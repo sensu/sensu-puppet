@@ -1,0 +1,41 @@
+Puppet::Type.newtype(:sensu_dashboard_config) do
+  @doc = ""
+
+  ensurable do
+    newvalue(:present) do
+      provider.create
+    end
+
+    newvalue(:absent) do
+      provider.destroy
+    end
+
+    defaultto :present
+  end
+
+  newparam(:name) do
+    desc "This value has no effect, set it to what ever you want."
+  end
+
+  newproperty(:port) do
+    desc "The port that the Sensu Dashboard should listen on"
+
+    defaultto '5671'
+  end
+
+  newproperty(:host) do
+    desc "The hostname that the Sensu Dashboard should listen on"
+
+    defaultto 'localhost'
+  end
+
+  newproperty(:user) do
+    desc "The username to use when connecting to the Sensu Dashboard"
+
+    defaultto 'sensu'
+  end
+
+  newproperty(:password) do
+    desc "The password to use when connecting to the Sensu Dashboard"
+  end
+end
