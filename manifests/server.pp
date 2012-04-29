@@ -79,4 +79,9 @@ define sensu::server(
         Service['sensu-api'],
       ];
   }
+
+  sensu::handler { 'default':
+    type    => 'pipe',
+    command => '/etc/sensu/handlers/default',
+  }
 }
