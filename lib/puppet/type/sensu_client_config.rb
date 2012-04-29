@@ -1,6 +1,14 @@
 Puppet::Type.newtype(:sensu_client_config) do
   @doc = ""
 
+  def initialize(*args)
+    super
+
+    self[:notify] = [
+      "Service[sensu-client]",
+    ].select { |ref| catalog.resource(ref) }
+  end
+
   ensurable do
     newvalue(:present) do
       provider.create

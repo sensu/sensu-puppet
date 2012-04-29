@@ -1,6 +1,16 @@
 Puppet::Type.newtype(:sensu_rabbitmq_config) do
   @doc = ""
 
+  def initialize(*args)
+    super
+
+    self[:notify] = [
+      "Service[sensu-server]",
+      "Service[sensu-client]",
+      "Service[sensu-api]",
+    ].select { |ref| catalog.resource(ref) }
+  end
+
   ensurable do
     newvalue(:present) do
       provider.create
