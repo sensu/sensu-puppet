@@ -5,7 +5,7 @@ Puppet::Type.type(:sensu_handler_config).provide(:json) do
     super
 
     begin
-      @conf = JSON.parse(File.read("/etc/sensu/conf.d/handlerss_#{resource[:name]}.json"))
+      @conf = JSON.parse(File.read("/etc/sensu/conf.d/handlers_#{resource[:name]}.json"))
     rescue
       @conf = {}
     end
