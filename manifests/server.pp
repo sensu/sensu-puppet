@@ -86,4 +86,6 @@ define sensu::server(
     type    => 'pipe',
     command => '/etc/sensu/handlers/default',
   }
+
+  Sensu_check_config<<| |>>
 }
