@@ -23,6 +23,10 @@ Puppet::Type.newtype(:sensu_check_config) do
   end
 
   newparam(:name) do
+    desc "Some unique name, not the name of the check."
+  end
+
+  newparam(:realname) do
     desc "The name of the check"
   end
 
