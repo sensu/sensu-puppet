@@ -45,4 +45,8 @@ Puppet::Type.newtype(:sensu_check_config) do
   newproperty(:subscribers, :array_matching => :all) do
     desc ""
   end
+
+  autorequire(:package) do
+    ['sensu']
+  end
 end

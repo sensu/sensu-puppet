@@ -66,4 +66,8 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
 
     defaultto '/sensu'
   end
+
+  autorequire(:package) do
+    ['sensu']
+  end
 end

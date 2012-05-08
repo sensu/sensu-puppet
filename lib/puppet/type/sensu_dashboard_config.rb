@@ -46,4 +46,8 @@ Puppet::Type.newtype(:sensu_dashboard_config) do
   newproperty(:password) do
     desc "The password to use when connecting to the Sensu Dashboard"
   end
+
+  autorequire(:package) do
+    ['sensu']
+  end
 end

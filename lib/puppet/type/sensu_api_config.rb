@@ -37,4 +37,8 @@ Puppet::Type.newtype(:sensu_api_config) do
 
     defaultto 'localhost'
   end
+
+  autorequire(:package) do
+    ['sensu']
+  end
 end

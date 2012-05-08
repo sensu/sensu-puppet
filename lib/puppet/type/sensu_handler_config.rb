@@ -32,4 +32,8 @@ Puppet::Type.newtype(:sensu_handler_config) do
   newproperty(:command) do
     desc ""
   end
+
+  autorequire(:package) do
+    ['sensu']
+  end
 end
