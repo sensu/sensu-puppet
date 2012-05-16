@@ -21,12 +21,7 @@ define sensu::server(
   if !defined(Sensu_rabbitmq_config[$::fqdn]) {
     if $rabbitmq_ssl_cert_chain != '' {
       Sensu_rabbitmq_config {
-        ssl_cert_chain => $rabbitmq_ssl_cert_chain,
-      }
-    }
-
-    if $rabbitmq_ssl_private_key != '' {
-      Sensu_rabbitmq_config {
+        ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
         ssl_private_key => $rabbitmq_ssl_private_key,
       }
     }

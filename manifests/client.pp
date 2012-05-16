@@ -16,12 +16,7 @@ define sensu::client(
     if $rabbitmq_ssl_private_key != '' {
       Sensu_rabbitmq_config {
         ssl_private_key => $rabbitmq_ssl_private_key,
-      }
-    }
-
-    if $rabbitmq_ssl_cert_chain != '' {
-      Sensu_rabbitmq_config {
-        ssl_cert_chain => $rabbitmq_ssl_cert_chain,
+        ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
       }
     }
 
