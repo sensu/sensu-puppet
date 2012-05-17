@@ -12,21 +12,14 @@ define sensu::client(
 
   include sensu::package
 
-  if !defined(Sensu_rabbitmq_config[$::fqdn]) {
-    if $rabbitmq_ssl_private_key != '' {
-      Sensu_rabbitmq_config {
-        ssl_private_key => $rabbitmq_ssl_private_key,
-        ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
-      }
-    }
-
-    sensu_rabbitmq_config { $::fqdn:
-      port     => $rabbitmq_port,
-      host     => $rabbitmq_host,
-      user     => $rabbitmq_user,
-      vhost    => $rabbitmq_vhost,
-      password => $rabbitmq_password,
-    }
+  sensu::rabbitmq { 'client':
+    ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
+    ssl_private_key => $rabbitmq_ssl_private_key,
+    port            => $rabbitmq_port,
+    host            => $rabbitmq_host,
+    user            => $rabbitmq_user,
+    vhost           => $rabbitmq_vhost,
+    password        => $rabbitmq_password,
   }
 
   sensu_client_config { $::fqdn:

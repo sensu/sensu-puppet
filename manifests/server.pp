@@ -18,21 +18,14 @@ define sensu::server(
                     ) {
   include sensu::package
 
-  if !defined(Sensu_rabbitmq_config[$::fqdn]) {
-    if $rabbitmq_ssl_cert_chain != '' {
-      Sensu_rabbitmq_config {
-        ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
-        ssl_private_key => $rabbitmq_ssl_private_key,
-      }
-    }
-
-    sensu_rabbitmq_config { $::fqdn:
-      port     => $rabbitmq_port,
-      host     => $rabbitmq_host,
-      user     => $rabbitmq_user,
-      password => $rabbitmq_password,
-      vhost    => $rabbitmq_vhost,
-    }
+  sensu::rabbitmq { 'server':
+    ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
+    ssl_private_key => $rabbitmq_ssl_private_key,
+    port            => $rabbitmq_port,
+    host            => $rabbitmq_host,
+    user            => $rabbitmq_user,
+    password        => $rabbitmq_password,
+    vhost           => $rabbitmq_vhost,
   }
 
   sensu_redis_config { $::fqdn:
