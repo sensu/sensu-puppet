@@ -1,5 +1,15 @@
-
-class sensu::debian {
+#
+# Add APT key and repository
+#
+# == Parameters:
+#
+# $ensure::     'present' or 'absent'
+# $repo::       'main' or 'unstable'
+#
+class sensu::debian (
+  $ensure = 'present',
+  $repo   = 'main'
+  ) {
 
   sensu::apt::key { 'Sensu':
     ensure  => 'present',
@@ -7,8 +17,8 @@ class sensu::debian {
   }
 
   sensu::apt::source { 'sensuapp':
-    ensure  => 'present',
-    content => 'deb http://repos.sensuapp.org/apt sensu main',
+    ensure  => $ensure,
+    content => "deb http://repos.sensuapp.org/apt sensu ${repo}",
     require => Sensu::Apt::Key['Sensu'],
   }
 
