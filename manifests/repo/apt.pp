@@ -3,18 +3,20 @@ class sensu::repo::apt (
     $repo
   ) {
 
-  if defined?() {
-    apt::key { 'Sensu':
-      ensure  => $ensure,
-      url     => 'http://repos.sensuapp.org/apt/pubkey.gpg',
+  if defined(apt::source) and defined(apt::key) {
+
+    apt::source { 'sensu':
+      ensure   => $ensure,
+      location => 'http://repos.sensuapp.org/apt',
+      release  => 'sensu',
+      repos    => $repo,
     }
-    apt::source { 'sensuapp':
-      ensure  => $ensure,
-      content => "deb http://repos.sensuapp.org/apt sensu ${repo}",
-      require => Apt::Key['Sensu'],
+
+    apt::key { 'sensu':
+      key        => '7580C77F',
+      key_source => 'http://repos.sensuapp.org/apt/pubkey.gpg',
     }
-  } else {
-    fail (' notice message ')
-  }
+
+  } else { fail('This class requires puppet-apt module') }
 
 }

@@ -13,15 +13,15 @@ class sensu::repo (
 
   case $::operatingsystem {
 
-    'debian|ubuntu': {
+    'Debian','Ubuntu': {
       class { 'sensu::repo::apt': ensure => $ensure, repo => $repo }
     }
 
-    'fedora|rhel|centos': {
+    'Fedora','Rhel','Centos': {
       class { 'sensu::repo::yum': ensure => $ensure, repo => $repo }
     }
 
-    default: { notify message }
+    default: { alert("$::operatingsystem not supported yet") }
 
   }
 
