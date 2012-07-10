@@ -1,12 +1,12 @@
 define sensu::rabbitmq(
-                       $ssl_cert_chain,
-                       $ssl_private_key,
-                       $port,
-                       $host,
-                       $user,
-                       $password,
-                       $vhost
-                       ) {
+                    $ssl_cert_chain,
+                    $ssl_private_key,
+                    $port,
+                    $host,
+                    $user,
+                    $password,
+                    $vhost
+  ) {
 
   if !defined(Sensu_rabbitmq_config[$::fqdn]) {
     if $ssl_cert_chain != '' {
@@ -56,7 +56,7 @@ define sensu::rabbitmq(
         }
       }
     }
-                                                                                   
+
     sensu_rabbitmq_config { $::fqdn:
       port     => $port,
       host     => $host,
