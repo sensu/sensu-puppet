@@ -10,6 +10,7 @@ class sensu::repo::apt (
       location => 'http://repos.sensuapp.org/apt',
       release  => 'sensu',
       repos    => $repo,
+      include_src => false,
     }
 
     apt::key { 'sensu':
