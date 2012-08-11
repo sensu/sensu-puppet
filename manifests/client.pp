@@ -29,9 +29,10 @@ define sensu::client(
   }
 
   service { 'sensu-client':
-    ensure  => running,
-    enable  => true,
-    require => [
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
+    require    => [
       Sensu_rabbitmq_config[$::fqdn],
       Sensu_client_config[$::fqdn],
     ],
