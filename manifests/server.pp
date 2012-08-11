@@ -46,8 +46,9 @@ define sensu::server(
   }
 
   Service {
-    ensure => running,
-    enable => true,
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
   }
 
   service {
