@@ -1,3 +1,4 @@
+require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'json'
 
 Puppet::Type.type(:sensu_redis_config).provide(:json) do
