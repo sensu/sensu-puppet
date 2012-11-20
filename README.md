@@ -10,7 +10,7 @@ Example
     
     # server
     node "sensu-server.foo.com" { 
-      sensu::server { "$::fqdn-sensu-server": rabbitmq_password => "secret" }
+      sensu::server { "${::fqdn}-sensu-server": rabbitmq_password => "secret" }
 
       sensu::check { "check_ntp": 
         command => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
