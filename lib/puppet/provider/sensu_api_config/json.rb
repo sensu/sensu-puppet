@@ -1,7 +1,9 @@
-require 'rubygems' if RUBY_VERSION < '1.9.0'
-require 'json'
+require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.features.rubygems?
+require 'json' if Puppet.features.json?
 
 Puppet::Type.type(:sensu_api_config).provide(:json) do
+  confine :feature => :json
+
   # Internal: Retrieve the current contents of /etc/sensu/config.json.
   #
   # Returns a Hash representation of the JSON structure in

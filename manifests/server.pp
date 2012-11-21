@@ -76,5 +76,4 @@ define sensu::server(
     command => '/etc/sensu/handlers/default',
   }
 
-  Sensu_check_config<<| |>>
 }
