@@ -1,7 +1,9 @@
-require 'rubygems' if RUBY_VERSION < '1.9.0'
-require 'json'
+require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.features.rubygems?
+require 'json' if Puppet.features.json?
 
 Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
+  confine :feature => :json
+
   def conf
     begin
       @conf ||= JSON.parse(File.read('/etc/sensu/config.json'))

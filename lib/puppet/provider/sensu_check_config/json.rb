@@ -1,7 +1,9 @@
-require 'rubygems' if RUBY_VERSION < '1.9.0'
-require 'json'
+require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.features.rubygems?
+require 'json' if Puppet.features.json?
 
 Puppet::Type.type(:sensu_check_config).provide(:json) do
+  confine :feature => :json
+
   def initialize(*args)
     super
 
