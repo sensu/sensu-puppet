@@ -11,6 +11,7 @@ class sensu::repo::apt (
       release     => 'sensu',
       repos       => $repo,
       include_src => false,
+      before      => Package['sensu'],
     }
 
     apt::key { 'sensu':
