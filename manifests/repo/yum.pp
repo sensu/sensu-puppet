@@ -13,6 +13,7 @@ class sensu::repo::yum (
     baseurl  => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/',
     gpgcheck => 0,
     name     => "sensu-${repo}",
+    before   => Package['sensu'],
   }
 
 }
