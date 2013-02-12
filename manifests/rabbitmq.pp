@@ -15,6 +15,7 @@ define sensu::rabbitmq(
         owner  => 'sensu',
         group  => 'sensu',
         mode   => '0755',
+        require => Package['sensu'],
       }
 
       if $ssl_cert_chain =~ /^puppet:\/\// {
