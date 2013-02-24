@@ -11,10 +11,10 @@ define sensu::rabbitmq(
   if !defined(Sensu_rabbitmq_config[$::fqdn]) {
     if $ssl_cert_chain != '' {
       file { '/etc/sensu/ssl':
-        ensure => directory,
-        owner  => 'sensu',
-        group  => 'sensu',
-        mode   => '0755',
+        ensure  => directory,
+        owner   => 'sensu',
+        group   => 'sensu',
+        mode    => '0755',
         require => Package['sensu'],
       }
 

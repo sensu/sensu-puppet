@@ -4,7 +4,7 @@ define sensu::check(
                     $interval    = '60',
                     $subscribers = []
                     ) {
-  
+
   sensu_check_config { $name:
     realname    => $name,
     command     => $command,
