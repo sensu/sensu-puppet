@@ -21,7 +21,7 @@ class sensu::repo (
       class { 'sensu::repo::yum': ensure => $ensure, repo => $repo }
     }
 
-    default: { alert("$::operatingsystem not supported yet") }
+    default: { alert("${::operatingsystem} not supported yet") }
 
   }
 
