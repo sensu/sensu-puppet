@@ -1,2 +1,3 @@
 sensu.komodoproject
 pkg/*
+spec/fixtures
