@@ -6,7 +6,7 @@ define sensu::client(
                       $rabbitmq_host            = 'localhost',
                       $rabbitmq_user            = 'sensu',
                       $rabbitmq_vhost           = '/sensu',
-                      $address                  = $ipaddress,
+                      $address                  = $::ipaddress,
                       $subscriptions            = []
                       ) {
 
