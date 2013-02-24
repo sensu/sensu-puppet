@@ -1,3 +1,10 @@
+# = Class: sensu::server
+#
+# Builds Sensu servers
+#
+# == Parameters
+#
+
 define sensu::server(
                       $rabbitmq_password,
                       $rabbitmq_port            = '5671',

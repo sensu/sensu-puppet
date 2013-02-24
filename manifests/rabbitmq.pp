@@ -1,3 +1,10 @@
+# = Define: sensu::rabbitmq
+#
+# Configures RabbitMQ for Sensu
+#
+# == Parameters
+#
+
 define sensu::rabbitmq(
                     $ssl_cert_chain,
                     $ssl_private_key,

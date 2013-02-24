@@ -1,3 +1,10 @@
+# = Define: sensu::check
+#
+# Defines Sensu checks
+#
+# == Parameters
+#
+
 define sensu::check(
                     $command,
                     $handlers    = [],

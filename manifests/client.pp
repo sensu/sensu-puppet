@@ -1,3 +1,10 @@
+# = Define: sensu::client
+#
+# Configures Sensu clients
+#
+# == Parameters
+#
+
 define sensu::client(
                       $rabbitmq_password,
                       $rabbitmq_ssl_private_key = '',

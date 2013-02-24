@@ -1,3 +1,10 @@
+# = Define: sensu::handler
+#
+# Defines Sensu handlers
+#
+# == Parameters
+#
+
 define sensu::handler(
                       $type,
                       $command
