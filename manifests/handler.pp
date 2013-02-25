@@ -11,10 +11,16 @@ define sensu::handler(
   $ensure = 'present'
 ) {
 
+  if defined(Class['sensu::service::server']) {
+    $notify_services = Class['sensu::service::server']
+  } else {
+    $notify_services = []
+  }
+
   sensu_handler_config { $name:
     type    => $type,
     command => $command,
     ensure  => $ensure,
-    notify  => Class['sensu::service::server']
+    notify  => $notify_services
   }
 }
