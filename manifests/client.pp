@@ -1,11 +1,11 @@
-# = Define: sensu::client
+# = Class: sensu::client
 #
 # Configures Sensu clients
 #
 # == Parameters
 #
 
-define sensu::client(
+class sensu::client(
                       $rabbitmq_password,
                       $rabbitmq_ssl_private_key = '',
                       $rabbitmq_ssl_cert_chain  = '',
@@ -14,12 +14,13 @@ define sensu::client(
                       $rabbitmq_user            = 'sensu',
                       $rabbitmq_vhost           = '/sensu',
                       $address                  = $::ipaddress,
-                      $subscriptions            = []
+                      $subscriptions            = [],
+                      $client_name              = $::fqdn
                       ) {
 
   include sensu::package
 
-  sensu::rabbitmq { 'client':
+  class { 'sensu::rabbitmq':
     ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
     ssl_private_key => $rabbitmq_ssl_private_key,
     port            => $rabbitmq_port,
@@ -30,7 +31,7 @@ define sensu::client(
   }
 
   sensu_client_config { $::fqdn:
-    client_name   => $name,
+    client_name   => $client_name,
     address       => $address,
     subscriptions => $subscriptions,
   }

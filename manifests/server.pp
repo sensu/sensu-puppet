@@ -5,7 +5,7 @@
 # == Parameters
 #
 
-define sensu::server(
+class sensu::server(
                       $rabbitmq_password,
                       $rabbitmq_port            = '5671',
                       $rabbitmq_host            = 'localhost',
@@ -25,7 +25,7 @@ define sensu::server(
                     ) {
   include sensu::package
 
-  sensu::rabbitmq { 'server':
+  class { 'sensu::rabbitmq':
     ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
     ssl_private_key => $rabbitmq_ssl_private_key,
     port            => $rabbitmq_port,

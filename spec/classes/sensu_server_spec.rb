@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'sensu::server', :type => :define do
+describe 'sensu::server', :type => :class do
   let(:title) { 'sensu::server' }
 
   context 'defaults' do
@@ -9,7 +9,7 @@ describe 'sensu::server', :type => :define do
 
     it { should include_class('sensu::package') }
 
-    it { should contain_sensu__rabbitmq('server').with(
+    it { should contain_class('sensu::rabbitmq').with(
       'ssl_cert_chain'  => '',
       'ssl_private_key' => '',
       'port'            => '5671',
@@ -82,7 +82,7 @@ describe 'sensu::server', :type => :define do
 
     it { should include_class('sensu::package') }
 
-    it { should contain_sensu__rabbitmq('server').with(
+    it { should contain_class('sensu::rabbitmq').with(
       'ssl_cert_chain'  => '/etc/rabbitmq/ssl/chain.pem',
       'ssl_private_key' => '/etc/rabbitmq/ssl/key.pem',
       'port'            => '1234',
