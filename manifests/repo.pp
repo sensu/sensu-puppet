@@ -18,7 +18,7 @@ class sensu::repo (
     }
 
     'Fedora','Rhel','Centos': {
-      class { 'sensu::repo::yum': ensure => $ensure, repo => $repo }
+      class { 'sensu::repo::yum': ensure => $ensure }
     }
 
     default: { alert("${::operatingsystem} not supported yet") }
