@@ -1,6 +1,13 @@
+# = Class: sensu::repo::apt
+#
+# Adds Sensu repo to Apt
+#
+# == Parameters
+#
+
 class sensu::repo::apt (
-    $ensure,
-    $repo
+    $ensure = 'present',
+    $repo   = 'main'
   ) {
 
   if defined(apt::source) and defined(apt::key) {

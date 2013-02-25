@@ -1,6 +1,13 @@
+# = Class: sensu::repo::yum
+#
+# Adds Sensu YUM repo support
+#
+# == Parameters
+#
+
 class sensu::repo::yum (
-    $ensure,
-    $repo
+    $ensure = 'present',
+    $repo   = 'main'
   ) {
 
   $enabled = $ensure ? {
