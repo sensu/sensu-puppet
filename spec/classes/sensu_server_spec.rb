@@ -4,72 +4,48 @@ describe 'sensu::server', :type => :class do
   let(:title) { 'sensu::server' }
 
   context 'defaults' do
-    let(:params) { { :rabbitmq_password => 'asdfjkl' } }
+    let(:facts) { { :fqdn => 'testhost.domain.com' } }
+    it { should contain_sensu_redis_config('testhost.domain.com').with_ensure('absent') }
+    it { should contain_sensu_api_config('testhost.domain.com').with_ensure('absent') }
+    it { should contain_sensu_dashboard_config('testhost.domain.com').with_ensure('absent') }
+    it { should contain_sensu__handler('default').with_ensure('absent') }
+  end
+
+  context 'defaults (enabled)' do
     let(:facts) { { :fqdn => 'testhost.domain.com', :ipaddress => '1.2.3.4' } }
-
-    it { should include_class('sensu::package') }
-
-    it { should contain_class('sensu::rabbitmq').with(
-      'ssl_cert_chain'  => '',
-      'ssl_private_key' => '',
-      'port'            => '5671',
-      'host'            => 'localhost',
-      'user'            => 'sensu',
-      'password'        => 'asdfjkl',
-      'vhost'           => '/sensu'
-    ) }
+    let(:params) { { :enabled => 'true' } }
 
     it { should contain_sensu_redis_config('testhost.domain.com').with(
-      'host'  => 'localhost',
-      'port'  => '6379'
+      'host'    => 'localhost',
+      'port'    => '6379',
+      'ensure'  => 'present'
     ) }
 
     it { should contain_sensu_api_config('testhost.domain.com').with(
-      'host'  => 'localhost',
-      'port'  => '4567'
+      'host'    => 'localhost',
+      'port'    => '4567',
+      'ensure'  => 'present'
     ) }
 
     it { should contain_sensu_dashboard_config('testhost.domain.com').with(
       'host'      => '1.2.3.4',
       'port'      => '8080',
       'user'      => 'admin',
-      'password'  => 'secret'
+      'password'  => 'secret',
+      'ensure'    => 'present'
     ) }
 
-    it { should contain_service('sensu-server').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[testhost.domain.com]', 'Sensu_redis_config[testhost.domain.com]']
+    it { should contain_sensu__handler('default').with(
+      'type'    => 'pipe',
+      'command' => '/etc/sensu/handlers/default',
+      'ensure'  => 'present'
     ) }
 
-    it { should contain_service('sensu-api').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[testhost.domain.com]', 'Sensu_api_config[testhost.domain.com]', 'Service[sensu-server]']
-    ) }
-
-    it { should contain_service('sensu-dashboard').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[testhost.domain.com]', 'Sensu_dashboard_config[testhost.domain.com]', 'Service[sensu-api]']
-    ) }
-
-    it { should contain_sensu__handler('default').with_type('pipe').with_command('/etc/sensu/handlers/default') }
   end # Defaults
 
-  context 'setting params' do
+  context 'setting params (enabled)' do
     let(:facts) { { :fqdn => 'testhost.domain.com', :ipaddress => '1.2.3.4' } }
     let(:params) { {
-      :rabbitmq_password        => 'asdfjkl',
-      :rabbitmq_port            => '1234',
-      :rabbitmq_host            => 'rabbithost',
-      :rabbitmq_user            => 'sensuuser',
-      :rabbitmq_vhost           => '/myvhost',
-      :rabbitmq_ssl_private_key => '/etc/rabbitmq/ssl/key.pem',
-      :rabbitmq_ssl_cert_chain  => '/etc/rabbitmq/ssl/chain.pem',
       :redis_host               => 'redishost',
       :redis_port               => '2345',
       :api_host                 => 'apihost',
@@ -77,60 +53,35 @@ describe 'sensu::server', :type => :class do
       :dashboard_host           => 'dashhost',
       :dashboard_port           => '5678',
       :dashboard_user           => 'user',
-      :dashboard_password       => 'mypass'
+      :dashboard_password       => 'mypass',
+      :enabled                  => 'true'
     } }
 
-    it { should include_class('sensu::package') }
-
-    it { should contain_class('sensu::rabbitmq').with(
-      'ssl_cert_chain'  => '/etc/rabbitmq/ssl/chain.pem',
-      'ssl_private_key' => '/etc/rabbitmq/ssl/key.pem',
-      'port'            => '1234',
-      'host'            => 'rabbithost',
-      'user'            => 'sensuuser',
-      'password'        => 'asdfjkl',
-      'vhost'           => '/myvhost'
-    ) }
-
     it { should contain_sensu_redis_config('testhost.domain.com').with(
-      'host'  => 'redishost',
-      'port'  => '2345'
+      'host'    => 'redishost',
+      'port'    => '2345',
+      'ensure'  => 'present'
     ) }
 
     it { should contain_sensu_api_config('testhost.domain.com').with(
-      'host'  => 'apihost',
-      'port'  => '3456'
+      'host'    => 'apihost',
+      'port'    => '3456',
+      'ensure'  => 'present'
     ) }
 
     it { should contain_sensu_dashboard_config('testhost.domain.com').with(
       'host'      => 'dashhost',
       'port'      => '5678',
       'user'      => 'user',
-      'password'  => 'mypass'
+      'password'  => 'mypass',
+      'ensure'    => 'present'
     ) }
 
-    it { should contain_service('sensu-server').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[testhost.domain.com]', 'Sensu_redis_config[testhost.domain.com]']
+    it { should contain_sensu__handler('default').with(
+      'type'    => 'pipe',
+      'command' => '/etc/sensu/handlers/default',
+      'ensure'  => 'present'
     ) }
-
-    it { should contain_service('sensu-api').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[testhost.domain.com]', 'Sensu_api_config[testhost.domain.com]', 'Service[sensu-server]']
-    ) }
-
-    it { should contain_service('sensu-dashboard').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[testhost.domain.com]', 'Sensu_dashboard_config[testhost.domain.com]', 'Service[sensu-api]']
-    ) }
-
-    it { should contain_sensu__handler('default').with_type('pipe').with_command('/etc/sensu/handlers/default') }
   end # setting params
 
 end

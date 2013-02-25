@@ -12,7 +12,8 @@ class sensu::rabbitmq(
                     $host,
                     $user,
                     $password,
-                    $vhost
+                    $vhost,
+                    $notify_services
   ) {
 
   if !defined(Sensu_rabbitmq_config[$::fqdn]) {
@@ -71,6 +72,7 @@ class sensu::rabbitmq(
       user     => $user,
       password => $password,
       vhost    => $vhost,
+      notify   => $notify_services
     }
   }
 }
