@@ -3,8 +3,9 @@ class sensu::service::client (
 ) {
 
   $real_ensure = $enabled ? {
-    true  => 'running',
-    false => 'stopped',
+    'true'  => 'running',
+    true    => 'running',
+    default => 'stopped',
   }
 
   service { 'sensu-client':

@@ -13,7 +13,7 @@ describe 'sensu::server', :type => :class do
 
   context 'defaults (enabled)' do
     let(:facts) { { :fqdn => 'testhost.domain.com', :ipaddress => '1.2.3.4' } }
-    let(:params) { { :enabled => true } }
+    let(:params) { { :enabled => 'true' } }
 
     it { should contain_sensu_redis_config('testhost.domain.com').with(
       'host'    => 'localhost',
@@ -54,7 +54,7 @@ describe 'sensu::server', :type => :class do
       :dashboard_port           => '5678',
       :dashboard_user           => 'user',
       :dashboard_password       => 'mypass',
-      :enabled                  => true
+      :enabled                  => 'true'
     } }
 
     it { should contain_sensu_redis_config('testhost.domain.com').with(
