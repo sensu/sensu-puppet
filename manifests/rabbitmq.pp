@@ -1,11 +1,11 @@
-# = Define: sensu::rabbitmq
+# = Class: sensu::rabbitmq
 #
-# Configures RabbitMQ for Sensu
+# Configures Sensu for RabbitMQ
 #
 # == Parameters
 #
 
-define sensu::rabbitmq(
+class sensu::rabbitmq(
                     $ssl_cert_chain,
                     $ssl_private_key,
                     $port,
