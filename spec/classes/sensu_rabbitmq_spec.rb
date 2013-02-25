@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'sensu::rabbitmq', :type => :define do
+describe 'sensu::rabbitmq', :type => :class do
   let(:title) { 'myrabbit' }
   let(:facts) { { :fqdn => 'hostname.domain.com' } }
 
