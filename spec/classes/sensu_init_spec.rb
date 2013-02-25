@@ -125,7 +125,7 @@ describe 'sensu', :type => :class do
     let(:facts) { { :fqdn => 'myhost.domain.com', :ipaddress => '1.2.3.4' } }
 
     it { should contain_class('sensu::rabbitmq').with(
-      'notify_services'  => ''
+      'notify_services'  => []
     )}
   end
 

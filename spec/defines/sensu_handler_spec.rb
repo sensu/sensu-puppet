@@ -17,7 +17,7 @@ describe 'sensu::handler', :type => :define do
   context 'absent' do
     let(:facts) { { 'Class[sensu::service::server]' => true } }
     let(:params) { { :type => 'pipe', :command => '/etc/sensu/mycommand.rb', :ensure => 'absent' } }
-    it { should contain_sensu_handler_config('myhandler').with_ensure('absent').with_notify('') }
+    it { should contain_sensu_handler_config('myhandler').with_ensure('absent').with_notify([]) }
 
   end
 
