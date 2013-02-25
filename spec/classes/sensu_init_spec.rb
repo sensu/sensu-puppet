@@ -32,26 +32,24 @@ describe 'sensu', :type => :class do
       'dashboard_port'      => '8080',
       'dashboard_user'      => 'admin',
       'dashboard_password'  => 'secret',
-      'enabled'             => false
+      'enabled'             => 'false'
     )}
 
     it { should contain_class('sensu::client').with(
       'address'       => '1.2.3.4',
       'subscriptions' => [],
       'client_name'   => 'myhost.domain.com',
-      'enabled'       => true
+      'enabled'       => 'true'
     )}
 
-    it { should contain_class('sensu::service::server').with_enabled(false) }
-    it { should contain_class('sensu::service::client').with_enabled(true) }
+    it { should contain_class('sensu::service::server').with_enabled('false') }
+    it { should contain_class('sensu::service::client').with_enabled('true') }
   end
 
 
   context 'setting all params' do
     let(:params) { {
       :rabbitmq_password        => 'asdfjkl',
-      :server                   => true,
-      :client                   => false,
       :version                  => '0.9.10',
       :install_repo             => false,
       :rabbitmq_port            => '1234',
@@ -99,22 +97,22 @@ describe 'sensu', :type => :class do
       'dashboard_port'      => '5678',
       'dashboard_user'      => 'dashuser',
       'dashboard_password'  => 'dashpass',
-      'enabled'             => true
+      'enabled'             => 'true'
     )}
 
     it { should contain_class('sensu::client').with(
       'address'       => '127.0.0.1',
       'subscriptions' => ['all'],
       'client_name'   => 'myhost',
-      'enabled'       => false
+      'enabled'       => 'false'
     )}
 
-    it { should contain_class('sensu::service::server').with_enabled(true) }
-    it { should contain_class('sensu::service::client').with_enabled(false) }
+    it { should contain_class('sensu::service::server').with_enabled('true') }
+    it { should contain_class('sensu::service::client').with_enabled('false') }
   end
 
   context 'server and client' do
-    let(:params) { { :rabbitmq_password => 'asdfjkl', :server => true, :client => true } }
+    let(:params) { { :rabbitmq_password => 'asdfjkl', :server => 'true', :client => 'true' } }
     let(:facts) { { :fqdn => 'myhost.domain.com', :ipaddress => '1.2.3.4' } }
 
     it { should contain_class('sensu::rabbitmq').with(
@@ -123,7 +121,7 @@ describe 'sensu', :type => :class do
   end
 
   context 'neither server nor client' do
-    let(:params) { { :rabbitmq_password => 'asdfjkl', :server => false, :client => false } }
+    let(:params) { { :rabbitmq_password => 'asdfjkl', :server => 'false', :client => 'false' } }
     let(:facts) { { :fqdn => 'myhost.domain.com', :ipaddress => '1.2.3.4' } }
 
     it { should contain_class('sensu::rabbitmq').with(

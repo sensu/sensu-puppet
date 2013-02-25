@@ -9,8 +9,8 @@
 
 class sensu (
   $rabbitmq_password,
-  $server                   = false,
-  $client                   = true,
+  $server                   = 'false',
+  $client                   = 'true',
   $version                  = 'latest',
   $install_repo             = 'true',
   $rabbitmq_port            = '5671',
@@ -45,13 +45,13 @@ class sensu (
   Class['sensu::service::client'] ->
   Class['sensu']
 
-  if $server == true {
-    if $client == true {
+  if $server == 'true' or $server == true {
+    if $client == 'true' or $client == true {
       $notify_services = [ Class['sensu::service::client'], Class['sensu::service::server'] ]
     } else {
       $notify_services = Class['sensu::service::server']
     }
-  } elsif $client == true {
+  } elsif $client == 'true' or $client == true {
     $notify_services = Class['sensu::service::client']
   } else {
     $notify_services = []

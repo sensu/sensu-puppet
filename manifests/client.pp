@@ -9,10 +9,11 @@ class sensu::client(
   $address        = $::ipaddress,
   $subscriptions  = [],
   $client_name    = $::fqdn,
-  $enabled        = true
+  $enabled        = 'true'
 ) {
 
   $ensure = $enabled ? {
+    'true'  => 'present',
     true    => 'present',
     default => 'absent'
   }
