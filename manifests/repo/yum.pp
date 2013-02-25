@@ -6,8 +6,7 @@
 #
 
 class sensu::repo::yum (
-    $ensure = 'present',
-    $repo   = 'main'
+    $ensure = 'present'
   ) {
 
   $enabled = $ensure ? {
@@ -19,7 +18,7 @@ class sensu::repo::yum (
     enabled  => $enabled,
     baseurl  => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/',
     gpgcheck => 0,
-    name     => "sensu-${repo}",
+    name     => "sensu",
     before   => Package['sensu'],
   }
 

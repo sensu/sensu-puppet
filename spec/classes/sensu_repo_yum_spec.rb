@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'sensu::repo::yum', :type => :class do
 
   context 'ensure: present' do
-    let(:params) { { :ensure => 'present', :repo => 'main' } }
+    let(:params) { { :ensure => 'present' } }
     it { should contain_yumrepo('sensu').with(
       'enabled'   => 1,
       'baseurl'   => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/',
@@ -13,7 +13,7 @@ describe 'sensu::repo::yum', :type => :class do
   end
 
   context 'ensure: absent' do
-    let(:params) { { :ensure => 'absent', :repo => 'main' } }
+    let(:params) { { :ensure => 'absent' } }
     it { should contain_yumrepo('sensu').with(
       'enabled' => 'absent',
       'before'  => 'Package[sensu]'
@@ -21,7 +21,7 @@ describe 'sensu::repo::yum', :type => :class do
   end
 
   context 'ensure: foo' do
-    let(:params) { { :ensure => 'foo', :repo => 'main' } }
+    let(:params) { { :ensure => 'foo' } }
     it { should contain_yumrepo('sensu').with(
       'enabled' => 'absent',
       'before'  => 'Package[sensu]'
