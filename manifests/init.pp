@@ -7,6 +7,87 @@
 # None.
 #
 
-class sensu {
+class sensu (
+  $rabbitmq_password,
+  $server                   = false,
+  $client                   = true,
+  $rabbitmq_port            = '5671',
+  $rabbitmq_host            = 'localhost',
+  $rabbitmq_user            = 'sensu',
+  $rabbitmq_vhost           = '/sensu',
+  $rabbitmq_ssl_private_key = '',
+  $rabbitmq_ssl_cert_chain  = '',
+  $redis_host               = 'localhost',
+  $redis_port               = '6379',
+  $api_host                 = 'localhost',
+  $api_port                 = '4567',
+  $dashboard_host           = $::ipaddress,
+  $dashboard_port           = '8080',
+  $dashboard_user           = 'admin',
+  $dashboard_password       = 'secret',
+  $subscriptions            = [],
+  $client_address           = $::ipaddress,
+  $client_name              = $::fqdn
+){
+
+  Class['sensu::package'] ->
+  Class['sensu::rabbitmq']
+
+  Class['sensu::rabbitmq'] ->
+  Class['sensu::server'] ~>
+  Class['sensu::service::server'] ->
+  Class['sensu']
+
+  Class['sensu::rabbitmq'] ->
+  Class['sensu::client'] ~>
+  Class['sensu::service::client'] ->
+  Class['sensu']
+
+  if $server == true {
+    if $client == true {
+      $notify_services = [ Class['sensu::service::client'], Class['sensu::service::server'] ]
+    } else {
+      $notify_services = Class['sensu::service::server']
+    }
+  } elsif $client == true {
+    $notify_services = Class['sensu::service::client']
+  } else {
+    $notify_services = []
+  }
+
+  class { 'sensu::package': }
+  class { 'sensu::rabbitmq':
+    ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
+    ssl_private_key => $rabbitmq_ssl_private_key,
+    port            => $rabbitmq_port,
+    host            => $rabbitmq_host,
+    user            => $rabbitmq_user,
+    password        => $rabbitmq_password,
+    vhost           => $rabbitmq_vhost,
+    notify_services => $notify_services
+  }
+
+  class { 'sensu::server':
+    redis_host          => $redis_host,
+    redis_port          => $redis_port,
+    api_host            => $api_host,
+    api_port            => $api_port,
+    dashboard_host      => $dashboard_host,
+    dashboard_port      => $dashboard_port,
+    dashboard_user      => $dashboard_user,
+    dashboard_password  => $dashboard_password,
+    enabled             => $server
+  }
+
+  class { 'sensu::service::server': enabled => $server }
+
+  class { 'sensu::client':
+    address       => $client_address,
+    subscriptions => $subscriptions,
+    client_name   => $client_name,
+    enabled       => $client
+  }
+
+  class { 'sensu::service::client': enabled => $client }
 
 }

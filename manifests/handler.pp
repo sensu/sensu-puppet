@@ -6,13 +6,15 @@
 #
 
 define sensu::handler(
-                      $type,
-                      $command
-                      ) {
+  $type,
+  $command,
+  $ensure = 'present'
+) {
 
   sensu_handler_config { $name:
     type    => $type,
     command => $command,
-    before  => Service['sensu-server'],
+    ensure  => $ensure,
+    notify  => Class['sensu::service::server']
   }
 }
