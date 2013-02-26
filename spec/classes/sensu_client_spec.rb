@@ -5,71 +5,37 @@ describe 'sensu::client', :type => :class do
 
   context 'defaults' do
     let(:facts) { { :ipaddress => '2.3.4.5', :fqdn => 'host.domain.com' } }
-    let(:params) { { :rabbitmq_password => 'asdfjkl' } }
-
-    it { should include_class('sensu::package') }
-    it { should contain_class('sensu::rabbitmq').with(
-      'ssl_cert_chain'  => '',
-      'ssl_private_key' => '',
-      'port'            => '5671',
-      'host'            => 'localhost',
-      'user'            => 'sensu',
-      'vhost'           => '/sensu',
-      'password'        => 'asdfjkl'
-    ) }
 
     it { should contain_sensu_client_config('host.domain.com').with(
       'client_name'   => 'host.domain.com',
       'address'       => '2.3.4.5',
-      'subscriptions' => []
+      'subscriptions' => [],
+      'ensure'        => 'present'
     ) }
 
-    it { should contain_service('sensu-client').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[host.domain.com]', 'Sensu_client_config[host.domain.com]']
-    ) }
   end
 
-  context 'setting params' do
+  context 'setting params (enabled)' do
     let(:facts) { { :fqdn => 'host.domain.com' } }
     let(:params) { {
-      :rabbitmq_password        => 'asdfjkl',
-      :rabbitmq_ssl_private_key => '/etc/sensu/ssl/key.pem',
-      :rabbitmq_ssl_cert_chain  => '/etc/sensu/ssl/chain.pem',
-      :rabbitmq_port            => '1234',
-      :rabbitmq_host            => 'rabbithost',
-      :rabbitmq_user            => 'sensuuser',
-      :rabbitmq_vhost           => '/myvhost',
       :address                  => '1.2.3.4',
       :subscriptions            => ['all'],
       :client_name              => 'myclient'
     } }
 
-    it { should include_class('sensu::package') }
-    it { should contain_class('sensu::rabbitmq').with(
-      'ssl_cert_chain'  => '/etc/sensu/ssl/chain.pem',
-      'ssl_private_key' => '/etc/sensu/ssl/key.pem',
-      'port'            => '1234',
-      'host'            => 'rabbithost',
-      'user'            => 'sensuuser',
-      'vhost'           => '/myvhost',
-      'password'        => 'asdfjkl'
-    ) }
-
     it { should contain_sensu_client_config('host.domain.com').with(
       'client_name'   => 'myclient',
       'address'       => '1.2.3.4',
-      'subscriptions' => ['all']
+      'subscriptions' => ['all'],
+      'ensure'        => 'present'
     ) }
 
-    it { should contain_service('sensu-client').with(
-      'ensure'      => 'running',
-      'enable'      => true,
-      'hasrestart'  => true,
-      'require'     => ['Sensu_rabbitmq_config[host.domain.com]', 'Sensu_client_config[host.domain.com]']
-    ) }
+  end
+
+  context 'disabled' do
+    let(:facts) { { :fqdn => 'host.domain.com' } }
+    let(:params) { { :enabled => false } }
+    it { should contain_sensu_client_config('host.domain.com').with_ensure('absent') }
   end
 
 end

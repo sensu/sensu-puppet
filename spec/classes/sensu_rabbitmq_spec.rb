@@ -11,7 +11,8 @@ describe 'sensu::rabbitmq', :type => :class do
     :host             => 'myhost',
     :user             => 'sensuuser',
     :password         => 'sensupass',
-    :vhost            => '/myvhost'
+    :vhost            => '/myvhost',
+    :notify_services  => []
   } }
 
   pending "it should test cert installs" do
