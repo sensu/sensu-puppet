@@ -20,5 +20,5 @@ class sensu::package(
     notify  => $notify_services
   }
 
-  sensu_clean_config { $::fqdn: }
+  file { '/etc/sensu/config.json': ensure => absent }
 }
