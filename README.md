@@ -29,7 +29,7 @@ Pluginsync should be enabled. Also, you need ruby json library/gem on all your n
 ### Sensu Server
 
     node "sensu-server.foo.com" { 
-      sensu::server { "${::fqdn}-sensu-server": rabbitmq_password => "secret" }
+      sensu { "${::fqdn}-sensu-server": rabbitmq_password => "secret", server => true }
 
       sensu::check { "check_ntp": 
         command => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
@@ -46,7 +46,7 @@ Pluginsync should be enabled. Also, you need ruby json library/gem on all your n
 ### Sensu Client
     
     node "sensu-client.foo.com" { 
-       sensu::client { "$::fqdn":
+       sensu { "$::fqdn":
          rabbitmq_password => "secret",
          rabbitmq_host => "sensu-server.foo.com",
          subscriptions => "sensu-test"

@@ -6,43 +6,33 @@
 #
 
 class sensu::server(
-                      $rabbitmq_password,
-                      $rabbitmq_port            = '5671',
-                      $rabbitmq_host            = 'localhost',
-                      $rabbitmq_user            = 'sensu',
-                      $rabbitmq_vhost           = '/sensu',
-                      $rabbitmq_ssl_private_key = '',
-                      $rabbitmq_ssl_cert_chain  = '',
-                      $redis_host               = 'localhost',
-                      $redis_port               = '6379',
-                      $api_host                 = 'localhost',
-                      $api_port                 = '4567',
-                      $dashboard_host           = $::ipaddress,
-                      $dashboard_port           = '8080',
-                      $dashboard_user           = 'admin',
-                      $dashboard_password       = 'secret',
-                      $ensure                   = 'present'
-                    ) {
-  include sensu::package
+  $redis_host         = 'localhost',
+  $redis_port         = '6379',
+  $api_host           = 'localhost',
+  $api_port           = '4567',
+  $dashboard_host     = $::ipaddress,
+  $dashboard_port     = '8080',
+  $dashboard_user     = 'admin',
+  $dashboard_password = 'secret',
+  $enabled            = 'false'
+) {
 
-  class { 'sensu::rabbitmq':
-    ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
-    ssl_private_key => $rabbitmq_ssl_private_key,
-    port            => $rabbitmq_port,
-    host            => $rabbitmq_host,
-    user            => $rabbitmq_user,
-    password        => $rabbitmq_password,
-    vhost           => $rabbitmq_vhost,
+  $ensure = $enabled ? {
+    'true'  => 'present',
+    true    => 'present',
+    default => 'absent'
   }
 
   sensu_redis_config { $::fqdn:
-    host => $redis_host,
-    port => $redis_port,
+    host    => $redis_host,
+    port    => $redis_port,
+    ensure  => $ensure,
   }
 
   sensu_api_config { $::fqdn:
-    host => $api_host,
-    port => $api_port,
+    host    => $api_host,
+    port    => $api_port,
+    ensure  => $ensure,
   }
 
   sensu_dashboard_config { $::fqdn:
@@ -50,37 +40,12 @@ class sensu::server(
     port     => $dashboard_port,
     user     => $dashboard_user,
     password => $dashboard_password,
-  }
-
-  Service {
-    ensure     => running,
-    enable     => true,
-    hasrestart => true,
-  }
-
-  service {
-    'sensu-server':
-      require => [
-        Sensu_rabbitmq_config[$::fqdn],
-        Sensu_redis_config[$::fqdn],
-      ];
-    'sensu-api':
-      require => [
-        Sensu_rabbitmq_config[$::fqdn],
-        Sensu_api_config[$::fqdn],
-        Service['sensu-server'],
-      ];
-    'sensu-dashboard':
-      require => [
-        Sensu_rabbitmq_config[$::fqdn],
-        Sensu_dashboard_config[$::fqdn],
-        Service['sensu-api'],
-      ];
+    ensure   => $ensure,
   }
 
   sensu::handler { 'default':
     type    => 'pipe',
     command => '/etc/sensu/handlers/default',
+    ensure  => $ensure
   }
-
 }
