@@ -11,6 +11,8 @@ class sensu (
   $rabbitmq_password,
   $server                   = 'false',
   $client                   = 'true',
+  $version                  = 'latest',
+  $install_repo             = 'true',
   $rabbitmq_port            = '5671',
   $rabbitmq_host            = 'localhost',
   $rabbitmq_user            = 'sensu',
@@ -55,7 +57,12 @@ class sensu (
     $notify_services = []
   }
 
-  class { 'sensu::package': }
+  class { 'sensu::package':
+    version         => $version,
+    install_repo    => $install_repo,
+    notify_services => $notify_services
+  }
+
   class { 'sensu::rabbitmq':
     ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
     ssl_private_key => $rabbitmq_ssl_private_key,
