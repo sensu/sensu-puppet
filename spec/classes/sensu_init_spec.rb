@@ -6,6 +6,12 @@ describe 'sensu', :type => :class do
     let(:params) { { :rabbitmq_password => 'asdfjkl' } }
     let(:facts) { { :fqdn => 'myhost.domain.com', :ipaddress => '1.2.3.4' } }
 
+    it { should contain_class('sensu::package').with(
+      'version'         => 'latest',
+      'install_repo'    => true,
+      'notify_services' => 'Class[Sensu::Service::Client]'
+    )}
+
     it { should contain_class('sensu::rabbitmq').with(
       'ssl_cert_chain'  => '',
       'ssl_private_key' => '',
@@ -44,8 +50,10 @@ describe 'sensu', :type => :class do
   context 'setting all params' do
     let(:params) { {
       :rabbitmq_password        => 'asdfjkl',
-      :server                   => 'true',
-      :client                   => 'false',
+      :server                   => true,
+      :client                   => false,
+      :version                  => '0.9.10',
+      :install_repo             => false,
       :rabbitmq_port            => '1234',
       :rabbitmq_host            => 'rabbithost',
       :rabbitmq_user            => 'sensuuser',
@@ -64,6 +72,12 @@ describe 'sensu', :type => :class do
       :client_address           => '127.0.0.1',
       :client_name              => 'myhost'
     } }
+
+    it { should contain_class('sensu::package').with(
+      'version'         => '0.9.10',
+      'install_repo'    => false,
+      'notify_services' => 'Class[Sensu::Service::Server]'
+    )}
 
     it { should contain_class('sensu::rabbitmq').with(
       'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
