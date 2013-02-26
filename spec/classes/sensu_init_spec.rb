@@ -50,6 +50,8 @@ describe 'sensu', :type => :class do
   context 'setting all params' do
     let(:params) { {
       :rabbitmq_password        => 'asdfjkl',
+      :server                   => true,
+      :client                   => false,
       :version                  => '0.9.10',
       :install_repo             => false,
       :rabbitmq_port            => '1234',
@@ -125,7 +127,7 @@ describe 'sensu', :type => :class do
     let(:facts) { { :fqdn => 'myhost.domain.com', :ipaddress => '1.2.3.4' } }
 
     it { should contain_class('sensu::rabbitmq').with(
-      'notify_services'  => []
+      'notify_services'  => ''
     )}
   end
 
