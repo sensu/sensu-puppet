@@ -27,4 +27,9 @@ Puppet::Type.type(:sensu_client_subscription).provide(:json) do
   def destroy
     @conf = nil
   end
+
+  def exists?
+    @conf.has_key? 'subscription'
+  end
 end
+
