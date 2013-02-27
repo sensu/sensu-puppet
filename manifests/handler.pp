@@ -18,9 +18,9 @@ define sensu::handler(
   }
 
   sensu_handler_config { $name:
+    ensure  => $ensure,
     type    => $type,
     command => $command,
-    ensure  => $ensure,
     notify  => $notify_services
   }
 }

@@ -8,11 +8,11 @@
 class sensu::rabbitmq(
                     $ssl_cert_chain,
                     $ssl_private_key,
-                    $port,
-                    $host,
-                    $user,
+                    $port = '5671',
+                    $host = 'localhost',
+                    $user = 'sensu',
                     $password,
-                    $vhost,
+                    $vhost = '/sensu',
                     $notify_services
   ) {
 
