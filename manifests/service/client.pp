@@ -1,3 +1,9 @@
+# = Class: sensu::service::client
+#
+# Manages Sensu client service
+#
+# == Parameters
+#
 class sensu::service::client (
   $enabled
 ) {

@@ -24,28 +24,28 @@ class sensu::server(
   }
 
   sensu_redis_config { $::fqdn:
-    host    => $redis_host,
-    port    => $redis_port,
-    ensure  => $ensure,
+    ensure => $ensure,
+    host   => $redis_host,
+    port   => $redis_port,
   }
 
   sensu_api_config { $::fqdn:
-    host    => $api_host,
-    port    => $api_port,
-    ensure  => $ensure,
+    ensure => $ensure,
+    host   => $api_host,
+    port   => $api_port,
   }
 
   sensu_dashboard_config { $::fqdn:
+    ensure   => $ensure,
     host     => $dashboard_host,
     port     => $dashboard_port,
     user     => $dashboard_user,
     password => $dashboard_password,
-    ensure   => $ensure,
   }
 
   sensu::handler { 'default':
+    ensure  => $ensure,
     type    => 'pipe',
     command => '/etc/sensu/handlers/default',
-    ensure  => $ensure
   }
 }
