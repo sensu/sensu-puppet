@@ -12,14 +12,14 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
 
   def conf
     begin
-      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/checks_#{resource[:realname]}.json"))
+      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/check_#{resource[:realname]}.json"))
     rescue
       @conf ||= {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/checks_#{resource[:realname]}.json", 'w') do |f|
+    File.open("/etc/sensu/conf.d/check_#{resource[:realname]}.json", 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
   end
@@ -71,5 +71,53 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
 
   def subscribers=(value)
     conf['checks'][resource[:realname]]['subscribers'] = value
+  end
+
+  def type
+    conf['checks'][resource[:realname]]['type']
+  end
+
+  def type=(value)
+    conf['checks'][resource[:realname]]['type'] = value
+  end
+
+  def notification
+    conf['checks'][resource[:realname]]['notification']
+  end
+
+  def notification=(value)
+    conf['checks'][resource[:realname]]['notification'] = value
+  end
+
+  def refresh
+    conf['checks'][resource[:realname]]['refresh']
+  end
+
+  def refresh=(value)
+    conf['checks'][resource[:realname]]['refresh'] = value
+  end
+
+  def occurrences
+    conf['checks'][resource[:realname]]['occurrences']
+  end
+
+  def occurrences=(value)
+    conf['checks'][resource[:realname]]['occurrences'] = value
+  end
+
+  def low_flap_threshold
+    conf['checks'][resource[:realname]]['low_flap_threshold']
+  end
+
+  def low_flap_threshold=(value)
+    conf['checks'][resource[:realname]]['low_flap_threshold'] = value
+  end
+
+  def high_flap_threshold
+    conf['checks'][resource[:realname]]['high_flap_threshold']
+  end
+
+  def high_flap_threshold=(value)
+    conf['checks'][resource[:realname]]['high_flap_threshold'] = value
   end
 end
