@@ -4,7 +4,6 @@
 #
 # == Parameters
 #
-
 class sensu::client(
   $address        = $::ipaddress,
   $subscriptions  = [],
@@ -19,10 +18,10 @@ class sensu::client(
   }
 
   sensu_client_config { $::fqdn:
+    ensure        => $ensure,
     client_name   => $client_name,
     address       => $address,
     subscriptions => $subscriptions,
-    ensure        => $ensure
   }
 
 }
