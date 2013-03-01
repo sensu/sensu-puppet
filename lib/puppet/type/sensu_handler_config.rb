@@ -26,11 +26,15 @@ Puppet::Type.newtype(:sensu_handler_config) do
   end
 
   newproperty(:type) do
-    desc ""
+    desc "Type of handler"
   end
 
   newproperty(:command) do
-    desc ""
+    desc "Command the handler should run"
+  end
+  
+  newproperty(:severities) do
+    desc "Severities applicable to this handler"
   end
 
   autorequire(:package) do
