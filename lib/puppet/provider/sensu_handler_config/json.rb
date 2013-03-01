@@ -49,6 +49,7 @@ Puppet::Type.type(:sensu_handler_config).provide(:json) do
   
   def severities=(value)
     @conf['handlers'][resource[:name]]['severities'] = value
+  end
 
   def type
     @conf['handlers'][resource[:name]]['type']
