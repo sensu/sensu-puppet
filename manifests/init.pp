@@ -29,7 +29,8 @@ class sensu (
   $dashboard_password       = 'secret',
   $subscriptions            = [],
   $client_address           = $::ipaddress,
-  $client_name              = $::fqdn
+  $client_name              = $::fqdn,
+  $plugins                  = []
 ){
 
   Class['sensu::package'] ->
@@ -96,5 +97,7 @@ class sensu (
   }
 
   class { 'sensu::service::client': enabled => $client }
+
+  sensu::plugin { $plugins: install_path => '/etc/sensu/plugins'}
 
 }
