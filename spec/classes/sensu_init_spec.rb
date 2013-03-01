@@ -70,7 +70,8 @@ describe 'sensu', :type => :class do
       :dashboard_password       => 'dashpass',
       :subscriptions            => ['all'],
       :client_address           => '127.0.0.1',
-      :client_name              => 'myhost'
+      :client_name              => 'myhost',
+      :plugins                  => [ 'puppet:///data/plug1', 'puppet:///data/plug2' ]
     } }
 
     it { should contain_class('sensu::package').with(
@@ -111,6 +112,9 @@ describe 'sensu', :type => :class do
 
     it { should contain_class('sensu::service::server').with_enabled('true') }
     it { should contain_class('sensu::service::client').with_enabled('false') }
+    
+    it { should contain_sensu__plugin('puppet:///data/plug1') }
+    it { should contain_sensu__plugin('puppet:///data/plug2') }
   end
 
   context 'server and client' do
