@@ -1,4 +1,4 @@
-Puppet::Type.newtype(:sensu_handler_config) do
+Puppet::Type.newtype(:sensu_handler) do
   @doc = ""
 
   def initialize(*args)
@@ -32,9 +32,13 @@ Puppet::Type.newtype(:sensu_handler_config) do
   newproperty(:command) do
     desc "Command the handler should run"
   end
-  
+
   newproperty(:severities) do
     desc "Severities applicable to this handler"
+  end
+
+  newproperty(:handlers) do
+    desc "Handlers this handler mutexes into"
   end
 
   autorequire(:package) do

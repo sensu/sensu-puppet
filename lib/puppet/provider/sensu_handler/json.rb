@@ -1,7 +1,7 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.features.rubygems?
 require 'json' if Puppet.features.json?
 
-Puppet::Type.type(:sensu_handler_config).provide(:json) do
+Puppet::Type.type(:sensu_handler).provide(:json) do
   confine :feature => :json
 
   def initialize(*args)
@@ -41,6 +41,17 @@ Puppet::Type.type(:sensu_handler_config).provide(:json) do
 
   def command=(value)
     @conf['handlers'][resource[:name]]['command'] = value
+  end
+
+  def handlers
+    @conf['handlers'][resource[:name]]['handlers']
+  end
+
+  def handlers=(value)
+    @conf['handlers'][resource[:name]]['handlers'] = value
+    munge do |value|
+      Array(value)
+    end
   end
   
   def severities
