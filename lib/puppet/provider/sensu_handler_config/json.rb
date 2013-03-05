@@ -8,23 +8,21 @@ Puppet::Type.type(:sensu_handler_config).provide(:json) do
     super
 
     begin
-      @conf = JSON.parse(File.read("/etc/sensu/conf.d/handlers_#{resource[:name]}.json"))
+      @conf = JSON.parse(File.read("/etc/sensu/conf.d/#{resource[:name]}.json"))
     rescue
       @conf = {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/handlers_#{resource[:name]}.json", 'w') do |f|
+    File.open("/etc/sensu/conf.d/#{resource[:name]}.json", 'w') do |f|
       f.puts JSON.pretty_generate(@conf)
     end
   end
 
   def create
-    @conf['handlers'] = {}
-    @conf['handlers'][resource[:name]] = {}
-    self.command = resource[:command]
-    self.type = resource[:type]
+    @conf[resource[:name]] = {}
+    self.config = resource[:config]
   end
 
   def destroy
@@ -32,30 +30,14 @@ Puppet::Type.type(:sensu_handler_config).provide(:json) do
   end
 
   def exists?
-    @conf.has_key?('handlers') and @conf['handlers'].has_key?(resource[:name])
+    @conf.has_key?(resource[:name])
   end
 
-  def command
-    @conf['handlers'][resource[:name]]['command']
+  def config
+    @conf[resource[:name]]
   end
 
-  def command=(value)
-    @conf['handlers'][resource[:name]]['command'] = value
-  end
-  
-  def severities
-    @conf['handlers'][resource[:name]]['severities']
-  end
-  
-  def severities=(value)
-    @conf['handlers'][resource[:name]]['severities'] = value
-  end
-
-  def type
-    @conf['handlers'][resource[:name]]['type']
-  end
-
-  def type=(value)
-    @conf['handlers'][resource[:name]]['type'] = value
+  def config=(value)
+    @conf[resource[:name]] = value
   end
 end

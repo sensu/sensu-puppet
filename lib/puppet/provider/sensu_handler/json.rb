@@ -1,0 +1,72 @@
+require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.features.rubygems?
+require 'json' if Puppet.features.json?
+
+Puppet::Type.type(:sensu_handler).provide(:json) do
+  confine :feature => :json
+
+  def initialize(*args)
+    super
+
+    begin
+      @conf = JSON.parse(File.read("/etc/sensu/conf.d/handlers_#{resource[:name]}.json"))
+    rescue
+      @conf = {}
+    end
+  end
+
+  def flush
+    File.open("/etc/sensu/conf.d/handlers_#{resource[:name]}.json", 'w') do |f|
+      f.puts JSON.pretty_generate(@conf)
+    end
+  end
+
+  def create
+    @conf['handlers'] = {}
+    @conf['handlers'][resource[:name]] = {}
+    self.command = resource[:command]
+    self.type = resource[:type]
+  end
+
+  def destroy
+    @conf = nil
+  end
+
+  def exists?
+    @conf.has_key?('handlers') and @conf['handlers'].has_key?(resource[:name])
+  end
+
+  def command
+    @conf['handlers'][resource[:name]]['command']
+  end
+
+  def command=(value)
+    @conf['handlers'][resource[:name]]['command'] = value
+  end
+
+  def handlers
+    @conf['handlers'][resource[:name]]['handlers']
+  end
+
+  def handlers=(value)
+    @conf['handlers'][resource[:name]]['handlers'] = value
+    munge do |value|
+      Array(value)
+    end
+  end
+  
+  def severities
+    @conf['handlers'][resource[:name]]['severities']
+  end
+  
+  def severities=(value)
+    @conf['handlers'][resource[:name]]['severities'] = value
+  end
+
+  def type
+    @conf['handlers'][resource[:name]]['type']
+  end
+
+  def type=(value)
+    @conf['handlers'][resource[:name]]['type'] = value
+  end
+end
