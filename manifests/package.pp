@@ -19,6 +19,13 @@ class sensu::package(
     ensure  => $version,
     notify  => $notify_services
   }
+  
+  file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
+    ensure  => directory,
+    mode    => '0555',
+    owner   => 'sensu',
+    group   => 'sensu',
+  }
 
   file { '/etc/sensu/config.json': ensure => absent }
 }

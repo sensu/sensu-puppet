@@ -7,6 +7,8 @@ describe 'sensu::package', :type => :class do
     it { should create_class('sensu::package') }
     it { should include_class('sensu::repo') }
     it { should contain_package('sensu').with_ensure('latest') }
+    it { should contain_file('/etc/sensu/handlers').with_ensure('directory') }
+    it { should contain_file('/etc/sensu/plugins').with_ensure('directory') }
     it { should contain_file('/etc/sensu/config.json').with_ensure('absent') }
   end
 
