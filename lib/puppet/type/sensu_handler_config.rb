@@ -3,10 +3,6 @@ Puppet::Type.newtype(:sensu_handler_config) do
 
   def initialize(*args)
     super
-
-    self[:notify] = [
-      "Service[sensu-server]",
-    ].select { |ref| catalog.resource(ref) }
   end
 
   ensurable do
@@ -22,22 +18,18 @@ Puppet::Type.newtype(:sensu_handler_config) do
   end
 
   newparam(:name) do
-    desc "The name of the handler"
+    desc "The key name of the handler"
   end
 
-  newproperty(:type) do
-    desc "Type of handler"
-  end
-
-  newproperty(:command) do
-    desc "Command the handler should run"
-  end
-  
-  newproperty(:severities) do
-    desc "Severities applicable to this handler"
+  newproperty(:config) do
+    desc "Configuration for the handler"
   end
 
   autorequire(:package) do
     ['sensu']
+  end
+  
+  autorequire(:file) do
+    ['/etc/sensu/handlers']
   end
 end

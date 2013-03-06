@@ -8,7 +8,6 @@ describe 'sensu::server', :type => :class do
     it { should contain_sensu_redis_config('testhost.domain.com').with_ensure('absent') }
     it { should contain_sensu_api_config('testhost.domain.com').with_ensure('absent') }
     it { should contain_sensu_dashboard_config('testhost.domain.com').with_ensure('absent') }
-    it { should contain_sensu__handler('default').with_ensure('absent') }
   end
 
   context 'defaults (enabled)' do
@@ -33,12 +32,6 @@ describe 'sensu::server', :type => :class do
       'user'      => 'admin',
       'password'  => 'secret',
       'ensure'    => 'present'
-    ) }
-
-    it { should contain_sensu__handler('default').with(
-      'type'    => 'pipe',
-      'command' => '/etc/sensu/handlers/default',
-      'ensure'  => 'present'
     ) }
 
   end # Defaults
@@ -75,12 +68,6 @@ describe 'sensu::server', :type => :class do
       'user'      => 'user',
       'password'  => 'mypass',
       'ensure'    => 'present'
-    ) }
-
-    it { should contain_sensu__handler('default').with(
-      'type'    => 'pipe',
-      'command' => '/etc/sensu/handlers/default',
-      'ensure'  => 'present'
     ) }
   end # setting params
 

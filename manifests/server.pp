@@ -42,10 +42,4 @@ class sensu::server(
     user     => $dashboard_user,
     password => $dashboard_password,
   }
-
-  sensu::handler { 'default':
-    ensure  => $ensure,
-    type    => 'pipe',
-    command => '/etc/sensu/handlers/default',
-  }
 }
