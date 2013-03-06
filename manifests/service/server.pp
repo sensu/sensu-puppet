@@ -5,7 +5,7 @@
 # == Parameters
 #
 class sensu::service::server(
-  $enabled
+  $enabled = 'stopped'
 ) {
 
   $real_ensure = $enabled ? {
@@ -15,7 +15,7 @@ class sensu::service::server(
   }
 
   Service {
-    ensure     => $real_enabled,
+    ensure     => $real_ensure,
     enable     => $enabled,
     hasrestart => true,
   }

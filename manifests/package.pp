@@ -19,7 +19,7 @@ class sensu::package(
     ensure  => $version,
     notify  => $notify_services
   }
-  
+
   file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
     ensure  => directory,
     mode    => '0555',

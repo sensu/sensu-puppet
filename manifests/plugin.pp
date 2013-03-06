@@ -1,3 +1,10 @@
+# = Define: sensu::plugin
+#
+# Installs the Sensu plugins
+#
+# == Parameters
+#
+
 define sensu::plugin(
   $install_path = '/etc/sensu/plugins'
 ){
