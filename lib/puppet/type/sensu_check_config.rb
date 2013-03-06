@@ -65,9 +65,17 @@ Puppet::Type.newtype(:sensu_check_config) do
   newproperty(:subscribers, :array_matching => :all) do
     desc "Who is subscribed to this check"
   end
-  
+
   newproperty(:type) do
     desc "What type of check is this"
+  end
+
+  newproperty(:standalone, :boolean => true) do
+    desc "Whether this is a standalone check"
+
+    newvalues(:true, :false)
+
+    defaultto :false
   end
 
   autorequire(:package) do

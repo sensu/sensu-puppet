@@ -120,4 +120,12 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   def high_flap_threshold=(value)
     conf['checks'][resource[:realname]]['high_flap_threshold'] = value
   end
+
+  def standalone
+    conf['checks'][resource[:realname]]['standalone']
+  end
+
+  def standalone=(value)
+    conf['checks'][resource[:realname]]['standalone'] = value
+  end
 end
