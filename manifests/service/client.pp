@@ -5,7 +5,7 @@
 # == Parameters
 #
 class sensu::service::client (
-  $enabled
+  $enabled = 'stopped'
 ) {
 
   $real_ensure = $enabled ? {
