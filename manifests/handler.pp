@@ -39,12 +39,12 @@ define sensu::handler(
     }
   } else {
     $file_ensure = $ensure ? {
-      'absent'  => 'abasent',
+      'absent'  => 'absent',
       default   => 'file'
     }
 
     file { "${install_path}/${filename}":
-      ensure  => $file_file,
+      ensure  => $file_ensure,
       owner   => 'sensu',
       group   => 'sensu',
       mode    => '0555',

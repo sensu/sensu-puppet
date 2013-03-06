@@ -8,7 +8,7 @@
 #
 
 class sensu (
-  $rabbitmq_password,
+  $rabbitmq_password        = '',
   $server                   = 'false',
   $client                   = 'true',
   $version                  = 'latest',
