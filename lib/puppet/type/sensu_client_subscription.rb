@@ -25,6 +25,11 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     desc "The subscription name"
   end
 
+  newproperty(:subscriptions) do
+    desc "Subscriptions"
+    defaultto :name
+  end
+
   autorequire(:package) do
     ['sensu']
   end
