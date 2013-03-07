@@ -33,7 +33,7 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Command the handler should run"
   end
 
-  newproperty(:severities) do
+  newproperty(:severities, :array_matching => :all) do
     desc "Severities applicable to this handler"
   end
 
