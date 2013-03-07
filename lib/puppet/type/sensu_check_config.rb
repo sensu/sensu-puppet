@@ -78,6 +78,14 @@ Puppet::Type.newtype(:sensu_check_config) do
     defaultto :false
   end
 
+  newproperty(:aggregate, :boolean => true) do
+    desc "Whether this is an aggregate check"
+
+    newvalues(:true, :false)
+
+    defaultto :false
+  end
+
   autorequire(:package) do
     ['sensu']
   end
