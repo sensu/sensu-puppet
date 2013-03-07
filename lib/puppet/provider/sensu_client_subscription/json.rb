@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_client_subscription).provide(:json) do
     super
 
     begin
-      @conf = JSON.parse(File.read("/etc/sensu/conf.d/subscription_#{resource[:name]}.json"))
+      @conf = {'client' => { 'subscriptions' => JSON.parse(File.read("/etc/sensu/conf.d/subscription_#{resource[:name]}.json")) } }
     rescue
       @conf = {}
     end
@@ -30,6 +30,17 @@ Puppet::Type.type(:sensu_client_subscription).provide(:json) do
 
   def exists?
     @conf.has_key? 'subscription'
+  end
+
+  def subscriptions
+    @conf['client']['subscriptions']
+  end
+
+  def subscriptions=(value)
+    @conf['client']['subscriptions'] = value
+    munge do |value|
+      Array(value)
+    end
   end
 end
 
