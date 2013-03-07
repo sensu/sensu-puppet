@@ -6,30 +6,59 @@ describe 'sensu::check', :type => :define do
   context 'defaults' do
     let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
 
-    it { should contain_sensu_check_config('mycheck').with(
+    it { should contain_sensu_check('mycheck').with(
       'realname'    => 'mycheck',
       'command'     => '/etc/sensu/somecommand.rb',
       'handlers'    => [],
       'interval'    => '60',
-      'subscribers' => []
+      'subscribers' => [],
+      'standalone'  => 'true',
+      'aggregate'   => 'false'
     ) }
+
+    it { should contain_sensu_check_config('mycheck').with_ensure('absent') }
   end
 
   context 'setting params' do
     let(:params) { {
-      :command      => '/etc/sensu/command2.rb',
-      :handlers     => ['/handler1', '/handler2'],
-      :interval     => '10',
-      :subscribers  => ['all']
+      :command              => '/etc/sensu/command2.rb',
+      :handlers             => ['/handler1', '/handler2'],
+      :interval             => '10',
+      :subscribers          => ['all'],
+      :type                 => 'metric',
+      :standalone           => false,
+      :notification         => 'some text',
+      :low_flap_threshold   => 10,
+      :high_flap_threshold  => 15,
+      :refresh              => 1800,
+      :aggregate            => true,
+      :config               => { 'foo' => 'bar' },
+      :config_key           => 'mykey'
+
     } }
 
-    it { should contain_sensu_check_config('mycheck').with(
-      'realname'    => 'mycheck',
-      'command'     => '/etc/sensu/command2.rb',
-      'handlers'    => ['/handler1', '/handler2'],
-      'interval'    => '10',
-      'subscribers' => ['all']
+    it { should contain_sensu_check('mycheck').with(
+      'realname'            => 'mycheck',
+      'command'             => '/etc/sensu/command2.rb',
+      'handlers'            => ['/handler1', '/handler2'],
+      'interval'            => '10',
+      'subscribers'         => ['all'],
+      'type'                => 'metric',
+      'standalone'          => 'false',
+      'notification'        => 'some text',
+      'low_flap_threshold'  => '10',
+      'high_flap_threshold' => '15',
+      'refresh'             => '1800',
+      'aggregate'           => 'true'
     ) }
+    it { should contain_sensu_check_config('mykey').with_ensure('present')}
+  end
+
+  context 'ensure absent' do
+    let(:params) { { :command => '/etc/sensu/somecommand.rb', :ensure => 'absent' } }
+
+    it { should contain_sensu_check('mycheck').with_ensure('absent') }
+    it { should contain_sensu_check_config('mycheck').with_ensure('absent') }
   end
 
 end
