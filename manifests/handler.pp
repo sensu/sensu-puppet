@@ -6,14 +6,19 @@
 #
 
 define sensu::handler(
-  $source       = '',
   $type         = 'pipe',
-  $handlers     = [],
-  $install_path = '/etc/sensu/handlers',
-  $config       = '',
-  $config_key   = '',
+  $command      = undef,
+  $handlers     = undef,
   $ensure       = 'present',
-  $severities   = ['ok', 'warning', 'critical', 'unknown']
+  $severities   = ['ok', 'warning', 'critical', 'unknown'],
+  $exchange     = undef,
+  $mutator      = undef,
+  # Used to install the handler
+  $source       = '',
+  $install_path = '/etc/sensu/handlers',
+  # Handler specific config
+  $config       = '',
+  $config_key   = $name,
 ) {
 
   if defined(Class['sensu::service::server']) {
@@ -22,42 +27,36 @@ define sensu::handler(
     $notify_services = []
   }
 
-  $filename = inline_template("<%= scope.lookupvar('source').split('/').last %>")
+  if $source != '' {
 
-  $real_key = $config_key ? {
-    ''      => inline_template("<%= File.basename(scope.lookupvar('filename')).split('.').first %>"),
-    default => $config_key
-  }
+    $filename = inline_template("<%= scope.lookupvar('source').split('/').last %>")
+    $command_real = "${install_path}/${filename}"
 
-  if $handlers != [] {
-    sensu_handler { $name:
-      ensure      => $ensure,
-      type        => $type,
-      handlers    => $handlers,
-      severities  => $severities,
-      notify      => $notify_services,
-    }
-  } else {
     $file_ensure = $ensure ? {
       'absent'  => 'absent',
       default   => 'file'
     }
 
-    file { "${install_path}/${filename}":
+    file { $command_real:
       ensure  => $file_ensure,
       owner   => 'sensu',
       group   => 'sensu',
       mode    => '0555',
       source  => $source,
     }
+  } else {
+    $command_real = $command
+  }
 
-    sensu_handler { $real_key:
-      ensure      => $ensure,
-      type        => $type,
-      command     => "${install_path}/${filename}",
-      severities  => $severities,
-      notify      => $notify_services,
-    }
+  sensu_handler { $name:
+    ensure      => $ensure,
+    type        => $type,
+    command     => $command_real,
+    handlers    => $handlers,
+    severities  => $severities,
+    exchange    => $exchange,
+    mutator     => $mutator,
+    notify      => $notify_services,
   }
 
   # Handler config
@@ -73,7 +72,7 @@ define sensu::handler(
     }
   }
 
-  sensu_handler_config { $real_key:
+  sensu_handler_config { $config_key:
     ensure  => $config_present,
     config  => $config,
   }

@@ -33,11 +33,19 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Command the handler should run"
   end
 
+  newproperty(:exchange) do
+    desc "Exchange information used by the amqp type"
+  end
+
+  newproperty(:mutator) do
+    desc "Handler specific data massager"
+  end
+
   newproperty(:severities, :array_matching => :all) do
     desc "Severities applicable to this handler"
   end
 
-  newproperty(:handlers) do
+  newproperty(:handlers, :array_matching => :all) do
     desc "Handlers this handler mutexes into"
   end
 
