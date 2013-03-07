@@ -128,4 +128,12 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   def standalone=(value)
     conf['checks'][resource[:realname]]['standalone'] = value
   end
+
+  def aggregate
+    conf['checks'][resource[:realname]]['aggregate']
+  end
+
+  def aggregate=(value)
+    conf['checks'][resource[:realname]]['aggregate'] = value
+  end
 end
