@@ -7,133 +7,37 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   def initialize(*args)
     super
 
-    @conf = nil
-  end
-
-  def conf
     begin
-      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/check_#{resource[:realname]}.json"))
+      @conf = JSON.parse(File.read("/etc/sensu/conf.d/#{resource[:name]}.json"))
     rescue
-      @conf ||= {}
+      @conf = {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/check_#{resource[:realname]}.json", 'w') do |f|
-      f.puts JSON.pretty_generate(conf)
+    File.open("/etc/sensu/conf.d/#{resource[:name]}.json", 'w') do |f|
+      f.puts JSON.pretty_generate(@conf)
     end
   end
 
   def create
-    conf['checks'] = {}
-    conf['checks'][resource[:realname]] = {}
-    self.handlers = resource[:handlers]
-    self.command = resource[:command]
-    self.interval = resource[:interval]
-    self.subscribers = resource[:subscribers]
+    @conf[resource[:name]] = {}
+    self.config = resource[:config]
   end
 
   def destroy
-    conf = nil
+    @conf = nil
   end
 
   def exists?
-    conf.has_key?('checks') and conf['checks'].has_key?(resource[:realname])
+    @conf.has_key?(resource[:name])
   end
 
-  def interval
-    conf['checks'][resource[:realname]]['interval'].to_s
+  def config
+    @conf[resource[:name]]
   end
 
-  def interval=(value)
-    conf['checks'][resource[:realname]]['interval'] = value.to_i
-  end
-
-  def handlers
-    conf['checks'][resource[:realname]]['handlers'] || []
-  end
-
-  def handlers=(value)
-    conf['checks'][resource[:realname]]['handlers'] = value
-  end
-
-  def command
-    conf['checks'][resource[:realname]]['command']
-  end
-
-  def command=(value)
-    conf['checks'][resource[:realname]]['command'] = value
-  end
-
-  def subscribers
-    conf['checks'][resource[:realname]]['subscribers'] || []
-  end
-
-  def subscribers=(value)
-    conf['checks'][resource[:realname]]['subscribers'] = value
-  end
-
-  def type
-    conf['checks'][resource[:realname]]['type']
-  end
-
-  def type=(value)
-    conf['checks'][resource[:realname]]['type'] = value
-  end
-
-  def notification
-    conf['checks'][resource[:realname]]['notification']
-  end
-
-  def notification=(value)
-    conf['checks'][resource[:realname]]['notification'] = value
-  end
-
-  def refresh
-    conf['checks'][resource[:realname]]['refresh']
-  end
-
-  def refresh=(value)
-    conf['checks'][resource[:realname]]['refresh'] = value
-  end
-
-  def occurrences
-    conf['checks'][resource[:realname]]['occurrences']
-  end
-
-  def occurrences=(value)
-    conf['checks'][resource[:realname]]['occurrences'] = value
-  end
-
-  def low_flap_threshold
-    conf['checks'][resource[:realname]]['low_flap_threshold']
-  end
-
-  def low_flap_threshold=(value)
-    conf['checks'][resource[:realname]]['low_flap_threshold'] = value
-  end
-
-  def high_flap_threshold
-    conf['checks'][resource[:realname]]['high_flap_threshold']
-  end
-
-  def high_flap_threshold=(value)
-    conf['checks'][resource[:realname]]['high_flap_threshold'] = value
-  end
-
-  def standalone
-    conf['checks'][resource[:realname]]['standalone']
-  end
-
-  def standalone=(value)
-    conf['checks'][resource[:realname]]['standalone'] = value
-  end
-
-  def aggregate
-    conf['checks'][resource[:realname]]['aggregate']
-  end
-
-  def aggregate=(value)
-    conf['checks'][resource[:realname]]['aggregate'] = value
+  def config=(value)
+    @conf[resource[:name]] = value
   end
 end
