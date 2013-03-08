@@ -11,9 +11,7 @@ describe 'sensu::check', :type => :define do
       'command'     => '/etc/sensu/somecommand.rb',
       'handlers'    => [],
       'interval'    => '60',
-      'subscribers' => [],
-      'standalone'  => undef,
-      'aggregate'   => undef
+      'subscribers' => []
     ) }
 
     it { should contain_sensu_check_config('mycheck').with_ensure('absent') }
