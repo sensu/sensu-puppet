@@ -17,7 +17,7 @@ class sensu::server(
   $enabled            = 'false',
   $purge_config       = 'false',
 ) {
-  
+
   $ensure = $enabled ? {
     'true'  => 'present',
     true    => 'present',

@@ -17,7 +17,7 @@ class sensu::client(
     true    => 'present',
     default => 'absent'
   }
-  
+
   if $purge_config {
     file { '/etc/sensu/conf.d/client.json': ensure => $ensure }
   }
