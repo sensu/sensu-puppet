@@ -11,6 +11,8 @@ describe 'sensu::check', :type => :define do
       'command'     => '/etc/sensu/somecommand.rb',
       'handlers'    => [],
       'interval'    => '60',
+      'aggregate'   => undef,
+      'standalone'  => undef,
       'subscribers' => []
     ) }
 
