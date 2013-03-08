@@ -71,4 +71,12 @@ describe 'sensu::server', :type => :class do
     ) }
   end # setting params
 
+  context 'purge_configs' do
+    let(:params) { { :purge_config => true, :enabled => true } }
+
+    it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('present') }
+    it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('present')  }
+    it { should contain_file('/etc/sensu/conf.d/dashboard.json').with_ensure('present') }
+  end
+
 end
