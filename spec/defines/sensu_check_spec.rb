@@ -11,9 +11,7 @@ describe 'sensu::check', :type => :define do
       'command'     => '/etc/sensu/somecommand.rb',
       'handlers'    => [],
       'interval'    => '60',
-      'subscribers' => [],
-      'standalone'  => 'true',
-      'aggregate'   => 'false'
+      'subscribers' => []
     ) }
 
     it { should contain_sensu_check_config('mycheck').with_ensure('absent') }
@@ -26,7 +24,7 @@ describe 'sensu::check', :type => :define do
       :interval             => '10',
       :subscribers          => ['all'],
       :type                 => 'metric',
-      :standalone           => false,
+      :standalone           => true,
       :notification         => 'some text',
       :low_flap_threshold   => 10,
       :high_flap_threshold  => 15,
@@ -34,7 +32,6 @@ describe 'sensu::check', :type => :define do
       :aggregate            => true,
       :config               => { 'foo' => 'bar' },
       :config_key           => 'mykey'
-
     } }
 
     it { should contain_sensu_check('mycheck').with(
@@ -44,12 +41,12 @@ describe 'sensu::check', :type => :define do
       'interval'            => '10',
       'subscribers'         => ['all'],
       'type'                => 'metric',
-      'standalone'          => 'false',
+      'standalone'          => true,
       'notification'        => 'some text',
       'low_flap_threshold'  => '10',
       'high_flap_threshold' => '15',
       'refresh'             => '1800',
-      'aggregate'           => 'true'
+      'aggregate'           => true
     ) }
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
   end
