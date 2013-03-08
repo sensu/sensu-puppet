@@ -25,9 +25,12 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     desc "The subscription name"
   end
 
-  newproperty(:subscriptions) do
-    desc "Subscriptions"
+  newparam(:subscriptions) do
+    desc "Subscriptions included"
     defaultto :name
+    munge do |value|
+      Array(value)
+    end
   end
 
   autorequire(:package) do
