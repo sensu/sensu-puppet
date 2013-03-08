@@ -8,13 +8,18 @@ class sensu::client(
   $address        = $::ipaddress,
   $subscriptions  = [],
   $client_name    = $::fqdn,
-  $enabled        = 'true'
+  $enabled        = 'true',
+  $purge_config   = 'false',
 ) {
 
   $ensure = $enabled ? {
     'true'  => 'present',
     true    => 'present',
     default => 'absent'
+  }
+
+  if $purge_config {
+    file { '/etc/sensu/conf.d/client.json': ensure => $ensure }
   }
 
   sensu_client_config { $::fqdn:

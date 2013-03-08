@@ -30,7 +30,8 @@ class sensu (
   $subscriptions            = [],
   $client_address           = $::ipaddress,
   $client_name              = $::fqdn,
-  $plugins                  = []
+  $plugins                  = [],
+  $purge_config             = false,
 ){
 
   Class['sensu::package'] ->
@@ -61,7 +62,8 @@ class sensu (
   class { 'sensu::package':
     version         => $version,
     install_repo    => $install_repo,
-    notify_services => $notify_services
+    notify_services => $notify_services,
+    purge_config    => $purge_config,
   }
 
   class { 'sensu::rabbitmq':
@@ -72,7 +74,8 @@ class sensu (
     user            => $rabbitmq_user,
     password        => $rabbitmq_password,
     vhost           => $rabbitmq_vhost,
-    notify_services => $notify_services
+    notify_services => $notify_services,
+    purge_config    => $purge_config,
   }
 
   class { 'sensu::server':
@@ -84,7 +87,8 @@ class sensu (
     dashboard_port      => $dashboard_port,
     dashboard_user      => $dashboard_user,
     dashboard_password  => $dashboard_password,
-    enabled             => $server
+    enabled             => $server,
+    purge_config        => $purge_config,
   }
 
   class { 'sensu::service::server': enabled => $server }
@@ -93,7 +97,8 @@ class sensu (
     address       => $client_address,
     subscriptions => $subscriptions,
     client_name   => $client_name,
-    enabled       => $client
+    enabled       => $client,
+    purge_config  => $purge_config,
   }
 
   class { 'sensu::service::client': enabled => $client }

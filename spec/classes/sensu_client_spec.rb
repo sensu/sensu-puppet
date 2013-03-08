@@ -37,5 +37,11 @@ describe 'sensu::client', :type => :class do
     let(:params) { { :enabled => false } }
     it { should contain_sensu_client_config('host.domain.com').with_ensure('absent') }
   end
+  
+  context 'purge_configs' do
+    let(:params) { { :purge_config => true } }
+
+    it { should contain_file('/etc/sensu/conf.d/client.json').with_ensure('present') }
+  end
 
 end
