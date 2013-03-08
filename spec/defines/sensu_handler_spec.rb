@@ -67,4 +67,12 @@ describe 'sensu::handler', :type => :define do
     let(:params) { { :config => { 'foo' => 'bar' }, :config_key => 'configkey' } }
     it { should contain_sensu_handler_config('configkey').with_config({'foo' => 'bar'} ) }
   end
+
+  context 'purge_configs' do
+    let(:params) { { :purge_config => true, :config => { 'foo' => 'bar' } } }
+
+    it { should contain_file('/etc/sensu/conf.d/handler_myhandler.json').with_ensure('present') }
+    it { should contain_file('/etc/sensu/conf.d/myhandler.json').with_ensure('present') }
+  end
+
 end

@@ -19,6 +19,7 @@ define sensu::handler(
   # Handler specific config
   $config       = '',
   $config_key   = $name,
+  $purge_config = $sensu::purge_config,
 ) {
 
   if defined(Class['sensu::service::server']) {
@@ -48,17 +49,6 @@ define sensu::handler(
     $command_real = $command
   }
 
-  sensu_handler { $name:
-    ensure      => $ensure,
-    type        => $type,
-    command     => $command_real,
-    handlers    => $handlers,
-    severities  => $severities,
-    exchange    => $exchange,
-    mutator     => $mutator,
-    notify      => $notify_services,
-  }
-
   # Handler config
   case $ensure {
     'present': {
@@ -70,6 +60,22 @@ define sensu::handler(
     default: {
       $config_present = 'absent'
     }
+  }
+
+  if $purge_config {
+    file { "/etc/sensu/conf.d/handler_${name}.json": ensure => $ensure, before => sensu_handler[$name] }
+    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => sensu_handler_config[$config_key] }
+  }
+
+  sensu_handler { $name:
+    ensure      => $ensure,
+    type        => $type,
+    command     => $command_real,
+    handlers    => $handlers,
+    severities  => $severities,
+    exchange    => $exchange,
+    mutator     => $mutator,
+    notify      => $notify_services,
   }
 
   sensu_handler_config { $config_key:

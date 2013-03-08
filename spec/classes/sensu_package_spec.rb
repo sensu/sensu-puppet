@@ -25,5 +25,15 @@ describe 'sensu::package', :type => :class do
       'notify'  => 'Class[Sensu::Service::Server]'
     ) }
   end
+  
+  context 'purge_configs' do
+    let(:params) { { :purge_config => true } }
+
+    it { should contain_file('/etc/sensu/conf.d/').with(
+      'purge'   => 'true',
+      'recurse' => 'true',
+      'force'   => 'true'
+    ) }
+  end
 
 end

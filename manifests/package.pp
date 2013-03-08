@@ -6,9 +6,10 @@
 #
 
 class sensu::package(
-  $version = 'latest',
-  $notify_services = [],
-  $install_repo = 'true'
+  $version          = 'latest',
+  $notify_services  = [],
+  $install_repo     = 'true',
+  $purge_config     = 'false',
 ) {
 
   if $install_repo == 'true' or $install_repo == true {
@@ -18,6 +19,14 @@ class sensu::package(
   package { 'sensu':
     ensure  => $version,
     notify  => $notify_services
+  }
+
+  if $purge_config {
+    file { '/etc/sensu/conf.d':
+      purge   => true,
+      recurse => true,
+      force   => true,
+    }
   }
 
   file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:

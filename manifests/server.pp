@@ -14,13 +14,20 @@ class sensu::server(
   $dashboard_port     = '8080',
   $dashboard_user     = 'admin',
   $dashboard_password = 'secret',
-  $enabled            = 'false'
+  $enabled            = 'false',
+  $purge_config       = 'false',
 ) {
 
   $ensure = $enabled ? {
     'true'  => 'present',
     true    => 'present',
     default => 'absent'
+  }
+
+  if $purge_config {
+    file { '/etc/sensu/conf.d/redis.json': ensure => $ensure }
+    file { '/etc/sensu/conf.d/api.json': ensure => $ensure }
+    file { '/etc/sensu/conf.d/dashboard.json': ensure => $ensure }
   }
 
   sensu_redis_config { $::fqdn:

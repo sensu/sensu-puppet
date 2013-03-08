@@ -61,4 +61,11 @@ describe 'sensu::check', :type => :define do
     it { should contain_sensu_check_config('mycheck').with_ensure('absent') }
   end
 
+  context 'purge_configs' do
+    let(:params) { { :command => '/foo/bar', :purge_config => true, :config => { 'foo' => 'bar' } } }
+
+    it { should contain_file('/etc/sensu/conf.d/check_mycheck.json').with_ensure('present') }
+    it { should contain_file('/etc/sensu/conf.d/mycheck.json').with_ensure('present') }
+  end
+
 end
