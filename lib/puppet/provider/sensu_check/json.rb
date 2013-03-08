@@ -32,6 +32,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.command = resource[:command]
     self.interval = resource[:interval]
     self.subscribers = resource[:subscribers]
+    # Optional arguments
+    self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
+    self.standalone = resource[:standalone] unless resource[:standalone].nil?
+    self.standalone = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
+    self.standalone = resource[:low_flap_threshold] unless resource[:low_flap_threshold].nil?
+    self.standalone = resource[:occurrences] unless resource[:occurrences].nil?
+    self.standalone = resource[:refresh] unless resource[:refresh].nil?
+    self.standalone = resource[:notification] unless resource[:notification].nil?
   end
 
   def destroy
