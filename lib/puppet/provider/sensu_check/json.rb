@@ -35,11 +35,11 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     # Optional arguments
     self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
-    self.standalone = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
-    self.standalone = resource[:low_flap_threshold] unless resource[:low_flap_threshold].nil?
-    self.standalone = resource[:occurrences] unless resource[:occurrences].nil?
-    self.standalone = resource[:refresh] unless resource[:refresh].nil?
-    self.standalone = resource[:notification] unless resource[:notification].nil?
+    self.high_flap_threshold = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
+    self.low_flap_threshold = resource[:low_flap_threshold] unless resource[:low_flap_threshold].nil?
+    self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
+    self.refresh = resource[:refresh] unless resource[:refresh].nil?
+    self.notification = resource[:notification] unless resource[:notification].nil?
   end
 
   def destroy
