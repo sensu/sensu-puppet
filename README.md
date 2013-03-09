@@ -1,6 +1,6 @@
 # Sensu-Puppet
 
-This module is basically functional.
+This module is functional.
 
 Tested with Travis CI
 
@@ -8,7 +8,7 @@ Tested with Travis CI
 
 ## Installation
 
-$ puppet module install sensu/sensu
+    $ puppet module install sensu/sensu
 
 ## Prerequisites
 
