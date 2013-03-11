@@ -150,8 +150,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def standalone=(value)
-    puts value
-    puts value.class
     case value
     when true, 'true', 'True', :true, 1
       conf['checks'][resource[:realname]]['standalone'] = true
