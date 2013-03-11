@@ -25,6 +25,11 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     @conf['handlers'][resource[:name]] = {}
     self.command = resource[:command]
     self.type = resource[:type]
+    # Optional arguments
+    self.exchange = resource[:exchange] unless resource[:exchange].nil?
+    self.handlers = resource[:handlers] unless resource[:handlers].nil?
+    self.mutator = resource[:mutator] unless resource[:mutator].nil?
+    self.severities = resource[:severities] unless resource[:severities].nil?
   end
 
   def destroy
