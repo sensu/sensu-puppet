@@ -67,7 +67,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def aggregate
-    conf['checks'][resource[:realname]]['aggregate']
+    case conf['checks'][resource[:realname]]['aggregate']
+    when true
+      :true
+    when false
+      :false
+    else
+      conf['checks'][resource[:realname]]['aggregate']
+    end
   end
 
   def aggregate=(value)
@@ -146,7 +153,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def standalone
-    conf['checks'][resource[:realname]]['standalone']
+    case conf['checks'][resource[:realname]]['standalone']
+    when true
+      :true
+    when false
+      :false
+    else
+      conf['checks'][resource[:realname]]['standalone']
+    end
   end
 
   def standalone=(value)
