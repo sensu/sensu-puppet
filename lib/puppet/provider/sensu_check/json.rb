@@ -68,11 +68,25 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def aggregate
-    conf['checks'][resource[:realname]]['aggregate']
+    case conf['checks'][resource[:realname]]['aggregate']
+    when true
+      :true
+    when false
+      :false
+    else
+      conf['checks'][resource[:realname]]['aggregate']
+    end
   end
 
   def aggregate=(value)
-    conf['checks'][resource[:realname]]['aggregate'] = value
+    case value
+    when true, 'true', 'True', :true, 1
+      conf['checks'][resource[:realname]]['aggregate'] = true
+    when false, 'false', 'False', :false, 0
+      conf['checks'][resource[:realname]]['aggregate'] = false
+    else
+      conf['checks'][resource[:realname]]['aggregate'] = value
+    end
   end
 
   def command
@@ -140,10 +154,24 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def standalone
-    conf['checks'][resource[:realname]]['standalone']
+    case conf['checks'][resource[:realname]]['standalone']
+    when true
+      :true
+    when false
+      :false
+    else
+      conf['checks'][resource[:realname]]['standalone']
+    end
   end
 
   def standalone=(value)
-    conf['checks'][resource[:realname]]['standalone'] = value
+    case value
+    when true, 'true', 'True', :true, 1
+      conf['checks'][resource[:realname]]['standalone'] = true
+    when false, 'false', 'False', :false, 0
+      conf['checks'][resource[:realname]]['standalone'] = false
+    else
+      conf['checks'][resource[:realname]]['standalone'] = value
+    end
   end
 end
