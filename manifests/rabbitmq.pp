@@ -68,7 +68,7 @@ class sensu::rabbitmq(
     }
 
     if $purge_config {
-      file { '/etc/sensu/conf.d/rabbitmq.json': before => sensu_rabbitmq_config[$::fqdn] }
+      file { '/etc/sensu/conf.d/rabbitmq.json': before => Sensu_rabbitmq_config[$::fqdn] }
     }
 
     sensu_rabbitmq_config { $::fqdn:
