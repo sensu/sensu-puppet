@@ -37,8 +37,8 @@ define sensu::check(
   }
 
   if $purge_config {
-    file { "/etc/sensu/conf.d/check_${name}.json": ensure => $ensure, before => sensu_check[$name] }
-    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => sensu_check_config[$config_key] }
+    file { "/etc/sensu/conf.d/check_${name}.json": ensure => $ensure, before => Sensu_check[$name] }
+    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => Sensu_check_config[$config_key] }
   }
 
   sensu_check { $name:
