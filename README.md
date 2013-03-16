@@ -25,36 +25,38 @@ See Modulefile for details.
 Pluginsync should be enabled. Also, you need ruby json library/gem on all your nodes.  
 
 ## Example
-    
+
 ### Sensu Server
 
-    node "sensu-server.foo.com" { 
-      sensu { "${::fqdn}-sensu-server": 
-        rabbitmq_password => "secret", 
-        server => true,
-        plugins => [ 'puppet:///data/sensu/plugins/ntp.rb',
-                     'puppet:///data/sensu/plugins/postfix.rb'
-        ]}
-
-      sensu::check { "check_ntp": 
-        command => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
-        handlers => "default",
-        subscribers => "sensu-test"
+    node 'sensu-server.foo.com' {
+      class { 'sensu':
+        rabbitmq_password => 'secret',
+        server            => true,
+        plugins           => [
+          'puppet:///data/sensu/plugins/ntp.rb',
+          'puppet:///data/sensu/plugins/postfix.rb'
+        ]
       }
 
-      sensu::check { "...": 
+      sensu::check { 'check_ntp':
+        command     => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
+        handlers    => 'default',
+        subscribers => 'sensu-test'
+      }
+
+      sensu::check { '...':
         ...
       }
     }
-    
+
 
 ### Sensu Client
-    
-    node "sensu-client.foo.com" { 
-       sensu { "$::fqdn":
-         rabbitmq_password => "secret",
-         rabbitmq_host => "sensu-server.foo.com",
-         subscriptions => "sensu-test"
+
+    node 'sensu-client.foo.com' {
+       class { 'sensu':
+         rabbitmq_password  => 'secret',
+         rabbitmq_host      => 'sensu-server.foo.com',
+         subscriptions      => 'sensu-test',
        }
     }
 
