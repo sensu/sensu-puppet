@@ -63,8 +63,8 @@ define sensu::handler(
   }
 
   if $purge_config {
-    file { "/etc/sensu/conf.d/handler_${name}.json": ensure => $ensure, before => sensu_handler[$name] }
-    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => sensu_handler_config[$config_key] }
+    file { "/etc/sensu/conf.d/handler_${name}.json": ensure => $ensure, before => Sensu_handler[$name] }
+    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => Sensu_handler_config[$config_key] }
   }
 
   sensu_handler { $name:
