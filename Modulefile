@@ -1,4 +1,4 @@
-version '0.0.1'
+version '0.5.0'
 name 'sensu-puppet'
 dependency 'puppetlabs/apt'
 dependency 'puppetlabs/rabbitmq'
