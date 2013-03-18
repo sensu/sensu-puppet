@@ -34,6 +34,7 @@ class sensu::package(
     mode    => '0555',
     owner   => 'sensu',
     group   => 'sensu',
+    require => Package['sensu'],
   }
 
   file { '/etc/sensu/config.json': ensure => absent }
