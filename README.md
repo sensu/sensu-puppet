@@ -38,6 +38,10 @@ Pluginsync should be enabled. Also, you need ruby json library/gem on all your n
         ]
       }
 
+      sensu::handler { 'default':
+        command => 'mail -s \'sensu alert\' ops@foo.com',
+      }
+
       sensu::check { 'check_ntp':
         command     => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
         handlers    => 'default',
