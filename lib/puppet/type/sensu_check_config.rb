@@ -25,6 +25,10 @@ Puppet::Type.newtype(:sensu_check_config) do
     desc "Configuration for the check"
   end
 
+  newproperty(:metadata) do
+    desc "Configuration to send with check events to server"
+  end
+
   autorequire(:package) do
     ['sensu']
   end

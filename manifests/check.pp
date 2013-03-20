@@ -18,7 +18,8 @@ define sensu::check(
   $high_flap_threshold  = undef,
   $refresh              = undef,
   $aggregate            = undef,
-  $config               = '',
+  $metadata             = undef,
+  $config               = undef,
   $config_key           = $name,
   $purge_config         = 'false',
 ) {
@@ -26,9 +27,14 @@ define sensu::check(
   # Handler config
   case $ensure {
     'present': {
-      $config_present = $config ? {
-        ''      => 'absent',
-        default => 'present'
+      if $config {
+        $config_present = 'present'
+      }
+      elsif $metadata {
+        $config_present = 'present'
+      }
+      else {
+        $config_present = 'absent'
       }
     }
     default: {
@@ -58,8 +64,9 @@ define sensu::check(
   }
 
   sensu_check_config { $config_key:
-    ensure  => $config_present,
-    config  => $config,
+    ensure   => $config_present,
+    metadata => $metadata,
+    config   => $config,
   }
 
 }
