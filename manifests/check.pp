@@ -27,13 +27,9 @@ define sensu::check(
   # Handler config
   case $ensure {
     'present': {
-      if $config {
+      if ($config) or ($metadata) {
         $config_present = 'present'
-      }
-      elsif $metadata {
-        $config_present = 'present'
-      }
-      else {
+      } else {
         $config_present = 'absent'
       }
     }
