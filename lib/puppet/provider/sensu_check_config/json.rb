@@ -23,7 +23,7 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   def create
     @conf[resource[:name]] = {}
     self.config = resource[:config] unless resource[:config].nil?
-    self.metadata = resource[:metadata] unless resource[:metadata].nil?
+    self.additional = resource[:additional] unless resource[:additional].nil?
   end
 
   def destroy
@@ -42,7 +42,7 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
     @conf[resource[:name]] = value
   end
 
-  def metadata=(value)
+  def additional=(value)
     @conf['checks'] = {}
     @conf['checks'][resource[:name]] = value
   end
