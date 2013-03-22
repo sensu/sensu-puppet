@@ -40,8 +40,8 @@ define sensu::plugin(
       }
     }
     default:      {
-      fail('Unsupported sensu::plugin install type') 
+      fail('Unsupported sensu::plugin install type')
     }
-  
+
   }
 }
