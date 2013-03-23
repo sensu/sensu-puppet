@@ -49,6 +49,7 @@ class sensu (
 
   if $server == 'true' or $server == true {
     if $client == 'true' or $client == true {
+      Class['sensu::service::server'] ~> Class['sensu::service::client']
       $notify_services = [ Class['sensu::service::client'], Class['sensu::service::server'] ]
     } else {
       $notify_services = Class['sensu::service::server']
