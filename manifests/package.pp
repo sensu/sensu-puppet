@@ -29,7 +29,7 @@ class sensu::package(
     }
   }
 
-  file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
+  file { ['/etc/sensu/plugins', '/etc/sensu/handlers', '/etc/sensu/conf.d/checks']:
     ensure  => directory,
     mode    => '0555',
     owner   => 'sensu',

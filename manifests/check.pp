@@ -18,32 +18,15 @@ define sensu::check(
   $high_flap_threshold  = undef,
   $refresh              = undef,
   $aggregate            = undef,
-  $config               = '',
-  $config_key           = $name,
   $purge_config         = 'false',
 ) {
 
-  # Handler config
-  case $ensure {
-    'present': {
-      $config_present = $config ? {
-        ''      => 'absent',
-        default => 'present'
-      }
-    }
-    default: {
-      $config_present = 'absent'
-    }
-  }
-
   if $purge_config {
-    file { "/etc/sensu/conf.d/check_${name}.json": ensure => $ensure, before => Sensu_check[$name] }
-    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => Sensu_check_config[$config_key] }
+    file { "/etc/sensu/conf.d/checks/${name}.json": ensure => $ensure, before => Sensu_check[$name] }
   }
 
   sensu_check { $name:
     ensure              => $ensure,
-    realname            => $name,
     type                => $type,
     standalone          => $standalone,
     command             => $command,
@@ -55,11 +38,6 @@ define sensu::check(
     high_flap_threshold => $high_flap_threshold,
     refresh             => $refresh,
     aggregate           => $aggregate,
-  }
-
-  sensu_check_config { $config_key:
-    ensure  => $config_present,
-    config  => $config,
   }
 
 }
