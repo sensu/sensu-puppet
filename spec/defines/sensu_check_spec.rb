@@ -30,8 +30,6 @@ describe 'sensu::check', :type => :define do
       :high_flap_threshold  => 15,
       :refresh              => 1800,
       :aggregate            => true,
-      :config               => { 'foo' => 'bar' },
-      :config_key           => 'mykey'
     } }
 
     it { should contain_sensu_check('mycheck').with(
@@ -49,12 +47,30 @@ describe 'sensu::check', :type => :define do
       'aggregate'           => true
     ) }
 
-    it { should contain_sensu_check_config('mykey').with_ensure('present')}
+    it { should contain_file('/etc/sensu/conf.d/mycheck.json').with_ensure('absent') }
   end
 
-  context 'additional' do
-    let(:params) { { :command => 'ls', :additional => { 'foo' => 'bar' } } }
+  context 'additional metadata without config' do
+    let(:params) { { :command => 'ls', :handlers => ['default'],  :additional => { 'foo' => 'bar' } } }
+    it { should contain_file('/etc/sensu/conf.d/mycheck.json').with_ensure('present') }
     it { should contain_sensu_check_config('mycheck').with_additional({'foo' => 'bar'} ) }
+    it { should contain_sensu_check_config('mycheck').without_config }
+  end
+
+  context 'config without additional metadata' do
+    let(:params) { { :command => 'ls', :handlers => ['default'], :config_key => 'mykey', :config => { 'foo' => 'bar' } } }
+    it { should contain_file('/etc/sensu/conf.d/mykey.json').with_ensure('present') }
+    it { should contain_sensu_check_config('mykey').with_config({ 'foo' => 'bar'}) }
+    it { should contain_sensu_check_config('mykey').with_ensure('present')}
+    it { should contain_sensu_check_config('mykey').without_additional }
+  end
+
+  context 'config and additional metadata' do
+    let(:params) { { :command => 'ls', :handlers => ['default'], :additional => { 'foo' => 'bar' }, :config => { 'foo' => 'bar' } } }
+    it { should contain_file('/etc/sensu/conf.d/check_mycheck.json').with_ensure('present') }
+    it { should contain_file('/etc/sensu/conf.d/mycheck.json').with_ensure('present') }
+    it { should contain_sensu_check_config('mycheck').with_config({ 'foo' => 'bar'}) }
+    it { should contain_sensu_check_config('mycheck').with_additional({ 'foo' => 'bar'}) }
   end
 
   context 'ensure absent' do
