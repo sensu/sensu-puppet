@@ -50,7 +50,7 @@ describe 'sensu::check', :type => :define do
       'additional'          => { 'check_metadata' => 'is_found' },
       'aggregate'           => true
     ) }
-    print contain_sensu_check('mycheck')
+    puts contain_sensu_check('mycheck')
 
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
   end
