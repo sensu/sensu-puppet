@@ -31,7 +31,6 @@ describe 'sensu::check', :type => :define do
       :refresh              => 1800,
       :aggregate            => true,
       :config               => { 'foo' => 'bar' },
-      :additional           => { 'check_metadata' => 'is_found' },
       :config_key           => 'mykey'
     } }
 
@@ -47,12 +46,15 @@ describe 'sensu::check', :type => :define do
       'low_flap_threshold'  => '10',
       'high_flap_threshold' => '15',
       'refresh'             => '1800',
-      'additional'          => { 'check_metadata' => 'is_found' },
       'aggregate'           => true
     ) }
-    puts contain_sensu_check('mycheck')
 
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
+  end
+
+  context 'additional' do
+    let(:params) { { :command => 'ls', :additional => { 'foo' => 'bar' } } }
+    it { should contain_sensu_check_config('mycheck').with_additional({'foo' => 'bar'} ) }
   end
 
   context 'ensure absent' do
