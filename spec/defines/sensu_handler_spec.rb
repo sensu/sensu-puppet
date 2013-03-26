@@ -13,14 +13,12 @@ describe 'sensu::handler', :type => :define do
       'command'     => '/etc/sensu/handlers/mycommand.rb',
       'severities'  => ['ok', 'warning', 'critical', 'unknown']
     ) }
-    it { should contain_sensu_handler_config('myhandler').with_ensure('absent') }
   end
 
   context 'absent' do
     let(:facts) { { 'Class[sensu::service::server]' => true } }
     let(:params) { { :type => 'pipe', :ensure => 'absent', :source => 'puppet:///somewhere/mycommand.rb' } }
     it { should contain_sensu_handler('myhandler').with_ensure('absent') }
-    it { should contain_sensu_handler_config('myhandler').with_ensure('absent') }
   end
 
   context 'install path' do
@@ -63,16 +61,10 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_mutator('only_check_output') }
   end
 
-  context 'config' do
-    let(:params) { { :config => { 'foo' => 'bar' }, :config_key => 'configkey' } }
-    it { should contain_sensu_handler_config('configkey').with_config({'foo' => 'bar'} ) }
-  end
-
   context 'purge_configs' do
-    let(:params) { { :purge_config => true, :config => { 'foo' => 'bar' } } }
+    let(:params) { { :purge_config => true } }
 
-    it { should contain_file('/etc/sensu/conf.d/handler_myhandler.json').with_ensure('present') }
-    it { should contain_file('/etc/sensu/conf.d/myhandler.json').with_ensure('present') }
+    it { should contain_file('/etc/sensu/conf.d/handlers/myhandler.json').with_ensure('present') }
   end
 
 end

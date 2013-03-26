@@ -38,6 +38,7 @@ define sensu::check(
     high_flap_threshold => $high_flap_threshold,
     refresh             => $refresh,
     aggregate           => $aggregate,
+    require             => File['/etc/sensu/conf.d/checks'],
   }
 
 }
