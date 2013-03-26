@@ -31,6 +31,7 @@ describe 'sensu::check', :type => :define do
       :refresh              => 1800,
       :aggregate            => true,
       :config               => { 'foo' => 'bar' },
+      :additional           => { 'foo' => 'bar' },
       :config_key           => 'mykey'
     } }
 
@@ -49,6 +50,7 @@ describe 'sensu::check', :type => :define do
       'aggregate'           => true
     ) }
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
+    it { should contain_sensu_check_config('foo').with_ensure('present')}
   end
 
   context 'ensure absent' do
