@@ -47,10 +47,10 @@ describe 'sensu::check', :type => :define do
       'low_flap_threshold'  => '10',
       'high_flap_threshold' => '15',
       'refresh'             => '1800',
+      'additional'          => {'check_metadata' => 'is_found'},
       'aggregate'           => true
     ) }
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
-    it { should contain_sensu_check_config('mycheck').with('check_metadata' => 'is_found') }
   end
 
   context 'ensure absent' do
