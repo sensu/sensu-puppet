@@ -11,23 +11,22 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def conf
-    resource[:realname] = resource[:name] if resource[:realname] == nil
     begin
-      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/check_#{resource[:realname]}.json"))
+      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/checks/#{resource[:name]}.json"))
     rescue
       @conf ||= {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/check_#{resource[:realname]}.json", 'w') do |f|
+    File.open("/etc/sensu/conf.d/checks/#{resource[:name]}.json", 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
   end
 
   def create
     conf['checks'] = {}
-    conf['checks'][resource[:realname]] = {}
+    conf['checks'][resource[:name]] = {}
     self.handlers = resource[:handlers]
     self.command = resource[:command]
     self.interval = resource[:interval]
@@ -48,130 +47,130 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def exists?
-    conf.has_key?('checks') and conf['checks'].has_key?(resource[:realname])
+    conf.has_key?('checks') and conf['checks'].has_key?(resource[:name])
   end
 
   def interval
-    conf['checks'][resource[:realname]]['interval'].to_s
+    conf['checks'][resource[:name]]['interval'].to_s
   end
 
   def interval=(value)
-    conf['checks'][resource[:realname]]['interval'] = value.to_i
+    conf['checks'][resource[:name]]['interval'] = value.to_i
   end
 
   def handlers
-    conf['checks'][resource[:realname]]['handlers'] || []
+    conf['checks'][resource[:name]]['handlers'] || []
   end
 
   def handlers=(value)
-    conf['checks'][resource[:realname]]['handlers'] = value
+    conf['checks'][resource[:name]]['handlers'] = value
   end
 
   def aggregate
-    case conf['checks'][resource[:realname]]['aggregate']
+    case conf['checks'][resource[:name]]['aggregate']
     when true
       :true
     when false
       :false
     else
-      conf['checks'][resource[:realname]]['aggregate']
+      conf['checks'][resource[:name]]['aggregate']
     end
   end
 
   def aggregate=(value)
     case value
     when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:realname]]['aggregate'] = true
+      conf['checks'][resource[:name]]['aggregate'] = true
     when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:realname]]['aggregate'] = false
+      conf['checks'][resource[:name]]['aggregate'] = false
     else
-      conf['checks'][resource[:realname]]['aggregate'] = value
+      conf['checks'][resource[:name]]['aggregate'] = value
     end
   end
 
   def command
-    conf['checks'][resource[:realname]]['command']
+    conf['checks'][resource[:name]]['command']
   end
 
   def command=(value)
-    conf['checks'][resource[:realname]]['command'] = value
+    conf['checks'][resource[:name]]['command'] = value
   end
 
   def subscribers
-    conf['checks'][resource[:realname]]['subscribers'] || []
+    conf['checks'][resource[:name]]['subscribers'] || []
   end
 
   def subscribers=(value)
-    conf['checks'][resource[:realname]]['subscribers'] = value
+    conf['checks'][resource[:name]]['subscribers'] = value
   end
 
   def type
-    conf['checks'][resource[:realname]]['type']
+    conf['checks'][resource[:name]]['type']
   end
 
   def type=(value)
-    conf['checks'][resource[:realname]]['type'] = value
+    conf['checks'][resource[:name]]['type'] = value
   end
 
   def notification
-    conf['checks'][resource[:realname]]['notification']
+    conf['checks'][resource[:name]]['notification']
   end
 
   def notification=(value)
-    conf['checks'][resource[:realname]]['notification'] = value
+    conf['checks'][resource[:name]]['notification'] = value
   end
 
   def refresh
-    conf['checks'][resource[:realname]]['refresh']
+    conf['checks'][resource[:name]]['refresh']
   end
 
   def refresh=(value)
-    conf['checks'][resource[:realname]]['refresh'] = value
+    conf['checks'][resource[:name]]['refresh'] = value
   end
 
   def occurrences
-    conf['checks'][resource[:realname]]['occurrences']
+    conf['checks'][resource[:name]]['occurrences']
   end
 
   def occurrences=(value)
-    conf['checks'][resource[:realname]]['occurrences'] = value
+    conf['checks'][resource[:name]]['occurrences'] = value
   end
 
   def low_flap_threshold
-    conf['checks'][resource[:realname]]['low_flap_threshold']
+    conf['checks'][resource[:name]]['low_flap_threshold']
   end
 
   def low_flap_threshold=(value)
-    conf['checks'][resource[:realname]]['low_flap_threshold'] = value.to_i
+    conf['checks'][resource[:name]]['low_flap_threshold'] = value.to_i
   end
 
   def high_flap_threshold
-    conf['checks'][resource[:realname]]['high_flap_threshold']
+    conf['checks'][resource[:name]]['high_flap_threshold']
   end
 
   def high_flap_threshold=(value)
-    conf['checks'][resource[:realname]]['high_flap_threshold'] = value.to_i
+    conf['checks'][resource[:name]]['high_flap_threshold'] = value.to_i
   end
 
   def standalone
-    case conf['checks'][resource[:realname]]['standalone']
+    case conf['checks'][resource[:name]]['standalone']
     when true
       :true
     when false
       :false
     else
-      conf['checks'][resource[:realname]]['standalone']
+      conf['checks'][resource[:name]]['standalone']
     end
   end
 
   def standalone=(value)
     case value
     when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:realname]]['standalone'] = true
+      conf['checks'][resource[:name]]['standalone'] = true
     when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:realname]]['standalone'] = false
+      conf['checks'][resource[:name]]['standalone'] = false
     else
-      conf['checks'][resource[:realname]]['standalone'] = value
+      conf['checks'][resource[:name]]['standalone'] = value
     end
   end
 end

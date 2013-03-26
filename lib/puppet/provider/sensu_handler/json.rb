@@ -8,14 +8,14 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     super
 
     begin
-      @conf = JSON.parse(File.read("/etc/sensu/conf.d/handler_#{resource[:name]}.json"))
+      @conf = JSON.parse(File.read("/etc/sensu/conf.d/handlers/#{resource[:name]}.json"))
     rescue
       @conf = {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/handler_#{resource[:name]}.json", 'w') do |f|
+    File.open("/etc/sensu/conf.d/handlers/#{resource[:name]}.json", 'w') do |f|
       f.puts JSON.pretty_generate(@conf)
     end
   end

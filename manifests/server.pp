@@ -30,6 +30,14 @@ class sensu::server(
     file { '/etc/sensu/conf.d/dashboard.json': ensure => $ensure }
   }
 
+  file { ['/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/handlers']:
+    ensure  => directory,
+    mode    => '0555',
+    owner   => 'sensu',
+    group   => 'sensu',
+    require => Package['sensu'],
+  }
+
   sensu_redis_config { $::fqdn:
     ensure => $ensure,
     host   => $redis_host,
