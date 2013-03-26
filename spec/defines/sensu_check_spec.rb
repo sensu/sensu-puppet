@@ -50,7 +50,7 @@ describe 'sensu::check', :type => :define do
       'aggregate'           => true
     ) }
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
-    it { should contain_sensu_check_config('mycheck').with_config({'mycheck' => {'additional' => 'exists'}}) }
+    it { should contain_sensu_check_config('mycheck').with_config({'additional' => 'exists'}) }
   end
 
   context 'ensure absent' do
