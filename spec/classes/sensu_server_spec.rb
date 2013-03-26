@@ -14,6 +14,9 @@ describe 'sensu::server', :type => :class do
     let(:facts) { { :fqdn => 'testhost.domain.com', :ipaddress => '1.2.3.4' } }
     let(:params) { { :enabled => 'true' } }
 
+    it { should contain_file('/etc/sensu/conf.d/checks').with_ensure('directory').with_require('Package[sensu]') }
+    it { should contain_file('/etc/sensu/conf.d/handlers').with_ensure('directory').with_require('Package[sensu]') }
+
     it { should contain_sensu_redis_config('testhost.domain.com').with(
       'host'    => 'localhost',
       'port'    => '6379',

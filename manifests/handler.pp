@@ -17,8 +17,6 @@ define sensu::handler(
   $source       = '',
   $install_path = '/etc/sensu/handlers',
   # Handler specific config
-  $config       = '',
-  $config_key   = $name,
   $purge_config = $sensu::purge_config,
 ) {
 
@@ -49,38 +47,20 @@ define sensu::handler(
     $command_real = $command
   }
 
-  # Handler config
-  case $ensure {
-    'present': {
-      $config_present = $config ? {
-        ''      => 'absent',
-        default => 'present'
-      }
-    }
-    default: {
-      $config_present = 'absent'
-    }
-  }
-
   if $purge_config {
-    file { "/etc/sensu/conf.d/handler_${name}.json": ensure => $ensure, before => Sensu_handler[$name] }
-    file { "/etc/sensu/conf.d/${config_key}.json": ensure => $config_present, before => Sensu_handler_config[$config_key] }
+    file { "/etc/sensu/conf.d/handlers/${name}.json": ensure => $ensure, before => Sensu_handler[$name] }
   }
 
   sensu_handler { $name:
-    ensure      => $ensure,
-    type        => $type,
-    command     => $command_real,
-    handlers    => $handlers,
-    severities  => $severities,
-    exchange    => $exchange,
-    mutator     => $mutator,
-    notify      => $notify_services,
-  }
-
-  sensu_handler_config { $config_key:
-    ensure  => $config_present,
-    config  => $config,
+    ensure     => $ensure,
+    type       => $type,
+    command    => $command_real,
+    handlers   => $handlers,
+    severities => $severities,
+    exchange   => $exchange,
+    mutator    => $mutator,
+    notify     => $notify_services,
+    require    => File['/etc/sensu/conf.d/handlers'],
   }
 
 }
