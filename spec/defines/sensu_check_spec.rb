@@ -31,7 +31,7 @@ describe 'sensu::check', :type => :define do
       :refresh              => 1800,
       :aggregate            => true,
       :config               => { 'foo' => 'bar' },
-      :additional           => { 'additional' => 'exists' },
+      :additional           => { 'check_metadata' => 'is_found' },
       :config_key           => 'mykey'
     } }
 
@@ -50,7 +50,7 @@ describe 'sensu::check', :type => :define do
       'aggregate'           => true
     ) }
     it { should contain_sensu_check_config('mykey').with_ensure('present')}
-    it { should contain_sensu_check_config('mycheck').with_additional({'additional' => 'exists'}) }
+    it { should contain_sensu_check_config('mycheck').with_additional({'check_metadata' => 'is_found'}) }
   end
 
   context 'ensure absent' do
