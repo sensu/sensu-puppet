@@ -71,6 +71,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "What type of check is this"
   end
 
+  newproperty(:config) do
+    desc "Check configuration for the client to use"
+  end
+
   newproperty(:standalone, :boolean => true) do
     desc "Whether this is a standalone check"
 
