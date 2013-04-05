@@ -17,6 +17,7 @@ define sensu::handler(
   $source       = '',
   $install_path = '/etc/sensu/handlers',
   # Handler specific config
+  $config       = undef,
   $purge_config = $sensu::purge_config,
 ) {
 
@@ -59,6 +60,7 @@ define sensu::handler(
     severities => $severities,
     exchange   => $exchange,
     mutator    => $mutator,
+    config     => $config,
     notify     => $notify_services,
     require    => File['/etc/sensu/conf.d/handlers'],
   }

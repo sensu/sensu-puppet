@@ -49,6 +49,10 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Handlers this handler mutexes into"
   end
 
+  newproperty(:config) do
+    desc "Handler specific config"
+  end
+
   autorequire(:package) do
     ['sensu']
   end
