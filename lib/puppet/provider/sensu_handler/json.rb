@@ -26,6 +26,7 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     self.command = resource[:command]
     self.type = resource[:type]
     # Optional arguments
+    self.config = resource[:config] unless resource[:config].nil?
     self.exchange = resource[:exchange] unless resource[:exchange].nil?
     self.handlers = resource[:handlers] unless resource[:handlers].nil?
     self.mutator = resource[:mutator] unless resource[:mutator].nil?
@@ -46,6 +47,14 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
 
   def command=(value)
     @conf['handlers'][resource[:name]]['command'] = value
+  end
+
+  def config
+    @conf[resource[:name]]
+  end
+
+  def config=(value)
+    @conf[resource[:name]] = value
   end
 
   def exchange
