@@ -33,6 +33,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.subscribers = resource[:subscribers]
     # Optional arguments
     self.type = resource[:type] unless resource[:type].nil?
+    self.config = resource[:config] unless resource[:config].nil?
     self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
     self.high_flap_threshold = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
@@ -110,6 +111,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def type=(value)
     conf['checks'][resource[:name]]['type'] = value
+  end
+
+  def config
+    conf[resource[:name]]
+  end
+
+  def config=(value)
+    conf[resource[:name]] = value
   end
 
   def notification
