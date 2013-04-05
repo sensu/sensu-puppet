@@ -39,13 +39,13 @@ describe 'sensu::repo', :type => :class do
   describe 'operatingsystem: Darwin' do
     let(:facts) { { :operatingsystem => 'Darwin' } }
     context 'no params' do
-      xit { should contain_alert }
+      it { expect { should raise_error(Puppet::Error) } }
     end
 
     ['present', 'absent'].each do |state|
       context "ensure => #{state}" do
         let(:params) { { :ensure => state } }
-        xit { should contain_alert('Darwin not supported yet') }
+        it { expect { should raise_error(Puppet::Error) } }
       end
     end
   end

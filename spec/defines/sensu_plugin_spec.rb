@@ -73,7 +73,7 @@ describe 'sensu::plugin', :type => :define do
 
   context 'default' do
     let(:params) { { :type => 'unknown' } }
-    xit { should contain_fail('Unsupported sensu::plugin install type') }
+    it { expect { should raise_error(Puppet::Error) } }
   end #default
 
 end
