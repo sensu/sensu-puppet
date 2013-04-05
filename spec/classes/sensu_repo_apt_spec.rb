@@ -42,7 +42,7 @@ describe 'sensu::repo::apt', :type => :class do
 
   context 'without puppet-apt installed' do
     let(:params) { { :ensure => 'present', :repo => 'main' } }
-    xit { should contain_fail('This class requires puppet-apt module') }
+    it { expect { should raise_error(Puppet::Error) } }
   end
 
 end
