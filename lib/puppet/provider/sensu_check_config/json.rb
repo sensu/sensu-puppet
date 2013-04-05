@@ -25,10 +25,12 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   end
 
   def create
-    if resource.has_key?(:event)
+    if resource[:event]
       conf['checks'] = {}
       conf['checks'][resource[:name]] = {}
     end
+    self.event = resource[:event] unless resource[:event].nil?
+    self.config = resource[:config] unless resource[:config].nil?
   end
 
   def destroy
@@ -36,11 +38,28 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   end
 
   def exists?
-    conf.has_key?(resource[:name]) or conf.has_key?('checks')
+    if resource[:event] and resource[:config]
+      conf.has_key?('checks') and conf['checks'].has_key?(resource[:name]) and conf.has_key?(resource[:name])
+    else
+      if resource[:event]
+        conf.has_key?('checks') and conf['checks'].has_key?(resource[:name])
+      end
+      if resource[:config]
+        conf.has_key?(resource[:name])
+      end
+    end
+  end
+
+  def config
+    conf[resource[:name]] = resource[:config] || {}
   end
 
   def config=(value)
     conf[resource[:name]] = resource[:config]
+  end
+
+  def event
+    conf['checks'][resource[:name]] = resource[:event] || {}
   end
 
   def event=(value)
