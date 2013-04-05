@@ -63,7 +63,7 @@ describe 'sensu::handler', :type => :define do
 
   context 'config' do
     let(:params) { { :config => {'param' => 'value'} } }
-    
+
     it { should contain_sensu_handler('myhandler').with_config( {'param' => 'value' } ) }
   end
 
