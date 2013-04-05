@@ -61,6 +61,12 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_mutator('only_check_output') }
   end
 
+  context 'config' do
+    let(:params) { { :config => {'param' => 'value'} } }
+
+    it { should contain_sensu_handler('myhandler').with_config( {'param' => 'value' } ) }
+  end
+
   context 'purge_configs' do
     let(:params) { { :purge_config => true } }
 
