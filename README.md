@@ -136,7 +136,7 @@ schedule checks for this service as a subscriber:
 apache/manifests/monitoring/sensu.pp
 
     class apache::monitoring::sensu {
-      sensu::subscription { 'apache' }
+      sensu::subscription { 'apache': }
     }
 
 If you would like to automatically include the Sensu monitoring class as
