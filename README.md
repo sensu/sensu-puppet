@@ -111,6 +111,54 @@ site.pp
       ...
     }
 
+## Safe Mode checks
+
+By default Sensu clients will execute whatever check messages are on the
+queue.  This is potentially a large security hole.
+If you enable the safe_mode parameter, it will require that checks are
+defined on the client.  If standalone checks are used then defining on
+the client is sufficient, otherwise checks will also need to be defined
+on the server as well.
+
+A usage example is shown below.
+
+### Sensu server
+
+    node 'sensu-server.foo.com' {
+      class { 'sensu':
+        rabbitmq_password => 'secret',
+        server            => true,
+        plugins           => [
+          'puppet:///data/sensu/plugins/ntp.rb',
+          'puppet:///data/sensu/plugins/postfix.rb'
+        ],
+        safe_mode         => true,
+      }
+
+      ...
+
+      sensu::check { "diskspace":
+        command => '/etc/sensu/plugins/system/check-disk.rb',
+      }
+ 
+
+    }
+
+### Sensu client
+
+    node 'sensu-client.foo.com' {
+       class { 'sensu':
+         rabbitmq_password  => 'secret',
+         rabbitmq_host      => 'sensu-server.foo.com',
+         subscriptions      => 'sensu-test',
+         safe_mode          => true,
+       }
+
+      sensu::check { "diskspace":
+        command => '/etc/sensu/plugins/system/check-disk.rb',
+      }
+    }
+    
 
 ## Including Sensu monitoring in other modules
 
