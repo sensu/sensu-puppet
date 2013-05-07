@@ -25,6 +25,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.client_name = resource[:client_name]
     self.address = resource[:address]
     self.subscriptions = resource[:subscriptions]
+    self.safe_mode = resource[:safe_mode]
   end
 
   def destroy
@@ -58,4 +59,13 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   def subscriptions=(value)
     @conf['client']['subscriptions'] = value
   end
+
+  def safe_mode
+    @conf['client']['safe_mode']
+  end
+
+  def safe_mode=(value)
+    @conf['client']['safe_mode'] = value
+  end
+
 end

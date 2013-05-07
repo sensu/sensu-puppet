@@ -37,6 +37,10 @@ Puppet::Type.newtype(:sensu_client_config) do
     desc ""
   end
 
+  newproperty(:safe_mode) do
+    desc "Require checks to be defined on server and client"
+  end
+
   autorequire(:package) do
     ['sensu']
   end
