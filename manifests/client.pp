@@ -10,7 +10,7 @@ class sensu::client(
   $client_name    = $::fqdn,
   $enabled        = 'true',
   $purge_config   = 'false',
-  $safe_mode      = 'false',
+  $safe_mode      = false,
 ) {
 
   $ensure = $enabled ? {

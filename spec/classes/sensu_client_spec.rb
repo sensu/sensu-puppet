@@ -21,7 +21,7 @@ describe 'sensu::client', :type => :class do
       :address                  => '1.2.3.4',
       :subscriptions            => ['all'],
       :client_name              => 'myclient',
-      :safe_mode                => 'true'
+      :safe_mode                => true
     } }
 
     it { should contain_sensu_client_config('host.domain.com').with(
@@ -29,7 +29,7 @@ describe 'sensu::client', :type => :class do
       'address'       => '1.2.3.4',
       'subscriptions' => ['all'],
       'ensure'        => 'present',
-      'safe_mode'     => 'true'
+      'safe_mode'     => true
     ) }
 
   end
