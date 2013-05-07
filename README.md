@@ -69,12 +69,12 @@ or gem on all your nodes.
        }
     }
 
-### Advanced Example (hiera)
+## Advanced Example (hiera)
 This example includes the `sensu` class as part of a base class or role
 and configures Sensu on each individual node via
 [Hiera](http://docs.puppetlabs.com/#hierahiera1).
 
-hiera.yaml
+### hiera.yaml
 
     ---
     :hierarchy:
@@ -86,7 +86,7 @@ hiera.yaml
     :yaml:
       :datadir: '/etc/puppet/%{environment}/modules/hieradata'
 
-common.yaml
+### common.yaml
 
     sensu::dashboard_port: 8090
     sensu::dashboard_password: mysupersecretpassword
@@ -96,7 +96,7 @@ common.yaml
     sensu::rabbitmq_password: password
     sensu::rabbitmq_port: 5672
 
-sensu-server.foo.com.yaml
+### sensu-server.foo.com.yaml
 
     sensu::server: true
 
@@ -112,7 +112,7 @@ site.pp
     }
 
 
-### Including Sensu monitoring in other modules
+## Including Sensu monitoring in other modules
 
 There are a few different patterns that can be used to include Sensu
 monitoring into other modules. One pattern creates a new class that is
