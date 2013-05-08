@@ -36,18 +36,22 @@ class sensu (
   $safe_mode                = false,
 ){
 
+  anchor {'sensu::begin': }
+  anchor {'sensu::end': }
+
+  Anchor['sensu::begin'] ->
   Class['sensu::package'] ->
   Class['sensu::rabbitmq']
 
   Class['sensu::rabbitmq'] ->
   Class['sensu::server'] ~>
   Class['sensu::service::server'] ->
-  Class['sensu']
+  Anchor['sensu::end']
 
   Class['sensu::rabbitmq'] ->
   Class['sensu::client'] ~>
   Class['sensu::service::client'] ->
-  Class['sensu']
+  Anchor['sensu::end']
 
   if $server == 'true' or $server == true {
     if $client == 'true' or $client == true {
