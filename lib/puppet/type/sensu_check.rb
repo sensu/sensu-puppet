@@ -67,6 +67,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Who is subscribed to this check"
   end
 
+  newproperty(:sla, :array_matching => :all) do
+    desc "custom variable for notifu"
+  end
+
   newproperty(:type) do
     desc "What type of check is this"
   end
