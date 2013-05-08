@@ -33,6 +33,7 @@ class sensu (
   $plugins                  = [],
   $purge_config             = false,
   $use_embedded_ruby        = false,
+  $safe_mode                = false,
 ){
 
   Class['sensu::package'] ->
@@ -102,6 +103,7 @@ class sensu (
     client_name   => $client_name,
     enabled       => $client,
     purge_config  => $purge_config,
+    safe_mode     => $safe_mode,
   }
 
   class { 'sensu::service::client': enabled => $client }
