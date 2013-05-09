@@ -61,11 +61,24 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def safe_mode
-    @conf['client']['safe_mode']
+    case @conf['client']['safe_mode']
+    when true
+      :true
+    when false
+      :false
+    else
+      @conf['client']['safe_mode']
+    end
   end
 
   def safe_mode=(value)
-    @conf['client']['safe_mode'] = value
+    case value
+    when true, 'true', 'True', :true, 1
+      @conf['client']['safe_mode'] = true
+    else
+      @conf['client']['safe_mode'] = false
+    end
   end
 
 end
+
