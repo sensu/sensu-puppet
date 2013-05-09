@@ -20,7 +20,9 @@ class sensu::package(
   package { 'sensu':
     ensure  => $version,
     notify  => $notify_services
-  }
+  } ->
+ 
+  file { '/etc/sensu/config.json': ensure => absent }
 
   if $purge_config {
     file { '/etc/sensu/conf.d':
@@ -49,5 +51,4 @@ class sensu::package(
     require => Package['sensu'],
   }
 
-  file { '/etc/sensu/config.json': ensure => absent }
 }
