@@ -42,6 +42,32 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
     self.refresh = resource[:refresh] unless resource[:refresh].nil?
     self.notification = resource[:notification] unless resource[:notification].nil?
+    self.custom = resource[:custom] unless resource[:custom].nil?
+  end
+
+  def check_args
+    ['handlers','command','interval','subscribers','sla','type','config','aggregate','standalone','high_flap_threshold','low_flap_threshold','occurrences','refresh','notification']
+  end
+
+  def custom
+    tmp = {}
+    conf['checks'][resource[:name]].each do |k,v|
+      tmp.merge!( k => v )
+    end
+    check_args.each do | del_arg |
+      tmp.delete(del_arg)
+    end
+    tmp
+  end
+
+  def custom=(value)
+    tmp = custom
+    tmp.each_key do |k|
+      conf['checks'][resource[:name]].delete(k) unless check_args.include?(k)
+    end
+    value.each do | k, v |
+        conf['checks'][resource[:name]][ k ] = v
+    end
   end
 
   def destroy
