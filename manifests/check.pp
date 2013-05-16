@@ -19,6 +19,7 @@ define sensu::check(
   $high_flap_threshold  = undef,
   $refresh              = undef,
   $aggregate            = undef,
+  $occurrences          = undef,
   $config               = undef,
   $purge_config         = 'false',
 ) {
@@ -41,6 +42,7 @@ define sensu::check(
     high_flap_threshold => $high_flap_threshold,
     refresh             => $refresh,
     aggregate           => $aggregate,
+    occurrences         => $occurrences,
     config              => $config,
     require             => File['/etc/sensu/conf.d/checks'],
   }
