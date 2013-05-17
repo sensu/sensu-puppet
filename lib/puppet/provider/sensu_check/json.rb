@@ -139,7 +139,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def refresh
-    conf['checks'][resource[:name]]['refresh']
+    conf['checks'][resource[:name]]['refresh'].to_s
   end
 
   def refresh=(value)
