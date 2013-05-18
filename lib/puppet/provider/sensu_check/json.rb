@@ -32,27 +32,25 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.interval = resource[:interval]
     self.subscribers = resource[:subscribers]
     # Optional arguments
-    self.sla = resource[:sla] unless resource[:sla].nil?
     self.type = resource[:type] unless resource[:type].nil?
-    self.config = resource[:config] unless resource[:config].nil?
-    self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
     self.high_flap_threshold = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
     self.low_flap_threshold = resource[:low_flap_threshold] unless resource[:low_flap_threshold].nil?
-    self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
-    self.refresh = resource[:refresh] unless resource[:refresh].nil?
-    self.notification = resource[:notification] unless resource[:notification].nil?
     self.custom = resource[:custom] unless resource[:custom].nil?
   end
 
   def check_args
-    ['handlers','command','interval','subscribers','sla','type','config','aggregate','standalone','high_flap_threshold','low_flap_threshold','occurrences','refresh','notification']
+    ['handlers','command','interval','subscribers','type','standalone','high_flap_threshold','low_flap_threshold']
   end
 
   def custom
     tmp = {}
     conf['checks'][resource[:name]].each do |k,v|
-      tmp.merge!( k => v )
+      if v.is_a?( Fixnum )
+        tmp.merge!( k => v.to_s )
+      else
+        tmp.merge!( k => v )
+      end
     end
     check_args.each do | del_arg |
       tmp.delete(del_arg)
@@ -66,7 +64,20 @@ Puppet::Type.type(:sensu_check).provide(:json) do
       conf['checks'][resource[:name]].delete(k) unless check_args.include?(k)
     end
     value.each do | k, v |
-        conf['checks'][resource[:name]][ k ] = v
+      conf['checks'][resource[:name]][ k ] =  to_type( v )
+    end
+  end
+
+  def to_type(value)
+    case value
+    when true, 'true', 'True', :true
+      true
+    when false, 'false', 'False', :false
+      false
+    when /^([0-9])+$/
+      value.to_i
+    else
+      value
     end
   end
 
@@ -94,28 +105,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]]['handlers'] = value
   end
 
-  def aggregate
-    case conf['checks'][resource[:name]]['aggregate']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['checks'][resource[:name]]['aggregate']
-    end
-  end
-
-  def aggregate=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:name]]['aggregate'] = true
-    when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:name]]['aggregate'] = false
-    else
-      conf['checks'][resource[:name]]['aggregate'] = value
-    end
-  end
-
   def command
     conf['checks'][resource[:name]]['command']
   end
@@ -132,52 +121,12 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]]['subscribers'] = value
   end
 
-  def sla
-    conf['checks'][resource[:name]]['sla'] || []
-  end
-
-  def sla=(value)
-    conf['checks'][resource[:name]]['sla'] = value
-  end
-
   def type
     conf['checks'][resource[:name]]['type']
   end
 
   def type=(value)
     conf['checks'][resource[:name]]['type'] = value
-  end
-
-  def config
-    conf[resource[:name]]
-  end
-
-  def config=(value)
-    conf[resource[:name]] = value
-  end
-
-  def notification
-    conf['checks'][resource[:name]]['notification']
-  end
-
-  def notification=(value)
-    conf['checks'][resource[:name]]['notification'] = value
-  end
-
-  def refresh
-    conf['checks'][resource[:name]]['refresh'].to_s
-  end
-
-  def refresh=(value)
-    conf['checks'][resource[:name]]['refresh'] = value.to_i
-  end
-
-  def occurrences
-    conf['checks'][resource[:name]]['occurrences'].to_s
-  end
-
-  def occurrences=(value)
-    conf['checks'][resource[:name]]['occurrences'] = value.to_i
   end
 
   def low_flap_threshold
