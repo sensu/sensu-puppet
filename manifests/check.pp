@@ -13,15 +13,9 @@ define sensu::check(
   $standalone           = undef,
   $interval             = '60',
   $subscribers          = [],
-  $sla                  = [],
-  $custom               = undef,
-  $notification         = undef,
   $low_flap_threshold   = undef,
   $high_flap_threshold  = undef,
-  $refresh              = undef,
-  $aggregate            = undef,
-  $occurrences          = undef,
-  $config               = undef,
+  $custom               = undef,
   $purge_config         = 'false',
 ) {
 
@@ -37,15 +31,9 @@ define sensu::check(
     handlers            => $handlers,
     interval            => $interval,
     subscribers         => $subscribers,
-    sla                 => $sla,
-    custom              => $custom,
-    notification        => $notification,
     low_flap_threshold  => $low_flap_threshold,
     high_flap_threshold => $high_flap_threshold,
-    refresh             => $refresh,
-    aggregate           => $aggregate,
-    occurrences         => $occurrences,
-    config              => $config,
+    custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
   }
 

@@ -140,7 +140,7 @@ A usage example is shown below.
       sensu::check { "diskspace":
         command => '/etc/sensu/plugins/system/check-disk.rb',
       }
- 
+
 
     }
 
@@ -158,19 +158,20 @@ A usage example is shown below.
         command => '/etc/sensu/plugins/system/check-disk.rb',
       }
     }
-    
+
 
 ## Using custom variables in check definition
 
     sensu::check{ 'check_file_test':
       command      => '/usr/local/bin/check_file_test.sh',
       handlers     => 'notifu',
-      sla          => ['admin:2'],
       custom       => {
         'foo'      => 'bar',
-        'in_array' => ['foo','zwei']
+        'numval'   => 6,
+        'boolval'  => true,
+        'in_array' => ['foo','baz']
       },
-      subscribers   => 'sensu-test'
+      subscribers  => 'sensu-test'
     }
 
 This will create the following check definition for Sensu
@@ -183,7 +184,7 @@ This will create the following check definition for Sensu
           ],
           "in_array": [
             "foo",
-            "zwei"
+            "baz"
           ],
           "command": "/usr/local/bin/check_file_test.sh",
           "subscribers": [
@@ -191,9 +192,8 @@ This will create the following check definition for Sensu
           ],
           "foo": "bar",
           "interval": 60,
-          "sla": [
-            "admin:2"
-          ]
+          "numval": 6,
+          "boolval": true
         }
       }
     }
