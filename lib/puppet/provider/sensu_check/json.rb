@@ -147,7 +147,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def occurrences
-    conf['checks'][resource[:name]]['occurrences']
+    conf['checks'][resource[:name]]['occurrences'].to_s
   end
 
   def occurrences=(value)
@@ -155,7 +155,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def low_flap_threshold
-    conf['checks'][resource[:name]]['low_flap_threshold']
+    conf['checks'][resource[:name]]['low_flap_threshold'].to_s
   end
 
   def low_flap_threshold=(value)
@@ -163,7 +163,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def high_flap_threshold
-    conf['checks'][resource[:name]]['high_flap_threshold']
+    conf['checks'][resource[:name]]['high_flap_threshold'].to_s
   end
 
   def high_flap_threshold=(value)
