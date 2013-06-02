@@ -79,6 +79,11 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Check configuration for the client to use"
   end
 
+  newproperty(:safe_mode) do
+    desc "Requires that checks are defined on the client"
+    newvalues(:true, :false)
+  end
+
   newproperty(:standalone, :boolean => true) do
     desc "Whether this is a standalone check"
 
