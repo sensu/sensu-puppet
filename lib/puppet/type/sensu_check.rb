@@ -71,6 +71,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "custom variable for notifu"
   end
 
+  newproperty(:custom) do
+    desc "custom variable"
+  end
+
   newproperty(:type) do
     desc "What type of check is this"
   end

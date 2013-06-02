@@ -160,6 +160,45 @@ A usage example is shown below.
     }
     
 
+## Using custom variables in check definition
+
+    sensu::check{ 'check_file_test':
+      command      => '/usr/local/bin/check_file_test.sh',
+      handlers     => 'notifu',
+      sla          => ['admin:2'],
+      custom       => {
+        'foo'      => 'bar',
+        'in_array' => ['foo','zwei']
+      },
+      subscribers   => 'sensu-test'
+    }
+
+This will create the following check definition for Sensu
+
+  {
+    "checks": {
+      "check_file_test": {
+        "handlers": [
+          "notifu"
+        ],
+        "in_array": [
+          "foo",
+          "zwei"
+        ],
+        "command": "/usr/local/bin/check_file_test.sh",
+        "subscribers": [
+          "sensu-test"
+        ],
+        "foo": "bar",
+        "interval": 60,
+        "sla": [
+          "admin:2"
+        ]
+      }
+    }
+  }
+
+
 ## Including Sensu monitoring in other modules
 
 There are a few different patterns that can be used to include Sensu
