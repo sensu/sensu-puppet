@@ -10,7 +10,7 @@ define sensu::check(
   $ensure               = 'present',
   $type                 = undef,
   $handlers             = [],
-  $standalone           = undef,
+  $standalone           = true,
   $interval             = '60',
   $subscribers          = [],
   $low_flap_threshold   = undef,
