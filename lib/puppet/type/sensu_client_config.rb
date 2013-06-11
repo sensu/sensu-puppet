@@ -42,6 +42,10 @@ Puppet::Type.newtype(:sensu_client_config) do
     newvalues(:true, :false)
   end
 
+  newproperty(:custom) do
+    desc "Custom variable"
+  end
+
   autorequire(:package) do
     ['sensu']
   end

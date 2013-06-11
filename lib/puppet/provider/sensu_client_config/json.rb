@@ -26,6 +26,37 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.address = resource[:address]
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
+    # Optional arguments
+    self.custom = resource[:custom] unless resource[:custom].nil?
+  end
+
+  def check_args
+    ['name','address','subscriptions','safe_mode']
+  end
+
+  def custom
+    tmp = {}
+    conf['client'][resource[:name]].each do |k,v|
+      if v.is_a?( Fixnum )
+        tmp.merge!( k => v.to_s )
+      else
+        tmp.merge!( k => v )
+      end
+    end
+    check_args.each do | del_arg |
+      tmp.delete(del_arg)
+    end
+    tmp
+  end
+
+  def custom=(value)
+    tmp = custom
+    tmp.each_key do |k|
+      conf['client'][resource[:name]].delete(k) unless check_args.include?(k)
+    end
+    value.each do | k, v |
+      conf['client'][resource[:name]][ k ] =  to_type( v )
+    end
   end
 
   def destroy
