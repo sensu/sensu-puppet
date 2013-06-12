@@ -36,7 +36,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def custom
     tmp = {}
-    conf['client'][resource[:name]].each do |k,v|
+    @conf['client'].each do |k,v|
       if v.is_a?( Fixnum )
         tmp.merge!( k => v.to_s )
       else
@@ -52,10 +52,10 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   def custom=(value)
     tmp = custom
     tmp.each_key do |k|
-      conf['client'][resource[:name]].delete(k) unless check_args.include?(k)
+      @conf['client'].delete(k) unless check_args.include?(k)
     end
     value.each do | k, v |
-      conf['client'][resource[:name]][ k ] =  to_type( v )
+      @conf['client'][ k ] =  to_type( v )
     end
   end
 
