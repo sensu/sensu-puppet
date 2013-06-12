@@ -31,7 +31,7 @@ describe 'sensu::client', :type => :class do
       'subscriptions' => ['all'],
       'ensure'        => 'present',
       'safe_mode'     => true,
-      'custom'        => { 'a' => 'b', 'array' => [ 'c', 'd']},
+      'custom'        => { 'a' => 'b', 'array' => [ 'c', 'd']}
     ) }
 
   end
