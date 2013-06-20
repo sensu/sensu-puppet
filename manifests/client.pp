@@ -11,6 +11,7 @@ class sensu::client(
   $enabled        = 'true',
   $purge_config   = 'false',
   $safe_mode      = false,
+  $custom         = undef,
 ) {
 
   $ensure = $enabled ? {
@@ -29,6 +30,7 @@ class sensu::client(
     address       => $address,
     subscriptions => $subscriptions,
     safe_mode     => $safe_mode,
+    custom        => $custom,
   }
 
 }

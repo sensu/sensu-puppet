@@ -34,6 +34,7 @@ class sensu (
   $purge_config             = false,
   $use_embedded_ruby        = false,
   $safe_mode                = false,
+  $custom                   = undef,
 ){
 
   anchor {'sensu::begin': }
@@ -108,6 +109,7 @@ class sensu (
     enabled       => $client,
     purge_config  => $purge_config,
     safe_mode     => $safe_mode,
+    custom        => $custom
   }
 
   class { 'sensu::service::client': enabled => $client }
