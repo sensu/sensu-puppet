@@ -51,7 +51,17 @@ Puppet::Type.newtype(:sensu_check) do
   end
 
   newproperty(:custom) do
-    desc "custom variable"
+    desc "Custom check variables"
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    defaultto {}
   end
 
   newproperty(:type) do

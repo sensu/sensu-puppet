@@ -44,28 +44,12 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def custom
-    tmp = {}
-    conf['checks'][resource[:name]].each do |k,v|
-      if v.is_a?( Fixnum )
-        tmp.merge!( k => v.to_s )
-      else
-        tmp.merge!( k => v )
-      end
-    end
-    check_args.each do | del_arg |
-      tmp.delete(del_arg)
-    end
-    tmp
+    conf['checks'][resource[:name]].reject { |k,v| check_args.include?(k) }
   end
 
   def custom=(value)
-    tmp = custom
-    tmp.each_key do |k|
-      conf['checks'][resource[:name]].delete(k) unless check_args.include?(k)
-    end
-    value.each do | k, v |
-      conf['checks'][resource[:name]][ k ] =  to_type( v )
-    end
+    conf['checks'][resource[:name]].delete_if { |k,v| not check_args.include?(k) }
+    conf['checks'][resource[:name]].merge!(value)
   end
 
   def to_type(value)

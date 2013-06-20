@@ -26,6 +26,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.address = resource[:address]
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
+    self.custom = resource[:custom] unless resource[:custom].nil?
   end
 
   def destroy
@@ -34,6 +35,10 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def exists?
     @conf.has_key?('client')
+  end
+
+  def check_args
+    ['name', 'address', 'subscriptions', 'safe_mode']
   end
 
   def client_name
@@ -58,6 +63,15 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def subscriptions=(value)
     @conf['client']['subscriptions'] = value
+  end
+
+  def custom
+    @conf['client'].reject { |k,v| check_args.include?(k) }
+  end
+
+  def custom=(value)
+    @conf['client'].delete_if { |k,v| not check_args.include?(k) }
+    @conf['client'].merge!(value)
   end
 
   def safe_mode
