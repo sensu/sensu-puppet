@@ -30,6 +30,7 @@ class sensu (
   $subscriptions            = [],
   $client_address           = $::ipaddress,
   $client_name              = $::fqdn,
+  $client_custom            = {},
   $plugins                  = [],
   $purge_config             = false,
   $use_embedded_ruby        = false,
@@ -108,6 +109,7 @@ class sensu (
     enabled       => $client,
     purge_config  => $purge_config,
     safe_mode     => $safe_mode,
+    custom        => $client_custom,
   }
 
   class { 'sensu::service::client': enabled => $client }

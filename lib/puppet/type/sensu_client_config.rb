@@ -42,6 +42,20 @@ Puppet::Type.newtype(:sensu_client_config) do
     newvalues(:true, :false)
   end
 
+  newproperty(:custom) do
+    desc "Custom client variables"
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    defaultto {}
+  end
+
   autorequire(:package) do
     ['sensu']
   end
