@@ -10,7 +10,8 @@ describe 'sensu::client', :type => :class do
       'client_name'   => 'host.domain.com',
       'address'       => '2.3.4.5',
       'subscriptions' => [],
-      'ensure'        => 'present'
+      'ensure'        => 'present',
+      'custom'        => {}
     ) }
 
   end
@@ -21,7 +22,8 @@ describe 'sensu::client', :type => :class do
       :address                  => '1.2.3.4',
       :subscriptions            => ['all'],
       :client_name              => 'myclient',
-      :safe_mode                => true
+      :safe_mode                => true,
+      :custom                   => { 'foo' => 'bar', 'bool' => true }
     } }
 
     it { should contain_sensu_client_config('host.domain.com').with(
@@ -29,7 +31,8 @@ describe 'sensu::client', :type => :class do
       'address'       => '1.2.3.4',
       'subscriptions' => ['all'],
       'ensure'        => 'present',
-      'safe_mode'     => true
+      'safe_mode'     => true,
+      'custom'        => { 'foo' => 'bar', 'bool' => true }
     ) }
 
   end
@@ -39,7 +42,7 @@ describe 'sensu::client', :type => :class do
     let(:params) { { :enabled => false } }
     it { should contain_sensu_client_config('host.domain.com').with_ensure('absent') }
   end
-  
+
   context 'purge_configs' do
     let(:params) { { :purge_config => true } }
 
