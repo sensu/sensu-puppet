@@ -173,8 +173,11 @@ apache/manifests/monitoring/sensu.pp
       sensu::check { 'apache-running':
         handlers    => 'default',
         command     => '/etc/sensu/plugins/check-procs.rb -p /usr/sbin/httpd -w 100 -c 200 -C 1',
-        refresh     => 1800,
         standalone  => true,
+        custom      => {
+          refresh     => 1800,
+          occurrences => 2,
+        },
       }
     }
 
