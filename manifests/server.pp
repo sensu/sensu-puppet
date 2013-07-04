@@ -35,6 +35,8 @@ class sensu::server(
     mode    => '0555',
     owner   => 'sensu',
     group   => 'sensu',
+    purge   => $purge_config,
+    recurse => true,
     require => Package['sensu'],
   }
 
