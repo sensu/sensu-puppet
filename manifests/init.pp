@@ -84,7 +84,6 @@ class sensu (
     password        => $rabbitmq_password,
     vhost           => $rabbitmq_vhost,
     notify_services => $notify_services,
-    purge_config    => $purge_config,
   }
 
   class { 'sensu::server':
@@ -107,7 +106,6 @@ class sensu (
     subscriptions => $subscriptions,
     client_name   => $client_name,
     enabled       => $client,
-    purge_config  => $purge_config,
     safe_mode     => $safe_mode,
     custom        => $client_custom,
   }

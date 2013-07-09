@@ -14,7 +14,6 @@ class sensu::rabbitmq(
   $password             = '',
   $vhost                = '/sensu',
   $notify_services      = '',
-  $purge_config         = 'false',
   ) {
 
   if !defined(Sensu_rabbitmq_config[$::fqdn]) {
@@ -67,8 +66,12 @@ class sensu::rabbitmq(
       }
     }
 
-    if $purge_config {
-      file { '/etc/sensu/conf.d/rabbitmq.json': before => Sensu_rabbitmq_config[$::fqdn] }
+    file { '/etc/sensu/conf.d/rabbitmq.json':
+      ensure  => 'file',
+      owner   => 'sensu',
+      group   => 'sensu',
+      mode    => '0444',
+      before  => Sensu_rabbitmq_config[$::fqdn],
     }
 
     sensu_rabbitmq_config { $::fqdn:
