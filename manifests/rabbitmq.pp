@@ -70,7 +70,7 @@ class sensu::rabbitmq(
       ensure  => 'file',
       owner   => 'sensu',
       group   => 'sensu',
-      mode    => '0444',
+      mode    => '0440',
       before  => Sensu_rabbitmq_config[$::fqdn],
     }
 
