@@ -49,5 +49,18 @@ class sensu::package(
     require => Package['sensu'],
   }
 
+  user { 'sensu':
+    ensure  => 'present',
+    system  => true,
+    home    => '/opt/sensu',
+    shell   => '/bin/false',
+    comment => 'Sensu Monitoring Framework',
+  }
+
+  group { 'sensu':
+    ensure  => 'present',
+    system  => true,
+  }
+
   file { '/etc/sensu/config.json': ensure => absent }
 }

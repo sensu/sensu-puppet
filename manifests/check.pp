@@ -16,11 +16,14 @@ define sensu::check(
   $low_flap_threshold   = undef,
   $high_flap_threshold  = undef,
   $custom               = undef,
-  $purge_config         = 'false',
 ) {
 
-  if $purge_config {
-    file { "/etc/sensu/conf.d/checks/${name}.json": ensure => $ensure, before => Sensu_check[$name] }
+  file { "/etc/sensu/conf.d/checks/${name}.json":
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0440',
+    before  => Sensu_check[$name],
   }
 
   sensu_check { $name:

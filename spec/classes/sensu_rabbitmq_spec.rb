@@ -57,12 +57,6 @@ describe 'sensu::rabbitmq', :type => :class do
       'notify'          => 'Class[sensu::service::server]'
     ) }
   end
-  
-  context 'purge_configs' do
-    let(:params) { { :purge_config => true } }
-
-    it { should contain_file('/etc/sensu/conf.d/rabbitmq.json') }
-  end
 
 end
 

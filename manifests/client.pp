@@ -9,7 +9,6 @@ class sensu::client(
   $subscriptions  = [],
   $client_name    = $::fqdn,
   $enabled        = 'true',
-  $purge_config   = 'false',
   $safe_mode      = false,
   $custom         = {}
 ) {
@@ -20,8 +19,11 @@ class sensu::client(
     default => 'absent'
   }
 
-  if $purge_config {
-    file { '/etc/sensu/conf.d/client.json': ensure => $ensure }
+  file { '/etc/sensu/conf.d/client.json':
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0444',
   }
 
   sensu_client_config { $::fqdn:
