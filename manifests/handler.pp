@@ -18,7 +18,6 @@ define sensu::handler(
   $install_path = '/etc/sensu/handlers',
   # Handler specific config
   $config       = undef,
-  $purge_config = $sensu::purge_config,
 ) {
 
   if defined(Class['sensu::service::server']) {
@@ -48,8 +47,12 @@ define sensu::handler(
     $command_real = $command
   }
 
-  if $purge_config {
-    file { "/etc/sensu/conf.d/handlers/${name}.json": ensure => $ensure, before => Sensu_handler[$name] }
+  file { "/etc/sensu/conf.d/handlers/${name}.json":
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0444',
+    before  => Sensu_handler[$name],
   }
 
   sensu_handler { $name:

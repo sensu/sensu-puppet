@@ -24,10 +24,25 @@ class sensu::server(
     default => 'absent'
   }
 
-  if $purge_config {
-    file { '/etc/sensu/conf.d/redis.json': ensure => $ensure }
-    file { '/etc/sensu/conf.d/api.json': ensure => $ensure }
-    file { '/etc/sensu/conf.d/dashboard.json': ensure => $ensure }
+  file { '/etc/sensu/conf.d/redis.json':
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0444',
+  }
+
+  file { '/etc/sensu/conf.d/api.json':
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0444',
+  }
+
+  file { '/etc/sensu/conf.d/dashboard.json':
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0440',
   }
 
   file { ['/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/handlers']:

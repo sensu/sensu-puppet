@@ -9,11 +9,14 @@ define sensu::config (
   $ensure       = 'present',
   $config       = undef,
   $event        = undef,
-  $purge_config = undef,
 ) {
 
-  if $purge_config {
-    file { "/etc/sensu/conf.d/checks/config_${name}.json": ensure => $ensure, before => Sensu_check[$name] }
+  file { "/etc/sensu/conf.d/checks/config_${name}.json":
+    ensure  => $ensure,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0444',
+    before  => Sensu_check[$name],
   }
 
   sensu_check_config { $name:
