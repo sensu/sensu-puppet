@@ -30,6 +30,7 @@ describe 'sensu::package', :type => :class do
     let(:params) { { :purge_config => true } }
 
     it { should contain_file('/etc/sensu/conf.d/').with(
+      'ensure'  => 'directory',
       'purge'   => 'true',
       'recurse' => 'true',
       'force'   => 'true'

@@ -24,6 +24,7 @@ class sensu::package(
 
   if $purge_config {
     file { '/etc/sensu/conf.d':
+      ensure  => directory,
       purge   => true,
       recurse => true,
       force   => true,
