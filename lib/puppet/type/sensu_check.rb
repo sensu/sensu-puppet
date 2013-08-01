@@ -43,7 +43,7 @@ Puppet::Type.newtype(:sensu_check) do
   end
 
   newproperty(:refresh) do
-    desc "Number of "Number of seconds handlers should wait before taking second actionn"
+    desc "Number of seconds handlers should wait before taking second action"
   end
 
   newproperty(:low_flap_threshold) do
