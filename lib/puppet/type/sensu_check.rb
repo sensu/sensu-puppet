@@ -42,6 +42,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "How frequently the check runs in seconds"
   end
 
+  newproperty(:refresh) do
+    desc "Number of seconds handlers should wait before taking second action"
+  end
+
   newproperty(:low_flap_threshold) do
     desc "A host is determined to be flapping when the percent change is below this threshold."
   end

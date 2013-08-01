@@ -30,6 +30,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.handlers = resource[:handlers]
     self.command = resource[:command]
     self.interval = resource[:interval]
+    self.refresh = resource[:refresh]
     self.subscribers = resource[:subscribers]
     # Optional arguments
     self.type = resource[:type] unless resource[:type].nil?
@@ -40,7 +41,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def check_args
-    ['handlers','command','interval','subscribers','type','standalone','high_flap_threshold','low_flap_threshold']
+    ['handlers','command','interval', 'refresh', 'subscribers','type','standalone','high_flap_threshold','low_flap_threshold']
   end
 
   def custom
@@ -79,6 +80,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def interval=(value)
     conf['checks'][resource[:name]]['interval'] = value.to_i
+  end
+
+  def refresh
+    conf['checks'][resource[:name]]['refresh'].to_s
+  end
+
+  def refresh=(value)
+    conf['checks'][resource[:name]]['refresh'] = value.to_i
   end
 
   def handlers
@@ -151,3 +160,4 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     end
   end
 end
+
