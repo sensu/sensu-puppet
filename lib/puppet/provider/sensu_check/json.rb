@@ -44,6 +44,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def custom
+    conf['checks'][resource[:name]].each { |k, v| conf['checks'][resource[:name]][k] = v.to_s }
     conf['checks'][resource[:name]].reject { |k,v| check_args.include?(k) }
   end
 
