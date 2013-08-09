@@ -61,6 +61,31 @@ Puppet::Type.newtype(:sensu_check) do
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
     end
 
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    def to_type(value)
+      case value
+      when true, 'true', 'True', :true
+        true
+      when false, 'false', 'False', :false
+        false
+      when /^([0-9])+$/
+        value.to_i
+      else
+        value
+      end
+    end
+
     defaultto {}
   end
 
