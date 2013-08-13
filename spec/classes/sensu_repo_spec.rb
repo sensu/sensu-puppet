@@ -20,7 +20,7 @@ describe 'sensu::repo', :type => :class do
     end
   end
 
-  ['Rhel', 'CentOS' ].each do |os|
+  ['RedHat', 'CentOS' ].each do |os|
     describe "operatingsystem: #{os}" do
       let(:facts) { { :operatingsystem => os } }
       context 'no params' do
