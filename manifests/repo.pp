@@ -17,7 +17,7 @@ class sensu::repo (
       class { 'sensu::repo::apt': ensure => $ensure, repo => $repo }
     }
 
-    'Fedora','Rhel','Centos': {
+    'Fedora','RedHat','Centos': {
       class { 'sensu::repo::yum': ensure => $ensure }
     }
 
