@@ -18,15 +18,17 @@ define sensu::check(
   $custom               = undef,
 ) {
 
-  file { "/etc/sensu/conf.d/checks/${name}.json":
+  $check_name = regsubst($name, ' ', '_', 'G')
+
+  file { "/etc/sensu/conf.d/checks/${check_name}.json":
     ensure  => $ensure,
     owner   => 'sensu',
     group   => 'sensu',
     mode    => '0440',
-    before  => Sensu_check[$name],
+    before  => Sensu_check[$check_name],
   }
 
-  sensu_check { $name:
+  sensu_check { $check_name:
     ensure              => $ensure,
     type                => $type,
     standalone          => $standalone,
