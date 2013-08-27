@@ -28,6 +28,7 @@ class sensu::package(
       purge   => true,
       recurse => true,
       force   => true,
+      require => Package['sensu']
     }
   }
 
