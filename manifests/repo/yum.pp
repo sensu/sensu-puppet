@@ -16,7 +16,7 @@ class sensu::repo::yum (
 
   yumrepo { 'sensu':
     enabled  => $enabled,
-    baseurl  => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/',
+    baseurl  => "http://repos.sensuapp.org/yum/el/${::operatingsystemmajrelease}/${::architecture}/",
     gpgcheck => 0,
     name     => 'sensu',
     descr    => 'sensu',
