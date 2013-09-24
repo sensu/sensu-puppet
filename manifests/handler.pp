@@ -13,6 +13,7 @@ define sensu::handler(
   $severities   = ['ok', 'warning', 'critical', 'unknown'],
   $exchange     = undef,
   $mutator      = undef,
+  $socket       = undef,
   # Used to install the handler
   $source       = '',
   $install_path = '/etc/sensu/handlers',
@@ -62,6 +63,7 @@ define sensu::handler(
     handlers   => $handlers,
     severities => $severities,
     exchange   => $exchange,
+    socket     => $socket,
     mutator    => $mutator,
     config     => $config,
     notify     => $notify_services,
