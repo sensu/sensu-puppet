@@ -27,11 +27,11 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   def create
     conf['checks'] = {}
     conf['checks'][resource[:name]] = {}
-    self.handlers = resource[:handlers]
     self.command = resource[:command]
     self.interval = resource[:interval]
-    self.subscribers = resource[:subscribers]
     # Optional arguments
+    self.handlers = resource[:handlers] unless resource[:handlers].nil?
+    self.subscribers = resource[:subscribers] unless resource[:subscribers].nil?
     self.type = resource[:type] unless resource[:type].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
     self.high_flap_threshold = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
@@ -83,7 +83,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def handlers
-    conf['checks'][resource[:name]]['handlers'] || []
+    conf['checks'][resource[:name]]['handlers']
   end
 
   def handlers=(value)
@@ -99,7 +99,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def subscribers
-    conf['checks'][resource[:name]]['subscribers'] || []
+    conf['checks'][resource[:name]]['subscribers']
   end
 
   def subscribers=(value)
