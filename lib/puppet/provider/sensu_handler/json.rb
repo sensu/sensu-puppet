@@ -72,6 +72,9 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
 
   def socket=(value)
     @conf['handlers'][resource[:name]]['socket'] = value
+    if @conf['handlers'][resource[:name]]['socket'].has_key('port')
+      @conf['handlers'][resource[:name]]['socket']['port'] = @conf['handlers'][resource[:name]]['socket']['port'].to_i
+    end
   end
 
   def handlers
