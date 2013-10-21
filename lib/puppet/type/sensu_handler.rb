@@ -39,6 +39,28 @@ Puppet::Type.newtype(:sensu_handler) do
 
   newproperty(:socket) do
     desc "Socket information used by the udp type"
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is['port'] == (@should[0]['port'] = @should[0]['port'].to_i)
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
   end
 
   newproperty(:mutator) do
