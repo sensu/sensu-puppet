@@ -23,7 +23,7 @@ describe 'sensu::client', :type => :class do
       :subscriptions            => ['all'],
       :client_name              => 'myclient',
       :safe_mode                => true,
-      :custom                   => { 'foo' => 'bar', 'bool' => true }
+      :custom                   => { 'bool' => true, 'foo' => 'bar' }
     } }
 
     it { should contain_sensu_client_config('host.domain.com').with(
@@ -32,7 +32,7 @@ describe 'sensu::client', :type => :class do
       'subscriptions' => ['all'],
       'ensure'        => 'present',
       'safe_mode'     => true,
-      'custom'        => { 'foo' => 'bar', 'bool' => true }
+      'custom'        => { 'bool' => true, 'foo' => 'bar' }
     ) }
 
   end
