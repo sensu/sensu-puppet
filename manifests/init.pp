@@ -35,6 +35,7 @@ class sensu (
   $purge_config             = false,
   $use_embedded_ruby        = false,
   $safe_mode                = false,
+  $manage_services          = true
 ){
 
   anchor {'sensu::begin': }
@@ -54,7 +55,9 @@ class sensu (
   Class['sensu::service::client'] ->
   Anchor['sensu::end']
 
-  if $server == 'true' or $server == true {
+  if $manage_services != 'true' and $manage_services != true {
+    $notify_services = []
+  } elsif $server == 'true' or $server == true {
     if $client == 'true' or $client == true {
       Class['sensu::service::server'] ~> Class['sensu::service::client']
       $notify_services = [ Class['sensu::service::client'], Class['sensu::service::server'] ]

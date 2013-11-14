@@ -14,13 +14,18 @@ class sensu::service::server(
     default => 'stopped',
   }
 
-  Service {
-    ensure     => $real_ensure,
-    enable     => $enabled,
-    hasrestart => true,
+  if $sensu::manage_services == 'true' or $sensu::manage_services == true {
+
+    Service {
+      ensure     => $real_ensure,
+      enable     => $enabled,
+      hasrestart => true,
+    }
+
+    service { 'sensu-server': }
+    service { 'sensu-api': }
+    service { 'sensu-dashboard': }
+
   }
 
-  service { 'sensu-server': }
-  service { 'sensu-api': }
-  service { 'sensu-dashboard': }
 }
