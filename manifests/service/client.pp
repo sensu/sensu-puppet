@@ -14,7 +14,7 @@ class sensu::service::client (
     default => 'stopped',
   }
 
-  if $sensu::manage_services == 'true' or $sensu::manage_services == true {
+  if $sensu::manage_services == 'true' or $sensu::manage_services == true or $sensu::manage_services == undef {
     service { 'sensu-client':
       ensure     => $real_ensure,
       enable     => $enabled,

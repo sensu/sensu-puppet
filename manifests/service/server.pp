@@ -14,7 +14,7 @@ class sensu::service::server(
     default => 'stopped',
   }
 
-  if $sensu::manage_services == 'true' or $sensu::manage_services == true {
+if $sensu::manage_services == 'true' or $sensu::manage_services == true or $sensu::manage_services == undef {
 
     Service {
       ensure     => $real_ensure,
