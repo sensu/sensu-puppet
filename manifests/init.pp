@@ -8,44 +8,51 @@
 #
 
 class sensu (
-  $rabbitmq_password        = '',
-  $server                   = 'false',
-  $client                   = 'true',
-  $version                  = 'latest',
-  $install_repo             = 'true',
-  $rabbitmq_port            = '5671',
-  $rabbitmq_host            = 'localhost',
-  $rabbitmq_user            = 'sensu',
-  $rabbitmq_vhost           = '/sensu',
-  $rabbitmq_ssl_private_key = '',
-  $rabbitmq_ssl_cert_chain  = '',
-  $redis_host               = 'localhost',
-  $redis_port               = '6379',
-  $api_host                 = 'localhost',
-  $api_port                 = '4567',
-  $dashboard_host           = $::ipaddress,
-  $dashboard_port           = '8080',
-  $dashboard_user           = 'admin',
-  $dashboard_password       = 'secret',
+  $rabbitmq_password        = hiera('sensu::rabbitmq_password',''),
+  $server                   = hiera('sensu::server', false),
+  $client                   = hiera('sensu::client', true),
+  $version                  = hiera('sensu::version', 'latest'),
+  $install_repo             = hiera('sensu::install_repo', true),
+  $rabbitmq_port            = hiera('sensu::rabbitmq_port', '5671'),
+  $rabbitmq_host            = hiera('sensu::rabbitmq_host', 'localhost'),
+  $rabbitmq_user            = hiera('sensu::rabbitmq_user', 'sensu'),
+  $rabbitmq_vhost           = hiera('sensu::rabbitmq_vhost', '/sensu'),
+  $rabbitmq_ssl_private_key = hiera('sensu::rabbitmq_ssl_private_key', ''),
+  $rabbitmq_ssl_cert_chain  = hiera('sensu::rabbitmq_ssl_cert_chain', ''),
+  $redis_host               = hiera('sensu::redis_host', 'localhost'),
+  $redis_port               = hiera('sensu::redis_port', '6379'),
+  $api_host                 = hiera('sensu::api_host', 'localhost'),
+  $api_port                 = hiera('sensu::api_port', '4567'),
+  $dashboard_host           = hiera('sensu::dashboard_host', $::ipaddress),
+  $dashboard_port           = hiera('sensu::dashboard_port','8080'),
+  $dashboard_user           = hiera('sensu::dashboard_user', 'admin'),
+  $dashboard_password       = hiera('sensu::dashboard_password','secret'),
   $subscriptions            = [],
-  $client_address           = $::ipaddress,
-  $client_name              = $::fqdn,
+  $client_address           = hiera('sensu::client_address', $::ipaddress),
+  $client_name              = hiera('sensu::client_name', $::fqdn),
+  $client_custom            = {},
   $plugins                  = [],
-  $purge_config             = false,
+  $purge_config             = hiera('sensu::purge_config', false),
+  $use_embedded_ruby        = hiera('sensu::use_embedded_ruby', false),
+  $safe_mode                = hiera('sensu::safe_mode', false),
 ){
 
+  anchor {'sensu::begin': }
+  anchor {'sensu::end': }
+
+  Anchor['sensu::begin'] ->
   Class['sensu::package'] ->
   Class['sensu::rabbitmq']
 
   Class['sensu::rabbitmq'] ->
   Class['sensu::server'] ~>
   Class['sensu::service::server'] ->
-  Class['sensu']
+  Anchor['sensu::end']
 
   Class['sensu::rabbitmq'] ->
   Class['sensu::client'] ~>
   Class['sensu::service::client'] ->
-  Class['sensu']
+  Anchor['sensu::end']
 
   if $server == 'true' or $server == true {
     if $client == 'true' or $client == true {
@@ -61,10 +68,11 @@ class sensu (
   }
 
   class { 'sensu::package':
-    version         => $version,
-    install_repo    => $install_repo,
-    notify_services => $notify_services,
-    purge_config    => $purge_config,
+    version           => $version,
+    install_repo      => $install_repo,
+    notify_services   => $notify_services,
+    purge_config      => $purge_config,
+    use_embedded_ruby => $use_embedded_ruby,
   }
 
   class { 'sensu::rabbitmq':
@@ -76,7 +84,6 @@ class sensu (
     password        => $rabbitmq_password,
     vhost           => $rabbitmq_vhost,
     notify_services => $notify_services,
-    purge_config    => $purge_config,
   }
 
   class { 'sensu::server':
@@ -99,7 +106,8 @@ class sensu (
     subscriptions => $subscriptions,
     client_name   => $client_name,
     enabled       => $client,
-    purge_config  => $purge_config,
+    safe_mode     => $safe_mode,
+    custom        => $client_custom,
   }
 
   class { 'sensu::service::client': enabled => $client }
