@@ -34,6 +34,7 @@ class sensu (
   $plugins                  = [],
   $purge_config             = false,
   $use_embedded_ruby        = false,
+  $rubyopt                  = '',
   $safe_mode                = false,
   $manage_services          = true
 ){
@@ -76,6 +77,7 @@ class sensu (
     notify_services   => $notify_services,
     purge_config      => $purge_config,
     use_embedded_ruby => $use_embedded_ruby,
+    rubyopt           => $rubyopt,
   }
 
   class { 'sensu::rabbitmq':
