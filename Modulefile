@@ -1,4 +1,4 @@
-version '0.7.5'
+version '0.7.6'
 name 'sensu-puppet'
 license 'MIT'
 summary 'A module to intall the Sensu monitoring framework'
