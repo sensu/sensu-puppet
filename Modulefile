@@ -1,5 +1,5 @@
 version '0.7.6'
-name 'sensu-puppet'
+name 'sensu'
 license 'MIT'
 summary 'A module to intall the Sensu monitoring framework'
 project_page 'https://github.com/sensu/sensu-puppet'
