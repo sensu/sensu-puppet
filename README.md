@@ -198,6 +198,13 @@ This will create the following check definition for Sensu
       }
     }
 
+### Disable Service Management
+
+If you'd prefer to use an external service management tool such as DaemonTools or SupervisorD,
+you can disable the modules internal service management functions like so:
+
+    sensu::manage_services: false
+
 
 ## Including Sensu monitoring in other modules
 

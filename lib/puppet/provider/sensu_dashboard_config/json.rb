@@ -56,6 +56,7 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
 
   def user=(value)
     conf['dashboard']['user'] = value
+    conf['dashboard'].delete('user') if ''==value
   end
 
   def password
@@ -64,5 +65,7 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
 
   def password=(value)
     conf['dashboard']['password'] = value
+    conf['dashboard'].delete('password') if ''==value
+
   end
 end
