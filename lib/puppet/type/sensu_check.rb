@@ -1,3 +1,4 @@
+require 'puppet_x/sensu/to_type'
 Puppet::Type.newtype(:sensu_check) do
   @doc = ""
 
@@ -52,6 +53,7 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:custom) do
     desc "Custom check variables"
+    include Puppet_X::Sensu::Totype
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -70,19 +72,6 @@ Puppet::Type.newtype(:sensu_check) do
         end
       else
         true
-      end
-    end
-
-    def to_type(value)
-      case value
-      when true, 'true', 'True', :true
-        true
-      when false, 'false', 'False', :false
-        false
-      when /^([0-9])+$/
-        value.to_i
-      else
-        value
       end
     end
 
