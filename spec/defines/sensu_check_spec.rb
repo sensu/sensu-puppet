@@ -9,9 +9,9 @@ describe 'sensu::check', :type => :define do
 
       it { should contain_sensu_check('mycheck').with(
         'command'     => '/etc/sensu/somecommand.rb',
-        'handlers'    => [],
+        'handlers'    => '',
         'interval'    => '60',
-        'subscribers' => []
+        'subscribers' => ''
       ) }
 
     end
@@ -56,9 +56,9 @@ describe 'sensu::check', :type => :define do
 
       it { should contain_sensu_check('mycheck_foobar').with(
         'command'     => '/etc/sensu/somecommand.rb',
-        'handlers'    => [],
+        'handlers'    => '',
         'interval'    => '60',
-        'subscribers' => []
+        'subscribers' => ''
       ) }
 
       it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foobar.json') }
