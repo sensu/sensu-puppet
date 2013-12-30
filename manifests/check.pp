@@ -18,7 +18,7 @@ define sensu::check(
   $custom               = undef,
 ) {
 
-  $check_name = regsubst($name, ' ', '_', 'G')
+  $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
   file { "/etc/sensu/conf.d/checks/${check_name}.json":
     ensure  => $ensure,
