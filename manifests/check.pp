@@ -65,7 +65,7 @@ define sensu::check(
     fail("sensu::check{${name}}: high_flap_threshold must be an integer (got: ${high_flap_threshold})")
   }
 
-  $check_name = regsubst($name, ' ', '_', 'G')
+  $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
   file { "/etc/sensu/conf.d/checks/${check_name}.json":
     ensure  => $ensure,
