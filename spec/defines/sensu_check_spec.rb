@@ -64,7 +64,23 @@ describe 'sensu::check', :type => :define do
       it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foobar.json') }
 
     end
+  end
 
+  context 'with brackets in name' do
+    let(:title) { 'mycheck (foo) bar' }
+    context 'defaults' do
+      let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
+
+      it { should contain_sensu_check('mycheck_foo_bar').with(
+        'command'     => '/etc/sensu/somecommand.rb',
+        'handlers'    => '',
+        'interval'    => '60',
+        'subscribers' => ''
+      ) }
+
+      it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foo_bar.json') }
+    end
   end
 
 end
+
