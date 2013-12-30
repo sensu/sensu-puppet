@@ -1,8 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
 
+require 'puppet_x/sensu/to_type'
+
 Puppet::Type.type(:sensu_client_config).provide(:json) do
   confine :feature => :json
+  include Puppet_X::Sensu::Totype
 
   def initialize(*args)
     super
@@ -71,7 +74,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def custom=(value)
     @conf['client'].delete_if { |k,v| not check_args.include?(k) }
-    @conf['client'].merge!(value)
+    @conf['client'].merge!(to_type value)
   end
 
   def safe_mode

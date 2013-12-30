@@ -1,8 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
 
+require 'puppet_x/sensu/to_type'
+
 Puppet::Type.type(:sensu_check).provide(:json) do
   confine :feature => :json
+  include Puppet_X::Sensu::Totype
 
   def initialize(*args)
     super
@@ -48,22 +51,8 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def custom=(value)
-    value.each { |k, v| value[k] = to_type(v) }
     conf['checks'][resource[:name]].delete_if { |k,v| not check_args.include?(k) }
-    conf['checks'][resource[:name]].merge!(value)
-  end
-
-  def to_type(value)
-    case value
-    when true, 'true', 'True', :true
-      true
-    when false, 'false', 'False', :false
-      false
-    when /^([0-9])+$/
-      value.to_i
-    else
-      value
-    end
+    conf['checks'][resource[:name]].merge!(to_type value)
   end
 
   def destroy
