@@ -8,10 +8,10 @@ describe 'sensu::check', :type => :define do
       let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
 
       it { should contain_sensu_check('mycheck').with(
-        'command'     => '/etc/sensu/somecommand.rb',
-        'handlers'    => '',
-        'interval'    => '60',
-        'subscribers' => ''
+        :command     => '/etc/sensu/somecommand.rb',
+        :handlers    => '',
+        :interval    => 60,
+        :subscribers => []
       ) }
 
     end
@@ -20,7 +20,7 @@ describe 'sensu::check', :type => :define do
       let(:params) { {
         :command              => '/etc/sensu/command2.rb',
         :handlers             => ['/handler1', '/handler2'],
-        :interval             => '10',
+        :interval             => 10,
         :subscribers          => ['all'],
         :custom               => { 'a' => 'b', 'array' => [ 'c', 'd']},
         :type                 => 'metric',
@@ -30,15 +30,15 @@ describe 'sensu::check', :type => :define do
       } }
 
       it { should contain_sensu_check('mycheck').with(
-        'command'             => '/etc/sensu/command2.rb',
-        'handlers'            => ['/handler1', '/handler2'],
-        'interval'            => '10',
-        'subscribers'         => ['all'],
-        'custom'              => { 'a' => 'b', 'array' => [ 'c', 'd']},
-        'type'                => 'metric',
-        'standalone'          => true,
-        'low_flap_threshold'  => '10',
-        'high_flap_threshold' => '15'
+        :command             => '/etc/sensu/command2.rb',
+        :handlers            => ['/handler1', '/handler2'],
+        :interval            => 10,
+        :subscribers         => ['all'],
+        :custom              => { 'a' => 'b', 'array' => [ 'c', 'd']},
+        :type                => 'metric',
+        :standalone          => true,
+        :low_flap_threshold  => 10,
+        :high_flap_threshold => 15
       ) }
     end
 
@@ -55,32 +55,16 @@ describe 'sensu::check', :type => :define do
       let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
 
       it { should contain_sensu_check('mycheck_foobar').with(
-        'command'     => '/etc/sensu/somecommand.rb',
-        'handlers'    => '',
-        'interval'    => '60',
-        'subscribers' => ''
+        :command     => '/etc/sensu/somecommand.rb',
+        :handlers    => '',
+        :interval    => '60',
+        :subscribers => []
       ) }
 
       it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foobar.json') }
 
     end
-  end
 
-  context 'with brackets in name' do
-    let(:title) { 'mycheck (foo) bar' }
-    context 'defaults' do
-      let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
-
-      it { should contain_sensu_check('mycheck_foo_bar').with(
-        'command'     => '/etc/sensu/somecommand.rb',
-        'handlers'    => '',
-        'interval'    => '60',
-        'subscribers' => ''
-      ) }
-
-      it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foo_bar.json') }
-    end
   end
 
 end
-

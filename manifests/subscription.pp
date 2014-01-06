@@ -4,10 +4,16 @@
 #
 # == Parameters
 #
-
+# [*ensure*]
+#   String. Whether the check should be present or not
+#   Default: present
+#   Valid values: present, absent
+#
 define sensu::subscription (
   $ensure       = 'present',
 ) {
+
+  validate_re($ensure, ['^present$', '^absent$'] )
 
   file { "/etc/sensu/conf.d/subscription_${name}.json":
     ensure  => $ensure,
@@ -17,6 +23,9 @@ define sensu::subscription (
     before  => Sensu_client_subscription[$name],
   }
 
-  sensu_client_subscription { $name: ensure => $ensure }
+  sensu_client_subscription { $name:
+    ensure  => $ensure,
+    notify  => Class['sensu::client::service'],
+  }
 
 }
