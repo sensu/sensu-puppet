@@ -12,6 +12,7 @@ class sensu::package(
   $purge_config     = 'false',
   $use_embedded_ruby = 'true',
   $rubyopt          = '',
+  $log_level        = 'info',
 ) {
 
   if $install_repo == 'true' or $install_repo == true {

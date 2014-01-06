@@ -36,7 +36,8 @@ class sensu (
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
   $safe_mode                = false,
-  $manage_services          = true
+  $manage_services          = true,
+  $log_level                = 'info',
 ){
 
   anchor {'sensu::begin': }
@@ -78,6 +79,7 @@ class sensu (
     purge_config      => $purge_config,
     use_embedded_ruby => $use_embedded_ruby,
     rubyopt           => $rubyopt,
+    log_level         => $log_level,
   }
 
   class { 'sensu::rabbitmq':
