@@ -4,120 +4,220 @@
 #
 # == Parameters
 #
-# None.
+# [*version*]
+#   String.  Version of sensu to install
+#   Default: latest
+#   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
-
+# [*install_repo*]
+#   Boolean.  Whether or not to install the sensu repo
+#   Default: true
+#   Valid values: true, false
+#
+# [*repo*]
+#   String.  Which sensu repo to install
+#   Default: main
+#   Valid values: main, unstable
+#
+# [*client*]
+#   Boolean.  Include the sensu client
+#   Default: true
+#   Valid values: true, false
+#
+# [*server*]
+#   Boolean.  Include the sensu server
+#   Default: false
+#   Valid values: true, false
+#
+# [*api*]
+#   Boolean.  Include the sensu api service
+#   Default: false
+#   Valid values: true, false
+#
+# [*dashboard*]
+#   Boolean.  Include the sensu dashboard service
+#   Default: false
+#   Valid values: true, false
+#
+# [*manage_services*]
+#   Boolean.  Manage the sensu services with puppet
+#   Default: true
+#   Valid values: true, false
+#
+# [*rabbitmq_port*]
+#   Integer.  Rabbitmq port to be used by sensu
+#   Default: 5671
+#
+# [*rabbitmq_host*]
+#   String.  Host running rabbitmq for sensu
+#   Default: 'localhost'
+#
+# [*rabbitmq_user*]
+#   String.  Username to connect to rabbitmq with for sensu
+#   Default: 'sensu'
+#
+# [*rabbitmq_password*]
+#   String.  Password to connect to rabbitmq with for sensu
+#   Default: ''
+#
+# [*rabbitmq_vhost*]
+#   String.  Rabbitmq vhost to be used by sensu
+#   Default: '/sensu'
+#
+# [*rabbitmq_ssl_private_key*]
+#   String.  Private key to be used by sensu to connect to rabbitmq
+#     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
+#   Default: undef
+#
+# [*rabbitmq_ssl_cert_chain*]
+#   String.  Private SSL cert chain to be used by sensu to connect to rabbitmq
+#     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
+#   Default: undef
+#
+# [*redis_host*]
+#   String.  Hostname of redis to be used by sensu
+#   Default: localhost
+#
+# [*redis_port*]
+#   Integer.  Redis port to be used by sensu
+#   Default: 6379
+#
+# [*api_host*]
+#   String.  Hostname of the sensu api service
+#   Default: localhost
+#
+# [*api_port*]
+#   Integer.  Port of the sensu api service
+#   Default: 4567
+#
+# [*dashboard_host*]
+#   String.  Hostname of the dahsboard host
+#   Default: $::ipaddress
+#
+# [*dashboard_port*]
+#   Integer.  Port for the sensu dashboard
+#   Default: 8080
+#
+# [*dashboard_user*]
+#   String.  Username to access the dashboard service
+#   Default: admin
+#
+# [*dashboard_password*]
+#   String.  Password for dashboard_user
+#   Default: secret
+#
+# [*subscriptions*]
+#   String, Array of strings.  Default suscriptions used by the client
+#   Default: []
+#
+# [*client_address*]
+#   String.  Address of the client to report with checks
+#   Default: $::ipaddress
+#
+# [*client_name*]
+#   String.  Name of the client to report with checks
+#   Default: $::fqdn
+#
+# [*client_custom*]
+#   Hash.  Custom client variables
+#   Default: {}
+#
+# [*safe_mode*]
+#   Boolean.  Force safe mode for checks
+#   Default: false
+#   Valid values: true, false
+#
+# [*plugins*]
+#   String, Array of Strings.  Plugins to install on the node
+#   Default: []
+#
+# [*purge_config*]
+#   Boolean.  If unused configs should be removed from the system
+#   Default: false
+#   Valid values: true, false
+#
+# [*use_embedded_ruby*]
+#   Boolean.  If the embedded ruby should be used
+#   Default: false
+#   Valid values: true, false
+#
+# [*rubyopt*]
+#   String.  Ruby opts to be passed to the sensu services
+#   Default: ''
+#
+# [*log_level*]
+#   String.  Sensu log level to be used
+#   Default: 'info'
+#   Valid values: debug, info, warn, error, fatal
+#
 class sensu (
-  $rabbitmq_password        = '',
-  $server                   = 'false',
-  $client                   = 'true',
   $version                  = 'latest',
-  $install_repo             = 'true',
-  $rabbitmq_port            = '5671',
+  $install_repo             = true,
+  $repo                     = 'main',
+  $client                   = true,
+  $server                   = false,
+  $api                      = false,
+  $dashboard                = false,
+  $manage_services          = true,
+  $rabbitmq_port            = 5671,
   $rabbitmq_host            = 'localhost',
   $rabbitmq_user            = 'sensu',
+  $rabbitmq_password        = '',
   $rabbitmq_vhost           = '/sensu',
-  $rabbitmq_ssl_private_key = '',
-  $rabbitmq_ssl_cert_chain  = '',
+  $rabbitmq_ssl_private_key = undef,
+  $rabbitmq_ssl_cert_chain  = undef,
   $redis_host               = 'localhost',
-  $redis_port               = '6379',
+  $redis_port               = 6379,
   $api_host                 = 'localhost',
-  $api_port                 = '4567',
+  $api_port                 = 4567,
   $dashboard_host           = $::ipaddress,
-  $dashboard_port           = '8080',
+  $dashboard_port           = 8080,
   $dashboard_user           = 'admin',
   $dashboard_password       = 'secret',
   $subscriptions            = [],
   $client_address           = $::ipaddress,
   $client_name              = $::fqdn,
   $client_custom            = {},
+  $safe_mode                = false,
   $plugins                  = [],
   $purge_config             = false,
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
-  $safe_mode                = false,
-  $manage_services          = true,
   $log_level                = 'info',
 ){
 
-  anchor {'sensu::begin': }
+  $client_real = str2bool($client)
+  $server_real = str2bool($server)
+  $api_real = str2bool($api)
+  $dashboard_real = str2bool($dashboard)
+  $install_repo_real = str2bool($install_repo)
+  $purge_config_real = str2bool($purge_config)
+  $safe_mode_real = str2bool($safe_mode)
+  $manage_services_real = str2bool($manage_services)
+  $subscriptions_real = any2array($subscriptions)
+  validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
+  validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
+  validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
+  if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
+  if !is_integer($redis_port) { fail('redis_port must be an integer') }
+  if !is_integer($api_port) { fail('api_port must be an integer') }
+  if !is_integer($dashboard_port) { fail('dashboard_port must be an integer') }
+
+
+  # Include everything and let each module determine its state.  This allows
+  # transitioning to purged config and stopping/disabling services
+  anchor { 'sensu::begin': } ->
+  class { 'sensu::package': } ->
+  class { 'sensu::rabbitmq::config': } ->
+  class { 'sensu::api::config': } ->
+  class { 'sensu::redis::config': } ->
+  class { 'sensu::client::config': } ->
+  class { 'sensu::dashboard::config': } ->
+  class { 'sensu::client::service': } ->
+  class { 'sensu::api::service': } ->
+  class { 'sensu::server::service': } ->
+  class { 'sensu::dashboard::service': } ->
   anchor {'sensu::end': }
-
-  Anchor['sensu::begin'] ->
-  Class['sensu::package'] ->
-  Class['sensu::rabbitmq']
-
-  Class['sensu::rabbitmq'] ->
-  Class['sensu::server'] ~>
-  Class['sensu::service::server'] ->
-  Anchor['sensu::end']
-
-  Class['sensu::rabbitmq'] ->
-  Class['sensu::client'] ~>
-  Class['sensu::service::client'] ->
-  Anchor['sensu::end']
-
-  if $manage_services != 'true' and $manage_services != true {
-    $notify_services = []
-  } elsif $server == 'true' or $server == true {
-    if $client == 'true' or $client == true {
-      Class['sensu::service::server'] ~> Class['sensu::service::client']
-      $notify_services = [ Class['sensu::service::client'], Class['sensu::service::server'] ]
-    } else {
-      $notify_services = Class['sensu::service::server']
-    }
-  } elsif $client == 'true' or $client == true {
-    $notify_services = Class['sensu::service::client']
-  } else {
-    $notify_services = []
-  }
-
-  class { 'sensu::package':
-    version           => $version,
-    install_repo      => $install_repo,
-    notify_services   => $notify_services,
-    purge_config      => $purge_config,
-    use_embedded_ruby => $use_embedded_ruby,
-    rubyopt           => $rubyopt,
-    log_level         => $log_level,
-  }
-
-  class { 'sensu::rabbitmq':
-    ssl_cert_chain  => $rabbitmq_ssl_cert_chain,
-    ssl_private_key => $rabbitmq_ssl_private_key,
-    port            => $rabbitmq_port,
-    host            => $rabbitmq_host,
-    user            => $rabbitmq_user,
-    password        => $rabbitmq_password,
-    vhost           => $rabbitmq_vhost,
-    notify_services => $notify_services,
-  }
-
-  class { 'sensu::server':
-    redis_host          => $redis_host,
-    redis_port          => $redis_port,
-    api_host            => $api_host,
-    api_port            => $api_port,
-    dashboard_host      => $dashboard_host,
-    dashboard_port      => $dashboard_port,
-    dashboard_user      => $dashboard_user,
-    dashboard_password  => $dashboard_password,
-    enabled             => $server,
-    purge_config        => $purge_config,
-  }
-
-  class { 'sensu::service::server': enabled => $server }
-
-  class { 'sensu::client':
-    address       => $client_address,
-    subscriptions => $subscriptions,
-    client_name   => $client_name,
-    enabled       => $client,
-    safe_mode     => $safe_mode,
-    custom        => $client_custom,
-  }
-
-  class { 'sensu::service::client': enabled => $client }
 
   sensu::plugin { $plugins: install_path => '/etc/sensu/plugins'}
 

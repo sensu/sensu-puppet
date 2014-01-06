@@ -5,29 +5,42 @@ describe 'sensu::handler', :type => :define do
 
   context 'default (present)' do
 
-    let(:params) { { :type => 'pipe', :source => 'puppet:///somewhere/mycommand.rb' } }
+    let(:params) { {
+      :type     => 'pipe',
+      :command  => 'mycommand.rb',
+      :source   => 'puppet:///somewhere/mycommand.rb'
+    } }
     it { should contain_file('/etc/sensu/handlers/mycommand.rb').with_source('puppet:///somewhere/mycommand.rb')}
     it { should contain_sensu_handler('myhandler').with(
-      'ensure'      => 'present',
-      'type'        => 'pipe',
-      'command'     => '/etc/sensu/handlers/mycommand.rb',
-      'severities'  => ['ok', 'warning', 'critical', 'unknown']
+      :ensure      => 'present',
+      :type        => 'pipe',
+      :command     => '/etc/sensu/handlers/mycommand.rb',
+      :severities  => ['ok', 'warning', 'critical', 'unknown']
     ) }
   end
 
   context 'absent' do
     let(:facts) { { 'Class[sensu::service::server]' => true } }
-    let(:params) { { :type => 'pipe', :ensure => 'absent', :source => 'puppet:///somewhere/mycommand.rb' } }
+    let(:params) { {
+      :type => 'pipe',
+      :ensure => 'absent',
+      :source => 'puppet:///somewhere/mycommand.rb'
+    } }
     it { should contain_sensu_handler('myhandler').with_ensure('absent') }
   end
 
   context 'install path' do
-    let(:params) { { :install_path => '/etc', :source => 'puppet:///mycommand.rb'} }
+    let(:params) { {
+      :install_path => '/etc',
+      :source       => 'puppet:///mycommand.rb'
+    } }
     it { should contain_file('/etc/mycommand.rb') }
   end
 
   context 'command' do
-    let(:params) { { :command => '/somewhere/file/script.sh' } }
+    let(:params) { {
+      :command => '/somewhere/file/script.sh'
+    } }
 
     it { should contain_sensu_handler('myhandler').with_command('/somewhere/file/script.sh') }
   end
@@ -40,17 +53,17 @@ describe 'sensu::handler', :type => :define do
   end
 
   context 'handlers' do
-    let(:params) { { :handlers => ['mailer', 'hipchat'] } }
+    let(:params) { { :type => 'set', :handlers => ['mailer', 'hipchat'] } }
     it { should contain_sensu_handler('myhandler').with(
-      'ensure'      => 'present',
-      'type'        => 'pipe',
-      'handlers'    => ['mailer', 'hipchat'],
-      'severities'  => ['ok', 'warning', 'critical', 'unknown']
+      :ensure      => 'present',
+      :type        => 'set',
+      :handlers    => ['mailer', 'hipchat'],
+      :severities  => ['ok', 'warning', 'critical', 'unknown']
     ) }
   end
 
   context 'exchange' do
-    let(:params) { { :exchange => { 'type' => 'topic' } } }
+    let(:params) { { :type => 'amqp', :exchange => { 'type' => 'topic' } } }
 
     it { should contain_sensu_handler('myhandler').with_exchange({'type' => 'topic'}) }
   end
@@ -62,7 +75,7 @@ describe 'sensu::handler', :type => :define do
   end
 
   context 'config' do
-    let(:params) { { :config => {'param' => 'value'} } }
+    let(:params) { { :command => 'mycommand.rb', :config => {'param' => 'value'} } }
 
     it { should contain_sensu_handler('myhandler').with_config( {'param' => 'value' } ) }
   end
