@@ -54,14 +54,14 @@ describe 'sensu', :type => :class do
         let(:params) { { :client => true } }
         it { should contain_service('sensu-client').with(
           :ensure => 'running',
-          :enable => true,
+          :enable => true
         ) }
       end # default
 
       context 'not managing services' do
         let(:params) { {
           :client           => true,
-          :manage_services  => false,
+          :manage_services  => false
         } }
         it { should_not contain_service('sensu-client') }
       end # not managing service
@@ -86,14 +86,14 @@ describe 'sensu', :type => :class do
         let(:params) { { :client => false } }
         it { should contain_service('sensu-client').with(
           :ensure => 'stopped',
-          :enable => false,
+          :enable => false
         ) }
       end # managing services
 
       context 'no client, not managing services' do
         let(:params) { {
           :client           => false,
-          :manage_services  => false,
+          :manage_services  => false
         } }
         it { should_not contain_service('sensu-client') }
       end #no client, not managing services

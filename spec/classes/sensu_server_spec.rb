@@ -7,7 +7,7 @@ describe 'sensu' do
 
     it { should contain_service('sensu-server').with(
       :ensure => 'stopped',
-      :enable => false,
+      :enable => false
     ) }
   end # without server
 
@@ -16,7 +16,7 @@ describe 'sensu' do
 
     it { should contain_service('sensu-server').with(
       :ensure => 'running',
-      :enable => true,
+      :enable => true
     ) }
   end # with server
 
