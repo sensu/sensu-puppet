@@ -9,9 +9,9 @@ class sensu::client::service {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::manage_services_real {
+  if $sensu::manage_services {
 
-    case $sensu::client_real {
+    case $sensu::client {
       true: {
         $ensure = 'running'
         $enable = true

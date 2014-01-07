@@ -8,10 +8,14 @@ class sensu::repo::yum {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::install_repo_real  {
-    $url = $sensu::repo ? {
-      'unstable'  => 'http://repos.sensuapp.org/yum-unstable/el/$releasever/$basearch/',
-      default     => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/'
+  if $sensu::install_repo  {
+    if $sensu::repo_source {
+      $url = $sensu::repo_source
+    } else {
+      $url = $sensu::repo ? {
+        'unstable'  => 'http://repos.sensuapp.org/yum-unstable/el/$releasever/$basearch/',
+        default     => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/'
+      }
     }
 
     yumrepo { 'sensu':

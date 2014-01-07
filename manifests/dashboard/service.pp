@@ -8,9 +8,9 @@ class sensu::dashboard::service {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::manage_services_real {
+  if $sensu::manage_services {
 
-    case $sensu::dashboard_real {
+    case $sensu::dashboard {
       true: {
         $ensure = 'running'
         $enable = true

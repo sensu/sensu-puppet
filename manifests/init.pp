@@ -19,6 +19,10 @@
 #   Default: main
 #   Valid values: main, unstable
 #
+# [*repo_source*]
+#   String.  Location of the yum/apt repo.  Overrides the default location
+#   Default: undef
+#
 # [*client*]
 #   Boolean.  Include the sensu client
 #   Default: true
@@ -154,6 +158,7 @@ class sensu (
   $version                  = 'latest',
   $install_repo             = true,
   $repo                     = 'main',
+  $repo_source              = undef,
   $client                   = true,
   $server                   = false,
   $api                      = false,
@@ -186,14 +191,8 @@ class sensu (
   $log_level                = 'info',
 ){
 
-  $client_real = str2bool($client)
-  $server_real = str2bool($server)
-  $api_real = str2bool($api)
-  $dashboard_real = str2bool($dashboard)
-  $install_repo_real = str2bool($install_repo)
-  $purge_config_real = str2bool($purge_config)
-  $safe_mode_real = str2bool($safe_mode)
-  $manage_services_real = str2bool($manage_services)
+  validate_bool($client, $server, $api, $dashboard, $install_repo, $purge_config, $safe_mode, $manage_services)
+
   $subscriptions_real = any2array($subscriptions)
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -202,7 +201,6 @@ class sensu (
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($dashboard_port) { fail('dashboard_port must be an integer') }
-
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services

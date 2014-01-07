@@ -40,7 +40,7 @@ class sensu::package {
     owner   => 'sensu',
     group   => 'sensu',
     mode    => '0555',
-    purge   => $sensu::purge_config_real,
+    purge   => $sensu::purge_config,
     recurse => true,
     force   => true,
     require => Package['sensu'],

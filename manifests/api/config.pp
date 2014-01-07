@@ -8,7 +8,7 @@ class sensu::api::config {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::purge_config_real and !$sensu::server_real and !$sensu::api_real and !$sensu::dashboard_real {
+  if $sensu::purge_config and !$sensu::server and !$sensu::api and !$sensu::dashboard {
     $ensure = 'absent'
   } else {
     $ensure = 'present'
