@@ -70,7 +70,6 @@ define sensu::handler(
   validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$' ] )
   if $exchange { validate_hash($exchange) }
   if $socket { validate_hash($socket) }
-  if $handlers { validate_array($handlers) }
   validate_array($severities)
   if $source { validate_re($source, ['^puppet://'] ) }
 

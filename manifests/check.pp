@@ -55,7 +55,6 @@ define sensu::check(
 
   validate_re($ensure, ['^present$', '^absent$'] )
   validate_bool($standalone)
-  if $handlers { validate_array($handlers) }
   if !is_integer($interval) {
     fail("sensu::check{${name}}: interval must be an integer (got: ${interval})")
   }
