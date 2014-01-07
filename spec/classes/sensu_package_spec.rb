@@ -25,7 +25,7 @@ describe 'sensu' do
       } }
 
       it { should contain_package('sensu').with(
-        :ensure => '0.9.10',
+        :ensure => '0.9.10'
       ) }
     end
 

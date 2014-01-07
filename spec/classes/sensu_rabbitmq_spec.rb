@@ -60,7 +60,7 @@ describe 'sensu', :type => :class do
         :password        => 'sensupass',
         :vhost           => '/myvhost',
         :ssl_cert_chain  => '/etc/sensu/ssl/cert.pem',
-        :ssl_private_key => '/etc/sensu/ssl/key.pem',
+        :ssl_private_key => '/etc/sensu/ssl/key.pem'
       ) }
     end # when using key in puppet
 
