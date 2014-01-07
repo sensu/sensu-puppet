@@ -111,7 +111,7 @@
 #   Default: secret
 #
 # [*subscriptions*]
-#   String, Array of strings.  Default suscriptions used by the client
+#   Array of strings.  Default suscriptions used by the client
 #   Default: []
 #
 # [*client_address*]
@@ -193,7 +193,7 @@ class sensu (
 
   validate_bool($client, $server, $api, $dashboard, $install_repo, $purge_config, $safe_mode, $manage_services)
 
-  $subscriptions_real = any2array($subscriptions)
+  validate_array($subscriptions)
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )

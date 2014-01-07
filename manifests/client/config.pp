@@ -25,7 +25,7 @@ class sensu::client::config {
     ensure        => $ensure,
     client_name   => $sensu::client_name,
     address       => $sensu::client_address,
-    subscriptions => $sensu::subscriptions_real,
+    subscriptions => $sensu::subscriptions,
     safe_mode     => $sensu::safe_mode,
     custom        => $sensu::client_custom,
   }
