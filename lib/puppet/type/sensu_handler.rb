@@ -67,6 +67,10 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Handler specific data massager"
   end
 
+  newproperty(:filters, :array_matching => :all) do
+    desc "Handler filters"
+  end
+
   newproperty(:severities, :array_matching => :all) do
     desc "Severities applicable to this handler"
   end
