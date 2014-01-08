@@ -12,14 +12,20 @@ class sensu::repo::apt {
 
   if defined(apt::source) and defined(apt::key) {
 
-    $ensure = $sensu::install_repo_real ? {
+    $ensure = $sensu::install_repo ? {
       true    => 'present',
       default => 'absent'
     }
 
+    if $sensu::repo_source {
+      $url = $sensu::repo_source
+    } else {
+      $url = 'http://repos.sensuapp.org/apt'
+    }
+
     apt::source { 'sensu':
       ensure      => $ensure,
-      location    => 'http://repos.sensuapp.org/apt',
+      location    => $url,
       release     => 'sensu',
       repos       => $sensu::repo,
       include_src => false,

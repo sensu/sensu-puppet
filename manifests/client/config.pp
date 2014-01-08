@@ -8,7 +8,7 @@ class sensu::client::config {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::purge_config_real and !$sensu::client_real {
+  if $sensu::purge_config and !$sensu::client {
     $ensure = 'absent'
   } else {
     $ensure = 'present'
@@ -25,7 +25,7 @@ class sensu::client::config {
     ensure        => $ensure,
     client_name   => $sensu::client_name,
     address       => $sensu::client_address,
-    subscriptions => $sensu::subscriptions_real,
+    subscriptions => $sensu::subscriptions,
     safe_mode     => $sensu::safe_mode,
     custom        => $sensu::client_custom,
   }

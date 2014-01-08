@@ -58,6 +58,11 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with_repos('unstable') }
           end
 
+          context 'override repo url' do
+            let(:params) { { :repo_source => 'http://repo.mydomain.com/apt' } }
+            it { should contain_apt__source('sensu').with( :location => 'http://repo.mydomain.com/apt') }
+          end
+
           context 'install_repo => false' do
             let(:params) { { :install_repo => false, :repo => 'main' } }
             it { should contain_apt__source('sensu').with_ensure('absent') }
@@ -89,6 +94,11 @@ describe 'sensu' do
         context 'unstable repo' do
           let(:params) { { :repo => 'unstable' } }
           it { should contain_yumrepo('sensu').with(:baseurl => 'http://repos.sensuapp.org/yum-unstable/el/$releasever/$basearch/' )}
+        end
+
+        context 'override repo url' do
+          let(:params) { { :repo_source => 'http://repo.mydomain.com/yum' } }
+          it { should contain_yumrepo('sensu').with( :baseurl => 'http://repo.mydomain.com/yum') }
         end
 
         context 'install_repo => false' do

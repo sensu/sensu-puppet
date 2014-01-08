@@ -19,11 +19,11 @@
 #   Default: undef
 #
 # [*handlers*]
-#   String, Array of Strings.  Handlers to use when type=set
+#   Array of Strings.  Handlers to use when type=set
 #   Default: undef
 #
 # [*severities*]
-#   String, Array of Strings.  Severities handler is valid for
+#   Array of Strings.  Severities handler is valid for
 #   Default: ['ok', 'warning', 'critical', 'unknown']
 #   Valid values: ok, warning, critical, unknown
 #
@@ -70,8 +70,7 @@ define sensu::handler(
   validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$' ] )
   if $exchange { validate_hash($exchange) }
   if $socket { validate_hash($socket) }
-  $handlers_real = any2array($handlers)
-  $severities_real = any2array($severities)
+  validate_array($severities)
   if $source { validate_re($source, ['^puppet://'] ) }
 
   if $type == 'pipe' and $ensure != 'absent' and !$command and !$source and !$mutator {
@@ -128,8 +127,8 @@ define sensu::handler(
     ensure     => $ensure,
     type       => $type,
     command    => $command_real,
-    handlers   => $handlers_real,
-    severities => $severities_real,
+    handlers   => $handlers,
+    severities => $severities,
     exchange   => $exchange,
     socket     => $socket,
     mutator    => $mutator,

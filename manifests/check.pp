@@ -17,7 +17,7 @@
 #   Default: undef
 #
 # [*handlers*]
-#   String, Array of Strings.  Handlers to use for this check
+#   Array of Strings.  Handlers to use for this check
 #   Default: undef
 #
 # [*standalone*]
@@ -55,7 +55,6 @@ define sensu::check(
 
   validate_re($ensure, ['^present$', '^absent$'] )
   validate_bool($standalone)
-  $handlers_real = any2array($handlers)
   if !is_integer($interval) {
     fail("sensu::check{${name}}: interval must be an integer (got: ${interval})")
   }
@@ -81,7 +80,7 @@ define sensu::check(
     type                => $type,
     standalone          => $standalone,
     command             => $command,
-    handlers            => $handlers_real,
+    handlers            => $handlers,
     interval            => $interval,
     subscribers         => $subscribers,
     low_flap_threshold  => $low_flap_threshold,
