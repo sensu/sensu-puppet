@@ -38,6 +38,14 @@ Puppet::Type.newtype(:sensu_api_config) do
     defaultto 'localhost'
   end
 
+  newproperty(:user) do
+    desc "The username used for clients to authenticate against the Sensu API"
+  end
+
+  newproperty(:password) do
+    desc "The password use for client authentication against the Sensu API"
+  end
+
   autorequire(:package) do
     ['sensu']
   end
