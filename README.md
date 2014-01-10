@@ -198,6 +198,37 @@ This will create the following check definition for Sensu
       }
     }
 
+##  Handler configuration
+
+    sensu::handler {
+      'handler_foobar':
+        command => '/etc/sensu/handlers/foobar.py',
+        type    => 'pipe',
+        config  => {
+          'foobar_setting' => 'value',
+      }
+    }
+
+This will create the following handler definition for Sensu (server)
+
+     {
+       "handler_foobar": {
+         "foobar_setting": "value"
+       },
+       "handlers": {
+          "handler_foobar": {
+            "command": "/etc/sensu/plugins/foobar.py",
+            "severities": [
+              "ok",
+              "warning",
+              "critical",
+              "unknown"
+            ],
+          "type": "pipe"
+          }
+       }
+     }
+
 ### Disable Service Management
 
 If you'd prefer to use an external service management tool such as DaemonTools or SupervisorD,
