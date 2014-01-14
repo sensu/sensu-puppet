@@ -18,13 +18,15 @@ class sensu::api::config {
     ensure  => $ensure,
     owner   => 'sensu',
     group   => 'sensu',
-    mode    => '0444',
+    mode    => '0440',
   }
 
   sensu_api_config { $::fqdn:
-    ensure  => $ensure,
-    host    => $sensu::api_host,
-    port    => $sensu::api_port,
+    ensure   => $ensure,
+    host     => $sensu::api_host,
+    port     => $sensu::api_port,
+    user     => $sensu::api_user,
+    password => $sensu::api_password,
   }
 
 }

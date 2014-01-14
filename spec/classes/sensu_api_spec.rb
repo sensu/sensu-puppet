@@ -56,6 +56,8 @@ describe 'sensu', :type => :class do
           :host   => 'localhost',
           :port   => 4567
         ) }
+        it { should contain_sensu_api_config('testhost.domain.com').without_api_user }
+        it { should contain_sensu_api_config('testhost.domain.com').without_api_password }
       end # defaults
 
       context 'set config params' do
@@ -68,6 +70,25 @@ describe 'sensu', :type => :class do
           :ensure => 'present',
           :host   => 'sensuapi.domain.com',
           :port   => 5678
+        ) }
+        it { should contain_sensu_api_config('testhost.domain.com').without_api_user }
+        it { should contain_sensu_api_config('testhost.domain.com').without_api_password }
+      end # set config params
+
+      context 'set config params including authentication' do
+        let(:params) { {
+          :api          => true,
+          :api_host     => 'sensuapi.domain.com',
+          :api_port     => 5678,
+          :api_user     => 'test_user',
+          :api_password => 'test_password'
+        } }
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :ensure   => 'present',
+          :host     => 'sensuapi.domain.com',
+          :port     => 5678,
+          :user     => 'test_user',
+          :password => 'test_password'
         ) }
       end # set config params
 
