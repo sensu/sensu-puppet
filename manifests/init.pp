@@ -48,6 +48,11 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*manage_user*]
+#   Boolean.  Manage the sensu user with puppet
+#   Default: true
+#   Valid values: true, false
+#
 # [*rabbitmq_port*]
 #   Integer.  Rabbitmq port to be used by sensu
 #   Default: 5671
@@ -164,6 +169,7 @@ class sensu (
   $api                      = false,
   $dashboard                = false,
   $manage_services          = true,
+  $manage_user              = true,
   $rabbitmq_port            = 5671,
   $rabbitmq_host            = 'localhost',
   $rabbitmq_user            = 'sensu',
