@@ -1,7 +1,12 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
 
-require 'puppet_x/sensu/to_type'
+begin
+  require 'puppet_x/sensu/to_type'
+rescue LoadError => e
+  libdir = Pathname.new(__FILE__).parent.parent.parent
+  require File.join(libdir, 'puppet_x/sensu/to_type')
+end
 
 Puppet::Type.type(:sensu_filter).provide(:json) do
   confine :feature => :json

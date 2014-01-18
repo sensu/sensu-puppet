@@ -75,7 +75,7 @@ describe 'sensu::check', :type => :define do
         'command'     => '/etc/sensu/somecommand.rb',
         'handlers'    => '',
         'interval'    => '60',
-        'subscribers' => ''
+        'subscribers' => []
       ) }
 
       it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foo_bar.json') }
