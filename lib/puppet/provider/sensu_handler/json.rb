@@ -93,6 +93,18 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     @conf['handlers'][resource[:name]]['mutator'] = value
   end
 
+  def filters
+    @conf['filters'][resource[:name]]['filters']
+  end
+
+  def filters=(value)
+    if value.is_a?(Array)
+      @conf['filters'][resource[:name]]['filters'] = value
+    else
+      @conf['filters'][resource[:name]]['filters'] = [ value ]
+    end
+  end
+
   def severities
     @conf['handlers'][resource[:name]]['severities']
   end

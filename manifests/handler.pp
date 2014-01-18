@@ -37,6 +37,10 @@
 #   Keys: host, port
 #   Default: undef
 #
+# [*filters*]
+#   Hash.  Filter command to apply
+#   Default: undef
+#
 # [*source*]
 #   String.  Source of the puppet handler
 #   Default: undef
@@ -59,6 +63,7 @@ define sensu::handler(
   $exchange     = undef,
   $mutator      = undef,
   $socket       = undef,
+  $filters      = undef,
   # Used to install the handler
   $source       = undef,
   $install_path = '/etc/sensu/handlers',
@@ -132,6 +137,7 @@ define sensu::handler(
     exchange   => $exchange,
     socket     => $socket,
     mutator    => $mutator,
+    filters    => $filters,
     config     => $config,
     notify     => $notify_services,
     require    => File['/etc/sensu/conf.d/handlers'],
