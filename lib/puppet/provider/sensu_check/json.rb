@@ -135,7 +135,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def timeout=(value)
-    conf['checks'][resource[:name]]['timeout'] = value.to_i
+    conf['checks'][resource[:name]]['timeout'] = value.to_f
   end
 
   def aggregate

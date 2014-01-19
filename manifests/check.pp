@@ -96,8 +96,8 @@ define sensu::check(
   if $high_flap_threshold and !is_integer($high_flap_threshold) {
     fail("sensu::check{${name}}: high_flap_threshold must be an integer (got: ${high_flap_threshold})")
   }
-  if $timeout and !is_integer($timeout) {
-    fail("sensu::check{${name}}: timeout must be an integer (got: ${timeout})")
+  if $timeout and !is_float($timeout) {
+    fail("sensu::check{${name}}: timeout must be an float (got: ${timeout})")
   }
   if $occurrences and !is_integer($occurrences) {
     fail("sensu::check{${name}}: timeout must be an integer (got: ${occurrences})")
