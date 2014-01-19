@@ -1,7 +1,7 @@
 begin
   require 'puppet_x/sensu/to_type'
 rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
+  libdir = Pathname.new(__FILE__).parent.parent.parent.parent
   require File.join(libdir, 'puppet_x/sensu/to_type')
 end
 Puppet::Type.newtype(:sensu_client_config) do
