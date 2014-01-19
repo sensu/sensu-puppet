@@ -37,6 +37,8 @@ or gem on all your nodes.
       class { 'sensu':
         rabbitmq_password => 'secret',
         server            => true,
+        dashboard         => true,
+        api               => true,
         plugins           => [
           'puppet:///data/sensu/plugins/ntp.rb',
           'puppet:///data/sensu/plugins/postfix.rb'
@@ -124,10 +126,15 @@ A usage example is shown below.
 
 ### Sensu server
 
+Each component of Sensu can be controlled separately.  The server components
+are managed with the server, dashboard, and api parameters.
+
     node 'sensu-server.foo.com' {
       class { 'sensu':
         rabbitmq_password => 'secret',
         server            => true,
+        dashboard         => true,
+        api               => true,
         plugins           => [
           'puppet:///data/sensu/plugins/ntp.rb',
           'puppet:///data/sensu/plugins/postfix.rb'
