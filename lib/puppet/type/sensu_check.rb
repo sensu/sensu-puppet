@@ -109,14 +109,6 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Whether check is unpublished"
   end
 
-  newproperty(:occurrences) do
-    desc "Trigger handler notification only after X occurrences"
-  end
-
-  newproperty(:refresh) do
-    desc "Trigger repeated handler notification only after X seconds"
-  end
-
   autorequire(:package) do
     ['sensu']
   end

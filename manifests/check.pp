@@ -58,14 +58,6 @@
 #   of commands that are not actually 'checks' per say, but actually arbitrary commands for remediation
 #   Default: undef
 #
-# [*occurrences*]
-#   Integer.  Handler specific. Trigger handler notification only each X occurrences of event
-#   Default: undef
-#
-# [*refresh*]
-#   Integer.  Handler specific. Trigger repeated handler notification only after X seconds of refresh
-#   Default: undef
-#
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -80,8 +72,6 @@ define sensu::check(
   $aggregate           = undef,
   $handle              = undef,
   $publish             = undef,
-  $occurrences         = undef,
-  $refresh             = undef,
   $custom              = undef,
 ) {
 
@@ -98,12 +88,6 @@ define sensu::check(
   }
   if $timeout and !is_float($timeout) {
     fail("sensu::check{${name}}: timeout must be an float (got: ${timeout})")
-  }
-  if $occurrences and !is_integer($occurrences) {
-    fail("sensu::check{${name}}: timeout must be an integer (got: ${occurrences})")
-  }
-  if $refresh and !is_integer($refresh) {
-    fail("sensu::check{${name}}: timeout must be an integer (got: ${refresh})")
   }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
@@ -130,8 +114,6 @@ define sensu::check(
     aggregate           => $aggregate,
     handle              => $handle,
     publish             => $publish,
-    occurrences         => $occurrences,
-    refresh             => $refresh,
     custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
     notify              => [ Class['sensu::client::service'], Class['sensu::server::service'] ],

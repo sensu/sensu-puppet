@@ -30,9 +30,7 @@ describe 'sensu::check', :type => :define do
         :timeout             => 0.5,
         :aggregate           => true,
         :handle              => true,
-        :publish             => true,
-        :occurrences         => 3,
-        :refresh             => 1800
+        :publish             => true
       } }
 
       it { should contain_sensu_check('mycheck').with(
@@ -48,9 +46,7 @@ describe 'sensu::check', :type => :define do
         :timeout             => 0.5,
         :aggregate           => true,
         :handle              => true,
-        :publish             => true,
-        :occurrences         => 3,
-        :refresh             => 1800
+        :publish             => true
       ) }
     end
 

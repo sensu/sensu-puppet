@@ -48,13 +48,11 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
     self.handle = resource[:handle] unless resource[:handle].nil?
     self.publish = resource[:publish] unless resource[:publish].nil?
-    self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
-    self.refresh = resource[:refresh] unless resource[:refresh].nil?
     self.custom = resource[:custom] unless resource[:custom].nil?
   end
 
   def check_args
-    ['handlers','command','interval','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','occurrences','refresh','custom']
+    ['handlers','command','interval','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','custom']
   end
 
   def custom
@@ -202,22 +200,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     else
       conf['checks'][resource[:name]]['publish'] = value
     end
-  end
-
-  def occurrences
-    conf['checks'][resource[:name]]['occurrences'].to_s
-  end
-
-  def occurrences=(value)
-    conf['checks'][resource[:name]]['occurrences'] = value.to_i
-  end
-
-  def refresh
-    conf['checks'][resource[:name]]['refresh'].to_s
-  end
-
-  def refresh=(value)
-    conf['checks'][resource[:name]]['refresh'] = value.to_i
   end
 
   def standalone
