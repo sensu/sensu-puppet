@@ -18,15 +18,19 @@ describe 'sensu::check', :type => :define do
 
     context 'setting params' do
       let(:params) { {
-        :command              => '/etc/sensu/command2.rb',
-        :handlers             => ['/handler1', '/handler2'],
-        :interval             => 10,
-        :subscribers          => ['all'],
-        :custom               => { 'a' => 'b', 'array' => [ 'c', 'd']},
-        :type                 => 'metric',
-        :standalone           => true,
-        :low_flap_threshold   => 10,
-        :high_flap_threshold  => 15
+        :command             => '/etc/sensu/command2.rb',
+        :handlers            => ['/handler1', '/handler2'],
+        :interval            => 10,
+        :subscribers         => ['all'],
+        :custom              => { 'a' => 'b', 'array' => [ 'c', 'd']},
+        :type                => 'metric',
+        :standalone          => true,
+        :low_flap_threshold  => 10,
+        :high_flap_threshold => 15,
+        :timeout             => 0.5,
+        :aggregate           => true,
+        :handle              => true,
+        :publish             => true
       } }
 
       it { should contain_sensu_check('mycheck').with(
@@ -38,7 +42,11 @@ describe 'sensu::check', :type => :define do
         :type                => 'metric',
         :standalone          => true,
         :low_flap_threshold  => 10,
-        :high_flap_threshold => 15
+        :high_flap_threshold => 15,
+        :timeout             => 0.5,
+        :aggregate           => true,
+        :handle              => true,
+        :publish             => true
       ) }
     end
 

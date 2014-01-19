@@ -40,17 +40,39 @@
 #   Integer.  Flap detection - see Nagios Flap Detection: http://nagios.sourceforge.net/docs/3_0/flapping.html
 #   Default: undef
 #
+# [*timeout*]
+#   Integer.  Check timeout in seconds, after it fails
+#   Default: undef
+#
+# [*aggregate*]
+#   Boolean.  Aggregates, preventing event floods. Set 'aggregate:true and 'handle':false, this prevents the
+#   server from sending to a handler, and makes the aggregated results available under /aggregates in the REST API
+#   Default: undef
+#
+# [*handle*]
+#   Boolean.  When true, check will not be sent to handlers
+#   Default: undef
+#
+# [*publish*]
+#   Boolean.  Unpublished checks. Prevents the check from being triggered on clients. This allows for the definition
+#   of commands that are not actually 'checks' per say, but actually arbitrary commands for remediation
+#   Default: undef
+#
 define sensu::check(
   $command,
-  $ensure               = 'present',
-  $type                 = undef,
-  $handlers             = undef,
-  $standalone           = true,
-  $interval             = 60,
-  $subscribers          = [],
-  $low_flap_threshold   = undef,
-  $high_flap_threshold  = undef,
-  $custom               = undef,
+  $ensure              = 'present',
+  $type                = undef,
+  $handlers            = undef,
+  $standalone          = true,
+  $interval            = 60,
+  $subscribers         = [],
+  $low_flap_threshold  = undef,
+  $high_flap_threshold = undef,
+  $timeout             = undef,
+  $aggregate           = undef,
+  $handle              = undef,
+  $publish             = undef,
+  $custom              = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -63,6 +85,9 @@ define sensu::check(
   }
   if $high_flap_threshold and !is_integer($high_flap_threshold) {
     fail("sensu::check{${name}}: high_flap_threshold must be an integer (got: ${high_flap_threshold})")
+  }
+  if $timeout and !is_float($timeout) {
+    fail("sensu::check{${name}}: timeout must be an float (got: ${timeout})")
   }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
@@ -85,6 +110,10 @@ define sensu::check(
     subscribers         => $subscribers,
     low_flap_threshold  => $low_flap_threshold,
     high_flap_threshold => $high_flap_threshold,
+    timeout             => $timeout,
+    aggregate           => $aggregate,
+    handle              => $handle,
+    publish             => $publish,
     custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
     notify              => [ Class['sensu::client::service'], Class['sensu::server::service'] ],
