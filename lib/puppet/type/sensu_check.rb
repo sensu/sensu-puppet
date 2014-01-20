@@ -93,6 +93,22 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(:true, :false)
   end
 
+  newproperty(:timeout) do
+    desc "Check timeout in seconds, after it fails"
+  end
+
+  newproperty(:aggregate) do
+    desc "Whether check is aggregate"
+  end
+
+  newproperty(:handle) do
+    desc "Whether check event send to a handler"
+  end
+
+  newproperty(:publish) do
+    desc "Whether check is unpublished"
+  end
+
   autorequire(:package) do
     ['sensu']
   end
