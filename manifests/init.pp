@@ -55,7 +55,7 @@
 #
 # [*rabbitmq_port*]
 #   Integer.  Rabbitmq port to be used by sensu
-#   Default: 5671
+#   Default: 5672
 #
 # [*rabbitmq_host*]
 #   String.  Host running rabbitmq for sensu
@@ -178,7 +178,7 @@ class sensu (
   $dashboard                = false,
   $manage_services          = true,
   $manage_user              = true,
-  $rabbitmq_port            = 5671,
+  $rabbitmq_port            = 5672,
   $rabbitmq_host            = 'localhost',
   $rabbitmq_user            = 'sensu',
   $rabbitmq_password        = '',

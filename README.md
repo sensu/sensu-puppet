@@ -289,7 +289,7 @@ monitoring platforms, you could do something like:
 
 apache/manifests/service.pp
 
-$monitoring = hiera('monitoring', '')
+    $monitoring = hiera('monitoring', '')
 
     case $monitoring {
       'sensu':  { include apache::monitoring::sensu }
