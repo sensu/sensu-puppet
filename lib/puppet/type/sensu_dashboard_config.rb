@@ -28,7 +28,7 @@ Puppet::Type.newtype(:sensu_dashboard_config) do
   newproperty(:port) do
     desc "The port that the Sensu Dashboard should listen on"
 
-    defaultto '5672'
+    defaultto '8080'
   end
 
   newproperty(:host) do
