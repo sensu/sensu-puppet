@@ -38,7 +38,7 @@ define sensu::filter (
     owner   => 'sensu',
     group   => 'sensu',
     mode    => '0444',
-    before  => Sensu_client_subscription[$name],
+    before  => Sensu_filter[$name],
   }
 
   sensu_filter { $name:
