@@ -56,8 +56,10 @@ Puppet::Type.newtype(:sensu_filter) do
     defaultto {}
   end
 
-  newproperty(:negate) do
+  newproperty(:negate, :boolean => true) do
     desc ""
+
+    newvalues(:true, :false)
   end
 
   autorequire(:package) do

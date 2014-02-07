@@ -32,6 +32,7 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     self.handlers = resource[:handlers] unless resource[:handlers].nil?
     self.mutator = resource[:mutator] unless resource[:mutator].nil?
     self.severities = resource[:severities] unless resource[:severities].nil?
+    self.filters = resource[:filters] unless resource[:filters].nil?
   end
 
   def destroy
@@ -99,9 +100,9 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
 
   def filters=(value)
     if value.is_a?(Array)
-      @conf['filters'][resource[:name]]['filters'] = value
+      @conf['handlers'][resource[:name]]['filters'] = value
     else
-      @conf['filters'][resource[:name]]['filters'] = [ value ]
+      @conf['handlers'][resource[:name]]['filters'] = [ value ]
     end
   end
 
