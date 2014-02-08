@@ -50,7 +50,7 @@
 #   Default: undef
 #
 # [*handle*]
-#   Boolean.  When true, check will not be sent to handlers
+#   Boolean.  When false, check will not be sent to handlers
 #   Default: undef
 #
 # [*publish*]
