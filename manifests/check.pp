@@ -86,7 +86,7 @@ define sensu::check(
   if $high_flap_threshold and !is_integer($high_flap_threshold) {
     fail("sensu::check{${name}}: high_flap_threshold must be an integer (got: ${high_flap_threshold})")
   }
-  if $timeout and !integer($timeout) {
+  if $timeout and !is_integer($timeout) {
     fail("sensu::check{${name}}: timeout must be an integer (got: ${timeout})")
   }
 
