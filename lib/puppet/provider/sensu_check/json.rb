@@ -132,8 +132,13 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]]['timeout'].to_s
   end
 
+  def trim num
+    i, f = num.to_i, num.to_f
+    i == f ? i : f
+  end
+
   def timeout=(value)
-    conf['checks'][resource[:name]]['timeout'] = value.to_f
+    conf['checks'][resource[:name]]['timeout'] = trim(value)
   end
 
   def aggregate
