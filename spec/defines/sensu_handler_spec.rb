@@ -68,6 +68,19 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_exchange({'type' => 'topic'}) }
   end
 
+  context 'tcp' do
+    let(:params) {
+      {
+        :type => 'tcp',
+        :socket => {
+          'host' => '192.168.23.23',
+          'port' => '2003'
+        }
+      }
+    }
+    it { should contain_sensu_handler('myhandler').with_socket({'host' => '192.168.23.23', 'port' => '2003'}) }
+  end
+
   context 'mutator' do
     let(:params) { { :mutator => 'only_check_output' } }
 
