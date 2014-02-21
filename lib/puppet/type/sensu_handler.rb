@@ -44,20 +44,12 @@ Puppet::Type.newtype(:sensu_handler) do
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
     end
 
-    def should_to_s(hash = @should)
+    def should_to_s(hash = @should[0])
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
     end
 
     def insync?(is)
-      if defined? @should[0]
-        if is['port'] == (@should[0]['port'] = @should[0]['port'].to_i)
-          true
-        else
-          false
-        end
-      else
-        true
-      end
+      is_to_s(is) == should_to_s
     end
 
     defaultto {}
