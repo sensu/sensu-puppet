@@ -32,8 +32,10 @@ describe 'sensu', :type => :class do
 
     context 'managing services' do
       it { should contain_service('sensu-api').with(
-        :ensure => 'stopped',
-        :enable => false
+        :ensure     => 'stopped',
+        :enable     => false,
+        :hasstatus  => true,
+        :hasrestart => true,
       )}
     end # managing services
 
@@ -111,8 +113,10 @@ describe 'sensu', :type => :class do
       context 'managing services' do
         let(:params) { { :api => true } }
         it { should contain_service('sensu-api').with(
-          :ensure => 'running',
-          :enable => true
+          :ensure     => 'running',
+          :enable     => true,
+          :hasstatus  => true,
+          :hasrestart => true,
         )}
       end # managing services
 

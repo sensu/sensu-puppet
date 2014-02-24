@@ -22,9 +22,11 @@ class sensu::server::service {
     }
 
     service { 'sensu-server':
-      ensure    => $ensure,
-      enable    => $enable,
-      subscribe => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'], Class['sensu::rabbitmq::config'] ],
+      ensure     => $ensure,
+      enable     => $enable,
+      hasstatus  => true,
+      hasrestart => true,
+      subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'], Class['sensu::rabbitmq::config'] ],
     }
   }
 }

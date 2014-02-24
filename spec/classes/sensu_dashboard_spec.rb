@@ -6,8 +6,10 @@ describe 'sensu', :type => :class do
 
     context 'managing services' do
       it { should contain_service('sensu-dashboard').with(
-        :ensure => 'stopped',
-        :enable => false
+        :ensure     => 'stopped',
+        :enable     => false,
+        :hasstatus  => true,
+        :hasrestart => true,
       )}
     end # managing services
 
@@ -21,7 +23,7 @@ describe 'sensu', :type => :class do
         :purge_config => true,
         :server       => false,
         :api          => false,
-        :dashboard    => false
+        :dashboard    => false,
       } }
 
       it { should contain_file('/etc/sensu/conf.d/dashboard.json').with_ensure('absent') }
@@ -79,8 +81,10 @@ describe 'sensu', :type => :class do
       context 'managing services' do
         let(:params) { { :dashboard => true } }
         it { should contain_service('sensu-dashboard').with(
-          :ensure => 'running',
-          :enable => true
+          :ensure     => 'running',
+          :enable     => true,
+          :hasstatus  => true,
+          :hasrestart => true,
         )}
       end # managing services
 
