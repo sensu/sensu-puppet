@@ -8,7 +8,6 @@ describe 'sensu' do
     it { should contain_service('sensu-server').with(
       :ensure     => 'stopped',
       :enable     => false,
-      :hasstatus  => true,
       :hasrestart => true,
     ) }
   end # without server
@@ -19,7 +18,6 @@ describe 'sensu' do
     it { should contain_service('sensu-server').with(
       :ensure     => 'running',
       :enable     => true,
-      :hasstatus  => true,
       :hasrestart => true,
     ) }
   end # with server

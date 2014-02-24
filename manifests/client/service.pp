@@ -25,7 +25,6 @@ class sensu::client::service {
     service { 'sensu-client':
       ensure     => $ensure,
       enable     => $enable,
-      hasstatus  => true,
       hasrestart => true,
       subscribe  => [Class['sensu::package'], Class['sensu::client::config'], Class['sensu::rabbitmq::config'] ],
     }

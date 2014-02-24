@@ -24,7 +24,6 @@ class sensu::dashboard::service {
     service { 'sensu-dashboard':
       ensure     => $ensure,
       enable     => $enable,
-      hasstatus  => true,
       hasrestart => true,
       subscribe  => [ Class['sensu::package'], Class['sensu::dashboard::config'], Class['sensu::api::config'], Class['sensu::redis::config'] ]
     }

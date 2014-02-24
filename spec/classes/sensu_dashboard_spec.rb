@@ -8,7 +8,6 @@ describe 'sensu', :type => :class do
       it { should contain_service('sensu-dashboard').with(
         :ensure     => 'stopped',
         :enable     => false,
-        :hasstatus  => true,
         :hasrestart => true,
       )}
     end # managing services
@@ -83,7 +82,6 @@ describe 'sensu', :type => :class do
         it { should contain_service('sensu-dashboard').with(
           :ensure     => 'running',
           :enable     => true,
-          :hasstatus  => true,
           :hasrestart => true,
         )}
       end # managing services
