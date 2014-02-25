@@ -55,7 +55,7 @@ describe 'sensu', :type => :class do
         it { should contain_service('sensu-client').with(
           :ensure     => 'running',
           :enable     => true,
-          :hasrestart => true,
+          :hasrestart => true
         ) }
       end # default
 
@@ -88,7 +88,7 @@ describe 'sensu', :type => :class do
         it { should contain_service('sensu-client').with(
           :ensure     => 'stopped',
           :enable     => false,
-          :hasrestart => true,
+          :hasrestart => true
         ) }
       end # managing services
 
