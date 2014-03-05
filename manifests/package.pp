@@ -2,46 +2,48 @@
 #
 # Installs the Sensu packages
 #
-# == Parameters
-#
+class sensu::package {
 
-class sensu::package(
-  $version          = 'latest',
-  $notify_services  = [],
-  $install_repo     = 'true',
-  $purge_config     = 'false',
-  $use_embedded_ruby = 'true',
-  $rubyopt          = '',
-) {
+  if $caller_module_name != $module_name {
+    fail("Use of private class ${name} by ${caller_module_name}")
+  }
 
-  if $install_repo == 'true' or $install_repo == true {
-    include sensu::repo
+  case $::operatingsystem {
+
+    'Debian','Ubuntu': {
+      class { 'sensu::repo::apt': }
+    }
+
+    'Fedora','RedHat','Centos': {
+      class { 'sensu::repo::yum': }
+    }
+
+    default: { alert("${::operatingsystem} not supported yet") }
+
   }
 
   package { 'sensu':
-    ensure  => $version,
-    notify  => $notify_services
+    ensure  => $sensu::version,
   }
 
-  if $purge_config {
-    file { '/etc/sensu/conf.d':
-      ensure  => directory,
-      purge   => true,
-      recurse => true,
-      force   => true,
-      require => Package['sensu']
-    }
-  }
-
-  file { 'sensu':
+  file { '/etc/default/sensu':
     ensure  => file,
-    path    => '/etc/default/sensu',
     content => template("${module_name}/sensu.erb"),
     owner   => '0',
     group   => '0',
-    mode    => '0644',
+    mode    => '0444',
     require => Package['sensu'],
-    notify  => $notify_services,
+  }
+
+  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters' ]:
+    ensure  => directory,
+    owner   => 'sensu',
+    group   => 'sensu',
+    mode    => '0555',
+    purge   => $sensu::purge_config,
+    recurse => true,
+    force   => true,
+    require => Package['sensu'],
   }
 
   file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
@@ -52,17 +54,19 @@ class sensu::package(
     require => Package['sensu'],
   }
 
-  user { 'sensu':
-    ensure  => 'present',
-    system  => true,
-    home    => '/opt/sensu',
-    shell   => '/bin/false',
-    comment => 'Sensu Monitoring Framework',
-  }
+  if $sensu::manage_user {
+    user { 'sensu':
+      ensure  => 'present',
+      system  => true,
+      home    => '/opt/sensu',
+      shell   => '/bin/false',
+      comment => 'Sensu Monitoring Framework',
+    }
 
-  group { 'sensu':
-    ensure  => 'present',
-    system  => true,
+    group { 'sensu':
+      ensure  => 'present',
+      system  => true,
+    }
   }
 
   file { '/etc/sensu/config.json': ensure => absent }

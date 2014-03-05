@@ -4,15 +4,11 @@ rescue LoadError => e
   libdir = Pathname.new(__FILE__).parent.parent.parent
   require File.join(libdir, 'puppet_x/sensu/to_type')
 end
-Puppet::Type.newtype(:sensu_client_config) do
+Puppet::Type.newtype(:sensu_filter) do
   @doc = ""
 
   def initialize(*args)
     super
-
-    self[:notify] = [
-      "Service[sensu-client]",
-    ].select { |ref| catalog.resource(ref) }
   end
 
   ensurable do
@@ -28,28 +24,12 @@ Puppet::Type.newtype(:sensu_client_config) do
   end
 
   newparam(:name) do
-    desc "The name of the host"
+    desc "The name of the filter."
   end
 
-  newproperty(:client_name) do
+
+  newparam(:attributes) do
     desc ""
-  end
-
-  newproperty(:address) do
-    desc ""
-  end
-
-  newproperty(:subscriptions, :array_matching => :all) do
-    desc ""
-  end
-
-  newproperty(:safe_mode, :boolean => true) do
-    desc "Require checks to be defined on server and client"
-    newvalues(:true, :false)
-  end
-
-  newproperty(:custom) do
-    desc "Custom client variables"
 
     include Puppet_X::Sensu::Totype
 
@@ -74,6 +54,12 @@ Puppet::Type.newtype(:sensu_client_config) do
     end
 
     defaultto {}
+  end
+
+  newproperty(:negate, :boolean => true) do
+    desc ""
+
+    newvalues(:true, :false)
   end
 
   autorequire(:package) do

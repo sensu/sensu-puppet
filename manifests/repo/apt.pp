@@ -1,22 +1,33 @@
 # = Class: sensu::repo::apt
 #
-# Adds Sensu repo to Apt
+# Adds the Sensu repo to Apt
 #
 # == Parameters
 #
+class sensu::repo::apt {
 
-class sensu::repo::apt (
-    $ensure = 'present',
-    $repo   = 'main'
-  ) {
+  if $caller_module_name != $module_name {
+    fail("Use of private class ${name} by ${caller_module_name}")
+  }
 
   if defined(apt::source) and defined(apt::key) {
 
+    $ensure = $sensu::install_repo ? {
+      true    => 'present',
+      default => 'absent'
+    }
+
+    if $sensu::repo_source {
+      $url = $sensu::repo_source
+    } else {
+      $url = 'http://repos.sensuapp.org/apt'
+    }
+
     apt::source { 'sensu':
       ensure      => $ensure,
-      location    => 'http://repos.sensuapp.org/apt',
+      location    => $url,
       release     => 'sensu',
-      repos       => $repo,
+      repos       => $sensu::repo,
       include_src => false,
       before      => Package['sensu'],
     }
@@ -26,6 +37,8 @@ class sensu::repo::apt (
       key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg',
     }
 
-  } else { fail('This class requires puppet-apt module') }
+  } else {
+    fail('This class requires puppet-apt module')
+  }
 
 }

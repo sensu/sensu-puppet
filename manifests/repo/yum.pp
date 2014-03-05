@@ -1,26 +1,31 @@
 # = Class: sensu::repo::yum
 #
-# Adds Sensu YUM repo support
+# Adds the Sensu YUM repo support
 #
-# == Parameters
-#
+class sensu::repo::yum {
 
-class sensu::repo::yum (
-    $ensure = 'present'
-  ) {
-
-  $enabled = $ensure ? {
-    'present' => 1,
-    default   => 'absent'
+  if $caller_module_name != $module_name {
+    fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  yumrepo { 'sensu':
-    enabled  => $enabled,
-    baseurl  => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/',
-    gpgcheck => 0,
-    name     => 'sensu',
-    descr    => 'sensu',
-    before   => Package['sensu'],
+  if $sensu::install_repo  {
+    if $sensu::repo_source {
+      $url = $sensu::repo_source
+    } else {
+      $url = $sensu::repo ? {
+        'unstable'  => 'http://repos.sensuapp.org/yum-unstable/el/$releasever/$basearch/',
+        default     => 'http://repos.sensuapp.org/yum/el/$releasever/$basearch/'
+      }
+    }
+
+    yumrepo { 'sensu':
+      enabled  => 1,
+      baseurl  => $url,
+      gpgcheck => 0,
+      name     => 'sensu',
+      descr    => 'sensu',
+      before   => Package['sensu'],
+    }
   }
 
 }

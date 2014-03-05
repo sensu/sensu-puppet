@@ -1,3 +1,9 @@
+begin
+  require 'puppet_x/sensu/to_type'
+rescue LoadError => e
+  libdir = Pathname.new(__FILE__).parent.parent.parent
+  require File.join(libdir, 'puppet_x/sensu/to_type')
+end
 Puppet::Type.newtype(:sensu_check) do
   @doc = ""
 
@@ -52,6 +58,7 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:custom) do
     desc "Custom check variables"
+    include Puppet_X::Sensu::Totype
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -73,19 +80,6 @@ Puppet::Type.newtype(:sensu_check) do
       end
     end
 
-    def to_type(value)
-      case value
-      when true, 'true', 'True', :true
-        true
-      when false, 'false', 'False', :false
-        false
-      when /^([0-9])+$/
-        value.to_i
-      else
-        value
-      end
-    end
-
     defaultto {}
   end
 
@@ -95,6 +89,28 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:standalone, :boolean => true) do
     desc "Whether this is a standalone check"
+
+    newvalues(:true, :false)
+  end
+
+  newproperty(:timeout) do
+    desc "Check timeout in seconds, after it fails"
+  end
+
+  newproperty(:aggregate, :boolean => true) do
+    desc "Whether check is aggregate"
+
+    newvalues(:true, :false)
+  end
+
+  newproperty(:handle, :boolean => true) do
+    desc "Whether check event send to a handler"
+
+    newvalues(:true, :false)
+  end
+
+  newproperty(:publish, :boolean => true) do
+    desc "Whether check is unpublished"
 
     newvalues(:true, :false)
   end

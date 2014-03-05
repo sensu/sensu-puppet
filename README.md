@@ -5,7 +5,7 @@ Tested with Travis CI
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
 ## Upgrade note
-Version 0.5.0 and later are incompatible with previous versions of the
+Versions prior to 1.0.0 are incompatible with previous versions of the
 Sensu-Puppet module.
 
 ## Installation
@@ -17,26 +17,34 @@ Sensu-Puppet module.
 - RabbitMQ server, vhost, and credentials
 
 ### Dependencies
-
 - puppetlabs/apt
+- puppetlabs/stdlib
 
-See Modulefile for details.
-
-### Others
+See `Modulefile` for details.
 
 Pluginsync should be enabled. Also, you will need the Ruby JSON library
 or gem on all your nodes.
 
 [EPEL](http://mirrors.kernel.org/fedora-epel/6/x86_64/rubygem-json-1.4.6-1.el6.x86_64.rpm)
 
-## Basic Example
+Rubygem:
 
-### Sensu Server
+    $ sudo gem install json
+
+Debian & Ubuntu:
+
+    $ sudo apt-get install ruby-json
+
+## Basic example
+
+### Sensu server
 
     node 'sensu-server.foo.com' {
       class { 'sensu':
         rabbitmq_password => 'secret',
         server            => true,
+        dashboard         => true,
+        api               => true,
         plugins           => [
           'puppet:///data/sensu/plugins/ntp.rb',
           'puppet:///data/sensu/plugins/postfix.rb'
@@ -59,7 +67,7 @@ or gem on all your nodes.
     }
 
 
-### Sensu Client
+### Sensu client
 
     node 'sensu-client.foo.com' {
        class { 'sensu':
@@ -69,7 +77,8 @@ or gem on all your nodes.
        }
     }
 
-## Advanced Example (hiera)
+## Advanced example using Hiera
+
 This example includes the `sensu` class as part of a base class or role
 and configures Sensu on each individual node via
 [Hiera](http://docs.puppetlabs.com/#hierahiera1).
@@ -114,9 +123,10 @@ site.pp
 ## Safe Mode checks
 
 By default Sensu clients will execute whatever check messages are on the
-queue.  This is potentially a large security hole.
-If you enable the safe_mode parameter, it will require that checks are
-defined on the client.  If standalone checks are used then defining on
+queue. This is potentially a large security hole.
+
+If you enable the `safe_mode` parameter, it will require that checks are
+defined on the client. If standalone checks are used then defining on
 the client is sufficient, otherwise checks will also need to be defined
 on the server as well.
 
@@ -124,10 +134,15 @@ A usage example is shown below.
 
 ### Sensu server
 
+Each component of Sensu can be controlled separately. The server components
+are managed with the server, dashboard, and API parameters.
+
     node 'sensu-server.foo.com' {
       class { 'sensu':
         rabbitmq_password => 'secret',
         server            => true,
+        dashboard         => true,
+        api               => true,
         plugins           => [
           'puppet:///data/sensu/plugins/ntp.rb',
           'puppet:///data/sensu/plugins/postfix.rb'
@@ -160,7 +175,7 @@ A usage example is shown below.
     }
 
 
-## Using custom variables in check definition
+## Using custom variables in check definitions
 
     sensu::check{ 'check_file_test':
       command      => '/usr/local/bin/check_file_test.sh',
@@ -174,7 +189,7 @@ A usage example is shown below.
       subscribers  => 'sensu-test'
     }
 
-This will create the following check definition for Sensu
+This will create the following check definition for Sensu:
 
     {
       "checks": {
@@ -198,10 +213,42 @@ This will create the following check definition for Sensu
       }
     }
 
+## Handler configuration
+
+    sensu::handler {
+      'handler_foobar':
+        command => '/etc/sensu/handlers/foobar.py',
+        type    => 'pipe',
+        config  => {
+          'foobar_setting' => 'value',
+      }
+    }
+
+This will create the following handler definition for Sensu (server):
+
+     {
+       "handler_foobar": {
+         "foobar_setting": "value"
+       },
+       "handlers": {
+          "handler_foobar": {
+            "command": "/etc/sensu/plugins/foobar.py",
+            "severities": [
+              "ok",
+              "warning",
+              "critical",
+              "unknown"
+            ],
+          "type": "pipe"
+          }
+       }
+     }
+
 ### Disable Service Management
 
-If you'd prefer to use an external service management tool such as DaemonTools or SupervisorD,
-you can disable the modules internal service management functions like so:
+If you'd prefer to use an external service management tool such as
+DaemonTools or SupervisorD, you can disable the module's internal
+service management functions like so:
 
     sensu::manage_services: false
 
@@ -219,7 +266,6 @@ apache/manifests/monitoring/sensu.pp
       sensu::check { 'apache-running':
         handlers    => 'default',
         command     => '/etc/sensu/plugins/check-procs.rb -p /usr/sbin/httpd -w 100 -c 200 -C 1',
-        standalone  => true,
         custom      => {
           refresh     => 1800,
           occurrences => 2,
@@ -242,7 +288,7 @@ monitoring platforms, you could do something like:
 
 apache/manifests/service.pp
 
-$monitoring = hiera('monitoring', '')
+    $monitoring = hiera('monitoring', '')
 
     case $monitoring {
       'sensu':  { include apache::monitoring::sensu }

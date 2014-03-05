@@ -42,7 +42,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:port) do
     desc "The port that RabbitMQ is listening on"
 
-    defaultto '5671'
+    defaultto '5672'
   end
 
   newproperty(:host) do
