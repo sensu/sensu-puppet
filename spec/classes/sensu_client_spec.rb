@@ -53,8 +53,9 @@ describe 'sensu', :type => :class do
       context 'default' do
         let(:params) { { :client => true } }
         it { should contain_service('sensu-client').with(
-          :ensure => 'running',
-          :enable => true
+          :ensure     => 'running',
+          :enable     => true,
+          :hasrestart => true
         ) }
       end # default
 
@@ -85,8 +86,9 @@ describe 'sensu', :type => :class do
       context 'managing services' do
         let(:params) { { :client => false } }
         it { should contain_service('sensu-client').with(
-          :ensure => 'stopped',
-          :enable => false
+          :ensure     => 'stopped',
+          :enable     => false,
+          :hasrestart => true
         ) }
       end # managing services
 

@@ -47,7 +47,7 @@ define sensu::plugin(
 
   case $type {
     'file':       {
-      $filename = inline_template("<%= scope.lookupvar('name').split('/').last %>")
+      $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
       file { "${install_path}/${filename}":
         ensure  => file,
