@@ -70,4 +70,15 @@ class sensu::package {
   }
 
   file { '/etc/sensu/config.json': ensure => absent }
+
+  package { 'rubygems':
+  ensure  => present,
+  }
+
+  package { 'json':
+  ensure    => present,
+  provider  => 'gem',
+  require   => Package['rubygems'],
+  }
+
 }
