@@ -22,18 +22,7 @@ Sensu-Puppet module.
 
 See `Modulefile` for details.
 
-Pluginsync should be enabled. Also, you will need the Ruby JSON library
-or gem on all your nodes.
-
-[EPEL](http://mirrors.kernel.org/fedora-epel/6/x86_64/rubygem-json-1.4.6-1.el6.x86_64.rpm)
-
-Rubygem:
-
-    $ sudo gem install json
-
-Debian & Ubuntu:
-
-    $ sudo apt-get install ruby-json
+Pluginsync should be enabled.
 
 ## Basic example
 
