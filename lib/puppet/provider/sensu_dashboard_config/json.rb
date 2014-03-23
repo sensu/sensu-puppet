@@ -51,7 +51,7 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
   end
 
   def user
-    conf['dashboard']['user']
+    conf['dashboard']['user'].to_s
   end
 
   def user=(value)
@@ -60,7 +60,7 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
   end
 
   def password
-    conf['dashboard']['password']
+    conf['dashboard']['password'].to_s
   end
 
   def password=(value)
