@@ -8,17 +8,17 @@ class sensu::package {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  case $::operatingsystem {
+  case $::osfamily {
 
-    'Debian','Ubuntu': {
+    'Debian': {
       class { 'sensu::repo::apt': }
     }
 
-    'Fedora','RedHat','Centos': {
+    'RedHat': {
       class { 'sensu::repo::yum': }
     }
 
-    default: { alert("${::operatingsystem} not supported yet") }
+    default: { alert("${::osfamily} not supported yet") }
 
   }
 
