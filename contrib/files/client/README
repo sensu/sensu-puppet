@@ -1,0 +1,5 @@
+Here is where you'd put for clients
+cert.pem
+key.pem
+
+Generate them by following the directions at: http://sensuapp.org/docs/0.12/guide

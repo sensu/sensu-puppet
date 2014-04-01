@@ -1,0 +1,16 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides: sensu-client-removal
+# Required-Start: $network $syslog
+# Required-Stop:
+# Default-Start:
+# Default-Stop: 016
+# Short-Description: remove cleint from sensu
+# Description: send termination email
+### END INIT INFO
+#
+
+curl -X DELETE http://<%= @sensuhost %>:4567/clients/<%= @fqdn %>
+sleep 3 # make sure the message has time to send
+
+exit 0

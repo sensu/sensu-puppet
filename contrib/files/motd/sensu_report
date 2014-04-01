@@ -1,0 +1,25 @@
+#!/usr/bin/env python2
+import json,sys,urllib2,socket
+
+GREEN = '\033[92m'
+RED = '\033[91m'
+CLEAR = '\033[0m'
+
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-s", "--server", dest="server",
+                  help="sensu api server hostname", default='sensu')
+parser.add_option("-p", "--port", dest="port",
+                  help="sensu server api port", default='4567')
+(options, args) = parser.parse_args()
+
+response = urllib2.urlopen('http://' + options.server + ':' + options.port + '/events/' + socket.getfqdn())
+data = json.load(response)
+print
+if len(data) > 0:
+  print "Failed Sensu checks on this host:"
+  for entry in data:
+      sys.stdout.write("   " + RED + entry['check'] + ': ' + entry['output'] + CLEAR )
+else:
+  print "All Sensu checks " + GREEN + "green " + CLEAR + "for this host."
+print

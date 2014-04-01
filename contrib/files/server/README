@@ -1,0 +1,6 @@
+Here is where you'd put for the RabbitMQ server
+cert.pem
+key.pem
+cacert.pem
+
+Generate them by following the directions at: http://sensuapp.org/docs/0.12/guide
