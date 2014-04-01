@@ -3,10 +3,6 @@
 #
 class examplesensu::server {
 
-  mcollective::client::setting { 'plugin.rabbitmq.heartbeat_interval':
-    value => '60',
-  }
-
   package { 'redis-server':
     ensure => installed,
   }
