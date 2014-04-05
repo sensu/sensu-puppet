@@ -18,7 +18,7 @@ class sensu::package {
       class { 'sensu::repo::yum': }
     }
 
-    default: { alert("${::operatingsystem} not supported yet") }
+    default: { fail("${::operatingsystem} not supported yet") }
 
   }
 
