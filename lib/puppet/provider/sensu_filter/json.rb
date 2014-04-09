@@ -19,14 +19,18 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
 
   def conf
     begin
-      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/filters/#{resource[:name]}.json"))
+      @conf ||= JSON.parse(File.read(config_file))
     rescue
       @conf ||= {}
     end
   end
 
+  def config_file
+    "#{resource[:base_path]}/#{resource[:name]}.json"
+  end
+
   def flush
-    File.open("/etc/sensu/conf.d/filters/#{resource[:name]}.json", 'w') do |f|
+    File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
   end

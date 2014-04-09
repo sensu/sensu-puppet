@@ -10,7 +10,7 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
   # /etc/sensu/config.json or an empty Hash if the file can not be read.
   def conf
     begin
-      @conf ||= JSON.parse(File.read('/etc/sensu/conf.d/api.json'))
+      @conf ||= JSON.parse(File.read(config_file))
     rescue
       @conf ||= {}
     end
@@ -20,7 +20,7 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
   #
   # Returns nothing.
   def flush
-    File.open('/etc/sensu/conf.d/api.json', 'w') do |f|
+    File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(@conf)
     end
   end
@@ -55,6 +55,11 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
   # Returns the String port number.
   def port
     conf['api']['port'].to_s
+  end
+
+
+  def config_file
+    "#{resource[:base_path]}/api.json"
   end
 
   # Public: Set the port that the API should listen on.

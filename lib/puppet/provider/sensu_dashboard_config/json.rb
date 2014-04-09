@@ -6,14 +6,14 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
 
   def conf
     begin
-      @conf ||= JSON.parse(File.read('/etc/sensu/conf.d/dashboard.json'))
+      @conf ||= JSON.parse(File.read(config_file))
     rescue
       @conf ||= {}
     end
   end
 
   def flush
-    File.open('/etc/sensu/conf.d/dashboard.json', 'w') do |f|
+    File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
   end
@@ -24,6 +24,10 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
     self.host = resource[:host]
     self.user = resource[:user]
     self.password = resource[:password]
+  end
+
+  def config_file
+    "#{resource[:base_path]}/dashboard.json"
   end
 
   def destroy

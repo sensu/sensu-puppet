@@ -27,6 +27,11 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     desc "This value has no effect, set it to what ever you want."
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/'
+  end
+
   newproperty(:ssl_private_key) do
     desc "The path on disk to the SSL private key needed to connect to RabbitMQ"
 

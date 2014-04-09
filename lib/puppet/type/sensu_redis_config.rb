@@ -26,6 +26,11 @@ Puppet::Type.newtype(:sensu_redis_config) do
     desc "This value has no effect, set it to what ever you want."
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/'
+  end
+
   newproperty(:port) do
     desc "The port that Redis is listening on"
 
