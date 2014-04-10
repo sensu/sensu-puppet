@@ -51,14 +51,14 @@ define sensu::plugin(
 
       file { "${install_path}/${filename}":
         ensure  => file,
-        mode    => '0555',
+        mode    => '0755',
         source  => $name,
       }
     }
     'directory':  {
       file { $install_path:
         ensure  => directory,
-        mode    => '0555',
+        mode    => '0755',
         source  => $name,
         recurse => $recurse,
         purge   => $purge,

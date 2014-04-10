@@ -29,7 +29,7 @@ class sensu::rabbitmq::config {
         source  => $sensu::rabbitmq_ssl_cert_chain,
         owner   => 'sensu',
         group   => 'sensu',
-        mode    => '0444',
+        mode    => '0644',
         require => File['/etc/sensu/ssl'],
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
@@ -45,7 +45,7 @@ class sensu::rabbitmq::config {
         source  => $sensu::rabbitmq_ssl_private_key,
         owner   => 'sensu',
         group   => 'sensu',
-        mode    => '0440',
+        mode    => '0640',
         require => File['/etc/sensu/ssl'],
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
@@ -63,7 +63,7 @@ class sensu::rabbitmq::config {
     ensure  => $ensure,
     owner   => 'sensu',
     group   => 'sensu',
-    mode    => '0440',
+    mode    => '0640',
     before  => Sensu_rabbitmq_config[$::fqdn],
   }
 

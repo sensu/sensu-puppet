@@ -31,7 +31,7 @@ class sensu::package {
     content => template("${module_name}/sensu.erb"),
     owner   => '0',
     group   => '0',
-    mode    => '0444',
+    mode    => '0644',
     require => Package['sensu'],
   }
 
@@ -39,7 +39,7 @@ class sensu::package {
     ensure  => directory,
     owner   => 'sensu',
     group   => 'sensu',
-    mode    => '0555',
+    mode    => '0755',
     purge   => $sensu::purge_config,
     recurse => true,
     force   => true,
@@ -48,7 +48,7 @@ class sensu::package {
 
   file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
     ensure  => directory,
-    mode    => '0555',
+    mode    => '0755',
     owner   => 'sensu',
     group   => 'sensu',
     require => Package['sensu'],
