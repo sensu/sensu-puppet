@@ -22,7 +22,6 @@ class sensu::repo::apt {
     } else {
       $url = 'http://repos.sensuapp.org/apt'
     }
-
     if $ensure == 'present' {
       apt::key { 'sensu':
         key         => '7580C77F',
