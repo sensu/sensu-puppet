@@ -68,7 +68,7 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def attributes=(value)
-    conf['filter'][resource[:name]]['attributes'].merge!(to_type value)
+    conf['filter'][resource[:name]]['attributes'].merge!(to_type(value))
   end
 
 end
