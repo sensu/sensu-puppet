@@ -79,7 +79,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def custom=(value)
     @conf['client'].delete_if { |k,v| not check_args.include?(k) }
-    @conf['client'].merge!(to_type value)
+    @conf['client'].merge!(to_type(value))
   end
 
   def safe_mode

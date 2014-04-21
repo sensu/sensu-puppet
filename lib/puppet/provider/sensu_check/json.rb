@@ -61,7 +61,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def custom=(value)
     conf['checks'][resource[:name]].delete_if { |k,v| not check_args.include?(k) }
-    conf['checks'][resource[:name]].merge!(to_type value)
+    conf['checks'][resource[:name]].merge!(to_type(value))
   end
 
   def destroy
