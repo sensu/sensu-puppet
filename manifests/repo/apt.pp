@@ -34,7 +34,7 @@ class sensu::repo::apt {
 
     apt::key { 'sensu':
       key         => '7580C77F',
-      key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg',
+      key_source  => "${url}/pubkey.gpg",
     }
 
   } else {
