@@ -20,14 +20,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def conf
     begin
-      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/checks/#{resource[:name]}.json"))
+      @conf ||= JSON.parse(File.read(config_file))
     rescue
       @conf ||= {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/checks/#{resource[:name]}.json", 'w') do |f|
+    File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
   end
@@ -74,6 +74,10 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def interval
     conf['checks'][resource[:name]]['interval'].to_s
+  end
+
+  def config_file
+    "#{resource[:base_path]}/#{resource[:name]}.json"
   end
 
   def interval=(value)

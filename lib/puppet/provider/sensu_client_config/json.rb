@@ -16,16 +16,20 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     super
 
     begin
-      @conf = JSON.parse(File.read('/etc/sensu/conf.d/client.json'))
+      @conf = JSON.parse(File.read(config_file))
     rescue
       @conf = {}
     end
   end
 
   def flush
-    File.open('/etc/sensu/conf.d/client.json', 'w') do |f|
+    File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(@conf)
     end
+  end
+
+  def config_file
+    "#{resource[:base_path]}/client.json"
   end
 
   def create

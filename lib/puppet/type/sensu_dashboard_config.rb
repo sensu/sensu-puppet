@@ -43,6 +43,11 @@ Puppet::Type.newtype(:sensu_dashboard_config) do
     defaultto 'sensu'
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/'
+  end
+
   newproperty(:password) do
     desc "The password to use when connecting to the Sensu Dashboard"
   end

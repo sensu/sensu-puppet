@@ -25,6 +25,11 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     desc "The subscription name"
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/'
+  end
+
   newparam(:subscriptions) do
     desc "Subscriptions included"
     defaultto :name

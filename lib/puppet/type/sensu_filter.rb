@@ -27,6 +27,10 @@ Puppet::Type.newtype(:sensu_filter) do
     desc "The name of the filter."
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/filters/'
+  end
 
   newparam(:attributes) do
     desc ""

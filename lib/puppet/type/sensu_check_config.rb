@@ -26,6 +26,11 @@ Puppet::Type.newtype(:sensu_check_config) do
     desc "The check name to configure"
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/checks'
+  end
+
   newparam(:config) do
     desc "Check configuration for the client to use"
   end

@@ -48,6 +48,11 @@ Puppet::Type.newtype(:sensu_check) do
     desc "How frequently the check runs in seconds"
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/checks'
+  end
+
   newproperty(:low_flap_threshold) do
     desc "A host is determined to be flapping when the percent change is below this threshold."
   end
