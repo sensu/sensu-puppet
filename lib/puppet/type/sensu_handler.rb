@@ -55,6 +55,11 @@ Puppet::Type.newtype(:sensu_handler) do
     defaultto {}
   end
 
+  newparam(:base_path) do
+    desc "The base path to the client config file"
+    defaultto '/etc/sensu/conf.d/handlers/'
+  end
+
   newproperty(:mutator) do
     desc "Handler specific data massager"
   end

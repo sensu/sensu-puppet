@@ -12,14 +12,14 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
 
   def conf
     begin
-      @conf ||= JSON.parse(File.read("/etc/sensu/conf.d/checks/config_#{resource[:name]}.json"))
+      @conf ||= JSON.parse(File.read(config_file))
     rescue
       @conf ||= {}
     end
   end
 
   def flush
-    File.open("/etc/sensu/conf.d/checks/config_#{resource[:name]}.json", 'w') do |f|
+    File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
   end
@@ -48,6 +48,10 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
         conf.has_key?(resource[:name])
       end
     end
+  end
+
+  def config_file
+    "#{resource[:base_path]}/config_#{resource[:name]}.json"
   end
 
   def config
