@@ -24,32 +24,22 @@ matrix:
   exclude:
     - rvm: 1.9.3
       env: PUPPET_VERSION="~> 2.7.0"
-      gemfile: .gemfile
     - rvm: 2.0.0
       env: PUPPET_VERSION="~> 2.7.0"
-      gemfile: .gemfile
     - rvm: 2.0.0
       env: PUPPET_VERSION="~> 3.1.0"
-      gemfile: .gemfile
     - rvm: 2.1.0
       env: PUPPET_VERSION="~> 2.7.0"
-      gemfile: .gemfile
     - rvm: 2.1.0
       env: PUPPET_VERSION="~> 3.0.0"
-      gemfile: .gemfile
     - rvm: 2.1.0
       env: PUPPET_VERSION="~> 3.1.0"
-      gemfile: .gemfile
     - rvm: 2.1.0
       env: PUPPET_VERSION="~> 3.2.0"
-      gemfile: .gemfile
     - rvm: 2.1.0
       env: PUPPET_VERSION="~> 3.3.0"
-      gemfile: .gemfile
     - rvm: 2.1.0
       env: PUPPET_VERSION="~> 3.4.0"
-      gemfile: .gemfile
-gemfile: .gemfile
 notifications:
   email:
     - james@lovedthanlost.net
