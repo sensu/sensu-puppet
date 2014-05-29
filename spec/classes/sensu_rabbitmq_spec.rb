@@ -21,7 +21,7 @@ describe 'sensu', :type => :class do
         :rabbitmq_host            => 'myhost',
         :rabbitmq_user            => 'sensuuser',
         :rabbitmq_password        => 'sensupass',
-        :rabbitmq_vhost           => '/myvhost',
+        :rabbitmq_vhost           => 'myvhost',
       } }
 
       it { should_not contain_file('/etc/sensu/ssl/cert.pem') }
@@ -32,7 +32,7 @@ describe 'sensu', :type => :class do
         :host            => 'myhost',
         :user            => 'sensuuser',
         :password        => 'sensupass',
-        :vhost           => '/myvhost',
+        :vhost           => 'myvhost',
         :ssl_cert_chain  => '/etc/private/ssl/cert.pem',
         :ssl_private_key => '/etc/private/ssl/key.pem'
       ) }

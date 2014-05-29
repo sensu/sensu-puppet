@@ -71,7 +71,7 @@
 #
 # [*rabbitmq_vhost*]
 #   String.  Rabbitmq vhost to be used by sensu
-#   Default: '/sensu'
+#   Default: 'sensu'
 #
 # [*rabbitmq_ssl_private_key*]
 #   String.  Private key to be used by sensu to connect to rabbitmq
