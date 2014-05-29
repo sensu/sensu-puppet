@@ -92,7 +92,7 @@ define sensu::check(
 
   if $client {
     if $server {
-      $notify = [ Class['sensu::client::service'], Class['sensu::server::service'] ]
+
     } else {
       $notify = Class['sensu::client::service']
     }
@@ -128,7 +128,7 @@ define sensu::check(
     publish             => $publish,
     custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
-    notify              => $notify,
+    notify              => $::sensu::check_notify,
   }
 
 }

@@ -217,6 +217,27 @@ class sensu (
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($dashboard_port) { fail('dashboard_port must be an integer') }
 
+  # Ugly hack for notifications, better way?
+  # Put here to avoid computing the conditionals for every check
+  if $client and $server and $api {
+    $check_notify = [ Class['sensu::client::service'], Class['sensu::server::service'], Class['sensu::api::service'] ]
+  } elsif $client and $server {
+    $check_notify = [ Class['sensu::client::service'], Class['sensu::server::service'] ]
+  } elsif $client and $api {
+    $check_notify = [ Class['sensu::client::service'], Class['sensu::api::service'] ]
+  } elsif $server and $api {
+    $check_notify = [ Class['sensu::server::service'], Class['sensu::api::service'] ]
+  } elsif $server {
+    $check_notify = Class['sensu::server::service']
+  } elsif $client {
+    $check_notify = Class['sensu::client::service']
+  } elsif $api {
+    $check_notify = Class['sensu::api::service']
+  } else {
+    $check_notify = []
+  }
+
+
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
   anchor { 'sensu::begin': } ->
