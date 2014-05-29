@@ -99,7 +99,7 @@ and configures Sensu on each individual node via
 
     sensu::dashboard_port: 8090
     sensu::dashboard_password: mysupersecretpassword
-    sensu::install_repo: 'false'
+    sensu::install_repo: false
     sensu::purge_config: true
     sensu::rabbitmq_host: 10.31.0.90
     sensu::rabbitmq_password: password
@@ -111,7 +111,7 @@ and configures Sensu on each individual node via
 
 nosensu.foo.com.yaml
 
-    sensu::client: 'false'
+    sensu::client: false
 
 site.pp
 
