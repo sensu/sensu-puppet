@@ -58,6 +58,10 @@
 #   of commands that are not actually 'checks' per say, but actually arbitrary commands for remediation
 #   Default: undef
 #
+# [*dependencies*]
+#   Array.  List of checks this check depends on.  Note: The validity of the other checks is not enforced by puppet
+#   Default: undef
+#
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -72,6 +76,7 @@ define sensu::check(
   $aggregate           = undef,
   $handle              = undef,
   $publish             = undef,
+  $dependencies        = undef,
   $custom              = undef,
 ) {
 
@@ -126,6 +131,7 @@ define sensu::check(
     aggregate           => $aggregate,
     handle              => $handle,
     publish             => $publish,
+    dependencies        => $dependencies,
     custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
     notify              => $notify,

@@ -36,6 +36,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Command to be run by the check"
   end
 
+  newproperty(:dependencies) do
+    desc "Dependencies of this check"
+  end
+
   newproperty(:handlers, :array_matching => :all) do
     desc "List of handlers that responds to this check"
   end
