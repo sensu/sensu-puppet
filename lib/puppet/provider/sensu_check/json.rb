@@ -100,6 +100,15 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]]['command'] = value
   end
 
+  def dependencies
+    conf['checks'][resource[:name]]['dependencies']
+  end
+
+  def dependencies=(value)
+    value = [ value ] if value.is_a?(String)
+    conf['checks'][resource[:name]]['dependencies'] = value
+  end
+
   def subscribers
     conf['checks'][resource[:name]]['subscribers']
   end
