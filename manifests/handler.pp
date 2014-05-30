@@ -113,7 +113,7 @@ define sensu::handler(
       ensure  => $file_ensure,
       owner   => 'sensu',
       group   => 'sensu',
-      mode    => '0555',
+      mode    => '0755',
       source  => $source,
     }
   } else {
@@ -124,7 +124,7 @@ define sensu::handler(
     ensure  => $ensure,
     owner   => 'sensu',
     group   => 'sensu',
-    mode    => '0444',
+    mode    => '0644',
     before  => Sensu_handler[$name],
   }
 

@@ -108,7 +108,7 @@ define sensu::check(
     ensure  => $ensure,
     owner   => 'sensu',
     group   => 'sensu',
-    mode    => '0440',
+    mode    => '0640',
     before  => Sensu_check[$check_name],
   }
 
