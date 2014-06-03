@@ -23,6 +23,7 @@ class sensu::api::config {
 
   sensu_api_config { $::fqdn:
     ensure   => $ensure,
+    bind     => $sensu::api_bind,
     host     => $sensu::api_host,
     port     => $sensu::api_port,
     user     => $sensu::api_user,
