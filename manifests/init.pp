@@ -200,6 +200,7 @@ class sensu (
   $dashboard_user           = 'admin',
   $dashboard_password       = 'secret',
   $subscriptions            = [],
+  $client_bind              = '127.0.0.1',
   $client_address           = $::ipaddress,
   $client_name              = $::fqdn,
   $client_custom            = {},

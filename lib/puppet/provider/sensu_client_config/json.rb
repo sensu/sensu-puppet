@@ -36,6 +36,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     @conf['client'] = {}
     self.client_name = resource[:client_name]
     self.address = resource[:address]
+    self.bind = resource[:bind]
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
     self.custom = resource[:custom] unless resource[:custom].nil?
@@ -50,7 +51,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def check_args
-    ['name', 'address', 'subscriptions', 'safe_mode']
+    ['name', 'address', 'subscriptions', 'safe_mode', 'bind']
   end
 
   def client_name
@@ -67,6 +68,14 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def address=(value)
     @conf['client']['address'] = value
+  end
+
+  def bind
+    @conf['client']['bind']
+  end
+
+  def bind=(value)
+    @conf['client']['bind'] = value
   end
 
   def subscriptions
