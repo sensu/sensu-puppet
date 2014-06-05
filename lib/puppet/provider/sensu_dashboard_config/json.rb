@@ -22,6 +22,7 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
     conf['dashboard'] = {}
     self.port = resource[:port]
     self.host = resource[:host]
+    self.bind = resource[:bind]
     self.user = resource[:user]
     self.password = resource[:password]
   end
@@ -52,6 +53,14 @@ Puppet::Type.type(:sensu_dashboard_config).provide(:json) do
 
   def host=(value)
     conf['dashboard']['host'] = value
+  end
+
+  def bind
+    conf['dashboard']['bind']
+  end
+
+  def bind=(value)
+    conf['dashboard']['bind'] = value
   end
 
   def user

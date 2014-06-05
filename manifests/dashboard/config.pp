@@ -23,6 +23,7 @@ class sensu::dashboard::config {
 
   sensu_dashboard_config { $::fqdn:
     ensure    => $ensure,
+    bind      => $sensu::dashboard_bind,
     host      => $sensu::dashboard_host,
     port      => $sensu::dashboard_port,
     user      => $sensu::dashboard_user,

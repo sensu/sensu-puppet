@@ -195,6 +195,7 @@ class sensu (
   $api_port                 = 4567,
   $api_user                 = undef,
   $api_password             = undef,
+  $dashboard_bind           = '0.0.0.0',
   $dashboard_host           = $::ipaddress,
   $dashboard_port           = 8080,
   $dashboard_user           = 'admin',

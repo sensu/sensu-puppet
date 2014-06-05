@@ -37,6 +37,12 @@ Puppet::Type.newtype(:sensu_dashboard_config) do
     defaultto 'localhost'
   end
 
+  newproperty(:bind) do
+    desc "The IP dashboard will bind to"
+
+    defaultto '0.0.0.0'
+  end
+
   newproperty(:user) do
     desc "The username to use when connecting to the Sensu Dashboard"
 
