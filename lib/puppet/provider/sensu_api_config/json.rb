@@ -30,6 +30,7 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
   # Returns nothing.
   def create
     conf['api'] = {}
+    self.bind = resource[:bind]
     self.port = resource[:port]
     self.host = resource[:host]
     self.user = resource[:user] unless resource[:user].nil?
@@ -50,13 +51,29 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
     conf.has_key? 'api'
   end
 
+
+  # Public:  Retrieve the bind IP that the API is bound on the server
+  #
+  # Returns the String bind IP
+
+  def bind
+    conf['api']['bind']
+  end
+
+  # Public:  Set the IP that bind will use.
+  #
+  # Returns nothing.
+
+  def bind=(value)
+    conf['api']['bind'] = value
+  end
+
   # Public: Retrieve the port number that the API is configured to listen on.
   #
   # Returns the String port number.
   def port
     conf['api']['port'].to_s
   end
-
 
   def config_file
     "#{resource[:base_path]}/api.json"

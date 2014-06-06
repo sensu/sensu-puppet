@@ -38,6 +38,12 @@ Puppet::Type.newtype(:sensu_api_config) do
     defaultto 'localhost'
   end
 
+  newproperty(:bind) do
+    desc "The bind IP that sensu will bind to"
+
+    defaultto '0.0.0.0'
+  end
+
   newparam(:base_path) do
     desc "The base path to the client config file"
     defaultto '/etc/sensu/conf.d/'
