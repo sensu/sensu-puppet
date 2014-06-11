@@ -68,6 +68,15 @@ describe 'sensu' do
             ) }
           end
 
+          context 'override key ID and key source' do
+            let(:params) { { :repo_key_id => 'FFFFFFFF', :repo_key_source => 'http://repo.mydomina.com/apt/pubkey.gpg' } }
+
+            it { should_not contain_apt__key('sensu').with(
+              :key         => 'FFFFFFFF',
+              :key_source  => 'http://repo.mydomain.com/apt/pubkey.gpg'
+            ) }
+          end
+
           context 'install_repo => false' do
             let(:params) { { :install_repo => false, :repo => 'main' } }
             it { should contain_apt__source('sensu').with_ensure('absent') }

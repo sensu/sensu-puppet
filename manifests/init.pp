@@ -22,6 +22,14 @@
 # [*repo_source*]
 #   String.  Location of the yum/apt repo.  Overrides the default location
 #   Default: undef
+
+# [*repo_key_id*]
+#   String.  The apt GPG key id
+#   Default: undef
+#
+# [*repo_key_source*]
+#   String.  URL of the apt GPG key
+#   Default: undef
 #
 # [*client*]
 #   Boolean.  Include the sensu client
@@ -175,6 +183,8 @@ class sensu (
   $install_repo             = true,
   $repo                     = 'main',
   $repo_source              = undef,
+  $repo_key_id              = undef,
+  $repo_key_source          = undef,
   $client                   = true,
   $server                   = false,
   $api                      = false,
