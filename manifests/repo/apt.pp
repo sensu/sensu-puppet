@@ -22,21 +22,11 @@ class sensu::repo::apt {
     } else {
       $url = 'http://repos.sensuapp.org/apt'
     }
-    if $sensu::repo_key_id {
-      $key = $sensu::repo_key_id
-    } else {
-      $key = '7580C77F'
-    }
-    if $sensu::repo_key_source {
-      $key_source = $sensu::repo_key_source
-    } else {
-      $key_source = 'http://repos.sensuapp.org/apt/pubkey.gpg'
-    }
 
     if $ensure == 'present' {
       apt::key { 'sensu':
-        key         => $key,
-        key_source  => $key_source,
+        key         => $sensu::repo_key_id,
+        key_source  => $sensu::repo_key_source,
       }
     }
     apt::source { 'sensu':
