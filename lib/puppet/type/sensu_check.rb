@@ -52,6 +52,14 @@ Puppet::Type.newtype(:sensu_check) do
     desc "How frequently the check runs in seconds"
   end
 
+  newproperty(:occurrences) do
+    desc "The number of event occurrences before the handler should take action."
+  end
+
+  newproperty(:refresh) do
+    desc "The number of seconds sensu-plugin-aware handlers should wait before taking second action."
+  end
+
   newparam(:base_path) do
     desc "The base path to the client config file"
     defaultto '/etc/sensu/conf.d/checks'

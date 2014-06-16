@@ -39,6 +39,8 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.interval = resource[:interval]
     # Optional arguments
     self.handlers = resource[:handlers] unless resource[:handlers].nil?
+    self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
+    self.refresh = resource[:interval] unless resource[:interval].nil?
     self.subscribers = resource[:subscribers] unless resource[:subscribers].nil?
     self.type = resource[:type] unless resource[:type].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
@@ -52,7 +54,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def check_args
-    ['handlers','command','interval','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','custom']
+    ['handlers','command','interval','occurrences','refresh','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','custom']
   end
 
   def custom
@@ -90,6 +92,21 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def handlers=(value)
     conf['checks'][resource[:name]]['handlers'] = value
+  end
+  def occurrences
+    conf['checks'][resource[:name]]['occurrences']
+  end
+
+  def occurrences=(value)
+    conf['checks'][resource[:name]]['occurrences'] = value
+  end
+
+  def refresh
+    conf['checks'][resource[:name]]['refresh']
+  end
+
+  def refresh=(value)
+    conf['checks'][resource[:name]]['refresh'] = value
   end
 
   def command
