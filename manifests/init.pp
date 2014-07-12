@@ -22,6 +22,14 @@
 # [*repo_source*]
 #   String.  Location of the yum/apt repo.  Overrides the default location
 #   Default: undef
+
+# [*repo_key_id*]
+#   String.  The apt GPG key id
+#   Default: 7580C77F
+#
+# [*repo_key_source*]
+#   String.  URL of the apt GPG key
+#   Default: http://repos.sensuapp.org/apt/pubkey.gpg
 #
 # [*client*]
 #   Boolean.  Include the sensu client
@@ -175,6 +183,8 @@ class sensu (
   $install_repo             = true,
   $repo                     = 'main',
   $repo_source              = undef,
+  $repo_key_id              = '7580C77F',
+  $repo_key_source          = 'http://repos.sensuapp.org/apt/pubkey.gpg',
   $client                   = true,
   $server                   = false,
   $api                      = false,
