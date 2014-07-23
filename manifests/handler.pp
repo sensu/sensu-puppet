@@ -109,12 +109,14 @@ define sensu::handler(
       default   => 'file'
     }
 
-    file { $command_real:
-      ensure  => $file_ensure,
-      owner   => 'sensu',
-      group   => 'sensu',
-      mode    => '0555',
-      source  => $source,
+    if !defined(File[$command_real]) {
+      file { $command_real:
+        ensure  => $file_ensure,
+        owner   => 'sensu',
+        group   => 'sensu',
+        mode    => '0555',
+        source  => $source,
+      }
     }
   } else {
     $command_real = $command
