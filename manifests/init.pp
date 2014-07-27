@@ -47,9 +47,9 @@
 #   Valid values: true, false
 #
 # [*dashboard*]
-#   Boolean.  Include the sensu dashboard service
+#   String.  Name of the dashboard to install. false if none.
 #   Default: false
-#   Valid values: true, false
+#   Valid values: false, uchiwa, etc...
 #
 # [*manage_services*]
 #   Boolean.  Manage the sensu services with puppet
@@ -117,6 +117,16 @@
 # [*api_password*]
 #   Integer. Password of the sensu api service
 #   Default: undef
+#
+# [*dashboard_version*]
+#   String.  Version of sensu dashboard specified in $dashboard to install
+#   Default: latest
+#   Valid values: absent, installed, latest, present, [\d\.\-]+
+#
+# [*dashboard_config_file*]
+#   String.  Path to dashboard configuration file
+#   Default: /etc/sensu/conf.d/dashboard.json
+#   Valid values: Valid absolute path
 #
 # [*dashboard_host*]
 #   String.  Hostname of the dahsboard host
@@ -205,6 +215,8 @@ class sensu (
   $api_port                 = 4567,
   $api_user                 = undef,
   $api_password             = undef,
+  $dashboard_version        = 'latest',
+  $dashboard_config_file    = '/etc/sensu/conf.d/dashboard.json',
   $dashboard_bind           = '0.0.0.0',
   $dashboard_host           = $::ipaddress,
   $dashboard_port           = 8080,
@@ -223,10 +235,13 @@ class sensu (
   $log_level                = 'info',
 ){
 
-  validate_bool($client, $server, $api, $dashboard, $install_repo, $purge_config, $safe_mode, $manage_services)
+  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services)
+
+  validate_absolute_path($dashboard_config_file)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
+  validate_re($dashboard_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid dashboard package version: ${dashboard_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
@@ -258,6 +273,7 @@ class sensu (
   # transitioning to purged config and stopping/disabling services
   anchor { 'sensu::begin': } ->
   class { 'sensu::package': } ->
+  class { 'sensu::dashboard::package': } ->
   class { 'sensu::rabbitmq::config': } ->
   class { 'sensu::api::config': } ->
   class { 'sensu::redis::config': } ->

@@ -1,0 +1,20 @@
+module.exports = {
+  sensu: [
+    {
+      name: 'Sensu',
+      host: '<%= @api_host %>',
+      ssl: false,
+      port: <%= @api_port %>,
+      user: '',
+      pass: '',
+      path: '',
+      timeout: 5000
+    }
+  ],
+  uchiwa: {
+    user: '',
+    pass: '',
+    stats: 10,
+    refresh: 10000
+  }
+}
