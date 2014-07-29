@@ -7,7 +7,7 @@
 # [*type*]
 #   String.  Plugin source
 #   Default: file
-#   Valid values: file, directory, package
+#   Valid values: file, directory, package, url
 #
 # [*install_path*]
 #   String.  The path to install the plugin
@@ -44,6 +44,7 @@ define sensu::plugin(
 
   validate_bool($purge, $recurse, $force)
   validate_re($pkg_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${pkg_version}")
+  validate_re($type, ['^file$', '^url$', '^package$', '^directory$'], "Invalid plugin type: ${type}")
 
   case $type {
     'file':       {
@@ -54,6 +55,20 @@ define sensu::plugin(
         mode    => '0555',
         source  => $name,
       }
+    }
+    'url' : {
+        $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
+
+        wget::fetch { $name :
+          destination => "${install_path}/${filename}",
+          timeout     => 0,
+          verbose     => false,
+          require     => File[$install_path],
+        } ->
+        file { "${install_path}/${filename}":
+          ensure  => file,
+          mode    => '0555',
+        }
     }
     'directory':  {
       file { $install_path:
