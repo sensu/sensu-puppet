@@ -26,6 +26,11 @@ class sensu::package {
     ensure  => $sensu::version,
   }
 
+  package { 'sensu-plugin' :
+    ensure   => $sensu::sensu_plugin_version,
+    provider => 'gem',
+  }
+
   file { '/etc/default/sensu':
     ensure  => file,
     content => template("${module_name}/sensu.erb"),
