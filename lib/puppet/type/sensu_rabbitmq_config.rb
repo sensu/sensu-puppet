@@ -69,7 +69,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:vhost) do
     desc "The vhost to use when connecting to RabbitMQ"
 
-    defaultto '/sensu'
+    defaultto 'sensu'
   end
 
   autorequire(:package) do

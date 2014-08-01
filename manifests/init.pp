@@ -195,7 +195,7 @@ class sensu (
   $rabbitmq_host            = 'localhost',
   $rabbitmq_user            = 'sensu',
   $rabbitmq_password        = '',
-  $rabbitmq_vhost           = '/sensu',
+  $rabbitmq_vhost           = 'sensu',
   $rabbitmq_ssl_private_key = undef,
   $rabbitmq_ssl_cert_chain  = undef,
   $redis_host               = 'localhost',
