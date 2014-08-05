@@ -9,6 +9,11 @@
 #   Default: latest
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
+# [*sensu_plugin_version*]
+#   String.  Version of the sensu-plugin gem to install
+#   Default: absent
+#   Valid values: absent, installed, latest, present, [\d\.\-]+
+#
 # [*install_repo*]
 #   Boolean.  Whether or not to install the sensu repo
 #   Default: true
@@ -180,6 +185,7 @@
 #
 class sensu (
   $version                  = 'latest',
+  $sensu_plugin_version     = 'absent',
   $install_repo             = true,
   $repo                     = 'main',
   $repo_source              = undef,
@@ -227,6 +233,7 @@ class sensu (
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
+  validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
