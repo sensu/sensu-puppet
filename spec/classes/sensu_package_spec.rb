@@ -21,11 +21,17 @@ describe 'sensu' do
 
     context 'setting version' do
       let(:params) { {
-        :version      => '0.9.10',
+        :version              => '0.9.10',
+        :sensu_plugin_version => 'installed',
       } }
 
       it { should contain_package('sensu').with(
         :ensure => '0.9.10'
+      ) }
+
+      it { should contain_package('sensu-plugin').with(
+        :ensure   => 'installed',
+        :provider => 'gem'
       ) }
     end
 
