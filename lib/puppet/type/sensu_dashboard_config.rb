@@ -46,7 +46,6 @@ Puppet::Type.newtype(:sensu_dashboard_config) do
   newproperty(:user) do
     desc "The username to use when connecting to the Sensu Dashboard"
 
-    defaultto 'sensu'
   end
 
   newparam(:base_path) do
