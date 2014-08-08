@@ -23,6 +23,38 @@ describe 'sensu::plugin', :type => :define do
     end
   end #file
 
+  context 'url' do
+    let(:title) { 'https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh' }
+
+    context 'defaults' do
+      let(:params) { {
+       :type         => 'url',
+      } }
+
+      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
+        'destination' => '/etc/sensu/plugins/check-mem.sh',
+        'verbose'     => 'false',
+        'timeout'     => '0'
+      ) }
+
+    end
+
+    context 'setting params' do
+      let(:params) { {
+       :type         => 'url',
+       :install_path => '/var/sensu/plugins'
+      } }
+
+      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
+        'destination' => '/var/sensu/plugins/check-mem.sh',
+        'verbose'     => 'false',
+        'timeout'     => '0'
+      ) }
+
+    end
+
+  end #url
+
   context 'directory' do
     let(:title) { 'puppet:///data/sensu/plugins' }
 
