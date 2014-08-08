@@ -40,7 +40,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     # Optional arguments
     self.handlers = resource[:handlers] unless resource[:handlers].nil?
     self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
-    self.refresh = resource[:interval] unless resource[:interval].nil?
+    self.refresh = resource[:refresh] unless resource[:interval].nil?
     self.subscribers = resource[:subscribers] unless resource[:subscribers].nil?
     self.type = resource[:type] unless resource[:type].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
@@ -94,19 +94,19 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]]['handlers'] = value
   end
   def occurrences
-    conf['checks'][resource[:name]]['occurrences']
+    conf['checks'][resource[:name]]['occurrences'].to_s
   end
 
   def occurrences=(value)
-    conf['checks'][resource[:name]]['occurrences'] = value
+    conf['checks'][resource[:name]]['occurrences'] = value.to_i
   end
 
   def refresh
-    conf['checks'][resource[:name]]['refresh']
+    conf['checks'][resource[:name]]['refresh'].to_s
   end
 
   def refresh=(value)
-    conf['checks'][resource[:name]]['refresh'] = value
+    conf['checks'][resource[:name]]['refresh'] = value.to_i
   end
 
   def command
