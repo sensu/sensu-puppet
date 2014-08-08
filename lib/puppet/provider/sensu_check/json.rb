@@ -40,7 +40,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     # Optional arguments
     self.handlers = resource[:handlers] unless resource[:handlers].nil?
     self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
-    self.refresh = resource[:refresh] unless resource[:interval].nil?
+    self.refresh = resource[:refresh] unless resource[:refresh].nil?
     self.subscribers = resource[:subscribers] unless resource[:subscribers].nil?
     self.type = resource[:type] unless resource[:type].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
