@@ -43,7 +43,6 @@ Debian & Ubuntu:
       class { 'sensu':
         rabbitmq_password => 'secret',
         server            => true,
-        dashboard         => true,
         api               => true,
         plugins           => [
           'puppet:///data/sensu/plugins/ntp.rb',
@@ -97,8 +96,6 @@ and configures Sensu on each individual node via
 
 ### common.yaml
 
-    sensu::dashboard_port: 8090
-    sensu::dashboard_password: mysupersecretpassword
     sensu::install_repo: false
     sensu::purge_config: true
     sensu::rabbitmq_host: 10.31.0.90
@@ -135,13 +132,12 @@ A usage example is shown below.
 ### Sensu server
 
 Each component of Sensu can be controlled separately. The server components
-are managed with the server, dashboard, and API parameters.
+are managed with the server, and API parameters.
 
     node 'sensu-server.foo.com' {
       class { 'sensu':
         rabbitmq_password => 'secret',
         server            => true,
-        dashboard         => true,
         api               => true,
         plugins           => [
           'puppet:///data/sensu/plugins/ntp.rb',
@@ -295,6 +291,11 @@ apache/manifests/service.pp
       'nagios': { include apache::monitoring::nagios }
     }
 
+## Dashboards
+
+The following puppet modules exist for managing dashboards
+
+* [uchiwa](https://github.com/pauloconnor/pauloconnor-uchiwa)
 
 ## License
 
