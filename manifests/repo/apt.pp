@@ -35,6 +35,7 @@ class sensu::repo::apt {
       release     => 'sensu',
       repos       => $sensu::repo,
       include_src => false,
+      key         => $sensu::repo_key_id,
       before      => Package['sensu'],
     }
 
