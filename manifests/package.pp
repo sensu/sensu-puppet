@@ -12,10 +12,12 @@ class sensu::package {
 
     'Debian': {
       class { 'sensu::repo::apt': }
+      $repo_require = Apt::Source['sensu']
     }
 
     'RedHat': {
       class { 'sensu::repo::yum': }
+      $repo_require = Yumrepo['sensu']
     }
 
     default: { alert("${::osfamily} not supported yet") }
@@ -24,6 +26,7 @@ class sensu::package {
 
   package { 'sensu':
     ensure  => $sensu::version,
+    require => $repo_require,
   }
 
   package { 'sensu-plugin' :
