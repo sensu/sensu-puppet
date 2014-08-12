@@ -51,11 +51,6 @@
 #   Default: false
 #   Valid values: true, false
 #
-# [*dashboard*]
-#   Boolean.  Include the sensu dashboard service
-#   Default: false
-#   Valid values: true, false
-#
 # [*manage_services*]
 #   Boolean.  Manage the sensu services with puppet
 #   Default: true
@@ -123,22 +118,6 @@
 #   Integer. Password of the sensu api service
 #   Default: undef
 #
-# [*dashboard_host*]
-#   String.  Hostname of the dahsboard host
-#   Default: $::ipaddress
-#
-# [*dashboard_port*]
-#   Integer.  Port for the sensu dashboard
-#   Default: 8080
-#
-# [*dashboard_user*]
-#   String.  Username to access the dashboard service
-#   Default: admin
-#
-# [*dashboard_password*]
-#   String.  Password for dashboard_user
-#   Default: secret
-#
 # [*subscriptions*]
 #   Array of strings.  Default suscriptions used by the client
 #   Default: []
@@ -194,7 +173,6 @@ class sensu (
   $client                   = true,
   $server                   = false,
   $api                      = false,
-  $dashboard                = false,
   $manage_services          = true,
   $manage_user              = true,
   $rabbitmq_port            = 5672,
@@ -211,11 +189,6 @@ class sensu (
   $api_port                 = 4567,
   $api_user                 = undef,
   $api_password             = undef,
-  $dashboard_bind           = '0.0.0.0',
-  $dashboard_host           = $::ipaddress,
-  $dashboard_port           = 8080,
-  $dashboard_user           = 'admin',
-  $dashboard_password       = 'secret',
   $subscriptions            = [],
   $client_bind              = '127.0.0.1',
   $client_address           = $::ipaddress,
@@ -229,7 +202,7 @@ class sensu (
   $log_level                = 'info',
 ){
 
-  validate_bool($client, $server, $api, $dashboard, $install_repo, $purge_config, $safe_mode, $manage_services)
+  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -238,7 +211,6 @@ class sensu (
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
-  if !is_integer($dashboard_port) { fail('dashboard_port must be an integer') }
 
   # Ugly hack for notifications, better way?
   # Put here to avoid computing the conditionals for every check
@@ -269,11 +241,9 @@ class sensu (
   class { 'sensu::api::config': } ->
   class { 'sensu::redis::config': } ->
   class { 'sensu::client::config': } ->
-  class { 'sensu::dashboard::config': } ->
   class { 'sensu::client::service': } ->
   class { 'sensu::api::service': } ->
   class { 'sensu::server::service': } ->
-  class { 'sensu::dashboard::service': } ->
   anchor {'sensu::end': }
 
   sensu::plugin { $plugins: install_path => '/etc/sensu/plugins'}
