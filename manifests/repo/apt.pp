@@ -28,6 +28,7 @@ class sensu::repo::apt {
         key         => $sensu::repo_key_id,
         key_source  => $sensu::repo_key_source,
       }
+      Apt::Key['sensu'] -> Apt::Source['sensu']
     }
     apt::source { 'sensu':
       ensure      => $ensure,
@@ -37,6 +38,12 @@ class sensu::repo::apt {
       include_src => false,
       before      => Package['sensu'],
     }
+
+    exec { "apt-update":
+        command => "/usr/bin/apt-get update"
+    }
+    Apt::Source <| |> ~> Exec["apt-update"]
+
 
   } else {
     fail('This class requires puppet-apt module')
