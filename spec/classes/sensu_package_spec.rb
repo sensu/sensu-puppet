@@ -41,7 +41,7 @@ describe 'sensu' do
         let(:facts) { { :osfamily => 'Debian' } }
 
         context 'with puppet-apt installed' do
-          let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include_src) {}', 'define apt::key ($key, $key_source) {}' ] }
+          let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include_src, $key, $key_source) {}' ] }
 
           context 'default' do
             it { should contain_apt__source('sensu').with(
@@ -50,12 +50,9 @@ describe 'sensu' do
               :release     => 'sensu',
               :repos       => 'main',
               :include_src => false,
-              :before      => 'Package[sensu]'
-            ) }
-
-            it { should contain_apt__key('sensu').with(
               :key         => '7580C77F',
-              :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg'
+              :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg',
+              :before      => 'Package[sensu]'
             ) }
           end
 
