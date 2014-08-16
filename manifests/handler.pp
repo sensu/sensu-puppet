@@ -12,7 +12,7 @@
 # [*type*]
 #   String.  Type of handler
 #   Default: pipe
-#   Valid values: pipe, tcp, udp, amqp, set
+#   Valid values: pipe, tcp, udp, amqp, transport, set
 #
 # [*command*]
 #   String.  Command to run as the handler when type=pipe
@@ -72,7 +72,7 @@ define sensu::handler(
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$' ] )
+  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
   if $exchange { validate_hash($exchange) }
   if $socket { validate_hash($socket) }
   validate_array($severities)
