@@ -5,6 +5,7 @@ Tested with Travis CI
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
 ## Upgrade note
+
 Versions prior to 1.0.0 are incompatible with previous versions of the
 Sensu-Puppet module.
 
@@ -13,10 +14,13 @@ Sensu-Puppet module.
     $ puppet module install sensu/sensu
 
 ## Prerequisites
+
 - Redis server and connectivity to a Redis database
 - RabbitMQ server, vhost, and credentials
+- Ruby JSON library or gem
 
 ### Dependencies
+
 - puppetlabs/apt
 - puppetlabs/stdlib
 
@@ -247,7 +251,6 @@ DaemonTools or SupervisorD, you can disable the module's internal
 service management functions like so:
 
     sensu::manage_services: false
-
 
 ## Including Sensu monitoring in other modules
 

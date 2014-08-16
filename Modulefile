@@ -1,4 +1,4 @@
-version '1.0.0'
+version '1.1.0'
 name 'sensu-sensu'
 license 'MIT'
 summary 'A module to intall the Sensu monitoring framework'
