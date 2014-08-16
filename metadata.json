@@ -1,0 +1,16 @@
+{
+  "name": "sensu-sensu",
+  "version": "1.1.0",
+  "author": "sensu",
+  "summary": "A module to intall the Sensu monitoring framework",
+  "license": "MIT",
+  "source": "https://github.com/sensu/sensu-puppet",
+  "project_page": "https://github.com/sensu/sensu-puppet",
+  "issues_url": "https://github.com/sensu/sensu-puppet/issues",
+  "tags": ["sensu", "monitoring"],
+  "dependencies": [
+    {"name":"maestrodev/wget","version_requirement":">= 1.4.5"},
+    {"name":"puppetlabs/apt","version_requirement":">= 0.0.1"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 0.0.1"}
+  ]
+}
