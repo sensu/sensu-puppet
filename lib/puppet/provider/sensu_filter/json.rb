@@ -12,11 +12,6 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   confine :feature => :json
   include Puppet_X::Sensu::Totype
 
-  def initialize(*args)
-    super
-    @conf = nil
-  end
-
   def conf
     begin
       @conf ||= JSON.parse(File.read(config_file))
@@ -42,7 +37,7 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def destroy
-    conf = nil
+    @conf = nil
   end
 
   def exists?

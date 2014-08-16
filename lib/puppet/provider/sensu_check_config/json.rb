@@ -4,12 +4,6 @@ require 'json' if Puppet.features.json?
 Puppet::Type.type(:sensu_check_config).provide(:json) do
   confine :feature => :json
 
-  def initialize(*args)
-    super
-
-    @conf = nil
-  end
-
   def conf
     begin
       @conf ||= JSON.parse(File.read(config_file))
