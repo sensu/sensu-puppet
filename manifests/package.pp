@@ -24,16 +24,8 @@ class sensu::package {
 
   }
 
-  if $sensu::install_repo {
-    $use_repo = $repo_require
-  } else {
-    $use_repo = false
-  }
-
-
   package { 'sensu':
     ensure  => $sensu::version,
-    require => $use_repo,
   }
 
   package { 'sensu-plugin' :
