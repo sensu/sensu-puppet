@@ -24,9 +24,9 @@ class sensu::package {
 
   }
 
-  
+
   package { 'sensu':
-    if $sensu::install_repo == 'true' {
+    if $sensu::install_repo {
       ensure  => $sensu::version,
       require => $repo_require,
     } else {
