@@ -33,7 +33,8 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   def create
     conf['filter'] = {}
     conf['filter'][resource[:name]] = {}
-    self.negate = resource[:negate]
+    self.negate     = resource[:negate]
+    self.attributes = resource[:attributes]
   end
 
   def destroy
@@ -67,6 +68,7 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def attributes=(value)
+    conf['filter'][resource[:name]]['attributes'] ||= {}
     conf['filter'][resource[:name]]['attributes'].merge!(to_type(value))
   end
 
