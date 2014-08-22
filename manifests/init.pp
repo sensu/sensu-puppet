@@ -145,6 +145,10 @@
 #   Hash.  Custom client variables
 #   Default: {}
 #
+# [*client_keepalive*]
+#   Hash.  Client keepalive config
+#   Default: {}
+#
 # [*safe_mode*]
 #   Boolean.  Force safe mode for checks
 #   Default: false
@@ -215,6 +219,7 @@ class sensu (
   $client_address           = $::ipaddress,
   $client_name              = $::fqdn,
   $client_custom            = {},
+  $client_keepalive         = {},
   $safe_mode                = false,
   $plugins                  = [],
   $plugins_dir              = undef,

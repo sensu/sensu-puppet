@@ -38,6 +38,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
     self.custom = resource[:custom] unless resource[:custom].nil?
+    self.keepalive = resource[:keepalive] unless resource[:keepalive].nil?
   end
 
   def destroy
@@ -91,6 +92,15 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   def custom=(value)
     conf['client'].delete_if { |k,v| not check_args.include?(k) }
     conf['client'].merge!(to_type(value))
+  end
+
+  def keepalive
+    conf['client']['keepalive'] || {}
+  end
+
+  def keepalive=(value)
+    conf['client']['keepalive'] ||= {}
+    conf['client']['keepalive'].merge!(to_type(value))
   end
 
   def safe_mode
