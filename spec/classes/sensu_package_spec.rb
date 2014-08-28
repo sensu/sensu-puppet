@@ -88,6 +88,8 @@ describe 'sensu' do
               :key         => '7580C77F',
               :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg'
             ) }
+
+            it { should contain_package('sensu').with( :require => nil ) }
           end
         end
 
@@ -121,6 +123,7 @@ describe 'sensu' do
         context 'install_repo => false' do
           let(:params) { { :install_repo => false } }
           it { should_not contain_yumrepo('sensu') }
+          it { should contain_package('sensu').with( :require => nil ) }
         end
       end
     end

@@ -12,12 +12,20 @@ class sensu::package {
 
     'Debian': {
       class { 'sensu::repo::apt': }
-      $repo_require = Apt::Source['sensu']
+      if str2bool($sensu::install_repo) {
+        $repo_require = Apt::Source['sensu']
+      } else {
+        $repo_require = undef
+      }
     }
 
     'RedHat': {
       class { 'sensu::repo::yum': }
-      $repo_require = Yumrepo['sensu']
+      if str2bool($sensu::install_repo) {
+        $repo_require = Yumrepo['sensu']
+      } else {
+        $repo_require = undef
+      }
     }
 
     default: { alert("${::osfamily} not supported yet") }
