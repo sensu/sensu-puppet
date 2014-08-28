@@ -200,6 +200,7 @@ class sensu (
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
   $log_level                = 'info',
+  $dashboard                = false,
 ){
 
   validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services)
@@ -211,6 +212,7 @@ class sensu (
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
+  if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
 
   # Ugly hack for notifications, better way?
   # Put here to avoid computing the conditionals for every check
