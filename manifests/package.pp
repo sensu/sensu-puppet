@@ -34,7 +34,6 @@ class sensu::package {
 
   package { 'sensu':
     ensure  => $sensu::version,
-    require => $repo_require,
   }
 
   package { 'sensu-plugin' :
@@ -62,7 +61,7 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
+  file { ['/etc/sensu/plugins', '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators', '/etc/sensu/extensions/handlers']:
     ensure  => directory,
     mode    => '0555',
     owner   => 'sensu',
