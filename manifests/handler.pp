@@ -80,6 +80,7 @@ define sensu::handler(
   validate_re($ensure, ['^present$', '^absent$'] )
   validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
   if $exchange { validate_hash($exchange) }
+  if $pipe { validate_hash($pipe) }
   if $socket { validate_hash($socket) }
   validate_array($severities)
   if $source { validate_re($source, ['^puppet://'] ) }
@@ -95,7 +96,7 @@ define sensu::handler(
     fail('exchange must be set with type amqp')
   }
 
-  if $type == 'transport' and !pipe {
+  if $type == 'transport' and !$pipe {
     fail('pipe must be set with type transport')
   }
 
