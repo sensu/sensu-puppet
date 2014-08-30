@@ -32,6 +32,11 @@
 #   Keys: host, port
 #   Default: undef
 #
+# [*pipe*]
+#   Hash.  Pipe information used when type=transport
+#   Keys: name, type, options 
+#   Default: undef
+#
 # [*socket*]
 #   Hash.  Socket information when type=tcp or type=udp
 #   Keys: host, port
@@ -61,6 +66,7 @@ define sensu::handler(
   $handlers     = undef,
   $severities   = ['ok', 'warning', 'critical', 'unknown'],
   $exchange     = undef,
+  $pipe         = undef,
   $mutator      = undef,
   $socket       = undef,
   $filters      = undef,
@@ -87,6 +93,10 @@ define sensu::handler(
 
   if $type == 'amqp' and !$exchange {
     fail('exchange must be set with type amqp')
+  }
+
+  if $type == 'transport' and !pipe {
+    fail('pipe must be set with type transport')
   }
 
   if $type == 'set' and !$handlers {
@@ -129,18 +139,19 @@ define sensu::handler(
   }
 
   sensu_handler { $name:
-    ensure     => $ensure,
-    type       => $type,
-    command    => $command_real,
-    handlers   => $handlers,
-    severities => $severities,
-    exchange   => $exchange,
-    socket     => $socket,
-    mutator    => $mutator,
-    filters    => $filters,
-    config     => $config,
-    notify     => $notify_services,
-    require    => File['/etc/sensu/conf.d/handlers'],
+    ensure       => $ensure,
+    type         => $type,
+    command      => $command_real,
+    handlers     => $handlers,
+    severities   => $severities,
+    exchange     => $exchange,
+    pipe         => $pipe,
+    socket       => $socket,
+    mutator      => $mutator,
+    filters      => $filters,
+    config       => $config,
+    notify       => $notify_services,
+    require      => File['/etc/sensu/conf.d/handlers'],
   }
 
 }

@@ -37,6 +37,10 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Exchange information used by the amqp type"
   end
 
+  newproperty(:pipe) do
+    desc "Pipe information used by the transport type"
+  end
+
   newproperty(:socket) do
     desc "Socket information used by the udp type"
 
