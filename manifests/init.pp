@@ -157,6 +157,10 @@
 #   String.  Ruby opts to be passed to the sensu services
 #   Default: ''
 #
+# [*gem_path*]
+#   String.  Paths to add to GEM_PATH if we need to look for different dirs.
+#   Default: ''
+#
 # [*log_level*]
 #   String.  Sensu log level to be used
 #   Default: 'info'
@@ -199,6 +203,7 @@ class sensu (
   $purge_config             = false,
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
+  $gem_path                 = '',
   $log_level                = 'info',
   $dashboard                = false,
 ){
