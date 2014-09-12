@@ -81,6 +81,30 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_socket({'host' => '192.168.23.23', 'port' => '2003'}) }
   end
 
+  context 'transport' do
+    let(:params) {
+      {
+        :type       => 'transport',
+        :pipe       => {
+          'type'    => 'topic',
+          'name'    => 'events',
+          'options' => {
+            'passive' => 'true',
+            'durable' => 'true'
+          }
+        }
+      }
+    }
+    it { should contain_sensu_handler('myhandler').with_pipe({
+      'type'    => 'topic',
+      'name'    => 'events',
+      'options' => {
+        'passive' => 'true',
+        'durable' => 'true'
+      }
+    }) }
+  end
+
   context 'mutator' do
     let(:params) { { :mutator => 'only_check_output' } }
 
