@@ -253,6 +253,6 @@ class sensu (
   class { 'sensu::server::service': } ->
   anchor {'sensu::end': }
 
-  sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+  sensu::plugin { $plugins: install_path => '/etc/sensu/plugins'}
 
 }
