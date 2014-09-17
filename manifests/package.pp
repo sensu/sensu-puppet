@@ -21,7 +21,7 @@ class sensu::package {
 
     'RedHat': {
       class { 'sensu::repo::yum': }
-      if $sensu::install_repo {
+      if str2bool($sensu::install_repo) {
         $repo_require = Yumrepo['sensu']
       } else {
         $repo_require = undef

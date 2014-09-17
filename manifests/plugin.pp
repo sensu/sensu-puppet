@@ -71,8 +71,7 @@ define sensu::plugin(
         }
     }
     'directory':  {
-      file { 'sensu_plugins_dir':
-        path    => $install_path,
+      file { $install_path:
         ensure  => directory,
         mode    => '0555',
         source  => $name,
