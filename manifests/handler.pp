@@ -28,11 +28,6 @@
 #   Valid values: ok, warning, critical, unknown
 #
 # [*pipe*]
-#   Hash.  Exchange information used when type=transport
-#   Keys: host, port
-#   Default: undef
-#
-# [*pipe*]
 #   Hash.  Pipe information used when type=transport
 #   Keys: name, type, options 
 #   Default: undef
@@ -65,7 +60,6 @@ define sensu::handler(
   $command      = undef,
   $handlers     = undef,
   $severities   = ['ok', 'warning', 'critical', 'unknown'],
-  $pipe     = undef,
   $pipe         = undef,
   $mutator      = undef,
   $socket       = undef,
@@ -142,7 +136,6 @@ define sensu::handler(
     handlers     => $handlers,
     severities   => $severities,
     pipe         => $pipe,
-    pipe         => $pipe,
     socket       => $socket,
     mutator      => $mutator,
     filters      => $filters,
@@ -150,5 +143,4 @@ define sensu::handler(
     notify       => $notify_services,
     require      => File['/etc/sensu/conf.d/handlers'],
   }
-
 }
