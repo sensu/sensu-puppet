@@ -33,10 +33,6 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Command the handler should run"
   end
 
-  newproperty(:exchange) do
-    desc "Exchange information used by the amqp type"
-  end
-
   newproperty(:pipe) do
     desc "Pipe information used by the transport type"
   end
