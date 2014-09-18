@@ -62,10 +62,10 @@ describe 'sensu::handler', :type => :define do
     ) }
   end
 
-  context 'exchange' do
-    let(:params) { { :type => 'amqp', :exchange => { 'type' => 'topic' } } }
+  context 'pipe' do
+    let(:params) { { :type => 'amqp', :pipe => { 'type' => 'topic' } } }
 
-    it { should contain_sensu_handler('myhandler').with_exchange({'type' => 'topic'}) }
+    it { should contain_sensu_handler('myhandler').with_pipe({'type' => 'topic'}) }
   end
 
   context 'tcp' do

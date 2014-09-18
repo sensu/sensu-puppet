@@ -12,7 +12,7 @@
 # [*type*]
 #   String.  Type of handler
 #   Default: pipe
-#   Valid values: pipe, tcp, udp, amqp, transport, set
+#   Valid values: pipe, tcp, udp, transport, set
 #
 # [*command*]
 #   String.  Command to run as the handler when type=pipe
@@ -27,8 +27,8 @@
 #   Default: ['ok', 'warning', 'critical', 'unknown']
 #   Valid values: ok, warning, critical, unknown
 #
-# [*exchange*]
-#   Hash.  Exchange information used when type=amqp
+# [*pipe*]
+#   Hash.  Exchange information used when type=transport
 #   Keys: host, port
 #   Default: undef
 #
@@ -65,7 +65,7 @@ define sensu::handler(
   $command      = undef,
   $handlers     = undef,
   $severities   = ['ok', 'warning', 'critical', 'unknown'],
-  $exchange     = undef,
+  $pipe     = undef,
   $pipe         = undef,
   $mutator      = undef,
   $socket       = undef,
@@ -78,8 +78,8 @@ define sensu::handler(
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
-  if $exchange { validate_hash($exchange) }
+  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^set$', '^transport$' ] )
+  if $pipe { validate_hash($pipe) }
   if $pipe { validate_hash($pipe) }
   if $socket { validate_hash($socket) }
   validate_array($severities)
@@ -90,10 +90,6 @@ define sensu::handler(
   }
   if ($type == 'tcp' or $type == 'udp') and !$socket {
     fail("socket must be set with type ${type}")
-  }
-
-  if $type == 'amqp' and !$exchange {
-    fail('exchange must be set with type amqp')
   }
 
   if $type == 'transport' and !$pipe {
@@ -145,7 +141,7 @@ define sensu::handler(
     command      => $command_real,
     handlers     => $handlers,
     severities   => $severities,
-    exchange     => $exchange,
+    pipe         => $pipe,
     pipe         => $pipe,
     socket       => $socket,
     mutator      => $mutator,
