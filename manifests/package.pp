@@ -70,7 +70,7 @@ class sensu::package {
   }
 
   if $sensu::_manage_plugins_dir {
-    file { '/etc/sensu/plugins',
+    file { '/etc/sensu/plugins':
       ensure  => directory,
       mode    => '0555',
       owner   => 'sensu',
