@@ -143,6 +143,10 @@
 #   String, Array of Strings.  Plugins to install on the node
 #   Default: []
 #
+# [*plugins_dir*]
+#   String. Puppet url to plugins directory
+#   Default: undef
+#
 # [*purge_config*]
 #   Boolean.  If unused configs should be removed from the system
 #   Default: false
@@ -200,6 +204,7 @@ class sensu (
   $client_custom            = {},
   $safe_mode                = false,
   $plugins                  = [],
+  $plugins_dir              = undef,
   $purge_config             = false,
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
@@ -253,6 +258,10 @@ class sensu (
   class { 'sensu::server::service': } ->
   anchor {'sensu::end': }
 
-  sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+  if $plugins_dir {
+    sensu::plugin { $plugins_dir: type => 'directory' }
+  } else {
+    sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+  }
 
 }
