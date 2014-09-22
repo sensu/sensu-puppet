@@ -69,6 +69,16 @@ class sensu::package {
     require => Package['sensu'],
   }
 
+  if $sensu::_manage_plugins_dir {
+    file { '/etc/sensu/plugins',
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      require => Package['sensu'],
+    }
+  }
+
   if $sensu::manage_user {
     user { 'sensu':
       ensure  => 'present',
