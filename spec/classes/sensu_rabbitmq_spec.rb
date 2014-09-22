@@ -38,6 +38,16 @@ describe 'sensu', :type => :class do
       ) }
     end # when using local key
 
+    context 'when using SSL transport' do
+      let(:params) { {
+        :rabbitmq_ssl => true,
+      } }
+
+      if { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :ssl_transport  => true
+      ) }
+    end # when using SSL transport
+
     context 'when using key in puppet' do
       let(:params) { {
         :rabbitmq_ssl_cert_chain  => 'puppet:///modules/sensu/cert.pem',
