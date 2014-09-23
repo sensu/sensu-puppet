@@ -43,7 +43,7 @@ describe 'sensu', :type => :class do
         :rabbitmq_ssl => true,
       } }
 
-      if { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
         :ssl_transport  => true
       ) }
     end # when using SSL transport
