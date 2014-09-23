@@ -61,12 +61,22 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { ['/etc/sensu/plugins', '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators', '/etc/sensu/extensions/handlers']:
+  file { ['/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators', '/etc/sensu/extensions/handlers']:
     ensure  => directory,
     mode    => '0555',
     owner   => 'sensu',
     group   => 'sensu',
     require => Package['sensu'],
+  }
+
+  if $sensu::_manage_plugins_dir {
+    file { '/etc/sensu/plugins':
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      require => Package['sensu'],
+    }
   }
 
   if $sensu::manage_user {

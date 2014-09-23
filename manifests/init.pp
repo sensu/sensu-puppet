@@ -61,6 +61,11 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*manage_plugins_dir*]
+#   Boolean. Manage the sensu plusing directory
+#   Default: true
+#   Valid values: true, false
+#
 # [*rabbitmq_port*]
 #   Integer.  Rabbitmq port to be used by sensu
 #   Default: 5672
@@ -143,6 +148,10 @@
 #   String, Array of Strings.  Plugins to install on the node
 #   Default: []
 #
+# [*plugins_dir*]
+#   String. Puppet url to plugins directory
+#   Default: undef
+#
 # [*purge_config*]
 #   Boolean.  If unused configs should be removed from the system
 #   Default: false
@@ -179,6 +188,7 @@ class sensu (
   $api                      = false,
   $manage_services          = true,
   $manage_user              = true,
+  $manage_plugins_dir       = true,
   $rabbitmq_port            = 5672,
   $rabbitmq_host            = 'localhost',
   $rabbitmq_user            = 'sensu',
@@ -200,6 +210,7 @@ class sensu (
   $client_custom            = {},
   $safe_mode                = false,
   $plugins                  = [],
+  $plugins_dir              = undef,
   $purge_config             = false,
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
@@ -239,6 +250,13 @@ class sensu (
     $check_notify = []
   }
 
+  # Because you can't reassign a variable in puppet and we need to set to
+  # false if you specify a directory, we have to use another variable.
+  if $plugins_dir {
+    $_manage_plugins_dir = false
+  } else {
+    $_manage_plugins_dir = $manage_plugins_dir
+  }
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
@@ -253,6 +271,10 @@ class sensu (
   class { 'sensu::server::service': } ->
   anchor {'sensu::end': }
 
-  sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+  if $plugins_dir {
+    sensu::plugin { $plugins_dir: type => 'directory' }
+  } else {
+    sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+  }
 
 }
