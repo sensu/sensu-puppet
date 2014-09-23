@@ -86,6 +86,12 @@
 #   String.  Rabbitmq vhost to be used by sensu
 #   Default: 'sensu'
 #
+# [*rabbitmq_ssl*]
+#   Boolean.  Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
+#     rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
+#     without specifying a private key or cert chain to use SSL transport, but not cert auth.
+#   Defaul: false
+#
 # [*rabbitmq_ssl_private_key*]
 #   String.  Private key to be used by sensu to connect to rabbitmq
 #     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
@@ -194,6 +200,7 @@ class sensu (
   $rabbitmq_user            = 'sensu',
   $rabbitmq_password        = '',
   $rabbitmq_vhost           = 'sensu',
+  $rabbitmq_ssl             = false,
   $rabbitmq_ssl_private_key = undef,
   $rabbitmq_ssl_cert_chain  = undef,
   $redis_host               = 'localhost',
