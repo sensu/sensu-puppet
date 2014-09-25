@@ -50,7 +50,12 @@ define sensu::plugin(
     'file':       {
       $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
-      define_plugins_dir { $install_path: }
+      define_plugins_dir { "${name}-${install_path}":
+        path    => $install_path,
+        purge   => $purge,
+        recurse => $recurse,
+        force   => $force,
+      }
           
       file { "${install_path}/${filename}":
         ensure  => file,
@@ -62,7 +67,12 @@ define sensu::plugin(
     'url' : {
         $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
-        define_plugins_dir { $install_path: }
+        define_plugins_dir { "${name}-${install_path}":
+          path    => $install_path,
+          purge   => $purge,
+          recurse => $recurse,
+          force   => $force,
+        }
 
         wget::fetch { $name :
           destination => "${install_path}/${filename}",
@@ -98,13 +108,21 @@ define sensu::plugin(
   }
 }
 # This is to verify the install_dir exists without duplicate declarations
-define define_plugins_dir ($path = $name) {
+define define_plugins_dir (
+  $path = $name,
+  $force,
+  $purge,
+  $recurse,
+) {
   if ! defined(File[$path]) {
     file { $path:
-      ensure => directory,
-      mode => '0555',
-      owner => 'sensu',
-      group => 'sensu',
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      recurse => $recurse,
+      purge   => $purge,
+      force   => $force,
       require => Package['sensu'],
     }
   }
