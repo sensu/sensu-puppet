@@ -2,3 +2,4 @@ sensu.komodoproject
 pkg/*
 spec/fixtures
 Gemfile.lock
+.vagrant/*
