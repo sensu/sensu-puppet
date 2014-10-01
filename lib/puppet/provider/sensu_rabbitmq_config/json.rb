@@ -20,6 +20,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
 
   def create
     conf['rabbitmq'] = {}
+    self.ssl_transport = resource[:ssl_transport] unless resource[:ssl_transport].nil?
     self.ssl_private_key = resource[:ssl_private_key] unless resource[:ssl_private_key].nil?
     self.ssl_cert_chain = resource[:ssl_cert_chain] unless resource[:ssl_cert_chain].nil?
     self.port = resource[:port]
@@ -35,6 +36,24 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
 
   def exists?
     conf.has_key? 'rabbitmq'
+  end
+
+  def ssl_transport
+    if conf['rabbitmq'].has_key? 'ssl'
+      :true
+    else
+      :false
+    end
+  end
+
+  def ssl_transport=(value)
+    if value == :false
+      if conf['rabbitmq'].has_key? 'ssl'
+        conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
+      end
+    else
+      conf['rabbitmq']['ssl'] ||= {}
+    end
   end
 
   def ssl_private_key

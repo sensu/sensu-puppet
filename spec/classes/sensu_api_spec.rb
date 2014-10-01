@@ -12,16 +12,10 @@ describe 'sensu', :type => :class do
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('present') }
       end
 
-      context 'wtih dashboard' do
-        let(:params) { { :dashboard => true } }
-        it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('present') }
-      end
-
       context 'purge config' do
         let(:params) { {
           :purge_config => true,
           :server       => false,
-          :dashboard    => false
         } }
 
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('absent') }
@@ -98,7 +92,6 @@ describe 'sensu', :type => :class do
           :purge_config => true,
           :api          => false,
           :server       => false,
-          :dashboard    => false,
         } }
 
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('absent') }

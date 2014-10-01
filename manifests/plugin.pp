@@ -7,7 +7,7 @@
 # [*type*]
 #   String.  Plugin source
 #   Default: file
-#   Valid values: file, directory, package
+#   Valid values: file, directory, package, url
 #
 # [*install_path*]
 #   String.  The path to install the plugin
@@ -44,16 +44,47 @@ define sensu::plugin(
 
   validate_bool($purge, $recurse, $force)
   validate_re($pkg_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${pkg_version}")
+  validate_re($type, ['^file$', '^url$', '^package$', '^directory$'], "Invalid plugin type: ${type}")
 
   case $type {
     'file':       {
       $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
+      define_plugins_dir { "${name}-${install_path}":
+        path    => $install_path,
+        purge   => $purge,
+        recurse => $recurse,
+        force   => $force,
+      }
+          
       file { "${install_path}/${filename}":
         ensure  => file,
         mode    => '0555',
         source  => $name,
+        require => File[$install_path],
       }
+    }
+    'url' : {
+        $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
+
+        define_plugins_dir { "${name}-${install_path}":
+          path    => $install_path,
+          purge   => $purge,
+          recurse => $recurse,
+          force   => $force,
+        }
+
+        wget::fetch { $name :
+          destination => "${install_path}/${filename}",
+          timeout     => 0,
+          verbose     => false,
+          require     => File[$install_path],
+        } ->
+        file { "${install_path}/${filename}":
+          ensure  => file,
+          mode    => '0555',
+          require => File[$install_path],
+        }
     }
     'directory':  {
       file { $install_path:
@@ -74,5 +105,25 @@ define sensu::plugin(
       fail('Unsupported sensu::plugin install type')
     }
 
+  }
+}
+# This is to verify the install_dir exists without duplicate declarations
+define define_plugins_dir (
+  $path = $name,
+  $force,
+  $purge,
+  $recurse,
+) {
+  if ! defined(File[$path]) {
+    file { $path:
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      recurse => $recurse,
+      purge   => $purge,
+      force   => $force,
+      require => Package['sensu'],
+    }
   }
 }

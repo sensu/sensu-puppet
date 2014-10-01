@@ -21,6 +21,8 @@ describe 'sensu::check', :type => :define do
         :command             => '/etc/sensu/command2.rb',
         :handlers            => ['/handler1', '/handler2'],
         :interval            => 10,
+        :occurrences         => 5,
+        :refresh             => 3600,
         :subscribers         => ['all'],
         :custom              => { 'a' => 'b', 'array' => [ 'c', 'd']},
         :type                => 'metric',
@@ -37,6 +39,8 @@ describe 'sensu::check', :type => :define do
         :command             => '/etc/sensu/command2.rb',
         :handlers            => ['/handler1', '/handler2'],
         :interval            => 10,
+        :occurrences         => 5,
+        :refresh             => 3600,
         :subscribers         => ['all'],
         :custom              => { 'a' => 'b', 'array' => [ 'c', 'd']},
         :type                => 'metric',
@@ -87,6 +91,51 @@ describe 'sensu::check', :type => :define do
       ) }
 
       it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foo_bar.json') }
+    end
+  end
+
+  context 'notifications' do
+    let(:title) { 'mycheck' }
+    let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
+
+    context 'no client, sever, or api' do
+      let(:pre_condition) { 'class {"sensu": client => false, api => false, server => false}' }
+      it { should contain_sensu_check('mycheck').with(:notify => []) }
+    end
+
+    context 'only client' do
+      let(:pre_condition) { 'class {"sensu": client => true, api => false, server => false}' }
+      it { should contain_sensu_check('mycheck').with(:notify => [ 'Class[Sensu::Client::Service]' ]) }
+    end
+
+    context 'only server' do
+      let(:pre_condition) { 'class {"sensu": client => false, api => false, server => true}' }
+      it { should contain_sensu_check('mycheck').with(:notify => [ 'Class[Sensu::Server::Service]' ]) }
+    end
+
+    context 'only api' do
+      let(:pre_condition) { 'class {"sensu": client => false, api => true, server => false}' }
+      it { should contain_sensu_check('mycheck').with(:notify => [ 'Class[Sensu::Api::Service]' ]) }
+    end
+
+    context 'client and api' do
+      let(:pre_condition) { 'class {"sensu": client => true, api => true, server => false}' }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Client::Service]', 'Class[Sensu::Api::Service]']) }
+    end
+
+    context 'client and server' do
+      let(:pre_condition) { 'class {"sensu": client => true, api => false, server => true}' }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Client::Service]', 'Class[Sensu::Server::Service]']) }
+    end
+
+    context 'api and server' do
+      let(:pre_condition) { 'class {"sensu": client => false, api => true, server => true}' }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Server::Service]', 'Class[Sensu::Api::Service]']) }
+    end
+
+    context 'client, api, and server' do
+      let(:pre_condition) { 'class {"sensu": client => true, api => true, server => true}' }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Client::Service]', 'Class[Sensu::Server::Service]', 'Class[Sensu::Api::Service]']) }
     end
   end
 

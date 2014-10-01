@@ -21,7 +21,7 @@ describe 'sensu', :type => :class do
         :rabbitmq_host            => 'myhost',
         :rabbitmq_user            => 'sensuuser',
         :rabbitmq_password        => 'sensupass',
-        :rabbitmq_vhost           => '/myvhost',
+        :rabbitmq_vhost           => 'myvhost',
       } }
 
       it { should_not contain_file('/etc/sensu/ssl/cert.pem') }
@@ -32,11 +32,21 @@ describe 'sensu', :type => :class do
         :host            => 'myhost',
         :user            => 'sensuuser',
         :password        => 'sensupass',
-        :vhost           => '/myvhost',
+        :vhost           => 'myvhost',
         :ssl_cert_chain  => '/etc/private/ssl/cert.pem',
         :ssl_private_key => '/etc/private/ssl/key.pem'
       ) }
     end # when using local key
+
+    context 'when using SSL transport' do
+      let(:params) { {
+        :rabbitmq_ssl => true,
+      } }
+
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :ssl_transport  => true
+      ) }
+    end # when using SSL transport
 
     context 'when using key in puppet' do
       let(:params) { {

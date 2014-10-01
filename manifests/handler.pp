@@ -12,7 +12,7 @@
 # [*type*]
 #   String.  Type of handler
 #   Default: pipe
-#   Valid values: pipe, tcp, udp, amqp, set
+#   Valid values: pipe, tcp, udp, amqp, transport, set
 #
 # [*command*]
 #   String.  Command to run as the handler when type=pipe
@@ -30,6 +30,11 @@
 # [*exchange*]
 #   Hash.  Exchange information used when type=amqp
 #   Keys: host, port
+#   Default: undef
+#
+# [*pipe*]
+#   Hash.  Pipe information used when type=transport
+#   Keys: name, type, options 
 #   Default: undef
 #
 # [*socket*]
@@ -61,6 +66,7 @@ define sensu::handler(
   $handlers     = undef,
   $severities   = ['ok', 'warning', 'critical', 'unknown'],
   $exchange     = undef,
+  $pipe         = undef,
   $mutator      = undef,
   $socket       = undef,
   $filters      = undef,
@@ -72,8 +78,9 @@ define sensu::handler(
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$' ] )
+  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
   if $exchange { validate_hash($exchange) }
+  if $pipe { validate_hash($pipe) }
   if $socket { validate_hash($socket) }
   validate_array($severities)
   if $source { validate_re($source, ['^puppet://'] ) }
@@ -87,6 +94,10 @@ define sensu::handler(
 
   if $type == 'amqp' and !$exchange {
     fail('exchange must be set with type amqp')
+  }
+
+  if $type == 'transport' and !$pipe {
+    fail('pipe must be set with type transport')
   }
 
   if $type == 'set' and !$handlers {
@@ -129,18 +140,19 @@ define sensu::handler(
   }
 
   sensu_handler { $name:
-    ensure     => $ensure,
-    type       => $type,
-    command    => $command_real,
-    handlers   => $handlers,
-    severities => $severities,
-    exchange   => $exchange,
-    socket     => $socket,
-    mutator    => $mutator,
-    filters    => $filters,
-    config     => $config,
-    notify     => $notify_services,
-    require    => File['/etc/sensu/conf.d/handlers'],
+    ensure       => $ensure,
+    type         => $type,
+    command      => $command_real,
+    handlers     => $handlers,
+    severities   => $severities,
+    exchange     => $exchange,
+    pipe         => $pipe,
+    socket       => $socket,
+    mutator      => $mutator,
+    filters      => $filters,
+    config       => $config,
+    notify       => $notify_services,
+    require      => File['/etc/sensu/conf.d/handlers'],
   }
 
 }

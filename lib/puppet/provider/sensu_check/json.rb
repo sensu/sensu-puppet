@@ -12,12 +12,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   confine :feature => :json
   include Puppet_X::Sensu::Totype
 
-  def initialize(*args)
-    super
-
-    @conf = nil
-  end
-
   def conf
     begin
       @conf ||= JSON.parse(File.read(config_file))
@@ -39,6 +33,8 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.interval = resource[:interval]
     # Optional arguments
     self.handlers = resource[:handlers] unless resource[:handlers].nil?
+    self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
+    self.refresh = resource[:refresh] unless resource[:refresh].nil?
     self.subscribers = resource[:subscribers] unless resource[:subscribers].nil?
     self.type = resource[:type] unless resource[:type].nil?
     self.standalone = resource[:standalone] unless resource[:standalone].nil?
@@ -52,7 +48,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def check_args
-    ['handlers','command','interval','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','custom']
+    ['handlers','command','interval','occurrences','refresh','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','custom']
   end
 
   def custom
@@ -91,6 +87,21 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   def handlers=(value)
     conf['checks'][resource[:name]]['handlers'] = value
   end
+  def occurrences
+    conf['checks'][resource[:name]]['occurrences'].to_s
+  end
+
+  def occurrences=(value)
+    conf['checks'][resource[:name]]['occurrences'] = value.to_i
+  end
+
+  def refresh
+    conf['checks'][resource[:name]]['refresh'].to_s
+  end
+
+  def refresh=(value)
+    conf['checks'][resource[:name]]['refresh'] = value.to_i
+  end
 
   def command
     conf['checks'][resource[:name]]['command']
@@ -98,6 +109,15 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def command=(value)
     conf['checks'][resource[:name]]['command'] = value
+  end
+
+  def dependencies
+    conf['checks'][resource[:name]]['dependencies']
+  end
+
+  def dependencies=(value)
+    value = [ value ] if value.is_a?(String)
+    conf['checks'][resource[:name]]['dependencies'] = value
   end
 
   def subscribers

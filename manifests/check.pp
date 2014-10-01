@@ -28,6 +28,12 @@
 #   Integer.  How frequently (in seconds) the check will be executed
 #   Default: 60
 #
+# [*occurrences*]
+#   Integer.  The number of event occurrences before the handler should take action.
+#
+# [*refresh*]
+#   Integer.  The number of seconds sensu-plugin-aware handlers should wait before taking second action.
+#
 # [*subscribers*]
 #   Array of Strings.  Which subscriptions must execute this check
 #   Default: []
@@ -58,6 +64,10 @@
 #   of commands that are not actually 'checks' per say, but actually arbitrary commands for remediation
 #   Default: undef
 #
+# [*dependencies*]
+#   Array.  List of checks this check depends on.  Note: The validity of the other checks is not enforced by puppet
+#   Default: undef
+#
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -65,6 +75,8 @@ define sensu::check(
   $handlers            = undef,
   $standalone          = true,
   $interval            = 60,
+  $occurrences         = undef,
+  $refresh             = undef,
   $subscribers         = [],
   $low_flap_threshold  = undef,
   $high_flap_threshold = undef,
@@ -72,6 +84,7 @@ define sensu::check(
   $aggregate           = undef,
   $handle              = undef,
   $publish             = undef,
+  $dependencies        = undef,
   $custom              = undef,
 ) {
 
@@ -79,6 +92,12 @@ define sensu::check(
   validate_bool($standalone)
   if !is_integer($interval) {
     fail("sensu::check{${name}}: interval must be an integer (got: ${interval})")
+  }
+  if $occurrences and !is_integer($occurrences) {
+    fail("sensu::check{${name}}: occurrences must be an integer (got: ${occurrences})")
+  }
+  if $refresh and !is_integer($refresh) {
+    fail("sensu::check{${name}}: refresh must be an integer (got: ${refresh})")
   }
   if $low_flap_threshold and !is_integer($low_flap_threshold) {
     fail("sensu::check{${name}}: low_flap_threshold must be an integer (got: ${low_flap_threshold})")
@@ -107,6 +126,8 @@ define sensu::check(
     command             => $command,
     handlers            => $handlers,
     interval            => $interval,
+    occurrences         => $occurrences,
+    refresh             => $refresh,
     subscribers         => $subscribers,
     low_flap_threshold  => $low_flap_threshold,
     high_flap_threshold => $high_flap_threshold,
@@ -114,9 +135,10 @@ define sensu::check(
     aggregate           => $aggregate,
     handle              => $handle,
     publish             => $publish,
+    dependencies        => $dependencies,
     custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
-    notify              => [ Class['sensu::client::service'], Class['sensu::server::service'] ],
+    notify              => $::sensu::check_notify,
   }
 
 }

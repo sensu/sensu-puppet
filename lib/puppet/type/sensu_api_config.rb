@@ -6,7 +6,6 @@ Puppet::Type.newtype(:sensu_api_config) do
 
     self[:notify] = [
       "Service[sensu-api]",
-      "Service[sensu-dashboard]",
     ].select { |ref| catalog.resource(ref) }
   end
 
@@ -36,6 +35,12 @@ Puppet::Type.newtype(:sensu_api_config) do
     desc "The hostname that the Sensu API is listening on"
 
     defaultto 'localhost'
+  end
+
+  newproperty(:bind) do
+    desc "The bind IP that sensu will bind to"
+
+    defaultto '0.0.0.0'
   end
 
   newparam(:base_path) do

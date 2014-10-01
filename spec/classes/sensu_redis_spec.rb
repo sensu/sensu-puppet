@@ -34,17 +34,11 @@ describe 'sensu' do
       it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('present') }
     end # with api
 
-    context 'with dashboard' do
-      let(:params) { { :dashboard => true } }
-      it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('present') }
-    end # with dashboard
-
     context 'purge configs' do
       let(:params) { {
         :purge_config => true,
         :server       => false,
         :api          => false,
-        :dashboard    => false,
       } }
 
       it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('absent') }

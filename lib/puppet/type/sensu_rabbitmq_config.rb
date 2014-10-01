@@ -32,6 +32,13 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
+  newproperty(:ssl_transport, :boolean => true) do
+    desc "Enable SSL transport to connect to RabbitMQ"
+
+    newvalues(true, false)
+    defaultto false
+  end
+
   newproperty(:ssl_private_key) do
     desc "The path on disk to the SSL private key needed to connect to RabbitMQ"
 
@@ -69,7 +76,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:vhost) do
     desc "The vhost to use when connecting to RabbitMQ"
 
-    defaultto '/sensu'
+    defaultto 'sensu'
   end
 
   autorequire(:package) do

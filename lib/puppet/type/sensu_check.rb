@@ -36,6 +36,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Command to be run by the check"
   end
 
+  newproperty(:dependencies, :array_matching => :all) do
+    desc "Dependencies of this check"
+  end
+
   newproperty(:handlers, :array_matching => :all) do
     desc "List of handlers that responds to this check"
   end
@@ -46,6 +50,14 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:interval) do
     desc "How frequently the check runs in seconds"
+  end
+
+  newproperty(:occurrences) do
+    desc "The number of event occurrences before the handler should take action."
+  end
+
+  newproperty(:refresh) do
+    desc "The number of seconds sensu-plugin-aware handlers should wait before taking second action."
   end
 
   newparam(:base_path) do

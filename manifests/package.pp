@@ -12,10 +12,20 @@ class sensu::package {
 
     'Debian': {
       class { 'sensu::repo::apt': }
+      if $sensu::install_repo {
+        $repo_require = Apt::Source['sensu']
+      } else {
+        $repo_require = undef
+      }
     }
 
     'RedHat': {
       class { 'sensu::repo::yum': }
+      if $sensu::install_repo {
+        $repo_require = Yumrepo['sensu']
+      } else {
+        $repo_require = undef
+      }
     }
 
     default: { alert("${::osfamily} not supported yet") }
@@ -24,6 +34,11 @@ class sensu::package {
 
   package { 'sensu':
     ensure  => $sensu::version,
+  }
+
+  package { 'sensu-plugin' :
+    ensure   => $sensu::sensu_plugin_version,
+    provider => 'gem',
   }
 
   file { '/etc/default/sensu':
@@ -46,12 +61,22 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { ['/etc/sensu/plugins', '/etc/sensu/handlers']:
+  file { ['/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators', '/etc/sensu/extensions/handlers']:
     ensure  => directory,
     mode    => '0555',
     owner   => 'sensu',
     group   => 'sensu',
     require => Package['sensu'],
+  }
+
+  if $sensu::_manage_plugins_dir {
+    file { '/etc/sensu/plugins':
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      require => Package['sensu'],
+    }
   }
 
   if $sensu::manage_user {
