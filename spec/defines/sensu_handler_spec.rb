@@ -7,7 +7,7 @@ describe 'sensu::handler', :type => :define do
 
     let(:params) { {
       :type     => 'pipe',
-      :command  => 'mycommand.rb',
+      :command  => '/etc/sensu/handlers/mycommand.rb',
       :source   => 'puppet:///somewhere/mycommand.rb'
     } }
     it { should contain_file('/etc/sensu/handlers/mycommand.rb').with_source('puppet:///somewhere/mycommand.rb')}
@@ -50,6 +50,16 @@ describe 'sensu::handler', :type => :define do
 
     it { should contain_file('/etc/sensu/handlers/script.sh').with_ensure('file')}
     it { should contain_sensu_handler('myhandler').with_command('/etc/sensu/handlers/script.sh') }
+  end
+
+  context 'source and command' do
+    let(:params) { {
+      :command => 'script.sh',
+      :source  => 'puppet:///sensu/handler/script.sh'
+    } }
+
+    it { should contain_file('/etc/sensu/handlers/script.sh').with_ensure('file') }
+    it { should contain_sensu_handler('myhandler').with_command('script.sh') }
   end
 
   context 'handlers' do

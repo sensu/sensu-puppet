@@ -113,19 +113,24 @@ define sensu::handler(
   if $source {
 
     $filename = inline_template('<%= scope.lookupvar(\'source\').split(\'/\').last %>')
-    $command_real = "${install_path}/${filename}"
+    $handler = "${install_path}/${filename}"
 
     $file_ensure = $ensure ? {
       'absent'  => 'absent',
       default   => 'file'
     }
 
-    file { $command_real:
+    file { $handler:
       ensure  => $file_ensure,
       owner   => 'sensu',
       group   => 'sensu',
       mode    => '0555',
       source  => $source,
+    }
+
+    $command_real = $command ? {
+      undef   => $handler,
+      default => $command,
     }
   } else {
     $command_real = $command
