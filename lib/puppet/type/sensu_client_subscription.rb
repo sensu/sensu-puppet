@@ -1,3 +1,9 @@
+begin
+  require 'puppet_x/sensu/to_type'
+rescue LoadError => e
+  libdir = Pathname.new(__FILE__).parent.parent.parent
+  require File.join(libdir, 'puppet_x/sensu/to_type')
+end
 Puppet::Type.newtype(:sensu_client_subscription) do
   @doc = ""
 
@@ -36,6 +42,34 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     munge do |value|
       Array(value)
     end
+  end
+
+  newproperty(:custom) do
+    desc "Custom client variables"
+
+    include Puppet_X::Sensu::Totype
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
   end
 
   autorequire(:package) do

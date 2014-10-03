@@ -8,9 +8,14 @@
 #   String. Whether the check should be present or not
 #   Default: present
 #   Valid values: present, absent
+
+# [*custom*]
+#   Hash.  Custom client variables
+#   Default: {}
 #
 define sensu::subscription (
   $ensure       = 'present',
+  $custom       = {},
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -25,6 +30,7 @@ define sensu::subscription (
 
   sensu_client_subscription { $name:
     ensure  => $ensure,
+    custom  => $custom,
     notify  => Class['sensu::client::service'],
   }
 

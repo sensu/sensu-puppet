@@ -281,6 +281,27 @@ apache/manifests/monitoring/sensu.pp
       sensu::subscription { 'apache': }
     }
 
+You can also define custom variables as part of the subscription:
+
+ntp/manifests/monitoring/ntp.pp
+
+    class ntp::monitoring::sensu {
+      sensu::subscription { 'ntp':
+        custom => {
+          ntp {
+            server => $ntp::servers[0],
+          },
+        },
+      }
+    }
+
+And then use that variable on your Sensu server:
+
+    sensu::check { 'check_ntp':
+      command     => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H :::ntp.server::: -w 30 -c 60',
+      ...
+    }
+
 If you would like to automatically include the Sensu monitoring class as
 part of your existing module with the ability to support different
 monitoring platforms, you could do something like:
