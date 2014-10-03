@@ -126,11 +126,11 @@
 #   Default: undef
 #
 # [*api_password*]
-#   Integer. Password of the sensu api service
+#   Integer. Password of the Sensu API service
 #   Default: undef
 #
 # [*subscriptions*]
-#   Array of strings.  Default suscriptions used by the client
+#   Array of strings.  Default subscriptions used by the client
 #   Default: []
 #
 # [*client_address*]
@@ -149,6 +149,10 @@
 #   Boolean.  Force safe mode for checks
 #   Default: false
 #   Valid values: true, false
+#
+# [*keepalive*]
+#   Hash. Keepalive hash.
+#   Default: {}
 #
 # [*plugins*]
 #   String, Array of Strings.  Plugins to install on the node
@@ -211,6 +215,7 @@ class sensu (
   $api_user                 = undef,
   $api_password             = undef,
   $subscriptions            = [],
+  $keepalive                = {},
   $client_bind              = '127.0.0.1',
   $client_address           = $::ipaddress,
   $client_name              = $::fqdn,

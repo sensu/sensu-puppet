@@ -14,6 +14,7 @@ describe 'sensu', :type => :class do
           :client_name   => 'host.domain.com',
           :address       => '2.3.4.5',
           :subscriptions => [],
+          :keepalive     => {},
           :ensure        => 'present',
           :custom        => {}
         ) }
@@ -26,6 +27,7 @@ describe 'sensu', :type => :class do
           :subscriptions            => ['all'],
           :client_name              => 'myclient',
           :safe_mode                => true,
+          :keepalive                => { 'thresholds' => { 'warning' => 60, 'critical' => 120 }, 'handler' => 'keepalive' },
           :client_custom            => { 'bool' => true, 'foo' => 'bar' }
         } }
 
@@ -36,6 +38,7 @@ describe 'sensu', :type => :class do
           :subscriptions => ['all'],
           :ensure        => 'present',
           :safe_mode     => true,
+          :keepalive     => { 'thresholds' => { 'warning' => 60, 'critical' => 120 }, 'handler' => 'keepalive' },
           :custom        => { 'bool' => true, 'foo' => 'bar' }
         } ) }
 

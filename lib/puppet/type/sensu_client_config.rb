@@ -48,6 +48,10 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto '127.0.0.1'
   end
 
+  newproperty(:keepalive, :array_matching => :all) do
+    desc ""
+  end
+
   newparam(:base_path) do
     desc "The base path to the client config file"
     defaultto '/etc/sensu/conf.d/'
