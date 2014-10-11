@@ -1,5 +1,7 @@
 # Sensu-Puppet
 
+Installs and manages the open source monitoring framework [Sensu](http://sensuapp.org).
+
 ## Tested with Travis CI
 
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
