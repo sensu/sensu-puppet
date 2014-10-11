@@ -1,12 +1,12 @@
 # Sensu-Puppet
 
-Tested with Travis CI
+## Tested with Travis CI
 
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
-Documented with Puppet Strings:
+## Documented with Puppet Strings
 
-[Puppet Strings Documentation](http://sensu.github.io/sensu-puppet/)
+[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
 
 ## Upgrade note
 
