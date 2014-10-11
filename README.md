@@ -4,6 +4,10 @@ Tested with Travis CI
 
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
+Documented with Puppet Strings:
+
+[Puppet Strings Documentation](http://sensu.github.io/sensu-puppet/)
+
 ## Upgrade note
 
 Versions prior to 1.0.0 are incompatible with previous versions of the
