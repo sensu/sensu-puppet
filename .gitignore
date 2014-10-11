@@ -1,6 +1,7 @@
-sensu.komodoproject
 pkg/*
+sensu.komodoproject
 spec/fixtures
 Gemfile.lock
 .vagrant/*
+.yardoc
 doc
