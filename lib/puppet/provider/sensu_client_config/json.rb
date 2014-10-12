@@ -37,6 +37,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.bind = resource[:bind]
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
+    self.keepalive = resource[:keepalive]
     self.custom = resource[:custom] unless resource[:custom].nil?
     self.keepalive = resource[:keepalive] unless resource[:keepalive].nil?
   end
@@ -75,6 +76,14 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
 
   def bind=(value)
     conf['client']['bind'] = value
+  end
+
+  def keepalive
+    conf['client']['keepalive'] || {}
+  end
+
+  def keepalive=(value)
+    conf['client']['keepalive'] = value
   end
 
   def subscriptions

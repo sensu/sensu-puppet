@@ -28,6 +28,7 @@ class sensu::client::config {
     bind          => $sensu::client_bind,
     subscriptions => $sensu::subscriptions,
     safe_mode     => $sensu::safe_mode,
+    keepalive     => $sensu::keepalive,
     custom        => $sensu::client_custom,
     keepalive     => $sensu::client_keepalive,
   }

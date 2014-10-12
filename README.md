@@ -180,6 +180,8 @@ are managed with the server, and API parameters.
       }
     }
 
+You can also pass in custom values and keepalives into Sensu clients
+using the `client_custom` and `keepalive` hashes.
 
 ## Using custom variables in check definitions
 
