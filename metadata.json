@@ -1,8 +1,8 @@
 {
   "name": "sensu-sensu",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "author": "sensu",
-  "summary": "A module to intall the Sensu monitoring framework",
+  "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
   "source": "https://github.com/sensu/sensu-puppet",
   "project_page": "https://github.com/sensu/sensu-puppet",
