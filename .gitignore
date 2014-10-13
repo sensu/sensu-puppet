@@ -4,4 +4,4 @@ spec/fixtures
 Gemfile.lock
 .vagrant/*
 .yardoc
-doc
+doc/**
