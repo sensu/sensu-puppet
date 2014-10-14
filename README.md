@@ -29,8 +29,9 @@ Sensu-Puppet module.
 
 - puppetlabs/apt
 - puppetlabs/stdlib
+- maestrodev/wget
 
-See `Modulefile` for details.
+See `metadata.json` for details.
 
 Pluginsync should be enabled. Also, you will need the Ruby JSON library
 or gem on all your nodes.
