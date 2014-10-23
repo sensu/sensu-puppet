@@ -32,9 +32,10 @@ describe 'sensu::plugin', :type => :define do
       } }
 
       it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
-        'destination' => '/etc/sensu/plugins/check-mem.sh',
-        'verbose'     => 'false',
-        'timeout'     => '0'
+        'destination'           => '/etc/sensu/plugins/check-mem.sh',
+        'verbose'               => 'false',
+        'timeout'               => '0',
+        'nocheckcertificate' => 'false',
       ) }
 
     end
@@ -49,6 +50,21 @@ describe 'sensu::plugin', :type => :define do
         'destination' => '/var/sensu/plugins/check-mem.sh',
         'verbose'     => 'false',
         'timeout'     => '0'
+      ) }
+
+    end
+
+    context 'nocheckcertificate' do
+      let(:params) { {
+       :type                => 'url',
+        :nocheckcertificate => true,
+      } }
+
+      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
+        'destination'        => '/etc/sensu/plugins/check-mem.sh',
+        'verbose'            => 'false',
+        'timeout'            => '0',
+        'nocheckcertificate' => 'true',
       ) }
 
     end

@@ -33,16 +33,21 @@
 #   Default: latest
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
+# [*nocheckcertificate*]
+#   Boolean.  When using url source, disable certificate checking for HTTPS
+#   Default: false
+#   Valid values: true, false
 define sensu::plugin(
-  $type         = 'file',
-  $install_path = '/etc/sensu/plugins',
-  $purge        = true,
-  $recurse      = true,
-  $force        = true,
-  $pkg_version  = 'latest',
+  $type               = 'file',
+  $install_path       = '/etc/sensu/plugins',
+  $purge              = true,
+  $recurse            = true,
+  $force              = true,
+  $pkg_version        = 'latest',
+  $nocheckcertificate = false,
 ){
 
-  validate_bool($purge, $recurse, $force)
+  validate_bool($purge, $recurse, $force, $nocheckcertificate)
   validate_re($pkg_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${pkg_version}")
   validate_re($type, ['^file$', '^url$', '^package$', '^directory$'], "Invalid plugin type: ${type}")
 
@@ -56,7 +61,7 @@ define sensu::plugin(
         recurse => $recurse,
         force   => $force,
       }
-          
+
       file { "${install_path}/${filename}":
         ensure  => file,
         mode    => '0555',
@@ -74,11 +79,12 @@ define sensu::plugin(
           force   => $force,
         }
 
-        wget::fetch { $name :
-          destination => "${install_path}/${filename}",
-          timeout     => 0,
-          verbose     => false,
-          require     => File[$install_path],
+        wget::fetch { $name:
+          destination        => "${install_path}/${filename}",
+          timeout            => 0,
+          verbose            => false,
+          nocheckcertificate => $nocheckcertificate,
+          require            => File[$install_path],
         } ->
         file { "${install_path}/${filename}":
           ensure  => file,
