@@ -31,8 +31,8 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def create
-    conf['filter'] = {}
-    conf['filter'][resource[:name]] = {}
+    conf['filters'] = {}
+    conf['filters'][resource[:name]] = {}
     self.negate     = resource[:negate]
     self.attributes = resource[:attributes]
   end
@@ -42,11 +42,11 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def exists?
-    conf.has_key?('filter') and conf['filter'].has_key?(resource[:name])
+    conf.has_key?('filters') and conf['filters'].has_key?(resource[:name])
   end
 
   def negate
-    case conf['filter'][resource[:name]]['negate']
+    case conf['filters'][resource[:name]]['negate']
     when true
       :true
     else
@@ -57,19 +57,19 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   def negate=(value)
     case value
     when true, 'true', 'True', :true, 1
-      conf['filter'][resource[:name]]['negate'] = true
+      conf['filters'][resource[:name]]['negate'] = true
     else
-      conf['filter'][resource[:name]]['negate'] = false
+      conf['filters'][resource[:name]]['negate'] = false
     end
   end
 
   def attributes
-    conf['filter'][resource[:name]]['attributes']
+    conf['filters'][resource[:name]]['attributes']
   end
 
   def attributes=(value)
-    conf['filter'][resource[:name]]['attributes'] ||= {}
-    conf['filter'][resource[:name]]['attributes'].merge!(to_type(value))
+    conf['filters'][resource[:name]]['attributes'] ||= {}
+    conf['filters'][resource[:name]]['attributes'].merge!(to_type(value))
   end
 
 end
