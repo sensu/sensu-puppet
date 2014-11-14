@@ -54,9 +54,11 @@ class sensu::rabbitmq::config {
     } else {
       $ssl_private_key = $sensu::rabbitmq_ssl_private_key
     }
+    $enable_ssl = true
   } else {
     $ssl_cert_chain = undef
     $ssl_private_key = undef
+    $enable_ssl = $sensu::rabbitmq_ssl
   }
 
   file { '/etc/sensu/conf.d/rabbitmq.json':
@@ -74,7 +76,7 @@ class sensu::rabbitmq::config {
     user            => $sensu::rabbitmq_user,
     password        => $sensu::rabbitmq_password,
     vhost           => $sensu::rabbitmq_vhost,
-    ssl_transport   => $sensu::rabbitmq_ssl,
+    ssl_transport   => $enable_ssl,
     ssl_cert_chain  => $ssl_cert_chain,
     ssl_private_key => $ssl_private_key,
   }
