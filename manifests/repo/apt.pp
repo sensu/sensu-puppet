@@ -22,16 +22,17 @@ class sensu::repo::apt {
     } else {
       $url = 'http://repos.sensuapp.org/apt'
     }
-
-    apt::source { 'sensu':
-      ensure      => $ensure,
-      location    => $url,
-      release     => 'sensu',
-      repos       => $sensu::repo,
-      include_src => false,
-      key         => $sensu::repo_key_id,
-      key_source  => $sensu::repo_key_source,
-      before      => Package['sensu'],
+    if !defined(Apt::Source['sensu']) {
+      apt::source { 'sensu':
+        ensure      => $ensure,
+        location    => $url,
+        release     => 'sensu',
+        repos       => $sensu::repo,
+        include_src => false,
+        key         => $sensu::repo_key_id,
+        key_source  => $sensu::repo_key_source,
+        before      => Package['sensu'],
+      }
     }
 
   } else {
