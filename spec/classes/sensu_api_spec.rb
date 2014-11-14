@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
-  let(:facts) { { :fqdn => 'testhost.domain.com' } }
+  let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat' } }
 
   context 'without api (default)' do
 

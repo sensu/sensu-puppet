@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'sensu::check', :type => :define do
+  let(:facts) { { :osfamily => 'RedHat' } }
+
   context 'without whitespace in name' do
     let(:title) { 'mycheck' }
 
