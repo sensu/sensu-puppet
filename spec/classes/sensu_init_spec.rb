@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
+  let(:facts) { { :osfamily => 'RedHat' } }
 
   it 'should compile' do should create_class('sensu') end
   it { should contain_user('sensu') }

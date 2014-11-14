@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
-  let(:facts) { { :fqdn => 'hostname.domain.com' } }
+  let(:facts) { { :fqdn => 'hostname.domain.com', :osfamily => 'RedHat' } }
   let(:params) { { :client => true } }
 
   context 'rabbitmq config' do
