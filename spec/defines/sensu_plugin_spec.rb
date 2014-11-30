@@ -8,7 +8,7 @@ describe 'sensu::plugin', :type => :define do
     context 'defaults' do
 
       it { should contain_file('/etc/sensu/plugins/plug1').with(
-        'source'      => 'puppet:///data/plug1'
+        'source' => 'puppet:///data/plug1'
       ) }
     end
 
@@ -18,7 +18,7 @@ describe 'sensu::plugin', :type => :define do
       } }
 
       it { should contain_file('/var/sensu/plugins/plug1').with(
-        'source'      => 'puppet:///data/plug1'
+        'source' => 'puppet:///data/plug1'
       ) }
     end
   end #file
@@ -28,27 +28,43 @@ describe 'sensu::plugin', :type => :define do
 
     context 'defaults' do
       let(:params) { {
-       :type         => 'url',
+        :type => 'url',
       } }
 
       it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
-        'destination' => '/etc/sensu/plugins/check-mem.sh',
-        'verbose'     => 'false',
-        'timeout'     => '0'
+        'destination'        => '/etc/sensu/plugins/check-mem.sh',
+        'verbose'            => 'false',
+        'timeout'            => '0',
+        'nocheckcertificate' => 'false'
       ) }
 
     end
 
     context 'setting params' do
       let(:params) { {
-       :type         => 'url',
-       :install_path => '/var/sensu/plugins'
+        :type         => 'url',
+        :install_path => '/var/sensu/plugins'
       } }
 
       it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
         'destination' => '/var/sensu/plugins/check-mem.sh',
         'verbose'     => 'false',
         'timeout'     => '0'
+      ) }
+
+    end
+
+    context 'nocheckcertificate' do
+      let(:params) { {
+        :type               => 'url',
+        :nocheckcertificate => true,
+      } }
+
+      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
+        'destination'        => '/etc/sensu/plugins/check-mem.sh',
+        'verbose'            => 'false',
+        'timeout'            => '0',
+        'nocheckcertificate' => 'true'
       ) }
 
     end

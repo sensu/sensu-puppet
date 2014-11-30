@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu' do
-  let(:facts) { { :fqdn => 'testhost.domain.com' } }
+  let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat' } }
 
   context 'package' do
     context 'defaults' do

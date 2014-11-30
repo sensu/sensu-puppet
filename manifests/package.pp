@@ -28,7 +28,7 @@ class sensu::package {
       }
     }
 
-    default: { alert("${::osfamily} not supported yet") }
+    default: { fail("${::osfamily} not supported yet") }
 
   }
 

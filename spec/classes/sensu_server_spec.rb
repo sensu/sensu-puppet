@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'sensu' do
   let(:title) { 'sensu::server' }
+  let(:facts) { { :osfamily => 'RedHat' } }
 
   context 'without server (default)' do
 
