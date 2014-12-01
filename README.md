@@ -90,7 +90,7 @@ See the tests directory for examples on setting up prerequisits.
 
     node 'sensu-server.foo.com' {
       class { 'sensu':
-        rabbitmq_password => 'secret',
+        rabbitmq_password => 'correct-horse-battery-staple',
         server            => true,
         api               => true,
         plugins           => [
@@ -119,7 +119,7 @@ See the tests directory for examples on setting up prerequisits.
 
     node 'sensu-client.foo.com' {
        class { 'sensu':
-         rabbitmq_password  => 'secret',
+         rabbitmq_password  => 'correct-horse-battery-staple',
          rabbitmq_host      => 'sensu-server.foo.com',
          subscriptions      => 'sensu-test',
        }
@@ -185,7 +185,7 @@ are managed with the server, and API parameters.
 
     node 'sensu-server.foo.com' {
       class { 'sensu':
-        rabbitmq_password => 'secret',
+        rabbitmq_password => 'correct-horse-battery-staple',
         server            => true,
         api               => true,
         plugins           => [
@@ -208,7 +208,7 @@ are managed with the server, and API parameters.
 
     node 'sensu-client.foo.com' {
        class { 'sensu':
-         rabbitmq_password  => 'secret',
+         rabbitmq_password  => 'correct-horse-battery-staple',
          rabbitmq_host      => 'sensu-server.foo.com',
          subscriptions      => 'sensu-test',
          safe_mode          => true,
