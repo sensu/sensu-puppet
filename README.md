@@ -51,6 +51,39 @@ Debian & Ubuntu:
 
     $ sudo apt-get install ruby-json
 
+## Quick start
+
+Before this puppet module can be used, the following items must be configured on the server. 
+
+- Install redis
+- Install rabbitmq
+- Add users to rabbitmq
+- Install dashboard (optional)
+
+If you just want to test sensu, start the provided Vagrant VM's which have all prerequisites preinstalled. 
+
+    vagrant up
+    vagrant status
+    vagrant ssh sensu-server
+    
+You can then access the api
+
+    curl http://admin:secret@localhost:4567/info
+ 
+
+Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
+
+    username => uchiwa
+    password => uchiwa
+    
+Navigate to `192.168.56.10:15672` to manage rabbitmq
+
+    username => sensu
+    password => correct-horse-battery-staple
+    
+See the tests directory for examples on setting up prerequisits. 
+
+
 ## Basic example
 
 ### Sensu server
