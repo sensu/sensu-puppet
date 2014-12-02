@@ -1,6 +1,7 @@
 # Sensu-Puppet
 
 Installs and manages the open source monitoring framework [Sensu](http://sensuapp.org).
+[![Puppet Forge](http://img.shields.io/puppetforge/v/sensu/sensu.svg)](https://forge.puppetlabs.com/sensu/sensu)
 
 ## Tested with Travis CI
 
