@@ -60,7 +60,7 @@ Before this puppet module can be used, the following items must be configured on
 - Add users to rabbitmq
 - Install dashboard (optional)
 
-If you just want to test sensu, start the provided Vagrant VM's which have all prerequisites preinstalled. 
+To quickly try out sensu, spin up a test VM with Vagrant that already has these prerequisites installed.
 
     vagrant up
     vagrant status
@@ -69,7 +69,7 @@ If you just want to test sensu, start the provided Vagrant VM's which have all p
 You can then access the api
 
     curl http://admin:secret@localhost:4567/info
- 
+
 
 Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
 
@@ -81,7 +81,7 @@ Navigate to `192.168.56.10:15672` to manage rabbitmq
     username => sensu
     password => correct-horse-battery-staple
     
-See the tests directory for examples on setting up prerequisits. 
+See the [tests directory](https://github.com/sensu/sensu-puppet/tree/vagrant/tests) and [Vagrantfile](https://github.com/sensu/sensu-puppet/blob/vagrant/Vagrantfile) for examples on setting up the prerequisites.
 
 
 ## Basic example
