@@ -9,7 +9,7 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
     source is not present at all, the gem will be installed from the default gem
     repositories."
 
-  has_feature :versionable
+  has_feature :versionable, :install_options
 
   commands :gemcmd => "/opt/sensu/embedded/bin/gem"
 end
