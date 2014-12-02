@@ -360,6 +360,16 @@ apache/manifests/service.pp
       'nagios': { include apache::monitoring::nagios }
     }
 
+## Installing Gems into the embedded ruby
+
+If you are using the embedded ruby that ships with sensu, you can install gems
+by using the `sensu_gem` package provier:
+
+    package { 'redphone':
+      ensure   => 'installed',
+      provider => sensu_gem,
+    }
+
 ## Dashboards
 
 The following puppet modules exist for managing dashboards
