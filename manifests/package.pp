@@ -38,7 +38,10 @@ class sensu::package {
 
   package { 'sensu-plugin' :
     ensure   => $sensu::sensu_plugin_version,
-    provider => 'gem',
+    provider => $sensu::use_embedded_ruby ? {
+      true    => 'sensu_gem',
+      default => 'gem',
+    }
   }
 
   file { '/etc/default/sensu':
