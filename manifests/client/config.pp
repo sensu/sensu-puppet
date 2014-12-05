@@ -15,10 +15,10 @@ class sensu::client::config {
   }
 
   file { '/etc/sensu/conf.d/client.json':
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0444',
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0444',
   }
 
   sensu_client_config { $::fqdn:

@@ -104,7 +104,7 @@ define sensu::plugin(
     }
     'package':    {
       package { $name:
-        ensure  => $pkg_version
+        ensure => $pkg_version
       }
     }
     default:      {
@@ -115,10 +115,10 @@ define sensu::plugin(
 }
 # This is to verify the install_dir exists without duplicate declarations
 define define_plugins_dir (
-  $path = $name,
   $force,
   $purge,
   $recurse,
+  $path = $name,
 ) {
   if ! defined(File[$path]) {
     file { $path:

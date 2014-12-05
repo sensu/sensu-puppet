@@ -112,11 +112,11 @@ define sensu::check(
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
   file { "/etc/sensu/conf.d/checks/${check_name}.json":
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0440',
-    before  => Sensu_check[$check_name],
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0440',
+    before => Sensu_check[$check_name],
   }
 
   sensu_check { $check_name:

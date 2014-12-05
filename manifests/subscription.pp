@@ -21,17 +21,17 @@ define sensu::subscription (
   validate_re($ensure, ['^present$', '^absent$'] )
 
   file { "/etc/sensu/conf.d/subscription_${name}.json":
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0444',
-    before  => Sensu_client_subscription[$name],
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0444',
+    before => Sensu_client_subscription[$name],
   }
 
   sensu_client_subscription { $name:
-    ensure  => $ensure,
-    custom  => $custom,
-    notify  => Class['sensu::client::service'],
+    ensure => $ensure,
+    custom => $custom,
+    notify => Class['sensu::client::service'],
   }
 
 }

@@ -15,10 +15,10 @@ class sensu::api::config {
   }
 
   file { '/etc/sensu/conf.d/api.json':
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0440',
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0440',
   }
 
   sensu_api_config { $::fqdn:
