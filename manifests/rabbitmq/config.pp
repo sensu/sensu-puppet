@@ -62,11 +62,11 @@ class sensu::rabbitmq::config {
   }
 
   file { '/etc/sensu/conf.d/rabbitmq.json':
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0440',
-    before  => Sensu_rabbitmq_config[$::fqdn],
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0440',
+    before => Sensu_rabbitmq_config[$::fqdn],
   }
 
   sensu_rabbitmq_config { $::fqdn:

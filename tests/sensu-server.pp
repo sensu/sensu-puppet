@@ -9,7 +9,7 @@ node 'sensu-server' {
     api               => true,
     api_user          => 'admin',
     api_password      => 'secret',
-    client_address    => "$::ipaddress_eth1",
+    client_address    => $::ipaddress_eth1,
   }
 
   sensu::handler { 'default':

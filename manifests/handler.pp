@@ -34,7 +34,7 @@
 #
 # [*pipe*]
 #   Hash.  Pipe information used when type=transport
-#   Keys: name, type, options 
+#   Keys: name, type, options
 #   Default: undef
 #
 # [*socket*]
@@ -116,16 +116,16 @@ define sensu::handler(
     $handler = "${install_path}/${filename}"
 
     $file_ensure = $ensure ? {
-      'absent'  => 'absent',
-      default   => 'file'
+      'absent' => 'absent',
+      default  => 'file'
     }
 
     file { $handler:
-      ensure  => $file_ensure,
-      owner   => 'sensu',
-      group   => 'sensu',
-      mode    => '0555',
-      source  => $source,
+      ensure => $file_ensure,
+      owner  => 'sensu',
+      group  => 'sensu',
+      mode   => '0555',
+      source => $source,
     }
 
     $command_real = $command ? {
@@ -137,27 +137,27 @@ define sensu::handler(
   }
 
   file { "/etc/sensu/conf.d/handlers/${name}.json":
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0444',
-    before  => Sensu_handler[$name],
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0444',
+    before => Sensu_handler[$name],
   }
 
   sensu_handler { $name:
-    ensure       => $ensure,
-    type         => $type,
-    command      => $command_real,
-    handlers     => $handlers,
-    severities   => $severities,
-    exchange     => $exchange,
-    pipe         => $pipe,
-    socket       => $socket,
-    mutator      => $mutator,
-    filters      => $filters,
-    config       => $config,
-    notify       => $notify_services,
-    require      => File['/etc/sensu/conf.d/handlers'],
+    ensure     => $ensure,
+    type       => $type,
+    command    => $command_real,
+    handlers   => $handlers,
+    severities => $severities,
+    exchange   => $exchange,
+    pipe       => $pipe,
+    socket     => $socket,
+    mutator    => $mutator,
+    filters    => $filters,
+    config     => $config,
+    notify     => $notify_services,
+    require    => File['/etc/sensu/conf.d/handlers'],
   }
 
 }

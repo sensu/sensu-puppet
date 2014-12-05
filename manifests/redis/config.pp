@@ -15,16 +15,16 @@ class sensu::redis::config {
   }
 
   file { '/etc/sensu/conf.d/redis.json':
-    ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0444',
+    ensure => $ensure,
+    owner  => 'sensu',
+    group  => 'sensu',
+    mode   => '0444',
   }
 
   sensu_redis_config { $::fqdn:
-    ensure  => $ensure,
-    host    => $sensu::redis_host,
-    port    => $sensu::redis_port,
+    ensure => $ensure,
+    host   => $sensu::redis_host,
+    port   => $sensu::redis_port,
   }
 
 }
