@@ -24,7 +24,7 @@ class sensu::flapjack::config {
   exec { 'flapjack.rb':
     command => 'wget -O /etc/sensu/extensions/flapjack.rb https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/extensions/handlers/flapjack.rb',
     creates => '/etc/sensu/extensions/flapjack.rb',
-    path    => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',    
+    path    => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
     before  => File['/etc/sensu/extensions/flapjack.rb'],
   }
 
