@@ -8,7 +8,7 @@ describe 'sensu' do
     context 'default settings' do
       it { should contain_sensu_flapjack_config('testhost.domain.com').with(
         :host => 'localhost',
-        :port => 6379
+        :port => 6380
       )}
     end # default settings
 
