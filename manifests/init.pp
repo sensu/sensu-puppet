@@ -209,9 +209,6 @@ class sensu (
   $rabbitmq_ssl_cert_chain  = undef,
   $redis_host               = 'localhost',
   $redis_port               = 6379,
-  $flapjack_redis_host      = 'localhost',
-  $flapjack_redis_port      = 6380,
-  $flapjack_redis_db        = 0,
   $api_bind                 = '0.0.0.0',
   $api_host                 = 'localhost',
   $api_port                 = 4567,
@@ -280,7 +277,6 @@ class sensu (
   class { 'sensu::rabbitmq::config': } ->
   class { 'sensu::api::config': } ->
   class { 'sensu::redis::config': } ->
-  class { 'sensu::flapjack::config': } ->
   class { 'sensu::client::config': } ->
   class { 'sensu::client::service': } ->
   class { 'sensu::api::service': } ->
