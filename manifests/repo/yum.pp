@@ -12,11 +12,19 @@ class sensu::repo::yum {
     if $sensu::repo_source {
       $url = $sensu::repo_source
     } else {
-      $url = $sensu::repo ? {
-        'unstable'  => "http://repos.sensuapp.org/yum-unstable/el/${::operatingsystemmajrelease}/\$basearch/",
-        default     => "http://repos.sensuapp.org/yum/el/${::operatingsystemmajrelease}/\$basearch/"
+      if $operatingsystemmajrelease == 7 {
+          $url = $sensu::repo ? {
+            'unstable'  => "http://repos.sensuapp.org/yum-unstable/el/6/\$basearch/",
+            default     => "http://repos.sensuapp.org/yum/el/6/\$basearch/"
+          }
+      } else {
+          $url = $sensu::repo ? {
+            'unstable'  => "http://repos.sensuapp.org/yum-unstable/el/${::operatingsystemmajrelease}/\$basearch/",
+            default     => "http://repos.sensuapp.org/yum/el/${::operatingsystemmajrelease}/\$basearch/"
+          }
       }
     }
+
 
     yumrepo { 'sensu':
       enabled  => 1,
