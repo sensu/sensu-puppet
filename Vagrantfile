@@ -17,8 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "sensu-server", primary: true, autostart: true do |server|
-    server.vm.box = "ubuntu-14_04"
-    server.vm.box_url = "https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/1/providers/virtualbox.box"
+    server.vm.box = "ubuntu/trusty64"
     server.vm.hostname = 'sensu-server'
     server.vm.network :private_network, ip: "192.168.56.10"
     server.vm.provision :shell, :path => "tests/provision_server.sh"
@@ -29,8 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "sensu-client", autostart: true do |client|
-    client.vm.box = "ubuntu-14_04"
-    client.vm.box_url = "https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/1/providers/virtualbox.box"
+    client.vm.box = "ubuntu/trusty64"
     client.vm.hostname = 'sensu-client'
     client.vm.network  :private_network, ip: "192.168.56.11"
     client.vm.provision :shell, :path => "tests/provision_client.sh"
