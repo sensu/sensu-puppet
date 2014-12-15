@@ -55,7 +55,7 @@ define sensu::plugin(
     'file':       {
       $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
-      define_plugins_dir { "${name}-${install_path}":
+      sensu::plugins_dir { "${name}-${install_path}":
         path    => $install_path,
         purge   => $purge,
         recurse => $recurse,
@@ -72,7 +72,7 @@ define sensu::plugin(
     'url' : {
         $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
-        define_plugins_dir { "${name}-${install_path}":
+        sensu::plugins_dir { "${name}-${install_path}":
           path    => $install_path,
           purge   => $purge,
           recurse => $recurse,
@@ -111,25 +111,5 @@ define sensu::plugin(
       fail('Unsupported sensu::plugin install type')
     }
 
-  }
-}
-# This is to verify the install_dir exists without duplicate declarations
-define define_plugins_dir (
-  $force,
-  $purge,
-  $recurse,
-  $path = $name,
-) {
-  if ! defined(File[$path]) {
-    file { $path:
-      ensure  => directory,
-      mode    => '0555',
-      owner   => 'sensu',
-      group   => 'sensu',
-      recurse => $recurse,
-      purge   => $purge,
-      force   => $force,
-      require => Package['sensu'],
-    }
   }
 }

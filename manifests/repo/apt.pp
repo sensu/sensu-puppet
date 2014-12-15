@@ -35,7 +35,7 @@ class sensu::repo::apt {
     }
 
   } else {
-    fail('This class requires puppet-apt module')
+    fail('This class requires puppetlabs-apt module')
   }
 
 }

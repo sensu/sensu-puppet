@@ -12,7 +12,7 @@ class sensu::repo::yum {
     if $sensu::repo_source {
       $url = $sensu::repo_source
     } else {
-      if $operatingsystemmajrelease == 7 {
+      if $::operatingsystemmajrelease == 7 {
           $url = $sensu::repo ? {
             'unstable'  => "http://repos.sensuapp.org/yum-unstable/el/6/\$basearch/",
             default     => "http://repos.sensuapp.org/yum/el/6/\$basearch/"
