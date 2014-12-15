@@ -200,6 +200,9 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def handle=(value)
     case value
+    when true, 'true', 'True', :true, 1 && resource[:handlers]
+      Puppet.notice("Do not use 'handle' and 'handlers' together. Your 'handle' value has been overridden with 'handlers'")
+      return
     when true, 'true', 'True', :true, 1
       conf['checks'][resource[:name]]['handle'] = true
     when false, 'false', 'False', :false, 0
