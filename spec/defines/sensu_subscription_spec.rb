@@ -30,6 +30,6 @@ describe 'sensu::subscription', :type => :define do
   context 'notifications' do
     let(:title) { 'mysubscription' }
 
-    it { should contain_sensu_client_subscription('mysubscription').with(:notify => ['Class[Sensu::Client::Service]' ]) }
+    it { should contain_sensu_client_subscription('mysubscription').with(:notify => 'Class[Sensu::Client::Service]' ) }
   end
 end
