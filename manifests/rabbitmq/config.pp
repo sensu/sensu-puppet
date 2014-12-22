@@ -23,7 +23,7 @@ class sensu::rabbitmq::config {
       require => Package['sensu'],
     }
 
-    if $sensu::rabbitmq_ssl_cert_chain =~ /^puppet:\/\// {
+    if $sensu::rabbitmq_ssl_cert_chain and $sensu::rabbitmq_ssl_cert_chain =~ /^puppet:\/\// {
       file { '/etc/sensu/ssl/cert.pem':
         ensure  => present,
         source  => $sensu::rabbitmq_ssl_cert_chain,
@@ -39,7 +39,7 @@ class sensu::rabbitmq::config {
       $ssl_cert_chain = $sensu::rabbitmq_ssl_cert_chain
     }
 
-    if $sensu::rabbitmq_ssl_private_key =~ /^puppet:\/\// {
+    if $sensu::rabbitmq_ssl_private_key and $sensu::rabbitmq_ssl_private_key =~ /^puppet:\/\// {
       file { '/etc/sensu/ssl/key.pem':
         ensure  => present,
         source  => $sensu::rabbitmq_ssl_private_key,
