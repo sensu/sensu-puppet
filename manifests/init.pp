@@ -71,7 +71,7 @@
 #   Default: 5672
 #
 # [*rabbitmq_host*]
-#   String.  Host running rabbitmq for sensu
+#   Array of strings.  Host running rabbitmq for sensu
 #   Default: 'localhost'
 #
 # [*rabbitmq_user*]
@@ -200,7 +200,7 @@ class sensu (
   $manage_user              = true,
   $manage_plugins_dir       = true,
   $rabbitmq_port            = 5672,
-  $rabbitmq_host            = 'localhost',
+  $rabbitmq_host            = ['localhost'],
   $rabbitmq_user            = 'sensu',
   $rabbitmq_password        = '',
   $rabbitmq_vhost           = 'sensu',

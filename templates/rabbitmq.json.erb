@@ -1,0 +1,21 @@
+<% count = 1 %>
+{
+  "rabbitmq":[
+    {
+      "host": "<%= @rabbitmq_host[0] %>",
+      "password": "<%= @rabbitmq_password %>",
+      "vhost": "<%= @rabbitmq_vhost %>",
+      "port": <%= @rabbitmq_port %>,
+      "user": "<%= @rabbitmq_user %>"
+    }<% while @rabbitmq_host[count].exists? do |element| -%>
+    ,
+    {
+      "host": "<%= @rabbitmq_host[count] %>",
+      "password": "<%= @rabbitmq_password %>",
+      "vhost": "<%= @rabbitmq_vhost %>",
+      "port": <%= @rabbitmq_port %>,
+      "user": "<%= @rabbitmq_user %>"
+    }
+    <% end -%>
+  ]
+}
