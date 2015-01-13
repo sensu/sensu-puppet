@@ -9,6 +9,14 @@
 #   Default: latest
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
+# [*sensu_plugin_name*]
+#   String.  Name of the sensu-plugin package
+#   Default: sensu-plugin
+#
+# [*sensu_plugin_provider*]
+#   String.  Provider used to install the sensu-plugin package
+#   Default: undef
+#
 # [*sensu_plugin_version*]
 #   String.  Version of the sensu-plugin gem to install
 #   Default: absent
@@ -187,6 +195,8 @@
 #
 class sensu (
   $version                  = 'latest',
+  $sensu_plugin_name        = 'sensu-plugin',
+  $sensu_plugin_provider    = undef,
   $sensu_plugin_version     = 'absent',
   $install_repo             = true,
   $repo                     = 'main',
