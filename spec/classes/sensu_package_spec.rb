@@ -35,6 +35,18 @@ describe 'sensu' do
       ) }
     end
 
+    context 'embeded_ruby' do
+      let(:params) { { :use_embedded_ruby => true } }
+
+      it { should contain_package('sensu-plugin').with(:provider => 'sensu_gem') }
+    end
+
+    context 'sensu_plugin_provider and sensu_plugin_name' do
+      let(:params) { { :sensu_plugin_name => 'rubygem-sensu-plugin', :sensu_plugin_provider => 'rpm' } }
+
+      it { should contain_package('rubygem-sensu-plugin').with(:provider => 'rpm') }
+    end
+
     context 'repos' do
 
       context 'ubuntu' do
