@@ -36,14 +36,18 @@ class sensu::package {
     ensure  => $sensu::version,
   }
 
-  $gem_provider = $sensu::use_embedded_ruby ? {
-    true    => 'sensu_gem',
-    default => 'gem',
+  if $::sensu::sensu_plugin_provider {
+    $plugin_provider = $::sensu::sensu_plugin_provider
+  } else {
+    $plugin_provider = $sensu::use_embedded_ruby ? {
+      true    => 'sensu_gem',
+      default => 'gem',
+    }
   }
 
-  package { 'sensu-plugin' :
+  package { $::sensu::sensu_plugin_name :
     ensure   => $sensu::sensu_plugin_version,
-    provider => $gem_provider,
+    provider => $plugin_provider,
   }
 
   file { '/etc/default/sensu':
