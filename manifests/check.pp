@@ -77,7 +77,7 @@ define sensu::check(
   $interval            = 60,
   $occurrences         = undef,
   $refresh             = undef,
-  $subscribers         = [],
+  $subscribers         = undef,
   $low_flap_threshold  = undef,
   $high_flap_threshold = undef,
   $timeout             = undef,

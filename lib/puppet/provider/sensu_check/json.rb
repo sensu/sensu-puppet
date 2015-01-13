@@ -44,11 +44,12 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
     self.handle = resource[:handle] unless resource[:handle].nil?
     self.publish = resource[:publish] unless resource[:publish].nil?
+    self.dependencies = resource[:dependencies] unless resource[:dependencies].nil?
     self.custom = resource[:custom] unless resource[:custom].nil?
   end
 
   def check_args
-    ['handlers','command','interval','occurrences','refresh','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','custom']
+    ['handlers','command','interval','occurrences','refresh','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','dependencies','custom']
   end
 
   def custom
