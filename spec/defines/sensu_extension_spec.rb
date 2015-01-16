@@ -8,6 +8,7 @@ describe 'sensu::extension', :type => :define do
       :source => 'puppet:///somewhere/mycommand.rb'
     } }
     it { should contain_file('/etc/sensu/extensions/mycommand.rb').with_source('puppet:///somewhere/mycommand.rb')}
+    it { should contain_file('/etc/sensu/conf.d/extensions/myextension.json') }
     it { should contain_sensu_extension('myextension').with(
       :ensure => 'present',
       :config => {}
@@ -21,6 +22,7 @@ describe 'sensu::extension', :type => :define do
       :source => 'puppet:///somewhere/mycommand.rb'
     } }
     it { should contain_sensu_extension('myextension').with_ensure('absent') }
+    it { should contain_file('/etc/sensu/conf.d/extensions/myextension.json').with_ensure('absent') }
   end
 
   context 'install path' do
