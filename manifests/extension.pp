@@ -15,7 +15,7 @@
 #
 # [*install_path*]
 #   String.  Path to install the extension
-#   Default: /etc/sensu/extensions/handlers
+#   Default: /etc/sensu/extensions
 #
 # [*config*]
 #   Hash.  Extension specific config
@@ -56,7 +56,7 @@ define sensu::extension(
     source => $source,
   }
 
-  file { "/etc/sensu/conf.d/handlers/${name}.json":
+  file { "/etc/sensu/conf.d/extensions/${name}.json":
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',
