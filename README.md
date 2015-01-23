@@ -13,7 +13,7 @@ Installs and manages the open source monitoring framework [Sensu](http://sensuap
 
 ## Sensu version supported
 
-The module currently supports Sensu version 0.12 and later. If not explictly stated it should always 
+The module currently supports Sensu version 0.12 and later. If not explictly stated it should always
 support the latest Sensu release. Please log an issue if you identify any incompatibilties.
 
 ## Upgrade note
@@ -54,7 +54,7 @@ Debian & Ubuntu:
 
 ## Quick start
 
-Before this puppet module can be used, the following items must be configured on the server. 
+Before this puppet module can be used, the following items must be configured on the server.
 
 - Install redis
 - Install rabbitmq
@@ -66,7 +66,7 @@ To quickly try out sensu, spin up a test VM with Vagrant that already has these 
     vagrant up
     vagrant status
     vagrant ssh sensu-server
-    
+
 You can then access the api
 
     curl http://admin:secret@localhost:4567/info
@@ -76,12 +76,12 @@ Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
 
     username => uchiwa
     password => uchiwa
-    
+
 Navigate to `192.168.56.10:15672` to manage rabbitmq
 
     username => sensu
     password => correct-horse-battery-staple
-    
+
 See the [tests directory](https://github.com/sensu/sensu-puppet/tree/vagrant/tests) and [Vagrantfile](https://github.com/sensu/sensu-puppet/blob/vagrant/Vagrantfile) for examples on setting up the prerequisites.
 
 
@@ -288,6 +288,25 @@ This will create the following handler definition for Sensu (server):
           "type": "pipe"
           }
        }
+     }
+
+## Extension configuration
+
+    sensu::extension {
+      'an_extension':
+        source  => 'puppet://somewhere/an_extension.rb',
+        config  => {
+          'foobar_setting' => 'value',
+      }
+    }
+
+This will save the extension under /etc/sensu/extensions and create
+the following configuration definition for Sensu:
+
+     {
+       "an_extension": {
+         "foobar_setting": "value"
+       },
      }
 
 ### Disable Service Management
