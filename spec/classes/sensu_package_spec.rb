@@ -14,6 +14,14 @@ describe 'sensu' do
           :purge  => false
         ) }
       end
+      [ '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
+        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ].each do |dir|
+        it { should contain_file(dir).with(
+          :ensure  => 'directory',
+          :recurse => true,
+          :purge   => false
+        ) }
+      end
       it { should contain_file('/etc/sensu/config.json').with_ensure('absent') }
       it { should contain_user('sensu') }
       it { should contain_group('sensu') }
@@ -152,6 +160,19 @@ describe 'sensu' do
         ) }
       end
 
+    end
+
+    context 'purge_scripts' do
+      let(:params) { { :purge_scripts => true } }
+
+      [ '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
+        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ].each do |dir|
+        it { should contain_file(dir).with(
+          :ensure  => 'directory',
+          :recurse => true,
+          :purge   => true
+        ) }
+      end
     end
   end
 
