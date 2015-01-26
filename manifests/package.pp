@@ -59,7 +59,8 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters', '/etc/sensu/conf.d/extensions' ]:
+  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters', '/etc/sensu/conf.d/extensions',
+      '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators', '/etc/sensu/extensions/handlers' ]:
     ensure  => directory,
     owner   => 'sensu',
     group   => 'sensu',
@@ -70,20 +71,15 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { ['/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators', '/etc/sensu/extensions/handlers']:
-    ensure  => directory,
-    mode    => '0555',
-    owner   => 'sensu',
-    group   => 'sensu',
-    require => Package['sensu'],
-  }
-
   if $sensu::_manage_plugins_dir {
     file { '/etc/sensu/plugins':
       ensure  => directory,
       mode    => '0555',
       owner   => 'sensu',
       group   => 'sensu',
+      purge   => $sensu::purge_config,
+      recurse => true,
+      force   => true,
       require => Package['sensu'],
     }
   }
