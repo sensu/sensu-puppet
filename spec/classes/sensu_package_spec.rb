@@ -146,21 +146,14 @@ describe 'sensu' do
     context 'purge_config' do
       let(:params) { { :purge_config => true } }
 
-      [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks' ].each do |dir|
+      [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks',
+        '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
+        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ].each do |dir|
         it { should contain_file(dir).with(
           :ensure  => 'directory',
           :purge   => true,
           :recurse => true,
           :force   => true
-        ) }
-      end
-
-      [ '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
-        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ].each do |dir|
-        it { should contain_file(dir).with(
-          :ensure  => 'directory',
-          :recurse => true,
-          :purge   => true
         ) }
       end
     end
