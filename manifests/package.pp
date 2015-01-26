@@ -76,7 +76,7 @@ class sensu::package {
     owner   => 'sensu',
     group   => 'sensu',
     recurse => true,
-    purge   => $sensu::purge_scripts,
+    purge   => $sensu::purge_config,
     require => Package['sensu'],
   }
 
@@ -87,7 +87,7 @@ class sensu::package {
       owner   => 'sensu',
       group   => 'sensu',
       recurse => true,
-      purge   => $sensu::purge_scripts,
+      purge   => $sensu::purge_config,
       require => Package['sensu'],
     }
   }

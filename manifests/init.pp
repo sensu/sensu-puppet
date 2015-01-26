@@ -175,11 +175,6 @@
 #   Default: false
 #   Valid values: true, false
 #
-# [*purge_scripts*]
-#   Boolean.  If unused plugins, handlers, extensions and mutators should be removed from the system
-#   Default: false
-#   Valid values: true, false
-#
 # [*use_embedded_ruby*]
 #   Boolean.  If the embedded ruby should be used
 #   Default: false
@@ -239,7 +234,6 @@ class sensu (
   $plugins                  = [],
   $plugins_dir              = undef,
   $purge_config             = false,
-  $purge_scripts            = false,
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
   $gem_path                 = '',
@@ -247,7 +241,7 @@ class sensu (
   $dashboard                = false,
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $purge_config, $purge_scripts, $safe_mode, $manage_services)
+  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")

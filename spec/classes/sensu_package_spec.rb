@@ -8,18 +8,13 @@ describe 'sensu' do
       it { should create_class('sensu::package') }
       it { should contain_package('sensu').with_ensure('latest') }
       it { should contain_file('/etc/default/sensu') }
-      [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks' ].each do |dir|
+      [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks',
+        '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
+        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins'].each do |dir|
         it { should contain_file(dir).with(
           :ensure => 'directory',
-          :purge  => false
-        ) }
-      end
-      [ '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
-        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ].each do |dir|
-        it { should contain_file(dir).with(
-          :ensure  => 'directory',
           :recurse => true,
-          :purge   => false
+          :purge  => false
         ) }
       end
       it { should contain_file('/etc/sensu/config.json').with_ensure('absent') }
@@ -159,11 +154,6 @@ describe 'sensu' do
           :force   => true
         ) }
       end
-
-    end
-
-    context 'purge_scripts' do
-      let(:params) { { :purge_scripts => true } }
 
       [ '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
         '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ].each do |dir|
