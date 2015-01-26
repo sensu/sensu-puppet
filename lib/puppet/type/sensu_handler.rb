@@ -70,14 +70,23 @@ Puppet::Type.newtype(:sensu_handler) do
 
   newproperty(:filters, :array_matching => :all) do
     desc "Handler filters"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:severities, :array_matching => :all) do
     desc "Severities applicable to this handler"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:handlers, :array_matching => :all) do
     desc "Handlers this handler mutexes into"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:config) do

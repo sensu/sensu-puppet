@@ -41,6 +41,9 @@ Puppet::Type.newtype(:sensu_client_config) do
 
   newproperty(:subscriptions, :array_matching => :all) do
     desc ""
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:bind) do
