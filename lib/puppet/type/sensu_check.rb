@@ -38,10 +38,16 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:dependencies, :array_matching => :all) do
     desc "Dependencies of this check"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:handlers, :array_matching => :all) do
     desc "List of handlers that responds to this check"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:high_flap_threshold) do
@@ -71,6 +77,9 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:subscribers, :array_matching => :all) do
     desc "Who is subscribed to this check"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:custom) do
