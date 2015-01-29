@@ -22,9 +22,10 @@ class sensu::redis::config {
   }
 
   sensu_redis_config { $::fqdn:
-    ensure => $ensure,
-    host   => $sensu::redis_host,
-    port   => $sensu::redis_port,
+    ensure   => $ensure,
+    host     => $sensu::redis_host,
+    port     => $sensu::redis_port,
+    password => $sensu::redis_password,
   }
 
 }
