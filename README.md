@@ -13,8 +13,8 @@ Installs and manages the open source monitoring framework [Sensu](http://sensuap
 
 ## Sensu version supported
 
-The module currently supports Sensu version 0.12 and later. If not explictly stated it should always
-support the latest Sensu release. Please log an issue if you identify any incompatibilties.
+The module currently supports Sensu version 0.12 and later. If not explicitly stated it should always
+support the latest Sensu release. Please log an issue if you identify any incompatibilities.
 
 ## Upgrade note
 
@@ -54,36 +54,37 @@ Debian & Ubuntu:
 
 ## Quick start
 
-Before this puppet module can be used, the following items must be configured on the server.
+Before this Puppet module can be used, the following items must be configured on the server.
 
-- Install redis
-- Install rabbitmq
-- Add users to rabbitmq
+- Install Redis
+- Install RabbitMQ
+- Add users to RabbitMQ
 - Install dashboard (optional)
 
-To quickly try out sensu, spin up a test VM with Vagrant that already has these prerequisites installed.
+To quickly try out Sensu, spin up a test virtual machine with Vagrant that already has these prerequisites installed.
 
-    vagrant up
-    vagrant status
-    vagrant ssh sensu-server
+    $ vagrant up
+    $ vagrant status
+    $ vagrant ssh sensu-server
 
-You can then access the api
+You can then access the API.
 
-    curl http://admin:secret@localhost:4567/info
-
+    $ curl http://admin:secret@localhost:4567/info
 
 Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
 
     username => uchiwa
     password => uchiwa
 
-Navigate to `192.168.56.10:15672` to manage rabbitmq
+Navigate to `192.168.56.10:15672` to manage RabbitMQ
 
     username => sensu
     password => correct-horse-battery-staple
 
-See the [tests directory](https://github.com/sensu/sensu-puppet/tree/vagrant/tests) and [Vagrantfile](https://github.com/sensu/sensu-puppet/blob/vagrant/Vagrantfile) for examples on setting up the prerequisites.
-
+See the [tests
+directory](https://github.com/sensu/sensu-puppet/tree/vagrant/tests) and
+[Vagrantfile](https://github.com/sensu/sensu-puppet/blob/vagrant/Vagrantfile)
+for examples on setting up the prerequisites.
 
 ## Basic example
 
@@ -382,8 +383,8 @@ apache/manifests/service.pp
 
 ## Installing Gems into the embedded ruby
 
-If you are using the embedded ruby that ships with sensu, you can install gems
-by using the `sensu_gem` package provier:
+If you are using the embedded ruby that ships with Sensu, you can install gems
+by using the `sensu_gem` package provider:
 
     package { 'redphone':
       ensure   => 'installed',

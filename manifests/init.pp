@@ -118,6 +118,10 @@
 #   Integer.  Redis port to be used by sensu
 #   Default: 6379
 #
+# [*redis_password*]
+#   String.  Password to be used to connect to Redis
+#   Default: ''
+#
 # [*api_bind*]
 #   String.  IP to bind api service
 #   Default: 0.0.0.0
@@ -219,6 +223,7 @@ class sensu (
   $rabbitmq_ssl_cert_chain  = undef,
   $redis_host               = 'localhost',
   $redis_port               = 6379,
+  $redis_password           = '',
   $api_bind                 = '0.0.0.0',
   $api_host                 = 'localhost',
   $api_port                 = 4567,

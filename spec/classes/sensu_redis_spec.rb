@@ -14,13 +14,15 @@ describe 'sensu' do
 
     context 'be configurable' do
       let(:params) { {
-        :redis_host => 'redis.domain.com',
-        :redis_port => 1234
+        :redis_host     => 'redis.domain.com',
+        :redis_port     => 1234,
+        :redis_password => 'password'
       } }
 
       it { should contain_sensu_redis_config('testhost.domain.com').with(
-        :host => 'redis.domain.com',
-        :port => 1234
+        :host     => 'redis.domain.com',
+        :port     => 1234,
+        :password => 'password'
       )}
     end # be configurable
 
