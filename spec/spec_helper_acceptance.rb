@@ -35,6 +35,7 @@ RSpec.configure do |c|
       if fact('osfamily') == 'RedHat'
         # CentOS has epel-release package in Extras, enabled by default
         shell('yum -y install epel-release')
+        shell('yum -y install erlang')
       end
       on host, puppet('module', 'install', 'puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'maestrodev-wget'), { :acceptable_exit_codes => [0,1] }
