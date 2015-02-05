@@ -70,7 +70,7 @@
 #   Valid values: true, false
 #
 # [*manage_plugins_dir*]
-#   Boolean. Manage the sensu plusing directory
+#   Boolean. Manage the sensu plugins directory
 #   Default: true
 #   Valid values: true, false
 #
