@@ -100,6 +100,7 @@ define sensu::plugin(
         recurse => $recurse,
         purge   => $purge,
         force   => $force,
+        require => Package['sensu'],
       }
     }
     'package':    {
