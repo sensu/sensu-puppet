@@ -22,7 +22,7 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
     conf['redis'] = {}
     self.port     = resource[:port]
     self.host     = resource[:host]
-    self.password = resource[:password]
+    self.password = resource[:password] unless resource[:password].nil?
   end
 
   def config_file
