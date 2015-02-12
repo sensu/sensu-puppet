@@ -120,7 +120,7 @@
 #
 # [*redis_password*]
 #   String.  Password to be used to connect to Redis
-#   Default: ''
+#   Default: undef
 #
 # [*api_bind*]
 #   String.  IP to bind api service
@@ -223,7 +223,7 @@ class sensu (
   $rabbitmq_ssl_cert_chain  = undef,
   $redis_host               = 'localhost',
   $redis_port               = 6379,
-  $redis_password           = '',
+  $redis_password           = undef,
   $api_bind                 = '0.0.0.0',
   $api_host                 = 'localhost',
   $api_port                 = 4567,
