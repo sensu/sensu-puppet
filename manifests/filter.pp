@@ -44,6 +44,7 @@ define sensu::filter (
     ensure     => $ensure,
     negate     => $negate,
     attributes => $attributes,
+    require    => File['/etc/sensu/conf.d/filters'],
   }
 
 }
