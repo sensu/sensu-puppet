@@ -10,7 +10,7 @@ group :development, :unit_tests do
   gem 'simplecov',                   :require => false
   gem 'json',                        :require => false
   gem 'puppet-syntax',               :require => false
-  gem 'metadata-json-lint', '0.0.4', :require => false
+  gem 'metadata-json-lint',          :require => false
   gem 'vagrant-wrapper',             :require => false
   gem 'puppet-blacksmith',           :require => false
   gem 'rest-client', "1.6.8",        :require => false
