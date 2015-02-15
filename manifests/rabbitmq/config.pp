@@ -49,7 +49,19 @@ class sensu::rabbitmq::config {
         require => File['/etc/sensu/ssl'],
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
+    } else if $sensu::rabbitmq_ssl_private_key and $sensu::rabbitmq_ssl_private_key =~ /^hiera\(/ {
+      file { '/etc/sensu/ssl/key.pem':
+        ensure  => present,
+        content => $sensu::rabbitmq_ssl_private_key,
+        owner   => 'sensu',
+        group   => 'sensu',
+        mode    => '0440',
+        require => File['/etc/sensu/ssl'],
+        before  => Sensu_rabbitmq_config[$::fqdn],
+      }
+    }
 
+    if $sensu::rabbitmq_ssl_private_key and ($sensu::rabbitmq_ssl_private_key =~ /^puppet:\/\// or $sensu::rabbitmq_ssl_private_key =~ /^hiera\(/) {
       $ssl_private_key = '/etc/sensu/ssl/key.pem'
     } else {
       $ssl_private_key = $sensu::rabbitmq_ssl_private_key
