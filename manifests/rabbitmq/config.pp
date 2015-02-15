@@ -49,7 +49,7 @@ class sensu::rabbitmq::config {
         require => File['/etc/sensu/ssl'],
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
-    } else if $sensu::rabbitmq_ssl_private_key and $sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/ {
+    } elsif $sensu::rabbitmq_ssl_private_key and $sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/ {
       file { '/etc/sensu/ssl/key.pem':
         ensure  => present,
         content => $sensu::rabbitmq_ssl_private_key,
