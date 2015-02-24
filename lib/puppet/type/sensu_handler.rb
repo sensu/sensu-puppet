@@ -65,7 +65,7 @@ Puppet::Type.newtype(:sensu_handler) do
   end
 
   newproperty(:mutator) do
-    desc "Handler specific data messenger"
+    desc "Handler specific data massagers"
   end
 
   newproperty(:filters, :array_matching => :all) do
