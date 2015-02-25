@@ -239,6 +239,7 @@ class sensu (
   $plugins                  = [],
   $plugins_dir              = undef,
   $purge_config             = false,
+  $purge_plugins_dir        = true,
   $use_embedded_ruby        = false,
   $rubyopt                  = '',
   $gem_path                 = '',

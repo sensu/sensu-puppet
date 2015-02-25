@@ -84,6 +84,9 @@ class sensu::package {
       mode    => '0555',
       owner   => 'sensu',
       group   => 'sensu',
+      purge   => $sensu::purge_plugins_dir,
+      recurse => true,
+      force   => true,
       require => Package['sensu'],
     }
   }
