@@ -17,6 +17,7 @@ describe 'sensu' do
       it { should contain_file('/etc/sensu/config.json').with_ensure('absent') }
       it { should contain_user('sensu') }
       it { should contain_group('sensu') }
+      it { should contain_file('/etc/sensu/plugins').with_purge(false) }
     end
 
     context 'setting version' do
@@ -146,6 +147,15 @@ describe 'sensu' do
       [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks' ].each do |dir|
         it { should contain_file(dir).with(
           :ensure  => 'directory',
+          :purge   => true,
+          :recurse => true,
+          :force   => true
+        ) }
+      end
+
+      context 'purge_plugins_dir' do
+        let(:params) { { :purge_plugins_dir => true } }
+        it { should contain_file('/etc/sensu/plugins').with(
           :purge   => true,
           :recurse => true,
           :force   => true
