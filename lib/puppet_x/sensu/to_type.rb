@@ -14,6 +14,8 @@ module Puppet_X
             true
           when false, 'false', 'False', :false
             false
+          when :undef
+            'undef'
           when /^([0-9])+$/
             value.to_i
           else
