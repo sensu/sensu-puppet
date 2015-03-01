@@ -138,7 +138,7 @@
 #   Default: undef
 #
 # [*api_password*]
-#   Integer. Password of the sensu api service
+#   String. Password of the sensu api service
 #   Default: undef
 #
 # [*subscriptions*]
