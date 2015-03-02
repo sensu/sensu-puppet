@@ -2,7 +2,11 @@ require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
-require 'puppet_blacksmith/rake_tasks'
+
+begin
+  require 'puppet_blacksmith/rake_tasks'
+rescue
+end
 
 exclude_paths = [
   "pkg/**/*",
