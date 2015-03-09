@@ -2,4 +2,5 @@ EMBEDDED_RUBY=<%= scope.lookupvar("sensu::use_embedded_ruby") %>
 LOG_LEVEL=<%= scope.lookupvar("sensu::log_level") %>
 RUBYOPT="<%= scope.lookupvar("sensu::rubyopt") %>"
 GEM_PATH="<%= scope.lookupvar("sensu::gem_path") %>"
+SERVICE_MAX_WAIT="<%= scope.lookupvar("sensu::init_stop_timeout_length") %>"
 
