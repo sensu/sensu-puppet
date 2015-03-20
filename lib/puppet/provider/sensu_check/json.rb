@@ -82,7 +82,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def handlers
-    conf['checks'][resource[:name]]['handlers']
+    conf['checks'][resource[:name]]['handlers'] || []
   end
 
   def handlers=(value)
@@ -113,7 +113,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def dependencies
-    conf['checks'][resource[:name]]['dependencies']
+    conf['checks'][resource[:name]]['dependencies'] || []
   end
 
   def dependencies=(value)
