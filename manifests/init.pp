@@ -211,6 +211,10 @@
 #   Default: 'info'
 #   Valid values: debug, info, warn, error, fatal
 #
+# [*init_stop_max_wait*]
+#   Integer.  Number of seconds to wait for the init stop script to run
+#   Default: 10
+#
 class sensu (
   $version                     = 'latest',
   $sensu_plugin_name           = 'sensu-plugin',
@@ -261,6 +265,7 @@ class sensu (
   $gem_path                    = '',
   $log_level                   = 'info',
   $dashboard                   = false,
+  $init_stop_max_wait          = 10,
 ){
 
   validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error)
@@ -272,6 +277,7 @@ class sensu (
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
+  if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
 
   # Ugly hack for notifications, better way?
