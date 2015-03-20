@@ -20,9 +20,10 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
 
   def create
     conf['redis'] = {}
-    self.port     = resource[:port]
-    self.host     = resource[:host]
+    self.port = resource[:port]
+    self.host = resource[:host]
     self.password = resource[:password] unless resource[:password].nil?
+    self.reconnect_on_error = resource[:reconnect_on_error] unless resource[:reconnect_on_error].nil?
   end
 
   def config_file
@@ -59,5 +60,13 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
 
   def password=(value)
     conf['redis']['password'] = value
+  end
+
+  def reconnect_on_error
+    conf['redis']['reconnect_on_error']
+  end
+
+  def reconnect_on_error=(value)
+    conf['redis']['reconnect_on_error'] = (value ? true : false)
   end
 end

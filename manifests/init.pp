@@ -99,6 +99,7 @@
 #     rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
 #     without specifying a private key or cert chain to use SSL transport, but not cert auth.
 #   Defaul: false
+#   Valid values: true, false
 #
 # [*rabbitmq_ssl_private_key*]
 #   String.  Private key to be used by sensu to connect to rabbitmq
@@ -109,6 +110,12 @@
 #   String.  Private SSL cert chain to be used by sensu to connect to rabbitmq
 #     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
 #   Default: undef
+#
+# [*rabbitmq_reconnect_on_error*]
+#   Boolean. In the event the connection or channel is closed by RabbitMQ, attempt to automatically
+#     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
+#   Default: false
+#   Valid values: true, false
 #
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
@@ -122,9 +129,16 @@
 #   String.  Password to be used to connect to Redis
 #   Default: undef
 #
+# [*reddis_reconnect_on_error*]
+#   Boolean. In the event the connection or channel is closed by Reddis, attempt to automatically
+#     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
+#   Default: false
+#   Valid values: true, false
+#
 # [*api_bind*]
 #   String.  IP to bind api service
 #   Default: 0.0.0.0
+#
 # [*api_host*]
 #   String.  Hostname of the sensu api service
 #   Default: localhost
@@ -198,56 +212,58 @@
 #   Valid values: debug, info, warn, error, fatal
 #
 class sensu (
-  $version                  = 'latest',
-  $sensu_plugin_name        = 'sensu-plugin',
-  $sensu_plugin_provider    = undef,
-  $sensu_plugin_version     = 'absent',
-  $install_repo             = true,
-  $repo                     = 'main',
-  $repo_source              = undef,
-  $repo_key_id              = '7580C77F',
-  $repo_key_source          = 'http://repos.sensuapp.org/apt/pubkey.gpg',
-  $client                   = true,
-  $server                   = false,
-  $api                      = false,
-  $manage_services          = true,
-  $manage_user              = true,
-  $manage_plugins_dir       = true,
-  $rabbitmq_port            = 5672,
-  $rabbitmq_host            = 'localhost',
-  $rabbitmq_user            = 'sensu',
-  $rabbitmq_password        = '',
-  $rabbitmq_vhost           = 'sensu',
-  $rabbitmq_ssl             = false,
-  $rabbitmq_ssl_private_key = undef,
-  $rabbitmq_ssl_cert_chain  = undef,
-  $redis_host               = 'localhost',
-  $redis_port               = 6379,
-  $redis_password           = undef,
-  $api_bind                 = '0.0.0.0',
-  $api_host                 = 'localhost',
-  $api_port                 = 4567,
-  $api_user                 = undef,
-  $api_password             = undef,
-  $subscriptions            = [],
-  $client_bind              = '127.0.0.1',
-  $client_address           = $::ipaddress,
-  $client_name              = $::fqdn,
-  $client_custom            = {},
-  $client_keepalive         = {},
-  $safe_mode                = false,
-  $plugins                  = [],
-  $plugins_dir              = undef,
-  $purge_config             = false,
-  $purge_plugins_dir        = false,
-  $use_embedded_ruby        = false,
-  $rubyopt                  = '',
-  $gem_path                 = '',
-  $log_level                = 'info',
-  $dashboard                = false,
+  $version                     = 'latest',
+  $sensu_plugin_name           = 'sensu-plugin',
+  $sensu_plugin_provider       = undef,
+  $sensu_plugin_version        = 'absent',
+  $install_repo                = true,
+  $repo                        = 'main',
+  $repo_source                 = undef,
+  $repo_key_id                 = '7580C77F',
+  $repo_key_source             = 'http://repos.sensuapp.org/apt/pubkey.gpg',
+  $client                      = true,
+  $server                      = false,
+  $api                         = false,
+  $manage_services             = true,
+  $manage_user                 = true,
+  $manage_plugins_dir          = true,
+  $rabbitmq_port               = 5672,
+  $rabbitmq_host               = 'localhost',
+  $rabbitmq_user               = 'sensu',
+  $rabbitmq_password           = '',
+  $rabbitmq_vhost              = 'sensu',
+  $rabbitmq_ssl                = false,
+  $rabbitmq_ssl_private_key    = undef,
+  $rabbitmq_ssl_cert_chain     = undef,
+  $rabbitmq_reconnect_on_error = false,
+  $redis_host                  = 'localhost',
+  $redis_port                  = 6379,
+  $redis_password              = undef,
+  $redis_reconnect_on_error    = false,
+  $api_bind                    = '0.0.0.0',
+  $api_host                    = 'localhost',
+  $api_port                    = 4567,
+  $api_user                    = undef,
+  $api_password                = undef,
+  $subscriptions               = [],
+  $client_bind                 = '127.0.0.1',
+  $client_address              = $::ipaddress,
+  $client_name                 = $::fqdn,
+  $client_custom               = {},
+  $client_keepalive            = {},
+  $safe_mode                   = false,
+  $plugins                     = [],
+  $plugins_dir                 = undef,
+  $purge_config                = false,
+  $purge_plugins_dir           = false,
+  $use_embedded_ruby           = false,
+  $rubyopt                     = '',
+  $gem_path                    = '',
+  $log_level                   = 'info',
+  $dashboard                   = false,
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services)
+  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
