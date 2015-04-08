@@ -102,13 +102,17 @@
 #   Valid values: true, false
 #
 # [*rabbitmq_ssl_private_key*]
-#   String.  Private key to be used by sensu to connect to rabbitmq
-#     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
+#   String.  Private key to be used by sensu to connect to rabbitmq. If the value starts with
+#     'puppet://' the file will be copied and used.  Also the key itself can be given as the
+#     parameter value, or a variable, or using hiera.  Absolute paths will just be used as
+#     a file reference, as you'd normally configure sensu.
 #   Default: undef
 #
 # [*rabbitmq_ssl_cert_chain*]
 #   String.  Private SSL cert chain to be used by sensu to connect to rabbitmq
-#     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
+#     If the value starts with 'puppet://' the file will be copied and used.   Also the key itself can
+#     be given as the parameter value, or a variable, or using hiera. Absolute paths will just be used
+#     as a file reference, as you'd normally configure sensu.
 #   Default: undef
 #
 # [*rabbitmq_reconnect_on_error*]
