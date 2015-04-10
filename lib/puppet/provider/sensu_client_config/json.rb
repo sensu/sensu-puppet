@@ -77,6 +77,14 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     conf['client']['bind'] = value
   end
 
+  def port
+    conf['client']['port']
+  end
+
+  def port=(value)
+    conf['client']['port'] = value
+  end
+
   def subscriptions
     conf['client']['subscriptions'] || []
   end

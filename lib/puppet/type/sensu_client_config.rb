@@ -51,6 +51,11 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto '127.0.0.1'
   end
 
+  newproperty(:port) do
+    desc "The port that client will bind to"
+    defaultto '3030'
+  end
+
   newparam(:base_path) do
     desc "The base path to the client config file"
     defaultto '/etc/sensu/conf.d/'
