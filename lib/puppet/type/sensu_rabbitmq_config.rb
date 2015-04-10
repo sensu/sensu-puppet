@@ -82,8 +82,8 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:reconnect_on_error, :boolean => true) do
     desc "Attempt to reconnect to RabbitMQ on error"
 
-    newvalues(true, false)
-    defaultto false
+    newvalues(:true, :false)
+    defaultto :false
   end
 
   autorequire(:package) do

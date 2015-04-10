@@ -144,10 +144,22 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def reconnect_on_error
-    conf['rabbitmq']['reconnect_on_error']
+    case conf['rabbitmq']['reconnect_on_error']
+    when true
+      :true
+    when false
+      :false
+    else
+      conf['rabbitmq']['reconnect_on_error']
+    end
   end
 
   def reconnect_on_error=(value)
-    conf['rabbitmq']['reconnect_on_error'] = (value ? true : false)
+    case value
+    when true, 'true', 'True', :true, 1
+      conf['rabbitmq']['reconnect_on_error'] = true
+    else
+      conf['rabbitmq']['reconnect_on_error'] = false
+    end
   end
 end
