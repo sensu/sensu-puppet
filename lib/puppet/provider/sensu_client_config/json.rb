@@ -107,8 +107,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def keepalive=(value)
-    conf['client']['keepalive'] ||= {}
-    conf['client']['keepalive'].merge!(to_type(value))
+    conf['client']['keepalive'] = value
   end
 
   def safe_mode
