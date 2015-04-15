@@ -63,10 +63,22 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def reconnect_on_error
-    conf['redis']['reconnect_on_error']
+    case conf['redis']['reconnect_on_error']
+    when true
+      :true
+    when false
+      :false
+    else
+      conf['redis']['reconnect_on_error']
+    end
   end
 
   def reconnect_on_error=(value)
-    conf['redis']['reconnect_on_error'] = (value ? true : false)
+    case value
+    when true, 'true', 'True', :true, 1
+      conf['redis']['reconnect_on_error'] = true
+    else
+      conf['redis']['reconnect_on_error'] = false
+    end
   end
 end
