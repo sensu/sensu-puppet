@@ -167,14 +167,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def aggregate
-    case conf['checks'][resource[:name]]['aggregate']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['checks'][resource[:name]]['aggregate']
-    end
+    conf['checks'][resource[:name]]['aggregate']
   end
 
   def aggregate=(value)
@@ -189,71 +182,31 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def handle
-    case conf['checks'][resource[:name]]['handle']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['checks'][resource[:name]]['handle']
-    end
+    conf['checks'][resource[:name]]['handle']
   end
 
   def handle=(value)
-    case value
-    when true, 'true', 'True', :true, 1 && resource[:handlers]
+    if value && resource[:handlers]
       Puppet.notice("Do not use 'handle' and 'handlers' together. Your 'handle' value has been overridden with 'handlers'")
       return
-    when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:name]]['handle'] = true
-    when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:name]]['handle'] = false
-    else
-      conf['checks'][resource[:name]]['handle'] = value
     end
+
+    conf['checks'][resource[:name]]['handle'] = value
   end
 
   def publish
-    case conf['checks'][resource[:name]]['publish']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['checks'][resource[:name]]['publish']
-    end
+    conf['checks'][resource[:name]]['publish']
   end
 
   def publish=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:name]]['publish'] = true
-    when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:name]]['publish'] = false
-    else
-      conf['checks'][resource[:name]]['publish'] = value
-    end
+    conf['checks'][resource[:name]]['publish'] = value
   end
 
   def standalone
-    case conf['checks'][resource[:name]]['standalone']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['checks'][resource[:name]]['standalone']
-    end
+    conf['checks'][resource[:name]]['standalone']
   end
 
   def standalone=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:name]]['standalone'] = true
-    when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:name]]['standalone'] = false
-    else
-      conf['checks'][resource[:name]]['standalone'] = value
-    end
+    conf['checks'][resource[:name]]['standalone'] = value
   end
 end

@@ -35,7 +35,6 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:ssl_transport) do
     desc "Enable SSL transport to connect to RabbitMQ"
 
-    newvalues(true, false)
     defaultto false
   end
 
@@ -82,7 +81,6 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:reconnect_on_error) do
     desc "Attempt to reconnect to RabbitMQ on error"
 
-    newvalues(:true, :false)
     defaultto :false
   end
 

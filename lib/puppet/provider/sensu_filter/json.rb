@@ -46,21 +46,11 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def negate
-    case conf['filters'][resource[:name]]['negate']
-    when true
-      :true
-    else
-      :false
-    end
+    conf['filters'][resource[:name]]['negate']
   end
 
   def negate=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['filters'][resource[:name]]['negate'] = true
-    else
-      conf['filters'][resource[:name]]['negate'] = false
-    end
+    conf['filters'][resource[:name]]['negate'] = value
   end
 
   def attributes
