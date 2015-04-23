@@ -35,6 +35,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.client_name = resource[:client_name]
     self.address = resource[:address]
     self.bind = resource[:bind]
+    self.port = resource[:port]
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
     self.custom = resource[:custom] unless resource[:custom].nil?
