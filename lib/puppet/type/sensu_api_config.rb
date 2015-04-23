@@ -2,7 +2,7 @@ Puppet::Type.newtype(:sensu_api_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-api]",

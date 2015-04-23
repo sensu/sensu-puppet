@@ -8,7 +8,7 @@ Puppet::Type.newtype(:sensu_client_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-client]",

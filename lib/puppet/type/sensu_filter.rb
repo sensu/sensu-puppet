@@ -7,10 +7,6 @@ end
 Puppet::Type.newtype(:sensu_filter) do
   @doc = ""
 
-  def initialize(*args)
-    super
-  end
-
   ensurable do
     newvalue(:present) do
       provider.create
