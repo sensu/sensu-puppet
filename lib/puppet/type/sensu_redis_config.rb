@@ -47,7 +47,7 @@ Puppet::Type.newtype(:sensu_redis_config) do
     desc "The password used to connect to Redis"
   end
 
-  newproperty(:reconnect_on_error, :boolean => true) do
+  newproperty(:reconnect_on_error) do
     desc "Attempt to reconnect to RabbitMQ on error"
 
     newvalues(:true, :false)

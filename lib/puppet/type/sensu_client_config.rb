@@ -61,7 +61,7 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:safe_mode, :boolean => true) do
+  newproperty(:safe_mode) do
     desc "Require checks to be defined on server and client"
     newvalues(:true, :false)
   end
