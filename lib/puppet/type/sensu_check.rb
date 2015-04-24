@@ -1,3 +1,5 @@
+require 'puppet/property/boolean'
+
 begin
   require 'puppet_x/sensu/to_type'
 rescue LoadError => e
@@ -8,7 +10,7 @@ Puppet::Type.newtype(:sensu_check) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-client]",
@@ -113,32 +115,24 @@ Puppet::Type.newtype(:sensu_check) do
     desc "What type of check is this"
   end
 
-  newproperty(:standalone, :boolean => true) do
+  newproperty(:standalone, :parent => Puppet::Property::Boolean) do
     desc "Whether this is a standalone check"
-
-    newvalues(:true, :false)
   end
 
   newproperty(:timeout) do
     desc "Check timeout in seconds, after it fails"
   end
 
-  newproperty(:aggregate, :boolean => true) do
+  newproperty(:aggregate, :parent => Puppet::Property::Boolean) do
     desc "Whether check is aggregate"
-
-    newvalues(:true, :false)
   end
 
-  newproperty(:handle, :boolean => true) do
+  newproperty(:handle, :parent => Puppet::Property::Boolean) do
     desc "Whether check event send to a handler"
-
-    newvalues(:true, :false)
   end
 
-  newproperty(:publish, :boolean => true) do
+  newproperty(:publish, :parent => Puppet::Property::Boolean) do
     desc "Whether check is unpublished"
-
-    newvalues(:true, :false)
   end
 
   autorequire(:package) do

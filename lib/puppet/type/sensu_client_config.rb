@@ -1,3 +1,5 @@
+require 'puppet/property/boolean'
+
 begin
   require 'puppet_x/sensu/to_type'
 rescue LoadError => e
@@ -8,7 +10,7 @@ Puppet::Type.newtype(:sensu_client_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-client]",
@@ -61,9 +63,10 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:safe_mode, :boolean => true) do
+  newproperty(:safe_mode, :parent => Puppet::Property::Boolean) do
     desc "Require checks to be defined on server and client"
-    newvalues(:true, :false)
+
+    defaultto :false # property assumed as managed in provider (no nil? checks)
   end
 
   newproperty(:custom) do

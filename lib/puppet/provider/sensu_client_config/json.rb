@@ -35,6 +35,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     self.client_name = resource[:client_name]
     self.address = resource[:address]
     self.bind = resource[:bind]
+    self.port = resource[:port]
     self.subscriptions = resource[:subscriptions]
     self.safe_mode = resource[:safe_mode]
     self.custom = resource[:custom] unless resource[:custom].nil?
@@ -111,23 +112,11 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def safe_mode
-    case conf['client']['safe_mode']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['client']['safe_mode']
-    end
+    conf['client']['safe_mode']
   end
 
   def safe_mode=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['client']['safe_mode'] = true
-    else
-      conf['client']['safe_mode'] = false
-    end
+    conf['client']['safe_mode'] = value
   end
 
 end

@@ -2,7 +2,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-server]",
@@ -32,10 +32,9 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:ssl_transport, :boolean => true) do
+  newproperty(:ssl_transport) do
     desc "Enable SSL transport to connect to RabbitMQ"
 
-    newvalues(true, false)
     defaultto false
   end
 
@@ -79,10 +78,9 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     defaultto 'sensu'
   end
 
-  newproperty(:reconnect_on_error, :boolean => true) do
+  newproperty(:reconnect_on_error) do
     desc "Attempt to reconnect to RabbitMQ on error"
 
-    newvalues(:true, :false)
     defaultto :false
   end
 

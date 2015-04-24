@@ -28,7 +28,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
     self.user = resource[:user]
     self.password = resource[:password]
     self.vhost = resource[:vhost]
-    self.reconnect_on_error = resource[:reconnect_on_error] unless resource[:reconnect_on_error].nil?
+    self.reconnect_on_error = resource[:reconnect_on_error]
   end
 
   def destroy
@@ -144,22 +144,10 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def reconnect_on_error
-    case conf['rabbitmq']['reconnect_on_error']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['rabbitmq']['reconnect_on_error']
-    end
+    conf['rabbitmq']['reconnect_on_error']
   end
 
   def reconnect_on_error=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['rabbitmq']['reconnect_on_error'] = true
-    else
-      conf['rabbitmq']['reconnect_on_error'] = false
-    end
+     conf['rabbitmq']['reconnect_on_error'] = value
   end
 end

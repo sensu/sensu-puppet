@@ -1,8 +1,10 @@
+require 'puppet/property/boolean'
+
 Puppet::Type.newtype(:sensu_redis_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-api]",
@@ -47,11 +49,11 @@ Puppet::Type.newtype(:sensu_redis_config) do
     desc "The password used to connect to Redis"
   end
 
-  newproperty(:reconnect_on_error, :boolean => true) do
+  newproperty(:reconnect_on_error, :parent => Puppet::Property::Boolean) do
     desc "Attempt to reconnect to RabbitMQ on error"
 
-    newvalues(:true, :false)
-    defaultto :false
+    defaultto :false # not boolean since puppet ignores non-truthy defaults
+                     # will still be munged to boolean
   end
 
   autorequire(:package) do

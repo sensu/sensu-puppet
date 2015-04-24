@@ -1,3 +1,5 @@
+require 'puppet/property/boolean'
+
 begin
   require 'puppet_x/sensu/to_type'
 rescue LoadError => e
@@ -6,10 +8,6 @@ rescue LoadError => e
 end
 Puppet::Type.newtype(:sensu_filter) do
   @doc = ""
-
-  def initialize(*args)
-    super
-  end
 
   ensurable do
     newvalue(:present) do
@@ -60,10 +58,10 @@ Puppet::Type.newtype(:sensu_filter) do
     defaultto {}
   end
 
-  newproperty(:negate, :boolean => true) do
+  newproperty(:negate, :parent => Puppet::Property::Boolean) do
     desc ""
 
-    newvalues(:true, :false)
+    defaultto :false # provider assumes it's managed
   end
 
   autorequire(:package) do

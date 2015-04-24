@@ -63,7 +63,7 @@ describe 'sensu' do
               :release     => 'sensu',
               :repos       => 'main',
               :include_src => false,
-              :key         => '7580C77F',
+              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
               :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg',
               :before      => 'Package[sensu]'
             ) }
@@ -79,7 +79,7 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with( :location => 'http://repo.mydomain.com/apt') }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => '7580C77F',
+              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
               :key_source  => 'http://repo.mydomain.com/apt/pubkey.gpg'
             ) }
           end
@@ -98,7 +98,7 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with_ensure('absent') }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => '7580C77F',
+              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
               :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg'
             ) }
 

@@ -38,7 +38,7 @@
 
 # [*repo_key_id*]
 #   String.  The apt GPG key id
-#   Default: 7580C77F
+#   Default: 8911D8FF37778F24B4E726A218609E3D7580C77F
 #
 # [*repo_key_source*]
 #   String.  URL of the apt GPG key
@@ -227,7 +227,7 @@ class sensu (
   $install_repo                = true,
   $repo                        = 'main',
   $repo_source                 = undef,
-  $repo_key_id                 = '7580C77F',
+  $repo_key_id                 = '8911D8FF37778F24B4E726A218609E3D7580C77F',
   $repo_key_source             = 'http://repos.sensuapp.org/apt/pubkey.gpg',
   $client                      = true,
   $server                      = false,
