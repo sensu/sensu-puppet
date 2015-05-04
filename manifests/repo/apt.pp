@@ -24,14 +24,18 @@ class sensu::repo::apt {
     }
 
     apt::source { 'sensu':
-      ensure      => $ensure,
-      location    => $url,
-      release     => 'sensu',
-      repos       => $sensu::repo,
-      include_src => false,
-      key         => $sensu::repo_key_id,
-      key_source  => $sensu::repo_key_source,
-      before      => Package['sensu'],
+      ensure   => $ensure,
+      location => $url,
+      release  => 'sensu',
+      repos    => $sensu::repo,
+      include  => {
+        'src' => false,
+      },
+      key      => {
+        'id'     => $sensu::repo_key_id,
+        'source' => $sensu::repo_key_source,
+      },
+      before   => Package['sensu'],
     }
 
   } else {
