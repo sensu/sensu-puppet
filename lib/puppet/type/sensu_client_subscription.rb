@@ -52,7 +52,7 @@ Puppet::Type.newtype(:sensu_client_subscription) do
   newproperty(:custom) do
     desc "Custom client variables"
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")

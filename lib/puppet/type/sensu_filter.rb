@@ -30,7 +30,7 @@ Puppet::Type.newtype(:sensu_filter) do
   newparam(:attributes) do
     desc ""
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")

@@ -83,7 +83,7 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:custom) do
     desc "Custom check variables"
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")

@@ -1,8 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
 
 Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   confine :feature => :json
+  include PuppetX::Sensu::ProviderCreate
 
   def conf
     begin
@@ -18,17 +21,8 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
     end
   end
 
-  def create
+  def pre_create
     conf['rabbitmq'] = {}
-    self.ssl_transport = resource[:ssl_transport] unless resource[:ssl_transport].nil?
-    self.ssl_private_key = resource[:ssl_private_key] unless resource[:ssl_private_key].nil?
-    self.ssl_cert_chain = resource[:ssl_cert_chain] unless resource[:ssl_cert_chain].nil?
-    self.port = resource[:port]
-    self.host = resource[:host]
-    self.user = resource[:user]
-    self.password = resource[:password]
-    self.vhost = resource[:vhost]
-    self.reconnect_on_error = resource[:reconnect_on_error]
   end
 
   def destroy

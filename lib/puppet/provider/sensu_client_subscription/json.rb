@@ -1,16 +1,14 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
-
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.type(:sensu_client_subscription).provide(:json) do
   confine :feature => :json
-  include Puppet_X::Sensu::Totype
+  include PuppetX::Sensu::ToType
+  include PuppetX::Sensu::ProviderCreate
 
   def conf
     begin
@@ -30,10 +28,8 @@ Puppet::Type.type(:sensu_client_subscription).provide(:json) do
     "#{resource[:base_path]}/subscription_#{resource[:name]}.json"
   end
 
-  def create
+  def pre_create
     conf['client'] = {}
-    self.subscriptions = [ resource[:subscriptions] ]
-    self.custom = resource[:custom] unless resource[:custom].nil?
   end
 
   def destroy
