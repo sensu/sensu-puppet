@@ -28,7 +28,7 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
   end
 
   def destroy
-    conf = nil
+    @conf = nil
   end
 
   def exists?
