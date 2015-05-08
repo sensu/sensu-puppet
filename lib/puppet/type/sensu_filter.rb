@@ -1,11 +1,8 @@
-require 'puppet/property/boolean'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
 Puppet::Type.newtype(:sensu_filter) do
   @doc = ""
 
@@ -58,7 +55,7 @@ Puppet::Type.newtype(:sensu_filter) do
     defaultto {}
   end
 
-  newproperty(:negate, :parent => Puppet::Property::Boolean) do
+  newproperty(:negate, :parent => PuppetX::Sensu::BooleanProperty) do
     desc ""
 
     defaultto :false # provider assumes it's managed
