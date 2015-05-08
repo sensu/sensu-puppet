@@ -32,7 +32,7 @@ Puppet::Type.type(:sensu_client_subscription).provide(:json) do
 
   def create
     conf['client'] = {}
-    self.subscriptions = [ resource[:name] ]
+    self.subscriptions = [ resource[:subscriptions] ]
     self.custom = resource[:custom] unless resource[:custom].nil?
   end
 

@@ -28,6 +28,7 @@ Puppet::Type.newtype(:sensu_client_subscription) do
   end
 
   newparam(:name) do
+    isnamevar
     desc "The subscription name"
   end
 
@@ -36,11 +37,18 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newparam(:subscriptions) do
-    desc "Subscriptions included"
-    defaultto :name
-    munge do |value|
-      Array(value)
+  newproperty(:subscriptions, :array_matching => :all) do
+    desc "Subscriptions included, defaults to resource name"
+
+    defaultto { resource.name }
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+
+    def insync?(is)
+      Puppet.notice "is: #{is.inspect}, should: #{should.inspect}"
+      is.sort == should.sort
     end
   end
 
