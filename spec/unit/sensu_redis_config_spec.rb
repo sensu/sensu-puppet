@@ -19,20 +19,20 @@ describe Puppet::Type.type(:sensu_redis_config) do
 
   describe 'reconnect_on_error property' do
     it 'defaults to false' do
-      expect(type_instance[:reconnect_on_error]).to be false
+      expect(type_instance[:reconnect_on_error]).to be :false
     end
 
     [true, :true, 'true', 'True', :yes, 'yes'].each do |v|
       it "accepts #{v.inspect} as true" do
         type_instance[:reconnect_on_error] = v
-        expect(type_instance[:reconnect_on_error]).to be true
+        expect(type_instance[:reconnect_on_error]).to be :true
       end
     end
 
     [false, :false, 'false', 'False', :no, 'no'].each do |v|
       it "accepts #{v.inspect} as false" do
         type_instance[:reconnect_on_error] = v
-        expect(type_instance[:reconnect_on_error]).to be false
+        expect(type_instance[:reconnect_on_error]).to be :false
       end
     end
 

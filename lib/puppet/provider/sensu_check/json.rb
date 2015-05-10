@@ -1,16 +1,14 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
-
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.type(:sensu_check).provide(:json) do
   confine :feature => :json
-  include Puppet_X::Sensu::Totype
+  include PuppetX::Sensu::ToType
+  include PuppetX::Sensu::ProviderCreate
 
   def conf
     begin
@@ -26,26 +24,9 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     end
   end
 
-  def create
+  def pre_create
     conf['checks'] = {}
     conf['checks'][resource[:name]] = {}
-    self.command = resource[:command]
-    self.interval = resource[:interval]
-    # Optional arguments
-    self.handlers = resource[:handlers] unless resource[:handlers].nil?
-    self.occurrences = resource[:occurrences] unless resource[:occurrences].nil?
-    self.refresh = resource[:refresh] unless resource[:refresh].nil?
-    self.subscribers = resource[:subscribers] unless resource[:subscribers].nil?
-    self.type = resource[:type] unless resource[:type].nil?
-    self.standalone = resource[:standalone] unless resource[:standalone].nil?
-    self.high_flap_threshold = resource[:high_flap_threshold] unless resource[:high_flap_threshold].nil?
-    self.low_flap_threshold = resource[:low_flap_threshold] unless resource[:low_flap_threshold].nil?
-    self.timeout = resource[:timeout] unless resource[:timeout].nil?
-    self.aggregate = resource[:aggregate] unless resource[:aggregate].nil?
-    self.handle = resource[:handle] unless resource[:handle].nil?
-    self.publish = resource[:publish] unless resource[:publish].nil?
-    self.dependencies = resource[:dependencies] unless resource[:dependencies].nil?
-    self.custom = resource[:custom] unless resource[:custom].nil?
   end
 
   def check_args
@@ -62,7 +43,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def destroy
-    conf = nil
+    @conf = nil
   end
 
   def exists?

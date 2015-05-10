@@ -1,3 +1,6 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+
 Puppet::Type.newtype(:sensu_rabbitmq_config) do
   @doc = ""
 
@@ -32,10 +35,10 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:ssl_transport) do
+  newproperty(:ssl_transport, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Enable SSL transport to connect to RabbitMQ"
 
-    defaultto false
+    defaultto :false
   end
 
   newproperty(:ssl_private_key) do

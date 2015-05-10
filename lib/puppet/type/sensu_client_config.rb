@@ -1,11 +1,8 @@
-require 'puppet/property/boolean'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
 Puppet::Type.newtype(:sensu_client_config) do
   @doc = ""
 
@@ -63,7 +60,7 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:safe_mode, :parent => Puppet::Property::Boolean) do
+  newproperty(:safe_mode, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Require checks to be defined on server and client"
 
     defaultto :false # property assumed as managed in provider (no nil? checks)
@@ -72,7 +69,7 @@ Puppet::Type.newtype(:sensu_client_config) do
   newproperty(:custom) do
     desc "Custom client variables"
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -100,7 +97,7 @@ Puppet::Type.newtype(:sensu_client_config) do
   newproperty(:keepalive) do
     desc "Keepalive config"
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")

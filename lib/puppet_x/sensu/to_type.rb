@@ -1,6 +1,6 @@
-module Puppet_X
+module PuppetX
   module Sensu
-    module Totype
+    module ToType
       def to_type(value)
         if value.is_a?(Hash)
           new = Hash.new

@@ -1,9 +1,6 @@
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
+
 Puppet::Type.newtype(:sensu_client_subscription) do
   @doc = ""
 
@@ -28,6 +25,7 @@ Puppet::Type.newtype(:sensu_client_subscription) do
   end
 
   newparam(:name) do
+    isnamevar
     desc "The subscription name"
   end
 
@@ -36,18 +34,25 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newparam(:subscriptions) do
-    desc "Subscriptions included"
-    defaultto :name
-    munge do |value|
-      Array(value)
+  newproperty(:subscriptions, :array_matching => :all) do
+    desc "Subscriptions included, defaults to resource name"
+
+    defaultto { resource.name }
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+
+    def insync?(is)
+      Puppet.notice "is: #{is.inspect}, should: #{should.inspect}"
+      is.sort == should.sort
     end
   end
 
   newproperty(:custom) do
     desc "Custom client variables"
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")

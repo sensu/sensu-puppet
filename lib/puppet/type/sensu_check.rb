@@ -1,11 +1,8 @@
-require 'puppet/property/boolean'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
 Puppet::Type.newtype(:sensu_check) do
   @doc = ""
 
@@ -86,7 +83,7 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:custom) do
     desc "Custom check variables"
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -115,7 +112,7 @@ Puppet::Type.newtype(:sensu_check) do
     desc "What type of check is this"
   end
 
-  newproperty(:standalone, :parent => Puppet::Property::Boolean) do
+  newproperty(:standalone, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether this is a standalone check"
   end
 
@@ -123,15 +120,15 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Check timeout in seconds, after it fails"
   end
 
-  newproperty(:aggregate, :parent => Puppet::Property::Boolean) do
+  newproperty(:aggregate, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check is aggregate"
   end
 
-  newproperty(:handle, :parent => Puppet::Property::Boolean) do
+  newproperty(:handle, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check event send to a handler"
   end
 
-  newproperty(:publish, :parent => Puppet::Property::Boolean) do
+  newproperty(:publish, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check is unpublished"
   end
 

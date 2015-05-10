@@ -1,4 +1,5 @@
-require 'puppet/property/boolean'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
 
 Puppet::Type.newtype(:sensu_redis_config) do
   @doc = ""
@@ -49,11 +50,10 @@ Puppet::Type.newtype(:sensu_redis_config) do
     desc "The password used to connect to Redis"
   end
 
-  newproperty(:reconnect_on_error, :parent => Puppet::Property::Boolean) do
+  newproperty(:reconnect_on_error, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Attempt to reconnect to RabbitMQ on error"
 
-    defaultto :false # not boolean since puppet ignores non-truthy defaults
-                     # will still be munged to boolean
+    defaultto :false
   end
 
   autorequire(:package) do

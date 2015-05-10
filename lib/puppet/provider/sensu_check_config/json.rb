@@ -1,8 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
 
 Puppet::Type.type(:sensu_check_config).provide(:json) do
   confine :feature => :json
+  include PuppetX::Sensu::ProviderCreate
 
   def conf
     begin
@@ -18,17 +21,15 @@ Puppet::Type.type(:sensu_check_config).provide(:json) do
     end
   end
 
-  def create
+  def pre_create
     if resource[:event]
       conf['checks'] = {}
       conf['checks'][resource[:name]] = {}
     end
-    self.event = resource[:event] unless resource[:event].nil?
-    self.config = resource[:config] unless resource[:config].nil?
   end
 
   def destroy
-    conf = nil
+    @conf = nil
   end
 
   def exists?
