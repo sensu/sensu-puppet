@@ -133,7 +133,7 @@
 #   String.  Password to be used to connect to Redis
 #   Default: undef
 #
-# [*reddis_reconnect_on_error*]
+# [*redis_reconnect_on_error*]
 #   Boolean. In the event the connection or channel is closed by Reddis, attempt to automatically
 #     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
 #   Default: false
