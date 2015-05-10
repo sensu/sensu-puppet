@@ -45,9 +45,17 @@ class sensu::package {
     }
   }
 
-  package { $::sensu::sensu_plugin_name :
-    ensure   => $sensu::sensu_plugin_version,
-    provider => $plugin_provider,
+  if $plugin_provider =~ /gem/ and $::sensu::gem_install_options {
+    package { $::sensu::sensu_plugin_name :
+      ensure          => $sensu::sensu_plugin_version,
+      provider        => $plugin_provider,
+      install_options => $::sensu::gem_install_options,
+    }
+  } else {
+    package { $::sensu::sensu_plugin_name :
+      ensure   => $sensu::sensu_plugin_version,
+      provider => $plugin_provider,
+    }
   }
 
   file { '/etc/default/sensu':

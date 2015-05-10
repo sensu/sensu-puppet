@@ -219,6 +219,13 @@
 #   Integer.  Number of seconds to wait for the init stop script to run
 #   Default: 10
 #
+# [*gem_install_options*]
+#   Optional configuration to use for the installation of the
+#   sensu plugin gem with sensu_gem provider.
+#   See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
+#   Default: undef
+#   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
+#
 class sensu (
   $version                     = 'latest',
   $sensu_plugin_name           = 'sensu-plugin',
@@ -271,6 +278,7 @@ class sensu (
   $log_level                   = 'info',
   $dashboard                   = false,
   $init_stop_max_wait          = 10,
+  $gem_install_options         = undef,
 ){
 
   validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error)
