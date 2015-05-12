@@ -168,6 +168,29 @@ site.pp
       ...
     }
 
+### sensu-client.foo.com.yaml
+
+    ---
+    sensu::subscriptions:
+        - all
+    sensu::server: false
+    sensu::extensions:
+      'system':
+        source: 'puppet:///modules/supervision/system_profile.rb'
+    sensu::handlers:
+      'graphite':
+        type: 'tcp'
+        socket:
+          host: '127.0.0.1'
+          port: '2003'
+        mutator: "only_check_output"
+    sensu::checks:
+      'file_test':
+        command: '/usr/local/bin/check_file_test.sh'
+    classes:
+        - sensu
+
+
 ## Safe Mode checks
 
 By default Sensu clients will execute whatever check messages are on the
