@@ -10,6 +10,8 @@ class sensu::repo::apt {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
+  include '::apt'
+
   if defined(apt::source) {
 
     $ensure = $sensu::install_repo ? {
@@ -24,14 +26,19 @@ class sensu::repo::apt {
     }
 
     apt::source { 'sensu':
-      ensure      => $ensure,
-      location    => $url,
-      release     => 'sensu',
-      repos       => $sensu::repo,
-      include_src => false,
-      key         => $sensu::repo_key_id,
-      key_source  => $sensu::repo_key_source,
-      before      => Package['sensu'],
+      ensure   => $ensure,
+      location => $url,
+      release  => 'sensu',
+      repos    => $sensu::repo,
+      key      => {
+        'id'     => $sensu::repo_key_id,
+        'source' => $sensu::repo_key_source,
+      },
+      include  => {
+        'src' => false,
+        'deb' => true,
+      },
+      before   => Package['sensu'],
     }
 
   } else {
