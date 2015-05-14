@@ -279,6 +279,13 @@ class sensu (
   $dashboard                   = false,
   $init_stop_max_wait          = 10,
   $gem_install_options         = undef,
+
+  ### START Hiera Lookups ###
+  $extensions                  = {},
+  $handlers                    = {},
+  $checks                      = {},
+  ### END Hiera Lookups ###
+
 ){
 
   validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error)
@@ -320,6 +327,11 @@ class sensu (
   } else {
     $_manage_plugins_dir = $manage_plugins_dir
   }
+
+  # Create resources from hiera lookups
+  create_resources('::sensu::extension', $extensions)
+  create_resources('::sensu::handler', $handlers)
+  create_resources('::sensu::check', $checks)
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
