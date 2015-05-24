@@ -63,8 +63,10 @@ describe 'sensu' do
               :release     => 'sensu',
               :repos       => 'main',
               :include_src => false,
-              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
-              :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg',
+              :key         => {
+                :id     => '8911D8FF37778F24B4E726A218609E3D7580C77F',
+                :source => 'http://repos.sensuapp.org/apt/pubkey.gpg'
+              },
               :before      => 'Package[sensu]'
             ) }
           end
@@ -79,8 +81,10 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with( :location => 'http://repo.mydomain.com/apt') }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
-              :key_source  => 'http://repo.mydomain.com/apt/pubkey.gpg'
+              :key         => {
+                :id     => '8911D8FF37778F24B4E726A218609E3D7580C77F',
+                :source => 'http://repos.sensuapp.org/apt/pubkey.gpg'
+              }
             ) }
           end
 
@@ -88,8 +92,10 @@ describe 'sensu' do
             let(:params) { { :repo_key_id => 'FFFFFFFF', :repo_key_source => 'http://repo.mydomina.com/apt/pubkey.gpg' } }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => 'FFFFFFFF',
-              :key_source  => 'http://repo.mydomain.com/apt/pubkey.gpg'
+              :key         => {
+                :id     => 'FFFFFFFF',
+                :source => 'http://repo.mydomain.com/apt/pubkey.gpg'
+              }
             ) }
           end
 
@@ -98,8 +104,10 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with_ensure('absent') }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
-              :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg'
+              :key         => {
+                :id     => '8911D8FF37778F24B4E726A218609E3D7580C77F',
+                :source => 'http://repos.sensuapp.org/apt/pubkey.gpg'
+              }
             ) }
 
             it { should contain_package('sensu').with( :require => nil ) }
