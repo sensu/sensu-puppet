@@ -116,6 +116,15 @@ describe 'sensu', :type => :class do
         it { should_not contain_service('sensu-api') }
       end # not managing services
 
+      context 'with hasrestart=false' do
+        let(:params) { { :api => true, :hasrestart => false } }
+        it { should contain_service('sensu-api').with(
+          :ensure     => 'running',
+          :enable     => true,
+          :hasrestart => false
+        )}
+      end # with hasrestart=false
+
     end # service
 
   end # with api
