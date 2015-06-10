@@ -9,6 +9,14 @@
 #   Default: latest
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
+# [*sensu_plugin_name*]
+#   String.  Name of the sensu-plugin package
+#   Default: sensu-plugin
+#
+# [*sensu_plugin_provider*]
+#   String.  Provider used to install the sensu-plugin package
+#   Default: undef
+#
 # [*sensu_plugin_version*]
 #   String.  Version of the sensu-plugin gem to install
 #   Default: absent
@@ -30,7 +38,7 @@
 
 # [*repo_key_id*]
 #   String.  The apt GPG key id
-#   Default: 7580C77F
+#   Default: 8911D8FF37778F24B4E726A218609E3D7580C77F
 #
 # [*repo_key_source*]
 #   String.  URL of the apt GPG key
@@ -62,7 +70,7 @@
 #   Valid values: true, false
 #
 # [*manage_plugins_dir*]
-#   Boolean. Manage the sensu plusing directory
+#   Boolean. Manage the sensu plugins directory
 #   Default: true
 #   Valid values: true, false
 #
@@ -91,16 +99,27 @@
 #     rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
 #     without specifying a private key or cert chain to use SSL transport, but not cert auth.
 #   Defaul: false
+#   Valid values: true, false
 #
 # [*rabbitmq_ssl_private_key*]
-#   String.  Private key to be used by sensu to connect to rabbitmq
-#     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
+#   String.  Private key to be used by sensu to connect to rabbitmq. If the value starts with
+#     'puppet://' the file will be copied and used.  Also the key itself can be given as the
+#     parameter value, or a variable, or using hiera.  Absolute paths will just be used as
+#     a file reference, as you'd normally configure sensu.
 #   Default: undef
 #
 # [*rabbitmq_ssl_cert_chain*]
 #   String.  Private SSL cert chain to be used by sensu to connect to rabbitmq
-#     If the value starts with 'puppet://' the file will be copied and used.  Absolute paths will just be used
+#     If the value starts with 'puppet://' the file will be copied and used.   Also the key itself can
+#     be given as the parameter value, or a variable, or using hiera. Absolute paths will just be used
+#     as a file reference, as you'd normally configure sensu.
 #   Default: undef
+#
+# [*rabbitmq_reconnect_on_error*]
+#   Boolean. In the event the connection or channel is closed by RabbitMQ, attempt to automatically
+#     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
+#   Default: false
+#   Valid values: true, false
 #
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
@@ -110,9 +129,20 @@
 #   Integer.  Redis port to be used by sensu
 #   Default: 6379
 #
+# [*redis_password*]
+#   String.  Password to be used to connect to Redis
+#   Default: undef
+#
+# [*redis_reconnect_on_error*]
+#   Boolean. In the event the connection or channel is closed by Reddis, attempt to automatically
+#     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
+#   Default: false
+#   Valid values: true, false
+#
 # [*api_bind*]
 #   String.  IP to bind api service
 #   Default: 0.0.0.0
+#
 # [*api_host*]
 #   String.  Hostname of the sensu api service
 #   Default: localhost
@@ -126,7 +156,7 @@
 #   Default: undef
 #
 # [*api_password*]
-#   Integer. Password of the sensu api service
+#   String. Password of the sensu api service
 #   Default: undef
 #
 # [*subscriptions*]
@@ -185,61 +215,89 @@
 #   Default: 'info'
 #   Valid values: debug, info, warn, error, fatal
 #
+# [*init_stop_max_wait*]
+#   Integer.  Number of seconds to wait for the init stop script to run
+#   Default: 10
+#
+# [*gem_install_options*]
+#   Optional configuration to use for the installation of the
+#   sensu plugin gem with sensu_gem provider.
+#   See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
+#   Default: undef
+#   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
+#
 class sensu (
-  $version                  = 'latest',
-  $sensu_plugin_version     = 'absent',
-  $install_repo             = true,
-  $repo                     = 'main',
-  $repo_source              = undef,
-  $repo_key_id              = '7580C77F',
-  $repo_key_source          = 'http://repos.sensuapp.org/apt/pubkey.gpg',
-  $client                   = true,
-  $server                   = false,
-  $api                      = false,
-  $manage_services          = true,
-  $manage_user              = true,
-  $manage_plugins_dir       = true,
-  $rabbitmq_port            = 5672,
-  $rabbitmq_host            = 'localhost',
-  $rabbitmq_user            = 'sensu',
-  $rabbitmq_password        = '',
-  $rabbitmq_vhost           = 'sensu',
-  $rabbitmq_ssl             = false,
-  $rabbitmq_ssl_private_key = undef,
-  $rabbitmq_ssl_cert_chain  = undef,
-  $redis_host               = 'localhost',
-  $redis_port               = 6379,
-  $api_bind                 = '0.0.0.0',
-  $api_host                 = 'localhost',
-  $api_port                 = 4567,
-  $api_user                 = undef,
-  $api_password             = undef,
-  $subscriptions            = [],
-  $client_bind              = '127.0.0.1',
-  $client_address           = $::ipaddress,
-  $client_name              = $::fqdn,
-  $client_custom            = {},
-  $client_keepalive         = {},
-  $safe_mode                = false,
-  $plugins                  = [],
-  $plugins_dir              = undef,
-  $purge_config             = false,
-  $use_embedded_ruby        = false,
-  $rubyopt                  = '',
-  $gem_path                 = '',
-  $log_level                = 'info',
-  $dashboard                = false,
+  $version                     = 'latest',
+  $sensu_plugin_name           = 'sensu-plugin',
+  $sensu_plugin_provider       = undef,
+  $sensu_plugin_version        = 'absent',
+  $install_repo                = true,
+  $repo                        = 'main',
+  $repo_source                 = undef,
+  $repo_key_id                 = '8911D8FF37778F24B4E726A218609E3D7580C77F',
+  $repo_key_source             = 'http://repos.sensuapp.org/apt/pubkey.gpg',
+  $client                      = true,
+  $server                      = false,
+  $api                         = false,
+  $manage_services             = true,
+  $manage_user                 = true,
+  $manage_plugins_dir          = true,
+  $rabbitmq_port               = 5672,
+  $rabbitmq_host               = 'localhost',
+  $rabbitmq_user               = 'sensu',
+  $rabbitmq_password           = '',
+  $rabbitmq_vhost              = 'sensu',
+  $rabbitmq_ssl                = false,
+  $rabbitmq_ssl_private_key    = undef,
+  $rabbitmq_ssl_cert_chain     = undef,
+  $rabbitmq_reconnect_on_error = false,
+  $redis_host                  = 'localhost',
+  $redis_port                  = 6379,
+  $redis_password              = undef,
+  $redis_reconnect_on_error    = false,
+  $api_bind                    = '0.0.0.0',
+  $api_host                    = 'localhost',
+  $api_port                    = 4567,
+  $api_user                    = undef,
+  $api_password                = undef,
+  $subscriptions               = [],
+  $client_bind                 = '127.0.0.1',
+  $client_port                 = '3030',
+  $client_address              = $::ipaddress,
+  $client_name                 = $::fqdn,
+  $client_custom               = {},
+  $client_keepalive            = {},
+  $safe_mode                   = false,
+  $plugins                     = [],
+  $plugins_dir                 = undef,
+  $purge_config                = false,
+  $purge_plugins_dir           = false,
+  $use_embedded_ruby           = false,
+  $rubyopt                     = '',
+  $gem_path                    = '',
+  $log_level                   = 'info',
+  $dashboard                   = false,
+  $init_stop_max_wait          = 10,
+  $gem_install_options         = undef,
+
+  ### START Hiera Lookups ###
+  $extensions                  = {},
+  $handlers                    = {},
+  $checks                      = {},
+  ### END Hiera Lookups ###
+
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services)
+  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
-  validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
+  validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
+  if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
 
   # Ugly hack for notifications, better way?
@@ -269,6 +327,11 @@ class sensu (
   } else {
     $_manage_plugins_dir = $manage_plugins_dir
   }
+
+  # Create resources from hiera lookups
+  create_resources('::sensu::extension', $extensions)
+  create_resources('::sensu::handler', $handlers)
+  create_resources('::sensu::check', $checks)
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services

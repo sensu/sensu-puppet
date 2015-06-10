@@ -1,11 +1,11 @@
-Puppet::Type.newtype(:sensu_check_config) do
+Puppet::Type.newtype(:sensu_extension) do
   @doc = ""
 
   def initialize(*args)
     super *args
 
     self[:notify] = [
-      "Service[sensu-client]",
+      "Service[sensu-api]",
       "Service[sensu-server]",
     ].select { |ref| catalog.resource(ref) }
   end
@@ -23,20 +23,17 @@ Puppet::Type.newtype(:sensu_check_config) do
   end
 
   newparam(:name) do
-    desc "The check name to configure"
+    desc "This value has no effect, set it to what ever you want."
   end
 
   newparam(:base_path) do
     desc "The base path to the client config file"
-    defaultto '/etc/sensu/conf.d/checks'
+    defaultto '/etc/sensu/conf.d/extensions/'
   end
 
-  newparam(:config) do
-    desc "Check configuration for the client to use"
-  end
-
-  newparam(:event) do
-    desc "Configuration to send with the event to handlers"
+  newproperty(:config) do
+    desc "The configuration for this extension"
+    defaultto {}
   end
 
   autorequire(:package) do

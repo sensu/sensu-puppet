@@ -1,8 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
 
 Puppet::Type.type(:sensu_api_config).provide(:json) do
   confine :feature => :json
+  include PuppetX::Sensu::ProviderCreate
 
   # Internal: Retrieve the current contents of /etc/sensu/config.json.
   #
@@ -25,16 +28,8 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
     end
   end
 
-  # Public: Create the API configuration section.
-  #
-  # Returns nothing.
-  def create
+  def pre_create
     conf['api'] = {}
-    self.bind = resource[:bind]
-    self.port = resource[:port]
-    self.host = resource[:host]
-    self.user = resource[:user] unless resource[:user].nil?
-    self.password = resource[:password] unless resource[:password].nil?
   end
 
   # Public: Remove the API configuration section.

@@ -12,4 +12,14 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
   has_feature :versionable, :install_options
 
   commands :gemcmd => "/opt/sensu/embedded/bin/gem"
+
+  def uninstall
+    command = [command(:gemcmd), "uninstall"]
+    command << "-x" << "-a" << resource[:name]
+    output = execute(command)
+
+    # Apparently some stupid gem versions don't exit non-0 on failure
+    self.fail "Could not uninstall: #{output.chomp}" if output.include?("ERROR")
+  end
+
 end

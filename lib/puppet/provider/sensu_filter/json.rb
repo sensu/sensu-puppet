@@ -1,16 +1,15 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
 
 Puppet::Type.type(:sensu_filter).provide(:json) do
   confine :feature => :json
-  include Puppet_X::Sensu::Totype
+  include PuppetX::Sensu::ToType
+  include PuppetX::Sensu::ProviderCreate
 
   def conf
     begin
@@ -30,11 +29,9 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
     end
   end
 
-  def create
+  def pre_create
     conf['filters'] = {}
     conf['filters'][resource[:name]] = {}
-    self.negate     = resource[:negate]
-    self.attributes = resource[:attributes]
   end
 
   def destroy
@@ -46,21 +43,11 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
   end
 
   def negate
-    case conf['filters'][resource[:name]]['negate']
-    when true
-      :true
-    else
-      :false
-    end
+    conf['filters'][resource[:name]]['negate']
   end
 
   def negate=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['filters'][resource[:name]]['negate'] = true
-    else
-      conf['filters'][resource[:name]]['negate'] = false
-    end
+    conf['filters'][resource[:name]]['negate'] = value
   end
 
   def attributes

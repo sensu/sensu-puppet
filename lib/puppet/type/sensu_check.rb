@@ -1,14 +1,13 @@
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
+
 Puppet::Type.newtype(:sensu_check) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-client]",
@@ -38,10 +37,16 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:dependencies, :array_matching => :all) do
     desc "Dependencies of this check"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:handlers, :array_matching => :all) do
     desc "List of handlers that responds to this check"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:high_flap_threshold) do
@@ -71,11 +76,14 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:subscribers, :array_matching => :all) do
     desc "Who is subscribed to this check"
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:custom) do
     desc "Custom check variables"
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -104,32 +112,24 @@ Puppet::Type.newtype(:sensu_check) do
     desc "What type of check is this"
   end
 
-  newproperty(:standalone, :boolean => true) do
+  newproperty(:standalone, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether this is a standalone check"
-
-    newvalues(:true, :false)
   end
 
   newproperty(:timeout) do
     desc "Check timeout in seconds, after it fails"
   end
 
-  newproperty(:aggregate, :boolean => true) do
+  newproperty(:aggregate, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check is aggregate"
-
-    newvalues(:true, :false)
   end
 
-  newproperty(:handle, :boolean => true) do
+  newproperty(:handle, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check event send to a handler"
-
-    newvalues(:true, :false)
   end
 
-  newproperty(:publish, :boolean => true) do
+  newproperty(:publish, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check is unpublished"
-
-    newvalues(:true, :false)
   end
 
   autorequire(:package) do

@@ -1,14 +1,13 @@
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
+
 Puppet::Type.newtype(:sensu_client_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-client]",
@@ -41,6 +40,9 @@ Puppet::Type.newtype(:sensu_client_config) do
 
   newproperty(:subscriptions, :array_matching => :all) do
     desc ""
+    def insync?(is)
+      is.sort == should.sort
+    end
   end
 
   newproperty(:bind) do
@@ -48,20 +50,26 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto '127.0.0.1'
   end
 
+  newproperty(:port) do
+    desc "The port that client will bind to"
+    defaultto '3030'
+  end
+
   newparam(:base_path) do
     desc "The base path to the client config file"
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:safe_mode, :boolean => true) do
+  newproperty(:safe_mode, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Require checks to be defined on server and client"
-    newvalues(:true, :false)
+
+    defaultto :false # property assumed as managed in provider (no nil? checks)
   end
 
   newproperty(:custom) do
     desc "Custom client variables"
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -89,7 +97,7 @@ Puppet::Type.newtype(:sensu_client_config) do
   newproperty(:keepalive) do
     desc "Keepalive config"
 
-    include Puppet_X::Sensu::Totype
+    include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")

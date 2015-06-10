@@ -36,14 +36,26 @@ class sensu::package {
     ensure  => $sensu::version,
   }
 
-  $gem_provider = $sensu::use_embedded_ruby ? {
-    true    => 'sensu_gem',
-    default => 'gem',
+  if $::sensu::sensu_plugin_provider {
+    $plugin_provider = $::sensu::sensu_plugin_provider
+  } else {
+    $plugin_provider = $sensu::use_embedded_ruby ? {
+      true    => 'sensu_gem',
+      default => 'gem',
+    }
   }
 
-  package { 'sensu-plugin' :
-    ensure   => $sensu::sensu_plugin_version,
-    provider => $gem_provider,
+  if $plugin_provider =~ /gem/ and $::sensu::gem_install_options {
+    package { $::sensu::sensu_plugin_name :
+      ensure          => $sensu::sensu_plugin_version,
+      provider        => $plugin_provider,
+      install_options => $::sensu::gem_install_options,
+    }
+  } else {
+    package { $::sensu::sensu_plugin_name :
+      ensure   => $sensu::sensu_plugin_version,
+      provider => $plugin_provider,
+    }
   }
 
   file { '/etc/default/sensu':
@@ -55,7 +67,7 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters' ]:
+  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters', '/etc/sensu/conf.d/extensions' ]:
     ensure  => directory,
     owner   => 'sensu',
     group   => 'sensu',
@@ -80,6 +92,9 @@ class sensu::package {
       mode    => '0555',
       owner   => 'sensu',
       group   => 'sensu',
+      purge   => $sensu::purge_plugins_dir,
+      recurse => true,
+      force   => true,
       require => Package['sensu'],
     }
   }

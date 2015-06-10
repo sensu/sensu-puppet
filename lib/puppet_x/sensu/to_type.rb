@@ -1,6 +1,6 @@
-module Puppet_X
+module PuppetX
   module Sensu
-    module Totype
+    module ToType
       def to_type(value)
         if value.is_a?(Hash)
           new = Hash.new
@@ -14,6 +14,8 @@ module Puppet_X
             true
           when false, 'false', 'False', :false
             false
+          when :undef
+            'undef'
           when /^([0-9])+$/
             value.to_i
           else

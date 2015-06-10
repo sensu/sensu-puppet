@@ -18,7 +18,7 @@ class sensu::client::config {
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',
-    mode   => '0444',
+    mode   => '0440',
   }
 
   sensu_client_config { $::fqdn:
@@ -26,6 +26,7 @@ class sensu::client::config {
     client_name   => $sensu::client_name,
     address       => $sensu::client_address,
     bind          => $sensu::client_bind,
+    port          => $sensu::client_port,
     subscriptions => $sensu::subscriptions,
     safe_mode     => $sensu::safe_mode,
     custom        => $sensu::client_custom,

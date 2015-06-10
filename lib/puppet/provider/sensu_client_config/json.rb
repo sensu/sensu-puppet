@@ -1,16 +1,14 @@
 require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
-
-begin
-  require 'puppet_x/sensu/to_type'
-rescue LoadError => e
-  libdir = Pathname.new(__FILE__).parent.parent.parent.parent
-  require File.join(libdir, 'puppet_x/sensu/to_type')
-end
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'provider_create.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.type(:sensu_client_config).provide(:json) do
   confine :feature => :json
-  include Puppet_X::Sensu::Totype
+  include PuppetX::Sensu::ToType
+  include PuppetX::Sensu::ProviderCreate
 
   def conf
     begin
@@ -30,15 +28,8 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     "#{resource[:base_path]}/client.json"
   end
 
-  def create
+  def pre_create
     conf['client'] = {}
-    self.client_name = resource[:client_name]
-    self.address = resource[:address]
-    self.bind = resource[:bind]
-    self.subscriptions = resource[:subscriptions]
-    self.safe_mode = resource[:safe_mode]
-    self.custom = resource[:custom] unless resource[:custom].nil?
-    self.keepalive = resource[:keepalive] unless resource[:keepalive].nil?
   end
 
   def destroy
@@ -50,7 +41,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def check_args
-    ['name', 'address', 'subscriptions', 'safe_mode', 'bind', 'keepalive']
+    ['name', 'address', 'subscriptions', 'safe_mode', 'bind', 'keepalive', 'port']
   end
 
   def client_name
@@ -77,6 +68,14 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     conf['client']['bind'] = value
   end
 
+  def port
+    conf['client']['port']
+  end
+
+  def port=(value)
+    conf['client']['port'] = value
+  end
+
   def subscriptions
     conf['client']['subscriptions'] || []
   end
@@ -99,28 +98,15 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def keepalive=(value)
-    conf['client']['keepalive'] ||= {}
-    conf['client']['keepalive'].merge!(to_type(value))
+    conf['client']['keepalive'] = value
   end
 
   def safe_mode
-    case conf['client']['safe_mode']
-    when true
-      :true
-    when false
-      :false
-    else
-      conf['client']['safe_mode']
-    end
+    conf['client']['safe_mode']
   end
 
   def safe_mode=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['client']['safe_mode'] = true
-    else
-      conf['client']['safe_mode'] = false
-    end
+    conf['client']['safe_mode'] = value
   end
 
 end

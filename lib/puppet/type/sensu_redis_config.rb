@@ -1,8 +1,11 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+
 Puppet::Type.newtype(:sensu_redis_config) do
   @doc = ""
 
   def initialize(*args)
-    super
+    super *args
 
     self[:notify] = [
       "Service[sensu-api]",
@@ -41,6 +44,16 @@ Puppet::Type.newtype(:sensu_redis_config) do
     desc "The hostname that Redis is listening on"
 
     defaultto 'localhost'
+  end
+
+  newproperty(:password) do
+    desc "The password used to connect to Redis"
+  end
+
+  newproperty(:reconnect_on_error, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc "Attempt to reconnect to RabbitMQ on error"
+
+    defaultto :false
   end
 
   autorequire(:package) do

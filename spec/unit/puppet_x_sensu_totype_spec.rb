@@ -7,7 +7,7 @@ rescue LoadError => e
 end
 
 class TotypeFixtureClass
-  include Puppet_X::Sensu::Totype
+  include PuppetX::Sensu::ToType
 end
 
 describe TotypeFixtureClass do

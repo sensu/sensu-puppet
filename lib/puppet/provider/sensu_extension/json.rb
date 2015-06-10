@@ -3,7 +3,7 @@ require 'json' if Puppet.features.json?
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'provider_create.rb'))
 
-Puppet::Type.type(:sensu_redis_config).provide(:json) do
+Puppet::Type.type(:sensu_extension).provide(:json) do
   confine :feature => :json
   include PuppetX::Sensu::ProviderCreate
 
@@ -22,50 +22,26 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def pre_create
-    conf['redis'] = {}
+    conf[resource[:name]] = {}
   end
 
   def config_file
-    "#{resource[:base_path]}/redis.json"
+    "#{resource[:base_path]}/#{resource[:name]}.json"
   end
 
   def destroy
-    conf.delete 'redis'
+    conf.delete resource[:name]
   end
 
   def exists?
-    conf.has_key? 'redis'
+    conf.has_key? resource[:name]
   end
 
-  def port
-    conf['redis']['port'].to_s
+  def config
+    conf[resource[:name]]
   end
 
-  def port=(value)
-    conf['redis']['port'] = value.to_i
-  end
-
-  def host
-    conf['redis']['host']
-  end
-
-  def host=(value)
-    conf['redis']['host'] = value
-  end
-
-  def password
-    conf['redis']['password']
-  end
-
-  def password=(value)
-    conf['redis']['password'] = value
-  end
-
-  def reconnect_on_error
-    conf['redis']['reconnect_on_error']
-  end
-
-  def reconnect_on_error=(value)
-    conf['redis']['reconnect_on_error'] = value
+  def config=(value)
+    conf[resource[:name]] = value
   end
 end
