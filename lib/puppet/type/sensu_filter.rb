@@ -27,9 +27,8 @@ Puppet::Type.newtype(:sensu_filter) do
     defaultto '/etc/sensu/conf.d/filters/'
   end
 
-  newparam(:attributes) do
-    desc ""
-
+  newproperty(:attributes) do
+    desc "Filter attributes"
     include PuppetX::Sensu::ToType
 
     def is_to_s(hash = @is)
