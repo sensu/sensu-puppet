@@ -2,7 +2,17 @@
 #
 # Manages the Sensu server service
 #
-class sensu::server::service {
+# == Parameters
+#
+# [*hasrestart*]
+#   Boolean. Value of hasrestart attribute for this service.
+#   Default: true
+
+class sensu::server::service (
+  $hasrestart = true,
+) {
+
+  validate_bool($hasrestart)
 
   if $caller_module_name != $module_name {
     fail("Use of private class ${name} by ${caller_module_name}")
@@ -24,7 +34,7 @@ class sensu::server::service {
     service { 'sensu-server':
       ensure     => $ensure,
       enable     => $enable,
-      hasrestart => true,
+      hasrestart => $hasrestart,
       subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'], Class['sensu::rabbitmq::config'] ],
     }
   }

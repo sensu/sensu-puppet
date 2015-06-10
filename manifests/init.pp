@@ -226,6 +226,13 @@
 #   Default: undef
 #   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
 #
+# [*hasrestart*]
+#   Boolean. Value of hasrestart attribute for sensu services.
+#   If you use your own startup scripts for upstart and want puppet
+#   to properly stop and start sensu services when those scripts change,
+#   set it to false. See also http://upstart.ubuntu.com/faq.html#reload
+#   Default: true
+#
 class sensu (
   $version                     = 'latest',
   $sensu_plugin_name           = 'sensu-plugin',
@@ -279,6 +286,7 @@ class sensu (
   $dashboard                   = false,
   $init_stop_max_wait          = 10,
   $gem_install_options         = undef,
+  $hasrestart                  = true,
 
   ### START Hiera Lookups ###
   $extensions                  = {},
@@ -288,7 +296,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error)
+  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -341,9 +349,15 @@ class sensu (
   class { 'sensu::api::config': } ->
   class { 'sensu::redis::config': } ->
   class { 'sensu::client::config': } ->
-  class { 'sensu::client::service': } ->
-  class { 'sensu::api::service': } ->
-  class { 'sensu::server::service': } ->
+  class { 'sensu::client::service':
+    hasrestart => $hasrestart,
+  } ->
+  class { 'sensu::api::service':
+    hasrestart => $hasrestart,
+  } ->
+  class { 'sensu::server::service':
+    hasrestart => $hasrestart,
+  } ->
   anchor {'sensu::end': }
 
   if $plugins_dir {
