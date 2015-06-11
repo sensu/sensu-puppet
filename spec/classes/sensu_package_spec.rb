@@ -51,10 +51,10 @@ describe 'sensu' do
     context 'repos' do
 
       context 'ubuntu' do
-        let(:facts) { { :osfamily => 'Debian' } }
+        let(:facts) { { :osfamily => 'Debian' , :lsbdistid => 'ubuntu'} }
 
         context 'with puppet-apt installed' do
-          let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include_src, $key, $key_source) {}' ] }
+          let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include, $key) {}' ] }
 
           context 'default' do
             it { should contain_apt__source('sensu').with(
@@ -62,9 +62,8 @@ describe 'sensu' do
               :location    => 'http://repos.sensuapp.org/apt',
               :release     => 'sensu',
               :repos       => 'main',
-              :include_src => false,
-              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
-              :key_source  => 'http://repos.sensuapp.org/apt/pubkey.gpg',
+              :include     => { 'src' => false },
+              :key         => { 'id' => '8911D8FF37778F24B4E726A218609E3D7580C77F', 'source' => 'http://repos.sensuapp.org/apt/pubkey.gpg' },
               :before      => 'Package[sensu]'
             ) }
           end
@@ -79,8 +78,7 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with( :location => 'http://repo.mydomain.com/apt') }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => '8911D8FF37778F24B4E726A218609E3D7580C77F',
-              :key_source  => 'http://repo.mydomain.com/apt/pubkey.gpg'
+              :key         => { 'id' => '8911D8FF37778F24B4E726A218609E3D7580C77F', 'source'  => 'http://repo.mydomain.com/apt/pubkey.gpg' }
             ) }
           end
 
@@ -88,8 +86,7 @@ describe 'sensu' do
             let(:params) { { :repo_key_id => 'FFFFFFFF', :repo_key_source => 'http://repo.mydomina.com/apt/pubkey.gpg' } }
 
             it { should_not contain_apt__key('sensu').with(
-              :key         => 'FFFFFFFF',
-              :key_source  => 'http://repo.mydomain.com/apt/pubkey.gpg'
+              :key         => { 'id' => 'FFFFFFFF', 'source'  => 'http://repo.mydomain.com/apt/pubkey.gpg' }
             ) }
           end
 
