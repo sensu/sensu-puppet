@@ -47,6 +47,9 @@ define sensu::plugin(
   $nocheckcertificate = false,
 ){
 
+  Sensu::Plugin[$name] ->
+  Class['sensu::client::service']
+
   validate_bool($purge, $recurse, $force, $nocheckcertificate)
   validate_re($pkg_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${pkg_version}")
   validate_re($type, ['^file$', '^url$', '^package$', '^directory$'], "Invalid plugin type: ${type}")
