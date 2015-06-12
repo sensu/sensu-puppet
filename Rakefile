@@ -1,7 +1,8 @@
-require 'rubygems'
+require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'puppetlabs_spec_helper/rake_tasks'
-require 'puppet-lint'
+require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
+require 'metadata-json-lint/rake_task'
 
 begin
   require 'puppet_blacksmith/rake_tasks'
@@ -20,14 +21,15 @@ PuppetLint.configuration.send("disable_quoted_booleans")
 PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetSyntax.exclude_paths = exclude_paths
 
-task :metadata do
-  sh "metadata-json-lint metadata.json"
+desc "Run acceptance tests"
+RSpec::Core::RakeTask.new(:acceptance) do |t|
+  t.pattern = 'spec/acceptance'
 end
 
 desc "Run syntax, lint, and spec tests."
 task :test => [
   :syntax,
   :lint,
-  :metadata,
+  :metadata_lint,
   :spec,
 ]

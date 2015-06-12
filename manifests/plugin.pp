@@ -108,7 +108,7 @@ define sensu::plugin(
     }
     'package':    {
       package { $name:
-        ensure => $pkg_version
+        ensure => $pkg_version,
       }
     }
     default:      {
