@@ -23,5 +23,14 @@ describe 'sensu' do
     ) }
   end # with server
 
+  context 'with hasrestart=false' do
+    let(:params) { { :server => true, :hasrestart => false } }
+    it { should contain_service('sensu-server').with(
+      :ensure     => 'running',
+      :enable     => true,
+      :hasrestart => false
+    ) }
+  end # with hasrestart=false
+
 end
 

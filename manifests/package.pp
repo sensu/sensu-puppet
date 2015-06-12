@@ -13,6 +13,7 @@ class sensu::package {
     'Debian': {
       class { 'sensu::repo::apt': }
       if $sensu::install_repo {
+        include apt
         $repo_require = Apt::Source['sensu']
       } else {
         $repo_require = undef
