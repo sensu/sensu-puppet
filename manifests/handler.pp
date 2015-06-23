@@ -43,7 +43,7 @@
 #   Default: undef
 #
 # [*filters*]
-#   Hash.  Filter command to apply
+#   Array.  Filter command to apply
 #   Default: undef
 #
 # [*source*]
