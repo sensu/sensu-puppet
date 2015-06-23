@@ -27,9 +27,9 @@ class sensu::client::config {
     address       => $sensu::client_address,
     bind          => $sensu::client_bind,
     port          => $sensu::client_port,
-    subscriptions => union ( hiera_array('sensu::subscriptions'), $sensu::subscriptions ),
+    subscriptions => union ( hiera_array('sensu::subscriptions', []), $sensu::subscriptions ),
     safe_mode     => $sensu::safe_mode,
-    custom        => merge ( hiera_hash('sensu::client_custom') , $sensu::client_custom ),
+    custom        => merge ( hiera_hash('sensu::client_custom', {}) , $sensu::client_custom ),
     keepalive     => $sensu::client_keepalive,
   }
 
