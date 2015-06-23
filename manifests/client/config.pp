@@ -13,18 +13,6 @@ class sensu::client::config {
   } else {
     $ensure = 'present'
   }
-
-  if hiera_array('::sensu::subscriptions') {
-    $subscriptions = hiera_array('::sensu::subscriptions')
-  } else {
-    $subscriptions = $sensu::subscriptions
-  }
-
-  if hiera_hash('::sensu::client_custom') {
-    $client_custom = hiera_hash('::sensu::client_custom')
-  } else {
-    $client_custom = $sensu::client_custom
-  }
   
   file { '/etc/sensu/conf.d/client.json':
     ensure => $ensure,
@@ -39,9 +27,9 @@ class sensu::client::config {
     address       => $sensu::client_address,
     bind          => $sensu::client_bind,
     port          => $sensu::client_port,
-    subscriptions => $subscriptions,
+    subscriptions => hiera_array('::sensu::subscriptions', $sensu::subscriptions ),
     safe_mode     => $sensu::safe_mode,
-    custom        => $client_custom,
+    custom        => hiera_hash('::sensu::client_custom', $sensu::client_custom ),
     keepalive     => $sensu::client_keepalive,
   }
 
