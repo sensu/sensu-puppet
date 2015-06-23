@@ -14,13 +14,13 @@ class sensu::client::config {
     $ensure = 'present'
   }
 
-  if hiera_array('::sensu::subscriptions') && is_array(hiera_array('::sensu::subscriptions')) {
+  if hiera_array('::sensu::subscriptions') {
     $subscriptions = hiera_array('::sensu::subscriptions')
   } else {
     $subscriptions = $sensu::subscriptions
   }
 
-  if hiera_hash('::sensu::client_custom')) && is_hash(hiera_hash('::sensu::client_custom')) {
+  if hiera_hash('::sensu::client_custom') {
     $client_custom = hiera_hash('::sensu::client_custom')
   } else {
     $client_custom = $sensu::client_custom
