@@ -103,7 +103,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def subscribers
-    conf['checks'][resource[:name]]['subscribers']
+    conf['checks'][resource[:name]]['subscribers'] || []
   end
 
   def subscribers=(value)
