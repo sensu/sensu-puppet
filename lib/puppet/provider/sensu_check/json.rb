@@ -134,6 +134,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]]['high_flap_threshold'] = value.to_i
   end
 
+  def source
+    conf['checks'][resource[:name]]['source']
+  end
+
+  def source=(value)
+    conf['checks'][resource[:name]]['source'] = value
+  end
+
   def timeout
     conf['checks'][resource[:name]]['timeout'].to_s
   end
