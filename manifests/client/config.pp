@@ -22,15 +22,15 @@ class sensu::client::config {
   }
 
   if $merge_subscriptions {
-    $subscriptions => union ( hiera_array('sensu::subscriptions', []), $sensu::subscriptions )
+    $subscriptions = union ( hiera_array('sensu::subscriptions', []), $sensu::subscriptions )
   } else {
-    $subscriptions => $sensu::subscriptions
+    $subscriptions = $sensu::subscriptions
   }
 
   if $merge_client_custom {
-    $client_custom  => merge ( hiera_hash('sensu::client_custom', {}) , $sensu::client_custom ),
+    $client_custom  = merge ( hiera_hash('sensu::client_custom', {}) , $sensu::client_custom )
   } else {
-    $client_custom => $sensu::client_custom
+    $client_custom = $sensu::client_custom
   }
 
   sensu_client_config { $::fqdn:
