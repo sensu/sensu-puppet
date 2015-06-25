@@ -21,13 +21,13 @@ class sensu::client::config {
     mode   => '0440',
   }
 
-  if $merge_subscriptions {
+  if $sensu::merge_subscriptions {
     $subscriptions = union ( hiera_array('sensu::subscriptions', []), $sensu::subscriptions )
   } else {
     $subscriptions = $sensu::subscriptions
   }
 
-  if $merge_client_custom {
+  if $sensu::merge_client_custom {
     $client_custom  = merge ( hiera_hash('sensu::client_custom', {}) , $sensu::client_custom )
   } else {
     $client_custom = $sensu::client_custom
