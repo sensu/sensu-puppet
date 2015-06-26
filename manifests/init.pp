@@ -245,6 +245,11 @@
 #   taking the lowest level (default hiera behaviour).
 #   Default: false
 #
+# [*merge_plugins*]
+#   Boolean. Value of merge_plugins attribute for sensu plugins configuration.
+#   If you want to merge plugins list from all levels of hiera, instead of 
+#   taking the lowest level (default hiera behaviour).
+#   Default: false
 #
 class sensu (
   $version                     = 'latest',
