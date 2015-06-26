@@ -300,8 +300,10 @@ class sensu (
   $init_stop_max_wait          = 10,
   $gem_install_options         = undef,
   $hasrestart                  = true,
+  
   $merge_subscriptions         = false,
   $merge_client_custom         = false,
+  $merge_plugins               = false,
   
   ### START Hiera Lookups ###
   $extensions                  = {},
@@ -375,10 +377,16 @@ class sensu (
   } ->
   anchor {'sensu::end': }
 
+  if $merge_plugins {
+    $merged_plugins = hiera_array('sensu::plugins', [])
+  } else {
+    $merged_plugins = $plugins
+  }
+
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
-    sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+    sensu::plugin { $merged_plugins: install_path => '/etc/sensu/plugins' }
   }
 
 }
