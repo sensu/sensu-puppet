@@ -15,6 +15,7 @@ describe 'sensu::handler', :type => :define do
       :ensure      => 'present',
       :type        => 'pipe',
       :command     => '/etc/sensu/handlers/mycommand.rb',
+      :filters     => [],
       :severities  => ['ok', 'warning', 'critical', 'unknown']
     ) }
   end
