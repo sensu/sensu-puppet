@@ -233,6 +233,24 @@
 #   set it to false. See also http://upstart.ubuntu.com/faq.html#reload
 #   Default: true
 #
+# [*merge_subscriptions*]
+#   Boolean. Value of merge_subscriptions attribute for sensu client configuration.
+#   If you want to merge client subscriptions from all levels of hiera, instead of 
+#   taking the lowest level (default hiera behaviour).
+#   Default: false
+#
+# [*merge_client_custom*]
+#   Boolean. Value of merge_client_custom attribute for sensu client configuration.
+#   If you want to merge client_custom metadata from all levels of hiera, instead of 
+#   taking the lowest level (default hiera behaviour).
+#   Default: false
+#
+# [*merge_plugins*]
+#   Boolean. Value of merge_plugins attribute for sensu plugins configuration.
+#   If you want to merge plugins list from all levels of hiera, instead of 
+#   taking the lowest level (default hiera behaviour).
+#   Default: false
+#
 class sensu (
   $version                     = 'latest',
   $sensu_plugin_name           = 'sensu-plugin',
@@ -287,7 +305,11 @@ class sensu (
   $init_stop_max_wait          = 10,
   $gem_install_options         = undef,
   $hasrestart                  = true,
-
+  
+  $merge_subscriptions         = false,
+  $merge_client_custom         = false,
+  $merge_plugins               = false,
+  
   ### START Hiera Lookups ###
   $extensions                  = {},
   $handlers                    = {},
@@ -360,10 +382,16 @@ class sensu (
   } ->
   anchor {'sensu::end': }
 
+  if $merge_plugins {
+    $merged_plugins = hiera_array('sensu::plugins', [])
+  } else {
+    $merged_plugins = $plugins
+  }
+
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
-    sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+    sensu::plugin { $merged_plugins: install_path => '/etc/sensu/plugins' }
   }
 
 }

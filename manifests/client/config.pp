@@ -13,12 +13,24 @@ class sensu::client::config {
   } else {
     $ensure = 'present'
   }
-
+  
   file { '/etc/sensu/conf.d/client.json':
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',
     mode   => '0440',
+  }
+
+  if $sensu::merge_subscriptions {
+    $subscriptions = union ( hiera_array('sensu::subscriptions', []), $sensu::subscriptions )
+  } else {
+    $subscriptions = $sensu::subscriptions
+  }
+
+  if $sensu::merge_client_custom {
+    $client_custom  = merge ( hiera_hash('sensu::client_custom', {}) , $sensu::client_custom )
+  } else {
+    $client_custom = $sensu::client_custom
   }
 
   sensu_client_config { $::fqdn:
@@ -27,9 +39,9 @@ class sensu::client::config {
     address       => $sensu::client_address,
     bind          => $sensu::client_bind,
     port          => $sensu::client_port,
-    subscriptions => $sensu::subscriptions,
+    subscriptions => $subscriptions,
     safe_mode     => $sensu::safe_mode,
-    custom        => $sensu::client_custom,
+    custom        => $client_custom,
     keepalive     => $sensu::client_keepalive,
   }
 
