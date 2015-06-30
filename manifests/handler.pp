@@ -44,7 +44,7 @@
 #
 # [*filters*]
 #   Array.  Filter command to apply
-#   Default: undef
+#   Default: []
 #
 # [*source*]
 #   String.  Source of the puppet handler
@@ -69,7 +69,7 @@ define sensu::handler(
   $pipe         = undef,
   $mutator      = undef,
   $socket       = undef,
-  $filters      = undef,
+  $filters      = [],
   # Used to install the handler
   $source       = undef,
   $install_path = '/etc/sensu/handlers',
@@ -82,7 +82,7 @@ define sensu::handler(
   if $exchange { validate_hash($exchange) }
   if $pipe { validate_hash($pipe) }
   if $socket { validate_hash($socket) }
-  validate_array($severities)
+  validate_array($severities, $filters)
   if $source { validate_re($source, ['^puppet://'] ) }
 
   if $type == 'pipe' and $ensure != 'absent' and !$command and !$source and !$mutator {

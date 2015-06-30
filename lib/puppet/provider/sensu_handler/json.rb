@@ -101,7 +101,7 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
   end
 
   def filters
-    conf['handlers'][resource[:name]]['filters']
+    conf['handlers'][resource[:name]]['filters'] || []
   end
 
   def filters=(value)
