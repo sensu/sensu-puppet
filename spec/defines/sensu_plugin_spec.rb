@@ -101,7 +101,10 @@ describe 'sensu::plugin', :type => :define do
       it { should contain_file('/etc/sensu/plugins').with(
         'recurse' => false,
         'purge'   => false,
-        'force'   => false
+        'force'   => false,
+        'mode'    => '0555',
+        'owner'   => 'sensu',
+        'group'   => 'sensu'
       ) }
     end
   end #directory
