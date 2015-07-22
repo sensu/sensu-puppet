@@ -308,25 +308,20 @@ class sensu (
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
 
-  # Ugly hack for notifications, better way?
   # Put here to avoid computing the conditionals for every check
-  if $client and $server and $api {
-    $check_notify = [ Class['sensu::client::service'], Class['sensu::server::service'], Class['sensu::api::service'] ]
-  } elsif $client and $server {
-    $check_notify = [ Class['sensu::client::service'], Class['sensu::server::service'] ]
-  } elsif $client and $api {
-    $check_notify = [ Class['sensu::client::service'], Class['sensu::api::service'] ]
-  } elsif $server and $api {
-    $check_notify = [ Class['sensu::server::service'], Class['sensu::api::service'] ]
-  } elsif $server {
-    $check_notify = Class['sensu::server::service']
-  } elsif $client {
-    $check_notify = Class['sensu::client::service']
-  } elsif $api {
-    $check_notify = Class['sensu::api::service']
-  } else {
-    $check_notify = []
+  if $client {
+    $client_service_class = Class['sensu::client::service']
   }
+
+  if $server {
+    $server_service_class = Class['sensu::server::service']
+  }
+
+  if $api {
+    $api_service_class = Class['sensu::api::service']
+  }
+
+  $client_notify = [ $client_service_class, $server_service_class, $api_service_class ]
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.
