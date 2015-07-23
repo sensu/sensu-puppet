@@ -58,6 +58,9 @@
 #   Hash.  Handler specific config
 #   Default: undef
 #
+# [*subdue*]
+#   Hash.  Handler subdue configuration
+#   Default: undef
 #
 define sensu::handler(
   $ensure       = 'present',
@@ -75,6 +78,7 @@ define sensu::handler(
   $install_path = '/etc/sensu/handlers',
   # Handler specific config
   $config       = undef,
+  $subdue       = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -156,6 +160,7 @@ define sensu::handler(
     mutator    => $mutator,
     filters    => $filters,
     config     => $config,
+    subdue     => $subdue,
     notify     => $notify_services,
     require    => File['/etc/sensu/conf.d/handlers'],
   }
