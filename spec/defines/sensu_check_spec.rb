@@ -101,17 +101,17 @@ describe 'sensu::check', :type => :define do
 
     context 'only client' do
       let(:pre_condition) { 'class {"sensu": client => true, api => false, server => false}' }
-      it { should contain_sensu_check('mycheck').with(:notify => 'Class[Sensu::Client::Service]' ) }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Client::Service]'] ) }
     end
 
     context 'only server' do
       let(:pre_condition) { 'class {"sensu": client => false, api => false, server => true}' }
-      it { should contain_sensu_check('mycheck').with(:notify => 'Class[Sensu::Server::Service]' ) }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Server::Service]'] ) }
     end
 
     context 'only api' do
       let(:pre_condition) { 'class {"sensu": client => false, api => true, server => false}' }
-      it { should contain_sensu_check('mycheck').with(:notify => 'Class[Sensu::Api::Service]' ) }
+      it { should contain_sensu_check('mycheck').with(:notify => ['Class[Sensu::Api::Service]'] ) }
     end
 
     context 'client and api' do
