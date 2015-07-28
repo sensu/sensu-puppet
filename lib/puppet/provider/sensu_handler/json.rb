@@ -127,4 +127,12 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
   def type=(value)
     conf['handlers'][resource[:name]]['type'] = value
   end
+
+  def subdue
+    conf['handlers'][resource[:name]]['subdue']
+  end
+
+  def subdue=(value)
+    conf['handlers'][resource[:name]]['subdue'] = value
+  end
 end

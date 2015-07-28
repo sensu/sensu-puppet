@@ -128,4 +128,19 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_config( {'param' => 'value' } ) }
   end
 
+  context 'subdue' do
+    let(:params) {
+      {
+        :command => 'mycommand.rb',
+        :type    => 'pipe',
+        :subdue  => {
+          'begin' => '09PM CEST',
+          'end'   => '10PM CEST'
+        }
+      }
+    }
+
+    it { should contain_sensu_handler('myhandler').with_subdue( {'begin' => '09PM CEST', 'end'   => '10PM CEST'} ) }
+  end
+
 end
