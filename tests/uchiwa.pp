@@ -7,7 +7,7 @@ package { 'uchiwa':
 }
 
 file { '/etc/sensu/uchiwa.json':
-  ensure  => present,
+  ensure  => file,
   content => '
 {
   "sensu": [
@@ -34,5 +34,5 @@ file { '/etc/sensu/uchiwa.json':
 
 service { 'uchiwa':
   ensure  => running,
-  require => [ File['/etc/sensu/uchiwa.json'],Package['uchiwa'] ]
+  require => [ File['/etc/sensu/uchiwa.json'],Package['uchiwa'] ],
 }

@@ -252,7 +252,7 @@ class sensu (
   $rabbitmq_port               = 5672,
   $rabbitmq_host               = 'localhost',
   $rabbitmq_user               = 'sensu',
-  $rabbitmq_password           = '',
+  $rabbitmq_password           = undef,
   $rabbitmq_vhost              = 'sensu',
   $rabbitmq_ssl                = false,
   $rabbitmq_ssl_private_key    = undef,
@@ -280,8 +280,8 @@ class sensu (
   $purge_config                = false,
   $purge_plugins_dir           = false,
   $use_embedded_ruby           = false,
-  $rubyopt                     = '',
-  $gem_path                    = '',
+  $rubyopt                     = undef,
+  $gem_path                    = undef,
   $log_level                   = 'info',
   $dashboard                   = false,
   $init_stop_max_wait          = 10,
@@ -344,18 +344,18 @@ class sensu (
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
   anchor { 'sensu::begin': } ->
-  class { 'sensu::package': } ->
-  class { 'sensu::rabbitmq::config': } ->
-  class { 'sensu::api::config': } ->
-  class { 'sensu::redis::config': } ->
-  class { 'sensu::client::config': } ->
-  class { 'sensu::client::service':
+  class { '::sensu::package': } ->
+  class { '::sensu::rabbitmq::config': } ->
+  class { '::sensu::api::config': } ->
+  class { '::sensu::redis::config': } ->
+  class { '::sensu::client::config': } ->
+  class { '::sensu::client::service':
     hasrestart => $hasrestart,
   } ->
-  class { 'sensu::api::service':
+  class { '::sensu::api::service':
     hasrestart => $hasrestart,
   } ->
-  class { 'sensu::server::service':
+  class { '::sensu::server::service':
     hasrestart => $hasrestart,
   } ->
   anchor {'sensu::end': }

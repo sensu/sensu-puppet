@@ -11,9 +11,9 @@ class sensu::package {
   case $::osfamily {
 
     'Debian': {
-      class { 'sensu::repo::apt': }
+      class { '::sensu::repo::apt': }
       if $sensu::install_repo {
-        include apt
+        include ::apt
         $repo_require = Apt::Source['sensu']
       } else {
         $repo_require = undef
@@ -21,7 +21,7 @@ class sensu::package {
     }
 
     'RedHat': {
-      class { 'sensu::repo::yum': }
+      class { '::sensu::repo::yum': }
       if $sensu::install_repo {
         $repo_require = Yumrepo['sensu']
       } else {

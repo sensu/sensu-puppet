@@ -1,5 +1,5 @@
 node 'sensu-server' {
-  class { 'sensu':
+  class { '::sensu':
     install_repo      => true,
     server            => true,
     manage_services   => true,
@@ -19,6 +19,6 @@ node 'sensu-server' {
   sensu::check { 'check_ntp':
     command     => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
     handlers    => 'default',
-    subscribers => 'sensu-test'
+    subscribers => 'sensu-test',
   }
 }
