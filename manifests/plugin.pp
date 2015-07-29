@@ -47,6 +47,11 @@ define sensu::plugin(
   $nocheckcertificate = false,
 ){
 
+  File {
+    owner => 'sensu',
+    group => 'sensu',
+  }
+
   Sensu::Plugin[$name] ->
   Class['sensu::client::service']
 
