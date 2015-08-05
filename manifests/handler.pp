@@ -140,11 +140,12 @@ define sensu::handler(
     $command_real = $command
   }
 
+  # handler configuration may contain "secrets"
   file { "/etc/sensu/conf.d/handlers/${name}.json":
-    ensure => $ensure,
+    ensure => $file_ensure,
     owner  => 'sensu',
     group  => 'sensu',
-    mode   => '0444',
+    mode   => '0440',
     before => Sensu_handler[$name],
   }
 
