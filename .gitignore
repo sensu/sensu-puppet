@@ -7,3 +7,6 @@ Gemfile.lock
 doc/**
 .bundle
 *.swp
+coverage/
+junit/
+log/

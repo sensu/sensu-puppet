@@ -27,6 +27,16 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*enterprise*]
+#   Boolean.  Whether or not to install and configure Sensu Enterprise
+#   Default: false
+#   Valid values: true, false
+#
+# [*enterprise_dashboard*]
+#   Boolean.  Whether or not to install sensu-enterprise-dashboard
+#   Default: false
+#   Valid values: true, false
+#
 # [*repo*]
 #   String.  Which sensu repo to install
 #   Default: main
@@ -237,60 +247,75 @@
 #   Default: true
 #
 class sensu (
-  $version                     = 'latest',
-  $sensu_plugin_name           = 'sensu-plugin',
-  $sensu_plugin_provider       = undef,
-  $sensu_plugin_version        = 'absent',
-  $install_repo                = true,
-  $repo                        = 'main',
-  $repo_source                 = undef,
-  $repo_key_id                 = '8911D8FF37778F24B4E726A218609E3D7580C77F',
-  $repo_key_source             = 'http://repos.sensuapp.org/apt/pubkey.gpg',
-  $client                      = true,
-  $server                      = false,
-  $api                         = false,
-  $manage_services             = true,
-  $manage_user                 = true,
-  $manage_plugins_dir          = true,
-  $rabbitmq_port               = 5672,
-  $rabbitmq_host               = 'localhost',
-  $rabbitmq_user               = 'sensu',
-  $rabbitmq_password           = undef,
-  $rabbitmq_vhost              = 'sensu',
-  $rabbitmq_ssl                = false,
-  $rabbitmq_ssl_private_key    = undef,
-  $rabbitmq_ssl_cert_chain     = undef,
-  $rabbitmq_reconnect_on_error = false,
-  $redis_host                  = 'localhost',
-  $redis_port                  = 6379,
-  $redis_password              = undef,
-  $redis_reconnect_on_error    = false,
-  $api_bind                    = '0.0.0.0',
-  $api_host                    = 'localhost',
-  $api_port                    = 4567,
-  $api_user                    = undef,
-  $api_password                = undef,
-  $subscriptions               = [],
-  $client_bind                 = '127.0.0.1',
-  $client_port                 = '3030',
-  $client_address              = $::ipaddress,
-  $client_name                 = $::fqdn,
-  $client_custom               = {},
-  $client_keepalive            = {},
-  $safe_mode                   = false,
-  $plugins                     = [],
-  $plugins_dir                 = undef,
-  $purge                       = false,
-  $purge_config                = false,
-  $purge_plugins_dir           = false,
-  $use_embedded_ruby           = false,
-  $rubyopt                     = undef,
-  $gem_path                    = undef,
-  $log_level                   = 'info',
-  $dashboard                   = false,
-  $init_stop_max_wait          = 10,
-  $gem_install_options         = undef,
-  $hasrestart                  = true,
+  $version                        = 'latest',
+  $sensu_plugin_name              = 'sensu-plugin',
+  $sensu_plugin_provider          = undef,
+  $sensu_plugin_version           = 'absent',
+  $install_repo                   = true,
+  $enterprise                     = false,
+  $enterprise_version             = 'latest',
+  $enterprise_user                = undef,
+  $enterprise_pass                = undef,
+  $enterprise_dashboard           = false,
+  $enterprise_dashboard_version   = 'latest',
+  $repo                           = 'main',
+  $repo_source                    = undef,
+  $repo_key_id                    = '8911D8FF37778F24B4E726A218609E3D7580C77F',
+  $repo_key_source                = 'http://repos.sensuapp.org/apt/pubkey.gpg',
+  $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
+  $client                         = true,
+  $server                         = false,
+  $api                            = false,
+  $manage_services                = true,
+  $manage_user                    = true,
+  $manage_plugins_dir             = true,
+  $rabbitmq_port                  = 5672,
+  $rabbitmq_host                  = 'localhost',
+  $rabbitmq_user                  = 'sensu',
+  $rabbitmq_password              = undef,
+  $rabbitmq_vhost                 = 'sensu',
+  $rabbitmq_ssl                   = false,
+  $rabbitmq_ssl_private_key       = undef,
+  $rabbitmq_ssl_cert_chain        = undef,
+  $rabbitmq_reconnect_on_error    = false,
+  $redis_host                     = 'localhost',
+  $redis_port                     = 6379,
+  $redis_password                 = undef,
+  $redis_reconnect_on_error       = false,
+  $api_bind                       = '0.0.0.0',
+  $api_host                       = 'localhost',
+  $api_port                       = 4567,
+  $api_user                       = undef,
+  $api_password                   = undef,
+  $subscriptions                  = [],
+  $client_bind                    = '127.0.0.1',
+  $client_port                    = '3030',
+  $client_address                 = $::ipaddress,
+  $client_name                    = $::fqdn,
+  $client_custom                  = {},
+  $client_keepalive               = {},
+  $safe_mode                      = false,
+  $plugins                        = [],
+  $plugins_dir                    = undef,
+  $purge                          = false,
+  $purge_config                   = false,
+  $purge_plugins_dir              = false,
+  $use_embedded_ruby              = false,
+  $rubyopt                        = undef,
+  $gem_path                       = undef,
+  $log_level                      = 'info',
+  $dashboard                      = false,
+  $init_stop_max_wait             = 10,
+  $gem_install_options            = undef,
+  $hasrestart                     = true,
+  $enterprise_dashboard_base_path = undef,
+  $enterprise_dashboard_host      = undef,
+  $enterprise_dashboard_port      = undef,
+  $enterprise_dashboard_refresh   = undef,
+  $enterprise_dashboard_user      = undef,
+  $enterprise_dashboard_pass      = undef,
+  $enterprise_dashboard_github    = undef,
+  $enterprise_dashboard_ldap      = undef,
 
   ### START Hiera Lookups ###
   $extensions                  = {},
@@ -300,10 +325,11 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart)
+  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
+  validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
@@ -313,6 +339,18 @@ class sensu (
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
+
+  # sensu-enterprise supercedes sensu-server and sensu-api
+  if ( $enterprise and $api ) or ( $enterprise and $server ) {
+    fail('Sensu Enterprise: sensu-enterprise replaces sensu-server and sensu-api')
+  }
+  # validate enterprise repo creds
+  if ( $enterprise or $enterprise_dashboard ) and $install_repo {
+    validate_string($enterprise_user, $enterprise_pass)
+    if $enterprise_user == undef or $enterprise_pass == undef {
+      fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
+    }
+  }
 
   # Ugly hack for notifications, better way?
   # Put here to avoid computing the conditionals for every check
@@ -378,6 +416,7 @@ class sensu (
   # transitioning to purged config and stopping/disabling services
   anchor { 'sensu::begin': } ->
   class { '::sensu::package': } ->
+  class { '::sensu::enterprise::package': } ->
   class { '::sensu::rabbitmq::config': } ->
   class { '::sensu::api::config': } ->
   class { '::sensu::redis::config': } ->
@@ -391,6 +430,8 @@ class sensu (
   class { '::sensu::server::service':
     hasrestart => $hasrestart,
   } ->
+  class { '::sensu::enterprise::service': } ->
+  class { '::sensu::enterprise::dashboard': } ->
   anchor {'sensu::end': }
 
   if $plugins_dir {
