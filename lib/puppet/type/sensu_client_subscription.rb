@@ -44,7 +44,7 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     end
 
     def insync?(is)
-      Puppet.notice "is: #{is.inspect}, should: #{should.inspect}"
+      Puppet.debug "is: #{is.inspect}, should: #{should.inspect}"
       is.sort == should.sort
     end
   end
