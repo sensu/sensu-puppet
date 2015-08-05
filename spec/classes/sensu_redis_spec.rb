@@ -28,12 +28,26 @@ describe 'sensu' do
 
     context 'with server' do
       let(:params) { { :server => true } }
-      it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('present') }
+      it do
+        should contain_file('/etc/sensu/conf.d/redis.json').with(
+          :ensure => 'present',
+          :owner  => 'sensu',
+          :group  => 'sensu',
+          :mode   => '0440'
+        ).that_comes_before("Sensu_redis_config[#{facts[:fqdn]}]")
+      end
     end # with server
 
     context 'with api' do
       let(:params) { { :api => true } }
-      it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('present') }
+      it do
+        should contain_file('/etc/sensu/conf.d/redis.json').with(
+          :ensure => 'present',
+          :owner  => 'sensu',
+          :group  => 'sensu',
+          :mode   => '0440'
+        ).that_comes_before("Sensu_redis_config[#{facts[:fqdn]}]")
+      end
     end # with api
 
     context 'purge configs' do
