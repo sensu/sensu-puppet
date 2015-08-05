@@ -14,11 +14,13 @@ class sensu::redis::config {
     $ensure = 'present'
   }
 
+  # redis configuration may contain "secrets"
   file { '/etc/sensu/conf.d/redis.json':
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',
-    mode   => '0444',
+    mode   => '0440',
+    before => Sensu_redis_config[$::fqdn],
   }
 
   sensu_redis_config { $::fqdn:
