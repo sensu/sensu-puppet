@@ -2,16 +2,21 @@ require 'spec_helper'
 
 describe 'sensu' do
   let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat' } }
+  directories = [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks',
+        '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
+        '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ]
 
   context 'package' do
     context 'defaults' do
       it { should create_class('sensu::package') }
       it { should contain_package('sensu').with_ensure('latest') }
       it { should contain_file('/etc/default/sensu') }
-      [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks' ].each do |dir|
+      directories.each do |dir|
         it { should contain_file(dir).with(
-          :ensure => 'directory',
-          :purge  => false
+          :ensure  => 'directory',
+          :recurse => true,
+          :force   => true,
+          :purge   => false
         ) }
       end
       it { should contain_file('/etc/sensu/config.json').with_ensure('absent') }
@@ -138,28 +143,60 @@ describe 'sensu' do
       end
     end
 
-    context 'purge_config' do
-      let(:params) { { :purge_config => true } }
+    context 'purge' do
+      {
+        false                    => [],
+        true                     => directories,
+        { 'config'   => true }   => [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks' ],
+        { 'plugins'  => true }   => [ '/etc/sensu/plugins' ],
+        { 'handlers' => true }   => [ '/etc/sensu/handlers' ],
+        { 'extensions' => true } => [ '/etc/sensu/extensions', '/etc/sensu/extensions/handlers' ],
+        { 'mutators' => true }   => [ '/etc/sensu/mutators' ],
+        {
+          'config' => true,
+          'plugins' => true
+        } => [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/plugins' ]
+      }.each do |purge_value, purged_directories|
+        context "=> #{purge_value}" do
+          let(:params) { { :purge => purge_value } }
 
-      [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks' ].each do |dir|
-        it { should contain_file(dir).with(
-          :ensure  => 'directory',
-          :purge   => true,
-          :recurse => true,
-          :force   => true
-        ) }
+          purged_directories.each do |dir|
+            it { should contain_file(dir).with(
+              :ensure  => 'directory',
+              :recurse => true,
+              :force   => true,
+              :purge   => true
+            ) }
+          end
+
+          (directories - purged_directories).each do |dir|
+            it { should contain_file(dir).with(
+              :ensure  => 'directory',
+              :recurse => true,
+              :force   => true,
+              :purge   => false
+            ) }
+          end
+        end
       end
 
-      context 'purge_plugins_dir' do
-        let(:params) { { :purge_plugins_dir => true } }
-        it { should contain_file('/etc/sensu/plugins').with(
-          :purge   => true,
-          :recurse => true,
-          :force   => true
-        ) }
+      context 'with a value that is not a boolean or hash' do
+        let(:params) { { :purge => 'a_string' } }
+
+        it 'should fail' do
+          expect { should create_class('sensu') }.to raise_error(/not a Hash/)
+        end
       end
 
+      context 'with a hash with an unknown key' do
+        let(:params) { { :purge => { 'other_key' => true } } }
+
+        it 'should fail' do
+          expect { should create_class('sensu') }.to raise_error(/Invalid keys for purge parameter/)
+        end
+      end
     end
+
   end
 
 end

@@ -192,10 +192,13 @@
 #   String. Puppet url to plugins directory
 #   Default: undef
 #
-# [*purge_config*]
-#   Boolean.  If unused configs should be removed from the system
+# [*purge*]
+#   Boolean or Hash.  If unused plugins, configs, handlers, extensions and mutators should be removed from the system.
+#   If set to true, all unused plugins, configs, handlers, extensions and mutators will be removed from the system.
+#   If set to a Hash, only unused files of the specified type(s) will be removed from the system.
 #   Default: false
-#   Valid values: true, false
+#   Valid values: true, false, Hash containing any of the keys 'plugins', 'config', 'handlers', 'extensions', 'mutators'
+#   Example value: { config => true, plugins => true }
 #
 # [*use_embedded_ruby*]
 #   Boolean.  If the embedded ruby should be used
@@ -277,6 +280,7 @@ class sensu (
   $safe_mode                   = false,
   $plugins                     = [],
   $plugins_dir                 = undef,
+  $purge                       = false,
   $purge_config                = false,
   $purge_plugins_dir           = false,
   $use_embedded_ruby           = false,
@@ -307,6 +311,8 @@ class sensu (
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
+  if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
+  if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
 
   # Ugly hack for notifications, better way?
   # Put here to avoid computing the conditionals for every check
@@ -334,6 +340,33 @@ class sensu (
     $_manage_plugins_dir = false
   } else {
     $_manage_plugins_dir = $manage_plugins_dir
+  }
+
+  if is_bool($purge) {
+    # If purge is a boolean, we either purge everything or purge nothing
+    $_purge_plugins    = $purge
+    $_purge_config     = $purge
+    $_purge_handlers   = $purge
+    $_purge_extensions = $purge
+    $_purge_mutators   = $purge
+  } else {
+    # If purge is not a boolean, it must be a hash
+    validate_hash($purge)
+    # Default anything not specified to false
+    $default_purge_hash = { plugins => false, config => false, handlers => false, extensions => false, mutators => false }
+    $full_purge_hash = merge($default_purge_hash, $purge)
+    validate_bool($full_purge_hash['plugins'], $full_purge_hash['config'], $full_purge_hash['handlers'], $full_purge_hash['extensions'], $full_purge_hash['mutators'])
+    # Check that all keys are valid
+    $invalid_keys = difference(keys($purge), keys($default_purge_hash))
+    if !empty($invalid_keys) {
+      fail("Invalid keys for purge parameter: ${invalid_keys}")
+    }
+
+    $_purge_plugins    = $full_purge_hash['plugins']
+    $_purge_config     = $full_purge_hash['config']
+    $_purge_handlers   = $full_purge_hash['handlers']
+    $_purge_extensions = $full_purge_hash['extensions']
+    $_purge_mutators   = $full_purge_hash['mutators']
   }
 
   # Create resources from hiera lookups

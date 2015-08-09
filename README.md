@@ -148,7 +148,8 @@ and configures Sensu on each individual node via
 ### common.yaml
 
     sensu::install_repo: false
-    sensu::purge_config: true
+    sensu::purge:
+      config: true
     sensu::rabbitmq_host: 10.31.0.90
     sensu::rabbitmq_password: password
     sensu::rabbitmq_port: 5672
@@ -340,6 +341,28 @@ DaemonTools or SupervisorD, you can disable the module's internal
 service management functions like so:
 
     sensu::manage_services: false
+
+## Purging Configuration
+
+By default, any sensu plugins, extensions, handlers, mutators, and
+configuration not defined using this puppet module will be left on
+the filesystem. This can be changed using the `purge` parameter.
+
+If all sensu plugins, extensions, handlers, mutators, and configuration
+should be managed by puppet, set the `purge` parameter to `true` to
+delete files which are not defined using this puppet module:
+
+    sensu::purge: true
+
+To get more fine-grained control over what is purged, set the `purge`
+parameter to a hash. The possible keys are: `config`, `plugins`,
+`extensions`, `handlers`, `mutators`. Any key whose value is `true`
+cause files of that type which are not defined using this puppet module
+to be deleted. Keys which are not specified will not be purged:
+
+    sensu::purge:
+      config: true
+      plugins: true
 
 ## Including Sensu monitoring in other modules
 
