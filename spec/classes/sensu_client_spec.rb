@@ -46,7 +46,7 @@ describe 'sensu', :type => :class do
       end # setting config params
 
       context 'purge config' do
-        let(:params) { { :purge_config => true } }
+        let(:params) { { :purge => { 'config' => true } } }
         it { should contain_file('/etc/sensu/conf.d/client.json').with_ensure('present') }
       end # purge config
 
@@ -89,7 +89,7 @@ describe 'sensu', :type => :class do
     context 'config' do
 
       context 'purge config' do
-        let(:params) { { :purge_config => true, :client => false } }
+        let(:params) { { :purge => { 'config' => true }, :client => false } }
         it { should contain_file('/etc/sensu/conf.d/client.json').with_ensure('absent') }
       end # purge config
 

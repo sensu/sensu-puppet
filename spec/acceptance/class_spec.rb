@@ -45,7 +45,7 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
         class { 'sensu':
           server                   => true,
           api                      => true,
-          purge_config             => true,
+          purge                    => true,
           rabbitmq_password        => 'secret',
           rabbitmq_host            => 'localhost',
         }

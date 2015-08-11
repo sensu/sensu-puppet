@@ -16,6 +16,18 @@ describe 'sensu', :type => :class do
     it { expect { should create_class('sensu') }.to raise_error(/Sensu-dashboard is deprecated, use a dashboard module/) }
   end
 
+  context 'fail if purge_config parameter present' do
+    let(:params) { { :purge_config => true } }
+
+    it { expect { should create_class('sensu') }.to raise_error(/purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead/) }
+  end
+
+  context 'fail if purge_plugins_dir parameter present' do
+    let(:params) { { :purge_plugins_dir => true } }
+
+    it { expect { should create_class('sensu') }.to raise_error(/purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead/) }
+  end
+
 end
 
 

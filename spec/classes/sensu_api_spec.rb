@@ -14,8 +14,8 @@ describe 'sensu', :type => :class do
 
       context 'purge config' do
         let(:params) { {
-          :purge_config => true,
-          :server       => false,
+          :purge  => { 'config' => true },
+          :server => false,
         } }
 
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('absent') }
@@ -89,9 +89,9 @@ describe 'sensu', :type => :class do
 
       context 'purge config' do
         let(:params) { {
-          :purge_config => true,
-          :api          => false,
-          :server       => false,
+          :purge  => { 'config' => true },
+          :api    => false,
+          :server => false,
         } }
 
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('absent') }
