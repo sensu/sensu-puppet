@@ -7,5 +7,7 @@ wget --quiet http://apt.puppetlabs.com/puppetlabs-release-precise.deb -O /tmp/pu
 dpkg -i /tmp/puppetlabs-release-precise.deb
 apt-get update 
 apt-get install -y ruby-json redis-server puppet-common #masterless puppet
+sed -i '/templatedir/d' /etc/puppet/puppet.conf
 puppet module install sensu/sensu
 puppet module install puppetlabs/rabbitmq
+
