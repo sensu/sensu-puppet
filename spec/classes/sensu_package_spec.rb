@@ -140,6 +140,7 @@ describe 'sensu' do
           it { should_not contain_yumrepo('sensu') }
           it { should contain_package('sensu').with( :require => nil ) }
         end
+
       end
     end
 

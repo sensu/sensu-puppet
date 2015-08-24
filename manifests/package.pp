@@ -14,19 +14,11 @@ class sensu::package {
       class { '::sensu::repo::apt': }
       if $sensu::install_repo {
         include ::apt
-        $repo_require = Apt::Source['sensu']
-      } else {
-        $repo_require = undef
       }
     }
 
     'RedHat': {
       class { '::sensu::repo::yum': }
-      if $sensu::install_repo {
-        $repo_require = Yumrepo['sensu']
-      } else {
-        $repo_require = undef
-      }
     }
 
     default: { fail("${::osfamily} not supported yet") }

@@ -14,7 +14,7 @@ class sensu::rabbitmq::config {
     $ensure = 'present'
   }
 
-  if $sensu::rabbitmq_ssl_cert_chain {
+  if $sensu::rabbitmq_ssl_cert_chain or $sensu::rabbitmq_ssl_private_key {
     file { '/etc/sensu/ssl':
       ensure  => directory,
       owner   => 'sensu',
