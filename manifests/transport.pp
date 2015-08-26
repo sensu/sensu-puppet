@@ -36,7 +36,7 @@ class sensu::transport {
     owner   => 'sensu',
     group   => 'sensu',
     mode    => '0440',
-    content => inline_template("<%= JSON.pretty_generate(@transport_type_hash) %>"),
+    content => inline_template("<%= JSON.pretty_generate(@transport_type) %>"),
     notify  => $::sensu::check_notify,
   }
 
