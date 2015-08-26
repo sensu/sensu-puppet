@@ -14,7 +14,7 @@ class sensu::transport {
     $ensure = 'present'
   }
 
-  if $::sensu::version =~ '^[\d\.\-]+$' {
+  if ( $::sensu::version =~ /^[\d\.\-]+$/ ) {
     if versioncmp($::sensu::version, '0.19.0') >= 0 {
       $_transport_type = "$::sensu::transport_type"
     } else {
