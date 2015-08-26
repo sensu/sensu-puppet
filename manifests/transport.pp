@@ -14,9 +14,19 @@ class sensu::transport {
     $ensure = 'present'
   }
 
-  $transport_type = {
+  if $::sensu::version =~ '^[\d\.\-]+$' {
+    if versioncmp($::sensu::version, '0.19.0') >= 0 {
+      $_transport_type = "$::sensu::transport_type"
+    } else {
+      $_transport_type = 'rabbitmq'
+    }
+  } else {
+    $_transport_type = "$::sensu::transport_type"
+  }
+
+  $transport_type_hash = {
     'transport' => {
-      'name' => "$::sensu::transport_type"
+      'name' => "$_transport_type"
     }
   }
 
@@ -26,7 +36,7 @@ class sensu::transport {
     owner   => 'sensu',
     group   => 'sensu',
     mode    => '0440',
-    content => inline_template("<%= JSON.pretty_generate(@transport_type) %>"),
+    content => inline_template("<%= JSON.pretty_generate(@transport_type_hash) %>"),
     notify  => $::sensu::check_notify,
   }
 

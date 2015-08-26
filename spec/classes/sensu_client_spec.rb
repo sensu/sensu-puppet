@@ -16,7 +16,6 @@ describe 'sensu', :type => :class do
           :bind          => '127.0.0.1',
           :port          => '3030',
           :subscriptions => [],
-          :ensure        => 'present',
           :custom        => {}
         ) }
       end # defaults
@@ -38,7 +37,6 @@ describe 'sensu', :type => :class do
           :bind          => '127.0.0.1',
           :port          => '3030',
           :subscriptions => ['all'],
-          :ensure        => 'present',
           :safe_mode     => true,
           :custom        => { 'bool' => true, 'foo' => 'bar' }
         } ) }
