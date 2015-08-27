@@ -154,6 +154,14 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*redis_db*]
+#   Integer.  The Redis instance DB to use/select
+#   Default: 0
+#
+# [*redis_auto_reconnect*]
+#   Boolean.  Reconnect to Redis in the event of a connection failure
+#   Default: true
+#
 # [*api_bind*]
 #   String.  IP to bind api service
 #   Default: 0.0.0.0
@@ -288,6 +296,8 @@ class sensu (
   $redis_port                     = 6379,
   $redis_password                 = undef,
   $redis_reconnect_on_error       = false,
+  $redis_db                       = 0,
+  $redis_auto_reconnect           = true,
   $api_bind                       = '0.0.0.0',
   $api_host                       = 'localhost',
   $api_port                       = 4567,
@@ -331,7 +341,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart)
+  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -346,6 +356,7 @@ class sensu (
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
+  if !is_integer($redis_db) { fail('redis_db must be an integer') }
 
   # sensu-enterprise supercedes sensu-server and sensu-api
   if ( $enterprise and $api ) or ( $enterprise and $server ) {
