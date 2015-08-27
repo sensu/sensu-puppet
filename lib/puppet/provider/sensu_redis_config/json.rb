@@ -68,4 +68,20 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   def reconnect_on_error=(value)
     conf['redis']['reconnect_on_error'] = value
   end
+
+  def db
+    conf['redis']['db'].to_i
+  end
+
+  def db=(value)
+    conf['redis']['db'] = value.to_i
+  end
+
+  def auto_reconnect
+    conf['redis']['auto_reconnect']
+  end
+
+  def auto_reconnect=(value)
+    conf['redis']['auto_reconnect'] = value
+  end
 end
