@@ -29,6 +29,8 @@ class sensu::redis::config {
     port               => $sensu::redis_port,
     password           => $sensu::redis_password,
     reconnect_on_error => $sensu::redis_reconnect_on_error,
+    db                 => $sensu::redis_db,
+    auto_reconnect     => $sensu::redis_auto_reconnect,
   }
 
 }

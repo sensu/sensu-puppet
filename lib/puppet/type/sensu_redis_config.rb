@@ -56,6 +56,18 @@ Puppet::Type.newtype(:sensu_redis_config) do
     defaultto :false
   end
 
+  newproperty(:db) do
+    desc "The Redis instance DB to use/select"
+
+    defaultto '0'
+  end
+
+  newproperty(:auto_reconnect) do
+    desc "Reconnect to Redis in the event of a connection failure"
+
+    defaultto :true
+  end
+
   autorequire(:package) do
     ['sensu']
   end

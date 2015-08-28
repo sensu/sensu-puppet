@@ -7,22 +7,28 @@ describe 'sensu' do
 
     context 'default settings' do
       it { should contain_sensu_redis_config('testhost.domain.com').with(
-        :host => 'localhost',
-        :port => 6379
+        :host           => 'localhost',
+        :port           => 6379,
+        :db             => 0,
+        :auto_reconnect => true
       )}
     end # default settings
 
     context 'be configurable' do
       let(:params) { {
-        :redis_host     => 'redis.domain.com',
-        :redis_port     => 1234,
-        :redis_password => 'password'
+        :redis_host           => 'redis.domain.com',
+        :redis_port           => 1234,
+        :redis_password       => 'password',
+        :redis_db             => 1,
+        :redis_auto_reconnect => false
       } }
 
       it { should contain_sensu_redis_config('testhost.domain.com').with(
-        :host     => 'redis.domain.com',
-        :port     => 1234,
-        :password => 'password'
+        :host           => 'redis.domain.com',
+        :port           => 1234,
+        :password       => 'password',
+        :db             => 1,
+        :auto_reconnect => false        
       )}
     end # be configurable
 
