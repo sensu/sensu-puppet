@@ -84,6 +84,11 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*transport_type*]
+#   String. Transport type to be used by sensu
+#   Default: 'rabbitmq'
+#   Valid values: 'rabbitmq', 'redis'
+#
 # [*rabbitmq_port*]
 #   Integer.  Rabbitmq port to be used by sensu
 #   Default: 5672
@@ -277,6 +282,7 @@ class sensu (
   $manage_services                = true,
   $manage_user                    = true,
   $manage_plugins_dir             = true,
+  $transport_type                 = 'rabbitmq',
   $rabbitmq_port                  = 5672,
   $rabbitmq_host                  = 'localhost',
   $rabbitmq_user                  = 'sensu',
@@ -342,6 +348,7 @@ class sensu (
   validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
+  validate_re($transport_type, ['^rabbitmq$', '^redis$'] )
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
@@ -428,6 +435,7 @@ class sensu (
   anchor { 'sensu::begin': } ->
   class { '::sensu::package': } ->
   class { '::sensu::enterprise::package': } ->
+  class { '::sensu::transport': } ->
   class { '::sensu::rabbitmq::config': } ->
   class { '::sensu::api::config': } ->
   class { '::sensu::redis::config': } ->
