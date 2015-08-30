@@ -16,6 +16,7 @@
 # [*sensu_plugin_provider*]
 #   String.  Provider used to install the sensu-plugin package
 #   Default: undef
+#   Valid values: sensu_gem, apt, aptitude, yum
 #
 # [*sensu_plugin_version*]
 #   String.  Version of the sensu-plugin gem to install
