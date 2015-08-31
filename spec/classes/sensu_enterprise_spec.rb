@@ -20,10 +20,6 @@ describe 'sensu', :type => :class do
           ) }
           it { should contain_service('sensu-enterprise') }
           it { should_not contain_yumrepo('sensu-enterprise-dashboard') }
-          it { should contain_service('sensu-enterprise-dashboard').with(
-            'enable' => false,
-            'ensure' => 'stopped'
-          ) }
         end
 
         context 'with manage_services => false' do
@@ -34,6 +30,10 @@ describe 'sensu', :type => :class do
             :manage_services      => false,
           } }
           it { should_not contain_service('puppet-enterprise-dashboard') }
+          it { should contain_service('sensu-enterprise-dashboard').with(
+            'enable' => false,
+            'ensure' => 'stopped'
+          ) }
         end
 
         context 'with enterprise_dashboard => true' do
@@ -103,10 +103,7 @@ describe 'sensu', :type => :class do
           it { should contain_yumrepo('sensu-enterprise') }
           it { should contain_service('sensu-enterprise') }
           it { should_not contain_yumrepo('sensu-enterprise-dashboard') }
-          it { should contain_service('sensu-enterprise-dashboard').with(
-            'enable' => false,
-            'ensure' => 'stopped'
-          ) }
+          it { should_not contain_service('sensu-enterprise-dashboard') }
         end
       end
 
