@@ -70,7 +70,7 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def db
-    conf['redis']['db'].to_i
+    conf['redis']['db'].to_s
   end
 
   def db=(value)
