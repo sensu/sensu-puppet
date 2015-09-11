@@ -62,6 +62,10 @@
 #   Hash.  Handler subdue configuration
 #   Default: undef
 #
+# [*default*]
+#   Boolean.  Whether this handler should be configured as a "default handler".
+#   Default: false
+#
 define sensu::handler(
   $ensure       = 'present',
   $type         = 'pipe',
@@ -79,6 +83,7 @@ define sensu::handler(
   # Handler specific config
   $config       = undef,
   $subdue       = undef,
+  $default      = false,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -88,6 +93,7 @@ define sensu::handler(
   if $socket { validate_hash($socket) }
   validate_array($severities, $filters)
   if $source { validate_re($source, ['^puppet://'] ) }
+  validate_bool($default)
 
   if $type == 'pipe' and $ensure != 'absent' and !$command and !$source and !$mutator {
     fail('command must be set with type pipe')
@@ -164,6 +170,19 @@ define sensu::handler(
     subdue     => $subdue,
     notify     => $notify_services,
     require    => File['/etc/sensu/conf.d/handlers'],
+  }
+
+  if $default {
+    ensure_resource('file', '/etc/sensu/conf.d/default_handler.json', {
+      ensure => $file_ensure,
+      owner  => 'sensu',
+      group  => 'sensu',
+      mode   => '0444',
+    })
+
+    sensu_default_handler { $name:
+      ensure => $ensure,
+    }
   }
 
 }

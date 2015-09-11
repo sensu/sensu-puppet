@@ -185,6 +185,7 @@ site.pp
           host: '127.0.0.1'
           port: '2003'
         mutator: "only_check_output"
+        default: true
     sensu::checks:
       'file_test':
         command: '/usr/local/bin/check_file_test.sh'
@@ -314,6 +315,30 @@ This will create the following handler definition for Sensu (server):
           }
        }
      }
+
+Setting the `default` parameter to `true` will add this handler to the list of
+"default" handlers registered in `/etc/sensu/conf.d/default_handler.json`.
+
+    sensu::handler {
+      'handler_foobar':
+        command => '/etc/sensu/handlers/foobar.py',
+        type    => 'pipe',
+        default => true,
+      }
+    }
+
+Would create the following default handler definition.
+
+    {
+      "handlers": {
+        "default": {
+          "type": "set",
+          "handlers": [
+            "handler_foobar"
+          ]
+        }
+      }
+    }
 
 ## Extension configuration
 
