@@ -123,6 +123,12 @@ describe 'sensu::plugin', :type => :define do
 
       it { should contain_package('sensu-plugins').with_ensure('1.1.1') }
     end
+
+    context 'set provider' do
+      let(:params) { { :type => 'package', :pkg_provider => 'sensu_gem' } }
+
+      it { should contain_package('sensu-plugins').with_provider('sensu_gem') }
+    end
   end #package
 
   context 'default' do
