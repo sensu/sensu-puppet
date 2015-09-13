@@ -114,15 +114,14 @@ define sensu::handler(
     $notify_services = []
   }
 
-  if $source {
+  $file_ensure = $ensure ? {
+    'absent' => 'absent',
+    default  => 'file'
+  }
 
+  if $source {
     $filename = inline_template('<%= scope.lookupvar(\'source\').split(\'/\').last %>')
     $handler = "${install_path}/${filename}"
-
-    $file_ensure = $ensure ? {
-      'absent' => 'absent',
-      default  => 'file'
-    }
 
     file { $handler:
       ensure => $file_ensure,
