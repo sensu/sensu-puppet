@@ -20,7 +20,7 @@
 #
 # [*sensu_plugin_version*]
 #   String.  Version of the sensu-plugin gem to install
-#   Default: absent
+#   Default: installed
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
 # [*install_repo*]
@@ -264,7 +264,7 @@ class sensu (
   $version                        = 'latest',
   $sensu_plugin_name              = 'sensu-plugin',
   $sensu_plugin_provider          = undef,
-  $sensu_plugin_version           = 'absent',
+  $sensu_plugin_version           = 'installed',
   $install_repo                   = true,
   $enterprise                     = false,
   $enterprise_version             = 'latest',
