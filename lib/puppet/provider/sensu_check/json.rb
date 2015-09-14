@@ -175,11 +175,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def handle=(value)
-    if value && resource[:handlers]
-      Puppet.notice("Do not use 'handle' and 'handlers' together. Your 'handle' value has been overridden with 'handlers'")
-      return
-    end
-
     conf['checks'][resource[:name]]['handle'] = value
   end
 
