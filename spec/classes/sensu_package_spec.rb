@@ -11,6 +11,8 @@ describe 'sensu' do
       it { should create_class('sensu::package') }
       it { should contain_package('sensu').with_ensure('latest') }
       it { should contain_file('/etc/default/sensu') }
+      it { should_not contain_file('/etc/default/sensu').with(:content => /RUBYOPT/) }
+      it { should_not contain_file('/etc/default/sensu').with(:content => /GEM_PATH/) }
       directories.each do |dir|
         it { should contain_file(dir).with(
           :ensure  => 'directory',
@@ -51,6 +53,12 @@ describe 'sensu' do
       let(:params) { { :sensu_plugin_name => 'rubygem-sensu-plugin', :sensu_plugin_provider => 'rpm' } }
 
       it { should contain_package('rubygem-sensu-plugin').with(:provider => 'rpm') }
+    end
+
+    context 'sysconfig settings' do
+      let(:params) { { :rubyopt => 'a', :gem_path => '/foo' } }
+      it { should contain_file('/etc/default/sensu').with(:content => /RUBYOPT="a"/) }
+      it { should contain_file('/etc/default/sensu').with(:content => /GEM_PATH="\/foo"/) }
     end
 
     context 'repos' do
