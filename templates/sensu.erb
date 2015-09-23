@@ -3,4 +3,5 @@ LOG_LEVEL=<%= scope.lookupvar("sensu::log_level") %>
 RUBYOPT="<%= scope.lookupvar("sensu::rubyopt") %>"
 GEM_PATH="<%= scope.lookupvar("sensu::gem_path") %>"
 SERVICE_MAX_WAIT="<%= scope.lookupvar("sensu::init_stop_max_wait") %>"
-
+<% path = scope.lookupvar("sensu::path") -%>
+PATH=<%= [:undef, nil].include?(path) ? "$PATH" : path %>

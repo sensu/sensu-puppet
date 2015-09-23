@@ -260,6 +260,8 @@
 #   set it to false. See also http://upstart.ubuntu.com/faq.html#reload
 #   Default: true
 #
+# [*path*]
+#   String. used to set PATH in /etc/default/sensu
 class sensu (
   $version                        = 'latest',
   $sensu_plugin_name              = 'sensu-plugin',
@@ -333,6 +335,7 @@ class sensu (
   $enterprise_dashboard_pass      = undef,
   $enterprise_dashboard_github    = undef,
   $enterprise_dashboard_ldap      = undef,
+  $path                           = undef,
 
   ### START Hiera Lookups ###
   $extensions                  = {},
