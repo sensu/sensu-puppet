@@ -1,5 +1,17 @@
 ## Change Log
 
+### v2.0.0 (2015/09/23)
+- Sensu Enterprise support
+- Puppet >= 3.3.0 required
+- puppetlabs/apt dependency bumped to 2.0.0
+- Purging reworked to allow removing all unmanaged resources or a subset
+- sensu::check::handlers no longer overrides sensu::check::handle
+- Support subdue on handlers
+- Add redis db and auto_reconnect options
+- Add ability to define check source for external resources
+- Support sensu gem plugins
+- Many bugfixes
+
 ### v1.5.5 (2015/04/10 14:04 +00:00)
 - [f8d0aef](https://github.com/sensu/sensu-puppet/commit/f8d0aef8f3e3e22c717b60b203f700dc28176228) Incremented to V1.5.5 (@jamtur01)
 - [#313](https://github.com/sensu/sensu-puppet/pull/313) Keepalived config not merged since you are specifying the json in the puppet hash variable (@victorgp)
