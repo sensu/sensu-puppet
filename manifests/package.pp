@@ -14,6 +14,10 @@ class sensu::package {
       class { '::sensu::repo::apt': }
       if $sensu::install_repo {
         include ::apt
+        $pkg_require = Class['apt::update']
+      }
+      else {
+        $pkg_require = undef
       }
     }
 
@@ -27,6 +31,7 @@ class sensu::package {
 
   package { 'sensu':
     ensure  => $sensu::version,
+    require => $pkg_require,
   }
 
   if $::sensu::sensu_plugin_provider {
