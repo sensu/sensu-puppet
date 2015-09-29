@@ -23,6 +23,8 @@ class sensu::package {
 
     'RedHat': {
       class { '::sensu::repo::yum': }
+
+      $pkg_require = undef
     }
 
     default: { fail("${::osfamily} not supported yet") }
