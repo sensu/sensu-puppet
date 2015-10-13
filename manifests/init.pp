@@ -85,6 +85,11 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*manage_handlers_dir*]
+#   Boolean. Manage the sensu handlers directory
+#   Default: true
+#   Valid values: true, false
+#
 # [*rabbitmq_port*]
 #   Integer.  Rabbitmq port to be used by sensu
 #   Default: 5672
@@ -280,6 +285,7 @@ class sensu (
   $manage_services                = true,
   $manage_user                    = true,
   $manage_plugins_dir             = true,
+  $manage_handlers_dir            = true,
   $rabbitmq_port                  = 5672,
   $rabbitmq_host                  = 'localhost',
   $rabbitmq_user                  = 'sensu',

@@ -78,15 +78,17 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { '/etc/sensu/handlers':
-    ensure  => directory,
-    mode    => '0555',
-    owner   => 'sensu',
-    group   => 'sensu',
-    purge   => $sensu::_purge_handlers,
-    recurse => true,
-    force   => true,
-    require => Package['sensu'],
+  if $sensu::manage_handlers_dir {
+    file { '/etc/sensu/handlers':
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      purge   => $sensu::_purge_handlers,
+      recurse => true,
+      force   => true,
+      require => Package['sensu'],
+    }
   }
 
   file { ['/etc/sensu/extensions', '/etc/sensu/extensions/handlers']:
