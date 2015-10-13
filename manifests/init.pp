@@ -85,6 +85,11 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*manage_handlers_dir*]
+#   Boolean. Manage the sensu handlers directory
+#   Default: true
+#   Valid values: true, false
+#
 # [*transport_type*]
 #   String. Transport type to be used by sensu
 #   Default: 'rabbitmq'
@@ -285,6 +290,7 @@ class sensu (
   $manage_services                = true,
   $manage_user                    = true,
   $manage_plugins_dir             = true,
+  $manage_handlers_dir            = true,
   $transport_type                 = 'rabbitmq',
   $rabbitmq_port                  = 5672,
   $rabbitmq_host                  = 'localhost',
