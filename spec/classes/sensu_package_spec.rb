@@ -208,4 +208,22 @@ describe 'sensu' do
 
   end
 
+  context 'directories' do
+    context 'manage handlers directory' do
+      let(:params) { { :manage_handlers_dir => true } }
+      it { should contain_file('/etc/sensu/handlers').with(
+        :ensure => 'directory',
+        :mode   => '0555',
+        :owner  => 'sensu',
+        :group  => 'sensu',
+        :recurse => true,
+        :force  => true
+      ) }
+    end
+
+    context 'do not manage handlers directory' do
+      let (:params) { { :manage_handlers_dir => false }}
+      it { should_not contain_file('/etc/sensu/handlers') }
+    end
+  end
 end
