@@ -13,8 +13,8 @@ class sensu::repo::yum {
       $url = $sensu::repo_source
     } else {
       $url = $sensu::repo ? {
-        'unstable'  => "http://repos.sensuapp.org/yum-unstable/el/\$basearch/",
-        default     => "http://repos.sensuapp.org/yum/el/\$basearch/"
+        'unstable'  => "http://repositories.sensuapp.org/yum-unstable/\$basearch/",
+        default     => "http://repositories.sensuapp.org/yum/\$basearch/"
       }
     }
 
