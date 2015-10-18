@@ -67,7 +67,7 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters', '/etc/sensu/conf.d/extensions' ]:
+  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters', '/etc/sensu/conf.d/extensions', '/etc/sensu/conf.d/mutators' ]:
     ensure  => directory,
     owner   => 'sensu',
     group   => 'sensu',
