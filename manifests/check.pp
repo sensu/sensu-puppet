@@ -72,6 +72,10 @@
 #   Array.  List of checks this check depends on.  Note: The validity of the other checks is not enforced by puppet
 #   Default: undef
 #
+# [*ttl*]
+#   Integer. The time to live (TTL) in seconds until check results are considered stale.
+#   Default: undef
+#
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -91,6 +95,7 @@ define sensu::check(
   $publish             = undef,
   $dependencies        = undef,
   $custom              = undef,
+  $ttl                 = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -112,6 +117,9 @@ define sensu::check(
   }
   if $timeout and !is_numeric($timeout) {
     fail("sensu::check{${name}}: timeout must be a numeric (got: ${timeout})")
+  }
+  if $ttl and !is_integer($ttl) {
+    fail("sensu::check{${name}}: ttl must be an integer (got: ${ttl})")
   }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
@@ -145,6 +153,7 @@ define sensu::check(
     custom              => $custom,
     require             => File['/etc/sensu/conf.d/checks'],
     notify              => $::sensu::check_notify,
+    ttl                 => $ttl,
   }
 
 }
