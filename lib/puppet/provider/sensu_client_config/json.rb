@@ -25,7 +25,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def config_file
-    "#{resource[:base_path]}/client.json"
+    File.join(resource[:base_path], 'client.json').gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR)
   end
 
   def pre_create

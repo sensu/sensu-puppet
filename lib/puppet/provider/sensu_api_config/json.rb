@@ -71,7 +71,7 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
   end
 
   def config_file
-    "#{resource[:base_path]}/api.json"
+    File.join(resource[:base_path], 'api.json').gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR)
   end
 
   # Public: Set the port that the API should listen on.

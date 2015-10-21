@@ -439,6 +439,26 @@ class sensu (
   create_resources('::sensu::handler', $handlers)
   create_resources('::sensu::check', $checks)
 
+  case $::osfamily {
+    'Debian','RedHat': {
+      $etc_dir = '/etc/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = 'sensu'
+      $group = 'sensu'
+      $dir_mode = '0555'
+      $file_mode = '0440'
+    }
+
+    'windows': {
+      $etc_dir = 'C:/opt/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = undef
+      $group = undef
+      $dir_mode = undef
+      $file_mode = undef
+    }
+  }
+
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
   anchor { 'sensu::begin': } ->

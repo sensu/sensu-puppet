@@ -15,16 +15,17 @@ class sensu::redis::config {
   }
 
   # redis configuration may contain "secrets"
-  file { '/etc/sensu/conf.d/redis.json':
+  file { "${sensu::etc_dir}/conf.d/redis.json":
     ensure => $ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
+    owner  => $sensu::user,
+    group  => $sensu::group,
+    mode   => $sensu::file_mode,
     before => Sensu_redis_config[$::fqdn],
   }
 
   sensu_redis_config { $::fqdn:
     ensure             => $ensure,
+    base_path          => "${sensu::etc_dir}/conf.d",
     host               => $sensu::redis_host,
     port               => $sensu::redis_port,
     password           => $sensu::redis_password,

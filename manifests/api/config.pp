@@ -14,20 +14,21 @@ class sensu::api::config {
     $ensure = 'present'
   }
 
-  file { '/etc/sensu/conf.d/api.json':
+  file { "${sensu::etc_dir}/conf.d/api.json":
     ensure => $ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
+    owner  => $sensu::user,
+    group  => $sensu::group,
+    mode   => $sensu::file_mode,
   }
 
   sensu_api_config { $::fqdn:
-    ensure   => $ensure,
-    bind     => $sensu::api_bind,
-    host     => $sensu::api_host,
-    port     => $sensu::api_port,
-    user     => $sensu::api_user,
-    password => $sensu::api_password,
+    ensure    => $ensure,
+    base_path => "${sensu::etc_dir}/conf.d",
+    bind      => $sensu::api_bind,
+    host      => $sensu::api_host,
+    port      => $sensu::api_port,
+    user      => $sensu::api_user,
+    password  => $sensu::api_password,
   }
 
 }
