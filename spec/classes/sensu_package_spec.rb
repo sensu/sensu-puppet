@@ -164,7 +164,7 @@ describe 'sensu' do
         {
           'config' => true,
           'plugins' => true
-        } => [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/plugins' ]
+        } => [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/mutators', '/etc/sensu/conf.d/checks', '/etc/sensu/plugins' ]
       }.each do |purge_value, purged_directories|
         context "=> #{purge_value}" do
           let(:params) { { :purge => purge_value } }
@@ -224,6 +224,23 @@ describe 'sensu' do
     context 'do not manage handlers directory' do
       let (:params) { { :manage_handlers_dir => false }}
       it { should_not contain_file('/etc/sensu/handlers') }
+    end
+
+    context 'manage mutators directory' do
+      let(:params) { { :manage_mutators_dir => true } }
+      it { should contain_file('/etc/sensu/mutators').with(
+        :ensure => 'directory',
+        :mode   => '0555',
+        :owner  => 'sensu',
+        :group  => 'sensu',
+        :recurse => true,
+        :force  => true
+      ) }
+    end
+
+    context 'do not manage mutators directory' do
+      let (:params) { { :manage_mutators_dir => false }}
+      it { should_not contain_file('/etc/sensu/mutators') }
     end
   end
 end
