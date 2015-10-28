@@ -76,6 +76,10 @@
 #   Integer. The time to live (TTL) in seconds until check results are considered stale.
 #   Default: undef
 #
+# [*subdue*]
+#   Hash.  Check subdue configuration
+#   Default: undef
+#
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -96,6 +100,7 @@ define sensu::check(
   $dependencies        = undef,
   $custom              = undef,
   $ttl                 = undef,
+  $subdue              = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -151,6 +156,7 @@ define sensu::check(
     publish             => $publish,
     dependencies        => $dependencies,
     custom              => $custom,
+    subdue              => $subdue,
     require             => File['/etc/sensu/conf.d/checks'],
     notify              => $::sensu::check_notify,
     ttl                 => $ttl,

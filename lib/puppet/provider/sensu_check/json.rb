@@ -201,4 +201,12 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   def ttl=(value)
     conf['checks'][resource[:name]]['ttl'] = value.to_i
   end
+
+  def subdue
+    conf['checks'][resource[:name]]['subdue']
+  end
+
+  def subdue=(value)
+    conf['checks'][resource[:name]]['subdue'] = value
+  end
 end
