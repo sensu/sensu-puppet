@@ -136,6 +136,10 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Whether check is unpublished"
   end
 
+  newproperty(:subdue) do
+    desc "Check subdue"
+  end
+
   newproperty(:ttl) do
     desc "Check ttl in seconds"
   end
