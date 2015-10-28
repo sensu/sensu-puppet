@@ -102,15 +102,17 @@ class sensu::package {
     require => Package['sensu'],
   }
 
-  file { '/etc/sensu/mutators':
-    ensure  => directory,
-    mode    => '0555',
-    owner   => 'sensu',
-    group   => 'sensu',
-    purge   => $sensu::_purge_mutators,
-    recurse => true,
-    force   => true,
-    require => Package['sensu'],
+  if $sensu::manage_mutators_dir {
+    file { '/etc/sensu/mutators':
+      ensure  => directory,
+      mode    => '0555',
+      owner   => 'sensu',
+      group   => 'sensu',
+      purge   => $sensu::_purge_mutators,
+      recurse => true,
+      force   => true,
+      require => Package['sensu'],
+    }
   }
 
   if $sensu::_manage_plugins_dir {

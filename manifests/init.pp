@@ -90,6 +90,11 @@
 #   Default: true
 #   Valid values: true, false
 #
+# [*manage_mutators_dir*]
+#   Boolean. Manage the sensu mutators directory
+#   Default: true
+#   Valid values: true, false
+#
 # [*rabbitmq_port*]
 #   Integer.  Rabbitmq port to be used by sensu
 #   Default: 5672
@@ -286,6 +291,7 @@ class sensu (
   $manage_user                    = true,
   $manage_plugins_dir             = true,
   $manage_handlers_dir            = true,
+  $manage_mutators_dir            = true,
   $rabbitmq_port                  = 5672,
   $rabbitmq_host                  = 'localhost',
   $rabbitmq_user                  = 'sensu',
@@ -345,7 +351,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect)
+  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
