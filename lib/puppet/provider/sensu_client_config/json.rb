@@ -41,7 +41,7 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def check_args
-    ['name', 'address', 'subscriptions', 'safe_mode', 'bind', 'keepalive', 'port']
+    ['name', 'address', 'subscriptions', 'safe_mode', 'socket', 'keepalive']
   end
 
   def client_name
@@ -60,20 +60,12 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     conf['client']['address'] = value
   end
 
-  def bind
-    conf['client']['bind']
+  def socket
+    conf['client']['socket']
   end
 
-  def bind=(value)
-    conf['client']['bind'] = value
-  end
-
-  def port
-    conf['client']['port']
-  end
-
-  def port=(value)
-    conf['client']['port'] = value
+  def socket=(value)
+    conf['client']['socket'] = value
   end
 
   def subscriptions
@@ -110,4 +102,3 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
 end
-

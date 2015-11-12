@@ -45,14 +45,31 @@ Puppet::Type.newtype(:sensu_client_config) do
     end
   end
 
-  newproperty(:bind) do
-    desc "The IP that client will bind to"
-    defaultto '127.0.0.1'
-  end
+  newproperty(:socket) do
+    desc "A set of attributes that configure the Sensu client socket."
+    include PuppetX::Sensu::ToType
 
-  newproperty(:port) do
-    desc "The port that client will bind to"
-    defaultto '3030'
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
   end
 
   newparam(:base_path) do

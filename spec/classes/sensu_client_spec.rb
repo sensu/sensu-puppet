@@ -13,8 +13,7 @@ describe 'sensu', :type => :class do
           :ensure        => 'present',
           :client_name   => 'host.domain.com',
           :address       => '2.3.4.5',
-          :bind          => '127.0.0.1',
-          :port          => '3030',
+          :socket        => { 'bind' => '127.0.0.1', 'port' => 3030 },
           :subscriptions => [],
           :custom        => {}
         ) }
@@ -34,8 +33,7 @@ describe 'sensu', :type => :class do
           :ensure        => 'present',
           :client_name   => 'myclient',
           :address       => '1.2.3.4',
-          :bind          => '127.0.0.1',
-          :port          => '3030',
+          :socket        => { 'bind' => '127.0.0.1', 'port' => 3030 },
           :subscriptions => ['all'],
           :safe_mode     => true,
           :custom        => { 'bool' => true, 'foo' => 'bar' }
