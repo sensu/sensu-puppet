@@ -82,8 +82,8 @@ Navigate to `192.168.56.10:15672` to manage RabbitMQ
     password => correct-horse-battery-staple
 
 See the [tests
-directory](https://github.com/sensu/sensu-puppet/tree/vagrant/tests) and
-[Vagrantfile](https://github.com/sensu/sensu-puppet/blob/vagrant/Vagrantfile)
+directory](https://github.com/sensu/sensu-puppet/tree/master/tests) and
+[Vagrantfile](https://github.com/sensu/sensu-puppet/blob/master/Vagrantfile)
 for examples on setting up the prerequisites.
 
 ## Basic example
