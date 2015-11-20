@@ -35,7 +35,7 @@ Sensu-Puppet module.
 
 - puppetlabs/apt
 - puppetlabs/stdlib
-- maestrodev/wget
+- lwf/puppet-remote_file
 
 See `metadata.json` for details.
 
@@ -446,4 +446,3 @@ The following puppet modules exist for managing dashboards
 ## License
 
 See LICENSE file.
-

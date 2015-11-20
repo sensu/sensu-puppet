@@ -42,14 +42,12 @@ class sensu::package {
       $pkg_title = 'sensu'
       $pkg_name = 'Sensu'
       $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_version}.msi"
-      $pkg_require = "Archive[${pkg_source}]"
+      $pkg_require = "Remote_file[${pkg_source}]"
 
-      archive { $pkg_source:
+      remote_file { $pkg_source:
         ensure   => present,
-        provider => faraday,
-        source   => "http://repos.sensuapp.org/msi/sensu-${pkg_version}.msi",
-        creates  => $pkg_source,
-        cleanup  => false,
+        source   => "http://repositories.sensuapp.org/msi/sensu-${pkg_version}.msi",
+        checksum => $::sensu::package_checksum,
       }
     }
 

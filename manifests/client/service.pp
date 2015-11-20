@@ -38,13 +38,8 @@ class sensu::client::service (
         content => template("${module_name}/sensu-client.erb"),
       }
 
-      $startup_type = $::os_maj_version ? {
-        '2003'  => 'Automatic',
-        default => 'Delayed-Auto',
-      }
-
       exec { 'install-sensu-client':
-        command => "powershell.exe -ExecutionPolicy RemoteSigned -Command \"New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType ${startup_type}\"",
+        command => "powershell.exe -ExecutionPolicy RemoteSigned -Command \"New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic\"",
         unless  => 'powershell.exe -ExecutionPolicy RemoteSigned -Command "Get-Service sensu-client"',
         path    => $::path,
         before  => Service['sensu-client'],
