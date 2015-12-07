@@ -314,7 +314,7 @@ class sensu (
   $api_password                   = undef,
   $subscriptions                  = [],
   $client_bind                    = '127.0.0.1',
-  $client_port                    = '3030',
+  $client_port                    = 3030,
   $client_address                 = $::ipaddress,
   $client_name                    = $::fqdn,
   $client_custom                  = {},
@@ -361,6 +361,7 @@ class sensu (
   if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
+  if !is_integer($client_port) { fail('client_port must be an integer') }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
