@@ -69,7 +69,7 @@ To quickly try out Sensu, spin up a test virtual machine with Vagrant that alrea
 
 You can then access the API.
 
-    $ curl http://admin:secret@localhost:4567/info
+    $ curl http://admin:secret@192.168.56.10:4567/info
 
 Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
 
