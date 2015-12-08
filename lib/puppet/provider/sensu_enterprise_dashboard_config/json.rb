@@ -109,15 +109,15 @@ Puppet::Type.type(:sensu_enterprise_dashboard_config).provide(:json) do
   # Public: Retrieve the password for the Dashboard
   #
   # Returns the String password.
-  def password
-    conf['dashboard']['password']
+  def pass
+    conf['dashboard']['pass']
   end
 
   # Public: Set the Dashboard password
   #
   # Returns nothing.
-  def password=(value)
-    conf['dashboard']['password'] = value
+  def pass=(value)
+    conf['dashboard']['pass'] = value
   end
 
   # Public: Retrieve the Github config
