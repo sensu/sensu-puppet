@@ -36,6 +36,13 @@ class sensu::repo::apt {
         'source' => $sensu::repo_key_source,
       },
       before   => Package['sensu'],
+      notify   => Exec['apt-update'],
+    }
+
+    exec {
+      'apt-update':
+        refreshonly  => true,
+        command      => '/usr/bin/apt-get update';
     }
 
     if $sensu::enterprise {
