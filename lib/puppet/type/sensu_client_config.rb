@@ -53,14 +53,6 @@ Puppet::Type.newtype(:sensu_client_config) do
       value.each { |k, v| value[k] = to_type(v) }
     end
 
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
     def insync?(is)
       if defined? @should[0]
         if is == @should[0].each { |k, v| value[k] = to_type(v) }
