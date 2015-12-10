@@ -49,6 +49,10 @@ Puppet::Type.newtype(:sensu_client_config) do
     desc "A set of attributes that configure the Sensu client socket."
     include PuppetX::Sensu::ToType
 
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
     end
@@ -88,6 +92,10 @@ Puppet::Type.newtype(:sensu_client_config) do
 
     include PuppetX::Sensu::ToType
 
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
     end
@@ -115,6 +123,10 @@ Puppet::Type.newtype(:sensu_client_config) do
     desc "Keepalive config"
 
     include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
