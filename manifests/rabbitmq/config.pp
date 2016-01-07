@@ -8,7 +8,7 @@ class sensu::rabbitmq::config {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::_purge_config and !$sensu::server and !$sensu::client {
+  if $sensu::_purge_config and !$sensu::server and !$sensu::client and !$sensu::enterprise {
     $ensure = 'absent'
   } else {
     $ensure = 'present'
