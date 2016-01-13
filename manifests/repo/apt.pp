@@ -20,7 +20,7 @@ class sensu::repo::apt {
     if $sensu::repo_source {
       $url = $sensu::repo_source
     } else {
-      $url = 'http://repos.sensuapp.org/apt'
+      $url = 'http://repositories.sensuapp.org/apt'
     }
 
     apt::source { 'sensu':
