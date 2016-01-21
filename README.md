@@ -284,6 +284,61 @@ This will create the following check definition for Sensu:
       }
     }
 
+
+## Slack multi channel configuration
+It enables to send alert to specific channel per check.
+Please see for the reference the multi channel handler script.
+https://github.com/sensu-plugins/sensu-plugins-slack/blob/master/bin/handler-slack-multichannel.rb
+
+For example:
+Check from hieradata:
+
+
+sensu.yaml:
+```
+::sensu_checks:
+    check-gmail-conn:
+      command: "/opt/sensu-plugins-omnibus/checks/check-ports.rb -H smtp.gmail.com -p 25"
+      handlers:
+        - "slack"
+      interval: "30"
+      occurrences: "3"
+      standalone: true
+      'slack':
+        channels:
+          - "#channel-A"
+          - "#channel-B"
+```
+
+check.pp:
+```
+create_resources('::sensu::check', $sensu_checks)
+```
+
+check-gmail-conn.json:
+```
+{
+  "checks": {
+    "check-gmail-conn": {
+      "command": "/opt/sensu-plugins-omnibus/checks/check-ports.rb -H smtp.gmail.com -p 25",
+      "handlers": [
+        "slack"
+      ],
+      "interval": 30,
+      "occurrences": 3,
+      "standalone": true,
+      "slack": {
+        "channels": [
+          "#channel-A",
+          "#channel-B"
+        ]
+      }
+    }
+  }
+}
+```
+
+
 ## Handler configuration
 
     sensu::handler {

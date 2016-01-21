@@ -80,6 +80,11 @@
 #   Hash.  Check subdue configuration
 #   Default: undef
 #
+# [*slack*]
+#   Hash.  Check slack Channel
+#   Default: undef
+#
+
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -101,6 +106,7 @@ define sensu::check(
   $custom              = undef,
   $ttl                 = undef,
   $subdue              = undef,
+  $slack               = undef
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -160,6 +166,7 @@ define sensu::check(
     require             => File['/etc/sensu/conf.d/checks'],
     notify              => $::sensu::check_notify,
     ttl                 => $ttl,
+    slack               => $slack,
   }
 
 }
