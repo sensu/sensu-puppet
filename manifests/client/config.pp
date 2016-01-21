@@ -33,6 +33,7 @@ class sensu::client::config {
     safe_mode     => $sensu::safe_mode,
     custom        => $sensu::client_custom,
     keepalive     => $sensu::client_keepalive,
+    redact        => $sensu::redact,
   }
 
 }
