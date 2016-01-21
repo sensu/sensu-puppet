@@ -270,7 +270,7 @@
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
-#   Default: undef
+#   Default: []
 
 class sensu (
   $version                        = 'latest',
@@ -347,7 +347,7 @@ class sensu (
   $enterprise_dashboard_github    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
-  $redact                         = undef,
+  $redact                         = [],
 
   ### START Hiera Lookups ###
   $extensions                  = {},
