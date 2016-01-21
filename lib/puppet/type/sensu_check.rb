@@ -147,4 +147,9 @@ Puppet::Type.newtype(:sensu_check) do
   autorequire(:package) do
     ['sensu']
   end
+  
+  newproperty(:slack) do
+    desc "Check Slack Channel"
+  end
+  
 end
