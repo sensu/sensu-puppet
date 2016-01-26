@@ -347,6 +347,7 @@ class sensu (
   $extensions                  = {},
   $handlers                    = {},
   $checks                      = {},
+  $mutators                    = {},
   ### END Hiera Lookups ###
 
 ){
@@ -438,6 +439,7 @@ class sensu (
   create_resources('::sensu::extension', $extensions)
   create_resources('::sensu::handler', $handlers)
   create_resources('::sensu::check', $checks)
+  create_resources('::sensu::mutator', $mutators)
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
