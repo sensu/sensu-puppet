@@ -185,9 +185,24 @@ site.pp
           host: '127.0.0.1'
           port: '2003'
         mutator: "only_check_output"
+      'file':
+        command: '/etc/sensu/handlers/file.rb'
+      'mail':
+        command: 'mail -s 'sensu event' email@address.com'
+    sensu::handler_defaults:
+      type: 'pipe'
     sensu::checks:
       'file_test':
         command: '/usr/local/bin/check_file_test.sh'
+      'chef_client':
+        command: 'check-chef-client.rb'
+    sensu::check_defaults:
+      handlers: 'mail'
+    sensu::mutators:
+      'tag':
+        command: '/etc/sensu/mutators/tag.rb'
+      'graphite':
+        command: '/etc/sensu/plugins/graphite.rb'
     classes:
         - sensu
 
@@ -446,4 +461,3 @@ The following puppet modules exist for managing dashboards
 ## License
 
 See LICENSE file.
-
