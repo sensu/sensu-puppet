@@ -267,6 +267,11 @@
 #
 # [*path*]
 #   String. used to set PATH in /etc/default/sensu
+#
+# [*redact*]
+#   Array of strings. Use to redact passwords from checks on the client side
+#   Default: []
+
 class sensu (
   $version                        = 'latest',
   $sensu_plugin_name              = 'sensu-plugin',
@@ -342,6 +347,7 @@ class sensu (
   $enterprise_dashboard_github    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
+  $redact                         = [],
 
   ### START Hiera Lookups ###
   $extensions                  = {},

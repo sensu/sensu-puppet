@@ -452,6 +452,47 @@ by using the `sensu_gem` package provider:
       provider => sensu_gem,
     }
 
+## Sensitive String Redaction
+
+Redaction of passwords is supported by this module. To enable it, pass a value to `sensu::redact`
+and set some password values with `sensu::client_custom`
+
+```
+  class { 'sensu':
+    redact  => 'password',
+    client_custom => {
+      github => {
+        password => 'correct-horse-battery-staple',
+      },
+    },
+  }
+```
+
+Or with hiera:
+
+```
+sensu::redact
+  - :password"
+sensu::client_custom:
+  - sensu::client_custom:
+  nexus:
+    password: "correct-horse-battery-staple'
+```
+
+This ends up like this in the uchiwa console:
+
+![Sensu Redaction](http://i.imgur.com/K4noGoN.png)
+
+You can make use of the password now when defining a check by using command substitution:
+
+```
+sensu::check{ 'check_password_test':
+  command      => '/usr/local/bin/check_password_test --password :::github.password::: ',
+}
+```
+
+
+
 ## Dashboards
 
 The following puppet modules exist for managing dashboards
