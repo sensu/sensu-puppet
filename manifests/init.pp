@@ -103,6 +103,19 @@
 #   String.  Host running rabbitmq for sensu
 #   Default: 'localhost'
 #
+# [*rabbitmq_cluster*]
+#   Boolean. Use HA RabbitMQ cluster
+#   Default: false
+#   Valid values: true, false
+#
+# [*rabbitmq_cluster_hosts*]
+#   Array of strings. Array of hosts in the cluster
+#   Default: ['localhost']
+#
+# [*rabbitmq_cluster_custom*]
+#   Array of hashes. Custom per server rabbitmq.json config. Requires host => 'hostname' as a minimum
+#   Default: undef
+#
 # [*rabbitmq_user*]
 #   String.  Username to connect to rabbitmq with for sensu
 #   Default: 'sensu'
@@ -299,6 +312,9 @@ class sensu (
   $manage_mutators_dir            = true,
   $rabbitmq_port                  = 5672,
   $rabbitmq_host                  = 'localhost',
+  $rabbitmq_cluster               = false,
+  $rabbitmq_cluster_hosts         = ['localhost'],
+  $rabbitmq_cluster_custom        = undef,
   $rabbitmq_user                  = 'sensu',
   $rabbitmq_password              = undef,
   $rabbitmq_vhost                 = 'sensu',
@@ -360,7 +376,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
+  validate_bool($client, $server, $api, $rabbitmq_cluster, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -375,6 +391,11 @@ class sensu (
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
   if !is_integer($redis_db) { fail('redis_db must be an integer') }
+  if !is_array($rabbitmq_cluster_hosts) { fail ('rabbitmq_cluster_hosts must be an array')}
+
+  if $sensu::rabbitmq_cluster_custom {
+    if !is_array($sensu::rabbitmq_cluster_custom) { fail('rabbitmq_cluster_custom must be an array of hashes') }
+  }
 
   # sensu-enterprise supercedes sensu-server and sensu-api
   if ( $enterprise and $api ) or ( $enterprise and $server ) {

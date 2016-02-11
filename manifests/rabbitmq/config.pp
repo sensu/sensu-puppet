@@ -33,7 +33,7 @@ class sensu::rabbitmq::config {
         group   => 'sensu',
         mode    => '0444',
         require => File['/etc/sensu/ssl'],
-        before  => Sensu_rabbitmq_config[$::fqdn],
+        before  => File['/etc/sensu/conf.d/rabbitmq.json'],
       }
 
       $ssl_cert_chain = '/etc/sensu/ssl/cert.pem'
@@ -47,7 +47,7 @@ class sensu::rabbitmq::config {
         group   => 'sensu',
         mode    => '0444',
         require => File['/etc/sensu/ssl'],
-        before  => Sensu_rabbitmq_config[$::fqdn],
+        before  => File['/etc/sensu/conf.d/rabbitmq.json'],
       }
 
       $ssl_cert_chain = '/etc/sensu/ssl/cert.pem'
@@ -67,7 +67,7 @@ class sensu::rabbitmq::config {
         group   => 'sensu',
         mode    => '0440',
         require => File['/etc/sensu/ssl'],
-        before  => Sensu_rabbitmq_config[$::fqdn],
+        before  => File['/etc/sensu/conf.d/rabbitmq.json'],
       }
 
       $ssl_private_key = '/etc/sensu/ssl/key.pem'
@@ -81,7 +81,7 @@ class sensu::rabbitmq::config {
         group   => 'sensu',
         mode    => '0440',
         require => File['/etc/sensu/ssl'],
-        before  => Sensu_rabbitmq_config[$::fqdn],
+        before  => File['/etc/sensu/conf.d/rabbitmq.json'],
       }
 
       $ssl_private_key = '/etc/sensu/ssl/key.pem'
@@ -98,25 +98,43 @@ class sensu::rabbitmq::config {
     $enable_ssl = $sensu::rabbitmq_ssl
   }
 
-  file { '/etc/sensu/conf.d/rabbitmq.json':
-    ensure => $ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
-    before => Sensu_rabbitmq_config[$::fqdn],
-  }
+  if ! $sensu::rabbitmq_cluster {
+    sensu_rabbitmq_config { $::fqdn:
+      ensure             => $ensure,
+      port               => $sensu::rabbitmq_port,
+      host               => $sensu::rabbitmq_host,
+      user               => $sensu::rabbitmq_user,
+      password           => $sensu::rabbitmq_password,
+      vhost              => $sensu::rabbitmq_vhost,
+      ssl_transport      => $enable_ssl,
+      ssl_cert_chain     => $ssl_cert_chain,
+      ssl_private_key    => $ssl_private_key,
+      reconnect_on_error => $sensu::rabbitmq_reconnect_on_error,
+    }
 
-  sensu_rabbitmq_config { $::fqdn:
-    ensure             => $ensure,
-    port               => $sensu::rabbitmq_port,
-    host               => $sensu::rabbitmq_host,
-    user               => $sensu::rabbitmq_user,
-    password           => $sensu::rabbitmq_password,
-    vhost              => $sensu::rabbitmq_vhost,
-    ssl_transport      => $enable_ssl,
-    ssl_cert_chain     => $ssl_cert_chain,
-    ssl_private_key    => $ssl_private_key,
-    reconnect_on_error => $sensu::rabbitmq_reconnect_on_error,
-  }
 
+    file { '/etc/sensu/conf.d/rabbitmq.json':
+      ensure => $ensure,
+      owner  => 'sensu',
+      group  => 'sensu',
+      mode   => '0440',
+      before => Sensu_rabbitmq_config[$::fqdn],
+    }
+  } elsif ! $sensu::rabbitmq_cluster_custom {
+    file { '/etc/sensu/conf.d/rabbitmq.json':
+      ensure  => $ensure,
+      content => template('sensu/rabbitmq.conf.erb'),
+      owner   => 'sensu',
+      group   => 'sensu',
+      mode    => '0440',
+    }
+  } else {
+    file { '/etc/sensu/conf.d/rabbitmq.json':
+      ensure  => $ensure,
+      content => template('sensu/rabbitmq.conf_custom.erb'),
+      owner   => 'sensu',
+      group   => 'sensu',
+      mode    => '0440',
+    }
+  }
 }

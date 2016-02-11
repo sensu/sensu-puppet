@@ -32,7 +32,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.hostname = 'sensu-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.11"
     client.vm.provision :shell, :path => "tests/provision_client.sh"
+	client.vm.provision :puppet, :manifests_path => ["vm","/vagrant/tests"], :manifest_file => "rabbitmq.pp", :options => "--hiera_config /etc/hiera.yaml"
     client.vm.provision :puppet, :manifests_path => ["vm","/vagrant/tests"], :manifest_file => "sensu-client.pp", :options => "--hiera_config /etc/hiera.yaml"
+	client.vm.provision :shell, :path => "tests/rabbitmq.sh"
   end
 
 end
