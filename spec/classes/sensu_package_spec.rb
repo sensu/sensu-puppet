@@ -81,6 +81,16 @@ describe 'sensu' do
             ) }
           end
 
+          context 'manage_repo => false' do
+            let(:params) { { :manage_repo => false, :install_repo => false } }
+            it { should_not contain_apt__source('sensu') }
+          end
+
+          context 'manage_repo => false independent from install_repo ' do
+            let(:params) { { :manage_repo => false , :install_repo => true } }
+            it { should_not contain_apt__source('sensu') }
+          end
+
           context 'unstable repo' do
             let(:params) { { :repo => 'unstable' } }
             it { should contain_apt__source('sensu').with_repos('unstable') }
@@ -131,6 +141,16 @@ describe 'sensu' do
             :gpgcheck  => 0,
             :before    => 'Package[sensu]'
           ) }
+        end
+
+        context 'manage_repo => false' do
+          let(:params) { { :manage_repo => false, :install_repo => false } }
+          it { should_not contain_yumrepo('sensu') }
+        end
+
+        context 'manage_repo => false independent from install_repo ' do
+          let(:params) { { :manage_repo => false , :install_repo => true } }
+          it { should_not contain_yumrepo('sensu') }
         end
 
         context 'unstable repo' do
