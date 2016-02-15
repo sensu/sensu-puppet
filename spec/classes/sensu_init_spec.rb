@@ -37,6 +37,38 @@ describe 'sensu', :type => :class do
     let(:params) { { :enterprise => true, :api => true } }
     it { expect { should create_class('sensu') }.to raise_error(Puppet::Error, /sensu-api/) }
   end
+
+  context 'with handlers attributes' do
+    let(:params) { {
+        :handlers => {
+          'hipchat_main_room' => {
+            'type'   => 'pipe',
+            'source' => 'puppet:///modules/sensu_module/community-plugins/handlers/notification/hipchat.rb',
+            'config' => {
+              'apikey' => 'my_long_api_key',
+              'room'   => 'Big Alerts'
+            }
+          },
+          'hipchat_other_room' => {
+            'type'   => 'pipe',
+            'source' => 'puppet:///modules/sensu_module/community-plugins/handlers/notification/hipchat.rb',
+            'config' => {
+              'apikey' => 'my_other_long_api_key',
+              'room'   => 'Small Alerts'
+            }
+          }
+        }
+    } }
+
+    it { should contain_file('/etc/sensu/handlers/hipchat.rb').with(
+        :ensure => 'file',
+        :owner  => 'sensu',
+        :group  => 'sensu',
+        :mode   => '0555',
+        :source => "puppet:///modules/sensu_module/community-plugins/handlers/notification/hipchat.rb"
+    )}
+
+  end
 end
 
 
