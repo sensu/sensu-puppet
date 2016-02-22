@@ -79,6 +79,43 @@ describe 'sensu', :type => :class do
     it { should contain_file('/etc/sensu/conf.d/filters/production.json') }
   end
 
+  context 'with checks attributes' do
+    let(:params) { {
+      :checks => {
+        'some-check' => {
+          'type'     => 'pipe',
+          'command'  => '/usr/local/bin/some-check',
+          'handlers' => ['email']
+        },
+        'check-cpu' => {
+          'type'        => 'pipe',
+          'command'     => '/usr/local/bin/check-cpu.rb',
+          'occurrences' => '5',
+          'handlers'    => 'irc'
+        }
+      },
+      :check_defaults => {
+        'occurrences' => '1'
+      }
+    } }
+
+    it { should contain_sensu_check('some-check').with(
+      :type        => 'pipe',
+      :command     => '/usr/local/bin/some-check',
+      :occurrences => '1',
+      :handlers    => ['email']
+    ) }
+    it { should contain_file('/etc/sensu/conf.d/checks/some-check.json') }
+
+    it { should contain_sensu_check('check-cpu').with(
+      :type        => 'pipe',
+      :command     => '/usr/local/bin/check-cpu.rb',
+      :occurrences => '5',
+      :handlers    => 'irc'
+    ) }
+    it { should contain_file('/etc/sensu/conf.d/checks/check-cpu.json') }
+  end
+
   context 'with handlers attributes' do
     let(:params) { {
         :handlers => {
@@ -108,6 +145,5 @@ describe 'sensu', :type => :class do
         :mode   => '0555',
         :source => "puppet:///modules/sensu_module/community-plugins/handlers/notification/hipchat.rb"
     )}
-
   end
 end
