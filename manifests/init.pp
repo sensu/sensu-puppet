@@ -355,6 +355,8 @@ class sensu (
   $handler_defaults            = {},
   $checks                      = {},
   $check_defaults              = {},
+  $filters                     = {},
+  $filter_defaults             = {},
   $mutators                    = {},
   ### END Hiera Lookups ###
 
@@ -447,6 +449,7 @@ class sensu (
   create_resources('::sensu::extension', $extensions)
   create_resources('::sensu::handler', $handlers, $handler_defaults)
   create_resources('::sensu::check', $checks, $check_defaults)
+  create_resources('::sensu::filter', $filters, $filter_defaults)
   create_resources('::sensu::mutator', $mutators)
 
   # Include everything and let each module determine its state.  This allows
