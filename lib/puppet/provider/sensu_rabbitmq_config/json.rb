@@ -144,4 +144,12 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   def reconnect_on_error=(value)
      conf['rabbitmq']['reconnect_on_error'] = value
   end
+
+  def prefetch
+    conf['rabbitmq']['prefetch'].to_s
+  end
+
+  def prefetch=(value)
+     conf['rabbitmq']['prefetch'] = value.to_i
+  end
 end

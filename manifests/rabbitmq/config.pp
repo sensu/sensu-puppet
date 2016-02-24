@@ -117,6 +117,7 @@ class sensu::rabbitmq::config {
     ssl_cert_chain     => $ssl_cert_chain,
     ssl_private_key    => $ssl_private_key,
     reconnect_on_error => $sensu::rabbitmq_reconnect_on_error,
+    prefetch           => $sensu::rabbitmq_prefetch,
   }
 
 }

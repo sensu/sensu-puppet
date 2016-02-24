@@ -87,6 +87,12 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     defaultto :false
   end
 
+  newproperty(:prefetch) do
+    desc "The RabbitMQ AMQP consumer prefetch value"
+
+    defaultto '1'
+  end
+
   autorequire(:package) do
     ['sensu']
   end

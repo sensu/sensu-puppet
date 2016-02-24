@@ -142,6 +142,10 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*rabbitmq_prefetch*]
+#   Integer.  The integer value for the RabbitMQ prefetch attribute
+#   Default: 1
+#
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
 #   Default: localhost
@@ -306,6 +310,7 @@ class sensu (
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
+  $rabbitmq_prefetch              = 1,
   $redis_host                     = 'localhost',
   $redis_port                     = 6379,
   $redis_password                 = undef,
