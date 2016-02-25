@@ -31,6 +31,23 @@ class sensu::client::service (
       }
     }
 
+    if $::osfamily == 'windows' {
+
+      file { 'C:/opt/sensu/bin/sensu-client.xml':
+        ensure  => present,
+        content => template("${module_name}/sensu-client.erb"),
+      }
+
+      exec { 'install-sensu-client':
+        command => "powershell.exe -ExecutionPolicy RemoteSigned -Command \"New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic\"",
+        unless  => 'powershell.exe -ExecutionPolicy RemoteSigned -Command "Get-Service sensu-client"',
+        path    => $::path,
+        before  => Service['sensu-client'],
+        require => File['C:/opt/sensu/bin/sensu-client.xml'],
+      }
+
+    }
+
     service { 'sensu-client':
       ensure     => $ensure,
       enable     => $enable,

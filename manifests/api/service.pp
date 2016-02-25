@@ -31,11 +31,13 @@ class sensu::api::service (
       }
     }
 
-    service { 'sensu-api':
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => $hasrestart,
-      subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'] ],
+    if $::osfamily != 'windows' {
+      service { 'sensu-api':
+        ensure     => $ensure,
+        enable     => $enable,
+        hasrestart => $hasrestart,
+        subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'] ],
+      }
     }
   }
 }

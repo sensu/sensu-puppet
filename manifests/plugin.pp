@@ -50,6 +50,7 @@ define sensu::plugin(
   $force              = true,
   $pkg_version        = 'latest',
   $pkg_provider       = $::sensu::sensu_plugin_provider,
+  $pkg_checksum       = undef,
   $nocheckcertificate = false,
 ){
 
@@ -93,12 +94,13 @@ define sensu::plugin(
           force   => $force,
         }
 
-        wget::fetch { $name:
-          destination        => "${install_path}/${filename}",
-          timeout            => 0,
-          verbose            => false,
-          nocheckcertificate => $nocheckcertificate,
-          require            => File[$install_path],
+        validate_string($pkg_checksum)
+
+        remote_file { $name:
+          ensure   => present,
+          path     => "${install_path}/${filename}",
+          checksum => $pkg_checksum,
+          require  => File[$install_path],
         } ->
         file { "${install_path}/${filename}":
           ensure  => file,

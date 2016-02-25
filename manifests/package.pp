@@ -11,6 +11,10 @@ class sensu::package {
   case $::osfamily {
 
     'Debian': {
+      $pkg_title = 'sensu'
+      $pkg_name = 'sensu'
+      $pkg_source = undef
+
       class { '::sensu::repo::apt': }
       if $sensu::install_repo {
         include ::apt
@@ -22,17 +26,39 @@ class sensu::package {
     }
 
     'RedHat': {
+      $pkg_title = 'sensu'
+      $pkg_name = 'sensu'
+      $pkg_source = undef
+
       class { '::sensu::repo::yum': }
 
       $pkg_require = undef
+    }
+
+    'windows': {
+      $repo_require = undef
+
+      $pkg_version = inline_template("<%= scope.lookupvar('sensu::version').sub(/(.*)\\./, '\\1-') %>")
+      $pkg_title = 'sensu'
+      $pkg_name = 'Sensu'
+      $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_version}.msi"
+      $pkg_require = "Remote_file[${pkg_source}]"
+
+      remote_file { $pkg_source:
+        ensure   => present,
+        source   => "http://repositories.sensuapp.org/msi/sensu-${pkg_version}.msi",
+        checksum => $::sensu::package_checksum,
+      }
     }
 
     default: { fail("${::osfamily} not supported yet") }
 
   }
 
-  package { 'sensu':
+  package { $pkg_title:
     ensure  => $sensu::version,
+    name    => $pkg_name,
+    source  => $pkg_source,
     require => $pkg_require,
   }
 
@@ -58,73 +84,75 @@ class sensu::package {
     }
   }
 
-  file { '/etc/default/sensu':
-    ensure  => file,
-    content => template("${module_name}/sensu.erb"),
-    owner   => '0',
-    group   => '0',
-    mode    => '0444',
-    require => Package['sensu'],
-  }
-
-  file { [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks', '/etc/sensu/conf.d/filters', '/etc/sensu/conf.d/extensions', '/etc/sensu/conf.d/mutators' ]:
-    ensure  => directory,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0555',
-    purge   => $sensu::_purge_config,
-    recurse => true,
-    force   => true,
-    require => Package['sensu'],
-  }
-
-  if $sensu::manage_handlers_dir {
-    file { '/etc/sensu/handlers':
-      ensure  => directory,
-      mode    => '0555',
-      owner   => 'sensu',
-      group   => 'sensu',
-      purge   => $sensu::_purge_handlers,
-      recurse => true,
-      force   => true,
+  if $::osfamily != 'windows' {
+    file { '/etc/default/sensu':
+      ensure  => file,
+      content => template("${module_name}/sensu.erb"),
+      owner   => '0',
+      group   => '0',
+      mode    => '0444',
       require => Package['sensu'],
     }
   }
 
-  file { ['/etc/sensu/extensions', '/etc/sensu/extensions/handlers']:
+  file { [ $sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators" ]:
     ensure  => directory,
-    mode    => '0555',
-    owner   => 'sensu',
-    group   => 'sensu',
+    owner   => $sensu::user,
+    group   => $sensu::group,
+    mode    => $sensu::dir_mode,
+    purge   => $sensu::_purge_config,
+    recurse => true,
+    force   => true,
+    require => Package[$pkg_name],
+  }
+
+  if $sensu::manage_handlers_dir {
+    file { "${sensu::etc_dir}/handlers":
+      ensure  => directory,
+      mode    => $sensu::dir_mode,
+      owner   => $sensu::user,
+      group   => $sensu::group,
+      purge   => $sensu::_purge_handlers,
+      recurse => true,
+      force   => true,
+      require => Package[$pkg_name],
+    }
+  }
+
+  file { ["${sensu::etc_dir}/extensions", "${sensu::etc_dir}/extensions/handlers"]:
+    ensure  => directory,
+    mode    => $sensu::dir_mode,
+    owner   => $sensu::user,
+    group   => $sensu::group,
     purge   => $sensu::_purge_extensions,
     recurse => true,
     force   => true,
-    require => Package['sensu'],
+    require => Package[$pkg_name],
   }
 
   if $sensu::manage_mutators_dir {
-    file { '/etc/sensu/mutators':
+    file { "${sensu::etc_dir}/mutators":
       ensure  => directory,
-      mode    => '0555',
-      owner   => 'sensu',
-      group   => 'sensu',
+      mode    => $sensu::dir_mode,
+      owner   => $sensu::user,
+      group   => $sensu::group,
       purge   => $sensu::_purge_mutators,
       recurse => true,
       force   => true,
-      require => Package['sensu'],
+      require => Package[$pkg_name],
     }
   }
 
   if $sensu::_manage_plugins_dir {
-    file { '/etc/sensu/plugins':
+    file { "${sensu::etc_dir}/plugins":
       ensure  => directory,
-      mode    => '0555',
-      owner   => 'sensu',
-      group   => 'sensu',
+      mode    => $sensu::dir_mode,
+      owner   => $sensu::user,
+      group   => $sensu::group,
       purge   => $sensu::_purge_plugins,
       recurse => true,
       force   => true,
-      require => Package['sensu'],
+      require => Package[$pkg_name],
     }
   }
 
@@ -143,5 +171,5 @@ class sensu::package {
     }
   }
 
-  file { '/etc/sensu/config.json': ensure => absent }
+  file { "${sensu::etc_dir}/config.json": ensure => absent }
 }
