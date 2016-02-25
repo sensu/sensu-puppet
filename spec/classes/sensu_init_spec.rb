@@ -38,6 +38,47 @@ describe 'sensu', :type => :class do
     it { expect { should create_class('sensu') }.to raise_error(Puppet::Error, /sensu-api/) }
   end
 
+  context 'with filters attributes' do
+    let(:params) { {
+      :filters => {
+        'recurrences-30' => {
+          'attributes' => {
+            'occurrences' => "eval: value == 1 || value % 30 == 0"
+          }
+        },
+        'production' => {
+          'attributes' => {
+            'client' => {
+              'environment' => 'production'
+            }
+          },
+          'negate' => true
+        }
+      },
+      :filter_defaults => {
+        'negate' => false
+      }
+    } }
+
+    it { should contain_sensu_filter('recurrences-30').with(
+      :attributes => {
+        'occurrences' => "eval: value == 1 || value % 30 == 0"
+      },
+      :negate => false
+    ) }
+    it { should contain_file('/etc/sensu/conf.d/filters/recurrences-30.json') }
+
+    it { should contain_sensu_filter('production').with(
+      :attributes => {
+        'client' => {
+          'environment' => 'production'
+        }
+      },
+      :negate => true
+    ) }
+    it { should contain_file('/etc/sensu/conf.d/filters/production.json') }
+  end
+
   context 'with handlers attributes' do
     let(:params) { {
         :handlers => {
@@ -70,6 +111,3 @@ describe 'sensu', :type => :class do
 
   end
 end
-
-
-

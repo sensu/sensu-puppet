@@ -196,6 +196,12 @@ site.pp
         command: '/usr/local/bin/check_file_test.sh'
       'chef_client':
         command: 'check-chef-client.rb'
+    sensu::filters:
+      'recurrences-30':
+        attributes:
+          occurrences: "eval: value == 1 || value % 30 == 0"
+    sensu::filter_defaults:
+      negate: true
     sensu::check_defaults:
       handlers: 'mail'
     sensu::mutators:

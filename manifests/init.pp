@@ -276,6 +276,37 @@
 #   Array of strings. Use to redact passwords from checks on the client side
 #   Default: []
 
+# [*handlers*]
+#   Hash of handlers for use with create_sources(sensu::handler).
+#   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
+#   Default: {}
+#
+# [*handler_defaults*]
+#   Handler defaults when not provided explicitely in $handlers.
+#   Example value: { 'filters' => ['production'] }
+#   Default: {}
+#
+# [*checks*]
+#   Hash of checks for use with create_sources(sensu::check).
+#   Example value: { 'check-cpu': { 'command' => 'check-cpu.rb' } }
+#   Default: {}
+#
+# [*check_defaults*]
+#   Check defaults when not provided explicitely in $checks.
+#   Example value: { 'occurences' => 3 }
+#   Default: {}
+#
+# [*filters*]
+#   Hash of filters for use with create_sources(sensu::filter).
+#   Example value: { 'occurrence': { 'attributes' => { 'occurrences' => '1' } } }
+#   Default: {}
+#
+# [*filter_defaults*]
+#   Filter defaults when not provided explicitely in $filters.
+#   Example value: { 'negate' => true }
+#   Default: {}
+
+
 class sensu (
   $version                        = 'latest',
   $sensu_plugin_name              = 'sensu-plugin',
@@ -360,6 +391,8 @@ class sensu (
   $handler_defaults            = {},
   $checks                      = {},
   $check_defaults              = {},
+  $filters                     = {},
+  $filter_defaults             = {},
   $mutators                    = {},
   ### END Hiera Lookups ###
 
@@ -452,6 +485,7 @@ class sensu (
   create_resources('::sensu::extension', $extensions)
   create_resources('::sensu::handler', $handlers, $handler_defaults)
   create_resources('::sensu::check', $checks, $check_defaults)
+  create_resources('::sensu::filter', $filters, $filter_defaults)
   create_resources('::sensu::mutator', $mutators)
 
   # Include everything and let each module determine its state.  This allows
