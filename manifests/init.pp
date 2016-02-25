@@ -380,6 +380,7 @@ class sensu (
   $enterprise_dashboard_refresh   = undef,
   $enterprise_dashboard_user      = undef,
   $enterprise_dashboard_pass      = undef,
+  $enterprise_dashboard_ssl       = undef,
   $enterprise_dashboard_github    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,

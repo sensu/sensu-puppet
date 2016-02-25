@@ -39,6 +39,7 @@ class sensu::enterprise::dashboard::config {
       refresh   => $::sensu::enterprise_dashboard_refresh,
       user      => $::sensu::enterprise_dashboard_user,
       pass      => $::sensu::enterprise_dashboard_pass,
+      ssl       => $::sensu::enterprise_dashboard_ssl,
       github    => $::sensu::enterprise_dashboard_github,
       ldap      => $::sensu::enterprise_dashboard_ldap,
     }
