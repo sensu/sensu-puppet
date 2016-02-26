@@ -382,6 +382,7 @@ class sensu (
   $enterprise_dashboard_pass      = undef,
   $enterprise_dashboard_ssl       = undef,
   $enterprise_dashboard_github    = undef,
+  $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
   $redact                         = [],

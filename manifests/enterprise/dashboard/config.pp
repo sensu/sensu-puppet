@@ -41,6 +41,7 @@ class sensu::enterprise::dashboard::config {
       pass      => $::sensu::enterprise_dashboard_pass,
       ssl       => $::sensu::enterprise_dashboard_ssl,
       github    => $::sensu::enterprise_dashboard_github,
+      gitlab    => $::sensu::enterprise_dashboard_gitlab,
       ldap      => $::sensu::enterprise_dashboard_ldap,
     }
   }

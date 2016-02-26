@@ -148,6 +148,20 @@ Puppet::Type.type(:sensu_enterprise_dashboard_config).provide(:json) do
     conf['dashboard']['github'] = value.to_hash
   end
 
+  # Public: Retrieve the GitLab config
+  #
+  # Returns the GitLab auth config
+  def gitlab
+    conf['dashboard']['gitlab']
+  end
+
+  # Public: Set the GitLab config hash
+  #
+  # Returns nothing.
+  def gitlab=(value)
+    conf['dashboard']['gitlab'] = value.to_hash
+  end
+
   # Public: Retrieve the LDAP config
   #
   # Returns the LDAP auth config
