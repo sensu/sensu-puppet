@@ -134,6 +134,20 @@ Puppet::Type.type(:sensu_enterprise_dashboard_config).provide(:json) do
     conf['dashboard']['ssl']
   end
 
+  # Public: Set the audit config
+  #
+  # Returns nothing.
+  def audit=(value)
+    conf['dashboard']['audit'] = value
+  end
+
+  # Public: Get the Dashboard audit config
+  #
+  # Returns the audit config
+  def audit
+    conf['dashboard']['audit']
+  end
+
   # Public: Retrieve the Github config
   #
   # Returns the Github auth config
