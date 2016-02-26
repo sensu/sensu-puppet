@@ -66,6 +66,16 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_config) do
     end
   end
 
+  newproperty(:audit) do
+    desc "A hash of audit attributes to enable audit logging"
+
+    validate do |value|
+      unless value.respond_to?(:to_hash)
+        raise ArgumentError, "Sensu Enterprise Dashboard audit config must be a Hash"
+      end
+    end
+  end
+
   newproperty(:github) do
     desc "A hash of GitHub authentication attributes to enable GitHub authentication via OAuth. Overrides simple authentication."
 
