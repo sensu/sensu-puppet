@@ -31,14 +31,14 @@ describe 'sensu::plugin', :type => :define do
 
     context 'defaults' do
       let(:params) { {
-        :type => 'url',
+        :type         => 'url',
+        :pkg_checksum => '1d58b78e9785f893889458f8e9fe8627'
       } }
 
-      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
-        :destination        => '/etc/sensu/plugins/check-mem.sh',
-        :verbose            => false,
-        :timeout            => 0,
-        :nocheckcertificate => false
+      it { should contain_remote_file('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
+        :ensure   => 'present',
+        :path     => '/etc/sensu/plugins/check-mem.sh',
+        :checksum => '1d58b78e9785f893889458f8e9fe8627'
       ) }
 
     end
@@ -46,28 +46,14 @@ describe 'sensu::plugin', :type => :define do
     context 'setting params' do
       let(:params) { {
         :type         => 'url',
-        :install_path => '/var/sensu/plugins'
+        :install_path => '/var/sensu/plugins',
+        :pkg_checksum => '1d58b78e9785f893889458f8e9fe8627'
       } }
 
-      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
-        'destination' => '/var/sensu/plugins/check-mem.sh',
-        'verbose'     => 'false',
-        'timeout'     => '0'
-      ) }
-
-    end
-
-    context 'nocheckcertificate' do
-      let(:params) { {
-        :type               => 'url',
-        :nocheckcertificate => true,
-      } }
-
-      it { should contain_wget__fetch('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
-        'destination'        => '/etc/sensu/plugins/check-mem.sh',
-        'verbose'            => 'false',
-        'timeout'            => '0',
-        'nocheckcertificate' => 'true'
+      it { should contain_remote_file('https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh').with(
+        :ensure   => 'present',
+        :path     => '/var/sensu/plugins/check-mem.sh',
+        :checksum => '1d58b78e9785f893889458f8e9fe8627'
       ) }
 
     end

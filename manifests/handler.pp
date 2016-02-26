@@ -123,13 +123,13 @@ define sensu::handler(
     $filename = inline_template('<%= scope.lookupvar(\'source\').split(\'/\').last %>')
     $handler = "${install_path}/${filename}"
 
-    file { $handler:
+    ensure_resource('file', $handler, {
       ensure => $file_ensure,
       owner  => 'sensu',
       group  => 'sensu',
       mode   => '0555',
       source => $source,
-    }
+    })
 
     $command_real = $command ? {
       undef   => $handler,

@@ -31,11 +31,13 @@ class sensu::server::service (
       }
     }
 
-    service { 'sensu-server':
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => $hasrestart,
-      subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'], Class['sensu::rabbitmq::config'] ],
+    if $::osfamily != 'windows' {
+      service { 'sensu-server':
+        ensure     => $ensure,
+        enable     => $enable,
+        hasrestart => $hasrestart,
+        subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'], Class['sensu::rabbitmq::config'] ],
+      }
     }
   }
 }

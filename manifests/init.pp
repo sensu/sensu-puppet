@@ -142,6 +142,10 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*rabbitmq_prefetch*]
+#   Integer.  The integer value for the RabbitMQ prefetch attribute
+#   Default: 1
+#
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
 #   Default: localhost
@@ -272,6 +276,37 @@
 #   Array of strings. Use to redact passwords from checks on the client side
 #   Default: []
 
+# [*handlers*]
+#   Hash of handlers for use with create_sources(sensu::handler).
+#   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
+#   Default: {}
+#
+# [*handler_defaults*]
+#   Handler defaults when not provided explicitely in $handlers.
+#   Example value: { 'filters' => ['production'] }
+#   Default: {}
+#
+# [*checks*]
+#   Hash of checks for use with create_sources(sensu::check).
+#   Example value: { 'check-cpu': { 'command' => 'check-cpu.rb' } }
+#   Default: {}
+#
+# [*check_defaults*]
+#   Check defaults when not provided explicitely in $checks.
+#   Example value: { 'occurences' => 3 }
+#   Default: {}
+#
+# [*filters*]
+#   Hash of filters for use with create_sources(sensu::filter).
+#   Example value: { 'occurrence': { 'attributes' => { 'occurrences' => '1' } } }
+#   Default: {}
+#
+# [*filter_defaults*]
+#   Filter defaults when not provided explicitely in $filters.
+#   Example value: { 'negate' => true }
+#   Default: {}
+
+
 class sensu (
   $version                        = 'latest',
   $sensu_plugin_name              = 'sensu-plugin',
@@ -306,6 +341,7 @@ class sensu (
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
+  $rabbitmq_prefetch              = 1,
   $redis_host                     = 'localhost',
   $redis_port                     = 6379,
   $redis_password                 = undef,
@@ -344,6 +380,7 @@ class sensu (
   $enterprise_dashboard_refresh   = undef,
   $enterprise_dashboard_user      = undef,
   $enterprise_dashboard_pass      = undef,
+  $enterprise_dashboard_ssl       = undef,
   $enterprise_dashboard_github    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
@@ -355,6 +392,8 @@ class sensu (
   $handler_defaults            = {},
   $checks                      = {},
   $check_defaults              = {},
+  $filters                     = {},
+  $filter_defaults             = {},
   $mutators                    = {},
   ### END Hiera Lookups ###
 
@@ -447,7 +486,28 @@ class sensu (
   create_resources('::sensu::extension', $extensions)
   create_resources('::sensu::handler', $handlers, $handler_defaults)
   create_resources('::sensu::check', $checks, $check_defaults)
+  create_resources('::sensu::filter', $filters, $filter_defaults)
   create_resources('::sensu::mutator', $mutators)
+
+  case $::osfamily {
+    'Debian','RedHat': {
+      $etc_dir = '/etc/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = 'sensu'
+      $group = 'sensu'
+      $dir_mode = '0555'
+      $file_mode = '0440'
+    }
+
+    'windows': {
+      $etc_dir = 'C:/opt/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = undef
+      $group = undef
+      $dir_mode = undef
+      $file_mode = undef
+    }
+  }
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
