@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
@@ -9,6 +9,7 @@
   "issues_url": "https://github.com/sensu/sensu-puppet/issues",
   "tags": [ "sensu", "monitoring" ],
   "operatingsystem_support": [
+    { "operatingsystem": "Windows", "operatingsystemrelease": ["Server 2008", "Server 2008 R2", "Server 2012", "Server 2012 R2" ] },
     { "operatingsystem": "RedHat", "operatingsystemrelease": [ "6", "7" ] },
     { "operatingsystem": "CentOS", "operatingsystemrelease": [ "6", "7" ] },
     { "operatingsystem": "Ubuntu", "operatingsystemrelease": [ "12.04", "14.04" ] }
