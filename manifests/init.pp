@@ -38,6 +38,11 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*manage_repo*]
+#   String. Wether or not to manage apt/yum repositories
+#   Default: true
+#   Valid values: true, false
+#
 # [*repo*]
 #   String.  Which sensu repo to install
 #   Default: main
@@ -319,6 +324,7 @@ class sensu (
   $enterprise_pass                = undef,
   $enterprise_dashboard           = false,
   $enterprise_dashboard_version   = 'latest',
+  $manage_repo                    = true,
   $repo                           = 'main',
   $repo_source                    = undef,
   $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
@@ -381,7 +387,9 @@ class sensu (
   $enterprise_dashboard_user      = undef,
   $enterprise_dashboard_pass      = undef,
   $enterprise_dashboard_ssl       = undef,
+  $enterprise_dashboard_audit     = undef,
   $enterprise_dashboard_github    = undef,
+  $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
   $redact                         = [],
@@ -399,7 +407,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
+  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -420,10 +428,12 @@ class sensu (
     fail('Sensu Enterprise: sensu-enterprise replaces sensu-server and sensu-api')
   }
   # validate enterprise repo creds
-  if ( $enterprise or $enterprise_dashboard ) and $install_repo {
-    validate_string($enterprise_user, $enterprise_pass)
-    if $enterprise_user == undef or $enterprise_pass == undef {
-      fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
+  if $manage_repo {
+    if ( $enterprise or $enterprise_dashboard ) and $install_repo {
+      validate_string($enterprise_user, $enterprise_pass)
+      if $enterprise_user == undef or $enterprise_pass == undef {
+        fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
+      }
     }
   }
 

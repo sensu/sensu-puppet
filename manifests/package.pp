@@ -15,8 +15,10 @@ class sensu::package {
       $pkg_name = 'sensu'
       $pkg_source = undef
 
-      class { '::sensu::repo::apt': }
-      if $sensu::install_repo {
+      if $sensu::manage_repo {
+        class { '::sensu::repo::apt': }
+      }
+      if $sensu::manage_repo and $sensu::install_repo {
         include ::apt
         $pkg_require = Class['apt::update']
       }
@@ -30,7 +32,9 @@ class sensu::package {
       $pkg_name = 'sensu'
       $pkg_source = undef
 
-      class { '::sensu::repo::yum': }
+      if $sensu::manage_repo {
+        class { '::sensu::repo::yum': }
+      }
 
       $pkg_require = undef
     }
