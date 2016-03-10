@@ -58,6 +58,21 @@ describe 'sensu::plugin', :type => :define do
 
     end
 
+    context 'new plugin should provide source' do
+      let(:title) { 'https://raw.githubusercontent.com/sensu-plugins/sensu-plugins-puppet/master/bin/check-puppet-last-run.rb' }
+      let(:params) { {
+        :type         => 'url',
+        :install_path => '/var/sensu/plugins',
+      } }
+
+      it { should contain_remote_file('https://raw.githubusercontent.com/sensu-plugins/sensu-plugins-puppet/master/bin/check-puppet-last-run.rb').with(
+        :ensure   => 'present',
+        :path     => '/var/sensu/plugins/check-puppet-last-run.rb',
+        :source   => 'https://raw.githubusercontent.com/sensu-plugins/sensu-plugins-puppet/master/bin/check-puppet-last-run.rb'
+      ) }
+
+    end
+
   end #url
 
   context 'directory' do
