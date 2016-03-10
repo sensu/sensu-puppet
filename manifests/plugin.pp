@@ -99,6 +99,7 @@ define sensu::plugin(
         remote_file { $name:
           ensure   => present,
           path     => "${install_path}/${filename}",
+          source   => $name,
           checksum => $pkg_checksum,
           require  => File[$install_path],
         } ->
