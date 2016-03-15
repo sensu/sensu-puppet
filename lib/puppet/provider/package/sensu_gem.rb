@@ -18,6 +18,12 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
       "/opt/sensu/embedded/bin/gem"
     end
 
+  def update
+    command = [command(:gemcmd), "update"]
+    command << resource[:name]
+    output = execute(command)
+  end
+
   def uninstall
     command = [command(:gemcmd), "uninstall"]
     command << "-x" << "-a" << resource[:name]
