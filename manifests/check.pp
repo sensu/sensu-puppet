@@ -129,16 +129,34 @@ define sensu::check(
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
-  file { "/etc/sensu/conf.d/checks/${check_name}.json":
+  case $::osfamily {
+    'windows': {
+      $etc_dir = 'C:/opt/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = undef
+      $group = undef
+      $file_mode = undef
+    }
+    default: {
+      $etc_dir = '/etc/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = 'sensu'
+      $group = 'sensu'
+      $file_mode = '0440'
+    }
+  }
+
+  file { "${conf_dir}/checks/${check_name}.json":
     ensure => $ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
+    owner  => $user,
+    group  => $group,
+    mode   => $file_mode,
     before => Sensu_check[$check_name],
   }
 
   sensu_check { $check_name:
     ensure              => $ensure,
+    base_path           => "${conf_dir}/checks",
     type                => $type,
     standalone          => $standalone,
     command             => $command,
@@ -157,7 +175,7 @@ define sensu::check(
     dependencies        => $dependencies,
     custom              => $custom,
     subdue              => $subdue,
-    require             => File['/etc/sensu/conf.d/checks'],
+    require             => File["${conf_dir}/checks"],
     notify              => $::sensu::check_notify,
     ttl                 => $ttl,
   }

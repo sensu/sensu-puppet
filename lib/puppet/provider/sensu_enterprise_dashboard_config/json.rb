@@ -120,6 +120,34 @@ Puppet::Type.type(:sensu_enterprise_dashboard_config).provide(:json) do
     conf['dashboard']['pass'] = value
   end
 
+  # Public: Set the ssl listener config
+  #
+  # Returns nothing.
+  def ssl=(value)
+    conf['dashboard']['ssl'] = value
+  end
+
+  # Public: Get the Dashboard ssl
+  #
+  # Returns the ssl listener config
+  def ssl
+    conf['dashboard']['ssl']
+  end
+
+  # Public: Set the audit config
+  #
+  # Returns nothing.
+  def audit=(value)
+    conf['dashboard']['audit'] = value
+  end
+
+  # Public: Get the Dashboard audit config
+  #
+  # Returns the audit config
+  def audit
+    conf['dashboard']['audit']
+  end
+
   # Public: Retrieve the Github config
   #
   # Returns the Github auth config
@@ -132,6 +160,20 @@ Puppet::Type.type(:sensu_enterprise_dashboard_config).provide(:json) do
   # Returns nothing.
   def github=(value)
     conf['dashboard']['github'] = value.to_hash
+  end
+
+  # Public: Retrieve the GitLab config
+  #
+  # Returns the GitLab auth config
+  def gitlab
+    conf['dashboard']['gitlab']
+  end
+
+  # Public: Set the GitLab config hash
+  #
+  # Returns nothing.
+  def gitlab=(value)
+    conf['dashboard']['gitlab'] = value.to_hash
   end
 
   # Public: Retrieve the LDAP config

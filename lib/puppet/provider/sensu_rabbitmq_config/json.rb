@@ -94,7 +94,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def config_file
-    "#{resource[:base_path]}/rabbitmq.json"
+    File.join(resource[:base_path],'rabbitmq.json').gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR)
   end
 
   def port
@@ -143,5 +143,13 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
 
   def reconnect_on_error=(value)
      conf['rabbitmq']['reconnect_on_error'] = value
+  end
+
+  def prefetch
+    conf['rabbitmq']['prefetch'].to_s
+  end
+
+  def prefetch=(value)
+     conf['rabbitmq']['prefetch'] = value.to_i
   end
 end

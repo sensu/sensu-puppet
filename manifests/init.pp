@@ -38,6 +38,11 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*manage_repo*]
+#   String. Whether or not to manage apt/yum repositories
+#   Default: true
+#   Valid values: true, false
+#
 # [*repo*]
 #   String.  Which sensu repo to install
 #   Default: main
@@ -154,6 +159,10 @@
 #     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
 #   Default: false
 #   Valid values: true, false
+#
+# [*rabbitmq_prefetch*]
+#   Integer.  The integer value for the RabbitMQ prefetch attribute
+#   Default: 1
 #
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
@@ -285,6 +294,37 @@
 #   Array of strings. Use to redact passwords from checks on the client side
 #   Default: []
 
+# [*handlers*]
+#   Hash of handlers for use with create_sources(sensu::handler).
+#   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
+#   Default: {}
+#
+# [*handler_defaults*]
+#   Handler defaults when not provided explicitely in $handlers.
+#   Example value: { 'filters' => ['production'] }
+#   Default: {}
+#
+# [*checks*]
+#   Hash of checks for use with create_sources(sensu::check).
+#   Example value: { 'check-cpu': { 'command' => 'check-cpu.rb' } }
+#   Default: {}
+#
+# [*check_defaults*]
+#   Check defaults when not provided explicitely in $checks.
+#   Example value: { 'occurences' => 3 }
+#   Default: {}
+#
+# [*filters*]
+#   Hash of filters for use with create_sources(sensu::filter).
+#   Example value: { 'occurrence': { 'attributes' => { 'occurrences' => '1' } } }
+#   Default: {}
+#
+# [*filter_defaults*]
+#   Filter defaults when not provided explicitely in $filters.
+#   Example value: { 'negate' => true }
+#   Default: {}
+
+
 class sensu (
   $version                        = 'latest',
   $sensu_plugin_name              = 'sensu-plugin',
@@ -297,6 +337,7 @@ class sensu (
   $enterprise_pass                = undef,
   $enterprise_dashboard           = false,
   $enterprise_dashboard_version   = 'latest',
+  $manage_repo                    = true,
   $repo                           = 'main',
   $repo_source                    = undef,
   $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
@@ -322,6 +363,7 @@ class sensu (
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
+  $rabbitmq_prefetch              = 1,
   $redis_host                     = 'localhost',
   $redis_port                     = 6379,
   $redis_password                 = undef,
@@ -360,7 +402,10 @@ class sensu (
   $enterprise_dashboard_refresh   = undef,
   $enterprise_dashboard_user      = undef,
   $enterprise_dashboard_pass      = undef,
+  $enterprise_dashboard_ssl       = undef,
+  $enterprise_dashboard_audit     = undef,
   $enterprise_dashboard_github    = undef,
+  $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
   $redact                         = [],
@@ -371,13 +416,14 @@ class sensu (
   $handler_defaults            = {},
   $checks                      = {},
   $check_defaults              = {},
+  $filters                     = {},
+  $filter_defaults             = {},
   $mutators                    = {},
   ### END Hiera Lookups ###
 
 ){
 
-  validate_bool($client, $server, $api, $rabbitmq_cluster, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
-
+  validate_bool($client, $server, $api, $manage_repo, $rabbitmq_cluster, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
@@ -402,10 +448,12 @@ class sensu (
     fail('Sensu Enterprise: sensu-enterprise replaces sensu-server and sensu-api')
   }
   # validate enterprise repo creds
-  if ( $enterprise or $enterprise_dashboard ) and $install_repo {
-    validate_string($enterprise_user, $enterprise_pass)
-    if $enterprise_user == undef or $enterprise_pass == undef {
-      fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
+  if $manage_repo {
+    if ( $enterprise or $enterprise_dashboard ) and $install_repo {
+      validate_string($enterprise_user, $enterprise_pass)
+      if $enterprise_user == undef or $enterprise_pass == undef {
+        fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
+      }
     }
   }
 
@@ -468,7 +516,28 @@ class sensu (
   create_resources('::sensu::extension', $extensions)
   create_resources('::sensu::handler', $handlers, $handler_defaults)
   create_resources('::sensu::check', $checks, $check_defaults)
+  create_resources('::sensu::filter', $filters, $filter_defaults)
   create_resources('::sensu::mutator', $mutators)
+
+  case $::osfamily {
+    'Debian','RedHat': {
+      $etc_dir = '/etc/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = 'sensu'
+      $group = 'sensu'
+      $dir_mode = '0555'
+      $file_mode = '0440'
+    }
+
+    'windows': {
+      $etc_dir = 'C:/opt/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = undef
+      $group = undef
+      $dir_mode = undef
+      $file_mode = undef
+    }
+  }
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services

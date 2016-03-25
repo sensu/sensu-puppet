@@ -26,7 +26,7 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def config_file
-    "#{resource[:base_path]}/redis.json"
+    File.join(resource[:base_path], 'redis.json').gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR)
   end
 
   def destroy

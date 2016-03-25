@@ -11,7 +11,12 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
 
   has_feature :versionable, :install_options
 
-  commands :gemcmd => "/opt/sensu/embedded/bin/gem"
+  commands :gemcmd =>
+    if File.exists?("#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.bat")
+      "#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.bat"
+    else
+      "/opt/sensu/embedded/bin/gem"
+    end
 
   def uninstall
     command = [command(:gemcmd), "uninstall"]

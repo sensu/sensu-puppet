@@ -56,12 +56,42 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_config) do
     desc "A password to enable simple authentication and restrict access to the dashboard. Leave blank along with user to disable simple authentication."
   end
 
+  newproperty(:ssl) do
+    desc "A hash of SSL attributes to enable native SSL"
+
+    validate do |value|
+      unless value.respond_to?(:to_hash)
+        raise ArgumentError, "Sensu Enterprise Dashboard ssl config must be a Hash"
+      end
+    end
+  end
+
+  newproperty(:audit) do
+    desc "A hash of audit attributes to enable audit logging"
+
+    validate do |value|
+      unless value.respond_to?(:to_hash)
+        raise ArgumentError, "Sensu Enterprise Dashboard audit config must be a Hash"
+      end
+    end
+  end
+
   newproperty(:github) do
     desc "A hash of GitHub authentication attributes to enable GitHub authentication via OAuth. Overrides simple authentication."
 
     validate do |value|
       unless value.respond_to?(:to_hash)
         raise ArgumentError, "Sensu Enterprise Dashboard github config must be a Hash"
+      end
+    end
+  end
+
+  newproperty(:gitlab) do
+    desc "A hash of GitLab authentication attributes to enable GitLab authentication via OAuth. Overrides simple authentication."
+
+    validate do |value|
+      unless value.respond_to?(:to_hash)
+        raise ArgumentError, "Sensu Enterprise Dashboard gitlab config must be a Hash"
       end
     end
   end
