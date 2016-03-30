@@ -120,6 +120,7 @@ class sensu::rabbitmq::config {
     ssl_private_key    => $ssl_private_key,
     reconnect_on_error => $sensu::rabbitmq_reconnect_on_error,
     prefetch           => $sensu::rabbitmq_prefetch,
+    base_path          => $sensu::conf_dir,
   }
 
 }
