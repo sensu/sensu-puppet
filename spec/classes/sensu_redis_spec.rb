@@ -7,7 +7,7 @@ describe 'sensu' do
 
     context 'default settings' do
       it { should contain_sensu_redis_config('testhost.domain.com').with(
-        :host           => 'localhost',
+        :host           => '127.0.0.1',
         :port           => 6379,
         :db             => 0,
         :auto_reconnect => true

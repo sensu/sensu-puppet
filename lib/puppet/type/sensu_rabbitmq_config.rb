@@ -62,7 +62,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:host) do
     desc "The hostname that RabbitMQ is listening on"
 
-    defaultto 'localhost'
+    defaultto '127.0.0.1'
   end
 
   newproperty(:user) do
