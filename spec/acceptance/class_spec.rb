@@ -47,7 +47,7 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
           api                      => true,
           purge                    => true,
           rabbitmq_password        => 'secret',
-          rabbitmq_host            => 'localhost',
+          rabbitmq_host            => '127.0.0.1',
         }
         EOS
 
@@ -71,7 +71,7 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
         it { is_expected.to be_enabled }
       end
 
-      describe command('curl localhost:4567/info') do
+      describe command('curl 127.0.0.1:4567/info') do
         its(:exit_status) { should eq 0 }
         its(:stdout) { should match /sensu.*version/ }
       end
@@ -105,7 +105,7 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
             enterprise_user      => '#{ENV['SE_USER']}',
             enterprise_pass      => '#{ENV['SE_PASS']}',
             rabbitmq_password    => 'secret',
-            rabbitmq_host        => 'localhost',
+            rabbitmq_host        => '127.0.0.1',
           }
           EOS
 
@@ -142,7 +142,7 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
           it { is_expected.to_not be_enabled }
         end
 
-        describe command('curl localhost:4567/info') do
+        describe command('curl 127.0.0.1:4567/info') do
           its(:exit_status) { should eq 0 }
           its(:stdout) { should match(/sensu.*version/) }
         end

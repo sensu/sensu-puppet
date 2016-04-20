@@ -43,7 +43,7 @@ Puppet::Type.newtype(:sensu_redis_config) do
   newproperty(:host) do
     desc "The hostname that Redis is listening on"
 
-    defaultto 'localhost'
+    defaultto '127.0.0.1'
   end
 
   newproperty(:password) do
