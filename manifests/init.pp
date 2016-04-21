@@ -223,8 +223,12 @@
 #   Valid values: true, false
 #
 # [*plugins*]
-#   String, Array of Strings.  Plugins to install on the node
-#   Default: []
+#   Hash. Plugins to install on the node
+#   Default:{}
+#
+# [*plugins_defaults*]
+#   Hash. Defaults for Plugins to install on the node
+#   Default:{}
 #
 # [*plugins_dir*]
 #   String. Puppet url to plugins directory
@@ -367,7 +371,8 @@ class sensu (
   $client_custom                  = {},
   $client_keepalive               = {},
   $safe_mode                      = false,
-  $plugins                        = [],
+  $plugins                        = {},
+  $plugins_defaults               = {},
   $plugins_dir                    = undef,
   $purge                          = false,
   $purge_config                   = false,
@@ -544,7 +549,7 @@ class sensu (
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
-    sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+    create_resources('::sensu::plugin', $plugins, $plugins_default)
   }
 
 }
