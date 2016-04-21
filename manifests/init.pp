@@ -549,7 +549,7 @@ class sensu (
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
-    create_resources('::sensu::plugin', $plugins, $plugins_default)
+    create_resources('::sensu::plugin', $plugins, $plugins_defaults)
   }
 
 }
