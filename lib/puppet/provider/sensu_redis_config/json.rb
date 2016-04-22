@@ -77,6 +77,14 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
     conf['redis']['db'] = value.to_i
   end
 
+  def sentinels
+    conf['redis']['sentinels']
+  end
+
+  def sentinels=(value)
+    conf['redis']['sentinels'] = value
+  end
+
   def auto_reconnect
     conf['redis']['auto_reconnect']
   end

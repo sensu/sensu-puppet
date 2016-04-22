@@ -68,6 +68,10 @@ Puppet::Type.newtype(:sensu_redis_config) do
     defaultto :true
   end
 
+  newproperty(:sentinels) do
+    desc "Redis Sentinel configuration for HA clustering"
+  end
+
   autorequire(:package) do
     ['sensu']
   end

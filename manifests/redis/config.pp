@@ -32,6 +32,7 @@ class sensu::redis::config {
     reconnect_on_error => $sensu::redis_reconnect_on_error,
     db                 => $sensu::redis_db,
     auto_reconnect     => $sensu::redis_auto_reconnect,
+    sentinels          => $sensu::redis_sentinels,
   }
 
 }
