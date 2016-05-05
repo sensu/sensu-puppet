@@ -7,6 +7,7 @@ Puppet::Type.newtype(:sensu_extension) do
     self[:notify] = [
       "Service[sensu-api]",
       "Service[sensu-server]",
+      "Service[sensu-enterprise]",
     ].select { |ref| catalog.resource(ref) }
   end
 
