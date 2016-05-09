@@ -106,7 +106,7 @@
 #
 # [*rabbitmq_host*]
 #   String.  Host running rabbitmq for sensu
-#   Default: 'localhost'
+#   Default: '127.0.0.1'
 #
 # [*rabbitmq_cluster*]
 #   Boolean. Use HA RabbitMQ cluster
@@ -115,7 +115,7 @@
 #
 # [*rabbitmq_cluster_hosts*]
 #   Array of strings. Array of hosts in the cluster
-#   Default: ['localhost']
+#   Default: ['127.0.0.1']
 #
 # [*rabbitmq_cluster_custom*]
 #   Array of hashes. Custom per server rabbitmq.json config. Requires host => 'hostname' as a minimum
@@ -166,7 +166,7 @@
 #
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
-#   Default: localhost
+#   Default: 127.0.0.1
 #
 # [*redis_port*]
 #   Integer.  Redis port to be used by sensu
@@ -196,7 +196,7 @@
 #
 # [*api_host*]
 #   String.  Hostname of the sensu api service
-#   Default: localhost
+#   Default: 127.0.0.1
 #
 # [*api_port*]
 #   Integer. Port of the sensu api service
@@ -352,9 +352,9 @@ class sensu (
   $manage_handlers_dir            = true,
   $manage_mutators_dir            = true,
   $rabbitmq_port                  = 5672,
-  $rabbitmq_host                  = 'localhost',
+  $rabbitmq_host                  = '127.0.0.1',
   $rabbitmq_cluster               = false,
-  $rabbitmq_cluster_hosts         = ['localhost'],
+  $rabbitmq_cluster_hosts         = ['127.0.0.1'],
   $rabbitmq_cluster_custom        = undef,
   $rabbitmq_user                  = 'sensu',
   $rabbitmq_password              = undef,
@@ -364,14 +364,14 @@ class sensu (
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = 1,
-  $redis_host                     = 'localhost',
+  $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
   $redis_reconnect_on_error       = false,
   $redis_db                       = 0,
   $redis_auto_reconnect           = true,
   $api_bind                       = '0.0.0.0',
-  $api_host                       = 'localhost',
+  $api_host                       = '127.0.0.1',
   $api_port                       = 4567,
   $api_user                       = undef,
   $api_password                   = undef,

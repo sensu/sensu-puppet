@@ -34,7 +34,7 @@ Puppet::Type.newtype(:sensu_api_config) do
   newproperty(:host) do
     desc "The hostname that the Sensu API is listening on"
 
-    defaultto 'localhost'
+    defaultto '127.0.0.1'
   end
 
   newproperty(:bind) do
