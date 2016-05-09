@@ -30,7 +30,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def check_args
-    ['handlers','command','interval','occurrences','refresh','source','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','dependencies','custom','ttl']
+    ['handlers','command','interval','occurrences','refresh','source','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','dependencies','custom','ttl', 'subdue']
   end
 
   def custom

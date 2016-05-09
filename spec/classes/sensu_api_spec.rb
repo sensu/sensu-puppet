@@ -48,7 +48,7 @@ describe 'sensu', :type => :class do
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('present') }
         it { should contain_sensu_api_config('testhost.domain.com').with(
           :ensure => 'present',
-          :host   => 'localhost',
+          :host   => '127.0.0.1',
           :port   => 4567
         ) }
         it { should contain_sensu_api_config('testhost.domain.com').without_api_user }

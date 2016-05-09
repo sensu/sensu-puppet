@@ -13,7 +13,7 @@ file { '/etc/sensu/uchiwa.json':
   "sensu": [
     {
       "name": "Site1",
-      "host": "localhost",
+      "host": "127.0.0.1",
       "port": 4567,
       "timeout": 5,
       "user": "admin",
