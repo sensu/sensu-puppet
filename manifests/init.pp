@@ -173,6 +173,10 @@
 #   Integer.  The Redis instance DB to use/select
 #   Default: 0
 #
+# [*redis_sentinels*]
+#   Array. Redis Sentinel configuration and connection information for one or more Sentinels
+#   Default: Not configured
+#
 # [*redis_auto_reconnect*]
 #   Boolean.  Reconnect to Redis in the event of a connection failure
 #   Default: true
@@ -354,6 +358,7 @@ class sensu (
   $redis_reconnect_on_error       = false,
   $redis_db                       = 0,
   $redis_auto_reconnect           = true,
+  $redis_sentinels                = undef,
   $api_bind                       = '0.0.0.0',
   $api_host                       = '127.0.0.1',
   $api_port                       = 4567,
