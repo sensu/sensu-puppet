@@ -177,6 +177,10 @@
 #   Array. Redis Sentinel configuration and connection information for one or more Sentinels
 #   Default: Not configured
 #
+# [*redis_master*]
+#   String. Redis master name in the sentinel configuration
+#   Default: undef. In the end whatever sensu defaults to, which is "mymaster" currently.
+#
 # [*redis_auto_reconnect*]
 #   Boolean.  Reconnect to Redis in the event of a connection failure
 #   Default: true
@@ -359,6 +363,7 @@ class sensu (
   $redis_db                       = 0,
   $redis_auto_reconnect           = true,
   $redis_sentinels                = undef,
+  $redis_master                   = undef,
   $api_bind                       = '0.0.0.0',
   $api_host                       = '127.0.0.1',
   $api_port                       = 4567,

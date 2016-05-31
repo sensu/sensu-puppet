@@ -105,6 +105,18 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
     end
   end
 
+  def master
+    conf['redis']['master'] || :absent
+  end
+
+  def master=(value)
+    if value == :absent
+      conf['redis'].delete 'master'
+    else
+      conf['redis']['master'] = value.to_s
+    end
+  end
+
   def auto_reconnect
     conf['redis']['auto_reconnect']
   end

@@ -27,6 +27,7 @@ class sensu::redis::config {
   $host = $has_sentinels ? { false => $sensu::redis_host, true  => undef, }
   $port = $has_sentinels ? { false => $sensu::redis_port, true  => undef, }
   $sentinels = $has_sentinels ? { true  => $sensu::redis_sentinels, false => undef, }
+  $master = $has_sentinels ? { true => $sensu::redis_master, false => undef, }
 
   sensu_redis_config { $::fqdn:
     ensure             => $ensure,
@@ -38,6 +39,7 @@ class sensu::redis::config {
     db                 => $sensu::redis_db,
     auto_reconnect     => $sensu::redis_auto_reconnect,
     sentinels          => $sentinels,
+    master             => $master,
   }
 
 }

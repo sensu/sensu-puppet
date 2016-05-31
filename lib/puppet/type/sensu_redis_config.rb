@@ -114,6 +114,16 @@ Puppet::Type.newtype(:sensu_redis_config) do
     end
   end
 
+  newproperty(:master) do
+    desc "Redis master name in the sentinel configuration"
+    # Use absent to ensure that config is flushed
+    # when property gets unset
+    defaultto :absent
+    def insync?(is)
+      if should.is_a?(Symbol) then should == is else super(is) end
+    end
+  end
+
   autorequire(:package) do
     ['sensu']
   end

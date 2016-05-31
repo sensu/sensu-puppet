@@ -51,11 +51,27 @@ describe Puppet::Type.type(:sensu_redis_config) do
   end
 
   describe "sentinels" do
-    it "defaults (no sentinels)" do
-      expect(type_instance.parameter(:sentinels).value).to eq([])
+    context "with defaults (no sentinels)" do
+      it "no sentinels" do
+        expect(type_instance.parameter(:sentinels).value).to eq([])
+      end
+
+      it "master.should is :absent" do
+        expect(type_instance.parameter(:master).should).to eq(:absent)
+      end
+
+      it "assumes insync? for :absent value" do
+        expect(type_instance.parameter(:master).safe_insync?(:absent)).to be true
+      end
+
+      ["abc", "absent"].each do |v|
+        it "assumes not insync? for specified master value '#{v.inspect}'" do
+          expect(type_instance.parameter(:master).safe_insync?(v)).to be false
+        end
+      end
     end
 
-    context "single value" do
+    context "with single sentinel" do
       let :inst do
         create_type_instance(resource_hash.merge({
           :sentinels => {
@@ -93,7 +109,7 @@ describe Puppet::Type.type(:sensu_redis_config) do
       end
     end
 
-    context "multiple values" do
+    context "with multiple sentinels" do
       let :inst do
         create_type_instance(resource_hash.merge({
           :sentinels => [{
@@ -135,6 +151,32 @@ describe Puppet::Type.type(:sensu_redis_config) do
           'port' => 12345
         }])).to be true
      end
+    end
+
+    context "when master is specified" do
+      let :inst do
+        create_type_instance(resource_hash.merge({
+          :master => "master-name"
+        }))
+      end
+
+      it "master name is propagated" do
+        expect(inst.parameter(:master).value).to eq("master-name")
+      end
+
+      it "assumes insync? for the same master value" do
+        expect(inst.parameter(:master).safe_insync?("master-name")).to be true
+      end
+
+      [:absent, "", nil].each do |v|
+        it "assumes not insync? for empty master value #{v.inspect}" do
+          expect(inst.parameter(:master).safe_insync?(v)).to be false
+        end
+      end
+
+      it "assumes not insync? for different master value" do
+        expect(inst.parameter(:master).safe_insync?("abc")).to be false
+      end
     end
   end
 

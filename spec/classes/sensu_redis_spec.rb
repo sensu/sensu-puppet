@@ -30,6 +30,7 @@ describe 'sensu' do
         :db             => 1,
         :auto_reconnect => false,
         :sentinels      => nil,
+        :master         => nil
       )}
     end # be configurable without sentinels
 
@@ -44,7 +45,8 @@ describe 'sensu' do
         }, {
             'host' => 'redis2.domain.com',
             'port' => '5678'
-        }]
+        }],
+        :redis_master         => 'master-name'
       } }
 
       it { should contain_sensu_redis_config('testhost.domain.com').with(
@@ -59,7 +61,8 @@ describe 'sensu' do
         }, {
             'host'  => 'redis2.domain.com',
             'port'  => 5678
-        }]
+        }],
+        :master         => "master-name"
       )}
     end # be configurable with sentinels
 
