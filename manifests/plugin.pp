@@ -100,6 +100,7 @@ define sensu::plugin(
           ensure   => present,
           path     => "${install_path}/${filename}",
           checksum => $pkg_checksum,
+          source   => $name,
           require  => File[$install_path],
         } ->
         file { "${install_path}/${filename}":
