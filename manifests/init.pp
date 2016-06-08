@@ -509,6 +509,15 @@ class sensu (
       $file_mode = '0440'
     }
 
+    'FreeBSD': {
+      $etc_dir = '/usr/local/etc/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = 'sensu'
+      $group = 'sensu'
+      $dir_mode = '0555'
+      $file_mode = '0444'
+    }
+
     'windows': {
       $etc_dir = 'C:/opt/sensu'
       $conf_dir = "${etc_dir}/conf.d"
@@ -518,6 +527,9 @@ class sensu (
       $file_mode = undef
     }
   }
+
+  # Set the handler paht
+  $handlers_path = "${etc_dir}/handlers"
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services

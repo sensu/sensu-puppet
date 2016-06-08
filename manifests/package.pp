@@ -31,7 +31,7 @@ class sensu::package {
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
       $pkg_source = undef
-
+      $default_dir = '/etc/default'
       if $sensu::manage_repo {
         class { '::sensu::repo::yum': }
       }
@@ -53,6 +53,13 @@ class sensu::package {
         source   => "http://repositories.sensuapp.org/msi/sensu-${pkg_version}.msi",
         checksum => $::sensu::package_checksum,
       }
+    }
+
+    'FreeBSD': {
+      $pkg_title = 'sensu'
+      $pkg_name = 'sensu'
+      $pkg_source = undef
+      $default_dir = '/usr/local/etc/default'
     }
 
     default: { fail("${::osfamily} not supported yet") }
@@ -89,7 +96,7 @@ class sensu::package {
   }
 
   if $::osfamily != 'windows' {
-    file { '/etc/default/sensu':
+    file { "${default_dir}/sensu":
       ensure  => file,
       content => template("${module_name}/sensu.erb"),
       owner   => '0',

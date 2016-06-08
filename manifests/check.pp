@@ -137,6 +137,13 @@ define sensu::check(
       $group = undef
       $file_mode = undef
     }
+    'FreeBSD': {
+      $etc_dir = '/usr/local/etc/sensu'
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = 'sensu'
+      $group = 'sensu'
+      $file_mode = '0440'
+    }
     default: {
       $etc_dir = '/etc/sensu'
       $conf_dir = "${etc_dir}/conf.d"
