@@ -37,7 +37,7 @@
 # [*pkg_provider*]
 #   String.  When using package to install plugins, provider to use.
 #   Default: undef
-#   Valid values: aptitude, apt, sensu_gem
+#   Valid values: sensu_gem, apt, aptitude, yum
 #
 # [*nocheckcertificate*]
 #   Boolean.  When using url source, disable certificate checking for HTTPS
