@@ -93,6 +93,15 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
     conf['client'].merge!(to_type(value))
   end
 
+  def sensitive
+    conf['client'].reject { |k,v| check_args.include?(k) }
+  end
+
+  def sensitive=(value)
+    conf['client'].delete_if { |k,v| no check_args.include?(k) }
+    conf['client'].merge!(to_type(value))
+  end
+
   def keepalive
     conf['client']['keepalive'] || {}
   end
