@@ -23,7 +23,6 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
         conf['redis'].delete prop.to_s
       end
     end
-
     File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
