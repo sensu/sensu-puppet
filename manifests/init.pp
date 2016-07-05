@@ -151,6 +151,10 @@
 #   Integer.  The integer value for the RabbitMQ prefetch attribute
 #   Default: 1
 #
+# [*rabbitmq_cluster*]
+#   Array. Rabbitmq Cluster configuration and connection information for one or more Cluster
+#   Default: Not configured
+#
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
 #   Default: 127.0.0.1
@@ -172,6 +176,10 @@
 # [*redis_db*]
 #   Integer.  The Redis instance DB to use/select
 #   Default: 0
+#
+# [*redis_sentinels*]
+#   Array. Redis Sentinel configuration and connection information for one or more Sentinels
+#   Default: Not configured
 #
 # [*redis_auto_reconnect*]
 #   Boolean.  Reconnect to Redis in the event of a connection failure
@@ -348,11 +356,13 @@ class sensu (
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = 1,
+  $rabbitmq_cluster               = undef,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
   $redis_reconnect_on_error       = false,
   $redis_db                       = 0,
+  $redis_sentinels                = undef,
   $redis_auto_reconnect           = true,
   $api_bind                       = '0.0.0.0',
   $api_host                       = '127.0.0.1',
