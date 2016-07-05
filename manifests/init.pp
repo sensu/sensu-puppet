@@ -280,7 +280,11 @@
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
 #   Default: []
-
+#
+# [*client_sensitive*]
+#   Hash.  The same as the custom parameter except the values aren't printed
+#   Default: {}
+#
 # [*handlers*]
 #   Hash of handlers for use with create_sources(sensu::handler).
 #   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
@@ -393,6 +397,7 @@ class sensu (
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
   $redact                         = [],
+  $client_sensitive               = {},
 
   ### START Hiera Lookups ###
   $extensions                  = {},

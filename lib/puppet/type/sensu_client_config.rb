@@ -118,6 +118,39 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto {}
   end
 
+  newproperty(:sensitive) do
+    desc "Client side sensitive values"
+
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+			return '[redacted sensitive values]'
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
   newproperty(:keepalive) do
     desc "Keepalive config"
 

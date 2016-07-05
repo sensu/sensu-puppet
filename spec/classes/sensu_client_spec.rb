@@ -29,7 +29,9 @@ describe 'sensu', :type => :class do
           :redact                   => ['password'],
           :client_name              => 'myclient',
           :safe_mode                => true,
-          :client_custom            => { 'bool' => true, 'foo' => 'bar' }
+          :client_custom            => { 'bool' => true, 'foo' => 'bar' },
+          :client_sensitive         => { 'password' => 'value' }
+
         } }
 
         it { should contain_sensu_client_config('host.domain.com').with( {
@@ -41,7 +43,8 @@ describe 'sensu', :type => :class do
           :redact        => ['password'],
           :ensure        => 'present',
           :safe_mode     => true,
-          :custom        => { 'bool' => true, 'foo' => 'bar' }
+          :custom        => { 'bool' => true, 'foo' => 'bar' },
+          :sensitive     => { 'password' => 'value' }
         } ) }
 
       end # setting config params
