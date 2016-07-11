@@ -108,19 +108,19 @@ class sensu::rabbitmq::config {
     before => Sensu_rabbitmq_config[$::fqdn],
   }
 
-$has_cluster = !($sensu::rabbitmq_cluster == undef or $sensu::rabbitmq_cluster == [])
-$host = $has_cluster ? { false => $sensu::rabbitmq_host, true => undef, }
-$port = $has_cluster ? { false => $sensu::rabbitmq_port, true => undef, }
-$user = $has_cluster ? { false => $sensu::rabbitmq_user, true => undef, }
-$password = $has_cluster ? { false => $sensu::rabbitmq_password, true => undef, }
-$vhost = $has__cluster ? { false => $sensu::rabbitmq_vhost, true => undef, }
-$ssl_transport = $has_cluster ? { false => $enable_ssl, true => undef, }
-$cert_chain = $has_cluster ? { false => $ssl_cert_chain, true => undef, }
-$private_key = $has_cluster ? { false => $ssl_private_key, true => undef, }
-$reconnect_on_error = $has_cluster ? { false => $sensu::rabbitmq_reconnect_on_error, true => undef, }
-$prefetch = $has_cluster ? { false => $sensu::rabbitmq_prefetch, true => undef, }
-$base_path = $has_cluster ? { false => $sensu::conf_dir, true => undef, }
-$cluste = $has_cluster ? { true => $sensu::rabbitmq_cluster, false => undef, }
+  $has_cluster = !($sensu::rabbitmq_cluster == undef or $sensu::rabbitmq_cluster == [])
+  $host = $has_cluster ? { false => $sensu::rabbitmq_host, true => undef, }
+  $port = $has_cluster ? { false => $sensu::rabbitmq_port, true => undef, }
+  $user = $has_cluster ? { false => $sensu::rabbitmq_user, true => undef, }
+  $password = $has_cluster ? { false => $sensu::rabbitmq_password, true => undef, }
+  $vhost = $has_cluster ? { false => $sensu::rabbitmq_vhost, true => undef, }
+  $ssl_transport = $has_cluster ? { false => $enable_ssl, true => undef, }
+  $cert_chain = $has_cluster ? { false => $ssl_cert_chain, true => undef, }
+  $private_key = $has_cluster ? { false => $ssl_private_key, true => undef, }
+  $reconnect_on_error = $has_cluster ? { false => $sensu::rabbitmq_reconnect_on_error, true => undef, }
+  $prefetch = $has_cluster ? { false => $sensu::rabbitmq_prefetch, true => undef, }
+  $base_path = $has_cluster ? { false => $sensu::conf_dir, true => undef, }
+  $cluster = $has_cluster ? { true => $sensu::rabbitmq_cluster, false => undef, }
 
   sensu_rabbitmq_config { $::fqdn:
     ensure             => $ensure,

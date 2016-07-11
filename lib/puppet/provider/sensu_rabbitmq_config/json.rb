@@ -34,8 +34,12 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_transport
-    if conf['rabbitmq'].has_key? 'ssl'
-      :true
+    if conf['rabbitmq'].class != Array 
+      if conf['rabbitmq'].has_key? 'ssl'
+        :true
+      else
+        :false
+      end
     else
       :false
     end
@@ -52,10 +56,14 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_private_key
-    if conf['rabbitmq'].has_key? 'ssl'
-      conf['rabbitmq']['ssl']['private_key_file'] || ''
-    else
-      ''
+    if conf['rabbitmq'].class != Array
+      if conf['rabbitmq'].has_key? 'ssl'
+        conf['rabbitmq']['ssl']['private_key_file'] || ''
+      else
+        ''
+      end
+    else 
+      '' 
     end
   end
 
@@ -73,10 +81,14 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_cert_chain
-    if conf['rabbitmq'].has_key? 'ssl'
-      conf['rabbitmq']['ssl']['cert_chain_file'] || ''
-    else
-      ''
+    if conf['rabbitmq'].class != Array
+      if conf['rabbitmq'].has_key? 'ssl'
+        conf['rabbitmq']['ssl']['cert_chain_file'] || ''
+      else
+        ''
+      end
+    else 
+      '' 
     end
   end
 
