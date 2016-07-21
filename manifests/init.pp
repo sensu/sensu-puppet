@@ -127,7 +127,9 @@
 #   Boolean.  Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
 #     rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
 #     without specifying a private key or cert chain to use SSL transport, but not cert auth.
-#   Defaul: false
+#     Setting rabbitmq_ssl => false will disable rabbitmq_ssl_cert_chain or rabbitmq_ssl_private_key
+#     from being created
+#   Default: undef
 #   Valid values: true, false
 #
 # [*rabbitmq_ssl_private_key*]
@@ -362,7 +364,7 @@ class sensu (
   $rabbitmq_user                  = 'sensu',
   $rabbitmq_password              = undef,
   $rabbitmq_vhost                 = '/sensu',
-  $rabbitmq_ssl                   = false,
+  $rabbitmq_ssl                   = undef,
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
