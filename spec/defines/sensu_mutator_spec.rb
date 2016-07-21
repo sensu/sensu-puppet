@@ -20,7 +20,7 @@ describe 'sensu::mutator', :type => :define do
         :owner  => 'sensu',
         :group  => 'sensu',
         :mode   => '0440'
-      ).that_comes_before("Sensu_Mutator[#{title}]")
+      )
     end
   end
 
@@ -33,9 +33,9 @@ describe 'sensu::mutator', :type => :define do
     } }
     it { should contain_sensu_mutator('mymutator').with_ensure('absent') }
     it do
-      should contain_file("/etc/sensu/conf.d/mutators/#{title}.json").
-        with_ensure('absent').
-        that_comes_before("Sensu_Mutator[#{title}]")
+      should contain_file("/etc/sensu/conf.d/mutators/#{title}.json").with(
+        :ensure => 'absent'
+      )
     end
   end
 

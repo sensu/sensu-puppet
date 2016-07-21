@@ -9,7 +9,7 @@ group :development, :unit_tests do
   gem 'rspec-puppet',                                     :require => false
   gem 'puppetlabs_spec_helper',                           :require => false
   gem 'puppet-lint', "1.0.1",                             :require => false
-  gem 'json',                                             :require => false
+  gem 'json', "~> 1.8.3",                                 :require => false
   gem 'puppet-syntax',                                    :require => false
   gem 'metadata-json-lint',                               :require => false
   gem 'puppet-blacksmith',                                :require => false
@@ -24,6 +24,7 @@ group :development, :unit_tests do
   gem 'puppet-lint-undef_in_function-check',              :require => false
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
+
 end
 
 group :system_tests do

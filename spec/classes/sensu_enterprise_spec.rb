@@ -5,6 +5,7 @@ describe 'sensu', :type => :class do
     let(:facts) { {
       :osfamily => 'RedHat',
       :fqdn     => 'testhost.domain.com'
+
     } }
 
     context 'with enterprise => true' do
@@ -120,7 +121,7 @@ describe 'sensu', :type => :class do
   end
 
   context 'on Debian' do
-    let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu' } }
+    let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04' } }
     context 'when enterprise => true' do
       let(:params) { {
         :enterprise => true,
