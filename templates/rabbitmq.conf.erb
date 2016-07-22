@@ -1,0 +1,38 @@
+{
+  "rabbitmq": [
+    <%- scope.lookupvar('sensu::rabbitmq_cluster_hosts').each do |host| -%>
+      {
+	"host": "<%= host	-%>",
+      <%- if scope.lookupvar('sensu::rabbitmq_ssl') -%>
+        "ssl": {
+          "private_key_file": "/etc/sensu/ssl/key.pem",
+          "cert_chain_file": "/etc/sensu/ssl/cert.pem"
+        },
+      <%- end -%>
+      <%- if scope.lookupvar('sensu::rabbitmq_port') -%>
+        "port": <%= scope.lookupvar('sensu::rabbitmq_port') -%>,
+      <%- end -%>
+      <%- if scope.lookupvar('sensu::rabbitmq_user') -%>
+        "user": "<%= scope.lookupvar('sensu::rabbitmq_user') -%>",
+      <%- end -%>
+      <%- if scope.lookupvar('sensu::rabbitmq_password') -%>
+        "password": "<%= scope.lookupvar('sensu::rabbitmq_password') -%>",
+      <%- end -%>
+      <%- if scope.lookupvar('sensu::rabbitmq_vhost') -%>
+        "vhost": "<%= scope.lookupvar('sensu::rabbitmq_vhost') -%>",
+      <%- end -%>
+      <%- if scope.lookupvar('sensu::rabbitmq_reconnect_on_error') -%>
+	    <%- if scope.lookupvar('sensu::rabbitmq_reconnect_on_error') == 'true' || scope.lookupvar('sensu::rabbitmq_reconnect_on_error') == true -%>
+        "reconnect_on_error": true
+        <%- end -%>
+      <%- else -%>
+        "reconnect_on_error": false
+      <%- end -%>
+      <%- if scope.lookupvar('sensu::rabbitmq_cluster_hosts')[-1] != host -%>
+      },
+      <%- else -%>
+      }
+      <%- end -%>
+    <%- end -%>
+  ]
+}
