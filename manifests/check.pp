@@ -85,7 +85,7 @@ define sensu::check(
   $ensure              = 'present',
   $type                = undef,
   $handlers            = undef,
-  $standalone          = true,
+  $standalone          = false,
   $interval            = 60,
   $occurrences         = undef,
   $refresh             = undef,

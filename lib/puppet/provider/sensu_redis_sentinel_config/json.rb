@@ -3,7 +3,7 @@ require 'json' if Puppet.features.json?
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'provider_create.rb'))
 
-Puppet::Type.type(:sensu_redis_config).provide(:json) do
+Puppet::Type.type(:sensu_redis_sentinel_config).provide(:json) do
   confine :feature => :json
   include PuppetX::Sensu::ProviderCreate
 
@@ -37,52 +37,12 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
     conf.has_key? 'redis'
   end
 
-  def port
-    conf['redis']['port'].to_s
-  end
-
-  def port=(value)
-    conf['redis']['port'] = value.to_i
-  end
-
-  def host
-    conf['redis']['host']
-  end
-
-  def host=(value)
-    conf['redis']['host'] = value
-  end
-
   def password
     conf['redis']['password']
   end
 
   def password=(value)
     conf['redis']['password'] = value
-  end
-
-  def reconnect_on_error
-    conf['redis']['reconnect_on_error']
-  end
-
-  def reconnect_on_error=(value)
-    conf['redis']['reconnect_on_error'] = value
-  end
-
-  def db
-    conf['redis']['db'].to_s
-  end
-
-  def db=(value)
-    conf['redis']['db'] = value.to_i
-  end
-
-  def sentinels_enabled
-    conf['redis']['sentinels_enabled']
-  end
-
-  def sentinels_enabled=(value)
-    conf['redis']['sentinels_enabled'] = value
   end
 
   def sentinels
@@ -109,11 +69,4 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
     end
   end
 
-  def auto_reconnect
-    conf['redis']['auto_reconnect']
-  end
-
-  def auto_reconnect=(value)
-    conf['redis']['auto_reconnect'] = value
-  end
 end

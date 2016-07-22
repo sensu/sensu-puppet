@@ -2,7 +2,7 @@ require 'set'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'boolean_property.rb'))
 
-Puppet::Type.newtype(:sensu_redis_config) do
+Puppet::Type.newtype(:sensu_redis_sentinel_config) do
   @doc = ""
 
   def initialize(*args)
@@ -35,44 +35,8 @@ Puppet::Type.newtype(:sensu_redis_config) do
     defaultto '/etc/sensu/conf.d/'
   end
 
-  newproperty(:port) do
-    desc "The port that Redis is listening on"
-
-    defaultto '6379'
-  end
-
-  newproperty(:host) do
-    desc "The hostname that Redis is listening on"
-
-    defaultto '127.0.0.1'
-  end
-
   newproperty(:password) do
     desc "The password used to connect to Redis"
-  end
-
-  newproperty(:reconnect_on_error, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc "Attempt to reconnect to RabbitMQ on error"
-
-    defaultto :false
-  end
-
-  newproperty(:db) do
-    desc "The Redis instance DB to use/select"
-
-    defaultto '0'
-  end
-
-  newproperty(:auto_reconnect) do
-    desc "Reconnect to Redis in the event of a connection failure"
-
-    defaultto :true
-  end
-
-  newproperty(:sentinels_enabled, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc "Will Sentinelconfig be used or standard config"
-
-    defaultto :false
   end
 
   newproperty(:sentinels, :array_matching => :all) do

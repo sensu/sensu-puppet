@@ -20,7 +20,8 @@ describe 'sensu' do
         :redis_port           => 1234,
         :redis_password       => 'password',
         :redis_db             => 1,
-        :redis_auto_reconnect => false
+        :redis_auto_reconnect => false,
+        :redis_sentinels      => [],
       } }
 
       it { should contain_sensu_redis_config('testhost.domain.com').with(

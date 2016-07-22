@@ -172,6 +172,24 @@
 # [*redis_db*]
 #   Integer.  The Redis instance DB to use/select
 #   Default: 0
+# 
+# [*sentinels_enabled*]
+#   Boolean. Defines if Sentinel config or standard config will be used
+#   Default: false
+#   Valid values: true, false
+#
+# [*redis_sentinels*]
+#   Array. Redis Sentinel configuration and connection information for one or more Sentinels
+#   Default: Not configured
+#
+# [*sentinels_enabled*]
+#   Boolean. Defines Sentinelsconfig be used or standard config
+#   Default: false
+#   Valid valuesL true, false
+#
+# [*redis_sentinels*]
+#   Array. Redis Sentinel configuration and connection information for one or more Sentinels
+#   Default: Not configured
 #
 # [*redis_auto_reconnect*]
 #   Boolean.  Reconnect to Redis in the event of a connection failure
@@ -351,9 +369,11 @@ class sensu (
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
-  $redis_reconnect_on_error       = false,
+  $redis_reconnect_on_error       = true,
   $redis_db                       = 0,
   $redis_auto_reconnect           = true,
+  $redis_sentinels                = [],
+  $sentinels_enabled              = false,
   $api_bind                       = '0.0.0.0',
   $api_host                       = '127.0.0.1',
   $api_port                       = 4567,
@@ -407,7 +427,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
+  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $sentinels_enabled, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
