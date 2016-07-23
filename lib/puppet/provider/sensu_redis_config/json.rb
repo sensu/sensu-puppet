@@ -16,6 +16,14 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def flush
+    # Clean nil valued properties, esp. sentinel related
+    # Related to https://github.com/sensu/sensu-puppet/issues/394.
+    self.class.resource_type.validproperties.each do |prop|
+      if resource.should(prop).nil?
+        conf['redis'].delete prop.to_s
+      end
+    end
+
     File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
@@ -38,19 +46,27 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def port
-    conf['redis']['port'].to_s
+    if conf['redis']['port'] then conf['redis']['port'].to_s else :absent end
   end
 
   def port=(value)
-    conf['redis']['port'] = value.to_i
+    if value == :absent
+      conf['redis'].delete 'port'
+    else
+      conf['redis']['port'] = value.to_i
+    end
   end
 
   def host
-    conf['redis']['host']
+    conf['redis']['host'] || :absent
   end
 
   def host=(value)
-    conf['redis']['host'] = value
+    if value == :absent
+      conf['redis'].delete 'host'
+    else
+      conf['redis']['host'] = value
+    end
   end
 
   def password
@@ -75,6 +91,30 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
 
   def db=(value)
     conf['redis']['db'] = value.to_i
+  end
+
+  def sentinels
+    conf['redis']['sentinels'] || []
+  end
+
+  def sentinels=(value)
+    if value == []
+      conf['redis'].delete 'sentinels'
+    else
+      conf['redis']['sentinels'] = value
+    end
+  end
+
+  def master
+    conf['redis']['master'] || :absent
+  end
+
+  def master=(value)
+    if value == :absent
+      conf['redis'].delete 'master'
+    else
+      conf['redis']['master'] = value.to_s
+    end
   end
 
   def auto_reconnect
