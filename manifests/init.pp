@@ -280,7 +280,15 @@
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
 #   Default: []
-
+#
+# [*deregister_on_stop*]
+#   Boolean. Whether the sensu client should deregister from the API on service stop
+#   Default: false
+#
+# [*deregister_handler*]
+#   String. The handler to use when deregistering a client on stop.
+#   Default: undef
+#
 # [*handlers*]
 #   Hash of handlers for use with create_sources(sensu::handler).
 #   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
@@ -393,6 +401,8 @@ class sensu (
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
   $redact                         = [],
+  $deregister_on_stop             = false,
+  $deregister_handler             = undef,
 
   ### START Hiera Lookups ###
   $extensions                  = {},
@@ -407,7 +417,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir)
+  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
