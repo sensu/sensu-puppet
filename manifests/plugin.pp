@@ -1,6 +1,7 @@
 # = Define: sensu::plugin
 #
-# Installs the Sensu plugins
+# Installs the Sensu community script and plugins
+# which can be used as monitoring checks
 #
 # == Parameters
 #
