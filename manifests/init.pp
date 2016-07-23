@@ -10,16 +10,19 @@
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
 # [*sensu_plugin_name*]
-#   String.  Name of the sensu-plugin package
+#   String.  Name of the sensu-plugin package. Refers to the sensu-plugin rubygem
+#   Not the community sensu-plugins community scripts.
 #   Default: sensu-plugin
 #
 # [*sensu_plugin_provider*]
-#   String.  Provider used to install the sensu-plugin package
+#   String.  Provider used to install the sensu-plugin package. Refers to the 
+#   sensu-plugin rubygem, not the sensu-plugins community scripts
 #   Default: undef
 #   Valid values: sensu_gem, apt, aptitude, yum
 #
 # [*sensu_plugin_version*]
-#   String.  Version of the sensu-plugin gem to install
+#   String.  Version of the sensu-plugin gem to install. Refers to the sensu-plugin
+#   rubygem, not the sensu-plugins community scripts
 #   Default: installed
 #   Valid values: absent, installed, latest, present, [\d\.\-]+
 #
