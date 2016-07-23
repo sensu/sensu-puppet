@@ -55,7 +55,7 @@
 #   Default: undef
 #
 # [*aggregate*]
-#   Boolean.  Aggregates, preventing event floods. Set 'aggregate:true and 'handle':false, this prevents the
+#   String.  Aggregates, preventing event floods. Set 'aggregate:<name> and 'handle':false, this prevents the
 #   server from sending to a handler, and makes the aggregated results available under /aggregates in the REST API
 #   Default: undef
 #

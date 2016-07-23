@@ -124,7 +124,7 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Check timeout in seconds, after it fails"
   end
 
-  newproperty(:aggregate, :parent => PuppetX::Sensu::BooleanProperty) do
+  newproperty(:aggregate) do
     desc "Whether check is aggregate"
   end
 
