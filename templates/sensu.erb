@@ -6,6 +6,10 @@ RUBYOPT="<%= scope.lookupvar("sensu::rubyopt") %>"
 <% if ![:undef, nil].include?(scope.lookupvar("sensu::gem_path")) -%>
 GEM_PATH="<%= scope.lookupvar("sensu::gem_path") %>"
 <% end -%>
+<% if scope.lookupvar("sensu::deregister_on_stop") -%>
+CLIENT_DEREGISTER_ON_STOP=true
+CLIENT_DEREGISTER_HANDLER="<%= scope.lookupvar("sensu::deregister_handler") %>"
+<% end -%>
 SERVICE_MAX_WAIT="<%= scope.lookupvar("sensu::init_stop_max_wait") %>"
 <% path = scope.lookupvar("sensu::path") -%>
 PATH=<%= [:undef, nil].include?(path) ? "$PATH" : path %>
