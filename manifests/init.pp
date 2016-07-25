@@ -377,7 +377,6 @@ class sensu (
   $redis_password                 = undef,
   $redis_reconnect_on_error       = false,
   $redis_db                       = 0,
-  $redis_sentinels                = undef,
   $redis_auto_reconnect           = true,
   $redis_sentinels                = undef,
   $redis_master                   = undef,
