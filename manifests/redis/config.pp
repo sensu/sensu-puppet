@@ -28,16 +28,16 @@ class sensu::redis::config {
   $port = $has_sentinels ? { false => $sensu::redis_port, true  => undef, }
   $sentinels = $has_sentinels ? { true  => $sensu::redis_sentinels, false => undef, }
 
-   sensu_redis_config { $::fqdn:
-     ensure             => $ensure,
-     base_path          => "${sensu::etc_dir}/conf.d",
-     host               => $host,
-     port               => $port,
-     password           => $sensu::redis_password,
-     reconnect_on_error => $sensu::redis_reconnect_on_error,
-     db                 => $sensu::redis_db,
-     auto_reconnect     => $sensu::redis_auto_reconnect,
-     sentinels          => $sentinels,
-   }
+  sensu_redis_config { $::fqdn:
+    ensure             => $ensure,
+    base_path          => "${sensu::etc_dir}/conf.d",
+    host               => $host,
+    port               => $port,
+    password           => $sensu::redis_password,
+    reconnect_on_error => $sensu::redis_reconnect_on_error,
+    db                 => $sensu::redis_db,
+    auto_reconnect     => $sensu::redis_auto_reconnect,
+    sentinels          => $sentinels,
+  }
 
 }
