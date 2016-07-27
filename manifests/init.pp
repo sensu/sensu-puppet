@@ -121,7 +121,7 @@
 #
 # [*rabbitmq_vhost*]
 #   String.  Rabbitmq vhost to be used by sensu
-#   Default: 'sensu'
+#   Default: '/sensu'
 #
 # [*rabbitmq_ssl*]
 #   Boolean.  Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
@@ -361,7 +361,7 @@ class sensu (
   $rabbitmq_host                  = '127.0.0.1',
   $rabbitmq_user                  = 'sensu',
   $rabbitmq_password              = undef,
-  $rabbitmq_vhost                 = 'sensu',
+  $rabbitmq_vhost                 = '/sensu',
   $rabbitmq_ssl                   = false,
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
