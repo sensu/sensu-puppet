@@ -81,7 +81,7 @@
 #   Default: undef
 #
 define sensu::check(
-  $command,
+  $command             = undef,
   $ensure              = 'present',
   $type                = undef,
   $handlers            = undef,
@@ -105,6 +105,9 @@ define sensu::check(
 
   validate_re($ensure, ['^present$', '^absent$'] )
   validate_bool($standalone)
+  if $ensure == 'present' and !$command {
+    fail("sensu::check{${name}}: a command must be given when ensure is present")
+  }
   if !is_integer($interval) {
     fail("sensu::check{${name}}: interval must be an integer (got: ${interval})")
   }
