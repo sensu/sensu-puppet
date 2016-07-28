@@ -95,7 +95,7 @@ class sensu::package {
       owner   => '0',
       group   => '0',
       mode    => '0444',
-      require => Package['sensu'],
+      require => Package[$pkg_name],
     }
   }
 
