@@ -129,7 +129,7 @@
 #   of the Hash value.
 #   Default: undef
 define sensu::check(
-  $command,
+  $command             = undef,
   $ensure              = 'present',
   $type                = undef,
   $handlers            = undef,
@@ -156,6 +156,10 @@ define sensu::check(
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
+
+  if $ensure == 'present' and !$command {
+    fail("sensu::check{${name}}: a command must be given when ensure is present")
+  }
   if !is_bool($standalone) and  $standalone != 'absent' {
     fail("sensu::check{${name}}: standalone must be a boolean or 'absent' (got: ${standalone})")
   }
