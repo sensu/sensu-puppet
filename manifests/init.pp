@@ -15,7 +15,7 @@
 #   Default: sensu-plugin
 #
 # [*sensu_plugin_provider*]
-#   String.  Provider used to install the sensu-plugin package. Refers to the 
+#   String.  Provider used to install the sensu-plugin package. Refers to the
 #   sensu-plugin rubygem, not the sensu-plugins community scripts
 #   Default: undef
 #   Valid values: sensu_gem, apt, aptitude, yum
@@ -76,6 +76,11 @@
 # [*api*]
 #   Boolean.  Include the sensu api service
 #   Default: false
+#   Valid values: true, false
+#
+# [*manage_apt*]
+#   Boolean.  Include the apt external puppet module
+#   Default: true
 #   Valid values: true, false
 #
 # [*manage_services*]
@@ -352,6 +357,7 @@ class sensu (
   $client                         = true,
   $server                         = false,
   $api                            = false,
+  $manage_apt                     = true,
   $manage_services                = true,
   $manage_user                    = true,
   $manage_plugins_dir             = true,
@@ -430,7 +436,7 @@ class sensu (
 
 ){
 
-  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
+  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_apt, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")

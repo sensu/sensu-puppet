@@ -18,7 +18,7 @@ class sensu::package {
       if $sensu::manage_repo {
         class { '::sensu::repo::apt': }
       }
-      if $sensu::manage_repo and $sensu::install_repo {
+      if $sensu::manage_repo and $sensu::install_repo and $sensu::manage_apt {
         include ::apt
         $pkg_require = Class['apt::update']
       }
