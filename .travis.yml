@@ -1,7 +1,7 @@
 ---
 language: ruby
 bundler_args: --without system_tests development
-script: "bundle install && bundle exec rake validate && bundle exec rake test SPEC_OPTS='--format documentation'"
+script: "bundle install && bundle exec rake validate && bundle exec rake test 
 cache: bundler
 sudo: false
 matrix:
