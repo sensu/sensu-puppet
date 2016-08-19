@@ -126,6 +126,9 @@ define sensu::check(
   if $ttl and !is_integer($ttl) {
     fail("sensu::check{${name}}: ttl must be an integer (got: ${ttl})")
   }
+  if $subdue and !is_hash($subdue) {
+    fail("sensu::check{${name}}: subdue must be a hash (got: ${subdue})")
+  }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
