@@ -34,7 +34,7 @@ class sensu::client::service (
     if $::osfamily == 'windows' {
 
       file { 'C:/opt/sensu/bin/sensu-client.xml':
-        ensure  => present,
+        ensure  => file,
         content => template("${module_name}/sensu-client.erb"),
       }
 

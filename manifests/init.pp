@@ -540,6 +540,8 @@ class sensu (
       $dir_mode = undef
       $file_mode = undef
     }
+
+    default: {}
   }
 
   # Include everything and let each module determine its state.  This allows
