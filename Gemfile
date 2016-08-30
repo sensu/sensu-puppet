@@ -35,8 +35,9 @@ group :system_tests do
 end
 
 group :development do
-  gem 'simplecov',   :require => false
-  gem 'guard-rake',  :require => false
+  gem 'simplecov',          :require => false
+  gem 'guard-rake',         :require => false
+  gem 'listen', '~> 3.0.0', :require => false
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']
