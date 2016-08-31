@@ -110,6 +110,7 @@ class sensu::rabbitmq::config {
 
   sensu_rabbitmq_config { $::fqdn:
     ensure             => $ensure,
+    base_path          => $sensu::conf_dir,
     port               => $sensu::rabbitmq_port,
     host               => $sensu::rabbitmq_host,
     user               => $sensu::rabbitmq_user,
@@ -120,7 +121,6 @@ class sensu::rabbitmq::config {
     ssl_private_key    => $ssl_private_key,
     reconnect_on_error => $sensu::rabbitmq_reconnect_on_error,
     prefetch           => $sensu::rabbitmq_prefetch,
-    base_path          => $sensu::conf_dir,
   }
 
 }
