@@ -166,12 +166,13 @@ class sensu::package {
     user { 'sensu':
       ensure  => 'present',
       system  => true,
-      home    => '/opt/sensu',
-      shell   => '/bin/false',
+      home    => $sensu::home_dir,
+      shell   => $sensu::shell,
+      require => Group[$sensu::group]
       comment => 'Sensu Monitoring Framework',
     }
 
-    group { 'sensu':
+    group { $sensu::group:
       ensure => 'present',
       system => true,
     }
