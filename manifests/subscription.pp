@@ -30,7 +30,7 @@ define sensu::subscription (
 
   sensu_client_subscription { $name:
     ensure    => $ensure,
-    base_path => $sensu::conf_dir
+    base_path => $sensu::conf_dir,
     custom    => $custom,
     notify    => Class['sensu::client::service'],
   }
