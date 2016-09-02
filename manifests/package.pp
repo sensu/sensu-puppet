@@ -168,7 +168,7 @@ class sensu::package {
       system  => true,
       home    => $sensu::home_dir,
       shell   => $sensu::shell,
-      require => Group[$sensu::group]
+      require => Group[$sensu::group],
       comment => 'Sensu Monitoring Framework',
     }
 
