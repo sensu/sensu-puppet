@@ -140,7 +140,7 @@ define sensu::handler(
   }
 
   # handler configuration may contain "secrets"
-  file { "${::sensu::handlers_path}/${name}.json":
+  file { "/etc/sensu/conf.d/handlers/${name}.json":
     ensure => $file_ensure,
     owner  => 'sensu',
     group  => 'sensu',
@@ -162,8 +162,7 @@ define sensu::handler(
     config     => $config,
     subdue     => $subdue,
     notify     => $notify_services,
-    base_path  => "${::sensu::conf_dir}/handlers",
-    require    => File["${::sensu::handlers_path}"],
+    require    => File['/etc/sensu/conf.d/handlers'],
   }
 
 }

@@ -56,15 +56,17 @@ describe 'sensu' do
     end
 
     context 'sysconfig settings' do
-      let(:params) { { :rubyopt => 'a', :gem_path => '/foo' } }
+      let(:params) { { :rubyopt => 'a', :gem_path => '/foo', :deregister_on_stop => true, :deregister_handler => 'example' } }
       it { should contain_file('/etc/default/sensu').with(:content => /RUBYOPT="a"/) }
       it { should contain_file('/etc/default/sensu').with(:content => /GEM_PATH="\/foo"/) }
+      it { should contain_file('/etc/default/sensu').with(:content => /CLIENT_DEREGISTER_ON_STOP=true/) }
+      it { should contain_file('/etc/default/sensu').with(:content => /CLIENT_DEREGISTER_HANDLER="example"/) } 
     end
 
     context 'repos' do
 
       context 'ubuntu' do
-        let(:facts) { { :osfamily => 'Debian' , :lsbdistid => 'ubuntu'} }
+        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', } }
 
         context 'with puppet-apt installed' do
           let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include, $key) {}' ] }

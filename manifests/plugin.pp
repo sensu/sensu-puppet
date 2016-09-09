@@ -1,6 +1,7 @@
 # = Define: sensu::plugin
 #
-# Installs the Sensu plugins
+# Installs the Sensu community script and plugins
+# which can be used as monitoring checks
 #
 # == Parameters
 #
@@ -36,7 +37,7 @@
 # [*pkg_provider*]
 #   String.  When using package to install plugins, provider to use.
 #   Default: undef
-#   Valid values: aptitude, apt, sensu_gem
+#   Valid values: sensu_gem, apt, aptitude, yum
 #
 # [*nocheckcertificate*]
 #   Boolean.  When using url source, disable certificate checking for HTTPS
@@ -99,6 +100,7 @@ define sensu::plugin(
         remote_file { $name:
           ensure   => present,
           path     => "${install_path}/${filename}",
+          source   => $name,
           checksum => $pkg_checksum,
           require  => File[$install_path],
         } ->

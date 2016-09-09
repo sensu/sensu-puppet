@@ -55,7 +55,7 @@
 #   Default: undef
 #
 # [*aggregate*]
-#   Boolean.  Aggregates, preventing event floods. Set 'aggregate:true and 'handle':false, this prevents the
+#   String.  Aggregates, preventing event floods. Set 'aggregate:<name> and 'handle':false, this prevents the
 #   server from sending to a handler, and makes the aggregated results available under /aggregates in the REST API
 #   Default: undef
 #
@@ -126,6 +126,9 @@ define sensu::check(
   if $ttl and !is_integer($ttl) {
     fail("sensu::check{${name}}: ttl must be an integer (got: ${ttl})")
   }
+  if $subdue and !is_hash($subdue) {
+    fail("sensu::check{${name}}: subdue must be a hash (got: ${subdue})")
+  }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
@@ -136,13 +139,6 @@ define sensu::check(
       $user = undef
       $group = undef
       $file_mode = undef
-    }
-    'FreeBSD': {
-      $etc_dir = '/usr/local/etc/sensu'
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = 'sensu'
-      $group = 'sensu'
-      $file_mode = '0440'
     }
     default: {
       $etc_dir = '/etc/sensu'

@@ -23,15 +23,23 @@ class sensu::redis::config {
     before => Sensu_redis_config[$::fqdn],
   }
 
+  $has_sentinels = !($sensu::redis_sentinels == undef or $sensu::redis_sentinels == [])
+  $host = $has_sentinels ? { false => $sensu::redis_host, true  => undef, }
+  $port = $has_sentinels ? { false => $sensu::redis_port, true  => undef, }
+  $sentinels = $has_sentinels ? { true  => $sensu::redis_sentinels, false => undef, }
+  $master = $has_sentinels ? { true => $sensu::redis_master, false => undef, }
+
   sensu_redis_config { $::fqdn:
     ensure             => $ensure,
     base_path          => "${sensu::etc_dir}/conf.d",
-    host               => $sensu::redis_host,
-    port               => $sensu::redis_port,
+    host               => $host,
+    port               => $port,
     password           => $sensu::redis_password,
     reconnect_on_error => $sensu::redis_reconnect_on_error,
     db                 => $sensu::redis_db,
     auto_reconnect     => $sensu::redis_auto_reconnect,
+    sentinels          => $sentinels,
+    master             => $master,
   }
 
 }
