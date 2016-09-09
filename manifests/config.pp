@@ -25,7 +25,7 @@ define sensu::config (
 
   validate_re($ensure, ['^present$', '^absent$'] )
 
-  file { "/etc/sensu/conf.d/checks/config_${name}.json":
+  file { "${sensu::etc_dir}/conf.d/checks/config_${name}.json":
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',
