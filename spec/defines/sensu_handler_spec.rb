@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu::handler', :type => :define do
+  let(:facts) { { :osfamily => 'RedHat' } }
   let(:title) { 'myhandler' }
 
   context 'default (present)' do
