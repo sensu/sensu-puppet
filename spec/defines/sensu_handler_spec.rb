@@ -155,4 +155,16 @@ describe 'sensu::handler', :type => :define do
     it { should raise_error(Puppet::Error, /Subdue at handler is deprecated since sensu 0.26/) }
   end
 
+  context 'timeout' do
+    let(:params) {
+      {
+          :command => 'mycommand.rb',
+          :type    => 'pipe',
+          :timeout => 10,
+      }
+    }
+
+    it { should contain_sensu_handler('myhandler').with_timeout( 10 ) }
+  end
+
 end
