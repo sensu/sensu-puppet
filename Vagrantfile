@@ -128,6 +128,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
   end
 
+  config.vm.define "freebsd11-client", autostart: false do |client|
+    client.vm.box = "freebsd/FreeBSD-11.0-STABLE"
+    client.vm.hostname = 'freebsd11-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.19"
+    client.vm.base_mac = "080027D14C66"
+#    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+#    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+  end
+
+  config.vm.define "freebsd10-client", autostart: false do |client|
+    client.vm.box = "freebsd/FreeBSD-10.3-STABLE"
+    client.vm.hostname = 'freebsd10-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.20"
+#    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+#    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+  end
+
   # This system is meant to be started without 'sensu-server' running.
   config.vm.define "sensu-server-enterprise", autostart: false do |server|
     server.vm.box = "centos/7"

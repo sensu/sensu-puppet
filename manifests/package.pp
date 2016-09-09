@@ -11,6 +11,7 @@ class sensu::package {
   case $::osfamily {
 
     'Debian': {
+      $default_dir = '/etc/default'
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
       $pkg_version = $::sensu::version
@@ -28,8 +29,18 @@ class sensu::package {
         $pkg_require = undef
       }
     }
-
+    'FreeBSD': {
+      $default_dir = '/usr/local/etc/default'
+      $pkg_title = 'sensu'
+      $pkg_name = 'sensu'
+      # FreeBSD does not support versions
+      $pkg_version = 'installed'
+      $pkg_source = undef
+      $pkg_provider = undef
+      $pkg_require = undef
+    }
     'RedHat': {
+      $default_dir = '/etc/default'
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
       $pkg_version = $::sensu::version
@@ -39,7 +50,6 @@ class sensu::package {
       if $::sensu::manage_repo {
         class { '::sensu::repo::yum': }
       }
-
       $pkg_require = undef
     }
 
@@ -98,9 +108,7 @@ class sensu::package {
         }
       }
     }
-
     default: { fail("${::osfamily} not supported yet") }
-
   }
 
   package { $pkg_title:
@@ -134,7 +142,7 @@ class sensu::package {
   }
 
   if $::osfamily != 'windows' {
-    file { '/etc/default/sensu':
+    file { "${default_dir}/sensu":
       ensure  => file,
       content => template("${module_name}/sensu.erb"),
       owner   => '0',
