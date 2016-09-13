@@ -361,7 +361,7 @@ class sensu (
   $rabbitmq_host                  = '127.0.0.1',
   $rabbitmq_user                  = 'sensu',
   $rabbitmq_password              = undef,
-  $rabbitmq_vhost                 = '/sensu',
+  $rabbitmq_vhost                 = 'sensu',
   $rabbitmq_ssl                   = false,
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
