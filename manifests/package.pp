@@ -163,7 +163,7 @@ class sensu::package {
   }
 
   if $sensu::manage_user {
-    user { 'sensu':
+    user { $sensu::user:
       ensure  => 'present',
       system  => true,
       home    => $sensu::home_dir,
