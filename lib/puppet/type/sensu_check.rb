@@ -128,6 +128,13 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Whether check is aggregate"
   end
 
+  newproperty(:aggregates, :array_matching => :all) do
+    desc "An array of aggregates to add to the check"
+    def insync?(is)
+      is.sort == should.sort
+    end
+  end
+
   newproperty(:handle, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Whether check event send to a handler"
   end
