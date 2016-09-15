@@ -19,12 +19,13 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.5.0"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 3.5" FUTURE_PARSER="yes"
-  - rvm: 2.1.0
+  - rvm: 2.1.9
     env: PUPPET_GEM_VERSION="~> 3" FUTURE_PARSER="yes"
-  - rvm: 2.1.6
+  - rvm: 2.1.9
     env: PUPPET_GEM_VERSION="~> 4.0"
-  - rvm: 2.1.6
+  - rvm: 2.1.9
     env: PUPPET_GEM_VERSION="~> 4"
-notifications:
-  email:
-    - james@lovedthanlost.net
+  - rvm: 2.2.5
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 2.2.5
+    env: PUPPET_GEM_VERSION="~> 4"
