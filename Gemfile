@@ -15,6 +15,7 @@ group :development, :unit_tests do
   gem 'metadata-json-lint',                               :require => false
   gem 'puppet-blacksmith',                                :require => false
   gem 'rest-client', "1.6.8",                             :require => false
+  gem 'ruby_dep', "~> 1.3.1",                             :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
   gem 'puppet-lint-appends-check',                        :require => false
   gem 'puppet-lint-empty_string-check',                   :require => false
