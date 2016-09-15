@@ -30,9 +30,11 @@
 #
 # [*occurrences*]
 #   Integer.  The number of event occurrences before the handler should take action.
+#   Default: undef
 #
 # [*refresh*]
 #   Integer.  The number of seconds sensu-plugin-aware handlers should wait before taking second action.
+#   Default: undef
 #
 # [*source*]
 #   String.  The check source, used to create a JIT Sensu client for an external resource (e.g. a network switch).
@@ -40,7 +42,7 @@
 #
 # [*subscribers*]
 #   Array of Strings.  Which subscriptions must execute this check
-#   Default: []
+#   Default: undef
 #
 # [*low_flap_threshold*]
 #   Integer.  Flap detection - see Nagios Flap Detection: http://nagios.sourceforge.net/docs/3_0/flapping.html
