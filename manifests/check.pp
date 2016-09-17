@@ -61,6 +61,10 @@
 #   server from sending to a handler, and makes the aggregated results available under /aggregates in the REST API
 #   Default: undef
 #
+# [*aggregates*]
+#   Array of Strings. An array of aggregates to add to the check. This supercedes the above aggregates parameter
+#   Defaults: undef
+#
 # [*handle*]
 #   Boolean.  When false, check will not be sent to handlers
 #   Default: undef
@@ -97,6 +101,7 @@ define sensu::check(
   $high_flap_threshold = undef,
   $timeout             = undef,
   $aggregate           = undef,
+  $aggregates          = undef,
   $handle              = undef,
   $publish             = undef,
   $dependencies        = undef,
@@ -130,6 +135,9 @@ define sensu::check(
   }
   if $subdue and !is_hash($subdue) {
     fail("sensu::check{${name}}: subdue must be a hash (got: ${subdue})")
+  }
+  if $aggregates and !is_array($aggregates) {
+    fail("sensu::check{${name}}: aggregates must be an array (got: ${aggregates})")
   }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
@@ -175,6 +183,7 @@ define sensu::check(
     high_flap_threshold => $high_flap_threshold,
     timeout             => $timeout,
     aggregate           => $aggregate,
+    aggregates          => $aggregates,
     handle              => $handle,
     publish             => $publish,
     dependencies        => $dependencies,

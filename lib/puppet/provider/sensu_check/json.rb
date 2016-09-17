@@ -30,7 +30,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def check_args
-    ['handlers','command','interval','occurrences','refresh','source','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','dependencies','custom','ttl', 'subdue']
+    ['handlers','command','interval','occurrences','refresh','source','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','dependencies','custom','ttl', 'subdue', 'aggregates']
   end
 
   def custom
@@ -69,6 +69,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   def handlers=(value)
     conf['checks'][resource[:name]]['handlers'] = value
   end
+
   def occurrences
     conf['checks'][resource[:name]]['occurrences'].to_s
   end
@@ -168,6 +169,14 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     else
       conf['checks'][resource[:name]]['aggregate'] = value
     end
+  end
+
+  def aggregates
+    conf['checks'][resource[:name]]['aggregates']
+  end
+
+  def aggregates(value)
+    conf['checks'][resource[:name]]['aggregates'] = value
   end
 
   def handle
