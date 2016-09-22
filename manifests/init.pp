@@ -316,6 +316,12 @@
 #   Default: 'info'
 #   Valid values: debug, info, warn, error, fatal
 #
+#
+# [*log_dir*]
+#   String.  Sensu log directory to be used
+#   Default: '/var/log/sensu'
+#   Valid values: Any valid log directory path, accessible by the sensu user
+#
 # [*init_stop_max_wait*]
 #   Integer.  Number of seconds to wait for the init stop script to run
 #   Default: 10
@@ -469,6 +475,7 @@ class sensu (
   $rubyopt                        = undef,
   $gem_path                       = undef,
   $log_level                      = 'info',
+  $log_dir                        = '/var/log/sensu',
   $dashboard                      = false,
   $init_stop_max_wait             = 10,
   $gem_install_options            = undef,
