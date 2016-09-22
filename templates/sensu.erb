@@ -1,5 +1,6 @@
 EMBEDDED_RUBY=<%= scope.lookupvar("sensu::use_embedded_ruby") %>
 LOG_LEVEL=<%= scope.lookupvar("sensu::log_level") %>
+LOG_DIR=<%= scope.lookupvar("sensu::log_dir") %>
 <% if ![:undef, nil].include?(scope.lookupvar("sensu::rubyopt")) -%>
 RUBYOPT="<%= scope.lookupvar("sensu::rubyopt") %>"
 <% end -%>
