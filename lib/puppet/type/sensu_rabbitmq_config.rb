@@ -81,6 +81,12 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     defaultto 'sensu'
   end
 
+  newproperty(:heartbeat) do
+    desc "The RabbitMQ heartbeat value"
+
+    defaultto '30'
+  end
+
   newproperty(:reconnect_on_error) do
     desc "Attempt to reconnect to RabbitMQ on error"
 

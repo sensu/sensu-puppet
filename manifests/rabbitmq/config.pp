@@ -115,6 +115,7 @@ class sensu::rabbitmq::config {
     user               => $sensu::rabbitmq_user,
     password           => $sensu::rabbitmq_password,
     vhost              => $sensu::rabbitmq_vhost,
+    heartbeat          => $sensu::rabbitmq_heartbeat,
     ssl_transport      => $enable_ssl,
     ssl_cert_chain     => $ssl_cert_chain,
     ssl_private_key    => $ssl_private_key,
