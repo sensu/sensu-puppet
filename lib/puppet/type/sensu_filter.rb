@@ -6,6 +6,14 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
 Puppet::Type.newtype(:sensu_filter) do
   @doc = ""
 
+  def initialize(*args)
+    super *args
+
+    self[:notify] = [
+      "Service[sensu-server]",
+    ].select { |ref| catalog.resource(ref) }
+  end
+
   ensurable do
     newvalue(:present) do
       provider.create
