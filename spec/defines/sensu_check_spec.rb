@@ -141,16 +141,42 @@ describe 'sensu::check', :type => :define do
 
   context 'subdue' do
     let(:title) { 'mycheck' }
-    let(:params) {
-      {
-        :command => '/etc/sensu/somecommand.rb',
-        :subdue  => {
-          'begin' => '5PM PST',
-          'end'   => '9AM PST'
+    context 'valid subdue hash' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => {
+            'days' => {
+              'monday' => [
+                {
+                  'begin' => '12:00:00 AM PST',
+                  'end'   => '9:00:00 AM PST'
+                },
+                {
+                  'begin' => '5:00:00 PM PST',
+                  'end'   => '11:59:59 PM PST'
+                }
+              ]
+            }
+          }
         }
       }
-    }
 
-    it { should contain_sensu_check('mycheck').with_subdue( {'begin' => '5PM PST', 'end' => '9AM PST'}) }
+      it { should contain_sensu_check('mycheck').with_subdue( {'days'=>{'monday'=>[{'begin'=>'12:00:00 AM PST', 'end'=>'9:00:00 AM PST'}, {'begin'=>'5:00:00 PM PST', 'end'=>'11:59:59 PM PST'}]}} ) }
+    end
+
+    context 'invalid subdue hash' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => {
+            'begin' => '5PM PST',
+            'end'   => '9AM PST'
+          }
+        }
+      }
+
+      it { should raise_error(Puppet::Error, /subdue hash should have a proper format/) }
+    end
   end
 end
