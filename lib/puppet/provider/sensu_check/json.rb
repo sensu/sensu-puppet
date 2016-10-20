@@ -217,7 +217,10 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def subdue=(value)
-    value = (value == :absent ? nil : value)
-    conf['checks'][resource[:name]]['subdue'] = value
+    if value == :absent
+      conf['checks'][resource[:name]].delete('subdue')
+    else
+      conf['checks'][resource[:name]]['subdue'] = value
+    end
   end
 end
