@@ -84,6 +84,7 @@
 #
 # [*subdue*]
 #   Hash.  Check subdue configuration
+#   Set this to 'absent' to remove it completely.
 #   Default: undef
 #
 define sensu::check(
@@ -133,7 +134,7 @@ define sensu::check(
   if $ttl and !is_integer($ttl) {
     fail("sensu::check{${name}}: ttl must be an integer (got: ${ttl})")
   }
-  if $subdue and !is_hash($subdue) {
+  if $subdue and !is_hash($subdue) and !($subdue == 'absent') {
     fail("sensu::check{${name}}: subdue must be a hash (got: ${subdue})")
   }
   if $aggregates and !is_array($aggregates) {

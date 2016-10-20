@@ -147,6 +147,7 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:subdue) do
     desc "Check subdue"
+    newvalues(/.*/, :absent)
   end
 
   newproperty(:ttl) do

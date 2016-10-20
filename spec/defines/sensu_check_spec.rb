@@ -139,18 +139,42 @@ describe 'sensu::check', :type => :define do
     end
   end
 
-  context 'subdue' do
+  context 'with subdue' do
     let(:title) { 'mycheck' }
-    let(:params) {
-      {
-        :command => '/etc/sensu/somecommand.rb',
-        :subdue  => {
-          'begin' => '5PM PST',
-          'end'   => '9AM PST'
+
+    context 'defined' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => {
+            'begin' => '5PM PST',
+            'end'   => '9AM PST'
+          }
         }
       }
-    }
 
-    it { should contain_sensu_check('mycheck').with_subdue( {'begin' => '5PM PST', 'end' => '9AM PST'}) }
+      it { should contain_sensu_check('mycheck').with_subdue( {'begin' => '5PM PST', 'end' => '9AM PST'}) }
+    end
+
+    context '=> \'absent\'' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => 'absent'
+        }
+      }
+
+      it { should contain_sensu_check('mycheck').with_subdue(:absent) }
+    end
+
+    context '= undef' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+        }
+      }
+
+      it { should contain_sensu_check('mycheck').without_subdue }
+    end
   end
 end
