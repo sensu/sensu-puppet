@@ -20,18 +20,19 @@ define sensu::subscription (
 
   validate_re($ensure, ['^present$', '^absent$'] )
 
-  file { "/etc/sensu/conf.d/subscription_${name}.json":
+  file { "${sensu::conf_dir}/subscription_${name}.json":
     ensure => $ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0444',
+    owner  => $sensu::user,
+    group  => $sensu::group,
+    mode   => $sensu::file_mode,
     before => Sensu_client_subscription[$name],
   }
 
   sensu_client_subscription { $name:
-    ensure => $ensure,
-    custom => $custom,
-    notify => Class['sensu::client::service'],
+    ensure    => $ensure,
+    base_path => $sensu::conf_dir,
+    custom    => $custom,
+    notify    => Class['sensu::client::service'],
   }
 
 }
