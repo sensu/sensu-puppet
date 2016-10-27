@@ -9,13 +9,8 @@ class sensu::enterprise::dashboard::package {
   }
 
   if $::sensu::enterprise_dashboard {
-    $ensure = $::sensu::enterprise_dashboard_version
-  } else {
-    $ensure = 'absent'
+    package { 'sensu-enterprise-dashboard':
+      ensure => $::sensu::enterprise_dashboard_version,
+    }
   }
-
-  package { 'sensu-enterprise-dashboard':
-    ensure => $ensure,
-  }
-
 }
