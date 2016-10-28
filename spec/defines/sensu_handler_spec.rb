@@ -152,7 +152,7 @@ describe 'sensu::handler', :type => :define do
       }
     }
 
-    it { should contain_sensu_handler('myhandler').with_subdue( {'begin' => '09PM CEST', 'end'   => '10PM CEST'} ) }
+    it { should raise_error(Puppet::Error, /Subdue at handler is deprecated since sensu 0.26/) }
   end
 
 end

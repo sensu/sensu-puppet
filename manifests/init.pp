@@ -15,7 +15,7 @@
 #   Default: sensu-plugin
 #
 # [*sensu_plugin_provider*]
-#   String.  Provider used to install the sensu-plugin package. Refers to the 
+#   String.  Provider used to install the sensu-plugin package. Refers to the
 #   sensu-plugin rubygem, not the sensu-plugins community scripts
 #   Default: undef
 #   Valid values: sensu_gem, apt, aptitude, yum
@@ -528,6 +528,8 @@ class sensu (
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'sensu'
       $group = 'sensu'
+      $home_dir = '/opt/sensu'
+      $shell = '/bin/false'
       $dir_mode = '0555'
       $file_mode = '0440'
     }
@@ -535,8 +537,10 @@ class sensu (
     'windows': {
       $etc_dir = 'C:/opt/sensu'
       $conf_dir = "${etc_dir}/conf.d"
-      $user = undef
-      $group = undef
+      $user = 'Sensu'
+      $group = "Users"
+      $home_dir = $etc_dir
+      $shell = undef
       $dir_mode = undef
       $file_mode = undef
     }

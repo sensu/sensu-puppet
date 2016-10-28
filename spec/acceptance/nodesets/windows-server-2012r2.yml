@@ -1,0 +1,11 @@
+HOSTS:
+  windows-server-amd64:
+    roles:
+      - master
+    platform: windows-server-amd64
+    box : opentable/win-2012r2-standard-amd64-nocm
+    box_url : https://vagrantcloud.com/opentable/boxes/win-2012r2-standard-amd64-nocm
+    hypervisor : vagrant
+CONFIG:
+  log_level: verbose
+  type: foss

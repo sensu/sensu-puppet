@@ -139,8 +139,9 @@ describe 'sensu::check', :type => :define do
     end
   end
 
-  context 'subdue' do
+  context 'with subdue' do
     let(:title) { 'mycheck' }
+
     context 'valid subdue hash' do
       let(:params) {
         {
@@ -177,6 +178,27 @@ describe 'sensu::check', :type => :define do
       }
 
       it { should raise_error(Puppet::Error, /subdue hash should have a proper format/) }
+    end
+
+    context '=> \'absent\'' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => 'absent'
+        }
+      }
+
+      it { should contain_sensu_check('mycheck').with_subdue(:absent) }
+    end
+
+    context '= undef' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+        }
+      }
+
+      it { should contain_sensu_check('mycheck').without_subdue }
     end
   end
 end

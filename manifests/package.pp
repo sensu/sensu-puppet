@@ -13,6 +13,7 @@ class sensu::package {
     'Debian': {
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
+      $pkg_version = $sensu::version
       $pkg_source = undef
 
       if $sensu::manage_repo {
@@ -30,6 +31,7 @@ class sensu::package {
     'RedHat': {
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
+      $pkg_version = $sensu::version
       $pkg_source = undef
 
       if $sensu::manage_repo {
@@ -42,15 +44,15 @@ class sensu::package {
     'windows': {
       $repo_require = undef
 
-      $pkg_version = inline_template("<%= scope.lookupvar('sensu::version').sub(/(.*)\\./, '\\1-') %>")
-      $pkg_title = 'sensu'
+      $pkg_version = inline_template("<%= scope.lookupvar('sensu::version').sub(/(.*)\\-/, '\\1.') %>")
+      $pkg_title = 'Sensu'
       $pkg_name = 'Sensu'
-      $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_version}.msi"
+      $pkg_source = "C:\\Windows\\Temp\\sensu-${sensu::version}.msi"
       $pkg_require = "Remote_file[${pkg_source}]"
 
       remote_file { $pkg_source:
         ensure   => present,
-        source   => "http://repositories.sensuapp.org/msi/sensu-${pkg_version}.msi",
+        source   => "http://repositories.sensuapp.org/msi/sensu-${sensu::version}.msi",
         checksum => $::sensu::package_checksum,
       }
     }
@@ -60,7 +62,7 @@ class sensu::package {
   }
 
   package { $pkg_title:
-    ensure  => $sensu::version,
+    ensure  => $pkg_version,
     name    => $pkg_name,
     source  => $pkg_source,
     require => $pkg_require,
@@ -161,15 +163,16 @@ class sensu::package {
   }
 
   if $sensu::manage_user {
-    user { 'sensu':
+    user { $sensu::user:
       ensure  => 'present',
       system  => true,
-      home    => '/opt/sensu',
-      shell   => '/bin/false',
+      home    => $sensu::home_dir,
+      shell   => $sensu::shell,
+      require => Group[$sensu::group],
       comment => 'Sensu Monitoring Framework',
     }
 
-    group { 'sensu':
+    group { $sensu::group:
       ensure => 'present',
       system => true,
     }

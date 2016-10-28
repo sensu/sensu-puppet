@@ -84,6 +84,7 @@
 #
 # [*subdue*]
 #   Hash.  Check subdue configuration
+#   Set this to 'absent' to remove it completely.
 #   Default: undef
 #
 define sensu::check(
@@ -138,8 +139,8 @@ define sensu::check(
       if !( has_key($subdue, 'days') and is_hash($subdue['days']) ){
         fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
       }
-    } else {
-      fail("sensu::check{${name}}: subdue must be a hash (got: ${subdue})")
+    } elsif !($subdue == 'absent') {
+      fail("sensu::check{${name}}: subdue must be a hash or 'absent' (got: ${subdue})")
     }
   }
   if $aggregates and !is_array($aggregates) {
