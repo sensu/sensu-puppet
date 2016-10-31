@@ -53,7 +53,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def interval
-    conf['checks'][resource[:name]]['interval'].to_s
+    conf['checks'][resource[:name]]['interval']
   end
 
   def config_file
@@ -61,7 +61,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def interval=(value)
-    conf['checks'][resource[:name]]['interval'] = value.to_i
+    conf['checks'][resource[:name]]['interval']
   end
 
   def handlers
@@ -73,19 +73,19 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def occurrences
-    conf['checks'][resource[:name]]['occurrences'].to_s
+    conf['checks'][resource[:name]]['occurrences']
   end
 
   def occurrences=(value)
-    conf['checks'][resource[:name]]['occurrences'] = value.to_i
+    conf['checks'][resource[:name]]['occurrences'] = value
   end
 
   def refresh
-    conf['checks'][resource[:name]]['refresh'].to_s
+    conf['checks'][resource[:name]]['refresh']
   end
 
   def refresh=(value)
-    conf['checks'][resource[:name]]['refresh'] = value.to_i
+    conf['checks'][resource[:name]]['refresh'] = value
   end
 
   def command
@@ -122,19 +122,19 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def low_flap_threshold
-    conf['checks'][resource[:name]]['low_flap_threshold'].to_s
+    conf['checks'][resource[:name]]['low_flap_threshold']
   end
 
   def low_flap_threshold=(value)
-    conf['checks'][resource[:name]]['low_flap_threshold'] = value.to_i
+    conf['checks'][resource[:name]]['low_flap_threshold'] = value
   end
 
   def high_flap_threshold
-    conf['checks'][resource[:name]]['high_flap_threshold'].to_s
+    conf['checks'][resource[:name]]['high_flap_threshold']
   end
 
   def high_flap_threshold=(value)
-    conf['checks'][resource[:name]]['high_flap_threshold'] = value.to_i
+    conf['checks'][resource[:name]]['high_flap_threshold'] = value
   end
 
   def source
@@ -146,16 +146,11 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def timeout
-    conf['checks'][resource[:name]]['timeout'].to_s
-  end
-
-  def trim num
-    i, f = num.to_i, num.to_f
-    i == f ? i : f
+    conf['checks'][resource[:name]]['timeout']
   end
 
   def timeout=(value)
-    conf['checks'][resource[:name]]['timeout'] = trim(value)
+    conf['checks'][resource[:name]]['timeout'] = value
   end
 
   def aggregate
@@ -163,14 +158,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def aggregate=(value)
-    case value
-    when true, 'true', 'True', :true, 1
-      conf['checks'][resource[:name]]['aggregate'] = true
-    when false, 'false', 'False', :false, 0
-      conf['checks'][resource[:name]]['aggregate'] = false
-    else
-      conf['checks'][resource[:name]]['aggregate'] = value
-    end
+    conf['checks'][resource[:name]]['aggregate'] = value
   end
 
   def aggregates
@@ -206,11 +194,11 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def ttl
-    conf['checks'][resource[:name]]['ttl'].to_s
+    conf['checks'][resource[:name]]['ttl']
   end
 
   def ttl=(value)
-    conf['checks'][resource[:name]]['ttl'] = value.to_i
+    conf['checks'][resource[:name]]['ttl'] = value
   end
 
   def subdue
