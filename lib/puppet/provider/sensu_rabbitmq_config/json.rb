@@ -34,7 +34,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_transport
-    if conf['rabbitmq'].class != Array 
+    if conf['rabbitmq'].class != Array
       if conf['rabbitmq'].has_key? 'ssl'
         :true
       else
@@ -62,8 +62,8 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
       else
         ''
       end
-    else 
-      '' 
+    else
+      ''
     end
   end
 
@@ -87,8 +87,8 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
       else
         ''
       end
-    else 
-      '' 
+    else
+      ''
     end
   end
 
@@ -165,7 +165,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   def prefetch=(value)
     if value != :absent then conf['rabbitmq']['prefetch'] = value.to_i end
   end
-  
+
   def cluster
     conf['rabbitmq']
   end
