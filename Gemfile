@@ -25,7 +25,11 @@ group :development, :unit_tests do
   gem 'puppet-lint-undef_in_function-check',              :require => false
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
-
+  # metadata-json-lint depends on semantic_puppet, version 0.1.4 of which
+  # is broken on ruby 1.8 due to use of `File.absolute_path`
+  if RUBY_VERSION < "1.9"
+    gem 'semantic_puppet', "< 0.1.4",                       :require => false
+  end
 end
 
 group :system_tests do
