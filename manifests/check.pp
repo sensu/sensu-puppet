@@ -134,8 +134,14 @@ define sensu::check(
   if $ttl and !is_integer($ttl) {
     fail("sensu::check{${name}}: ttl must be an integer (got: ${ttl})")
   }
-  if $subdue and !is_hash($subdue) and !($subdue == 'absent') {
-    fail("sensu::check{${name}}: subdue must be a hash (got: ${subdue})")
+  if $subdue {
+    if is_hash($subdue) {
+      if !( has_key($subdue, 'days') and is_hash($subdue['days']) ){
+        fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
+      }
+    } elsif !($subdue == 'absent') {
+      fail("sensu::check{${name}}: subdue must be a hash or 'absent' (got: ${subdue})")
+    }
   }
   if $aggregates and !is_array($aggregates) {
     fail("sensu::check{${name}}: aggregates must be an array (got: ${aggregates})")
