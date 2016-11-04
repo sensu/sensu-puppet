@@ -1,6 +1,6 @@
 # Change Log
 
-## [2.1.0](https://github.com/sensu/sensu-puppet/tree/2.1.0) (2015-09-24)
+## [2.1.0](https://github.com/sensu/sensu-puppet/tree/2.1.0) (2016-02-29)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v1.5.5...2.1.0)
 
 **Closed issues:**

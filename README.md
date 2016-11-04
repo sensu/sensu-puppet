@@ -11,10 +11,18 @@ Installs and manages the open source monitoring framework [Sensu](http://sensuap
 
 [Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
 
-## Sensu version supported
+## Compatibility - supported sensu versions
 
-The module currently supports Sensu version 0.12 and later. If not explicitly stated it should always
-support the latest Sensu release. Please log an issue if you identify any incompatibilities.
+If not explicitly stated it should always support the latest Sensu release.
+Please log an issue if you identify any incompatibilities.
+
+| Sensu Version    | Recommended Puppet Module Version   |
+| ---------------- | ----------------------------------- |
+| >= 0.26.0        | latest                              |
+| 0.22.x - 0.25.x  | 2.1.0                               |
+| 0.20.x - 0.21.x  | 2.0.0                               |
+| 0.17.x - 0.19.x  | 1.5.5                               |
+
 
 ## Upgrade note
 
