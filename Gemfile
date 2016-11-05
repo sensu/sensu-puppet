@@ -29,6 +29,7 @@ group :development, :unit_tests do
   # is broken on ruby 1.8 due to use of `File.absolute_path`
   if RUBY_VERSION < "1.9"
     gem 'semantic_puppet', "< 0.1.4",                       :require => false
+    gem 'rdoc', "< 4.3.0",                                  :require => false
   end
 end
 
