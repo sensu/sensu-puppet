@@ -290,7 +290,7 @@
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
-#   Default: []
+#   Default: undef
 #
 # [*deregister_on_stop*]
 #   Boolean. Whether the sensu client should deregister from the API on service stop
@@ -413,7 +413,7 @@ class sensu (
   $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
-  $redact                         = [],
+  $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
 
