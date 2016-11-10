@@ -20,6 +20,12 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     cluster && !cluster.empty?
   end
 
+  def acc(k, v)
+    @hash = {} unless @hash
+    @hash[k] = v
+    @hash
+  end
+
   ensurable do
     newvalue(:present) do
       provider.create
@@ -121,15 +127,19 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   end
 
   newproperty(:cluster, :array_matching => :all) do
-    desc "Rabbitmq Cluster"
-    def insync?(is)
-      Set.new(is) == Set.new(should)
-    end
+    desc 'Rabbitmq Cluster'
 
     munge do |value|
-      Hash[value.map do |k, v|
-        [k,if k == "port" then v.to_i elsif k == "prefetch" then v.to_i else v.to_s end]
-      end]
+      if value.is_a?(Hash)
+        value
+      elsif value.is_a?(Array)
+        # fix for puppet3
+        @resource.acc(value.first, value.last)
+      end
+    end
+
+    def insync?(is)
+      Set.new(is) == Set.new(should)
     end
   end
 

@@ -158,6 +158,15 @@ describe 'sensu', :type => :class do
             'vhost'           => '/myvhost',
             'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
             'ssl_private_key' => '/etc/sensu/ssl/key.pem'
+          },
+          {
+            'port'            => '1234',
+            'host'            => 'myhost',
+            'user'            => 'sensuuser',
+            'password'        => 'sensupass',
+            'vhost'           => '/myvhost',
+            'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
+            'ssl_private_key' => '/etc/sensu/ssl/key.pem'
           }
         ]
       }
