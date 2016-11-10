@@ -110,12 +110,12 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def port
-    if conf['rabbitmq'].class == Array then pre_create end
-    if conf['rabbitmq']['port'] then conf['rabbitmq']['port'].to_s else :absent end
+    pre_create if conf['rabbitmq'].class == Array
+    conf['rabbitmq']['port'] ? conf['rabbitmq']['port'].to_s : :absent
   end
 
   def port=(value)
-    if value != :absent then conf['rabbitmq']['port'] = value.to_i end
+    conf['rabbitmq']['port'] = value.to_i unless value == :absent
   end
 
   def host
@@ -123,7 +123,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def host=(value)
-    if value != :absent then conf['rabbitmq']['host'] = value end
+    conf['rabbitmq']['host'] = value unless value == :absent
   end
 
   def user
@@ -131,7 +131,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def user=(value)
-    if value != :absent then conf['rabbitmq']['user'] = value end
+    conf['rabbitmq']['user'] = value unless value == :absent
   end
 
   def password
@@ -139,7 +139,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def password=(value)
-    if value != :absent then conf['rabbitmq']['password'] = value end
+    conf['rabbitmq']['password'] = value unless value == :absent
   end
 
   def vhost
@@ -147,7 +147,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def vhost=(value)
-    if value != :absent then conf['rabbitmq']['vhost'] = value end
+    conf['rabbitmq']['vhost'] = value unless value == :absent
   end
 
   def reconnect_on_error
@@ -155,15 +155,15 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def reconnect_on_error=(value)
-    if value != :absent then conf['rabbitmq']['reconnect_on_error'] = value end
+    conf['rabbitmq']['reconnect_on_error'] = value unless value == :absent
   end
 
   def prefetch
-    if conf['rabbitmq']['prefetch'] then conf['rabbitmq']['prefetch'].to_s else :absent end
+    conf['rabbitmq']['prefetch'] ? conf['rabbitmq']['prefetch'].to_s : :absent
   end
 
   def prefetch=(value)
-    if value != :absent then conf['rabbitmq']['prefetch'] = value.to_i end
+    conf['rabbitmq']['prefetch'] = value.to_i unless value == :absent
   end
 
   def cluster
