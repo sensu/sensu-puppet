@@ -20,12 +20,6 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     cluster && !cluster.empty?
   end
 
-  def acc(k, v)
-    @hash = {} unless @hash
-    @hash[k] = v
-    @hash
-  end
-
   ensurable do
     newvalue(:present) do
       provider.create
@@ -129,12 +123,19 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:cluster, :array_matching => :all) do
     desc 'Rabbitmq Cluster'
 
+    validate do |value|
+      unless value.is_a?(Hash)
+        raise ArgumentError, 'rabbitmq_cluster must be an array of more than 1 hash'
+      end
+    end
+
     munge do |value|
-      if value.is_a?(Hash)
-        value
-      elsif value.is_a?(Array)
-        # fix for puppet3
-        @resource.acc(value.first, value.last)
+      value.reduce({}) do |acc, (k, v)|
+        acc[k] =
+          case k
+          when 'port', 'prefetch', 'heartbeat' then v.to_i
+          else v end
+        acc
       end
     end
 

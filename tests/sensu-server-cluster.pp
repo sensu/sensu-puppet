@@ -11,7 +11,7 @@ node 'sensu-server' {
     rabbitmq_cluster => [
       {
         'port'            => '1234',
-        'host'            => 'myhost',
+        'host'            => 'sensu-server.example.com',
         'user'            => 'sensuuser',
         'password'        => 'sensupass',
         'vhost'           => '/myvhost',
@@ -20,7 +20,7 @@ node 'sensu-server' {
       },
       {
         'port'            => '1234',
-        'host'            => 'differenthost',
+        'host'            => 'sensu-server.example.com',
         'user'            => 'sensuuser',
         'password'        => 'sensupass',
         'vhost'           => '/myvhost',

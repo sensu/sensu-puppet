@@ -56,7 +56,7 @@ describe Puppet::Type.type(:sensu_rabbitmq_config) do
           cluster_val = subject.parameter(:cluster).value
           expect(cluster_val).to be_an(Array)
           expect(cluster_val).to eq([{
-            'port'            => '1234',
+            'port'            => 1234,
             'host'            => 'myhost',
             'user'            => 'sensuuser',
             'password'        => 'sensupass',
@@ -70,18 +70,8 @@ describe Puppet::Type.type(:sensu_rabbitmq_config) do
       context 'as an array of arrays' do
         let(:subject) { create_type_instance(resource_hash.merge(cluster_arrays)) }
 
-        it 'should be an array of hashes' do
-          cluster_val = subject.parameter(:cluster).value
-          expect(cluster_val).to be_an(Array)
-          expect(cluster_val).to eq([{
-            'port'            => '1234',
-            'host'            => 'myhost',
-            'user'            => 'sensuuser',
-            'password'        => 'sensupass',
-            'vhost'           => '/myvhost',
-            'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
-            'ssl_private_key' => '/etc/sensu/ssl/key.pem'
-          }])
+        it 'should raise an error' do
+          expect {subject}.to raise_error(Puppet::ResourceError)
         end
       end
     end
