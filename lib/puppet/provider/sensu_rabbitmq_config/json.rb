@@ -151,6 +151,7 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def reconnect_on_error
+    return :absent if conf['rabbitmq'].is_a?(Array)
     conf['rabbitmq']['reconnect_on_error'] || :absent
   end
 

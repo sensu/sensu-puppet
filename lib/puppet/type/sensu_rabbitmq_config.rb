@@ -93,7 +93,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
 
   newproperty(:vhost) do
     desc 'The vhost to use when connecting to RabbitMQ'
-    defaultto { 'sensu' unless @resource.has_cluster? }
+    defaultto { '/sensu' unless @resource.has_cluster? }
 
     def insync?(is)
       return should == is if should.is_a?(Symbol)
@@ -113,7 +113,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
 
   newproperty(:prefetch) do
     desc 'The RabbitMQ AMQP consumer prefetch value'
-    defaultto { '1' unless @resource.has_cluster? }
+    defaultto { 1 unless @resource.has_cluster? }
 
     def insync?(is)
       return should == is if should.is_a?(Symbol)

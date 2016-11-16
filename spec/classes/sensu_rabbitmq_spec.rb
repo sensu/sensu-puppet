@@ -195,17 +195,6 @@ describe 'sensu', :type => :class do
       ) }
     end # when using prefetch attribute
 
-    context 'when not using prefetch attribute' do
-      let(:params) { {
-        :rabbitmq_host => 'myhost'
-      } }
-
-      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
-        :host => 'myhost',
-        :prefetch  => '1'
-      ) }
-    end # when not using prefetch attribute
-
     context 'purge config' do
       let(:params) { {
         :purge  => { 'config' => true },
