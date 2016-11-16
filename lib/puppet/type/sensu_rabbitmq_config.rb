@@ -11,7 +11,8 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     self[:notify] = [
       'Service[sensu-server]',
       'Service[sensu-client]',
-      'Service[sensu-api]'
+      'Service[sensu-api]',
+      'Service[sensu-enterprise]'
     ].select { |ref| catalog.resource(ref) }
   end
 

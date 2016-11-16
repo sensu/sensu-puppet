@@ -155,7 +155,7 @@
 #   Default: 1
 #
 # [*rabbitmq_cluster*]
-#   Array. Rabbitmq Cluster configuration and connection information for one or more Cluster
+#   Array of hashes. Rabbitmq Cluster configuration and connection information for one or more Cluster
 #   Default: Not configured
 #
 # [*redis_host*]
