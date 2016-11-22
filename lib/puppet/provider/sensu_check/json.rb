@@ -10,6 +10,8 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   include PuppetX::Sensu::ToType
   include PuppetX::Sensu::ProviderCreate
 
+  SENSU_CHECK_PROPERTIES = Puppet::Type.type(:sensu_check).validproperties.reject { |p| p == :ensure }
+
   def conf
     begin
       @conf ||= JSON.parse(File.read(config_file))
@@ -29,16 +31,16 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]] = {}
   end
 
-  def check_args
-    ['handlers','command','interval','occurrences','refresh','source','subscribers','type','standalone','high_flap_threshold','low_flap_threshold','timeout','aggregate','handle','publish','dependencies','custom','ttl', 'subdue', 'aggregates']
+  def is_property?(prop)
+    SENSU_CHECK_PROPERTIES.map(&:to_s).include? prop
   end
 
   def custom
-    conf['checks'][resource[:name]].reject { |k,v| check_args.include?(k) }
+    conf['checks'][resource[:name]].reject { |k,v| is_property?(k) }
   end
 
   def custom=(value)
-    conf['checks'][resource[:name]].delete_if { |k,v| not check_args.include?(k) }
+    conf['checks'][resource[:name]].delete_if { |k,v| not is_property?(k) }
     conf['checks'][resource[:name]].merge!(to_type(value))
   end
 
