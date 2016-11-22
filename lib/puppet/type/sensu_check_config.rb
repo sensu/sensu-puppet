@@ -7,6 +7,7 @@ Puppet::Type.newtype(:sensu_check_config) do
     self[:notify] = [
       "Service[sensu-client]",
       "Service[sensu-server]",
+      "Service[sensu-enterprise]",
     ].select { |ref| catalog.resource(ref) }
   end
 

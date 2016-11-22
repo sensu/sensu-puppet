@@ -11,6 +11,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
       "Service[sensu-server]",
       "Service[sensu-client]",
       "Service[sensu-api]",
+      "Service[sensu-enterprise]",
     ].select { |ref| catalog.resource(ref) }
   end
 
