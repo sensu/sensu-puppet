@@ -33,6 +33,20 @@ describe Puppet::Type.type(:sensu_rabbitmq_config) do
     }
   end
 
+  let :wout_port do
+    {
+      :cluster => [{
+        'port' => :undef,
+        'host'            => 'myhost',
+        'user'            => 'sensuuser',
+        'password'        => 'sensupass',
+        'vhost'           => '/myvhost',
+        'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
+        'ssl_private_key' => '/etc/sensu/ssl/key.pem'
+      }]
+    }
+  end
+
   let :cluster_arrays do
     {
       :cluster => [
@@ -72,6 +86,14 @@ describe Puppet::Type.type(:sensu_rabbitmq_config) do
 
         it 'should raise an error' do
           expect {subject}.to raise_error(Puppet::ResourceError)
+        end
+      end
+
+      context 'and port is undef' do
+        let(:subject) { create_type_instance(resource_hash.merge(wout_port))}
+
+        it 'should not raise an error' do
+          expect { subject }.to_not raise_error
         end
       end
     end

@@ -134,7 +134,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
       value.reduce({}) do |acc, (k, v)|
         acc[k] =
           case k
-          when 'port', 'prefetch', 'heartbeat' then v.to_i
+          when 'port', 'prefetch', 'heartbeat' then v.to_i unless v.is_a?(Symbol)
           else v end
         acc
       end
