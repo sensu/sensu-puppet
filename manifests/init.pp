@@ -154,6 +154,10 @@
 #   Integer.  The integer value for the RabbitMQ prefetch attribute
 #   Default: 1
 #
+# [*rabbitmq_cluster*]
+#   Array of hashes. Rabbitmq Cluster configuration and connection information for one or more Cluster
+#   Default: Not configured
+#
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
 #   Default: 127.0.0.1
@@ -357,16 +361,17 @@ class sensu (
   $manage_plugins_dir             = true,
   $manage_handlers_dir            = true,
   $manage_mutators_dir            = true,
-  $rabbitmq_port                  = 5672,
-  $rabbitmq_host                  = '127.0.0.1',
-  $rabbitmq_user                  = 'sensu',
+  $rabbitmq_port                  = undef,
+  $rabbitmq_host                  = undef,
+  $rabbitmq_user                  = undef,
   $rabbitmq_password              = undef,
-  $rabbitmq_vhost                 = '/sensu',
-  $rabbitmq_ssl                   = false,
+  $rabbitmq_vhost                 = undef,
+  $rabbitmq_ssl                   = undef,
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
-  $rabbitmq_prefetch              = 1,
+  $rabbitmq_prefetch              = undef,
+  $rabbitmq_cluster               = undef,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
@@ -437,7 +442,6 @@ class sensu (
   validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
-  if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }

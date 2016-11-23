@@ -34,8 +34,12 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_transport
-    if conf['rabbitmq'].has_key? 'ssl'
-      :true
+    if conf['rabbitmq'].class != Array
+      if conf['rabbitmq'].has_key? 'ssl'
+        :true
+      else
+        :false
+      end
     else
       :false
     end
@@ -52,8 +56,12 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_private_key
-    if conf['rabbitmq'].has_key? 'ssl'
-      conf['rabbitmq']['ssl']['private_key_file'] || ''
+    if conf['rabbitmq'].class != Array
+      if conf['rabbitmq'].has_key? 'ssl'
+        conf['rabbitmq']['ssl']['private_key_file'] || ''
+      else
+        ''
+      end
     else
       ''
     end
@@ -73,8 +81,12 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_cert_chain
-    if conf['rabbitmq'].has_key? 'ssl'
-      conf['rabbitmq']['ssl']['cert_chain_file'] || ''
+    if conf['rabbitmq'].class != Array
+      if conf['rabbitmq'].has_key? 'ssl'
+        conf['rabbitmq']['ssl']['cert_chain_file'] || ''
+      else
+        ''
+      end
     else
       ''
     end
@@ -98,58 +110,68 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def port
-    conf['rabbitmq']['port'].to_s
+    pre_create if conf['rabbitmq'].class == Array
+    conf['rabbitmq']['port'] ? conf['rabbitmq']['port'].to_s : :absent
   end
 
   def port=(value)
-    conf['rabbitmq']['port'] = value.to_i
+    conf['rabbitmq']['port'] = value.to_i unless value == :absent
   end
 
   def host
-    conf['rabbitmq']['host']
+    conf['rabbitmq']['host'] || :absent
   end
 
   def host=(value)
-    conf['rabbitmq']['host'] = value
+    conf['rabbitmq']['host'] = value unless value == :absent
   end
 
   def user
-    conf['rabbitmq']['user']
+    conf['rabbitmq']['user'] || :absent
   end
 
   def user=(value)
-    conf['rabbitmq']['user'] = value
+    conf['rabbitmq']['user'] = value unless value == :absent
   end
 
   def password
-    conf['rabbitmq']['password']
+    conf['rabbitmq']['password'] || :absent
   end
 
   def password=(value)
-    conf['rabbitmq']['password'] = value
+    conf['rabbitmq']['password'] = value unless value == :absent
   end
 
   def vhost
-    conf['rabbitmq']['vhost']
+    conf['rabbitmq']['vhost'] || :absent
   end
 
   def vhost=(value)
-    conf['rabbitmq']['vhost'] = value
+    conf['rabbitmq']['vhost'] = value unless value == :absent
   end
 
   def reconnect_on_error
-    conf['rabbitmq']['reconnect_on_error']
+    return :absent if conf['rabbitmq'].is_a?(Array)
+    conf['rabbitmq']['reconnect_on_error'] || :absent
   end
 
   def reconnect_on_error=(value)
-     conf['rabbitmq']['reconnect_on_error'] = value
+    conf['rabbitmq']['reconnect_on_error'] = value unless value == :absent
   end
 
   def prefetch
-    conf['rabbitmq']['prefetch'].to_s
+    conf['rabbitmq']['prefetch'] ? conf['rabbitmq']['prefetch'].to_s : :absent
   end
 
   def prefetch=(value)
-     conf['rabbitmq']['prefetch'] = value.to_i
+    conf['rabbitmq']['prefetch'] = value.to_i unless value == :absent
+  end
+
+  def cluster
+    conf['rabbitmq']
+  end
+
+  def cluster=(value)
+    conf['rabbitmq'] = value
   end
 end
