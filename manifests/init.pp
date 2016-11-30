@@ -547,7 +547,6 @@ class sensu (
       $shell = undef
       $dir_mode = undef
       $file_mode = undef
-      $manage_user = false
     }
 
     default: {}
