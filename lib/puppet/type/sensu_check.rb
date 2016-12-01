@@ -52,18 +52,30 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:high_flap_threshold) do
     desc "A host is determined to be flapping when the percent change exceedes this threshold."
+    munge do |value|
+      value.to_i
+    end
   end
 
   newproperty(:interval) do
     desc "How frequently the check runs in seconds"
+    munge do |value|
+      value.to_i
+    end
   end
 
   newproperty(:occurrences) do
     desc "The number of event occurrences before the handler should take action."
+    munge do |value|
+      value.to_i
+    end
   end
 
   newproperty(:refresh) do
     desc "The number of seconds sensu-plugin-aware handlers should wait before taking second action."
+    munge do |value|
+      value.to_i
+    end
   end
 
   newparam(:base_path) do
@@ -73,6 +85,9 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:low_flap_threshold) do
     desc "A host is determined to be flapping when the percent change is below this threshold."
+    munge do |value|
+      value.to_i
+    end
   end
 
   newproperty(:source) do
@@ -124,10 +139,24 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:timeout) do
     desc "Check timeout in seconds, after it fails"
+    munge do |value|
+      i, f = value.to_i, value.to_f
+      i == f ? i : f
+    end
   end
 
   newproperty(:aggregate) do
     desc "Whether check is aggregate"
+    munge do |value|
+      case value
+      when true, 'true', 'True', :true, 1
+        true
+      when false, 'false', 'False', :false, 0
+        false
+      else
+        value
+      end
+    end
   end
 
   newproperty(:aggregates, :array_matching => :all) do
@@ -152,6 +181,9 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:ttl) do
     desc "Check ttl in seconds"
+    munge do |value|
+      value.to_i
+    end
   end
 
   autorequire(:package) do
