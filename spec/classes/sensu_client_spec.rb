@@ -15,10 +15,11 @@ describe 'sensu', :type => :class do
           :address       => '2.3.4.5',
           :socket        => { 'bind' => '127.0.0.1', 'port' => 3030 },
           :subscriptions => [],
-          :redact        => [],
           :ensure        => 'present',
           :custom        => {}
         ) }
+
+        it { should contain_sensu_client_config('host.domain.com').without_redact }
       end # defaults
 
       context 'setting config params' do
