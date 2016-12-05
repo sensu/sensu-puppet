@@ -127,4 +127,13 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
   def type=(value)
     conf['handlers'][resource[:name]]['type'] = value
   end
+
+  def timeout
+    conf['handlers'][resource[:name]]['timeout']
+  end
+
+  def timeout=(value)
+    conf['handlers'][resource[:name]]['timeout'] = value
+  end
+
 end
