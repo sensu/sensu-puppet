@@ -61,7 +61,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def interval=(value)
-    conf['checks'][resource[:name]]['interval']
+    conf['checks'][resource[:name]]['interval'] = value
   end
 
   def handlers
