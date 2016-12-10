@@ -60,10 +60,11 @@ class sensu::package {
   }
 
   package { $pkg_title:
-    ensure  => $sensu::version,
-    name    => $pkg_name,
-    source  => $pkg_source,
-    require => $pkg_require,
+    ensure          => $sensu::version,
+    name            => $pkg_name,
+    source          => $pkg_source,
+    install_options => ['--allow-unauthenticated'],
+    require         => $pkg_require,
   }
 
   if $::sensu::sensu_plugin_provider {
