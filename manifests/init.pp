@@ -205,10 +205,15 @@
 #   Boolean.  Reconnect to Redis in the event of a connection failure
 #   Default: true
 #
-# [*transport_types*]
+# [*transport_type*]
 #   String. Transport type to be used by Sensu
 #   Default: rabbitmq
 #   Valid values: rabbitmq, redis
+#
+# [*transport_reconnect_on_error*]
+#   Boolean. If the transport connection is closed, attempt to reconnect automatically when possible.
+#   Default: true
+#   Valid values: true, false
 #
 # [*api_bind*]
 #   String.  IP to bind api service

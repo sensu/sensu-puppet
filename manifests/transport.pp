@@ -17,7 +17,7 @@ class sensu::transport {
   $transport_type_hash = {
     'transport' => {
       'name'               => $::sensu::transport_type,
-      'reconnect_on_error' => true,
+      'reconnect_on_error' => $::sensu::transport_reconnect_on_error,
     },
   }
 
