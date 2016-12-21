@@ -195,6 +195,29 @@ describe 'sensu', :type => :class do
       ) }
     end # when using prefetch attribute
 
+    context 'when using heartbeat attribute' do
+      let(:params) { {
+        :rabbitmq_host => 'myhost',
+        :rabbitmq_heartbeat => '10'
+      } }
+
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :host => 'myhost',
+        :heartbeat  => '10'
+      ) }
+    end # when using heartbeat attribute
+
+    context 'when not using heartbeat attribute' do
+      let(:params) { {
+        :rabbitmq_host => 'myhost'
+      } }
+
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :host => 'myhost',
+        :heartbeat  => '30'
+      ) }
+    end # when not using heartbeat attribute
+
     context 'purge config' do
       let(:params) { {
         :purge  => { 'config' => true },

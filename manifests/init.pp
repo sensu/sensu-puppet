@@ -158,6 +158,10 @@
 #   Array of hashes. Rabbitmq Cluster configuration and connection information for one or more Cluster
 #   Default: Not configured
 #
+# [*rabbitmq_heartbeat*]
+#   Integer.  The integer value for the RabbitMQ heartbeat attribute
+#   Default: 30
+#
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
 #   Default: 127.0.0.1
@@ -294,7 +298,7 @@
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
-#   Default: undef
+#   Default: []
 #
 # [*deregister_on_stop*]
 #   Boolean. Whether the sensu client should deregister from the API on service stop
@@ -306,7 +310,7 @@
 #
 # [*handlers*]
 #   Hash of handlers for use with create_sources(sensu::handler).
-#   Example value: { 'email' => { 'type' => 'pipe', 'command' => 'mail' } }
+#   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
 #   Default: {}
 #
 # [*handler_defaults*]
@@ -316,7 +320,7 @@
 #
 # [*checks*]
 #   Hash of checks for use with create_sources(sensu::check).
-#   Example value: { 'check-cpu' => { 'command' => 'check-cpu.rb' } }
+#   Example value: { 'check-cpu': { 'command' => 'check-cpu.rb' } }
 #   Default: {}
 #
 # [*check_defaults*]
@@ -326,7 +330,7 @@
 #
 # [*filters*]
 #   Hash of filters for use with create_sources(sensu::filter).
-#   Example value: { 'occurrence' => { 'attributes' => { 'occurrences' => '1' } } }
+#   Example value: { 'occurrence': { 'attributes' => { 'occurrences' => '1' } } }
 #   Default: {}
 #
 # [*filter_defaults*]
@@ -372,6 +376,7 @@ class sensu (
   $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = undef,
   $rabbitmq_cluster               = undef,
+  $rabbitmq_heartbeat             = 30,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
@@ -418,7 +423,7 @@ class sensu (
   $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
-  $redact                         = undef,
+  $redact                         = [],
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
 
