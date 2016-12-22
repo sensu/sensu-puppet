@@ -298,7 +298,7 @@
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
-#   Default: []
+#   Default: undef
 #
 # [*deregister_on_stop*]
 #   Boolean. Whether the sensu client should deregister from the API on service stop
@@ -310,7 +310,7 @@
 #
 # [*handlers*]
 #   Hash of handlers for use with create_sources(sensu::handler).
-#   Example value: { 'email': { 'type' => 'pipe', 'command' => 'mail' } }
+#   Example value: { 'email' => { 'type' => 'pipe', 'command' => 'mail' } }
 #   Default: {}
 #
 # [*handler_defaults*]
@@ -320,7 +320,7 @@
 #
 # [*checks*]
 #   Hash of checks for use with create_sources(sensu::check).
-#   Example value: { 'check-cpu': { 'command' => 'check-cpu.rb' } }
+#   Example value: { 'check-cpu' => { 'command' => 'check-cpu.rb' } }
 #   Default: {}
 #
 # [*check_defaults*]
@@ -330,7 +330,7 @@
 #
 # [*filters*]
 #   Hash of filters for use with create_sources(sensu::filter).
-#   Example value: { 'occurrence': { 'attributes' => { 'occurrences' => '1' } } }
+#   Example value: { 'occurrence' => { 'attributes' => { 'occurrences' => '1' } } }
 #   Default: {}
 #
 # [*filter_defaults*]
@@ -423,7 +423,7 @@ class sensu (
   $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
-  $redact                         = [],
+  $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
 
