@@ -61,6 +61,8 @@ define sensu::mutator(
       mode   => '0555',
       source => $source,
     }
+  } else {
+    $file_ensure = undef
   }
 
   file { "/etc/sensu/conf.d/mutators/${name}.json":
