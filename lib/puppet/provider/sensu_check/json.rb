@@ -77,7 +77,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def occurrences=(value)
-    conf['checks'][resource[:name]]['occurrences'] = value
+    conf['checks'][resource[:name]]['occurrences'] = value.to_i
   end
 
   def refresh
@@ -85,7 +85,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def refresh=(value)
-    conf['checks'][resource[:name]]['refresh'] = value
+    conf['checks'][resource[:name]]['refresh'] = value.to_i
   end
 
   def command
