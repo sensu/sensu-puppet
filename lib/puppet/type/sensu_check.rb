@@ -192,7 +192,8 @@ Puppet::Type.newtype(:sensu_check) do
     desc "An array of aggregates to add to the check"
     newvalues(/.*/, :absent)
     def insync?(is)
-      is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
+      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
+      is == should
     end
   end
 
