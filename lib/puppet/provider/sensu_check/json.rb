@@ -74,7 +74,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def get_property(property)
     value = conf['checks'][resource[:name]][property.to_s]
-    value ||= [] if [:handlers, :dependencies, :subscribers].include?(property)
     value.nil? ? :absent : value
   end
 
@@ -84,11 +83,6 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     else
       conf['checks'][resource[:name]][property.to_s] = value
     end
-  end
-
-  def dependencies=(value)
-    value = [ value ] if value.is_a?(String)
-    conf['checks'][resource[:name]]['dependencies'] = value
   end
 
 end

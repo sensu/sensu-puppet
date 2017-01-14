@@ -6,6 +6,18 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
 Puppet::Type.newtype(:sensu_check) do
   @doc = ""
 
+  class SensuCheckArrayProperty < Puppet::Property
+
+    def should
+      if @should and @should[0] == :absent
+        :absent
+      else
+        @should
+      end
+    end
+
+  end
+
   def initialize(*args)
     super *args
 
@@ -36,7 +48,7 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:dependencies, :array_matching => :all) do
+  newproperty(:dependencies, :array_matching => :all, :parent => SensuCheckArrayProperty) do
     desc "Dependencies of this check"
     newvalues(/.*/, :absent)
     def insync?(is)
@@ -45,7 +57,7 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
-  newproperty(:handlers, :array_matching => :all) do
+  newproperty(:handlers, :array_matching => :all, :parent => SensuCheckArrayProperty) do
     desc "List of handlers that responds to this check"
     newvalues(/.*/, :absent)
     def insync?(is)
@@ -104,7 +116,7 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:subscribers, :array_matching => :all) do
+  newproperty(:subscribers, :array_matching => :all, :parent => SensuCheckArrayProperty) do
     desc "Who is subscribed to this check"
     newvalues(/.*/, :absent)
     def insync?(is)
@@ -176,7 +188,7 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
-  newproperty(:aggregates, :array_matching => :all) do
+  newproperty(:aggregates, :array_matching => :all, :parent => SensuCheckArrayProperty) do
     desc "An array of aggregates to add to the check"
     newvalues(/.*/, :absent)
     def insync?(is)
