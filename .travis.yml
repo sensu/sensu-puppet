@@ -5,7 +5,6 @@ script: "bundle install && bundle exec rake validate && bundle exec rake test"
 cache: bundler
 sudo: false
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.1.0
   - 2.2.0
@@ -20,25 +19,11 @@ matrix:
   exclude:
   - rvm: 2.2.0
     env: PUPPET_GEM_VERSION="~> 3.8"
-  - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 4.2"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 4.2"
-  - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 4.4"
-  - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 4.3"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 4.3"
-  - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 4.4"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 4.4"
-  - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 4.5"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 4.5"
-
-
-
-
