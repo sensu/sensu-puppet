@@ -1,4 +1,7 @@
-require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
+begin
+  require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
+rescue
+end
 require 'json' if Puppet.features.json?
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'provider_create.rb'))
