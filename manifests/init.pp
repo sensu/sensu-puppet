@@ -541,8 +541,8 @@ class sensu (
     'windows': {
       $etc_dir = 'C:/opt/sensu'
       $conf_dir = "${etc_dir}/conf.d"
-      $user = 'Sensu'
-      $group = 'Users'
+      $user = 'NT Authority\SYSTEM'
+      $group = 'Administrators'
       $home_dir = $etc_dir
       $shell = undef
       $dir_mode = undef
