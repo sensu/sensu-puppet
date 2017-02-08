@@ -63,6 +63,53 @@ describe 'sensu::check', :type => :define do
 
       it { should contain_sensu_check('mycheck').with_ensure('absent') }
     end
+
+    context 'setting params to absent' do
+      let(:params) { {
+        :command             => '/etc/sensu/command2.rb',
+        :aggregate           => 'absent',
+        :aggregates          => 'absent',
+        :dependencies        => 'absent',
+        :handle              => 'absent',
+        :handlers            => 'absent',
+        :high_flap_threshold => 'absent',
+        :interval            => 'absent',
+        :low_flap_threshold  => 'absent',
+        :occurrences         => 'absent',
+        :publish             => 'absent',
+        :refresh             => 'absent',
+        :source              => 'absent',
+        :standalone          => 'absent',
+        :subdue              => 'absent',
+        :subscribers         => 'absent',
+        :timeout             => 'absent',
+        :ttl                 => 'absent',
+        :type                => 'absent'
+      } }
+
+      it { should contain_sensu_check('mycheck').with(
+        :command             => '/etc/sensu/command2.rb',
+        :aggregate           => :absent,
+        :aggregates          => :absent,
+        :dependencies        => :absent,
+        :handle              => :absent,
+        :handlers            => :absent,
+        :high_flap_threshold => :absent,
+        :interval            => :absent,
+        :low_flap_threshold  => :absent,
+        :occurrences         => :absent,
+        :publish             => :absent,
+        :refresh             => :absent,
+        :source              => :absent,
+        :standalone          => :absent,
+        :subdue              => :absent,
+        :subscribers         => :absent,
+        :timeout             => :absent,
+        :ttl                 => :absent,
+        :type                => :absent
+      ) }
+    end
+
   end
 
   context 'with whitespace in name' do
