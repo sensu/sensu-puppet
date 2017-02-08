@@ -4,5 +4,5 @@
   <name>Sensu Client</name>
   <description>This service runs a Sensu Client</description>
   <executable>C:\opt\sensu\embedded\bin\ruby</executable>
-  <arguments>C:\opt\sensu\embedded\bin\sensu-client -l C:\opt\sensu\sensu-client.log -d C:\opt\sensu\conf.d</arguments>
+  <arguments>C:\opt\sensu\embedded\bin\sensu-client -l C:\opt\sensu\sensu-client.log -d C:\opt\sensu\conf.d -L <%= scope.lookupvar("sensu::log_level") -%></arguments>
 </service>
