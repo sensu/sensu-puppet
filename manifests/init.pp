@@ -158,6 +158,10 @@
 #   Array of hashes. Rabbitmq Cluster configuration and connection information for one or more Cluster
 #   Default: Not configured
 #
+# [*rabbitmq_heartbeat*]
+#   Integer.  The integer value for the RabbitMQ heartbeat attribute
+#   Default: 30
+#
 # [*redis_host*]
 #   String.  Hostname of redis to be used by sensu
 #   Default: 127.0.0.1
@@ -372,6 +376,7 @@ class sensu (
   $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = undef,
   $rabbitmq_cluster               = undef,
+  $rabbitmq_heartbeat             = 30,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
