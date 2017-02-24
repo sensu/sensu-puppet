@@ -1,4 +1,5 @@
 define sensu::enterprise::dashboard::api (
+  $ensure    = present,
   $base_path = undef,
   $host      = undef,
   $port      = undef,
@@ -7,12 +8,13 @@ define sensu::enterprise::dashboard::api (
   $path      = undef,
   $timeout   = undef,
   $user      = undef,
-  $pass      = undef
+  $pass      = undef,
 ) {
 
   require sensu::enterprise::dashboard::config
 
   sensu_enterprise_dashboard_api_config { $title:
+    ensure    => $ensure,
     base_path => $base_path,
     host      => $host,
     port      => $port,
