@@ -75,7 +75,7 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with(
               :ensure      => 'present',
               :location    => 'http://repositories.sensuapp.org/apt',
-              :release     => 'sensu',
+              :release     => 'trusty',
               :repos       => 'main',
               :include     => { 'src' => false },
               :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'http://repositories.sensuapp.org/apt/pubkey.gpg' },
@@ -131,6 +131,23 @@ describe 'sensu' do
         context 'without puppet-apt installed' do
           it { expect { should raise_error(Puppet::Error) } }
         end
+      end
+
+      context 'debian' do
+        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '8.6', :lsbdistcodename => 'jessie', } }
+
+          context 'repo release' do
+            it { should contain_apt__source('sensu').with(
+              :ensure      => 'present',
+              :location    => 'http://repositories.sensuapp.org/apt',
+              :release     => 'jessie',
+              :repos       => 'main',
+              :include     => { 'src' => false },
+              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'http://repositories.sensuapp.org/apt/pubkey.gpg' },
+              :before      => 'Package[sensu]'
+            ) }
+          end
+
       end
 
       context 'redhat' do

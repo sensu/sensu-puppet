@@ -26,7 +26,7 @@ class sensu::repo::apt {
     apt::source { 'sensu':
       ensure   => $ensure,
       location => $url,
-      release  => 'sensu',
+      release  => $::lsbdistcodename,
       repos    => $sensu::repo,
       include  => {
         'src' => false,
