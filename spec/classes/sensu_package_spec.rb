@@ -75,7 +75,7 @@ describe 'sensu' do
             it { should contain_apt__source('sensu').with(
               :ensure      => 'present',
               :location    => 'http://repositories.sensuapp.org/apt',
-              :release     => 'sensu',
+              :release     => 'trusty',
               :repos       => 'main',
               :include     => { 'src' => false },
               :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'http://repositories.sensuapp.org/apt/pubkey.gpg' },
