@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu' do
-  let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat', :os_maj_version => 7 } }
+  let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat', :operatingsystemmajrelease => 7 } }
   directories = [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks',
         '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
         '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ]

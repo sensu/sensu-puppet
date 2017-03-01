@@ -36,7 +36,7 @@ class sensu::package {
         'installed' => $sensu::version,
         'present'   => $sensu::version,
         'absent'    => $sensu::version,
-        default     => "${sensu::version}.el${::os_maj_version}"
+        default     => "${sensu::version}.el${::operatingsystemmajrelease}"
       }
 
       $pkg_source = undef
