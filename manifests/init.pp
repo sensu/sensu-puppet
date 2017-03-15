@@ -376,7 +376,7 @@ class sensu (
   $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = undef,
   $rabbitmq_cluster               = undef,
-  $rabbitmq_heartbeat             = 30,
+  $rabbitmq_heartbeat             = undef,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
