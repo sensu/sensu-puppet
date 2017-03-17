@@ -51,16 +51,16 @@ class sensu::package {
       $pkg_require = "Remote_file[${pkg_source}]"
       
       case $::kernelmajversion {
-        6.0: {
+        '6.0': {
           $win_os_code = "2008"
         }
-        6.1: {
+        '6.1': {
           $win_os_code = "2008r2"
         }
-        6.2: {
+        '6.2': {
           $win_os_code = "2012"
         }
-        6.3: {
+        '6.3': {
           $win_os_code = "2012r2"
         }
         default: {
