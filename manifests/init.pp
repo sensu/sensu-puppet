@@ -337,6 +337,11 @@
 #   Filter defaults when not provided explicitely in $filters.
 #   Example value: { 'negate' => true }
 #   Default: {}
+#
+# [*package_checksum*]
+#   String. used to set package_checksum for windows installs
+#   Default: undef
+#
 
 
 class sensu (
@@ -426,6 +431,7 @@ class sensu (
   $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
+  $package_checksum               = undef,
 
   ### START Hiera Lookups ###
   $extensions                  = {},
