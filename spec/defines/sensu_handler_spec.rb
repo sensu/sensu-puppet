@@ -167,4 +167,9 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_timeout( 10 ) }
   end
 
+  context 'handle_flapping' do
+    let(:params) { { :command => 'mycommand.rb', :type => 'pipe', :handle_flapping => true } }
+    it { should contain_sensu_handler('myhandler').with_handle_flapping( true ) }
+  end
+
 end

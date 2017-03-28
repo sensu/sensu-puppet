@@ -97,6 +97,10 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Handler timeout"
   end
 
+  newproperty(:handle_flapping, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc "If events in the flapping state should be handled"
+  end
+
   autorequire(:package) do
     ['sensu']
   end

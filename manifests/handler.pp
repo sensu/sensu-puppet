@@ -62,26 +62,33 @@
 #   Integer.  Handler timeout configuration
 #   Default: undef
 #
+# [*handle_flapping*]
+#   Boolean.  If events in the flapping state should be handled.
+#   Default: false.
+#   Valid values: true, false
+#
 define sensu::handler(
-  $ensure       = 'present',
-  $type         = 'pipe',
-  $command      = undef,
-  $handlers     = undef,
-  $severities   = ['ok', 'warning', 'critical', 'unknown'],
-  $exchange     = undef,
-  $pipe         = undef,
-  $mutator      = undef,
-  $socket       = undef,
-  $filters      = [],
+  $ensure          = 'present',
+  $type            = 'pipe',
+  $command         = undef,
+  $handlers        = undef,
+  $severities      = ['ok', 'warning', 'critical', 'unknown'],
+  $exchange        = undef,
+  $pipe            = undef,
+  $mutator         = undef,
+  $socket          = undef,
+  $filters         = [],
   # Used to install the handler
-  $source       = undef,
-  $install_path = '/etc/sensu/handlers',
+  $source          = undef,
+  $install_path    = '/etc/sensu/handlers',
   # Handler specific config
-  $config       = undef,
-  $subdue       = undef,
-  $timeout      = undef,
+  $config          = undef,
+  $subdue          = undef,
+  $timeout         = undef,
+  $handle_flapping = false,
 ) {
 
+  validate_bool($handle_flapping)
   validate_re($ensure, ['^present$', '^absent$'] )
   validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
   if $exchange { validate_hash($exchange) }
@@ -152,20 +159,21 @@ define sensu::handler(
   }
 
   sensu_handler { $name:
-    ensure     => $ensure,
-    type       => $type,
-    command    => $command_real,
-    handlers   => $handlers,
-    severities => $severities,
-    exchange   => $exchange,
-    pipe       => $pipe,
-    socket     => $socket,
-    mutator    => $mutator,
-    filters    => $filters,
-    config     => $config,
-    timeout    => $timeout,
-    notify     => $notify_services,
-    require    => File['/etc/sensu/conf.d/handlers'],
+    ensure          => $ensure,
+    type            => $type,
+    command         => $command_real,
+    handlers        => $handlers,
+    severities      => $severities,
+    exchange        => $exchange,
+    pipe            => $pipe,
+    socket          => $socket,
+    mutator         => $mutator,
+    filters         => $filters,
+    config          => $config,
+    timeout         => $timeout,
+    handle_flapping => $handle_flapping,
+    notify          => $notify_services,
+    require         => File['/etc/sensu/conf.d/handlers'],
   }
 
 }
