@@ -49,10 +49,28 @@ class sensu::package {
       $pkg_name = 'Sensu'
       $pkg_source = "C:\\Windows\\Temp\\sensu-${sensu::version}.msi"
       $pkg_require = "Remote_file[${pkg_source}]"
+      
+      case $::kernelmajversion {
+        '6.0': {
+          $win_os_code = "2008"
+        }
+        '6.1': {
+          $win_os_code = "2008r2"
+        }
+        '6.2': {
+          $win_os_code = "2012"
+        }
+        '6.3': {
+          $win_os_code = "2012r2"
+        }
+        default: {
+          $win_os_code = "2012r2"
+        }
+      }
 
       remote_file { $pkg_source:
         ensure   => present,
-        source   => "http://repositories.sensuapp.org/msi/sensu-${sensu::version}.msi",
+        source   => "http://repositories.sensuapp.org/msi/${win_os_code}/sensu-${sensu::version}-${::architecture}.msi",
         checksum => $::sensu::package_checksum,
       }
     }
