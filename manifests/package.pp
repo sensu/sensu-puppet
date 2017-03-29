@@ -162,7 +162,7 @@ class sensu::package {
     }
   }
 
-  if $sensu::manage_user {
+  if $sensu::manage_user and $osfamily != 'windows' {
     user { $sensu::user:
       ensure  => 'present',
       system  => true,
