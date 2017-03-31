@@ -337,6 +337,11 @@
 #   Filter defaults when not provided explicitely in $filters.
 #   Example value: { 'negate' => true }
 #   Default: {}
+#
+# [*package_checksum*]
+#   String. used to set package_checksum for windows installs
+#   Default: undef
+#
 
 
 class sensu (
@@ -376,7 +381,7 @@ class sensu (
   $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = undef,
   $rabbitmq_cluster               = undef,
-  $rabbitmq_heartbeat             = 30,
+  $rabbitmq_heartbeat             = undef,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
@@ -426,6 +431,7 @@ class sensu (
   $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
+  $package_checksum               = undef,
   $windows_logrotate              = false,
   $windows_log_number             = '10',
   $windows_log_size               = '10240',

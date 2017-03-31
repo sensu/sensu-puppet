@@ -121,6 +121,7 @@ class sensu::rabbitmq::config {
   $prefetch = $has_cluster ? { false => $sensu::rabbitmq_prefetch, true => undef, }
   $base_path = $has_cluster ? { false => $sensu::conf_dir, true => undef, }
   $cluster = $has_cluster ? { true => $sensu::rabbitmq_cluster, false => undef, }
+  $heartbeat = $has_cluster ? { false => $sensu::rabbitmq_heartbeat, true => undef, }
 
   sensu_rabbitmq_config { $::fqdn:
     ensure             => $ensure,
