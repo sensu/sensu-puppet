@@ -426,6 +426,9 @@ class sensu (
   $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
+  $windows_logrotate              = false,
+  $windows_log_number             = '10',
+  $windows_log_size               = '10240',
 
   ### START Hiera Lookups ###
   $extensions                  = {},
