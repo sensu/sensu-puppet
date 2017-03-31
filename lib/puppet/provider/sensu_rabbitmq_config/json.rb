@@ -150,11 +150,11 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def heartbeat
-    conf['rabbitmq']['heartbeat'].to_s
+    conf['rabbitmq']['heartbeat'] ? conf['rabbitmq']['heartbeat'].to_s : :absent
   end
 
   def heartbeat=(value)
-    conf['rabbitmq']['heartbeat'] = value.to_i
+    conf['rabbitmq']['heartbeat'] = value.to_i unless value == :absent
   end
 
   def reconnect_on_error
