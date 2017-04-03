@@ -432,6 +432,9 @@ class sensu (
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
   $package_checksum               = undef,
+  $windows_logrotate              = false,
+  $windows_log_number             = '10',
+  $windows_log_size               = '10240',
   $windows_repo_prefix            = 'http://repositories.sensuapp.org/msi/sensu',
 
   ### START Hiera Lookups ###
