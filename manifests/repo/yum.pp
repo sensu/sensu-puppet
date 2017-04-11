@@ -24,7 +24,7 @@ class sensu::repo::yum {
       gpgcheck => 0,
       name     => 'sensu',
       descr    => 'sensu',
-      before   => Package['sensu'],
+      before   => Package[$sensu::package::pkg_title],
     }
 
     # prep for Enterprise repos
