@@ -21,7 +21,7 @@ class sensu::rabbitmq::config {
       ensure  => directory,
       owner   => $sensu::user,
       group   => $sensu::group,
-      mode    => '0755',
+      mode    => $sensu::dir_mode,
       require => Package['sensu'],
     }
 
