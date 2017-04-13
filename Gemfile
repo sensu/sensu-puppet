@@ -1,9 +1,5 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-if RUBY_VERSION >= '1.8.7' and RUBY_VERSION < '1.9'
-  gem 'rspec', '~> 2.0'
-end
-
 group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
   gem 'rspec-puppet',                                     :require => false
@@ -25,7 +21,6 @@ group :development, :unit_tests do
   gem 'puppet-lint-undef_in_function-check',              :require => false
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
-
 end
 
 group :system_tests do
@@ -49,7 +44,7 @@ end
 if puppetversion = ENV['PUPPET_GEM_VERSION']
   gem 'puppet', puppetversion, :require => false
 else
-  gem 'puppet', '>= 3.3.0', '< 4.0.0', :require => false
+  gem 'puppet', '>= 4.0.0', '< 4.5.0', :require => false
 end
 
 # vim:ft=ruby

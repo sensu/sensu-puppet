@@ -1,4 +1,3 @@
-require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'provider_create.rb'))
@@ -23,7 +22,6 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
         conf['redis'].delete prop.to_s
       end
     end
-
     File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end

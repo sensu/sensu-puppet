@@ -58,8 +58,8 @@
 #   Hash.  Handler specific config
 #   Default: undef
 #
-# [*subdue*]
-#   Hash.  Handler subdue configuration
+# [*timeout*]
+#   Integer.  Handler timeout configuration
 #   Default: undef
 #
 define sensu::handler(
@@ -79,6 +79,7 @@ define sensu::handler(
   # Handler specific config
   $config       = undef,
   $subdue       = undef,
+  $timeout      = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -88,6 +89,8 @@ define sensu::handler(
   if $socket { validate_hash($socket) }
   validate_array($severities, $filters)
   if $source { validate_re($source, ['^puppet://'] ) }
+  if $subdue{ fail('Subdue at handler is deprecated since sensu 0.26. See https://sensuapp.org/docs/0.26/overview/changelog.html#core-v0-26-0')}
+
 
   if $type == 'pipe' and $ensure != 'absent' and !$command and !$source and !$mutator {
     fail('command must be set with type pipe')
@@ -160,7 +163,7 @@ define sensu::handler(
     mutator    => $mutator,
     filters    => $filters,
     config     => $config,
-    subdue     => $subdue,
+    timeout    => $timeout,
     notify     => $notify_services,
     require    => File['/etc/sensu/conf.d/handlers'],
   }

@@ -15,7 +15,7 @@
 #   Default: sensu-plugin
 #
 # [*sensu_plugin_provider*]
-#   String.  Provider used to install the sensu-plugin package. Refers to the 
+#   String.  Provider used to install the sensu-plugin package. Refers to the
 #   sensu-plugin rubygem, not the sensu-plugins community scripts
 #   Default: undef
 #   Valid values: sensu_gem, apt, aptitude, yum
@@ -153,6 +153,10 @@
 # [*rabbitmq_prefetch*]
 #   Integer.  The integer value for the RabbitMQ prefetch attribute
 #   Default: 1
+#
+# [*rabbitmq_cluster*]
+#   Array of hashes. Rabbitmq Cluster configuration and connection information for one or more Cluster
+#   Default: Not configured
 #
 # [*rabbitmq_heartbeat*]
 #   Integer.  The integer value for the RabbitMQ heartbeat attribute
@@ -294,7 +298,7 @@
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
-#   Default: []
+#   Default: undef
 #
 # [*deregister_on_stop*]
 #   Boolean. Whether the sensu client should deregister from the API on service stop
@@ -333,6 +337,11 @@
 #   Filter defaults when not provided explicitely in $filters.
 #   Example value: { 'negate' => true }
 #   Default: {}
+#
+# [*package_checksum*]
+#   String. used to set package_checksum for windows installs
+#   Default: undef
+#
 
 
 class sensu (
@@ -361,17 +370,18 @@ class sensu (
   $manage_plugins_dir             = true,
   $manage_handlers_dir            = true,
   $manage_mutators_dir            = true,
-  $rabbitmq_port                  = 5672,
-  $rabbitmq_host                  = '127.0.0.1',
-  $rabbitmq_user                  = 'sensu',
+  $rabbitmq_port                  = undef,
+  $rabbitmq_host                  = undef,
+  $rabbitmq_user                  = undef,
   $rabbitmq_password              = undef,
-  $rabbitmq_vhost                 = '/sensu',
-  $rabbitmq_ssl                   = false,
+  $rabbitmq_vhost                 = undef,
+  $rabbitmq_ssl                   = undef,
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
   $rabbitmq_reconnect_on_error    = false,
-  $rabbitmq_prefetch              = 1,
-  $rabbitmq_heartbeat             = 30,
+  $rabbitmq_prefetch              = undef,
+  $rabbitmq_cluster               = undef,
+  $rabbitmq_heartbeat             = undef,
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
@@ -418,9 +428,14 @@ class sensu (
   $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
   $path                           = undef,
-  $redact                         = [],
+  $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
+  $package_checksum               = undef,
+  $windows_repo_prefix            = 'http://repositories.sensuapp.org/msi/sensu',
+  $windows_logrotate              = false,
+  $windows_log_number             = '10',
+  $windows_log_size               = '10240',
 
   ### START Hiera Lookups ###
   $extensions                  = {},
@@ -442,7 +457,6 @@ class sensu (
   validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
-  if !is_integer($rabbitmq_port) { fail('rabbitmq_port must be an integer') }
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
@@ -533,6 +547,8 @@ class sensu (
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'sensu'
       $group = 'sensu'
+      $home_dir = '/opt/sensu'
+      $shell = '/bin/false'
       $dir_mode = '0555'
       $file_mode = '0440'
     }
@@ -540,8 +556,10 @@ class sensu (
     'windows': {
       $etc_dir = 'C:/opt/sensu'
       $conf_dir = "${etc_dir}/conf.d"
-      $user = undef
-      $group = undef
+      $user = 'NT Authority\SYSTEM'
+      $group = 'Administrators'
+      $home_dir = $etc_dir
+      $shell = undef
       $dir_mode = undef
       $file_mode = undef
     }

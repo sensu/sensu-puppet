@@ -147,6 +147,42 @@ describe 'sensu', :type => :class do
       ) }
     end # when using key in variable
 
+    context 'when using rabbitmq cluster' do
+      let(:cluster_config) {
+        [
+          {
+            'port'            => '1234',
+            'host'            => 'myhost',
+            'user'            => 'sensuuser',
+            'password'        => 'sensupass',
+            'vhost'           => '/myvhost',
+            'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
+            'ssl_private_key' => '/etc/sensu/ssl/key.pem'
+          },
+          {
+            'port'            => '1234',
+            'host'            => 'myhost',
+            'user'            => 'sensuuser',
+            'password'        => 'sensupass',
+            'vhost'           => '/myvhost',
+            'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
+            'ssl_private_key' => '/etc/sensu/ssl/key.pem'
+          }
+        ]
+      }
+
+      let(:params) { {
+        :rabbitmq_ssl_cert_chain  => rabbitmq_ssl_cert_chain_test,
+        :rabbitmq_ssl_private_key => rabbitmq_ssl_private_key_test,
+        :rabbitmq_cluster => cluster_config
+      } }
+
+      it { should contain_file('/etc/sensu/ssl').with_ensure('directory') }
+      it { should contain_file('/etc/sensu/ssl/cert.pem').with_content(rabbitmq_ssl_cert_chain_test) }
+      it { should contain_file('/etc/sensu/ssl/key.pem').with_content(rabbitmq_ssl_private_key_test) }
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with_cluster(cluster_config) }
+    end
+
     context 'when using prefetch attribute' do
       let(:params) { {
         :rabbitmq_host => 'myhost',
@@ -159,16 +195,17 @@ describe 'sensu', :type => :class do
       ) }
     end # when using prefetch attribute
 
-    context 'when not using prefetch attribute' do
+    context 'when using heartbeat attribute' do
       let(:params) { {
-        :rabbitmq_host => 'myhost'
+        :rabbitmq_host => 'myhost',
+        :rabbitmq_heartbeat => '10'
       } }
 
       it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
         :host => 'myhost',
-        :prefetch  => '1'
+        :heartbeat  => '10'
       ) }
-    end # when not using prefetch attribute
+    end # when using heartbeat attribute
 
     context 'when using heartbeat attribute' do
       let(:params) { {

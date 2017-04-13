@@ -93,8 +93,8 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "Handler specific config"
   end
 
-  newproperty(:subdue) do
-    desc "Handler subdue"
+  newproperty(:timeout) do
+    desc "Handler timeout"
   end
 
   autorequire(:package) do

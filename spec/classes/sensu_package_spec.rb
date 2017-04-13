@@ -139,7 +139,7 @@ describe 'sensu' do
         context 'default' do
           it { should contain_yumrepo('sensu').with(
             :enabled   => 1,
-            :baseurl   => 'http://repositories.sensuapp.org/yum/$basearch/',
+            :baseurl   => 'http://repositories.sensuapp.org/yum/$releasever/$basearch/',
             :gpgcheck  => 0,
             :before    => 'Package[sensu]'
           ) }
@@ -157,7 +157,7 @@ describe 'sensu' do
 
         context 'unstable repo' do
           let(:params) { { :repo => 'unstable' } }
-          it { should contain_yumrepo('sensu').with(:baseurl => 'http://repositories.sensuapp.org/yum-unstable/$basearch/' )}
+          it { should contain_yumrepo('sensu').with(:baseurl => 'http://repositories.sensuapp.org/yum-unstable/$releasever/$basearch/' )}
         end
 
         context 'override repo url' do

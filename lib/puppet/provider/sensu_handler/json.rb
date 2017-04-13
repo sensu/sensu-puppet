@@ -1,4 +1,3 @@
-require 'rubygems' if RUBY_VERSION < '1.9.0' && Puppet.version < '3'
 require 'json' if Puppet.features.json?
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'provider_create.rb'))
@@ -128,11 +127,12 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     conf['handlers'][resource[:name]]['type'] = value
   end
 
-  def subdue
-    conf['handlers'][resource[:name]]['subdue']
+  def timeout
+    conf['handlers'][resource[:name]]['timeout']
   end
 
-  def subdue=(value)
-    conf['handlers'][resource[:name]]['subdue'] = value
+  def timeout=(value)
+    conf['handlers'][resource[:name]]['timeout'] = value
   end
+
 end

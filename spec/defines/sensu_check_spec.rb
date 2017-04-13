@@ -63,6 +63,53 @@ describe 'sensu::check', :type => :define do
 
       it { should contain_sensu_check('mycheck').with_ensure('absent') }
     end
+
+    context 'setting params to absent' do
+      let(:params) { {
+        :command             => '/etc/sensu/command2.rb',
+        :aggregate           => 'absent',
+        :aggregates          => 'absent',
+        :dependencies        => 'absent',
+        :handle              => 'absent',
+        :handlers            => 'absent',
+        :high_flap_threshold => 'absent',
+        :interval            => 'absent',
+        :low_flap_threshold  => 'absent',
+        :occurrences         => 'absent',
+        :publish             => 'absent',
+        :refresh             => 'absent',
+        :source              => 'absent',
+        :standalone          => 'absent',
+        :subdue              => 'absent',
+        :subscribers         => 'absent',
+        :timeout             => 'absent',
+        :ttl                 => 'absent',
+        :type                => 'absent'
+      } }
+
+      it { should contain_sensu_check('mycheck').with(
+        :command             => '/etc/sensu/command2.rb',
+        :aggregate           => :absent,
+        :aggregates          => :absent,
+        :dependencies        => :absent,
+        :handle              => :absent,
+        :handlers            => :absent,
+        :high_flap_threshold => :absent,
+        :interval            => :absent,
+        :low_flap_threshold  => :absent,
+        :occurrences         => :absent,
+        :publish             => :absent,
+        :refresh             => :absent,
+        :source              => :absent,
+        :standalone          => :absent,
+        :subdue              => :absent,
+        :subscribers         => :absent,
+        :timeout             => :absent,
+        :ttl                 => :absent,
+        :type                => :absent
+      ) }
+    end
+
   end
 
   context 'with whitespace in name' do
@@ -139,18 +186,66 @@ describe 'sensu::check', :type => :define do
     end
   end
 
-  context 'subdue' do
+  context 'with subdue' do
     let(:title) { 'mycheck' }
-    let(:params) {
-      {
-        :command => '/etc/sensu/somecommand.rb',
-        :subdue  => {
-          'begin' => '5PM PST',
-          'end'   => '9AM PST'
+
+    context 'valid subdue hash' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => {
+            'days' => {
+              'monday' => [
+                {
+                  'begin' => '12:00:00 AM PST',
+                  'end'   => '9:00:00 AM PST'
+                },
+                {
+                  'begin' => '5:00:00 PM PST',
+                  'end'   => '11:59:59 PM PST'
+                }
+              ]
+            }
+          }
         }
       }
-    }
 
-    it { should contain_sensu_check('mycheck').with_subdue( {'begin' => '5PM PST', 'end' => '9AM PST'}) }
+      it { should contain_sensu_check('mycheck').with_subdue( {'days'=>{'monday'=>[{'begin'=>'12:00:00 AM PST', 'end'=>'9:00:00 AM PST'}, {'begin'=>'5:00:00 PM PST', 'end'=>'11:59:59 PM PST'}]}} ) }
+    end
+
+    context 'invalid subdue hash' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => {
+            'begin' => '5PM PST',
+            'end'   => '9AM PST'
+          }
+        }
+      }
+
+      it { should raise_error(Puppet::Error, /subdue hash should have a proper format/) }
+    end
+
+    context '=> \'absent\'' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+          :subdue  => 'absent'
+        }
+      }
+
+      it { should contain_sensu_check('mycheck').with_subdue(:absent) }
+    end
+
+    context '= undef' do
+      let(:params) {
+        {
+          :command => '/etc/sensu/somecommand.rb',
+        }
+      }
+
+      it { should contain_sensu_check('mycheck').without_subdue }
+    end
   end
 end

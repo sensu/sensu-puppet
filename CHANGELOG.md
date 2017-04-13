@@ -1,6 +1,78 @@
 # Change Log
 
-## [2.1.0](https://github.com/sensu/sensu-puppet/tree/2.1.0) (2015-09-24)
+## [2.2.0](https://github.com/sensu/sensu-puppet/tree/2.2.0) (2016-11-27)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/2.1.0...2.2.0)
+
+**Closed issues:**
+
+- Sensu Windows: sensu_rabbitmq_config type needs base_path param passed [\#489](https://github.com/sensu/sensu-puppet/issues/489)
+- Trailing comma issue in config [\#492](https://github.com/sensu/sensu-puppet/issues/492)
+- Check subdue modified every run [\#497](https://github.com/sensu/sensu-puppet/issues/497)
+- Add support for Redis Sentinels Config [\#499](https://github.com/sensu/sensu-puppet/issues/499)
+- Cannot create /etc/sensu/conf.d/redis.json without "password" [\#503](https://github.com/sensu/sensu-puppet/issues/503)
+- Sensu puppet module causes invalid parameter prefetch on some runs of puppet [\#504](https://github.com/sensu/sensu-puppet/issues/504)
+- Sensu plugin install fails when using URLs [\#506](https://github.com/sensu/sensu-puppet/issues/506)
+- Sensu puppet module causes invalid parameter prefetch on some runs of puppet [\#507](https://github.com/sensu/sensu-puppet/issues/507)
+- Travis builds failing even on no code change [\#511](https://github.com/sensu/sensu-puppet/issues/511)
+- enable support for change in aggregates [\#512](https://github.com/sensu/sensu-puppet/issues/512)
+- sentinel supports in sensu redis.json [\#514](https://github.com/sensu/sensu-puppet/issues/514)
+- yum repository [\#519](https://github.com/sensu/sensu-puppet/issues/519)
+- Using sensu_gem provider before sensu::client is installed? [\#520](https://github.com/sensu/sensu-puppet/issues/520)
+- Add some new maintainers [\#522](https://github.com/sensu/sensu-puppet/issues/522)
+- Tests still failing [\#533](https://github.com/sensu/sensu-puppet/issues/533)
+- rake: uninitialized constant Syck with ruby 2.3.1 [\#539](https://github.com/sensu/sensu-puppet/issues/539)
+- error while installing ruby_dep, Bundler cannot continue [\#540](https://github.com/sensu/sensu-puppet/issues/540)
+- rabbitmq HA solution [\#541](https://github.com/sensu/sensu-puppet/issues/541)
+- subdue should be optional for sensu check definition [\#548](https://github.com/sensu/sensu-puppet/issues/548)
+- Add support for aggregates array [\#549](https://github.com/sensu/sensu-puppet/issues/549)
+- Update subdue for 0.26 [\#553](https://github.com/sensu/sensu-puppet/issues/553)
+- $::sensu::purge['config'] causes file path error on Windows agents [\#558](https://github.com/sensu/sensu-puppet/issues/558)
+- https://github.com/sensu/sensu-puppet/issues/558 [\#561](https://github.com/sensu/sensu-puppet/issues/561)
+- Update README.md with compatibility [\#568](https://github.com/sensu/sensu-puppet/issues/568)
+- Windows: Invalid Relationship [\#569](https://github.com/sensu/sensu-puppet/issues/569)
+
+**Merged pull requests:**
+
+- Updated config.pp to add base_path [\#490](https://github.com/sensu/sensu-puppet/pull/490) ([r0b0tAnthony](https://github.com/r0b0tAnthony))
+- Install rake < 11.0.0 for ruby < 1.9.3  [\#487](https://github.com/sensu/sensu-puppet/pull/487) ([atrepca](https://github.com/atrepca))
+- fix issue #497 [\#498](https://github.com/sensu/sensu-puppet/pull/498) ([bovy89](https://github.com/bovy89))
+- Use 127.0.0.1 instead of localhost for hosts, it could resolve to ::1 [\#494](https://github.com/sensu/sensu-puppet/pull/494) ([portertech](https://github.com/portertech))
+- Fix tests [\#517](https://github.com/sensu/sensu-puppet/pull/517) ([jaxxstorm](https://github.com/jaxxstorm))
+- add source to remote_file for urls in plugin.pp [\#486](https://github.com/sensu/sensu-puppet/pull/486) ([chrissav](https://github.com/chrissav))
+- Support redis sentinels and add master property [\#509](https://github.com/sensu/sensu-puppet/pull/509) ([modax](https://github.com/modax))
+- Better explain diff between diff sensu-plugin [\#526](https://github.com/sensu/sensu-puppet/pull/526) ([jaxxstorm](https://github.com/jaxxstorm))
+- Add support for client deregistration [\#523](https://github.com/sensu/sensu-puppet/pull/523) ([jaxxstorm](https://github.com/jaxxstorm))
+- Switch default vhost to /sensu [\#525](https://github.com/sensu/sensu-puppet/pull/525) ([jaxxstorm](https://github.com/jaxxstorm))
+- Fixing tests [\#538](https://github.com/sensu/sensu-puppet/pull/538) ([jaxxstorm](https://github.com/jaxxstorm)))
+- validate subdue is a hash [\#536](https://github.com/sensu/sensu-puppet/pull/536) ([fessyfoo](https://github.com/fessyfoo))
+- Add support for stringified aggregates  [\#524](https://github.com/sensu/sensu-puppet/pull/524) ([jaxxstorm](https://github.com/jaxxstorm))
+- small puppet-lint fixes [\#513](https://github.com/sensu/sensu-puppet/pull/513) ([ttarczynski](https://github.com/ttarczynski))
+- Small fix in docs [\#510](https://github.com/sensu/sensu-puppet/pull/510) ([ttarczynski](https://github.com/ttarczynski))
+- Pin the package provider for RedHat osfamily [\#530](https://github.com/sensu/sensu-puppet/pull/530) ([thejandroman](https://github.com/thejandroman))
+- Pin listen to a working pre-ruby2.2 version [\#529](https://github.com/sensu/sensu-puppet/pull/529) ([thejandroman](https://github.com/thejandroman))
+- Add ruby 2.2 tests [\#552](https://github.com/sensu/sensu-puppet/pull/552) ([jaxxstorm](https://github.com/jaxxstorm))
+- small fixes in docs [\#543](https://github.com/sensu/sensu-puppet/pull/543) ([ttarczynski](https://github.com/ttarczynski))
+- Allow undef handlers and subscribers [\#531](https://github.com/sensu/sensu-puppet/pull/531) ([thejandroman](https://github.com/thejandroman))
+- Add support for new aggregates type in 0.26 [\#554](https://github.com/sensu/sensu-puppet/pull/554) ([jaxxstorm](https://github.com/jaxxstorm))
+- Add an issue template [\#567](https://github.com/sensu/sensu-puppet/pull/567) ([jaxxstorm](https://github.com/jaxxstorm))
+- Fixes for Windows clients with Enterprise [\#544](https://github.com/sensu/sensu-puppet/pull/544) ([jacobmw](https://github.com/jacobmw))
+- remove subdue property with 'absent' [\#565](https://github.com/sensu/sensu-puppet/pull/565) ([ttarczynski](https://github.com/ttarczynski))
+- Remove subdue from handler [\#563](https://github.com/sensu/sensu-puppet/pull/563) ([ttarczynski](https://github.com/ttarczynski))
+- [enterprise dashboard] move package resource inside conditional [\#570](https://github.com/sensu/sensu-puppet/pull/570) ([cwjohnston](https://github.com/cwjohnston))
+- Add sensu compatibility info in README.md [\#571](https://github.com/sensu/sensu-puppet/pull/571) ([ttarczynski](https://github.com/ttarczynski))
+- pin semantic_puppet gem at < 0.1.4 on Ruby 1.8 or earlier [\#576](https://github.com/sensu/sensu-puppet/pull/576) ([cwjohnston](https://github.com/cwjohnston))
+- Tests for subdue 2.0 [\#564](https://github.com/sensu/sensu-puppet/pull/564) ([ttarczynski](https://github.com/ttarczynski))
+- fix tests on Ruby 1.8 [\#579](https://github.com/sensu/sensu-puppet/pull/579) ([ttarczynski](https://github.com/ttarczynski))
+- Small puppet-lint fix [\#575](https://github.com/sensu/sensu-puppet/pull/575) ([ttarczynski](https://github.com/ttarczynski))
+- use constant SENSU_CHECK_PROPERTIES instead of hardcoded check_args in sensu_check provider [\#572](https://github.com/sensu/sensu-puppet/pull/572) ([ttarczynski](https://github.com/ttarczynski))
+- Add support for multi-host Rabbitmq config [\#581](https://github.com/sensu/sensu-puppet/pull/581) ([dhgwilliam](https://github.com/dhgwilliam)) & ([cwjohnston](https://github.com/cwjohnston)) & ([whermann](https://github.com/whermann))
+
+
+
+
+
+
+## [2.1.0](https://github.com/sensu/sensu-puppet/tree/2.1.0) (2016-02-29)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v1.5.5...2.1.0)
 
 **Closed issues:**

@@ -23,6 +23,8 @@ module PuppetX
             :true
           when *BooleanProperty.values_for_false
             :false
+          when :absent, 'absent'
+            :absent
           else
             fail "expected a boolean value, got #{value.inspect}"
         end
@@ -30,7 +32,7 @@ module PuppetX
 
       # allow the provider to work with real booleans
       def set(value)
-        super(value == :true)
+        super(value.to_s == 'absent' ? :absent : value == :true)
       end
 
       def retrieve
