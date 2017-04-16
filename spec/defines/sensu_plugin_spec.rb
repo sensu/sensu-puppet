@@ -81,7 +81,8 @@ describe 'sensu::plugin', :type => :define do
     context 'defaults' do
       let(:params) { { :type => 'directory' } }
 
-      it { should contain_file('/etc/sensu/plugins').with(
+      it { should contain_file('sensu_plugins_dir').with(
+        'path'    => '/etc/sensu/plugins',
         'source'  => 'puppet:///data/sensu/plugins',
         'ensure'  => 'directory',
         'recurse' => 'true',
@@ -93,13 +94,13 @@ describe 'sensu::plugin', :type => :define do
     context 'set install_path' do
       let(:params) { { :type => 'directory', :install_path => '/opt/sensu/plugins' } }
 
-      it { should contain_file('/opt/sensu/plugins') }
+      it { should contain_file('sensu_plugins_dir').with('path' => '/opt/sensu/plugins') }
     end
 
     context 'set purge params' do
       let(:params) { { :type => 'directory', :recurse => false, :force => false, :purge => false } }
 
-      it { should contain_file('/etc/sensu/plugins').with(
+      it { should contain_file('sensu_plugins_dir').with(
         'recurse' => false,
         'purge'   => false,
         'force'   => false,
