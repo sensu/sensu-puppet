@@ -10,7 +10,7 @@ class sensu::repo::apt {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if defined(apt::source) {
+  if (defined(apt::source)) and (!defined(Apt::Source[sensu])) {
 
     $ensure = $sensu::install_repo ? {
       true    => 'present',
@@ -68,7 +68,7 @@ class sensu::repo::apt {
       }
     }
 
-  } else {
+  } elsif (!defined(Apt::Source[sensu])) {
     fail('This class requires puppetlabs-apt module')
   }
 
