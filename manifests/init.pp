@@ -397,7 +397,7 @@ class sensu (
   $api_password                   = undef,
   $subscriptions                  = [],
   $client_bind                    = '127.0.0.1',
-  $client_port                    = '3030',
+  $client_port                    = 3030,
   $client_address                 = $::ipaddress,
   $client_name                    = $::fqdn,
   $client_custom                  = {},
@@ -458,6 +458,7 @@ class sensu (
   validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
+  if !is_integer($client_port) { fail('client_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
