@@ -140,6 +140,7 @@ define sensu::handler(
     }
   } else {
     $command_real = $command
+    $file_ensure = 'file'
   }
 
   # handler configuration may contain "secrets"
