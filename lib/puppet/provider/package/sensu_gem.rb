@@ -13,7 +13,7 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
 
   commands :gemcmd =>
     if RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|winse|emx/
-      "#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.bat"
+      "#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.cmd"
     else
       "/opt/sensu/embedded/bin/gem"
     end
