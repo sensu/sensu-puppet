@@ -1,13 +1,13 @@
 node 'sensu-server' {
   class { '::sensu':
-    install_repo      => true,
-    server            => true,
-    manage_services   => true,
-    manage_user       => true,
-    api               => true,
-    api_user          => 'admin',
-    api_password      => 'secret',
-    client_address    => $::ipaddress_eth1,
+    install_repo     => true,
+    server           => true,
+    manage_services  => true,
+    manage_user      => true,
+    api              => true,
+    api_user         => 'admin',
+    api_password     => 'secret',
+    client_address   => $::ipaddress_eth1,
     rabbitmq_cluster => [
       {
         'port'            => '1234',
@@ -26,8 +26,8 @@ node 'sensu-server' {
         'vhost'           => '/myvhost',
         'ssl_cert_chain'  => '/etc/sensu/ssl/cert.pem',
         'ssl_private_key' => '/etc/sensu/ssl/key.pem'
-      }
-    ]
+      },
+    ],
   }
 
   sensu::handler { 'default':

@@ -15,7 +15,6 @@ describe 'sensu', :type => :class do
           :address       => '2.3.4.5',
           :socket        => { 'bind' => '127.0.0.1', 'port' => 3030 },
           :subscriptions => [],
-          :ensure        => 'present',
           :custom        => {}
         ) }
 
@@ -40,7 +39,6 @@ describe 'sensu', :type => :class do
           :socket        => { 'bind' => '127.0.0.1', 'port' => 3030 },
           :subscriptions => ['all'],
           :redact        => ['password'],
-          :ensure        => 'present',
           :safe_mode     => true,
           :custom        => { 'bool' => true, 'foo' => 'bar' }
         } ) }
