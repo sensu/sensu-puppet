@@ -78,6 +78,16 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*manage_extensions_dir*]
+#   Boolean.  Manage the sensu extensions with puppet
+#   Default: true
+#   Valid values: true, false
+#
+# [*populate_conf_dir*]
+#   Boolean.  Populate the conf dir with puppet
+#   Default: true
+#   Valid values: true, false
+#
 # [*manage_services*]
 #   Boolean.  Manage the sensu services with puppet
 #   Default: true
@@ -370,6 +380,8 @@ class sensu (
   $client                         = true,
   $server                         = false,
   $api                            = false,
+  $populate_conf_dir              = true,
+  $manage_extensions_dir          = true,
   $manage_services                = true,
   $manage_user                    = true,
   $manage_plugins_dir             = true,

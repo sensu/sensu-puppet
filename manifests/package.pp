@@ -101,15 +101,17 @@ class sensu::package {
     }
   }
 
-  file { [ $sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators" ]:
-    ensure  => directory,
-    owner   => $sensu::user,
-    group   => $sensu::group,
-    mode    => $sensu::dir_mode,
-    purge   => $sensu::_purge_config,
-    recurse => true,
-    force   => true,
-    require => Package[$pkg_name],
+  if $sensu::populate_conf_dir {
+    file { [ $sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators" ]:
+      ensure  => directory,
+      owner   => $sensu::user,
+      group   => $sensu::group,
+      mode    => $sensu::dir_mode,
+      purge   => $sensu::_purge_config,
+      recurse => true,
+      force   => true,
+      require => Package[$pkg_name],
+    }
   }
 
   if $sensu::manage_handlers_dir {
@@ -125,15 +127,17 @@ class sensu::package {
     }
   }
 
-  file { ["${sensu::etc_dir}/extensions", "${sensu::etc_dir}/extensions/handlers"]:
-    ensure  => directory,
-    mode    => $sensu::dir_mode,
-    owner   => $sensu::user,
-    group   => $sensu::group,
-    purge   => $sensu::_purge_extensions,
-    recurse => true,
-    force   => true,
-    require => Package[$pkg_name],
+  if $sensu::manage_extensions_dir {
+    file { ["${sensu::etc_dir}/extensions", "${sensu::etc_dir}/extensions/handlers"]:
+      ensure  => directory,
+      mode    => $sensu::dir_mode,
+      owner   => $sensu::user,
+      group   => $sensu::group,
+      purge   => $sensu::_purge_extensions,
+      recurse => true,
+      force   => true,
+      require => Package[$pkg_name],
+    }
   }
 
   if $sensu::manage_mutators_dir {
