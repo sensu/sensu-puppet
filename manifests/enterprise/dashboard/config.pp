@@ -1,3 +1,7 @@
+# = Class: sensu::enterprise::dashboard::config
+#
+# Manages the Sensu Enterprise Dashboard configuration
+#
 class sensu::enterprise::dashboard::config {
   if $caller_module_name != $module_name {
     fail("Use of private class ${name} by ${caller_module_name}")
