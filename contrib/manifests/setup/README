@@ -1,0 +1,14 @@
+This directory has 2 sets of files:
+
+init.pp & plugins.pp are clients.
+server.pp & plugins.pp are used by servers.
+
+It actually creates a full rabbitMQ server, with redis, and sets up SSL.
+
+
+It follows the guide at: http://sensuapp.org/docs/0.12/guide
+
+You'll need to create the certs by following the instructions at: http://sensuapp.org/docs/0.12/certificates
+
+
+Oh: this uses the puppetlabs-rabbitmq.  It's actually capable of sharing a rabbitmq w/ mcollective.

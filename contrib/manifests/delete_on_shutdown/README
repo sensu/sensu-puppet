@@ -1,0 +1,10 @@
+This is a short script / module that is great for use in cloud environments, especially AWS.
+
+When you shutdown a box - or autoscaling does -  it removes the system from Sensu.
+
+No need for credentials to AWS, or a  handler to see if an instance is terminated, etc.
+This should take care of *most* of the day to day client removals.
+
+Another option is by Bryan Brandau:  ( @agent462 )
+http://www.ragedsyscoder.com/blog/2014/01/14/sensu-automated-decommission-of-clients/
+https://github.com/agent462/sensu-handler-awsdecomm

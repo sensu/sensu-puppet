@@ -1,0 +1,10 @@
+This is a script from:
+
+http://www.xkyle.com/sensu-reports-in-your-motd-with-puppet/
+
+and it's been posted to https://github.com/solarkennedy/sensu-report
+
+
+This is the debian / ubuntu option, that uses update-motd. Much cleaner.  motd-ubuntu.pp
+
+The original is here, in motd.pp

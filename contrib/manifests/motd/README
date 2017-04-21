@@ -1,0 +1,7 @@
+This is a script from:
+
+http://www.xkyle.com/sensu-reports-in-your-motd-with-puppet/
+
+and it's been posted to https://github.com/solarkennedy/sensu-report
+
+I've got a debian/ubuntu option that's much easier than the original puppet code, but I thought it'd be nice to have some of these things in the contrib directory of the sensu puppet module.
