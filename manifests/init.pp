@@ -61,7 +61,7 @@
 #
 # [*repo_key_source*]
 #   String.  URL of the apt GPG key
-#   Default: http://repositories.sensuapp.org/apt/pubkey.gpg
+#   Default: http://sensu.global.ssl.fastly.net/apt/pubkey.gpg
 #
 # [*client*]
 #   Boolean.  Include the sensu client
@@ -366,7 +366,7 @@ class sensu (
   $repo                           = 'main',
   $repo_source                    = undef,
   $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
-  $repo_key_source                = 'http://repositories.sensuapp.org/apt/pubkey.gpg',
+  $repo_key_source                = 'http://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
   $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
   $client                         = true,
   $server                         = false,
