@@ -7,7 +7,7 @@
 # [*version*]
 #   String.  Version of sensu to install
 #   Default: latest
-#   Valid values: absent, installed, latest, present, [\d\.\-]+
+#   Valid values: absent, installed, latest, present, [\d\.\-el]+
 #
 # [*sensu_plugin_name*]
 #   String.  Name of the sensu-plugin package. Refers to the sensu-plugin rubygem
