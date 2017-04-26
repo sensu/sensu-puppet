@@ -28,19 +28,37 @@ describe 'sensu' do
     end
 
     context 'setting version' do
-      let(:params) { {
-        :version              => '0.9.10',
-        :sensu_plugin_version => 'installed',
-      } }
+      context 'without platform version suffix' do
+        let(:params) { {
+          :version              => '0.9.10',
+          :sensu_plugin_version => 'installed',
+        } }
 
-      it { should contain_package('sensu').with(
-        :ensure => '0.9.10'
-      ) }
+        it { should contain_package('sensu').with(
+          :ensure => '0.9.10'
+        ) }
 
-      it { should contain_package('sensu-plugin').with(
-        :ensure   => 'installed',
-        :provider => 'gem'
-      ) }
+        it { should contain_package('sensu-plugin').with(
+          :ensure   => 'installed',
+          :provider => 'gem'
+        ) }
+      end
+
+      context 'with redhat platform version suffix' do
+        let(:params) { {
+          :version              => '0.29.0-1.el7',
+          :sensu_plugin_version => 'installed',
+        } }
+
+        it { should contain_package('sensu').with(
+          :ensure => '0.29.0-1.el7'
+        ) }
+
+        it { should contain_package('sensu-plugin').with(
+          :ensure   => 'installed',
+          :provider => 'gem'
+        ) }
+      end
     end
 
     context 'embeded_ruby' do
