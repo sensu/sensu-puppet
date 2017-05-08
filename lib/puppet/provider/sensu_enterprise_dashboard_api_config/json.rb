@@ -15,11 +15,9 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
   # Returns a Hash representation of the JSON structure in
   # /etc/sensu/dashboard.json or an empty Hash if the file can not be read.
   def conf
-    begin
-      @conf ||= JSON.parse(File.read(config_file))
-    rescue
-      @conf ||= {}
-    end
+    @conf ||= JSON.parse(File.read(config_file))
+  rescue
+    @conf ||= {}
   end
 
   # Internal: Retrieve the sensu config block from conf
