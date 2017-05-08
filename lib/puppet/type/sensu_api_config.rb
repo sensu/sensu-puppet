@@ -1,3 +1,5 @@
+require 'puppet/parameter/boolean'
+
 Puppet::Type.newtype(:sensu_api_config) do
   @doc = ""
 
@@ -6,7 +8,8 @@ Puppet::Type.newtype(:sensu_api_config) do
 
     self[:notify] = [
       "Service[sensu-api]",
-    ].select { |ref| catalog.resource(ref) }
+      "Service[sensu-enterprise]",
+    ].select { |ref| catalog.resource(ref) if catalog }
   end
 
   ensurable do
@@ -45,6 +48,7 @@ Puppet::Type.newtype(:sensu_api_config) do
 
   newparam(:base_path) do
     desc "The base path to the client config file"
+
     defaultto '/etc/sensu/conf.d/'
   end
 
@@ -54,6 +58,50 @@ Puppet::Type.newtype(:sensu_api_config) do
 
   newproperty(:password) do
     desc "The password use for client authentication against the Sensu API"
+  end
+
+  newparam(:ssl, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    desc 'Whether to configure the SSL listener.'
+
+    defaultto false
+  end
+
+  newproperty(:ssl_port) do
+    desc 'The API HTTPS (SSL) port.'
+
+    defaultto { :absent }
+
+    validate do |value|
+      if value && @resource.ssl?
+        raise ArgumentError, 'Do not define ssl_port unless ssl => true'
+      end
+    end
+  end
+
+  newproperty(:ssl_keystore_file) do
+    desc 'The file path for the SSL certificate keystore.'
+
+    defaultto { :absent }
+
+    validate do |value|
+      if value && @resource.ssl?
+        raise ArgumentError,
+              'Do not define ssl_keystore_file unless ssl => true'
+      end
+    end
+  end
+
+  newproperty(:ssl_keystore_password) do
+    desc 'The SSL certificate keystore password.'
+
+    defaultto { :absent }
+
+    validate do |value|
+      if value && @resource.ssl?
+        raise ArgumentError,
+              'Do not define ssl_keystore_password unless ssl => true'
+      end
+    end
   end
 
   autorequire(:package) do
