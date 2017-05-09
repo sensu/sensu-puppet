@@ -78,6 +78,16 @@
 #   Default: false
 #   Valid values: true, false
 #
+# [*manage_extensions_dir*]
+#   Boolean.  Manage the sensu extensions with puppet
+#   Default: true
+#   Valid values: true, false
+#
+# [*populate_conf_dir*]
+#   Boolean.  Populate the conf dir with puppet
+#   Default: true
+#   Valid values: true, false
+#
 # [*manage_services*]
 #   Boolean.  Manage the sensu services with puppet
 #   Default: true
@@ -195,6 +205,11 @@
 # [*redis_auto_reconnect*]
 #   Boolean.  Reconnect to Redis in the event of a connection failure
 #   Default: true
+#
+# [*transport_types*]
+#   String. Transport type to be used by Sensu
+#   Default: rabbitmq
+#   Valid values: rabbitmq, redis
 #
 # [*api_bind*]
 #   String.  IP to bind api service
@@ -365,6 +380,8 @@ class sensu (
   $client                         = true,
   $server                         = false,
   $api                            = false,
+  $populate_conf_dir              = true,
+  $manage_extensions_dir          = true,
   $manage_services                = true,
   $manage_user                    = true,
   $manage_plugins_dir             = true,
@@ -390,6 +407,8 @@ class sensu (
   $redis_auto_reconnect           = true,
   $redis_sentinels                = undef,
   $redis_master                   = undef,
+  $transport_type                 = 'rabbitmq',
+  $transport_reconnect_on_error   = true,
   $api_bind                       = '0.0.0.0',
   $api_host                       = '127.0.0.1',
   $api_port                       = 4567,
@@ -457,6 +476,7 @@ class sensu (
   validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
   validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
   validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
+  validate_re($transport_type, ['^rabbitmq$', '^redis$'], "Invalid transport type '${transport_type}'. Expected either rabbitmq or redis" )
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
@@ -572,6 +592,7 @@ class sensu (
   anchor { 'sensu::begin': } ->
   class { '::sensu::package': } ->
   class { '::sensu::enterprise::package': } ->
+  class { '::sensu::transport': } ->
   class { '::sensu::rabbitmq::config': } ->
   class { '::sensu::api::config': } ->
   class { '::sensu::redis::config': } ->

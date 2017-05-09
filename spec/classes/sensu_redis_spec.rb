@@ -93,9 +93,12 @@ describe 'sensu' do
 
     context 'purge configs' do
       let(:params) { {
-        :purge  => { 'config' => true },
-        :server => false,
-        :api    => false,
+        :purge          => { 'config' => true },
+        :server         => false,
+        :api            => false,
+        :client         => false,
+        :enterprise     => false,
+        :transport_type => 'rabbitmq'
       } }
 
       it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('absent') }
