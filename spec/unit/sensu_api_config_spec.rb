@@ -18,8 +18,10 @@ describe Puppet::Type.type(:sensu_api_config) do
   end
 
   describe 'defaults to' do
-    it 'ssl_port => :absent' do
-      expect(type_instance[:ssl_port]).to be(:absent)
+    [:ssl_port, :ssl_keystore_file, :ssl_keystore_password].each do |key|
+      it "#{key} => :absent" do
+        expect(type_instance[key]).to be(:absent)
+      end
     end
   end
 
@@ -30,7 +32,7 @@ describe Puppet::Type.type(:sensu_api_config) do
       :ssl_keystore_password => 'totallysecret'
     }.each do |key, value|
       describe "setting #{key}" do
-        it 'should raise an error' do
+        it 'raises an error' do
           ssl_hash = { key => value }
           expect { described_class.new(resource_hash.merge(ssl_hash)) }.
             to raise_error(Puppet::ResourceError)
@@ -46,7 +48,7 @@ describe Puppet::Type.type(:sensu_api_config) do
       :ssl_keystore_password => 'totallysecret'
     }.each do |key, value|
       describe "setting #{key}" do
-        it 'should not raise an error' do
+        it 'doesn\'t raise an error' do
           ssl_hash = { :ssl => true, key => value }
           expect { described_class.new(resource_hash.merge(ssl_hash)) }.
             to_not raise_error
