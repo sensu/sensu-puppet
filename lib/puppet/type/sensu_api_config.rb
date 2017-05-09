@@ -70,37 +70,25 @@ Puppet::Type.newtype(:sensu_api_config) do
     desc 'The API HTTPS (SSL) port.'
 
     defaultto { :absent }
-
-    validate do |value|
-      if value && @resource.ssl?
-        raise ArgumentError, 'Do not define ssl_port unless ssl => true'
-      end
-    end
   end
 
   newproperty(:ssl_keystore_file) do
     desc 'The file path for the SSL certificate keystore.'
 
     defaultto { :absent }
-
-    validate do |value|
-      if value && @resource.ssl?
-        raise ArgumentError,
-              'Do not define ssl_keystore_file unless ssl => true'
-      end
-    end
   end
 
   newproperty(:ssl_keystore_password) do
     desc 'The SSL certificate keystore password.'
 
     defaultto { :absent }
+  end
 
-    validate do |value|
-      if value && @resource.ssl?
-        raise ArgumentError,
-              'Do not define ssl_keystore_password unless ssl => true'
-      end
+  validate do
+    unless self[:ssl]
+      self.fail 'Do not define ssl_port unless ssl => true' if self[:ssl_port] != :absent
+      self.fail 'Do not define ssl_keystore_file unless ssl => true' if self[:ssl_keystore_file] != :absent
+      self.fail 'Do not define ssl_keystore_password unless ssl => true' if self[:ssl_keystore_password] != :absent
     end
   end
 
