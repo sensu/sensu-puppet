@@ -18,8 +18,9 @@ class sensu::enterprise::service (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::enterprise {
-    case $sensu::manage_services {
+  if $sensu::manage_services {
+
+    case $sensu::enterprise {
       true: {
         $ensure = 'running'
         $enable = true
