@@ -24,16 +24,17 @@ class sensu::enterprise::dashboard::service (
       }
     }
 
-    service { 'sensu-enterprise-dashboard':
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => $hasrestart,
-      subscribe  => [
-        Class['sensu::enterprise::dashboard::package'],
-        Class['sensu::enterprise::dashboard::config'],
-        Class['sensu::redis::config'],
-      ],
+    if $::osfamily != 'windows' {
+      service { 'sensu-enterprise-dashboard':
+        ensure     => $ensure,
+        enable     => $enable,
+        hasrestart => $hasrestart,
+        subscribe  => [
+          Class['sensu::enterprise::dashboard::package'],
+          Class['sensu::enterprise::dashboard::config'],
+          Class['sensu::redis::config'],
+        ],
+      }
     }
-
   }
 }

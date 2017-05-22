@@ -30,11 +30,7 @@ describe 'sensu', :type => :class do
             :enterprise_dashboard => true,
             :manage_services      => false,
           } }
-          it { should_not contain_service('puppet-enterprise-dashboard') }
-          it { should contain_service('sensu-enterprise-dashboard').with(
-            'enable' => false,
-            'ensure' => 'stopped'
-          ) }
+          it { should_not contain_service('sensu-enterprise-dashboard') }
         end
 
         context 'with enterprise_dashboard => true' do
@@ -99,12 +95,16 @@ describe 'sensu', :type => :class do
             :enterprise           => true,
             :enterprise_user      => 'sensu',
             :enterprise_pass      => 'sensu',
-            :enterprise_dashboard => false
+            :enterprise_dashboard => false,
+            :manage_services      => true,
           } }
           it { should contain_yumrepo('sensu-enterprise') }
           it { should contain_service('sensu-enterprise') }
           it { should_not contain_yumrepo('sensu-enterprise-dashboard') }
-          it { should_not contain_service('sensu-enterprise-dashboard') }
+          it { should contain_service('sensu-enterprise-dashboard').with(
+            'enable' => false,
+            'ensure' => 'stopped'
+          ) }
         end
       end
 
