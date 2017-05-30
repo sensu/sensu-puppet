@@ -594,8 +594,12 @@ class sensu (
   class { '::sensu::server::service':
     hasrestart => $hasrestart,
   } ->
-  class { '::sensu::enterprise::service': } ->
-  class { '::sensu::enterprise::dashboard': } ->
+  class { '::sensu::enterprise::service':
+    hasrestart => $hasrestart,
+  } ->
+  class { '::sensu::enterprise::dashboard':
+    hasrestart => $hasrestart,
+  } ->
   anchor {'sensu::end': }
 
   if $plugins_dir {

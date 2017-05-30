@@ -18,8 +18,9 @@ class sensu::enterprise::service (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::enterprise {
-    case $sensu::manage_services {
+  if $sensu::manage_services {
+
+    case $sensu::enterprise {
       true: {
         $ensure = 'running'
         $enable = true
@@ -30,16 +31,18 @@ class sensu::enterprise::service (
       }
     }
 
-    service { 'sensu-enterprise':
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => $hasrestart,
-      subscribe  => [
-        Class['sensu::enterprise::package'],
-        Class['sensu::api::config'],
-        Class['sensu::redis::config'],
-        Class['sensu::rabbitmq::config'],
-      ],
+    if $::osfamily != 'windows' {
+      service { 'sensu-enterprise':
+        ensure     => $ensure,
+        enable     => $enable,
+        hasrestart => $hasrestart,
+        subscribe  => [
+          Class['sensu::enterprise::package'],
+          Class['sensu::api::config'],
+          Class['sensu::redis::config'],
+          Class['sensu::rabbitmq::config'],
+        ],
+      }
     }
   }
 }

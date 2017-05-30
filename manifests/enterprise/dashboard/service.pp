@@ -11,8 +11,9 @@ class sensu::enterprise::dashboard::service (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $::sensu::enterprise_dashboard {
-    case $::sensu::manage_services {
+  if $sensu::manage_services {
+
+    case $sensu::enterprise_dashboard {
       true: {
         $ensure = 'running'
         $enable = true
@@ -23,16 +24,17 @@ class sensu::enterprise::dashboard::service (
       }
     }
 
-    service { 'sensu-enterprise-dashboard':
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => $hasrestart,
-      subscribe  => [
-        Class['sensu::enterprise::dashboard::package'],
-        Class['sensu::enterprise::dashboard::config'],
-        Class['sensu::redis::config'],
-      ],
+    if $::osfamily != 'windows' {
+      service { 'sensu-enterprise-dashboard':
+        ensure     => $ensure,
+        enable     => $enable,
+        hasrestart => $hasrestart,
+        subscribe  => [
+          Class['sensu::enterprise::dashboard::package'],
+          Class['sensu::enterprise::dashboard::config'],
+          Class['sensu::redis::config'],
+        ],
+      }
     }
-
   }
 }
