@@ -209,9 +209,11 @@ describe 'sensu', :type => :class do
 
     context 'purge config' do
       let(:params) { {
-        :purge  => { 'config' => true },
-        :server => false,
-        :client => false
+        :purge          => { 'config' => true },
+        :server         => false,
+        :client         => false,
+        :enterprise     => false,
+        :transport_type => 'redis'
       } }
 
       it { should contain_file('/etc/sensu/conf.d/rabbitmq.json').with_ensure('absent') }
