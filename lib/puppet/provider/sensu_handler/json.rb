@@ -135,4 +135,12 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     conf['handlers'][resource[:name]]['timeout'] = value
   end
 
+  def handle_flapping
+    conf['handlers'][resource[:name]]['handle_flapping']
+  end
+
+  def handle_flapping=(value)
+    conf['handlers'][resource[:name]]['handle_flapping'] = value
+  end
+
 end
