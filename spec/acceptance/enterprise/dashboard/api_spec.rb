@@ -17,10 +17,6 @@ describe 'sensu::enterprise::dashboard::api', :unless => UNSUPPORTED_PLATFORMS.i
         sensu::enterprise::dashboard::api { 'sensu.example.com':
           datacenter => 'example-dc',
         }
-
-        resources { 'sensu_enterprise_dashboard_api_config':
-          purge => true,
-        }
         EOS
 
         # Run it twice and test for idempotency
