@@ -14,6 +14,17 @@ class sensu::client::config {
     $ensure = 'present'
   }
 
+  if $osfamily == 'windows' {
+    file { "${sensu::etc_dir}/embedded/bin/gem.bat":
+      ensure => $ensure,
+      source => 'puppet:///modules/sensu/gem.bat',
+      owner  => $sensu::user,
+      group  => $sensu::group,
+      mode   => $sensu::file_mode,
+    }
+    File["${sensu::etc_dir}/embedded/bin/gem.bat"]->Package<| provider == sensu_gem |>
+  }
+
   file { "${sensu::conf_dir}/client.json":
     ensure => $ensure,
     owner  => $sensu::user,
