@@ -121,7 +121,7 @@ describe 'sensu', :type => :class do
   end
 
   context 'on Debian' do
-    let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', } }
+    let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', :os => {:name => 'ubuntu', :release => {:full => '14.04'} }, } }
     context 'when enterprise => true' do
       let(:params) { {
         :enterprise => true,
