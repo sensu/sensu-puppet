@@ -84,7 +84,7 @@ describe 'sensu' do
     context 'repos' do
 
       context 'ubuntu' do
-        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', } }
+        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', :os => {:name => 'ubuntu', :release => {:full => '14.04'} }, } }
 
         context 'with puppet-apt installed' do
           let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include, $key) {}' ] }
@@ -152,7 +152,7 @@ describe 'sensu' do
       end
 
       context 'debian' do
-        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '8.6', :lsbdistcodename => 'jessie', } }
+        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '8.6', :lsbdistcodename => 'jessie', :os => {:name => 'debian', :release => {:full => '8.6'} }, } }
 
           context 'repo release' do
             it { should contain_apt__source('sensu').with(
