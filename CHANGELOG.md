@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.2.1 (jpuskar fork)
+Forked from: c7cdeb6a1ef5bc0b83f8c4c7e683e844a3dd5745
+- Implemented: https://github.com/sensu/sensu-puppet/pull/635
+- Implemented fix for: https://github.com/sensu/sensu-puppet/issues/589
+  - New parameters in init.pp (windows-*).
+  - Updated package source with conditionals for Chocolatey in package.pp.
+
 ## [2.2.0](https://github.com/sensu/sensu-puppet/tree/2.2.0) (2016-11-27)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/2.1.0...2.2.0)
 
