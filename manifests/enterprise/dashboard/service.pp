@@ -11,7 +11,7 @@ class sensu::enterprise::dashboard::service (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::manage_services {
+  if $sensu::manage_services and $sensu::enterprise_dashboard {
 
     case $sensu::enterprise_dashboard {
       true: {

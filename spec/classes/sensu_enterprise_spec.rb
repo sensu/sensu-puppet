@@ -101,10 +101,7 @@ describe 'sensu', :type => :class do
           it { should contain_yumrepo('sensu-enterprise') }
           it { should contain_service('sensu-enterprise') }
           it { should_not contain_yumrepo('sensu-enterprise-dashboard') }
-          it { should contain_service('sensu-enterprise-dashboard').with(
-            'enable' => false,
-            'ensure' => 'stopped'
-          ) }
+          it { should_not contain_service('sensu-enterprise-dashboard') }
         end
       end
 
