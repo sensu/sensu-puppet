@@ -1,7 +1,7 @@
 # = Define: sensu::write_json
 #
-# Writes arbitrary hash data to a config file. Note: you must manually restart
-# any Sensu services when using this defined resource type.
+# Writes arbitrary hash data to a config file. Note: you must manually notify
+# any Sensu services to restart them when using this defined resource type.
 #
 # Example:
 #
@@ -22,7 +22,7 @@
 #
 # [*mode*]
 #   String. The file mode.
-#   Default: 0400 for Unix-like systems, 0755 for Windows.
+#   Default: 0755
 #
 # [*owner*]
 #   String. The file owner.
@@ -43,7 +43,7 @@
 #
 define sensu::write_json(
   Enum['present', 'absent'] $ensure = 'present',
-  Optional[String]          $mode = undef,
+  Optional[String]          $mode = '0755',
   String                    $owner = $sensu::owner,
   String                    $group = $sensu::group,
   Boolean                   $pretty = true,
@@ -54,22 +54,9 @@ define sensu::write_json(
   case $::kernel {
     'windows': {
       assert_type(Stdlib::Windowspath, $title)
-
-      if $mode != undef {
-        $real_mode = '0755'
-      } else {
-        $real_mode = $mode
-      }
     }
-
     default: {
       assert_type(Stdlib::Unixpath, $title)
-
-      if $mode != undef {
-        $real_mode = '0400'
-      } else {
-        $real_mode = $mode
-      }
     }
   }
 
@@ -77,7 +64,7 @@ define sensu::write_json(
   # sensu_sorted_json function to format/sort the json.
   file { $title :
     ensure  => $ensure,
-    mode    => $real_mode,
+    mode    => $mode,
     owner   => $owner,
     group   => $group,
     content => sensu_sorted_json($content, $pretty, 4),
