@@ -81,7 +81,7 @@ describe 'sensu::write_json', :type => :define do
         :group => 'sensu',
       } }
 
-      it { is_expected.to compile.and_raise_error(/expected a match for/) }
+      it { is_expected.to compile.and_raise_error(/a match for/) }
     end
   end
 
@@ -93,7 +93,7 @@ describe 'sensu::write_json', :type => :define do
         :group => 'sensu',
       } }
 
-      it { is_expected.to compile.and_raise_error(/expected a match for/) }
+      it { is_expected.to compile.and_raise_error(/a match for/) }
     end
   end
 
@@ -107,7 +107,7 @@ describe 'sensu::write_json', :type => :define do
         :group => 'sensu',
       } }
 
-      it { is_expected.to compile.and_raise_error(/expected a match for/) }
+      it { is_expected.to compile.and_raise_error(/a match for/) }
     end
   end
 
