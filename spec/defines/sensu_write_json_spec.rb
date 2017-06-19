@@ -2,6 +2,11 @@ require 'spec_helper'
 
 CFG_PATH = '/etc/sensu/conf.d/custom.json'
 CUSTOM_CFG = {"custom" => "data"}
+CUSTOM_CFG_PRETTY = <<-END.gsub(/^\s+\|/, '')
+	|{
+  |    "custom": "data"
+  |}
+END
 
 describe 'sensu::write_json', :type => :define do
   let(:facts) { { :osfamily => 'RedHat' } }
@@ -30,7 +35,7 @@ describe 'sensu::write_json', :type => :define do
         :mode => '0755',
         :owner => 'sensu',
         :group => 'sensu',
-        :content => "{\n    \"custom\": \"data\"\n}\n",
+        :content => CUSTOM_CFG_PRETTY,
         :notify => nil,
         :subscribe => nil,
       ) }
