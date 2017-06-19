@@ -43,7 +43,7 @@
 #
 define sensu::write_json(
   Enum['present', 'absent'] $ensure = 'present',
-  Optional[String]          $mode = '0755',
+  String                    $mode = '0755',
   String                    $owner = $sensu::owner,
   String                    $group = $sensu::group,
   Boolean                   $pretty = true,
@@ -69,5 +69,4 @@ define sensu::write_json(
     group   => $group,
     content => sensu_sorted_json($content, $pretty, 4),
   }
-
 }
