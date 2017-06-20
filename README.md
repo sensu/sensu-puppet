@@ -319,13 +319,13 @@ You can also use the `sensu::write_json` defined resource type to write custom
 json config files:
 
     $contact_data = {
-      "support": {
-        "pagerduty": {
-          "service_key": "r3FPuDvNOTEDyQYCc7trBkymIFcy2NkE"
+      'support' => {
+        'pagerduty' => {
+          'service_key' => 'r3FPuDvNOTEDyQYCc7trBkymIFcy2NkE',
         },
-        "slack": {
-          "channel": "#support",
-          "username": "sensu"
+        'slack' => {
+          'channel'  => '#support',
+          'username' => 'sensu',
         }
       }
     }
