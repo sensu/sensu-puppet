@@ -313,6 +313,27 @@ This will create the following check definition for Sensu:
       }
     }
 
+## Writing custom configuration files
+
+You can also use the `sensu::write_json` defined resource type to write custom
+json config files:
+
+    $contact_data = {
+      "support": {
+        "pagerduty": {
+          "service_key": "r3FPuDvNOTEDyQYCc7trBkymIFcy2NkE"
+        },
+        "slack": {
+          "channel": "#support",
+          "username": "sensu"
+        }
+      }
+    }
+
+    sensu::write_json { '/etc/sensu/conf.d/contacts.json':
+      content => $contact_data,
+    }
+
 ## Handler configuration
 
     sensu::handler {
