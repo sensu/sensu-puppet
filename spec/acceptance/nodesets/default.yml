@@ -9,4 +9,3 @@ HOSTS:
 CONFIG:
   log_level: verbose
   type: foss
-  preserve_hosts: always
