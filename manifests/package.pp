@@ -15,6 +15,7 @@ class sensu::package {
       $pkg_name = 'sensu'
       $pkg_version = $sensu::version
       $pkg_source = undef
+      $pkg_provider = undef
 
       if $sensu::manage_repo {
         class { '::sensu::repo::apt': }
@@ -33,6 +34,7 @@ class sensu::package {
       $pkg_name = 'sensu'
       $pkg_version = $sensu::version
       $pkg_source = undef
+      $pkg_provider = undef
 
       if $sensu::manage_repo {
         class { '::sensu::repo::yum': }
@@ -45,15 +47,25 @@ class sensu::package {
       $repo_require = undef
 
       $pkg_version = inline_template("<%= scope.lookupvar('sensu::version').sub(/(.*)\\-/, '\\1.') %>")
-      $pkg_title = 'Sensu'
-      $pkg_name = 'Sensu'
-      $pkg_source = "C:\\Windows\\Temp\\sensu-${sensu::version}.msi"
-      $pkg_require = "Remote_file[${pkg_source}]"
+      $pkg_title = $::sensu::windows_package_title
+      $pkg_name = $::sensu::windows_package_name
 
-      remote_file { $pkg_source:
-        ensure   => present,
-        source   => "${sensu::windows_repo_prefix}-${sensu::version}.msi",
-        checksum => $::sensu::package_checksum,
+      if $::sensu::windows_package_provider == 'chocolatey' {
+        $pkg_provider = 'chocolatey'
+        if $::sensu::windows_choco_repo {
+          $pkg_source = $::sensu::windows_choco_repo
+        } else {
+          $pkg_source = undef
+        }
+      } else {
+        $pkg_source = "C:\\Windows\\Temp\\sensu-${sensu::version}.msi"
+        $pkg_require = "Remote_file[${pkg_source}]"
+
+        remote_file { $pkg_source:
+          ensure   => present,
+          source   => "${sensu::windows_repo_prefix}-${sensu::version}.msi",
+          checksum => $::sensu::package_checksum,
+        }
       }
     }
 
@@ -62,10 +74,11 @@ class sensu::package {
   }
 
   package { $pkg_title:
-    ensure  => $pkg_version,
-    name    => $pkg_name,
-    source  => $pkg_source,
-    require => $pkg_require,
+    ensure   => $pkg_version,
+    name     => $pkg_name,
+    source   => $pkg_source,
+    require  => $pkg_require,
+    provider => $pkg_provider,
   }
 
   if $::sensu::sensu_plugin_provider {
