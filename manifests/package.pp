@@ -31,14 +31,7 @@ class sensu::package {
     'RedHat': {
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
-      $pkg_version = $sensu::version ? {
-        'latest'    => $sensu::version,
-        'installed' => $sensu::version,
-        'present'   => $sensu::version,
-        'absent'    => $sensu::version,
-        default     => "${sensu::version}.el${::operatingsystemmajrelease}"
-      }
-
+      $pkg_version = $sensu::version
       $pkg_source = undef
 
       if $sensu::manage_repo {
