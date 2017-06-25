@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Rabbitmq needs to have a user that sensu can connect to. 
+# Rabbitmq needs to have a user that sensu can connect to.
 # The default user of 'guest' can only connect over localhost http://bit.ly/1thfSKL
 
 /usr/sbin/rabbitmqctl add_vhost /sensu

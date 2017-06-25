@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# Installs appropriate packages for Vagrant vms
-
-# apt-get install -y python-software-properties
-wget --quiet http://apt.puppetlabs.com/puppetlabs-release-precise.deb -O /tmp/puppetlabs-release-precise.deb
-dpkg -i /tmp/puppetlabs-release-precise.deb
-apt-get update
-apt-get install -y ruby-json redis-server puppet-common ruby-dev #masterless puppet
-sed -i '/templatedir/d' /etc/puppet/puppet.conf
-puppet module install sensu/sensu
+# setup module dependencies
 puppet module install puppetlabs/rabbitmq
 
+# install dependencies for sensu
+yum -y install redis jq nagios-plugins-ntp
+systemctl start redis
+systemctl enable redis
+
+# run puppet
+puppet apply /vagrant/tests/rabbitmq.pp
+puppet apply /vagrant/tests/sensu-server.pp
+puppet apply /vagrant/tests/uchiwa.pp
