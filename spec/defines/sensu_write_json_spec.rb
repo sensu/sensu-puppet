@@ -3,7 +3,7 @@ require 'spec_helper'
 CFG_PATH = '/etc/sensu/conf.d/custom.json'
 CUSTOM_CFG = {"custom" => "data"}
 CUSTOM_CFG_PRETTY = <<-END.gsub(/^\s+\|/, '')
-	|{
+  |{
   |    "custom": "data"
   |}
 END

@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'sensu::extension', :type => :define do
+  let(:pre_condition) do
+    <<-'ENDofPUPPETcode'
+    include ::sensu
+    ENDofPUPPETcode
+  end
   let(:title) { 'myextension' }
 
   context 'default (present)' do
