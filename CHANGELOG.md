@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.3.0](https://github.com/sensu/sensu-puppet/tree/v2.3.0)
+## [v2.3.1](https://github.com/sensu/sensu-puppet/tree/v2.3.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.3.0...v2.3.1)
+
+**Closed issues:**
+
+- sensu::write\_json requires that owner and group be specified [\#683](https://github.com/sensu/sensu-puppet/issues/683)
+- Heads up about new contributors [\#673](https://github.com/sensu/sensu-puppet/issues/673)
+
+**Merged pull requests:**
+
+- \(GH-683\) Fix having to specify owner/group for sensu::write\_json [\#684](https://github.com/sensu/sensu-puppet/pull/684) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.3.0](https://github.com/sensu/sensu-puppet/tree/v2.3.0) (2017-06-21)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.2.1...v2.3.0)
 
 **Closed issues:**
@@ -14,6 +26,7 @@
 
 **Merged pull requests:**
 
+- Release v2.3.0 [\#675](https://github.com/sensu/sensu-puppet/pull/675) ([ghoneycutt](https://github.com/ghoneycutt))
 - Fix \#670 - Package release string for EL platform [\#674](https://github.com/sensu/sensu-puppet/pull/674) ([ghoneycutt](https://github.com/ghoneycutt))
 - Update readme example for write\_json [\#672](https://github.com/sensu/sensu-puppet/pull/672) ([robbyt](https://github.com/robbyt))
 - Add ability to write arbitrary JSON to a file [\#671](https://github.com/sensu/sensu-puppet/pull/671) ([ghoneycutt](https://github.com/ghoneycutt))
