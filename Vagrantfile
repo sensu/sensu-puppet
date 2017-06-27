@@ -22,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--memory", "512"]
   end
 
-  config.vm.define "sensu-server", primary: true, autostart: true do |server|
+  config.vm.define "el7-server", primary: true, autostart: true do |server|
     server.vm.box = "centos/7"
     server.vm.hostname = 'sensu-server.example.com'
     server.vm.network :private_network, ip: "192.168.56.10"
@@ -34,11 +34,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     server.vm.provision :shell, :path => "tests/rabbitmq.sh"
   end
 
-  config.vm.define "sensu-client", autostart: true do |client|
+  config.vm.define "el7-client", autostart: true do |client|
     client.vm.box = "centos/7"
-    client.vm.hostname = 'sensu-client.example.com'
+    client.vm.hostname = 'el7-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.11"
     client.vm.provision :shell, :path => "tests/provision_basic.sh"
-    client.vm.provision :shell, :path => "tests/provision_client.sh"
+    client.vm.provision :shell, :path => "tests/provision_client_el7.sh"
+  end
+
+  config.vm.define "el6-client", autostart: false do |client|
+    client.vm.box = "centos/6"
+    client.vm.hostname = 'el6-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.12"
+    client.vm.provision :shell, :path => "tests/provision_basic.sh"
+    client.vm.provision :shell, :path => "tests/provision_client_el6.sh"
   end
 end
