@@ -7,13 +7,25 @@ describe 'sensu', :type => :class do
   it { should contain_user('sensu') }
 
   context 'osfamily windows with manage_user => true' do
-    let(:facts) {{ :osfamily => 'windows' }}
+    let(:facts) do
+      {
+        :osfamily => 'windows',
+        :kernel   => 'windows',
+      }
+    end
+
     it { should_not contain_user('sensu') }
   end
 
   context 'osfamily windows with manage_user => false' do
-    let(:facts) {{ :osfamily => 'windows' }}
+    let(:facts) do
+      {
+        :osfamily => 'windows',
+        :kernel   => 'windows',
+      }
+    end
     let(:params) { {:manage_user => false} }
+
     it { should_not contain_user('sensu') }
   end
 
