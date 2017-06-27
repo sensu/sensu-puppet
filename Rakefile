@@ -1,7 +1,5 @@
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
-require 'puppet-syntax/tasks/puppet-syntax'
-require 'metadata-json-lint/rake_task'
 
 begin
   require 'puppet_blacksmith/rake_tasks'
@@ -14,21 +12,20 @@ exclude_paths = [
   "spec/**/*",
 ]
 
-PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
 PuppetLint.configuration.send("disable_80chars")
-PuppetLint.configuration.send("disable_quoted_booleans")
+PuppetLint.configuration.send("disable_140chars")
 PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetSyntax.exclude_paths = exclude_paths
+PuppetLint.configuration.relative = true
 
 desc "Run acceptance tests"
 RSpec::Core::RakeTask.new(:acceptance) do |t|
   t.pattern = 'spec/acceptance'
 end
 
-desc "Run syntax, lint, and spec tests."
-task :test => [
-  :syntax,
-  :lint,
-  :metadata_lint,
-  :spec,
-]
+desc 'Validate manifests, templates, ruby files and shell scripts'
+task :validate do
+  # lib/* gets checked by puppetlabs_spec_helper, though it skips spec entirely
+  Dir['spec/**/*.rb', 'lib/**/*.rb'].each do |ruby_file|
+    sh "ruby -c #{ruby_file}" unless ruby_file =~ /^(spec\/fixtures)|(lib)/
+  end
+end

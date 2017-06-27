@@ -15,16 +15,14 @@ end
 group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
   gem 'rspec-puppet',                                     :require => false
-  gem 'puppetlabs_spec_helper',                           :require => false
-  gem 'puppet-lint', "1.0.1",                             :require => false
+  gem 'puppetlabs_spec_helper', '>= 2.0.0',               :require => false
+  gem 'puppet-lint', "~> 2.0",                            :require => false
   gem 'json', "~> 1.8.3",                                 :require => false
   gem 'json_pure', "~> 1.8.3",                            :require => false
-  gem 'puppet-syntax',                                    :require => false
   gem 'metadata-json-lint',                               :require => false
   gem 'puppet-blacksmith',                                :require => false
   gem 'rest-client', "1.6.8",                             :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
-  gem 'puppet-lint-appends-check',                        :require => false
   gem 'puppet-lint-empty_string-check',                   :require => false
   gem 'puppet-lint-file_ensure-check',                    :require => false
   gem 'puppet-lint-leading_zero-check',                   :require => false
