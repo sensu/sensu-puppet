@@ -46,8 +46,8 @@
 #
 define sensu::write_json (
   Enum['present', 'absent'] $ensure = 'present',
-  String                    $owner = $sensu::owner,
-  String                    $group = $sensu::group,
+  String                    $owner = 'sensu',
+  String                    $group = 'sensu',
   String                    $mode = '0755',
   Boolean                   $pretty = true,
   Hash                      $content = {},

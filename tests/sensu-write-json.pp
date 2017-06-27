@@ -15,7 +15,25 @@ $h = {
 }
 
 sensu::write_json { '/tmp/sensu.json':
-  owner   => $::id,
-  group   => $::gid,
+  content => $h,
+}
+
+sensu::write_json { '/tmp/sensu-owner.json':
+  owner   => 'root',
+  content => $h,
+}
+
+sensu::write_json { '/tmp/sensu-group.json':
+  group   => 'root',
+  content => $h,
+}
+
+sensu::write_json { '/tmp/sensu-mode.json':
+  mode   => '0777',
+  content => $h,
+}
+
+sensu::write_json { '/tmp/sensu-ugly.json':
+  pretty  => false,
   content => $h,
 }

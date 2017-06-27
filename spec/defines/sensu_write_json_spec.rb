@@ -16,8 +16,6 @@ describe 'sensu::write_json', :type => :define do
 
     context 'defaults' do
       let(:params) { {
-        :owner => 'sensu',
-        :group => 'sensu',
         :content => CUSTOM_CFG,
       } }
 
@@ -41,26 +39,53 @@ describe 'sensu::write_json', :type => :define do
       ) }
     end
 
-    context 'setting absent' do
+    context 'setting ensure to absent' do
       let(:params) { {
         :ensure => 'absent',
-        :mode => '0700',
-        :owner => 'root',
-        :group => 'root',
       } }
 
       it { should contain_file(CFG_PATH).with(
         :ensure => 'absent',
-        :mode => '0700',
+        :owner => 'sensu',
+        :group => 'sensu',
+        :mode => '0755',
         :notify => nil,
         :subscribe => nil,
       ) }
     end
 
+    context 'setting owner as non-default value' do
+      let(:params) { {
+        :owner => 'custom',
+      } }
+
+      it { should contain_file(CFG_PATH).with(
+        :owner => 'custom',
+      ) }
+    end
+
+    context 'setting group as non-default value' do
+      let(:params) { {
+        :group => 'custom',
+      } }
+
+      it { should contain_file(CFG_PATH).with(
+        :group => 'custom',
+      ) }
+    end
+
+    context 'setting mode as non-default value' do
+      let(:params) { {
+        :mode => '0777',
+      } }
+
+      it { should contain_file(CFG_PATH).with(
+        :mode => '0777',
+      ) }
+    end
+
     context 'disable pretty print' do
       let(:params) { {
-        :owner => 'root',
-        :group => 'root',
         :pretty => false,
         :content => CUSTOM_CFG,
       } }
@@ -68,8 +93,8 @@ describe 'sensu::write_json', :type => :define do
       it { should contain_file(CFG_PATH).with(
         :ensure => 'present',
         :mode => '0755',
-        :owner => 'root',
-        :group => 'root',
+        :owner => 'sensu',
+        :group => 'sensu',
         :content => "{\"custom\":\"data\"}",
         :notify => nil,
         :subscribe => nil,
