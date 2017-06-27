@@ -118,7 +118,7 @@ define sensu::handler(
     fail('handlers must be set with type set')
   }
 
-  if $sensu::server {
+  if $::sensu::server {
     $notify_services = Class['sensu::server::service']
   } else {
     $notify_services = []
@@ -175,5 +175,4 @@ define sensu::handler(
     notify          => $notify_services,
     require         => File['/etc/sensu/conf.d/handlers'],
   }
-
 }

@@ -8,11 +8,11 @@ class sensu::repo::yum {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::install_repo  {
-    if $sensu::repo_source {
-      $url = $sensu::repo_source
+  if $::sensu::install_repo  {
+    if $::sensu::repo_source {
+      $url = $::sensu::repo_source
     } else {
-      $url = $sensu::repo ? {
+      $url = $::sensu::repo ? {
         'unstable'  => "http://repositories.sensuapp.org/yum-unstable/\$releasever/\$basearch/",
         default     => "http://repositories.sensuapp.org/yum/\$releasever/\$basearch/"
       }
@@ -28,8 +28,8 @@ class sensu::repo::yum {
     }
 
     # prep for Enterprise repos
-    $se_user = $sensu::enterprise_user
-    $se_pass = $sensu::enterprise_pass
+    $se_user = $::sensu::enterprise_user
+    $se_pass = $::sensu::enterprise_pass
 
     if $::sensu::enterprise {
       $se_url  = "http://${se_user}:${se_pass}@enterprise.sensuapp.com/yum/noarch/"
@@ -57,5 +57,4 @@ class sensu::repo::yum {
       }
     }
   }
-
 }

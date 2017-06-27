@@ -15,7 +15,7 @@ before_install:
 
 sudo: false
 
-script: 'SPEC_OPTS="--format documentation" bundle exec rake test'
+script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec'
 
 matrix:
   fast_finish: true

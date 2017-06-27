@@ -10,7 +10,7 @@
 #   Valid values: present, absent
 #
 # [*command*]
-#   String.  Command to run. 
+#   String.  Command to run.
 #   Default: undef
 #
 # [*timeout*]
@@ -38,7 +38,7 @@ define sensu::mutator(
   validate_re($ensure, ['^present$', '^absent$'] )
   if $timeout { validate_re($timeout, '^\d+$') }
 
-  if $sensu::server {
+  if $::sensu::server {
     $notify_services = Class['sensu::server::service']
   } else {
     $notify_services = []
@@ -79,5 +79,4 @@ define sensu::mutator(
     timeout => $timeout,
     require => File['/etc/sensu/conf.d/mutators'],
   }
-
 }

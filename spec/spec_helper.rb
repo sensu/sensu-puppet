@@ -10,3 +10,21 @@ when 'SimpleCov'
 when 'rspec-puppet'
   at_exit { RSpec::Puppet::Coverage.report! }
 end
+
+RSpec.configure do |config|
+  config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
+  config.before :each do
+    # Ensure that we don't accidentally cache facts and environment between
+    # test cases.  This requires each example group to explicitly load the
+    # facts being exercised with something like
+    # Facter.collection.loader.load(:ipaddress)
+    Facter.clear
+    Facter.clear_messages
+  end
+  config.default_facts = {
+    :environment => 'rp_env',
+    :ipaddress   => '127.0.0.1',
+    :kernel      => 'Linux',
+    :osfamily    => 'RedHat',
+  }
+end

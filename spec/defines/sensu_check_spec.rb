@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'sensu::check', :type => :define do
+  let(:pre_condition) do
+    <<-'ENDofPUPPETcode'
+    include ::sensu
+    ENDofPUPPETcode
+  end
   let(:facts) { { :osfamily => 'RedHat' } }
 
   context 'without whitespace in name' do

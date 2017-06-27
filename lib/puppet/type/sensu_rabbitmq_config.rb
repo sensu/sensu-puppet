@@ -104,7 +104,7 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   newproperty(:heartbeat) do
     desc "The RabbitMQ heartbeat value"
     defaultto {30 unless @resource.has_cluster? }
-    
+
     def insync?(is)
       return should == is if should.is_a?(Symbol)
       super(is)

@@ -36,14 +36,14 @@
 #
 # [*pkg_provider*]
 #   String.  When using package to install plugins, provider to use.
-#   Default: undef
+#   Default: undef (taken from $::sensu::sensu_plugin_provider)
 #   Valid values: sensu_gem, apt, aptitude, yum
 #
 # [*nocheckcertificate*]
 #   Boolean.  When using url source, disable certificate checking for HTTPS
 #   Default: false
 #   Valid values: true, false
-define sensu::plugin(
+define sensu::plugin (
   $type               = 'file',
   $install_path       = '/etc/sensu/plugins',
   $purge              = true,
@@ -53,22 +53,22 @@ define sensu::plugin(
   $pkg_provider       = $::sensu::sensu_plugin_provider,
   $pkg_checksum       = undef,
   $nocheckcertificate = false,
-){
+) {
 
   File {
     owner => 'sensu',
     group => 'sensu',
   }
 
-  Sensu::Plugin[$name] ->
-  Class['sensu::client::service']
+  Sensu::Plugin[$name]
+  -> Class['sensu::client::service']
 
   validate_bool($purge, $recurse, $force, $nocheckcertificate)
   validate_re($pkg_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${pkg_version}")
   validate_re($type, ['^file$', '^url$', '^package$', '^directory$'], "Invalid plugin type: ${type}")
 
   case $type {
-    'file':       {
+    'file': {
       $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
       sensu::plugins_dir { "${name}-${install_path}":
@@ -85,34 +85,39 @@ define sensu::plugin(
         require => File[$install_path],
       }
     }
-    'url' : {
-        $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
+    'url': {
+      $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
 
-        sensu::plugins_dir { "${name}-${install_path}":
-          path    => $install_path,
-          purge   => $purge,
-          recurse => $recurse,
-          force   => $force,
-        }
+      sensu::plugins_dir { "${name}-${install_path}":
+        path    => $install_path,
+        purge   => $purge,
+        recurse => $recurse,
+        force   => $force,
+      }
 
-        validate_string($pkg_checksum)
+      validate_string($pkg_checksum)
 
-        remote_file { $name:
-          ensure   => present,
-          path     => "${install_path}/${filename}",
-          source   => $name,
-          checksum => $pkg_checksum,
-          require  => File[$install_path],
-        } ->
-        file { "${install_path}/${filename}":
-          ensure  => file,
-          mode    => '0555',
-          require => File[$install_path],
-        }
+      remote_file { $name:
+        ensure   => present,
+        path     => "${install_path}/${filename}",
+        source   => $name,
+        checksum => $pkg_checksum,
+        require  => File[$install_path],
+      }
+
+      file { "${install_path}/${filename}":
+        ensure  => file,
+        mode    => '0555',
+        require => [
+          File[$install_path],
+          Remote_file[$name],
+        ],
+      }
     }
-    'directory':  {
-      file { $install_path:
-        ensure  => directory,
+    'directory': {
+      file { "${install_path}_for_plugin_${name}":
+        ensure  => 'directory',
+        path    => $install_path,
         mode    => '0555',
         source  => $name,
         recurse => $recurse,
@@ -130,6 +135,5 @@ define sensu::plugin(
     default:      {
       fail('Unsupported sensu::plugin install type')
     }
-
   }
 }

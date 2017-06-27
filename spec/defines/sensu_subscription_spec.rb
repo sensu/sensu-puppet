@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'sensu::subscription', :type => :define do
+  let(:pre_condition) do
+    <<-'ENDofPUPPETcode'
+    include ::sensu
+    ENDofPUPPETcode
+  end
   context 'without whitespace in name' do
     let(:title) { 'mysubscription' }
 

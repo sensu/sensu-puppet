@@ -1,7 +1,13 @@
 fixtures:
   repositories:
-    apt: git://github.com/puppetlabs/puppetlabs-apt.git
-    stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
-    remote_file: git://github.com/lwf/puppet-remote_file.git
+    apt:
+      repo: git://github.com/puppetlabs/puppetlabs-apt.git
+      ref: 4.1.0
+    stdlib:
+      repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
+      ref: 4.16.0
+    remote_file:
+      repo: git://github.com/lwf/puppet-remote_file.git
+      ref: v1.1.3
   symlinks:
     sensu: "#{source_dir}"

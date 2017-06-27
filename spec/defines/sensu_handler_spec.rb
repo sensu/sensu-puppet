@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'sensu::handler', :type => :define do
+  let(:pre_condition) do
+    <<-'ENDofPUPPETcode'
+    include ::sensu
+    ENDofPUPPETcode
+  end
   let(:title) { 'myhandler' }
 
   context 'default (present)' do

@@ -6,7 +6,7 @@ $h = {
     'two'   => 2,
     'hash2' => {
       'works' => true,
-    }
+    },
   },
   'array_of_hash' => [
     {'one' => 1},
@@ -29,7 +29,7 @@ sensu::write_json { '/tmp/sensu-group.json':
 }
 
 sensu::write_json { '/tmp/sensu-mode.json':
-  mode   => '0777',
+  mode    => '0777',
   content => $h,
 }
 

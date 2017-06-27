@@ -42,7 +42,7 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 
 # setup module dependencies
 puppet module install puppetlabs/stdlib --version 4.16.0
-puppet module install puppetlabs/apt --version 3.0.0
+puppet module install puppetlabs/apt --version 4.1.0
 puppet module install lwf-remote_file --version 1.1.3
 
 # install EPEL repos for required dependencies

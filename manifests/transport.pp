@@ -8,7 +8,7 @@ class sensu::transport {
     fail("Use of private function ${name} by ${caller_module_name}")
   }
 
-  if $sensu::transport_type != 'redis' {
+  if $::sensu::transport_type != 'redis' {
     $ensure = 'absent'
   } else {
     $ensure = 'present'
@@ -16,7 +16,7 @@ class sensu::transport {
 
   $transport_type_hash = {
     'transport' => {
-      'name'               => $sensu::transport_type,
+      'name'               => $::sensu::transport_type,
       'reconnect_on_error' => true,
     },
   }
@@ -27,6 +27,6 @@ class sensu::transport {
     group   => 'sensu',
     mode    => '0440',
     content => inline_template('<%= JSON.pretty_generate(@transport_type_hash) %>'),
-    notify  => $sensu::check_notify,
+    notify  => $::sensu::check_notify,
   }
 }

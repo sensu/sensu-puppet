@@ -12,11 +12,11 @@ describe Puppet::Type.type(:sensu_rabbitmq_config) do
     result
   end
 
-  let :resource_hash do 
+  let :resource_hash do
     {
       :title   => 'foo.example.com',
       :catalog => Puppet::Resource::Catalog.new()
-    } 
+    }
   end
 
   let :cluster_proper do

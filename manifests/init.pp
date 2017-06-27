@@ -89,7 +89,8 @@
 #   Valid values: true, false
 #
 # [*manage_plugins_dir*]
-#   Boolean. Manage the sensu plugins directory
+#   Boolean. Manage the sensu plugins directory. Must be false if you use
+#   sensu::plugin with type 'directory'.
 #   Default: true
 #   Valid values: true, false
 #
@@ -577,35 +578,34 @@ class sensu (
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
-  anchor { 'sensu::begin': } ->
-  class { '::sensu::package': } ->
-  class { '::sensu::enterprise::package': } ->
-  class { '::sensu::transport': } ->
-  class { '::sensu::rabbitmq::config': } ->
-  class { '::sensu::api::config': } ->
-  class { '::sensu::redis::config': } ->
-  class { '::sensu::client::config': } ->
-  class { '::sensu::client::service':
+  anchor { 'sensu::begin': }
+  -> class { '::sensu::package': }
+  -> class { '::sensu::enterprise::package': }
+  -> class { '::sensu::transport': }
+  -> class { '::sensu::rabbitmq::config': }
+  -> class { '::sensu::api::config': }
+  -> class { '::sensu::redis::config': }
+  -> class { '::sensu::client::config': }
+  -> class { '::sensu::client::service':
     hasrestart => $hasrestart,
-  } ->
-  class { '::sensu::api::service':
+  }
+  -> class { '::sensu::api::service':
     hasrestart => $hasrestart,
-  } ->
-  class { '::sensu::server::service':
+  }
+  -> class { '::sensu::server::service':
     hasrestart => $hasrestart,
-  } ->
-  class { '::sensu::enterprise::service':
+  }
+  -> class { '::sensu::enterprise::service':
     hasrestart => $hasrestart,
-  } ->
-  class { '::sensu::enterprise::dashboard':
+  }
+  -> class { '::sensu::enterprise::dashboard':
     hasrestart => $hasrestart,
-  } ->
-  anchor {'sensu::end': }
+  }
+  -> anchor {'sensu::end': }
 
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
     sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
   }
-
 }
