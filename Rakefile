@@ -25,7 +25,11 @@ end
 desc 'Validate manifests, templates, ruby files and shell scripts'
 task :validate do
   # lib/* gets checked by puppetlabs_spec_helper, though it skips spec entirely
-  Dir['spec/**/*.rb', 'lib/**/*.rb'].each do |ruby_file|
+  Dir['Vagrantfile', 'spec/**/*.rb', 'lib/**/*.rb'].each do |ruby_file|
     sh "ruby -c #{ruby_file}" unless ruby_file =~ /^(spec\/fixtures)|(lib)/
+  end
+
+  Dir['**/*.sh'].each do |shell_script|
+    sh "bash -n #{shell_script}" unless shell_script =~ /spec\/fixtures/
   end
 end
