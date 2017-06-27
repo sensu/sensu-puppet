@@ -1,7 +1,24 @@
 # Change Log
 
-## [v2.4.0](https://github.com/sensu/sensu-puppet/tree/v2.4.0)
+## [v2.5.0](https://github.com/sensu/sensu-puppet/tree/v2.5.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.4.0...v2.5.0)
+
+**Closed issues:**
+
+- Ensure file validation tests are being done [\#680](https://github.com/sensu/sensu-puppet/issues/680)
+- Use a newer puppetlabs\_spec\_helper that includes syntax validation [\#679](https://github.com/sensu/sensu-puppet/issues/679)
+- Implement support for arbitrary top-level configuration hashes [\#661](https://github.com/sensu/sensu-puppet/issues/661)
+- Unable to define handler specific config properly [\#647](https://github.com/sensu/sensu-puppet/issues/647)
+- Getting 'cluster' error from module and then after updating getting 'heartbeat' error [\#634](https://github.com/sensu/sensu-puppet/issues/634)
+- Update repository URLs and release new module version [\#606](https://github.com/sensu/sensu-puppet/issues/606)
+
+**Merged pull requests:**
+
+- \(GH-680\) Add file validation checks for Vagrantfile and shell scripts \(\*.sh\) [\#687](https://github.com/sensu/sensu-puppet/pull/687) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-679\) Upgrade puppetlabs\_spec\_helper and puppet-lint [\#686](https://github.com/sensu/sensu-puppet/pull/686) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.4.0](https://github.com/sensu/sensu-puppet/tree/v2.4.0) (2017-06-27)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.3.1...v2.4.0)
 
 **Closed issues:**
