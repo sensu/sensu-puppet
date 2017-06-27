@@ -118,7 +118,7 @@ define sensu::plugin(
         recurse => $recurse,
         purge   => $purge,
         force   => $force,
-        require => Package['sensu'],
+        require => Package[$sensu::package::pkg_title],
       }
     }
     'package':    {

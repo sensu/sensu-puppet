@@ -97,7 +97,7 @@ class sensu::package {
       owner   => '0',
       group   => '0',
       mode    => '0444',
-      require => Package['sensu'],
+      require => Package[$pkg_title],
     }
   }
 
@@ -109,7 +109,7 @@ class sensu::package {
     purge   => $sensu::_purge_config,
     recurse => true,
     force   => true,
-    require => Package[$pkg_name],
+    require => Package[$pkg_title],
   }
 
   if $sensu::manage_handlers_dir {
@@ -121,7 +121,7 @@ class sensu::package {
       purge   => $sensu::_purge_handlers,
       recurse => true,
       force   => true,
-      require => Package[$pkg_name],
+      require => Package[$pkg_title],
     }
   }
 
@@ -133,7 +133,7 @@ class sensu::package {
     purge   => $sensu::_purge_extensions,
     recurse => true,
     force   => true,
-    require => Package[$pkg_name],
+    require => Package[$pkg_title],
   }
 
   if $sensu::manage_mutators_dir {
@@ -145,7 +145,7 @@ class sensu::package {
       purge   => $sensu::_purge_mutators,
       recurse => true,
       force   => true,
-      require => Package[$pkg_name],
+      require => Package[$pkg_title],
     }
   }
 
@@ -158,7 +158,7 @@ class sensu::package {
       purge   => $sensu::_purge_plugins,
       recurse => true,
       force   => true,
-      require => Package[$pkg_name],
+      require => Package[$pkg_title],
     }
   }
 
