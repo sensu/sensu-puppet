@@ -18,9 +18,9 @@ class sensu::client::service (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::manage_services {
+  if $::sensu::manage_services {
 
-    case $sensu::client {
+    case $::sensu::client {
       true: {
         $ensure = 'running'
         $enable = true
@@ -41,18 +41,21 @@ class sensu::client::service (
       exec { 'install-sensu-client':
         command => "powershell.exe -ExecutionPolicy RemoteSigned -Command \"New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic\"",
         unless  => 'powershell.exe -ExecutionPolicy RemoteSigned -Command "Get-Service sensu-client"',
-        path    => $::path,
+        path    => 'C:/Windows/System32/WindowsPowerShell/v1.0:C:/Windows/SysWOW64/WindowsPowerShell/v1.0',
         before  => Service['sensu-client'],
         require => File['C:/opt/sensu/bin/sensu-client.xml'],
       }
-
     }
 
     service { 'sensu-client':
       ensure     => $ensure,
       enable     => $enable,
       hasrestart => $hasrestart,
-      subscribe  => [Class['sensu::package'], Class['sensu::client::config'], Class['sensu::rabbitmq::config'] ],
+      subscribe  => [
+        Class['sensu::package'],
+        Class['sensu::client::config'],
+        Class['sensu::rabbitmq::config'],
+      ],
     }
   }
 }

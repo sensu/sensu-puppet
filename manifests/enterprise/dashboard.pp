@@ -5,12 +5,12 @@ class sensu::enterprise::dashboard (
   $hasrestart = true,
 ) {
 
-  anchor { 'sensu::enterprise::dashboard::begin': } ->
-  class { '::sensu::enterprise::dashboard::package': } ->
-  class { '::sensu::enterprise::dashboard::config': } ->
-  class { '::sensu::enterprise::dashboard::service':
+  anchor { 'sensu::enterprise::dashboard::begin': }
+  -> class { '::sensu::enterprise::dashboard::package': }
+  -> class { '::sensu::enterprise::dashboard::config': }
+  -> class { '::sensu::enterprise::dashboard::service':
     hasrestart => $hasrestart,
-  } ->
-  anchor { 'sensu::enterprise::dashboard::end': }
+  }
+  -> anchor { 'sensu::enterprise::dashboard::end': }
 
 }

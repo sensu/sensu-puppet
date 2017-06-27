@@ -119,7 +119,7 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
     api['ssl'] = value
   end
 
-  # Public: Retrieve the Boolean value which determines whether to accept 
+  # Public: Retrieve the Boolean value which determines whether to accept
   # an insecure SSL certificate
   #
   # Returns the Boolean insecure.

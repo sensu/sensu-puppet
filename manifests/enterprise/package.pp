@@ -11,7 +11,7 @@ class sensu::enterprise::package {
   if $::sensu::enterprise {
 
     package { 'sensu-enterprise':
-      ensure  => $sensu::enterprise_version,
+      ensure  => $::sensu::enterprise_version,
     }
 
     file { '/etc/default/sensu-enterprise':
@@ -23,5 +23,4 @@ class sensu::enterprise::package {
       require => Package['sensu-enterprise'],
     }
   }
-
 }

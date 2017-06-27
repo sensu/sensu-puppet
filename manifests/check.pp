@@ -234,5 +234,4 @@ define sensu::check(
     notify              => $::sensu::check_notify,
     ttl                 => $ttl,
   }
-
 }

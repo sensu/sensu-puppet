@@ -18,9 +18,9 @@ class sensu::api::service (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $sensu::manage_services {
+  if $::sensu::manage_services {
 
-    case $sensu::api {
+    case $::sensu::api {
       true: {
         $ensure = 'running'
         $enable = true
@@ -36,7 +36,11 @@ class sensu::api::service (
         ensure     => $ensure,
         enable     => $enable,
         hasrestart => $hasrestart,
-        subscribe  => [ Class['sensu::package'], Class['sensu::api::config'], Class['sensu::redis::config'] ],
+        subscribe  => [
+          Class['sensu::package'],
+          Class['sensu::api::config'],
+          Class['sensu::redis::config'],
+        ],
       }
     }
   }

@@ -25,11 +25,11 @@
 #
 # [*owner*]
 #   String. The file owner.
-#   Default: $sensu::user
+#   Default: $::sensu::user
 #
 # [*group*]
 #   String. The file group.
-#   Default: $sensu::group
+#   Default: $::sensu::group
 #
 # [*mode*]
 #   String. The file mode.

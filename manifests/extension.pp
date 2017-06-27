@@ -34,7 +34,7 @@ define sensu::extension(
   validate_re($ensure, ['^present$', '^absent$'] )
   validate_re($source, ['^puppet://'] )
 
-  if $sensu::client {
+  if $::sensu::client {
     $notify_services = Class['sensu::client::service']
   } else {
     $notify_services = []
@@ -70,5 +70,4 @@ define sensu::extension(
     notify  => $notify_services,
     require => File['/etc/sensu/conf.d/extensions'],
   }
-
 }
