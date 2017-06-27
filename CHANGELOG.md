@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.3.1](https://github.com/sensu/sensu-puppet/tree/v2.3.1)
+## [v2.4.0](https://github.com/sensu/sensu-puppet/tree/v2.4.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.3.1...v2.4.0)
+
+**Closed issues:**
+
+- Vagrant environment does not work [\#676](https://github.com/sensu/sensu-puppet/issues/676)
+
+**Merged pull requests:**
+
+- Migrate vagrant to CentOS 7 and Puppet v4 [\#677](https://github.com/sensu/sensu-puppet/pull/677) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.3.1](https://github.com/sensu/sensu-puppet/tree/v2.3.1) (2017-06-27)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.3.0...v2.3.1)
 
 **Closed issues:**
