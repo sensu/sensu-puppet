@@ -23,6 +23,7 @@ group :development, :unit_tests do
   gem 'puppet-blacksmith',                                :require => false
   gem 'rest-client', "1.6.8",                             :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
+  gem 'puppet-lint-alias-check',                          :require => false
   gem 'puppet-lint-empty_string-check',                   :require => false
   gem 'puppet-lint-file_ensure-check',                    :require => false
   gem 'puppet-lint-leading_zero-check',                   :require => false
@@ -30,6 +31,7 @@ group :development, :unit_tests do
   gem 'puppet-lint-trailing_comma-check',                 :require => false
   gem 'puppet-lint-undef_in_function-check',              :require => false
   gem 'puppet-lint-unquoted_string-check',                :require => false
+  gem 'puppet-lint-variable_contains_upcase',             :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
 end
 
