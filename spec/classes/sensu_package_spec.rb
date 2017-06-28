@@ -309,5 +309,14 @@ describe 'sensu' do
       let (:params) { { :manage_mutators_dir => false }}
       it { should_not contain_file('/etc/sensu/mutators') }
     end
+
+    context 'on Windows 2012r2' do
+      let(:facts) do
+        { :fqdn => 'testhost.domain.com', :osfamily => 'windows' }
+      end
+
+      it { should_not contain_package('Sensu') }
+      it { should contain_package('sensu') }
+    end
   end
 end
