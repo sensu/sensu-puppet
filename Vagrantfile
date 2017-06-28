@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
     server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
     server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
-    server.vm.provision :shell, :path => "tests/provision_basic.sh"
+    server.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     server.vm.provision :shell, :path => "tests/provision_server.sh"
     server.vm.provision :shell, :path => "tests/rabbitmq.sh"
   end
@@ -38,7 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.box = "centos/7"
     client.vm.hostname = 'el7-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.11"
-    client.vm.provision :shell, :path => "tests/provision_basic.sh"
+    client.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     client.vm.provision :shell, :path => "tests/provision_client_el7.sh"
   end
 
@@ -46,7 +46,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.box = "centos/6"
     client.vm.hostname = 'el6-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.12"
-    client.vm.provision :shell, :path => "tests/provision_basic.sh"
+    client.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     client.vm.provision :shell, :path => "tests/provision_client_el6.sh"
+  end
+
+  config.vm.define "ubuntu1604-client", autostart: false do |client|
+    client.vm.box = "ubuntu/xenial64"
+    client.vm.hostname = 'ubuntu1604-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.13"
+    client.vm.provision :shell, :path => "tests/provision_basic_ubuntu.sh"
+    client.vm.provision :shell, :path => "tests/provision_client_ubuntu.sh"
+  end
+
+  config.vm.define "ubuntu1404-client", autostart: false do |client|
+    client.vm.box = "ubuntu/trusty64"
+    client.vm.hostname = 'ubuntu1404-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.14"
+    client.vm.provision :shell, :path => "tests/provision_basic_ubuntu.sh"
+    client.vm.provision :shell, :path => "tests/provision_client_ubuntu1404.sh"
   end
 end

@@ -41,6 +41,7 @@ spec/fixtures/modules/*
 # Sensu
 junit/
 log/
+*.log
 vendor/
 sensu.komodoproject
 doc/**
