@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.6.0](https://github.com/sensu/sensu-puppet/tree/v2.6.0)
+## [v2.7.0](https://github.com/sensu/sensu-puppet/tree/v2.7.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.6.0...v2.7.0)
+
+**Closed issues:**
+
+- the sensu-plugin gem is incorrectly installed with the system ruby instead of the embedded ruby [\#688](https://github.com/sensu/sensu-puppet/issues/688)
+
+**Merged pull requests:**
+
+- \(GH-644\) Use the new apt and yum repositories [\#696](https://github.com/sensu/sensu-puppet/pull/696) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-688\) Default sensu-plugin gem to use sensu\_gem provider [\#694](https://github.com/sensu/sensu-puppet/pull/694) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.6.0](https://github.com/sensu/sensu-puppet/tree/v2.6.0) (2017-06-28)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.5.0...v2.6.0)
 
 **Closed issues:**
