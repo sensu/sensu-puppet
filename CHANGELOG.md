@@ -1,7 +1,21 @@
 # Change Log
 
-## [v2.5.0](https://github.com/sensu/sensu-puppet/tree/v2.5.0)
+## [v2.6.0](https://github.com/sensu/sensu-puppet/tree/v2.6.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.5.0...v2.6.0)
+
+**Closed issues:**
+
+- Drop support for Windows 2008 and 2012 \(non R2\) [\#691](https://github.com/sensu/sensu-puppet/issues/691)
+- Drop support for EOL platform ubuntu 12.04 [\#690](https://github.com/sensu/sensu-puppet/issues/690)
+
+**Merged pull requests:**
+
+- EOL platforms [\#693](https://github.com/sensu/sensu-puppet/pull/693) ([ghoneycutt](https://github.com/ghoneycutt))
+- Add support for Ubuntu 16.04 LTS [\#692](https://github.com/sensu/sensu-puppet/pull/692) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-681\) Add EL6 platform as a client to Vagrant [\#689](https://github.com/sensu/sensu-puppet/pull/689) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.5.0](https://github.com/sensu/sensu-puppet/tree/v2.5.0) (2017-06-27)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.4.0...v2.5.0)
 
 **Closed issues:**
