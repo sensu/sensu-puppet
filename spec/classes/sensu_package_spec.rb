@@ -40,7 +40,6 @@ describe 'sensu' do
 
         it { should contain_package('sensu-plugin').with(
           :ensure   => 'installed',
-          :provider => 'gem'
         ) }
       end
 
@@ -56,15 +55,26 @@ describe 'sensu' do
 
         it { should contain_package('sensu-plugin').with(
           :ensure   => 'installed',
-          :provider => 'gem'
         ) }
       end
     end
 
-    context 'embeded_ruby' do
-      let(:params) { { :use_embedded_ruby => true } }
+    describe 'embeded_ruby' do
+      context 'with default behavior (GH-688)' do
+        it { should contain_package('sensu-plugin').with(:provider => 'sensu_gem') }
+      end
 
-      it { should contain_package('sensu-plugin').with(:provider => 'sensu_gem') }
+      context 'with use_embedded_ruby => true' do
+        let(:params) { { :use_embedded_ruby => true } }
+
+        it { should contain_package('sensu-plugin').with(:provider => 'sensu_gem') }
+      end
+
+      context 'with use_embedded_ruby => false' do
+        let(:params) { { :use_embedded_ruby => false } }
+
+        it { should contain_package('sensu-plugin').with(:provider => 'gem') }
+      end
     end
 
     context 'sensu_plugin_provider and sensu_plugin_name' do
