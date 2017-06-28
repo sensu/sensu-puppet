@@ -169,4 +169,10 @@ describe 'sensu', :type => :class do
         :source => "puppet:///modules/sensu_module/community-plugins/handlers/notification/hipchat.rb"
     )}
   end
+
+  describe '(GH-688) default behavior of sensu_plugin_provider' do
+    it 'should be sensu_gem ' do
+      should contain_package('sensu-plugin').with(:provider => 'sensu_gem')
+    end
+  end
 end

@@ -264,8 +264,12 @@
 #   Example value: { config => true, plugins => true }
 #
 # [*use_embedded_ruby*]
-#   Boolean.  If the embedded ruby should be used
-#   Default: false
+#   Boolean.  If the embedded ruby should be used, e.g. to install the
+#   sensu-plugin gem.  This value is overridden by a defined
+#   sensu_plugin_provider.  Note, the embedded ruby should always be used to
+#   provide full compatibility.  Using other ruby runtimes, e.g. the system
+#   ruby, is not recommended.
+#   Default: true
 #   Valid values: true, false
 #
 # [*rubyopt*]
@@ -416,7 +420,7 @@ class sensu (
   $purge                          = false,
   $purge_config                   = false,
   $purge_plugins_dir              = false,
-  $use_embedded_ruby              = false,
+  $use_embedded_ruby              = true,
   $rubyopt                        = undef,
   $gem_path                       = undef,
   $log_level                      = 'info',
