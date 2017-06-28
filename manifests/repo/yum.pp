@@ -13,8 +13,8 @@ class sensu::repo::yum {
       $url = $::sensu::repo_source
     } else {
       $url = $::sensu::repo ? {
-        'unstable'  => "http://sensu.global.ssl.fastly.net/yum-unstable/\$releasever/\$basearch/",
-        default     => "http://sensu.global.ssl.fastly.net/yum/\$releasever/\$basearch/"
+        'unstable'  => "https://sensu.global.ssl.fastly.net/yum-unstable/\$releasever/\$basearch/",
+        default     => "https://sensu.global.ssl.fastly.net/yum/\$releasever/\$basearch/"
       }
     }
 
