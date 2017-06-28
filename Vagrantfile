@@ -65,4 +65,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :path => "tests/provision_basic_ubuntu.sh"
     client.vm.provision :shell, :path => "tests/provision_client_ubuntu1404.sh"
   end
+
+  config.vm.define "win2012r2-client", autostart: false do |client|
+    client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
+    client.vm.hostname = 'win2012r2-client'
+    client.vm.network  :private_network, ip: "192.168.56.15"
+    client.vm.network "forwarded_port", host: 33389, guest: 3389
+    # There are two basic power shell scripts.  The first installs Puppet, but
+    # puppet is not in the PATH.  The second invokes a new shell which will have
+    # Puppet in the PATH.
+    #
+    ## Install Puppet
+    client.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
+    ## Symlink module into place, run puppet module install for puppet apply
+    client.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
+    ## Run puppet apply
+    client.vm.provision :shell, :path => "tests/provision_client_win.ps1"
+  end
 end
