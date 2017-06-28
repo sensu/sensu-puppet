@@ -102,11 +102,11 @@ describe 'sensu' do
           context 'default' do
             it { should contain_apt__source('sensu').with(
               :ensure      => 'present',
-              :location    => 'http://sensu.global.ssl.fastly.net/apt',
+              :location    => 'https://sensu.global.ssl.fastly.net/apt',
               :release     => 'trusty',
               :repos       => 'main',
               :include     => { 'src' => false },
-              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'http://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
+              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
               :before      => 'Package[sensu]'
             ) }
           end
@@ -167,11 +167,11 @@ describe 'sensu' do
           context 'repo release' do
             it { should contain_apt__source('sensu').with(
               :ensure      => 'present',
-              :location    => 'http://sensu.global.ssl.fastly.net/apt',
+              :location    => 'https://sensu.global.ssl.fastly.net/apt',
               :release     => 'jessie',
               :repos       => 'main',
               :include     => { 'src' => false },
-              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'http://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
+              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
               :before      => 'Package[sensu]'
             ) }
           end
@@ -184,7 +184,7 @@ describe 'sensu' do
         context 'default' do
           it { should contain_yumrepo('sensu').with(
             :enabled   => 1,
-            :baseurl   => 'http://sensu.global.ssl.fastly.net/yum/$releasever/$basearch/',
+            :baseurl   => 'https://sensu.global.ssl.fastly.net/yum/$releasever/$basearch/',
             :gpgcheck  => 0,
             :before    => 'Package[sensu]'
           ) }
@@ -202,7 +202,7 @@ describe 'sensu' do
 
         context 'unstable repo' do
           let(:params) { { :repo => 'unstable' } }
-          it { should contain_yumrepo('sensu').with(:baseurl => 'http://sensu.global.ssl.fastly.net/yum-unstable/$releasever/$basearch/' )}
+          it { should contain_yumrepo('sensu').with(:baseurl => 'https://sensu.global.ssl.fastly.net/yum-unstable/$releasever/$basearch/' )}
         end
 
         context 'override repo url' do
