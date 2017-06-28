@@ -22,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--memory", "512"]
   end
 
-  config.vm.define "el7-server", primary: true, autostart: true do |server|
+  config.vm.define "sensu-server", primary: true, autostart: true do |server|
     server.vm.box = "centos/7"
     server.vm.hostname = 'sensu-server.example.com'
     server.vm.network :private_network, ip: "192.168.56.10"
