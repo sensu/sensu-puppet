@@ -177,7 +177,7 @@ class sensu::package {
       system => true,
     }
   } elsif $::sensu::manage_user and $::osfamily == 'windows' {
-    warning('Managing a local windows user is not supported')
+    notice('Managing a local windows user is not implemented on windows')
   }
 
   file { "${sensu::etc_dir}/config.json": ensure => absent }
