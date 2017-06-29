@@ -68,6 +68,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "win2012r2-client", autostart: false do |client|
     client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
+    client.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--cpus", "2"]
+    end
     client.vm.hostname = 'win2012r2-client'
     client.vm.network  :private_network, ip: "192.168.56.15"
     client.vm.network "forwarded_port", host: 33389, guest: 3389
