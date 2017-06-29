@@ -50,9 +50,9 @@ class sensu::package {
         default     => $pkg_version,
       }
       $pkg_title = 'sensu'
-      $pkg_name = 'sensu'
+      $pkg_name = 'Sensu'
       $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
-      $pkg_require = "Remote_file[${pkg_name}]"
+      $pkg_require = "Remote_file[${pkg_title}]"
 
       # The user can override the computation of the source URL.
       if $::sensu::windows_pkg_url {
@@ -67,7 +67,7 @@ class sensu::package {
       }
 
       # path matches Package[sensu] { source => $pkg_source }
-      remote_file { $pkg_name:
+      remote_file { $pkg_title:
         ensure   => present,
         path     => $pkg_source,
         source   => $pkg_url,
