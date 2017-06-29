@@ -343,6 +343,18 @@ describe 'sensu' do
         it { should contain_remote_file('sensu').with(
           source: 'https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi',
         ) }
+        # The MSI provider will keep re-installing the package unless the
+        # version is translated into dotted form.  e.g. 'Notice:
+        # /Stage[main]/Sensu::Package/Package[sensu]/ensure: ensure changed
+        # '0.29.0.11' to '0.29.0-11'
+        it 'translates 0.29.0-11 to 0.29.0.11' do
+          should contain_package('sensu').with(ensure: '0.29.0.11')
+        end
+        # The MSI provider checks Add/Remove programs.  Package[sensu] is
+        # registered as "Sensu" so the name parameter must match.
+        it 'uses name "Sensu" to match Add/Remove Programs' do
+          should contain_package('sensu').with(name: 'Sensu')
+        end
       end
 
       context 'with windows_pkg_url specified' do

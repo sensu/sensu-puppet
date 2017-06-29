@@ -44,13 +44,20 @@ class sensu::package {
     'windows': {
       $repo_require = undef
 
-      $pkg_version = $::sensu::version
-      $pkg_url_version = $pkg_version ? {
+      # $pkg_version is passed to Package[sensu] { ensure }.  The Windows MSI
+      # provider translates hyphens to dots, e.g. '0.29.0-11' maps to
+      # '0.29.0.11' on the system.  This mapping is necessary to converge.
+      $pkg_version = template('sensu/sensu-windows-package-version.erb')
+      # The version used to construct the download URL.
+      $pkg_url_version = $::sensu::version ? {
         'installed' => 'latest',
-        default     => $pkg_version,
+        default     => $::sensu::version,
       }
+      # The title used for consistent relationships in the Puppet catalog
       $pkg_title = 'sensu'
+      # The name used by the provider to compare to Windows Add/Remove programs.
       $pkg_name = 'Sensu'
+      # Where the MSI is downloaded to and installed from.
       $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
       $pkg_require = "Remote_file[${pkg_title}]"
 
