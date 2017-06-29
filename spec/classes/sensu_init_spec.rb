@@ -6,27 +6,29 @@ describe 'sensu', :type => :class do
   it 'should compile' do should create_class('sensu') end
   it { should contain_user('sensu') }
 
-  context 'osfamily windows with manage_user => true' do
+  context 'osfamily windows' do
     let(:facts) do
       {
         :osfamily => 'windows',
         :kernel   => 'windows',
+        :operatingsystem => 'Windows',
+        :os => {
+          :architecture => 'x64',
+          :release => {
+            :major => '2012 R2',
+          },
+        },
       }
+
+      describe 'with manage_user => true' do
+        it { should_not contain_user('sensu') }
+      end
+
+      describe 'with manage_user => false' do
+        let(:params) { {:manage_user => false} }
+        it { should_not contain_user('sensu') }
+      end
     end
-
-    it { should_not contain_user('sensu') }
-  end
-
-  context 'osfamily windows with manage_user => false' do
-    let(:facts) do
-      {
-        :osfamily => 'windows',
-        :kernel   => 'windows',
-      }
-    end
-    let(:params) { {:manage_user => false} }
-
-    it { should_not contain_user('sensu') }
   end
 
   context 'with manage_user => false' do

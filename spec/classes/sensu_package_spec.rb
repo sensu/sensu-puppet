@@ -9,7 +9,7 @@ describe 'sensu' do
   context 'package' do
     context 'defaults' do
       it { should create_class('sensu::package') }
-      it { should contain_package('sensu').with_ensure('latest') }
+      it { should contain_package('sensu').with_ensure('installed') }
       it { should contain_file('/etc/default/sensu') }
       it { should_not contain_file('/etc/default/sensu').with(:content => /RUBYOPT/) }
       it { should_not contain_file('/etc/default/sensu').with(:content => /GEM_PATH/) }
@@ -312,11 +312,38 @@ describe 'sensu' do
 
     context 'on Windows 2012r2' do
       let(:facts) do
-        { :fqdn => 'testhost.domain.com', :osfamily => 'windows' }
+        {
+          :fqdn => 'testhost.domain.com',
+          :operatingsystem => 'Windows',
+          :osfamily => 'windows',
+          :os => {
+            :architecture => 'x64',
+            :release => {
+              :major => '2012 R2',
+            },
+          },
+        }
       end
 
-      it { should_not contain_package('Sensu') }
-      it { should contain_package('sensu') }
+      context 'with defaults (GH-646)' do
+        it { should_not contain_package('Sensu') }
+        it { should contain_package('sensu').with(
+          ensure: 'installed',
+          source: 'C:\\Windows\\Temp\\sensu-latest.msi',
+        ) }
+
+        it { should contain_remote_file('sensu').with(
+          source: 'https://repositories.sensuapp.org/msi/2012r2/sensu-latest-x64.msi',
+          path: 'C:\\Windows\\Temp\\sensu-latest.msi',
+        ) }
+      end
+
+      context 'with explicit version, as used by Vagrant  (GH-646)' do
+        let(:params) { { version: '0.29.0-11' } }
+        it { should contain_remote_file('sensu').with(
+          source: 'https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi',
+        ) }
+      end
     end
   end
 end

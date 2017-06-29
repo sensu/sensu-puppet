@@ -44,15 +44,30 @@ class sensu::package {
     'windows': {
       $repo_require = undef
 
-      $pkg_version = inline_template("<%= scope.lookupvar('sensu::version').sub(/(.*)\\-/, '\\1.') %>")
+      $pkg_version = $::sensu::version
+      # Download the latest published version
+      $pkg_url_version = $pkg_version ? {
+        'installed' => 'latest',
+        default   => $pkg_version,
+      }
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
-      $pkg_source = "C:\\Windows\\Temp\\sensu-${sensu::version}.msi"
-      $pkg_require = "Remote_file[${pkg_source}]"
+      $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
+      $pkg_require = "Remote_file[${pkg_name}]"
+      # The OS Release specific sub-folder
+      $os_release = $facts['os']['release']['major']
+      $pkg_url_dir = $os_release ? {
+        '2008 R2' => '2008r2',
+        '2012 R2' => '2012r2',
+        '2016 R2' => '2016r2',
+        default   => $os_release,
+      }
+      $pkg_arch = $facts['os']['architecture']
 
-      remote_file { $pkg_source:
+      remote_file { $pkg_name:
         ensure   => present,
-        source   => "${sensu::windows_repo_prefix}-${sensu::version}.msi",
+        path     => $pkg_source,
+        source   => "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi",
         checksum => $::sensu::package_checksum,
       }
     }

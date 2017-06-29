@@ -5,8 +5,9 @@
 # == Parameters
 #
 # [*version*]
-#   String.  Version of sensu to install
-#   Default: latest
+#   String.  Version of sensu to install.  Defaults to `installed` to support
+#   Windows MSI packaging and to avoid surprising upgrades.
+#   Default: installed
 #   Valid values: absent, installed, latest, present, [\d\.\-el]+
 #
 # [*sensu_plugin_name*]
@@ -16,7 +17,8 @@
 #
 # [*sensu_plugin_provider*]
 #   String.  Provider used to install the sensu-plugin package. Refers to the
-#   sensu-plugin rubygem, not the sensu-plugins community scripts
+#   sensu-plugin rubygem, not the sensu-plugins community scripts.  On windows,
+#   defaults to `gem`, all other platforms defaults to `undef`
 #   Default: undef
 #   Valid values: sensu_gem, apt, aptitude, yum
 #
@@ -355,9 +357,12 @@
 
 
 class sensu (
-  $version                        = 'latest',
+  $version                        = 'installed',
   $sensu_plugin_name              = 'sensu-plugin',
-  $sensu_plugin_provider          = undef,
+  $sensu_plugin_provider          = $::osfamily ? {
+    'windows' => 'gem',
+    default   => undef,
+  },
   $sensu_plugin_version           = 'installed',
   $install_repo                   = true,
   $enterprise                     = false,
@@ -444,7 +449,7 @@ class sensu (
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
   $package_checksum               = undef,
-  $windows_repo_prefix            = 'http://repositories.sensuapp.org/msi/sensu',
+  $windows_repo_prefix            = 'https://repositories.sensuapp.org/msi',
   $windows_logrotate              = false,
   $windows_log_number             = '10',
   $windows_log_size               = '10240',
