@@ -39,11 +39,11 @@ class sensu::client::service (
       }
 
       exec { 'install-sensu-client':
-        command => "powershell.exe -ExecutionPolicy RemoteSigned -Command \"New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic\"",
-        unless  => 'powershell.exe -ExecutionPolicy RemoteSigned -Command "Get-Service sensu-client"',
-        path    => 'C:/Windows/System32/WindowsPowerShell/v1.0:C:/Windows/SysWOW64/WindowsPowerShell/v1.0',
-        before  => Service['sensu-client'],
-        require => File['C:/opt/sensu/bin/sensu-client.xml'],
+        provider => 'powershell',
+        command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
+        unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
+        before   => Service['sensu-client'],
+        require  => File['C:/opt/sensu/bin/sensu-client.xml'],
       }
     }
 
