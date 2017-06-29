@@ -6,7 +6,7 @@ if ( Get-Command "puppet" -ErrorAction SilentlyContinue ) {
 } else {
   Write-Output "Installing Puppet from $agent_url"
   Write-Output "Log will be written to $log"
-  Remove-Item $log
+  if ( Test-Path $log ) { Remove-Item $log }
   # Install puppet
   Start-Process msiexec.exe -Wait -NoNewWindow -ArgumentList @("/i", "$agent_url", "/qn", "/l*", "$log")
 }

@@ -70,11 +70,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
     client.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "2"]
+      vb.customize ["modifyvm", :id, "--cpus", "1"]
     end
     client.vm.hostname = 'win2012r2-client'
     client.vm.network  :private_network, ip: "192.168.56.15"
-    client.vm.network "forwarded_port", host: 33389, guest: 3389
+    client.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
     # There are two basic power shell scripts.  The first installs Puppet, but
     # puppet is not in the PATH.  The second invokes a new shell which will have
     # Puppet in the PATH.
