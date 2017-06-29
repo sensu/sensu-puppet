@@ -45,29 +45,32 @@ class sensu::package {
       $repo_require = undef
 
       $pkg_version = $::sensu::version
-      # Download the latest published version
       $pkg_url_version = $pkg_version ? {
         'installed' => 'latest',
-        default   => $pkg_version,
+        default     => $pkg_version,
       }
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
       $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
       $pkg_require = "Remote_file[${pkg_name}]"
-      # The OS Release specific sub-folder
-      $os_release = $facts['os']['release']['major']
-      $pkg_url_dir = $os_release ? {
-        '2008 R2' => '2008r2',
-        '2012 R2' => '2012r2',
-        '2016 R2' => '2016r2',
-        default   => $os_release,
-      }
-      $pkg_arch = $facts['os']['architecture']
 
+      # The user can override the computation of the source URL.
+      if $::sensu::windows_pkg_url {
+        $pkg_url = $::sensu::windows_pkg_url
+      } else {
+        # The OS Release specific sub-folder
+        $os_release = $facts['os']['release']['major']
+        # e.g. '2012 R2' => '2012r2'
+        $pkg_url_dir = template('sensu/sensu-version.erb')
+        $pkg_arch = $facts['os']['architecture']
+        $pkg_url = "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi"
+      }
+
+      # path matches Package[sensu] { source => $pkg_source }
       remote_file { $pkg_name:
         ensure   => present,
         path     => $pkg_source,
-        source   => "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi",
+        source   => $pkg_url,
         checksum => $::sensu::package_checksum,
       }
     }

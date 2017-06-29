@@ -354,7 +354,13 @@
 #   String. used to set package_checksum for windows installs
 #   Default: undef
 #
-
+# [*windows_pkg_url*]
+#   String.  If specified, override the behavior of computing the package source
+#   URL from windows_repo_prefix and os major release fact.  This parameter is
+#   intended to allow the end user to override the source URL used to install
+#   the Windows package.  For example:
+#   `"https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi"`
+#   Default: undef
 
 class sensu (
   $version                        = 'installed',
@@ -449,6 +455,7 @@ class sensu (
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
   $package_checksum               = undef,
+  $windows_pkg_url                = undef,
   $windows_repo_prefix            = 'https://repositories.sensuapp.org/msi',
   $windows_logrotate              = false,
   $windows_log_number             = '10',

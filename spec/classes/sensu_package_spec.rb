@@ -344,6 +344,18 @@ describe 'sensu' do
           source: 'https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi',
         ) }
       end
+
+      context 'with windows_pkg_url specified' do
+        let(:params) do
+          { windows_pkg_url: 'https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi' }
+        end
+
+        it 'overrides computation using windows_repo_prefix' do
+          should contain_remote_file('sensu').with(
+            source: 'https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi'
+          )
+        end
+      end
     end
   end
 end
