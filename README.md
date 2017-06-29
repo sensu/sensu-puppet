@@ -44,6 +44,7 @@ Sensu-Puppet module.
 - puppetlabs/apt
 - puppetlabs/stdlib
 - lwf/puppet-remote_file
+- puppetlabs/powershell
 
 See `metadata.json` for details.
 

@@ -9,5 +9,8 @@ fixtures:
     remote_file:
       repo: git://github.com/lwf/puppet-remote_file.git
       ref: v1.1.3
+    powershell:
+      repo: git://github.com/puppetlabs/puppetlabs-powershell.git
+      ref: 2.1.0
   symlinks:
     sensu: "#{source_dir}"

@@ -28,3 +28,4 @@ $hiera_content | Out-File -FilePath "$hiera_file" -Encoding ascii
 iex "puppet module install puppetlabs/stdlib --version 4.16.0"
 iex "puppet module install puppetlabs/apt --version 4.1.0"
 iex "puppet module install lwf-remote_file --version 1.1.3"
+iex "puppet module install puppetlabs/powershell --version 2.1.0"
