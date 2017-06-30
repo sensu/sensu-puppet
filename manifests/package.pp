@@ -44,15 +44,40 @@ class sensu::package {
     'windows': {
       $repo_require = undef
 
-      $pkg_version = inline_template("<%= scope.lookupvar('sensu::version').sub(/(.*)\\-/, '\\1.') %>")
-      $pkg_title = 'Sensu'
+      # $pkg_version is passed to Package[sensu] { ensure }.  The Windows MSI
+      # provider translates hyphens to dots, e.g. '0.29.0-11' maps to
+      # '0.29.0.11' on the system.  This mapping is necessary to converge.
+      $pkg_version = template('sensu/sensu-windows-package-version.erb')
+      # The version used to construct the download URL.
+      $pkg_url_version = $::sensu::version ? {
+        'installed' => 'latest',
+        default     => $::sensu::version,
+      }
+      # The title used for consistent relationships in the Puppet catalog
+      $pkg_title = 'sensu'
+      # The name used by the provider to compare to Windows Add/Remove programs.
       $pkg_name = 'Sensu'
-      $pkg_source = "C:\\Windows\\Temp\\sensu-${sensu::version}.msi"
-      $pkg_require = "Remote_file[${pkg_source}]"
+      # Where the MSI is downloaded to and installed from.
+      $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
+      $pkg_require = "Remote_file[${pkg_title}]"
 
-      remote_file { $pkg_source:
+      # The user can override the computation of the source URL.
+      if $::sensu::windows_pkg_url {
+        $pkg_url = $::sensu::windows_pkg_url
+      } else {
+        # The OS Release specific sub-folder
+        $os_release = $facts['os']['release']['major']
+        # e.g. '2012 R2' => '2012r2'
+        $pkg_url_dir = template('sensu/sensu-version.erb')
+        $pkg_arch = $facts['os']['architecture']
+        $pkg_url = "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi"
+      }
+
+      # path matches Package[sensu] { source => $pkg_source }
+      remote_file { $pkg_title:
         ensure   => present,
-        source   => "${sensu::windows_repo_prefix}-${sensu::version}.msi",
+        path     => $pkg_source,
+        source   => $pkg_url,
         checksum => $::sensu::package_checksum,
       }
     }
@@ -97,7 +122,7 @@ class sensu::package {
       owner   => '0',
       group   => '0',
       mode    => '0444',
-      require => Package['sensu'],
+      require => Package[$pkg_title],
     }
   }
 
@@ -109,7 +134,7 @@ class sensu::package {
     purge   => $::sensu::_purge_config,
     recurse => true,
     force   => true,
-    require => Package[$pkg_name],
+    require => Package[$pkg_title],
   }
 
   if $::sensu::manage_handlers_dir {
@@ -121,7 +146,7 @@ class sensu::package {
       purge   => $::sensu::_purge_handlers,
       recurse => true,
       force   => true,
-      require => Package[$pkg_name],
+      require => Package[$pkg_title],
     }
   }
 
@@ -133,7 +158,7 @@ class sensu::package {
     purge   => $::sensu::_purge_extensions,
     recurse => true,
     force   => true,
-    require => Package[$pkg_name],
+    require => Package[$pkg_title],
   }
 
   if $::sensu::manage_mutators_dir {
@@ -145,7 +170,7 @@ class sensu::package {
       purge   => $::sensu::_purge_mutators,
       recurse => true,
       force   => true,
-      require => Package[$pkg_name],
+      require => Package[$pkg_title],
     }
   }
 
@@ -158,7 +183,7 @@ class sensu::package {
       purge   => $::sensu::_purge_plugins,
       recurse => true,
       force   => true,
-      require => Package[$pkg_name],
+      require => Package[$pkg_title],
     }
   }
 
@@ -177,7 +202,7 @@ class sensu::package {
       system => true,
     }
   } elsif $::sensu::manage_user and $::osfamily == 'windows' {
-    warning('Managing a local windows user is not supported')
+    notice('Managing a local windows user is not implemented on windows')
   }
 
   file { "${sensu::etc_dir}/config.json": ensure => absent }

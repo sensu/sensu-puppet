@@ -21,8 +21,8 @@ class sensu::rabbitmq::config {
       ensure  => directory,
       owner   => $::sensu::user,
       group   => $::sensu::group,
-      mode    => '0755',
-      require => Package['sensu'],
+      mode    => $::sensu::dir_mode,
+      require => Package[$::sensu::package::pkg_title],
     }
 
     # if provided a cert chain, and its a puppet:// URI, source file form the

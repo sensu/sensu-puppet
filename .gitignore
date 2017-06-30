@@ -45,3 +45,7 @@ log/
 vendor/
 sensu.komodoproject
 doc/**
+
+# direnv & rbenv
+/.envrc
+/.ruby-version

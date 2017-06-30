@@ -1,0 +1,104 @@
+agent_specified_environment: production
+aio_agent_version: 1.10.4
+dmi:
+  manufacturer: innotek GmbH
+  product:
+    name: VirtualBox
+    serial_number: "0"
+env_windows_installdir: "C:\\Program Files\\Puppet Labs\\Puppet"
+facterversion: 3.6.5
+identity:
+  privileged: true
+  user: WIN2012R2-CLIEN\vagrant
+is_virtual: true
+kernel: windows
+kernelmajversion: "6.3"
+kernelrelease: 6.3.9600
+kernelversion: 6.3.9600
+memory:
+  system:
+    available: 185.55 MiB
+    available_bytes: 194560000
+    capacity: 63.73%
+    total: 511.55 MiB
+    total_bytes: 536399872
+    used: 326.00 MiB
+    used_bytes: 341839872
+networking:
+  domain: example.com
+  fqdn: win2012r2-client.example.com
+  hostname: win2012r2-client
+  interfaces:
+    Ethernet:
+      bindings:
+        - address: 10.0.2.15
+          netmask: 255.255.255.0
+          network: 10.0.2.0
+      bindings6:
+        - address: "fe80::e488:b85c:5262:ff86%12"
+          netmask: "ffff:ffff:ffff:ffff::"
+          network: "fe80::%12"
+      dhcp: 10.0.2.2
+      ip: 10.0.2.15
+      ip6: "fe80::e488:b85c:5262:ff86%12"
+      mac: "08:00:27:D5:9D:5A"
+      mtu: 1500
+      netmask: 255.255.255.0
+      netmask6: "ffff:ffff:ffff:ffff::"
+      network: 10.0.2.0
+      network6: "fe80::%12"
+    Ethernet 2:
+      bindings:
+        - address: 192.168.56.15
+          netmask: 255.255.255.0
+          network: 192.168.56.0
+      bindings6:
+        - address: "fe80::34cc:e390:c694:5e8%15"
+          netmask: "ffff:ffff:ffff:ffff::"
+          network: "fe80::%15"
+      ip: 192.168.56.15
+      ip6: "fe80::34cc:e390:c694:5e8%15"
+      mac: "08:00:27:5E:D1:4B"
+      mtu: 1500
+      netmask: 255.255.255.0
+      netmask6: "ffff:ffff:ffff:ffff::"
+      network: 192.168.56.0
+      network6: "fe80::%15"
+  ip: 192.168.56.15
+  ip6: "fe80::34cc:e390:c694:5e8%15"
+  mac: "08:00:27:5E:D1:4B"
+  mtu: 1500
+  netmask: 255.255.255.0
+  netmask6: "ffff:ffff:ffff:ffff::"
+  network: 192.168.56.0
+  network6: "fe80::%15"
+  primary: Ethernet 2
+os:
+  architecture: x64
+  family: windows
+  hardware: x86_64
+  name: windows
+  release:
+    full: 2012 R2
+    major: 2012 R2
+  windows:
+    system32: "C:\\Windows\\system32"
+path: "C:\\Program Files\\Puppet Labs\\Puppet\\puppet\\bin;C:\\Program Files\\Puppet Labs\\Puppet\\facter\\bin;C:\\Program Files\\Puppet Labs\\Puppet\\hiera\\bin;C:\\Program Files\\Puppet Labs\\Puppet\\mcollective\\bin;C:\\Program Files\\Puppet Labs\\Puppet\\bin;C:\\Program Files\\Puppet Labs\\Puppet\\sys\\ruby\\bin;C:\\Program Files\\Puppet Labs\\Puppet\\sys\\tools\\bin;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Puppet Labs\\Puppet\\bin"
+processors:
+  count: 2
+  isa: x64
+  models:
+    - Intel(R) Core(TM) i7-5557U CPU @ 3.10GHz
+  physicalcount: 1
+puppetversion: 4.10.4
+ruby:
+  platform: x64-mingw32
+  sitedir: "C:/Program Files/Puppet Labs/Puppet/sys/ruby/lib/ruby/site_ruby/2.1.0"
+  version: 2.1.9
+system_uptime:
+  days: 0
+  hours: 0
+  seconds: 2014
+  uptime: "0:33 hours"
+timezone: Pacific Daylight Time
+virtual: virtualbox

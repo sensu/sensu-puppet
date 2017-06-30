@@ -35,7 +35,7 @@ class sensu::repo::apt {
         'id'     => $::sensu::repo_key_id,
         'source' => $::sensu::repo_key_source,
       },
-      before   => Package['sensu'],
+      before   => Package[$sensu::package::pkg_title],
       notify   => Exec['apt-update'],
     }
 
