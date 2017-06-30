@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.7.0](https://github.com/sensu/sensu-puppet/tree/v2.7.0)
+## [v2.8.0](https://github.com/sensu/sensu-puppet/tree/v2.8.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.7.0...v2.8.0)
+
+**Closed issues:**
+
+- Vagrant should have clients for other platforms [\#681](https://github.com/sensu/sensu-puppet/issues/681)
+- Error installing Sensu on Windows Server 2012R2 [\#646](https://github.com/sensu/sensu-puppet/issues/646)
+
+**Merged pull requests:**
+
+- Fix Package\[sensu\] on windows [\#699](https://github.com/sensu/sensu-puppet/pull/699) ([jeffmccune](https://github.com/jeffmccune))
+- \(GH-697\) Use https with public package repositories [\#698](https://github.com/sensu/sensu-puppet/pull/698) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.7.0](https://github.com/sensu/sensu-puppet/tree/v2.7.0) (2017-06-28)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.6.0...v2.7.0)
 
 **Closed issues:**
