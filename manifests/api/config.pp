@@ -22,12 +22,16 @@ class sensu::api::config {
   }
 
   sensu_api_config { $::fqdn:
-    ensure    => $ensure,
-    base_path => "${sensu::etc_dir}/conf.d",
-    bind      => $::sensu::api_bind,
-    host      => $::sensu::api_host,
-    port      => $::sensu::api_port,
-    user      => $::sensu::api_user,
-    password  => $::sensu::api_password,
+    ensure                => $ensure,
+    base_path             => "${sensu::etc_dir}/conf.d",
+    bind                  => $::sensu::api_bind,
+    host                  => $::sensu::api_host,
+    port                  => $::sensu::api_port,
+    user                  => $::sensu::api_user,
+    password              => $::sensu::api_password,
+    ssl                   => $::sensu::api_ssl,
+    ssl_port              => $::sensu::api_ssl_port,
+    ssl_keystore_file     => $::sensu::api_ssl_keystore_file,
+    ssl_keystore_password => $::sensu::api_ssl_keystore_password,
   }
 }

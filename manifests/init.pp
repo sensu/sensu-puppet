@@ -224,6 +224,19 @@
 #   String. Password of the sensu api service
 #   Default: undef
 #
+# [*api_ssl*]
+#   Default: false
+#
+# [*api_ssl_port*]
+#   String. Password of the sensu api service
+#   Default: undef
+#
+# [*api_ssl_keystore_file*]
+#   Default: undef
+#
+# [*api_ssl_keystore_password*]
+#   Default: undef
+#
 # [*subscriptions*]
 #   Array of strings.  Default suscriptions used by the client
 #   Default: []
@@ -418,6 +431,10 @@ class sensu (
   $api_port                       = 4567,
   $api_user                       = undef,
   $api_password                   = undef,
+  $api_ssl                        = false,
+  $api_ssl_port                   = undef,
+  $api_ssl_keystore_file          = undef,
+  $api_ssl_keystore_password      = undef,
   $subscriptions                  = [],
   $client_bind                    = '127.0.0.1',
   $client_port                    = '3030',
