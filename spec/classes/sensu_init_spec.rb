@@ -31,6 +31,17 @@ describe 'sensu', :type => :class do
     end
   end
 
+  context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
+    let(:params) { {:plugins => 'puppet:///data/sensu/plugins/teststring.rb' } }
+    it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb').with_install_path('/etc/sensu/plugins') }
+  end
+
+  context 'with plugins => [ puppet:///test/array1.rb, puppet:///test/array2.rb ]' do
+    let(:params) { {:plugins => [ 'puppet:///test/array1.rb', 'puppet:///test/array2.rb' ] } }
+    it { should contain_sensu__plugin('puppet:///test/array1.rb').with_install_path('/etc/sensu/plugins') }
+    it { should contain_sensu__plugin('puppet:///test/array2.rb').with_install_path('/etc/sensu/plugins') }
+  end
+
   context 'with manage_user => false' do
     let(:params) { {:manage_user => false} }
     it { should_not contain_user('sensu') }
