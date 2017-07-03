@@ -260,6 +260,31 @@ are managed with the server, and API parameters.
 
     }
 
+If you need only one plugin you can also use a simple string:
+
+    node 'sensu-server.foo.com' {
+      class { 'sensu':
+        plugins           => 'puppet:///data/sensu/plugins/ntp.rb'
+        ...
+    }
+
+Specifying the plugins as hash, you can pass all parameters supported by
+the sensu::plugin define:
+
+    node 'sensu-server.foo.com' {
+      class { 'sensu':
+        plugins           => {
+          'puppet:///data/sensu/plugins/ntp.rb' => {
+            'install_path' => '/alternative/path',
+          'puppet:///data/sensu/plugins/postfix.rb'
+            'type'         => 'package',
+            'pkg_version'  => '2.4.2',
+        },
+        ...
+      }
+    }
+
+
 ### Sensu client
 
     node 'sensu-client.foo.com' {
