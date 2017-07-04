@@ -56,6 +56,18 @@ Puppet::Type.newtype(:sensu_api_config) do
     desc "The password use for client authentication against the Sensu API"
   end
 
+  newproperty(:ssl_port) do
+    desc "Port of the HTTPS (SSL) sensu api service. Enterprise only feature."
+  end
+
+  newproperty(:ssl_keystore_file) do
+    desc "The file path for the SSL certificate keystore. Enterprise only feature."
+  end
+
+  newproperty(:ssl_keystore_password) do
+    desc "The SSL certificate keystore password. Enterprise only feature."
+  end
+
   autorequire(:package) do
     ['sensu']
   end
