@@ -86,4 +86,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ## Run puppet apply
     client.vm.provision :shell, :path => "tests/provision_client_win.ps1"
   end
+
+  # This system is meant to be started without 'sensu-server' running.
+  config.vm.define "sensu-server-enterprise", autostart: false do |server|
+    server.vm.box = "centos/7"
+    server.vm.hostname = 'sensu-server.example.com'
+    server.vm.network :private_network, ip: "192.168.56.10"
+    server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
+    server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
+    server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
+    server.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    server.vm.provision :shell, :path => "tests/provision_enterprise_server.sh"
+    server.vm.provision :shell, :path => "tests/rabbitmq.sh"
+  end
 end

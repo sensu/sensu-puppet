@@ -4,9 +4,7 @@ describe 'sensu', :type => :class do
   let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat' } }
 
   context 'without api (default)' do
-
     context 'config' do
-
       context 'with server' do
         let(:params) { { :server => true } }
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('present') }
@@ -19,9 +17,7 @@ describe 'sensu', :type => :class do
         } }
 
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('absent') }
-
       end # purge config
-
     end # config
 
     context 'managing services' do
@@ -36,56 +32,115 @@ describe 'sensu', :type => :class do
       let(:params) { { :manage_services => false } }
       it { should_not contain_service('sensu-api') }
     end # not managing services
-
   end # without api
 
   context 'with api' do
-
     context 'config' do
-
       context 'defaults' do
         let(:params) { { :api => true } }
+
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('present') }
         it { should contain_sensu_api_config('testhost.domain.com').with(
-          :ensure => 'present',
-          :host   => '127.0.0.1',
-          :port   => 4567
+          :ensure                => 'present',
+          :base_path             => '/etc/sensu/conf.d',
+          :bind                  => '0.0.0.0',
+          :host                  => '127.0.0.1',
+          :port                  => 4567,
+          :user                  => nil,
+          :password              => nil,
+          :ssl_port              => nil,
+          :ssl_keystore_file     => nil,
+          :ssl_keystore_password => nil,
         ) }
-        it { should contain_sensu_api_config('testhost.domain.com').without_api_user }
-        it { should contain_sensu_api_config('testhost.domain.com').without_api_password }
-      end # defaults
+      end
 
-      context 'set config params' do
+      context 'with api_bind specified' do
+        let(:params) { {
+          :api      => true,
+          :api_bind => '10.1.2.3',
+        } }
+
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :bind => '10.1.2.3',
+        ) }
+      end
+
+      context 'with api_host specified' do
         let(:params) { {
           :api      => true,
           :api_host => 'sensuapi.domain.com',
-          :api_port => 5678
         } }
-        it { should contain_sensu_api_config('testhost.domain.com').with(
-          :ensure => 'present',
-          :host   => 'sensuapi.domain.com',
-          :port   => 5678
-        ) }
-        it { should contain_sensu_api_config('testhost.domain.com').without_api_user }
-        it { should contain_sensu_api_config('testhost.domain.com').without_api_password }
-      end # set config params
 
-      context 'set config params including authentication' do
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :host => 'sensuapi.domain.com',
+        ) }
+      end
+
+      context 'with api_port specified' do
+        let(:params) { {
+          :api      => true,
+          :api_port => 1234,
+        } }
+
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :port => 1234,
+        ) }
+      end
+
+      context 'with api_user specified' do
+        let(:params) { {
+          :api      => true,
+          :api_user => 'myuser',
+        } }
+
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :user => 'myuser',
+        ) }
+      end
+
+      context 'with api_password specified' do
         let(:params) { {
           :api          => true,
-          :api_host     => 'sensuapi.domain.com',
-          :api_port     => 5678,
-          :api_user     => 'test_user',
-          :api_password => 'test_password'
+          :api_password => 'mypassword',
         } }
+
         it { should contain_sensu_api_config('testhost.domain.com').with(
-          :ensure   => 'present',
-          :host     => 'sensuapi.domain.com',
-          :port     => 5678,
-          :user     => 'test_user',
-          :password => 'test_password'
+          :password => 'mypassword',
         ) }
-      end # set config params
+      end
+
+      context 'with api_ssl_port specified' do
+        let(:params) { {
+          :api          => true,
+          :api_ssl_port => 242,
+        } }
+
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :ssl_port => 242,
+        ) }
+      end
+
+      context 'with api_ssl_keystore_file specified' do
+        let(:params) { {
+          :api                   => true,
+          :api_ssl_keystore_file => '/path/to/api.keystore',
+        } }
+
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :ssl_keystore_file => '/path/to/api.keystore',
+        ) }
+      end
+
+      context 'with api_ssl_keystore_password specified' do
+        let(:params) { {
+          :api                       => true,
+          :api_ssl_keystore_password => 'keystore_password',
+        } }
+
+        it { should contain_sensu_api_config('testhost.domain.com').with(
+          :ssl_keystore_password => 'keystore_password',
+        ) }
+      end
 
       context 'purge config' do
         let(:params) { {
@@ -95,13 +150,11 @@ describe 'sensu', :type => :class do
         } }
 
         it { should contain_file('/etc/sensu/conf.d/api.json').with_ensure('absent') }
-
+        it { should contain_sensu_api_config('testhost.domain.com').with_ensure('absent') }
       end # purge config
-
     end # config
 
     context 'service' do
-
       context 'managing services' do
         let(:params) { { :api => true } }
         it { should contain_service('sensu-api').with(
@@ -124,9 +177,6 @@ describe 'sensu', :type => :class do
           :hasrestart => false
         )}
       end # with hasrestart=false
-
     end # service
-
   end # with api
-
 end

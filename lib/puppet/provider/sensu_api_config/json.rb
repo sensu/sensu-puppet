@@ -122,4 +122,50 @@ Puppet::Type.type(:sensu_api_config).provide(:json) do
     conf['api']['password'] = value
   end
 
+  # Public: Retrieve the HTTPS (SSL) port number that the API is configured to
+  # listen on. Enterprise only feature.
+  #
+  # Returns the String port number.
+  def ssl_port
+    conf['api']['ssl_port'].to_s
+  end
+
+  # Public: Set the HTTPS (SSL) port that the API should listen on. Enterprise
+  # only feature.
+  #
+  # Returns nothing.
+  def ssl_port=(value)
+    conf['api']['ssl_port'] = value.to_i
+  end
+
+  # Public: Retrieve the file path for the SSL certificate keystore. Enterprise
+  # only feature.
+  #
+  # Returns the String password.
+  def ssl_keystore_file
+    conf['api']['ssl_keystore_file']
+  end
+
+  # Public: Set the file path for the SSL certificate keystore. Enterprise only
+  # feature.
+  #
+  # Returns nothing.
+  def ssl_keystore_file=(value)
+    conf['api']['ssl_keystore_file'] = value
+  end
+
+  # Public: Retrieve the SSL certificate keystore password. Enterprise only
+  # feature.
+  #
+  # Returns the String password.
+  def ssl_keystore_password
+    conf['api']['ssl_keystore_password']
+  end
+
+  # Public: Set the SSL certificate keystore password. Enterprise only feature.
+  #
+  # Returns nothing.
+  def ssl_keystore_password=(value)
+    conf['api']['ssl_keystore_password'] = value
+  end
 end

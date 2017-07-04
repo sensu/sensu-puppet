@@ -224,6 +224,20 @@
 #   String. Password of the sensu api service
 #   Default: undef
 #
+# [*api_ssl_port*]
+#   Integer. Port of the HTTPS (SSL) sensu api service. Enterprise only
+#   feature.
+#   Default: undef
+#
+# [*api_ssl_keystore_file*]
+#   String. The file path for the SSL certificate keystore. Enterprise only
+#   feature.
+#   Default: undef
+#
+# [*api_ssl_keystore_password*]
+#   String. The SSL certificate keystore password. Enterprise only feature.
+#   Default: undef
+#
 # [*subscriptions*]
 #   Array of strings.  Default suscriptions used by the client
 #   Default: []
@@ -418,6 +432,9 @@ class sensu (
   $api_port                       = 4567,
   $api_user                       = undef,
   $api_password                   = undef,
+  $api_ssl_port                   = undef,
+  $api_ssl_keystore_file          = undef,
+  $api_ssl_keystore_password      = undef,
   $subscriptions                  = [],
   $client_bind                    = '127.0.0.1',
   $client_port                    = '3030',
@@ -484,6 +501,15 @@ class sensu (
   validate_re($transport_type, ['^rabbitmq$', '^redis$'], "Invalid transport type '${transport_type}'. Expected either rabbitmq or redis" )
   if !is_integer($redis_port) { fail('redis_port must be an integer') }
   if !is_integer($api_port) { fail('api_port must be an integer') }
+  if $api_ssl_port != undef and is_integer($api_ssl_port) == false {
+    fail('api_ssl_port must be an integer')
+  }
+  if $api_ssl_keystore_file != undef and is_string($api_ssl_keystore_file) == false {
+    fail('api_ssl_keystore_file must be a string')
+  }
+  if $api_ssl_keystore_password != undef and is_string($api_ssl_keystore_password) == false {
+    fail('api_ssl_keystore_password must be a string')
+  }
   if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
