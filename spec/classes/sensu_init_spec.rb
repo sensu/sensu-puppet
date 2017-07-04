@@ -31,6 +31,54 @@ describe 'sensu', :type => :class do
     end
   end
 
+  context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
+    let(:params) { {:plugins => 'puppet:///data/sensu/plugins/teststring.rb' } }
+    it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb').with_install_path('/etc/sensu/plugins') }
+  end
+
+  context 'with plugins => [ puppet:///test/array1.rb, puppet:///test/array2.rb ]' do
+    let(:params) { {:plugins => [ 'puppet:///test/array1.rb', 'puppet:///test/array2.rb' ] } }
+    it { should contain_sensu__plugin('puppet:///test/array1.rb').with_install_path('/etc/sensu/plugins') }
+    it { should contain_sensu__plugin('puppet:///test/array2.rb').with_install_path('/etc/sensu/plugins') }
+  end
+
+  context 'with plugins set to a valid hash containing two entries with different options' do
+    let(:params) { { :plugins => { 'puppet:///spec/testhash1.rb' => { 'pkg_version' => '2.4.2' }, 'puppet:///spec/testhash2.rb' => { 'install_path' => '/spec/testhash2' } } } }
+    it { should contain_sensu__plugin('puppet:///spec/testhash1.rb').with_pkg_version('2.4.2') }
+    it { should contain_sensu__plugin('puppet:///spec/testhash2.rb').with_install_path('/spec/testhash2') }
+  end
+
+  context 'with plugins_defaults set to { install_path => /test/path } and plugins set to a valid hash' do
+    let(:params) do
+      {
+        :plugins_defaults => {
+          'install_path' => '/test/path'
+        },
+        :plugins => {
+          'puppet:///spec/testhash1.rb' => {
+            'pkg_version' => '2.4.2',
+          },
+          'puppet:///spec/testhash2.rb' => {
+            'pkg_provider' => 'sensu-gem',
+          },
+        },
+      }
+    end
+
+    it do
+      should contain_sensu__plugin('puppet:///spec/testhash1.rb').with({
+        'install_path' => '/test/path',
+        'pkg_version'  => '2.4.2',
+      })
+    end
+    it do
+      should contain_sensu__plugin('puppet:///spec/testhash2.rb').with({
+        'install_path' => '/test/path',
+        'pkg_provider' => 'sensu-gem',
+      })
+    end
+  end
+
   context 'with manage_user => false' do
     let(:params) { {:manage_user => false} }
     it { should_not contain_user('sensu') }
@@ -177,4 +225,39 @@ describe 'sensu', :type => :class do
       should contain_package('sensu-plugin').with(:provider => 'sensu_gem')
     end
   end
+
+  describe 'variable type and content validations' do
+    mandatory_params = {}
+
+    validations = {
+      'plugins' => {
+        :name    => %w[plugins],
+        :valid   => ['/string', %w(/array), { '/hash' => {} }],
+        :invalid => [3, 2.42, true],
+        :message => 'Invalid data type',
+      },
+    }
+
+    validations.sort.each do |type, var|
+      var[:name].each do |var_name|
+        var[:params] = {} if var[:params].nil?
+        var[:valid].each do |valid|
+          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
+            it { should compile }
+          end
+        end
+
+        var[:invalid].each do |invalid|
+          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
+            it 'should fail' do
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
+            end
+          end
+        end
+      end # var[:name].each
+    end # validations.sort.each
+  end # describe 'variable type and content validations'
+
 end

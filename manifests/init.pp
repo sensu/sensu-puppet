@@ -250,8 +250,17 @@
 #   Valid values: true, false
 #
 # [*plugins*]
-#   String, Array of Strings.  Plugins to install on the node
+#   String, Array of strings, Hash.  Plugins to install on the node
+#     Strings and Arrays of strings will set 'install_path' => '/etc/sensu/plugins' as default.
 #   Default: []
+#   Example string: 'puppet:///data/sensu/plugins/plugin1.rb'
+#   Example array: [ 'puppet:///data/sensu/plugins/plugin1.rb', 'puppet:///data/sensu/plugins/plugin2.rb' ]
+#   Example hash: { 'puppet:///data/sensu/plugins/plugin1.rb' => { 'pkg_version' => '2.4.2' }, 'puppet:///data/sensu/plugins/plugin1.rb' => { 'pkg_provider' => 'sensu-gem' }
+#
+# [*plugins_defaults*]
+#   Hash. Defaults for Plugins to install on the node. Will be added when plugins is set to a hash.
+#   Default: {}
+#   Example value: { 'install_path' => '/other/path' }
 #
 # [*plugins_dir*]
 #   String. Puppet url to plugins directory
@@ -427,6 +436,7 @@ class sensu (
   $client_keepalive               = {},
   $safe_mode                      = false,
   $plugins                        = [],
+  $plugins_defaults               = {},
   $plugins_dir                    = undef,
   $purge                          = false,
   $purge_config                   = false,
@@ -622,6 +632,10 @@ class sensu (
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
-    sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' }
+    case $plugins {
+      String,Array: { sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' } }
+      Hash:         { create_resources('::sensu::plugin', $plugins, $plugins_defaults ) }
+      default:      { fail('Invalid data type for $plugins, must be a string, an array, or a hash.') }
+    }
   }
 }
