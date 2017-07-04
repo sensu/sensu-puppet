@@ -1,7 +1,22 @@
 # Change Log
 
-## [v2.8.0](https://github.com/sensu/sensu-puppet/tree/v2.8.0)
+## [v2.9.0](https://github.com/sensu/sensu-puppet/tree/v2.9.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.8.0...v2.9.0)
+
+**Closed issues:**
+
+- Change repos to use HTTPS by default [\#697](https://github.com/sensu/sensu-puppet/issues/697)
+- Windows Install [\#626](https://github.com/sensu/sensu-puppet/issues/626)
+- Using rabbitmq\_cluster works only the first time puppet runs [\#598](https://github.com/sensu/sensu-puppet/issues/598)
+- HTTPS Apt repo [\#583](https://github.com/sensu/sensu-puppet/issues/583)
+
+**Merged pull requests:**
+
+- \(GH-648\) Add ability to specify SSL options to API config for Enterpr… [\#705](https://github.com/sensu/sensu-puppet/pull/705) ([ghoneycutt](https://github.com/ghoneycutt))
+- Use rspec-puppet 2.5.x until 2.6.x is fixed [\#702](https://github.com/sensu/sensu-puppet/pull/702) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.8.0](https://github.com/sensu/sensu-puppet/tree/v2.8.0) (2017-06-30)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.7.0...v2.8.0)
 
 **Closed issues:**
