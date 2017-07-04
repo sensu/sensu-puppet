@@ -81,8 +81,7 @@ Puppet::Type.newtype(:sensu_redis_config) do
 
   newproperty(:reconnect_on_error, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Attempt to reconnect to RabbitMQ on error"
-
-    defaultto :false
+    defaultto :true
   end
 
   newproperty(:db) do
