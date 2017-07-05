@@ -1,7 +1,21 @@
 # Change Log
 
-## [v2.9.0](https://github.com/sensu/sensu-puppet/tree/v2.9.0)
+## [v2.10.0](https://github.com/sensu/sensu-puppet/tree/v2.10.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.9.0...v2.10.0)
+
+**Closed issues:**
+
+- Ubuntu16.04 uses the wrong ipaddress [\#695](https://github.com/sensu/sensu-puppet/issues/695)
+- redis\_reconnect\_on\_error should default to true [\#685](https://github.com/sensu/sensu-puppet/issues/685)
+- Windows - sensu-client.log does not rotate [\#618](https://github.com/sensu/sensu-puppet/issues/618)
+
+**Merged pull requests:**
+
+- \(GH-685\) redis\_reconnect\_on\_error now defaults to true [\#707](https://github.com/sensu/sensu-puppet/pull/707) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-695\) Use internal interface in Vagrant testing [\#706](https://github.com/sensu/sensu-puppet/pull/706) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.9.0](https://github.com/sensu/sensu-puppet/tree/v2.9.0) (2017-07-04)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.8.0...v2.9.0)
 
 **Closed issues:**
