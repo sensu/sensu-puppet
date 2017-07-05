@@ -179,8 +179,8 @@
 #
 # [*redis_reconnect_on_error*]
 #   Boolean. In the event the connection or channel is closed by Reddis, attempt to automatically
-#     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
-#   Default: false
+#     reconnect when possible.
+#   Default: true
 #   Valid values: true, false
 #
 # [*redis_db*]
@@ -420,7 +420,7 @@ class sensu (
   $redis_host                     = '127.0.0.1',
   $redis_port                     = 6379,
   $redis_password                 = undef,
-  $redis_reconnect_on_error       = false,
+  $redis_reconnect_on_error       = true,
   $redis_db                       = 0,
   $redis_auto_reconnect           = true,
   $redis_sentinels                = undef,
