@@ -33,6 +33,9 @@ group :development, :unit_tests do
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-variable_contains_upcase',             :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
+  if puppetversion < '5.0'
+    gem 'semantic_puppet', :require => false
+  end
 end
 
 group :system_tests do
