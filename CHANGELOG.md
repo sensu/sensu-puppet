@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.11.0](https://github.com/sensu/sensu-puppet/tree/v2.11.0)
+## [v2.12.0](https://github.com/sensu/sensu-puppet/tree/v2.12.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.11.0...v2.12.0)
+
+**Closed issues:**
+
+- Add ability to specify a different release for apt::source [\#711](https://github.com/sensu/sensu-puppet/issues/711)
+- Add support for Debian 7 and 8 [\#710](https://github.com/sensu/sensu-puppet/issues/710)
+
+**Merged pull requests:**
+
+- \(GH-710\) support debian 7 and 8 [\#712](https://github.com/sensu/sensu-puppet/pull/712) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.11.0](https://github.com/sensu/sensu-puppet/tree/v2.11.0) (2017-07-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.10.0...v2.11.0)
 
 **Closed issues:**
