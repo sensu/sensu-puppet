@@ -15,11 +15,9 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
   # Returns a Hash representation of the JSON structure in
   # /etc/sensu/dashboard.json or an empty Hash if the file can not be read.
   def conf
-    begin
-      @conf ||= JSON.parse(File.read(config_file))
-    rescue
-      @conf ||= {}
-    end
+    @conf ||= JSON.parse(File.read(config_file))
+  rescue
+    @conf ||= {}
   end
 
   # Internal: Retrieve the sensu config block from conf
@@ -31,8 +29,8 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
   end
 
   # Internal: Returns the name of the resource
-  def name
-    resource[:name]
+  def host
+    resource[:host]
   end
 
   # Internal: Returns the API endpoint config Hash
@@ -40,7 +38,7 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
   # Returns an empty Hash if the config block doesn't exist yet
   def api
     return @api if @api
-    api_hash = sensu.find { |endpoint| endpoint['name'] == name }
+    api_hash = sensu.find { |endpoint| endpoint['host'] == host }
     @api = api_hash ? api_hash : {}
   end
 
@@ -57,14 +55,14 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
 
   def pre_create
     conf['sensu'] ||= []
-    sensu << { 'name' => name } unless sensu.find{|e| e['name'] == name}
+    sensu << { 'host' => host } unless sensu.find{|e| e['host'] == host}
   end
 
   # Public: Remove the API configuration section.
   #
   # Returns nothing.
   def destroy
-    sensu.reject! { |api| api['name'] == name }
+    sensu.reject! { |api| api['host'] == host }
   end
 
   # Public: Determine if the specified API endpoint configuration section is present.
@@ -72,23 +70,23 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
   # Returns a Boolean, true if present, false if absent.
   def exists?
     sensu.inject(false) do |memo, api|
-      memo = true if api['name'] == name
+      memo = true if api['host'] == host
       memo
     end
   end
 
-  # Public: Retrieve the host name of the specified API endpoint
+  # Public: Retrieve the name of the specified API endpoint
   #
-  # Returns the String host
-  def host
-    api['host']
+  # Returns the String name
+  def datacenter
+    api['name']
   end
 
-  # Public: Set the host name of the specified API endpoint
+  # Public: Set the name of the specified API endpoint
   #
   # Returns nothing.
-  def host=(value)
-    api['host'] = value
+  def datacenter=(value)
+    api['name'] = value
   end
 
   # Public: Retrieve the port number that the API is configured to listen on.

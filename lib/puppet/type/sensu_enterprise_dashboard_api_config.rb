@@ -1,4 +1,5 @@
-require 'puppet/parameter/boolean'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
 
 Puppet::Type.newtype(:sensu_enterprise_dashboard_api_config) do
   @doc = ""
@@ -23,8 +24,10 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_api_config) do
     defaultto :present
   end
 
-  newparam(:name) do
-    desc "The name of the Sensu API (used elsewhere as the datacenter name)."
+  newparam(:host) do
+    desc "The hostname or IP address of the Sensu API."
+
+    isnamevar
   end
 
   newparam(:base_path) do
@@ -32,9 +35,8 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_api_config) do
     defaultto '/etc/sensu/'
   end
 
-  newproperty(:host) do
-    desc "The hostname or IP address of the Sensu API."
-    isrequired
+  newproperty(:datacenter) do
+    desc "The name of the Sensu API (used elsewhere as the datacenter name)."
   end
 
   newproperty(:port) do
@@ -45,16 +47,16 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_api_config) do
     defaultto '4567'
   end
 
-  newproperty(:ssl, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+  newproperty(:ssl, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Determines whether or not to use the HTTPS protocol."
 
-    defaultto false
+    defaultto :false
   end
 
-  newproperty(:insecure, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+  newproperty(:insecure, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "Determines whether or not to accept an insecure SSL certificate."
 
-    defaultto false
+    defaultto :false
   end
 
   newproperty(:path) do
