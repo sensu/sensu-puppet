@@ -50,4 +50,8 @@ group :development do
   gem 'listen', '~> 3.0.0', :require => false
 end
 
+if File.exists? 'Gemfile.local'
+  eval(File.read('Gemfile.local'), binding)
+end
+
 # vim:ft=ruby

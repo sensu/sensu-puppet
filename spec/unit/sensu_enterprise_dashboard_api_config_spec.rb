@@ -80,4 +80,16 @@ describe Puppet::Type.type(:sensu_enterprise_dashboard_api_config) do
       ).to be(:true)
     end
   end
+
+  describe '.instances' do
+    subject do
+      described_class.instances
+    end
+    it 'returns an array of provider instances' do
+      expect(subject).to be_a_kind_of(Array)
+      subject.each do |v|
+        expect(v).to be_a_kind_of(Puppet::Provider)
+      end
+    end
+  end
 end
