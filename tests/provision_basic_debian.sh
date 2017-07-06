@@ -10,14 +10,23 @@ function deb_install() {
 
 export DEBIAN_FRONTEND=noninteractive
 
-. /etc/lsb-release
+if [ -f /etc/lsb-release ]; then
+  # ubuntu
+  . /etc/lsb-release
+  CODENAME=$DISTRIB_CODENAME
+else
+  # debian
+  CODENAME=$(grep ^VERSION= /etc/os-release | awk -F \( '{print $2}' | awk -F \) '{print $1}')
+  apt-get -y install apt-transport-https
+  apt-get update
+fi
 
 apt-key adv --fetch-keys http://apt.puppetlabs.com/DEB-GPG-KEY-puppet
 
 apt-get -y install wget
 
 # install and configure puppet
-deb_install http://apt.puppetlabs.com/puppetlabs-release-pc1-${DISTRIB_CODENAME}.deb
+deb_install http://apt.puppetlabs.com/puppetlabs-release-pc1-${CODENAME}.deb
 apt-get update
 apt-get -y install puppet-agent
 ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet

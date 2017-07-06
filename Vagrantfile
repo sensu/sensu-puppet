@@ -39,7 +39,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.hostname = 'el7-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.11"
     client.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    client.vm.provision :shell, :path => "tests/provision_client_el7.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
   end
 
   config.vm.define "el6-client", autostart: false do |client|
@@ -47,23 +47,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.hostname = 'el6-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.12"
     client.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    client.vm.provision :shell, :path => "tests/provision_client_el6.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client-sensu_gem.pp"
   end
 
   config.vm.define "ubuntu1604-client", autostart: false do |client|
     client.vm.box = "ubuntu/xenial64"
     client.vm.hostname = 'ubuntu1604-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.13"
-    client.vm.provision :shell, :path => "tests/provision_basic_ubuntu.sh"
-    client.vm.provision :shell, :path => "tests/provision_client_ubuntu.sh"
+    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
   end
 
   config.vm.define "ubuntu1404-client", autostart: false do |client|
     client.vm.box = "ubuntu/trusty64"
     client.vm.hostname = 'ubuntu1404-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.14"
-    client.vm.provision :shell, :path => "tests/provision_basic_ubuntu.sh"
-    client.vm.provision :shell, :path => "tests/provision_client_ubuntu1404.sh"
+    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client-sensu_gem.pp"
   end
 
   config.vm.define "win2012r2-client", autostart: false do |client|
@@ -83,8 +83,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
     ## Symlink module into place, run puppet module install for puppet apply
     client.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
-    ## Run puppet apply
-    client.vm.provision :shell, :path => "tests/provision_client_win.ps1"
+    client.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-client-windows.pp"'
+  end
+
+  config.vm.define "debian8-client", autostart: false do |client|
+    client.vm.box = "debian/jessie64"
+    client.vm.hostname = 'debian8-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.17"
+    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+  end
+
+  config.vm.define "debian7-client", autostart: false do |client|
+    client.vm.box = "debian/wheezy64"
+    client.vm.hostname = 'debian7-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.18"
+    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
   end
 
   # This system is meant to be started without 'sensu-server' running.
