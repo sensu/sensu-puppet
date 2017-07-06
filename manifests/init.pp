@@ -65,6 +65,12 @@
 #   String.  URL of the apt GPG key
 #   Default: https://sensu.global.ssl.fastly.net/apt/pubkey.gpg
 #
+# [*repo_release*]
+#   String. Release for the apt source. Only set this if you want to run
+#   packages from another release, which is not supported by Sensu. Only works
+#   with systems that use apt.
+#   Default: $::lsbdistcodename
+#
 # [*client*]
 #   Boolean.  Include the sensu client
 #   Default: true
@@ -405,6 +411,7 @@ class sensu (
   $repo_source                    = undef,
   $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
   $repo_key_source                = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
+  $repo_release                   = undef,
   $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
   $client                         = true,
   $server                         = false,

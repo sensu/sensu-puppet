@@ -23,10 +23,18 @@ class sensu::repo::apt {
       $url = 'https://sensu.global.ssl.fastly.net/apt'
     }
 
+    # ignoring the puppet-lint plugin because of a bug that warns on the next
+    # line.
+    if $::sensu::repo_release == undef { #lint:ignore:undef_in_function
+      $release = $::lsbdistcodename
+    } else {
+      $release = $::sensu::repo_release
+    }
+
     apt::source { 'sensu':
       ensure   => $ensure,
       location => $url,
-      release  => $::lsbdistcodename,
+      release  => $release,
       repos    => $::sensu::repo,
       include  => {
         'src' => false,
