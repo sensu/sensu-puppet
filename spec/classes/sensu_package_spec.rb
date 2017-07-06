@@ -161,8 +161,25 @@ describe 'sensu' do
         end
       end
 
-      context 'debian' do
-        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '8.6', :lsbdistcodename => 'jessie', :os => {:name => 'debian', :release => {:full => '8.6'} }, } }
+      context 'Debian' do
+        context '7 (wheezy)' do
+          let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '7.11', :lsbdistcodename => 'wheezy', :os => {:name => 'Debian', :release => {:full => '7.11'} }, } }
+
+          context 'repo release' do
+            it { should contain_apt__source('sensu').with(
+              :ensure      => 'present',
+              :location    => 'https://sensu.global.ssl.fastly.net/apt',
+              :release     => 'wheezy',
+              :repos       => 'main',
+              :include     => { 'src' => false },
+              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
+              :before      => 'Package[sensu]'
+            ) }
+          end
+        end
+
+        context '8 (jessie)' do
+          let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '8.6', :lsbdistcodename => 'jessie', :os => {:name => 'Debian', :release => {:full => '8.6'} }, } }
 
           context 'repo release' do
             it { should contain_apt__source('sensu').with(
@@ -175,10 +192,21 @@ describe 'sensu' do
               :before      => 'Package[sensu]'
             ) }
           end
+        end
 
+        context 'with repo_release specified' do
+          let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '7.11', :lsbdistcodename => 'wheezy', :os => {:name => 'Debian', :release => {:full => '7.11'} }, } }
+          let(:params) { { :repo_release => 'myrelease' } }
+
+          context 'repo release' do
+            it { should contain_apt__source('sensu').with(
+              :release => 'myrelease',
+            ) }
+          end
+        end
       end
 
-      context 'redhat' do
+      context 'RedHat' do
         let(:facts) { { :osfamily => 'RedHat' } }
 
         context 'default' do
