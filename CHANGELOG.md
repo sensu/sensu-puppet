@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.13.0](https://github.com/sensu/sensu-puppet/tree/v2.13.0)
+## [v2.14.0](https://github.com/sensu/sensu-puppet/tree/v2.14.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.13.0...v2.14.0)
+
+**Closed issues:**
+
+- Add support for Puppet 5 [\#713](https://github.com/sensu/sensu-puppet/issues/713)
+- sensu\_enterprise\_dashboard\_api type should use `host` as namevar, not `name` [\#638](https://github.com/sensu/sensu-puppet/issues/638)
+- Unable to add ssl and insecure Sensu attributes to API section of dashboard.json [\#584](https://github.com/sensu/sensu-puppet/issues/584)
+
+**Merged pull requests:**
+
+- \(\#638\) Enable multiple Sensu Enterprise Dashboard API endpoints [\#715](https://github.com/sensu/sensu-puppet/pull/715) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.13.0](https://github.com/sensu/sensu-puppet/tree/v2.13.0) (2017-07-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.12.0...v2.13.0)
 
 **Merged pull requests:**
