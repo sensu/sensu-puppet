@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.12.0](https://github.com/sensu/sensu-puppet/tree/v2.12.0)
+## [v2.13.0](https://github.com/sensu/sensu-puppet/tree/v2.13.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.12.0...v2.13.0)
+
+**Merged pull requests:**
+
+- \(GH-713\) Support Puppet 5 [\#714](https://github.com/sensu/sensu-puppet/pull/714) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.12.0](https://github.com/sensu/sensu-puppet/tree/v2.12.0) (2017-07-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.11.0...v2.12.0)
 
 **Closed issues:**
