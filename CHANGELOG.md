@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.10.0](https://github.com/sensu/sensu-puppet/tree/v2.10.0)
+## [v2.11.0](https://github.com/sensu/sensu-puppet/tree/v2.11.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.10.0...v2.11.0)
+
+**Closed issues:**
+
+- module should support SSL configuration for API endpoints [\#648](https://github.com/sensu/sensu-puppet/issues/648)
+
+**Merged pull requests:**
+
+- Working on PR501 [\#703](https://github.com/sensu/sensu-puppet/pull/703) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.10.0](https://github.com/sensu/sensu-puppet/tree/v2.10.0) (2017-07-05)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.9.0...v2.10.0)
 
 **Closed issues:**
