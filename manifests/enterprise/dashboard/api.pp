@@ -4,6 +4,12 @@
 #
 # == Parameters
 #
+# [*host*]
+#   String. The hostname or IP address of the Sensu API.
+#   Default: undef
+#   This is used as the namevar for the underlying resource, so must be unique
+#   within the catalog.
+#
 # [*ensure*]
 #   String. Whether the dashboard API should be configured or not
 #   Default: present
@@ -13,8 +19,8 @@
 #   String. The base path to the client config file.
 #   Default: undef
 #
-# [*host*]
-#   String. The hostname or IP address of the Sensu API.
+# [*datacenter*]
+#   String. The datacenter name.
 #   Default: undef
 #
 # [*port*]
@@ -46,31 +52,31 @@
 #   Default: undef
 
 define sensu::enterprise::dashboard::api (
-  $ensure    = present,
-  $base_path = undef,
-  $host      = undef,
-  $port      = undef,
-  $ssl       = undef,
-  $insecure  = undef,
-  $path      = undef,
-  $timeout   = undef,
-  $user      = undef,
-  $pass      = undef,
+  $ensure     = present,
+  $base_path  = undef,
+  $datacenter = undef,
+  $port       = undef,
+  $ssl        = undef,
+  $insecure   = undef,
+  $path       = undef,
+  $timeout    = undef,
+  $user       = undef,
+  $pass       = undef,
 ) {
 
   require ::sensu::enterprise::dashboard::config
 
   sensu_enterprise_dashboard_api_config { $title:
-    ensure    => $ensure,
-    base_path => $base_path,
-    host      => $host,
-    port      => $port,
-    ssl       => $ssl,
-    insecure  => $insecure,
-    path      => $path,
-    timeout   => $timeout,
-    user      => $user,
-    pass      => $pass,
+    ensure     => $ensure,
+    base_path  => $base_path,
+    datacenter => $datacenter,
+    port       => $port,
+    ssl        => $ssl,
+    insecure   => $insecure,
+    path       => $path,
+    timeout    => $timeout,
+    user       => $user,
+    pass       => $pass,
   }
 
 }
