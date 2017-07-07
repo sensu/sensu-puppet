@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.15.0](https://github.com/sensu/sensu-puppet/tree/v2.15.0)
+## [v2.16.0](https://github.com/sensu/sensu-puppet/tree/v2.16.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.15.0...v2.16.0)
+
+**Implemented enhancements:**
+
+- implement an `instances` method for the sensu\_enterprise\_dashboard\_api\_config `json` provider [\#649](https://github.com/sensu/sensu-puppet/issues/649)
+
+**Merged pull requests:**
+
+- \(\#649\) Enumerate sensu\_enterprise\_dashboard\_config instances [\#716](https://github.com/sensu/sensu-puppet/pull/716) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.15.0](https://github.com/sensu/sensu-puppet/tree/v2.15.0) (2017-07-07)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.14.0...v2.15.0)
 
 **Closed issues:**
