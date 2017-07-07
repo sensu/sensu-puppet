@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.14.0](https://github.com/sensu/sensu-puppet/tree/v2.14.0)
+## [v2.15.0](https://github.com/sensu/sensu-puppet/tree/v2.15.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.14.0...v2.15.0)
+
+**Closed issues:**
+
+- unable to load facts into a newly installed puppet agent server from puppet master [\#719](https://github.com/sensu/sensu-puppet/issues/719)
+
+**Merged pull requests:**
+
+- Working on PR557 [\#718](https://github.com/sensu/sensu-puppet/pull/718) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.14.0](https://github.com/sensu/sensu-puppet/tree/v2.14.0) (2017-07-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.13.0...v2.14.0)
 
 **Closed issues:**
