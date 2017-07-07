@@ -6,10 +6,13 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_api_config) do
 
   def initialize(*args)
     super *args
-
-    self[:notify] = [
-      "Service[sensu-enterprise-dashboard]",
-    ].select { |ref| catalog.resource(ref) }
+    # N.B. catalog will return `nil` when running in the context of `puppet
+    # resource`.  We must take care not to call methods on a nil object.
+    if c = catalog
+      # Notify the service if it exists in the catalog.
+      id = 'Service[sensu-enterprise-dashboard]'
+      self[:notify] = [c.resource(id)].compact
+    end
   end
 
   ensurable do

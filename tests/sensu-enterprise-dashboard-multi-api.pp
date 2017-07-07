@@ -25,16 +25,30 @@ node 'sensu-server' {
   }
 
   class { '::sensu':
+    install_repo         => true,
+    server               => true,
+    manage_services      => true,
+    manage_user          => true,
+    rabbitmq_password    => 'correct-horse-battery-staple',
+    rabbitmq_vhost       => '/sensu',
+    api                  => true,
+    api_user             => 'admin',
+    api_password         => 'secret',
+    client_address       => $::ipaddress_eth1,
     enterprise_dashboard => true,
     enterprise_user      => $facts['se_user'],
     enterprise_pass      => $facts['se_pass'],
   }
 
-  sensu::enterprise::dashboard::api { 'sensu.example.com':
+  resources { 'sensu_enterprise_dashboard_api_config':
+    purge => true,
+  }
+
+  sensu::enterprise::dashboard::api { 'sensu.example.net':
     datacenter => 'example-dc',
   }
 
-  sensu::enterprise::dashboard::api { 'sensu.example.org':
+  sensu::enterprise::dashboard::api { 'sensu.example.io':
     datacenter => 'example-dc',
   }
 }

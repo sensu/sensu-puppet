@@ -187,4 +187,89 @@ Puppet::Type.type(:sensu_enterprise_dashboard_api_config).provide(:json) do
   def pass=(value)
     api['pass'] = value
   end
+
+  # Public: Load a configuration file.
+  #
+  # @param [Hash] opts
+  # @option opts [String] :config_file The dashboard configuration file to
+  #   load.  May be specified in the environment as SENSU_DASHBOARD_JSON to
+  #   affect the behavior of `puppet resource`.  Defaults to
+  #   `"/etc/sensu/dashboard.json"`
+  #
+  # @return [Hash] the JSON object loaded from the file, e.g.:
+  # {
+  #   "sensu": [
+  #     {
+  #       "host": "sensu.example.com",
+  #       "name": "example-dc",
+  #       "port": 4567,
+  #       "ssl": false,
+  #       "insecure": false,
+  #       "timeout": 5
+  #     },
+  #     {
+  #       "host": "sensu2.example.com",
+  #       "name": "example-dc",
+  #       "port": 4567,
+  #       "ssl": false,
+  #       "insecure": false,
+  #       "timeout": 5
+  #     }
+  #   ],
+  #   "dashboard": {
+  #     "host": "0.0.0.0",
+  #     "port": 3000,
+  #     "interval": 5,
+  #     "refresh": 5
+  #   }
+  # }
+  def self.load_config(opts = {})
+    if opts[:config_file]
+      fp = opts[:config_file]
+    elsif not ENV['SENSU_DASHBOARD_JSON'].to_s.empty?
+      fp = ENV['SENSU_DASHBOARD_JSON']
+    else
+      fp = '/etc/sensu/dashboard.json'
+    end
+
+    begin
+      Puppet.debug "Loading: #{fp}"
+      return JSON.parse(File.read(fp))
+    rescue StandardError => e
+      Puppet.warning "Could not load #{fp} #{e.message}"
+      Puppet.warning "Using an empty config hash instead."
+      return {}
+    end
+  end
+
+  # Given a config, map it to provider hashes.  Intended to take the output of
+  # config_file and convert it to an array of hashes suitable for initializing
+  # provider instances.
+  #
+  # @return Array[Hash]
+  def self.config_to_provider_hashes(config)
+    return [] unless config['sensu']
+    config['sensu'].map do |hsh|
+      hsh.inject({}) do |m, (k,v)|
+        case k
+        when 'host'
+          m[:name] = v
+        when 'name'
+          m[:datacenter] = v
+        else
+          m[k.to_sym] = v
+        end
+        m
+      end.merge(ensure: 'present', provider: 'json')
+    end
+  end
+
+  # Public: enumerate all resources, managed and unmanaged
+  #
+  # @return Array[Provider Instances]
+  def self.instances
+    config_to_provider_hashes(load_config).map do |provider_hash|
+      new(provider_hash)
+    end
+  end
 end
