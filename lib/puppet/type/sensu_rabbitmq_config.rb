@@ -8,12 +8,14 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
   def initialize(*args)
     super(*args)
 
-    self[:notify] = [
-      'Service[sensu-server]',
-      'Service[sensu-client]',
-      'Service[sensu-api]',
-      'Service[sensu-enterprise]'
-    ].select { |ref| catalog.resource(ref) }
+    if c = catalog
+      self[:notify] = [
+        'Service[sensu-server]',
+        'Service[sensu-client]',
+        'Service[sensu-api]',
+        'Service[sensu-enterprise]',
+      ].select { |ref| c.resource(ref) }
+    end
   end
 
   def has_cluster?
