@@ -157,15 +157,6 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
     conf['rabbitmq']['heartbeat'] = value.to_i unless value == :absent
   end
 
-  def reconnect_on_error
-    return :absent if conf['rabbitmq'].is_a?(Array)
-    conf['rabbitmq']['reconnect_on_error'] || :absent
-  end
-
-  def reconnect_on_error=(value)
-    conf['rabbitmq']['reconnect_on_error'] = value unless value == :absent
-  end
-
   def prefetch
     conf['rabbitmq']['prefetch'] ? conf['rabbitmq']['prefetch'].to_s : :absent
   end

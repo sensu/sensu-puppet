@@ -117,26 +117,24 @@ class sensu::rabbitmq::config {
   $ssl_transport = $has_cluster ? { false => $enable_ssl, true => undef, }
   $cert_chain = $has_cluster ? { false => $ssl_cert_chain, true => undef, }
   $private_key = $has_cluster ? { false => $ssl_private_key, true => undef, }
-  $reconnect_on_error = $has_cluster ? { false => $::sensu::rabbitmq_reconnect_on_error, true => undef, }
   $prefetch = $has_cluster ? { false => $::sensu::rabbitmq_prefetch, true => undef, }
   $base_path = $has_cluster ? { false => $::sensu::conf_dir, true => undef, }
   $cluster = $has_cluster ? { true => $::sensu::rabbitmq_cluster, false => undef, }
   $heartbeat = $has_cluster ? { false => $::sensu::rabbitmq_heartbeat, true => undef, }
 
   sensu_rabbitmq_config { $::fqdn:
-    ensure             => $ensure,
-    base_path          => $::sensu::conf_dir,
-    port               => $::sensu::rabbitmq_port,
-    host               => $::sensu::rabbitmq_host,
-    user               => $::sensu::rabbitmq_user,
-    password           => $::sensu::rabbitmq_password,
-    vhost              => $::sensu::rabbitmq_vhost,
-    heartbeat          => $::sensu::rabbitmq_heartbeat,
-    ssl_transport      => $enable_ssl,
-    ssl_cert_chain     => $ssl_cert_chain,
-    ssl_private_key    => $ssl_private_key,
-    reconnect_on_error => $::sensu::rabbitmq_reconnect_on_error,
-    prefetch           => $::sensu::rabbitmq_prefetch,
-    cluster            => $cluster,
+    ensure          => $ensure,
+    base_path       => $::sensu::conf_dir,
+    port            => $::sensu::rabbitmq_port,
+    host            => $::sensu::rabbitmq_host,
+    user            => $::sensu::rabbitmq_user,
+    password        => $::sensu::rabbitmq_password,
+    vhost           => $::sensu::rabbitmq_vhost,
+    heartbeat       => $::sensu::rabbitmq_heartbeat,
+    ssl_transport   => $enable_ssl,
+    ssl_cert_chain  => $ssl_cert_chain,
+    ssl_private_key => $ssl_private_key,
+    prefetch        => $::sensu::rabbitmq_prefetch,
+    cluster         => $cluster,
   }
 }

@@ -111,16 +111,6 @@ Puppet::Type.newtype(:sensu_rabbitmq_config) do
     end
   end
 
-  newproperty(:reconnect_on_error) do
-    desc 'Attempt to reconnect to RabbitMQ on error'
-    defaultto { :false unless @resource.has_cluster? }
-
-    def insync?(is)
-      return should == is if should.is_a?(Symbol)
-      super(is)
-    end
-  end
-
   newproperty(:prefetch) do
     desc 'The RabbitMQ AMQP consumer prefetch value'
     defaultto { 1 unless @resource.has_cluster? }
