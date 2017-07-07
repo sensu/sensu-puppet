@@ -136,7 +136,7 @@
 #   Boolean.  Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
 #     rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
 #     without specifying a private key or cert chain to use SSL transport, but not cert auth.
-#   Defaul: false
+#   Default: false
 #   Valid values: true, false
 #
 # [*rabbitmq_ssl_private_key*]
@@ -184,7 +184,7 @@
 #   Default: undef
 #
 # [*redis_reconnect_on_error*]
-#   Boolean. In the event the connection or channel is closed by Reddis, attempt to automatically
+#   Boolean. In the event the connection or channel is closed by redis, attempt to automatically
 #     reconnect when possible.
 #   Default: true
 #   Valid values: true, false
@@ -245,7 +245,7 @@
 #   Default: undef
 #
 # [*subscriptions*]
-#   Array of strings.  Default suscriptions used by the client
+#   Array of strings.  Default subscriptions used by the client
 #   Default: []
 #
 # [*client_address*]
@@ -341,7 +341,7 @@
 #   Default: true
 #
 # [*path*]
-#   String. used to set PATH in /etc/default/sensu
+#   String. Used to set PATH in /etc/default/sensu
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
@@ -356,37 +356,37 @@
 #   Default: undef
 #
 # [*handlers*]
-#   Hash of handlers for use with create_sources(sensu::handler).
+#   Hash of handlers for use with create_resources(sensu::handler).
 #   Example value: { 'email' => { 'type' => 'pipe', 'command' => 'mail' } }
 #   Default: {}
 #
 # [*handler_defaults*]
-#   Handler defaults when not provided explicitely in $handlers.
+#   Handler defaults when not provided explicitly in $handlers.
 #   Example value: { 'filters' => ['production'] }
 #   Default: {}
 #
 # [*checks*]
-#   Hash of checks for use with create_sources(sensu::check).
+#   Hash of checks for use with create_resources(sensu::check).
 #   Example value: { 'check-cpu' => { 'command' => 'check-cpu.rb' } }
 #   Default: {}
 #
 # [*check_defaults*]
-#   Check defaults when not provided explicitely in $checks.
-#   Example value: { 'occurences' => 3 }
+#   Check defaults when not provided explicitly in $checks.
+#   Example value: { 'occurrences' => 3 }
 #   Default: {}
 #
 # [*filters*]
-#   Hash of filters for use with create_sources(sensu::filter).
+#   Hash of filters for use with create_resources(sensu::filter).
 #   Example value: { 'occurrence' => { 'attributes' => { 'occurrences' => '1' } } }
 #   Default: {}
 #
 # [*filter_defaults*]
-#   Filter defaults when not provided explicitely in $filters.
+#   Filter defaults when not provided explicitly in $filters.
 #   Example value: { 'negate' => true }
 #   Default: {}
 #
 # [*package_checksum*]
-#   String. used to set package_checksum for windows installs
+#   String. Used to set package_checksum for windows installs
 #   Default: undef
 #
 # [*windows_pkg_url*]
@@ -541,11 +541,11 @@ class sensu (
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
   if !is_integer($redis_db) { fail('redis_db must be an integer') }
 
-  # sensu-enterprise supercedes sensu-server and sensu-api
+  # sensu-enterprise supersedes sensu-server and sensu-api
   if ( $enterprise and $api ) or ( $enterprise and $server ) {
     fail('Sensu Enterprise: sensu-enterprise replaces sensu-server and sensu-api')
   }
-  # validate enterprise repo creds
+  # validate enterprise repo credentials
   if $manage_repo {
     if ( $enterprise or $enterprise_dashboard ) and $install_repo {
       validate_string($enterprise_user, $enterprise_pass)
