@@ -58,4 +58,12 @@ Puppet::Type.type(:sensu_filter).provide(:json) do
     conf['filters'][resource[:name]]['attributes'].merge!(to_type(value))
   end
 
+  def when
+    conf['filters'][resource[:name]]['when']
+  end
+
+  def when=(value)
+    conf['filters'][resource[:name]]['when'] ||= {}
+    conf['filters'][resource[:name]]['when'].merge!(to_type(value))
+  end
 end
