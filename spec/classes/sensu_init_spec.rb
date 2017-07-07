@@ -5,6 +5,8 @@ describe 'sensu', :type => :class do
 
   it 'should compile' do should create_class('sensu') end
   it { should contain_user('sensu') }
+  it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/sensu$}) }
+
 
   context 'osfamily windows' do
     let(:facts) do
@@ -29,6 +31,11 @@ describe 'sensu', :type => :class do
         it { should_not contain_user('sensu') }
       end
     end
+  end
+
+  context 'with log_dir => /var/log/tests' do
+    let(:params) { {:log_dir => '/var/log/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/tests$}) }
   end
 
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
@@ -230,6 +237,12 @@ describe 'sensu', :type => :class do
     mandatory_params = {}
 
     validations = {
+      'absolute_path' => {
+        :name    => %w[log_dir],
+        :valid   => %w[/absolute/filepath /absolute/directory/],
+        :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil],
+        :message => 'is not an absolute path',
+      },
       'plugins' => {
         :name    => %w[plugins],
         :valid   => ['/string', %w(/array), { '/hash' => {} }],

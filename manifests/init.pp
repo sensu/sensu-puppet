@@ -316,6 +316,12 @@
 #   Default: 'info'
 #   Valid values: debug, info, warn, error, fatal
 #
+#
+# [*log_dir*]
+#   String.  Sensu log directory to be used
+#   Default: '/var/log/sensu'
+#   Valid values: Any valid log directory path, accessible by the sensu user
+#
 # [*init_stop_max_wait*]
 #   Integer.  Number of seconds to wait for the init stop script to run
 #   Default: 10
@@ -469,6 +475,7 @@ class sensu (
   $rubyopt                        = undef,
   $gem_path                       = undef,
   $log_level                      = 'info',
+  $log_dir                        = '/var/log/sensu',
   $dashboard                      = false,
   $init_stop_max_wait             = 10,
   $gem_install_options            = undef,
@@ -508,6 +515,7 @@ class sensu (
 
 ){
 
+  validate_absolute_path($log_dir)
   validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
