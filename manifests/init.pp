@@ -184,8 +184,8 @@
 #   Default: undef
 #
 # [*redis_reconnect_on_error*]
-#   Boolean. In the event the connection or channel is closed by redis, attempt to automatically
-#     reconnect when possible.
+#   Boolean. Reconnect to Redis in the event of a Redis error, e.g. READONLY
+#     (not to be confused with a connection failure).
 #   Default: true
 #   Valid values: true, false
 #
