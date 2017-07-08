@@ -396,6 +396,15 @@ describe 'sensu' do
           )
         end
       end
+
+      context 'with sensu::windows_package_provider: chocolatey' do
+        let(:params) do
+          { windows_package_provider: 'chocolatey' }
+        end
+        it 'uses the chocolatey provider for Package[Sensu]' do
+          should contain_package('sensu').with(provider: 'chocolatey')
+        end
+      end
     end
   end
 end

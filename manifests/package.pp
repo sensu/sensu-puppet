@@ -15,6 +15,7 @@ class sensu::package {
       $pkg_name = 'sensu'
       $pkg_version = $::sensu::version
       $pkg_source = undef
+      $pkg_provider = undef
 
       if $::sensu::manage_repo {
         class { '::sensu::repo::apt': }
@@ -33,6 +34,7 @@ class sensu::package {
       $pkg_name = 'sensu'
       $pkg_version = $::sensu::version
       $pkg_source = undef
+      $pkg_provider = undef
 
       if $::sensu::manage_repo {
         class { '::sensu::repo::yum': }
@@ -54,14 +56,13 @@ class sensu::package {
         default     => $::sensu::version,
       }
       # The title used for consistent relationships in the Puppet catalog
-      $pkg_title = 'sensu'
+      $pkg_title = $::sensu::windows_package_title
       # The name used by the provider to compare to Windows Add/Remove programs.
-      $pkg_name = 'Sensu'
-      # Where the MSI is downloaded to and installed from.
-      $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
-      $pkg_require = "Remote_file[${pkg_title}]"
+      $pkg_name = $::sensu::windows_package_name
 
-      # The user can override the computation of the source URL.
+      # The user can override the computation of the source URL.  This URL is
+      # used with the remote_file resource, it is not used with the chocolatey
+      # package provider.
       if $::sensu::windows_pkg_url {
         $pkg_url = $::sensu::windows_pkg_url
       } else {
@@ -73,12 +74,28 @@ class sensu::package {
         $pkg_url = "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi"
       }
 
-      # path matches Package[sensu] { source => $pkg_source }
-      remote_file { $pkg_title:
-        ensure   => present,
-        path     => $pkg_source,
-        source   => $pkg_url,
-        checksum => $::sensu::package_checksum,
+      if $::sensu::windows_package_provider == 'chocolatey' {
+        $pkg_provider = 'chocolatey'
+        if $::sensu::windows_choco_repo {
+          $pkg_source = $::sensu::windows_choco_repo
+        } else {
+          $pkg_source = undef
+        }
+        $pkg_require = undef
+      } else {
+        # Use Puppet's default package provider
+        $pkg_provider = undef
+        # Where the MSI is downloaded to and installed from.
+        $pkg_source = "C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi"
+        $pkg_require = "Remote_file[${pkg_title}]"
+
+        # path matches Package[sensu] { source => $pkg_source }
+        remote_file { $pkg_title:
+          ensure   => present,
+          path     => $pkg_source,
+          source   => $pkg_url,
+          checksum => $::sensu::package_checksum,
+        }
       }
     }
 
@@ -87,10 +104,11 @@ class sensu::package {
   }
 
   package { $pkg_title:
-    ensure  => $pkg_version,
-    name    => $pkg_name,
-    source  => $pkg_source,
-    require => $pkg_require,
+    ensure   => $pkg_version,
+    name     => $pkg_name,
+    source   => $pkg_source,
+    require  => $pkg_require,
+    provider => $pkg_provider,
   }
 
   if $::sensu::sensu_plugin_provider {
