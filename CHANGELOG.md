@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.17.0](https://github.com/sensu/sensu-puppet/tree/v2.17.0)
+## [v2.18.0](https://github.com/sensu/sensu-puppet/tree/v2.18.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.17.0...v2.18.0)
+
+**Closed issues:**
+
+- REQ - Windows - Support chocolatey as a package manager [\#589](https://github.com/sensu/sensu-puppet/issues/589)
+
+**Merged pull requests:**
+
+- \(\#589\) Add Chocolatey support for Windows [\#723](https://github.com/sensu/sensu-puppet/pull/723) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.17.0](https://github.com/sensu/sensu-puppet/tree/v2.17.0) (2017-07-08)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.16.0...v2.17.0)
 
 **Implemented enhancements:**
