@@ -396,6 +396,32 @@
 #   the Windows package.  For example:
 #   `"https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi"`
 #   Default: undef
+#
+# [*windows_package_provider*]
+#   String.  When something other than `undef`, use the specified package
+#   provider to install Windows packages.  The default behavior of `undef`
+#   defers to the default package provider in Puppet which is expected to be the
+#   msi provider.  Valid values are `undef` or `'chocolatey'`.
+#   Default: undef
+#
+# [*windows_choco_repo*]
+#   String.  The URL of the Chocolatey repository, used with the chocolatey
+#   windows package provider.
+#   Default: undef
+#
+# [*windows_package_name*]
+#   String.  The package name used to identify the package filename.  Defaults
+#   to `'sensu'` which matches the MSI filename published at
+#   `https://repositories.sensuapp.org/msi`.  Note, this is distinct from the
+#   windows_package_title, which is used to identify the package name as
+#   displayed in Add/Remove programs in Windows.
+#   Default: 'sensu'
+#
+# [*windows_package_title*]
+#   String.  The package name used to identify the package as listed in
+#   Add/Remove programs.  Note this is distinct from the package filename
+#   identifier specified with windows_package_name.
+#   Default: 'Sensu'
 
 class sensu (
   $version                        = 'installed',
@@ -501,6 +527,10 @@ class sensu (
   $windows_logrotate              = false,
   $windows_log_number             = '10',
   $windows_log_size               = '10240',
+  $windows_package_provider       = undef,
+  $windows_choco_repo             = undef,
+  $windows_package_name           = 'Sensu',
+  $windows_package_title          = 'sensu',
 
   ### START Hiera Lookups ###
   $extensions                  = {},
