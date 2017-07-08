@@ -239,6 +239,11 @@ sensu::filters:
       occurrences: "eval: value == 1 || value % 30 == 0"
 sensu::filter_defaults:
   negate: true
+  when:
+    days:
+      all:
+        - begin: 5:00 PM
+          end: 8:00 AM
 sensu::check_defaults:
   handlers: 'mail'
 sensu::mutators:

@@ -22,6 +22,7 @@ define sensu::filter (
   $ensure     = 'present',
   $negate     = undef,
   $attributes = undef,
+  $when       = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -31,6 +32,10 @@ define sensu::filter (
 
   if $attributes and !is_hash($attributes) {
     fail('attributes must be a hash')
+  }
+
+  if $when and !is_hash($when) {
+    fail('when must be a hash')
   }
 
   file { "/etc/sensu/conf.d/filters/${name}.json":
@@ -44,6 +49,7 @@ define sensu::filter (
     ensure     => $ensure,
     negate     => $negate,
     attributes => $attributes,
+    when       => $when,
     require    => File['/etc/sensu/conf.d/filters'],
   }
 

@@ -54,6 +54,33 @@ Puppet::Type.newtype(:sensu_filter) do
     defaultto {}
   end
 
+  newproperty(:when) do
+    desc 'Used to determine when a filter is applied.'
+    include PuppetX::Sensu::ToType
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
   newproperty(:negate, :parent => PuppetX::Sensu::BooleanProperty) do
     desc ""
 
