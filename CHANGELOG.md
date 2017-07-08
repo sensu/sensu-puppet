@@ -1,7 +1,22 @@
 # Change Log
 
-## [v2.16.0](https://github.com/sensu/sensu-puppet/tree/v2.16.0)
+## [v2.17.0](https://github.com/sensu/sensu-puppet/tree/v2.17.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.16.0...v2.17.0)
+
+**Implemented enhancements:**
+
+- Unable to set RabbitMQ Heartbeat option [\#428](https://github.com/sensu/sensu-puppet/issues/428)
+
+**Closed issues:**
+
+- Module does not support the when attribute on filters [\#658](https://github.com/sensu/sensu-puppet/issues/658)
+
+**Merged pull requests:**
+
+- \(\#658\) Manage the when attribute of sensu filters [\#721](https://github.com/sensu/sensu-puppet/pull/721) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.16.0](https://github.com/sensu/sensu-puppet/tree/v2.16.0) (2017-07-07)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.15.0...v2.16.0)
 
 **Implemented enhancements:**
