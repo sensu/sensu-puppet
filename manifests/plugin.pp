@@ -69,7 +69,7 @@ define sensu::plugin (
 
   case $type {
     'file': {
-      $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
+      $filename = basename($name)
 
       sensu::plugins_dir { "${name}-${install_path}":
         path    => $install_path,
@@ -86,7 +86,7 @@ define sensu::plugin (
       }
     }
     'url': {
-      $filename = inline_template('<%= scope.lookupvar(\'name\').split(\'/\').last %>')
+      $filename = basename($name)
 
       sensu::plugins_dir { "${name}-${install_path}":
         path    => $install_path,

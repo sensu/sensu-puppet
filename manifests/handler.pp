@@ -130,8 +130,7 @@ define sensu::handler(
   }
 
   if $source {
-    $filename = inline_template('<%= scope.lookupvar(\'source\').split(\'/\').last %>')
-    $handler = "${install_path}/${filename}"
+    $handler = "${install_path}/${basename($source)}"
 
     ensure_resource('file', $handler, {
       ensure => $file_ensure,

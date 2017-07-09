@@ -5,10 +5,17 @@ describe 'sensu', :type => :class do
 
   it 'should compile' do should create_class('sensu') end
   it { should contain_user('sensu') }
+  it { should contain_file('/etc/default/sensu').with_content(%r{^EMBEDDED_RUBY=true$}) }
+  it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_LEVEL=info$}) }
   it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/sensu$}) }
+  it { should contain_file('/etc/default/sensu').without_content(%r{^RUBYOPT=.*$}) }
+  it { should contain_file('/etc/default/sensu').without_content(%r{^GEM_PATH=.*$}) }
+  it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
+  it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
+  it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
+  it { should_not contain_file('C:/opt/sensu/bin/sensu-client.xml') }
 
-
-  context 'osfamily windows' do
+  describe 'osfamily windows' do
     let(:facts) do
       {
         :osfamily => 'windows',
@@ -21,21 +28,133 @@ describe 'sensu', :type => :class do
           },
         },
       }
-
-      describe 'with manage_user => true' do
-        it { should_not contain_user('sensu') }
-      end
-
-      describe 'with manage_user => false' do
-        let(:params) { {:manage_user => false} }
-        it { should_not contain_user('sensu') }
-      end
     end
+
+    context 'with default setting' do
+      content = <<-END.gsub(/^\s+\|/, '')
+        |<!-- Windows service definition for Sensu -->
+        |<service>
+        |  <id>sensu-client</id>
+        |  <name>Sensu Client</name>
+        |  <description>This service runs a Sensu Client</description>
+        |  <executable>C:\\opt\\sensu\\embedded\\bin\\ruby</executable>
+        |  <arguments>C:\\opt\\sensu\\embedded\\bin\\sensu-client -d C:\\opt\\sensu\\conf.d -L info</arguments>
+        |  <logpath>C:\\opt\\sensu\\</logpath>
+        |</service>
+      END
+
+      it do
+        should contain_file('C:/opt/sensu/bin/sensu-client.xml').with({
+          'ensure'  => 'file',
+          'content' => content,
+        })
+      end
+
+      it { should_not contain_user('sensu') }
+    end
+
+    context 'with log_level => debug' do
+      let(:params) { {:log_level => 'debug' } }
+      it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').with_content(%r{^\s*<arguments>C:\\opt\\sensu\\embedded\\bin\\sensu-client -d C:\\opt\\sensu\\conf.d -L debug</arguments>$}) }
+    end
+
+    context 'with windows_logrotate => true' do
+      let(:params) { {:windows_logrotate => true } }
+      content = <<-END.gsub(/^\s+\|/, '')
+        |<!-- Windows service definition for Sensu -->
+        |<service>
+        |  <id>sensu-client</id>
+        |  <name>Sensu Client</name>
+        |  <description>This service runs a Sensu Client</description>
+        |  <executable>C:\\opt\\sensu\\embedded\\bin\\ruby</executable>
+        |  <arguments>C:\\opt\\sensu\\embedded\\bin\\sensu-client -d C:\\opt\\sensu\\conf.d -L info</arguments>
+        |  <logpath>C:\\opt\\sensu\\</logpath>
+        |  <log mode="roll-by-size">
+        |        <sizeThreshold>10240</sizeThreshold>
+        |        <keepFiles>10</keepFiles>
+        |  </log>
+        |</service>
+      END
+      it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').with_content(content) }
+    end
+
+    # without windows_logrotate => true windows_log_size will be ignored
+    context 'windows_log_size => 242' do
+      let(:params) { {:windows_log_size => '242' } }
+      it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').without_content(%r{^\s*<sizeThreshold>.*</sizeThreshold>$}) }
+    end
+
+    context 'windows_logrotate => true & windows_log_size => 242' do
+      let(:params) { {:windows_logrotate => true, :windows_log_size => '242' } }
+      it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').with_content(%r{^\s*<sizeThreshold>242</sizeThreshold>$}) }
+    end
+
+    # without windows_logrotate => true windows_log_number will be ignored
+    context 'windows_log_number => 242' do
+      let(:params) { {:windows_log_number => '242' } }
+      it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').without_content(%r{^\s*<keepFiles>.*</keepFiles>$}) }
+    end
+
+    context 'windows_logrotate => true & windows_log_number => 242' do
+      let(:params) { {:windows_logrotate => true, :windows_log_number => '242' } }
+      it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').with_content(%r{^\s*<keepFiles>242</keepFiles>$}) }
+    end
+
+    context 'with manage_user => false' do
+      let(:params) { {:manage_user => false} }
+      it { should_not contain_user('sensu') }
+    end
+  end
+
+  context 'with use_embedded_ruby => false' do
+    let(:params) { {:use_embedded_ruby => false } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^EMBEDDED_RUBY=false$}) }
+  end
+
+  context 'with log_level => debug' do
+    let(:params) { {:log_level => 'debug' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_LEVEL=debug$}) }
   end
 
   context 'with log_dir => /var/log/tests' do
     let(:params) { {:log_dir => '/var/log/tests' } }
     it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/tests$}) }
+  end
+
+  context 'rubyopt => -rbundler/test' do
+    let(:params) { {:rubyopt => '-rbundler/test' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^RUBYOPT="-rbundler/test"$}) }
+  end
+
+  context 'gem_path => /path/to/gems' do
+    let(:params) { {:gem_path => '/path/to/gems' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^GEM_PATH="/path/to/gems"$}) }
+  end
+
+  context 'deregister_on_stop => true' do
+    let(:params) { {:deregister_on_stop => true } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=""$}) }
+  end
+
+  # without deregister_on_stop == true deregister_handler will be ignored
+  context 'deregister_handler => testing' do
+    let(:params) { {:deregister_handler => 'testing' } }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
+  end
+
+ context 'deregister_on_stop => true & deregister_handler => testing' do
+    let(:params) { {:deregister_on_stop => true, :deregister_handler => 'testing' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER="testing"$}) }
+  end
+
+  context 'init_stop_max_wait => 242' do
+    let(:params) { {:init_stop_max_wait => 242 } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="242"$}) }
+  end
+
+  context 'path => /spec/tests' do
+    let(:params) { {:path => '/spec/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=/spec/tests$}) }
   end
 
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
@@ -243,11 +362,29 @@ describe 'sensu', :type => :class do
         :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil],
         :message => 'is not an absolute path',
       },
+      'boolean' => {
+        :name    => %w(deregister_on_stop),
+        :valid   => [true, false],
+        :invalid => ['false', %w(array), { 'ha' => 'sh' }, 3, 2.42, nil],
+        :message => 'is not a boolean',
+      },
+      'integer' => {
+        :name    => %w(init_stop_max_wait),
+        :valid   => [3, '242'],
+        :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, nil],
+        :message => 'must be an integer',
+      },
       'plugins' => {
         :name    => %w[plugins],
         :valid   => ['/string', %w(/array), { '/hash' => {} }],
         :invalid => [3, 2.42, true],
         :message => 'Invalid data type',
+      },
+      'validate_re log_level' => {
+        :name    => %w[log_level],
+        :valid   => %w[debug info warn error fatal],
+        :invalid => ['string', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, nil],
+        :message => 'validate_re()',
       },
     }
 

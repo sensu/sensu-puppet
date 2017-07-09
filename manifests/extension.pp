@@ -40,8 +40,7 @@ define sensu::extension(
     $notify_services = []
   }
 
-  $filename = inline_template('<%= scope.lookupvar(\'source\').split(\'/\').last %>')
-  $handler = "${install_path}/${filename}"
+  $handler = "${install_path}/${basename($source)}"
 
   $file_ensure = $ensure ? {
     'absent'  => 'absent',
