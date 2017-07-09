@@ -583,25 +583,26 @@ class sensu (
     }
   }
 
-  # Ugly hack for notifications, better way?
   # Put here to avoid computing the conditionals for every check
-  if $client and $server and $api {
-    $check_notify = [ Class['sensu::client::service'], Class['sensu::server::service'], Class['sensu::api::service'] ]
-  } elsif $client and $server {
-    $check_notify = [ Class['sensu::client::service'], Class['sensu::server::service'] ]
-  } elsif $client and $api {
-    $check_notify = [ Class['sensu::client::service'], Class['sensu::api::service'] ]
-  } elsif $server and $api {
-    $check_notify = [ Class['sensu::server::service'], Class['sensu::api::service'] ]
-  } elsif $server {
-    $check_notify = Class['sensu::server::service']
-  } elsif $client {
-    $check_notify = Class['sensu::client::service']
-  } elsif $api {
-    $check_notify = Class['sensu::api::service']
+  if $client {
+    $client_service_class = Class['sensu::client::service']
   } else {
-    $check_notify = []
+    $client_service_class = undef
   }
+
+  if $server {
+    $server_service_class = Class['sensu::server::service']
+  } else {
+    $server_service_class = undef
+  }
+
+  if $api {
+    $api_service_class = Class['sensu::api::service']
+  } else {
+    $api_service_class = undef
+  }
+
+  $check_notify = delete_undef_values([ $client_service_class, $server_service_class, $api_service_class ])
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.
