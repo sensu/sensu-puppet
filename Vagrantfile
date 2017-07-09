@@ -128,21 +128,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
   end
 
-  config.vm.define "freebsd11-client", autostart: false do |client|
-    client.vm.box = "freebsd/FreeBSD-11.0-STABLE"
-    client.vm.hostname = 'freebsd11-client.example.com'
-    client.vm.network  :private_network, ip: "192.168.56.19"
-    client.vm.base_mac = "080027D14C66"
-#    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
-#    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
-  end
-
   config.vm.define "freebsd10-client", autostart: false do |client|
     client.vm.box = "freebsd/FreeBSD-10.3-STABLE"
     client.vm.hostname = 'freebsd10-client.example.com'
+    client.vm.guest = :freebsd
     client.vm.network  :private_network, ip: "192.168.56.20"
-#    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
-#    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+    client.vm.base_mac = "080027D14C67"
+    client.ssh.shell = "sh"
+    client.vm.synced_folder ".", "/vagrant", id: "vagrant-root", type: "rsync", rsync__exclude: [".git/", "spec/"]
+    client.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--cpus", "1"]
+      vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+      vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
+    end
+    client.vm.provision :shell, :path => "tests/provision_basic_freebsd.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client-freebsd.pp"
   end
 
   # This system is meant to be started without 'sensu-server' running.

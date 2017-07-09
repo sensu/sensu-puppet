@@ -32,10 +32,18 @@ class sensu::api::service (
     }
 
     if $::osfamily != 'windows' {
+
+      if $::osfamily == 'FreeBSD' {
+        $provider = 'init'
+      } else {
+        $provider = undef
+      }
+
       service { 'sensu-api':
         ensure     => $ensure,
         enable     => $enable,
         hasrestart => $hasrestart,
+        provider   => $provider,
         subscribe  => [
           Class['sensu::package'],
           Class['sensu::api::config'],

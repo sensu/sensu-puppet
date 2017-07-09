@@ -14,7 +14,7 @@ class sensu::api::config {
     $ensure = 'present'
   }
 
-  file { "${sensu::etc_dir}/conf.d/api.json":
+  file { "${::sensu::etc_dir}/conf.d/api.json":
     ensure => $ensure,
     owner  => $::sensu::user,
     group  => $::sensu::group,
@@ -23,7 +23,7 @@ class sensu::api::config {
 
   sensu_api_config { $::fqdn:
     ensure                => $ensure,
-    base_path             => "${sensu::etc_dir}/conf.d",
+    base_path             => "${::sensu::etc_dir}/conf.d",
     bind                  => $::sensu::api_bind,
     host                  => $::sensu::api_host,
     port                  => $::sensu::api_port,

@@ -150,12 +150,18 @@ define sensu::handler(
   }
 
   # handler configuration may contain "secrets"
-  file { "${::sensu::handlers_path}/${name}.json":
+  file { "${install_path}/${name}.json":
     ensure => $file_ensure,
     owner  => 'sensu',
     group  => 'sensu',
     mode   => '0440',
     before => Sensu_handler[$name],
+  }
+
+  if $::sensu::manage_handlers_dir == true {
+    $handler_require = File["${::sensu::etc_dir}/handlers"]
+  } else {
+    $handler_require = undef
   }
 
   sensu_handler { $name:
@@ -173,9 +179,6 @@ define sensu::handler(
     timeout         => $timeout,
     handle_flapping => $handle_flapping,
     notify          => $notify_services,
-    #require         => File['/etc/sensu/conf.d/handlers'],
-    subdue     => $subdue,
-    base_path  => "${::sensu::conf_dir}/handlers",
-    require    => File["${::sensu::handlers_path}"],
+    require         => $handler_require,
   }
 }

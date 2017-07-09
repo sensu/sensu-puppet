@@ -14,7 +14,7 @@ class sensu::rabbitmq::config {
     $ensure = 'present'
   }
 
-  $ssl_dir = "${sensu::etc_dir}/ssl"
+  $ssl_dir = "${::sensu::etc_dir}/ssl"
 
   if $::sensu::rabbitmq_ssl_cert_chain or $::sensu::rabbitmq_ssl_private_key {
     file { $ssl_dir:
@@ -100,7 +100,7 @@ class sensu::rabbitmq::config {
     $enable_ssl = $::sensu::rabbitmq_ssl
   }
 
-  file { "${sensu::conf_dir}/rabbitmq.json":
+  file { "${::sensu::conf_dir}/rabbitmq.json":
     ensure => $ensure,
     owner  => $::sensu::user,
     group  => $::sensu::group,

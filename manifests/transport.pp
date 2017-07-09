@@ -21,7 +21,7 @@ class sensu::transport {
     },
   }
 
-  file { "${sensu::conf_dir}/transport.json":
+  file { "${::sensu::conf_dir}/transport.json":
     ensure  => $ensure,
     owner   => 'sensu',
     group   => 'sensu',

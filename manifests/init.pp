@@ -385,7 +385,14 @@
 #   Default: {}
 #
 # [*package_checksum*]
-#   String. Used to set package_checksum for windows installs
+#   String. Used to set package_checksum for remote installs when `pkg_url` is
+#   specified.
+#   Default: undef
+#
+# [*pkg_url*]
+#   String. If specified, use this URL to the sensu package. For example:
+#   `'https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi'` or
+#   `'https://sensu.global.ssl.fastly.net/freebsd/FreeBSD:10:amd64/sensu/sensu-0.29.0_11.txz'`
 #   Default: undef
 #
 # [*windows_pkg_url*]
@@ -520,6 +527,7 @@ class sensu (
   $deregister_on_stop             = false,
   $deregister_handler             = undef,
   $package_checksum               = undef,
+  $pkg_url                        = undef,
   $windows_pkg_url                = undef,
   $windows_repo_prefix            = 'https://repositories.sensuapp.org/msi',
   $windows_logrotate              = false,
@@ -661,6 +669,8 @@ class sensu (
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'sensu'
       $group = 'sensu'
+      $home_dir = '/opt/sensu'
+      $shell = '/usr/sbin/nologin'
       $dir_mode = '0555'
       $file_mode = '0444'
     }
@@ -677,8 +687,6 @@ class sensu (
 
     default: {}
   }
-  # Set the handler path
-  $handlers_path = "${etc_dir}/handlers"
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services

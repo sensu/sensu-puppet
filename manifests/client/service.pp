@@ -47,10 +47,17 @@ class sensu::client::service (
       }
     }
 
+    if $::osfamily == 'FreeBSD' {
+      $provider = 'bsd'
+    } else {
+      $provider = undef
+    }
+
     service { 'sensu-client':
       ensure     => $ensure,
       enable     => $enable,
       hasrestart => $hasrestart,
+      provider   => $provider,
       subscribe  => [
         Class['sensu::package'],
         Class['sensu::client::config'],

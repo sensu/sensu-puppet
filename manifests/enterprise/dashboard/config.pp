@@ -28,7 +28,7 @@ class sensu::enterprise::dashboard::config {
       $_ensure = $ensure
     }
 
-    file { "${sensu::etc_dir}/dashboard.json":
+    file { "${::sensu::etc_dir}/dashboard.json":
       ensure => $_ensure,
       owner  => 'sensu',
       group  => 'sensu',

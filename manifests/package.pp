@@ -33,11 +33,29 @@ class sensu::package {
       $default_dir = '/usr/local/etc/default'
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
-      # FreeBSD does not support versions
-      $pkg_version = 'installed'
-      $pkg_source = undef
+      $pkg_version = template('sensu/sensu-freebsd-package-version.erb')
       $pkg_provider = undef
-      $pkg_require = undef
+      $pkg_url_version = $::sensu::version ? {
+        'installed' => 'latest',
+        # This template translates '-' to '_' in $::sensu::version.
+        default     => template('sensu/sensu-freebsd-package-version.erb'),
+      }
+
+      if $::sensu::pkg_url == undef {
+        $_pkg_url = "https://sensu.global.ssl.fastly.net/freebsd/FreeBSD:10:amd64/sensu/sensu-${pkg_url_version}.txz"
+      } else {
+        $_pkg_url = $::sensu::pkg_url
+      }
+
+      $pkg_source = "/tmp/sensu-${pkg_url_version}.txz"
+      $pkg_require = "Remote_file[${pkg_title}]"
+
+      remote_file { $pkg_title:
+        ensure   => present,
+        path     => $pkg_source,
+        source   => $_pkg_url,
+        checksum => $::sensu::package_checksum,
+      }
     }
     'RedHat': {
       $default_dir = '/etc/default'
@@ -81,7 +99,7 @@ class sensu::package {
         # e.g. '2012 R2' => '2012r2'
         $pkg_url_dir = template('sensu/sensu-version.erb')
         $pkg_arch = $facts['os']['architecture']
-        $pkg_url = "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi"
+        $pkg_url = "${::sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi"
       }
 
       if $::sensu::windows_package_provider == 'chocolatey' {
@@ -152,7 +170,7 @@ class sensu::package {
     }
   }
 
-  file { [ $::sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators" ]:
+  file { [ $::sensu::conf_dir, "${::sensu::conf_dir}/handlers", "${::sensu::conf_dir}/checks", "${::sensu::conf_dir}/filters", "${::sensu::conf_dir}/extensions", "${::sensu::conf_dir}/mutators" ]:
     ensure  => directory,
     owner   => $::sensu::user,
     group   => $::sensu::group,
@@ -164,7 +182,7 @@ class sensu::package {
   }
 
   if $::sensu::manage_handlers_dir {
-    file { "${sensu::etc_dir}/handlers":
+    file { "${::sensu::etc_dir}/handlers":
       ensure  => directory,
       mode    => $::sensu::dir_mode,
       owner   => $::sensu::user,
@@ -176,7 +194,7 @@ class sensu::package {
     }
   }
 
-  file { ["${sensu::etc_dir}/extensions", "${sensu::etc_dir}/extensions/handlers"]:
+  file { ["${::sensu::etc_dir}/extensions", "${::sensu::etc_dir}/extensions/handlers"]:
     ensure  => directory,
     mode    => $::sensu::dir_mode,
     owner   => $::sensu::user,
@@ -188,7 +206,7 @@ class sensu::package {
   }
 
   if $::sensu::manage_mutators_dir {
-    file { "${sensu::etc_dir}/mutators":
+    file { "${::sensu::etc_dir}/mutators":
       ensure  => directory,
       mode    => $::sensu::dir_mode,
       owner   => $::sensu::user,
@@ -201,7 +219,7 @@ class sensu::package {
   }
 
   if $::sensu::_manage_plugins_dir {
-    file { "${sensu::etc_dir}/plugins":
+    file { "${::sensu::etc_dir}/plugins":
       ensure  => directory,
       mode    => $::sensu::dir_mode,
       owner   => $::sensu::user,
@@ -231,5 +249,5 @@ class sensu::package {
     notice('Managing a local windows user is not implemented on windows')
   }
 
-  file { "${sensu::etc_dir}/config.json": ensure => absent }
+  file { "${::sensu::etc_dir}/config.json": ensure => absent }
 }

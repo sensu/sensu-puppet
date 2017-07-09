@@ -34,9 +34,11 @@ node default {
   }
 
   # Use the internal 192.168.56.* address
-  if $facts['networking']['interfaces']['eth1'] != undef {
+  if $::ipaddress_vtnet1 { # FreeBSD
+    $ip = $::ipaddress_vtnet1
+  } elsif $facts['networking']['interfaces']['eth1'] != undef { # EL
     $ip = $facts['networking']['interfaces']['eth1']['ip']
-  } elsif $facts['networking']['interfaces']['enp0s8'] != undef {
+  } elsif $facts['networking']['interfaces']['enp0s8'] != undef { # Ubuntu 16.04
     $ip = $facts['networking']['interfaces']['enp0s8']['ip']
   } else {
     $ip = $facts['networking']['ip']
