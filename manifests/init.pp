@@ -153,12 +153,6 @@
 #     as a file reference, as you'd normally configure sensu.
 #   Default: undef
 #
-# [*rabbitmq_reconnect_on_error*]
-#   Boolean. In the event the connection or channel is closed by RabbitMQ, attempt to automatically
-#     reconnect when possible. Default set to fault its not guaranteed to successfully reconnect.
-#   Default: false
-#   Valid values: true, false
-#
 # [*rabbitmq_prefetch*]
 #   Integer.  The integer value for the RabbitMQ prefetch attribute
 #   Default: 1
@@ -184,8 +178,8 @@
 #   Default: undef
 #
 # [*redis_reconnect_on_error*]
-#   Boolean. In the event the connection or channel is closed by redis, attempt to automatically
-#     reconnect when possible.
+#   Boolean. Reconnect to Redis in the event of a Redis error, e.g. READONLY
+#     (not to be confused with a connection failure).
 #   Default: true
 #   Valid values: true, false
 #
@@ -205,10 +199,15 @@
 #   Boolean.  Reconnect to Redis in the event of a connection failure
 #   Default: true
 #
-# [*transport_types*]
+# [*transport_type*]
 #   String. Transport type to be used by Sensu
 #   Default: rabbitmq
 #   Valid values: rabbitmq, redis
+#
+# [*transport_reconnect_on_error*]
+#   Boolean. If the transport connection is closed, attempt to reconnect automatically when possible.
+#   Default: true
+#   Valid values: true, false
 #
 # [*api_bind*]
 #   String.  IP to bind api service
@@ -461,7 +460,6 @@ class sensu (
   $rabbitmq_ssl                   = undef,
   $rabbitmq_ssl_private_key       = undef,
   $rabbitmq_ssl_cert_chain        = undef,
-  $rabbitmq_reconnect_on_error    = false,
   $rabbitmq_prefetch              = undef,
   $rabbitmq_cluster               = undef,
   $rabbitmq_heartbeat             = undef,
@@ -546,7 +544,7 @@ class sensu (
 ){
 
   validate_absolute_path($log_dir)
-  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $rabbitmq_reconnect_on_error, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
+  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
   validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-el]+$'], "Invalid package version: ${version}")
