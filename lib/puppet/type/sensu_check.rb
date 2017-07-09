@@ -69,6 +69,17 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
+  newproperty(:contacts, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+    desc "Contact names to override handler configuration via Contact Routing"
+    # Valid names documented at
+    # https://sensuapp.org/docs/0.29/enterprise/contact-routing.html#contact-names
+    newvalues(/^[\w\.-]+$/, :absent)
+    def insync?(is)
+      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
+      is == should
+    end
+  end
+
   newproperty(:high_flap_threshold) do
     desc "A host is determined to be flapping when the percent change exceedes this threshold."
     newvalues(/.*/, :absent)

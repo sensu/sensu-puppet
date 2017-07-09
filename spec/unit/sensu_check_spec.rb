@@ -1,11 +1,37 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:sensu_check) do
-  let(:resource_hash) do
+  let(:resource_hash_base) do
     {
       :title => 'foo.example.com',
       :catalog => Puppet::Resource::Catalog.new
     }
+  end
+  # Overridden on a context by context basis
+  let(:resource_hash_override) { {} }
+  let(:resource_hash) { resource_hash_base.merge(resource_hash_override) }
+
+  describe 'contacts parameter' do
+    subject { described_class.new(resource_hash)[:contacts] }
+
+    valid = [%w(support), %w(support ops), 'support']
+    invalid = [%w(supp%ort), %w(support op$), 'sup%port']
+
+    valid.each do |val|
+      describe "valid: contacts => #{val.inspect} " do
+        let(:resource_hash_override) { {contacts: val} }
+        it { is_expected.to eq [*val] }
+      end
+    end
+
+    invalid.each do |val|
+      describe "invalid: contacts => #{val.inspect}" do
+        let(:resource_hash_override) { {contacts: val} }
+        it do
+          expect { subject }.to raise_error Puppet::ResourceError, /Parameter contacts failed/
+        end
+      end
+    end
   end
 
   describe 'handlers' do

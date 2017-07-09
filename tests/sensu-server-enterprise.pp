@@ -36,4 +36,33 @@ node 'sensu-server' {
     handlers    => 'default',
     subscribers => 'sensu-test',
   }
+
+  # Exercise [Contact Routing](https://github.com/sensu/sensu-puppet/issues/597)
+  # This overrides the built-in email and slack handlers.
+  sensu::contact { 'support':
+    ensure => 'present',
+    config => {
+      'email' => {
+        'to'   => 'support@example.com',
+        'from' => 'sensu.noreply@example.com',
+      },
+      'slack' => {
+        'channel' => '#support',
+      },
+    },
+  }
+  sensu::contact { 'ops':
+    ensure => 'present',
+    config => { 'email'  => { 'to' => 'ops@example.com' } },
+  }
+  sensu::contact { 'departed':
+    ensure => 'absent',
+  }
+  # A second check to use the built-in email handler and contact.
+  sensu::check { 'check_ntp_with_routing':
+    command     => 'PATH=$PATH:/usr/lib64/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
+    handlers    => 'email',
+    contacts    => ['ops', 'support'],
+    subscribers => 'sensu-test',
+  }
 }
