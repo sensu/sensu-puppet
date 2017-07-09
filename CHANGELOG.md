@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.18.0](https://github.com/sensu/sensu-puppet/tree/v2.18.0)
+## [v2.19.0](https://github.com/sensu/sensu-puppet/tree/v2.19.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.18.0...v2.19.0)
+
+**Closed issues:**
+
+- rabbitmq\_reconnect\_on\_error parameter is useless [\#717](https://github.com/sensu/sensu-puppet/issues/717)
+- Windows - attempts to create a local 'sensu' user [\#617](https://github.com/sensu/sensu-puppet/issues/617)
+
+**Merged pull requests:**
+
+- \(\#717\) Remove rabbitmq\_reconnect\_on\_error [\#722](https://github.com/sensu/sensu-puppet/pull/722) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.18.0](https://github.com/sensu/sensu-puppet/tree/v2.18.0) (2017-07-08)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.17.0...v2.18.0)
 
 **Closed issues:**
