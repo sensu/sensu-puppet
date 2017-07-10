@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.19.0](https://github.com/sensu/sensu-puppet/tree/v2.19.0)
+## [v2.19.1](https://github.com/sensu/sensu-puppet/tree/v2.19.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.19.0...v2.19.1)
+
+**Closed issues:**
+
+- $check\_notify does not load sensu::enterprise::service [\#495](https://github.com/sensu/sensu-puppet/issues/495)
+
+**Merged pull requests:**
+
+- \(GH-388\) Simplify class notifications [\#725](https://github.com/sensu/sensu-puppet/pull/725) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(\#495\) Notify Service\[sensu-enterprise\] from Sensu::Check resources [\#720](https://github.com/sensu/sensu-puppet/pull/720) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.19.0](https://github.com/sensu/sensu-puppet/tree/v2.19.0) (2017-07-09)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.18.0...v2.19.0)
 
 **Closed issues:**
