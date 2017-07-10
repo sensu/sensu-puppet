@@ -9,18 +9,19 @@ node 'sensu-server' {
     mode   => '0600',
   }
 
+  # NOTE: When testing sensu enterprise, provide the SE_USER and SE_PASS to use
+  # with the online repository using the FACTER_SE_USER and FACTER_SE_PASS
+  # environment variables.  An effective way to manage this is with `direnv`
   class { '::sensu':
     install_repo              => true,
-    server                    => true,
+    enterprise                => true,
+    enterprise_user           => $facts['se_user'],
+    enterprise_pass           => $facts['se_pass'],
     manage_services           => true,
     manage_user               => true,
     rabbitmq_password         => 'correct-horse-battery-staple',
     rabbitmq_vhost            => '/sensu',
-    api                       => true,
-    api_user                  => 'admin',
-    api_password              => 'secret',
     client_address            => $::ipaddress_eth1,
-    # enterprise options
     api_ssl_port              => '4568',
     api_ssl_keystore_file     => '/etc/sensu/api.keystore',
     api_ssl_keystore_password => 'sensutest',

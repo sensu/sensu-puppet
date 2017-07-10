@@ -1,12 +1,18 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'boolean_property.rb'))
+
 Puppet::Type.newtype(:sensu_handler) do
   @doc = ""
 
   def initialize(*args)
     super *args
 
-    self[:notify] = [
-      "Service[sensu-server]",
-    ].select { |ref| catalog.resource(ref) }
+    if c = catalog
+      self[:notify] = [
+        'Service[sensu-server]',
+        'Service[sensu-enterprise]',
+      ].select { |ref| c.resource(ref) }
+    end
   end
 
   ensurable do

@@ -137,7 +137,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
     server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
     server.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    server.vm.provision :shell, :path => "tests/provision_enterprise_server.sh"
+    server.vm.provision :shell,
+      :path => "tests/provision_enterprise_server.sh",
+      :env => {
+        'FACTER_SE_USER' => ENV['FACTER_SE_USER'].to_s,
+        'FACTER_SE_PASS' => ENV['FACTER_SE_PASS'].to_s,
+      }
+
     server.vm.provision :shell, :path => "tests/rabbitmq.sh"
   end
 
