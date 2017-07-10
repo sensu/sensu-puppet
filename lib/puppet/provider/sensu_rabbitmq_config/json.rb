@@ -45,12 +45,14 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_transport=(value)
-    if value == :false
-      if conf['rabbitmq'].has_key? 'ssl'
-        conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
+    if conf['rabbitmq'].class != Array
+      if value == :false
+        if conf['rabbitmq'].has_key? 'ssl'
+          conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
+        end
+      else
+        conf['rabbitmq']['ssl'] ||= {}
       end
-    else
-      conf['rabbitmq']['ssl'] ||= {}
     end
   end
 
@@ -67,15 +69,17 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_private_key=(value)
-    if value == ''
-      if conf['rabbitmq'].has_key? 'ssl'
-        if conf['rabbitmq']['ssl'].has_key? 'private_key_file'
-          conf['rabbitmq']['ssl'].delete 'private_key_file'
+    if conf['rabbitmq'].class != Array
+      if value == ''
+        if conf['rabbitmq'].has_key? 'ssl'
+          if conf['rabbitmq']['ssl'].has_key? 'private_key_file'
+            conf['rabbitmq']['ssl'].delete 'private_key_file'
+          end
+          conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
         end
-        conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
+      else
+        (conf['rabbitmq']['ssl'] ||= {})['private_key_file'] = value
       end
-    else
-      (conf['rabbitmq']['ssl'] ||= {})['private_key_file'] = value
     end
   end
 
@@ -92,15 +96,17 @@ Puppet::Type.type(:sensu_rabbitmq_config).provide(:json) do
   end
 
   def ssl_cert_chain=(value)
-    if value == ''
-      if conf['rabbitmq'].has_key? 'ssl'
-        if conf['rabbitmq']['ssl'].has_key? 'cert_chain_file'
-          conf['rabbitmq']['ssl'].delete 'cert_chain_file'
+    if conf['rabbitmq'].class != Array
+      if value == ''
+        if conf['rabbitmq'].has_key? 'ssl'
+          if conf['rabbitmq']['ssl'].has_key? 'cert_chain_file'
+            conf['rabbitmq']['ssl'].delete 'cert_chain_file'
+          end
+          conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
         end
-        conf['rabbitmq'].delete 'ssl' if conf['rabbitmq']['ssl'].empty?
+      else
+        (conf['rabbitmq']['ssl'] ||= {})['cert_chain_file'] = value
       end
-    else
-      (conf['rabbitmq']['ssl'] ||= {})['cert_chain_file'] = value
     end
   end
 
