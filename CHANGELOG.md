@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.19.2](https://github.com/sensu/sensu-puppet/tree/v2.19.2)
+## [v2.20.0](https://github.com/sensu/sensu-puppet/tree/v2.20.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.19.2...v2.20.0)
+
+**Implemented enhancements:**
+
+- Unable to define Contact Routing for Sensu Enterprise [\#597](https://github.com/sensu/sensu-puppet/issues/597)
+
+**Merged pull requests:**
+
+- \(\#597\) Add sensu::contact type \(Enterprise Only\) [\#728](https://github.com/sensu/sensu-puppet/pull/728) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.19.2](https://github.com/sensu/sensu-puppet/tree/v2.19.2) (2017-07-11)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.19.1...v2.19.2)
 
 **Closed issues:**
