@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.19.1](https://github.com/sensu/sensu-puppet/tree/v2.19.1)
+## [v2.19.2](https://github.com/sensu/sensu-puppet/tree/v2.19.2)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.19.1...v2.19.2)
+
+**Closed issues:**
+
+- Switch to using Hiera data in the module instead of accessing variables in another scope [\#678](https://github.com/sensu/sensu-puppet/issues/678)
+- sensu-api service should subscribe to sensu::rabbitmq::config class [\#433](https://github.com/sensu/sensu-puppet/issues/433)
+
+**Merged pull requests:**
+
+- \(\#433\) Reload Service\[sensu\_api\] on RabbitMQ config changes [\#730](https://github.com/sensu/sensu-puppet/pull/730) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.19.1](https://github.com/sensu/sensu-puppet/tree/v2.19.1) (2017-07-10)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.19.0...v2.19.1)
 
 **Closed issues:**
