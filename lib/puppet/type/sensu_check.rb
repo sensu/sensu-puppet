@@ -26,6 +26,7 @@ Puppet::Type.newtype(:sensu_check) do
         "Service[sensu-client]",
         "Service[sensu-server]",
         "Service[sensu-enterprise]",
+        "Service[sensu-api]",
       ].select { |ref| c.resource(ref) }
     end
   end
