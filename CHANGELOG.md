@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.20.0](https://github.com/sensu/sensu-puppet/tree/v2.20.0)
+## [v2.20.1](https://github.com/sensu/sensu-puppet/tree/v2.20.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.20.0...v2.20.1)
+
+**Closed issues:**
+
+- don't use templates for static files [\#732](https://github.com/sensu/sensu-puppet/issues/732)
+- new subscribe check does not restart sensu-api service [\#600](https://github.com/sensu/sensu-puppet/issues/600)
+
+**Merged pull requests:**
+
+- \(\#600\) Reload Sensu API when check configurations change [\#734](https://github.com/sensu/sensu-puppet/pull/734) ([jeffmccune](https://github.com/jeffmccune))
+- \(\#562\) Sensu\_filter resources notify Sensu Server and Sensu Enterprise [\#733](https://github.com/sensu/sensu-puppet/pull/733) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.20.0](https://github.com/sensu/sensu-puppet/tree/v2.20.0) (2017-07-11)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.19.2...v2.20.0)
 
 **Implemented enhancements:**
