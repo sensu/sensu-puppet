@@ -162,6 +162,11 @@ describe 'sensu', :type => :class do
           :enable     => true,
           :hasrestart => true
         )}
+        describe '(#433)' do
+          it { is_expected.to contain_service('sensu-api').that_subscribes_to('Class[sensu::redis::config]') }
+          # GH-433 Make sure the API subscribes to rabbitmq and redis
+          it { is_expected.to contain_service('sensu-api').that_subscribes_to('Class[sensu::rabbitmq::config]') }
+        end
       end # managing services
 
       context 'not managing services' do

@@ -40,6 +40,7 @@ class sensu::api::service (
           Class['sensu::package'],
           Class['sensu::api::config'],
           Class['sensu::redis::config'],
+          Class['sensu::rabbitmq::config'],
         ],
       }
     }
