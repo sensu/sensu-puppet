@@ -8,17 +8,18 @@ describe 'sensu::check', :type => :define do
   end
   let(:facts) { { :osfamily => 'RedHat' } }
 
+  let(:params_base) {{ command: '/etc/sensu/somecommand.rb' }}
+  let(:params_override) {{}}
+  let(:params) { params_base.merge(params_override) }
+
   context 'without whitespace in name' do
     let(:title) { 'mycheck' }
 
     context 'defaults' do
-      let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
-
       it { should contain_sensu_check('mycheck').with(
         :command     => '/etc/sensu/somecommand.rb',
         :interval    => 60
       ) }
-
     end
 
     context 'setting params' do
@@ -114,29 +115,23 @@ describe 'sensu::check', :type => :define do
         :type                => :absent
       ) }
     end
-
   end
 
   context 'with whitespace in name' do
     let(:title) { 'mycheck foobar' }
     context 'defaults' do
-      let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
-
       it { should contain_sensu_check('mycheck_foobar').with(
         :command     => '/etc/sensu/somecommand.rb',
         :interval    => '60'
       ) }
 
       it { should contain_file('/etc/sensu/conf.d/checks/mycheck_foobar.json') }
-
     end
   end
 
   context 'with brackets in name' do
     let(:title) { 'mycheck (foo) bar' }
     context 'defaults' do
-      let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
-
       it { should contain_sensu_check('mycheck_foo_bar').with(
         'command'     => '/etc/sensu/somecommand.rb',
         'interval'    => '60'
@@ -148,7 +143,6 @@ describe 'sensu::check', :type => :define do
 
   context 'notifications' do
     let(:title) { 'mycheck' }
-    let(:params) { { :command => '/etc/sensu/somecommand.rb' } }
 
     context 'no client, sever, or api' do
       let(:pre_condition) { 'class {"sensu": client => false, api => false, server => false}' }
@@ -251,6 +245,33 @@ describe 'sensu::check', :type => :define do
       }
 
       it { should contain_sensu_check('mycheck').without_subdue }
+    end
+  end
+
+  describe 'param proxy_requests' do
+    let(:title) { 'mycheck' }
+
+    context 'valid proxy_requests hash' do
+      let(:params_override) do
+        { proxy_requests: { 'client_attributes' => { 'subscriptions' => 'eval: value.include?("http")' } } }
+      end
+
+      it { should contain_sensu_check('mycheck').with_proxy_requests(params_override[:proxy_requests]) }
+    end
+
+    context 'invalid proxy_requests hash' do
+      let(:params_override) { {proxy_requests: {}} }
+      it { should raise_error(Puppet::Error, /proxy_requests hash should have a proper format/) }
+    end
+
+    context '=> \'absent\'' do
+      let(:params_override) { { proxy_requests: 'absent' } }
+
+      it { should contain_sensu_check('mycheck').with_proxy_requests(:absent) }
+    end
+
+    context '= undef' do
+      it { should contain_sensu_check('mycheck').without_proxy_requests }
     end
   end
 end

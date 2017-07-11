@@ -88,5 +88,4 @@ Puppet::Type.type(:sensu_check).provide(:json) do
       conf['checks'][resource[:name]][property.to_s] = value
     end
   end
-
 end
