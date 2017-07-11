@@ -21,6 +21,12 @@
 #   Array of Strings.  Handlers to use for this check
 #   Set this to 'absent' to remove it completely.
 #   Default: undef
+
+# [*contacts*]
+#   Array of Strings.  Contacts to use for the contact-routing
+#   Sensu Enterprise feature.  This value corresponds with a sensu::contact
+#   resource having the same name.
+#   Default: undef
 #
 # [*standalone*]
 #   Boolean.  When true, scheduled by the client.  When false, listen for published check request
@@ -109,6 +115,7 @@ define sensu::check(
   $ensure              = 'present',
   $type                = undef,
   $handlers            = undef,
+  $contacts            = undef,
   $standalone          = true,
   $interval            = 60,
   $occurrences         = undef,
@@ -215,6 +222,7 @@ define sensu::check(
     standalone          => $standalone,
     command             => $command,
     handlers            => $handlers,
+    contacts            => $contacts,
     interval            => $interval,
     occurrences         => $occurrences,
     refresh             => $refresh,

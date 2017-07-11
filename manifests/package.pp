@@ -144,7 +144,7 @@ class sensu::package {
     }
   }
 
-  file { [ $::sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators" ]:
+  file { [ $::sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators", "${sensu::conf_dir}/contacts" ]:
     ensure  => directory,
     owner   => $::sensu::user,
     group   => $::sensu::group,
