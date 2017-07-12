@@ -124,17 +124,17 @@ class sensu::rabbitmq::config {
 
   sensu_rabbitmq_config { $::fqdn:
     ensure          => $ensure,
-    base_path       => $::sensu::conf_dir,
-    port            => $::sensu::rabbitmq_port,
-    host            => $::sensu::rabbitmq_host,
-    user            => $::sensu::rabbitmq_user,
-    password        => $::sensu::rabbitmq_password,
-    vhost           => $::sensu::rabbitmq_vhost,
-    heartbeat       => $::sensu::rabbitmq_heartbeat,
+    base_path       => $base_path,
+    port            => $port,
+    host            => $host,
+    user            => $user,
+    password        => $password,
+    vhost           => $vhost,
+    heartbeat       => $heartbeat,
     ssl_transport   => $enable_ssl,
     ssl_cert_chain  => $ssl_cert_chain,
     ssl_private_key => $ssl_private_key,
-    prefetch        => $::sensu::rabbitmq_prefetch,
+    prefetch        => $prefetch,
     cluster         => $cluster,
   }
 }

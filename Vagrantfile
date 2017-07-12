@@ -51,6 +51,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     server.vm.provision :shell, :path => "tests/rabbitmq.sh"
   end
 
+  config.vm.define 'sensu-server-cluster', autostart: false do |server|
+    server.vm.box = 'centos/7'
+    server.vm.hostname = 'sensu-server.example.com'
+    server.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.56.10'
+    server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
+    server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
+    server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
+    server.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    server.vm.provision :shell, :path => "tests/provision_server_cluster.sh"
+    server.vm.provision :shell, :path => "tests/rabbitmq.sh"
+  end
+
   # This system is meant to be started without 'sensu-server' running.
   config.vm.define "sensu-server-puppet5", autostart: false do |server|
     server.vm.box = "centos/7"
