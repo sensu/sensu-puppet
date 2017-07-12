@@ -227,6 +227,11 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:proxy_requests) do
+    desc "Proxy Requests"
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:ttl) do
     desc "Check ttl in seconds"
     newvalues(/.*/, :absent)

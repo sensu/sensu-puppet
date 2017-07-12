@@ -110,6 +110,13 @@
 #   Set this to 'absent' to remove it completely.
 #   Default: undef
 #
+# [*proxy_requests*]
+#   Hash.  [Proxy Check
+#   Requests](https://sensuapp.org/docs/latest/reference/checks.html#proxy-requests-attributes)
+#   Since Sensu 0.28.0.  Publishes a check request to every Sensu client which
+#   matches the defined client attributes.  See the documentation for the format
+#   of the Hash value.
+#   Default: undef
 define sensu::check(
   $command,
   $ensure              = 'present',
@@ -133,6 +140,7 @@ define sensu::check(
   $custom              = undef,
   $ttl                 = undef,
   $subdue              = undef,
+  $proxy_requests      = undef,
 ) {
 
   validate_re($ensure, ['^present$', '^absent$'] )
@@ -187,6 +195,15 @@ define sensu::check(
   if $aggregates and !is_array($aggregates) and !is_string($aggregates) {
     fail("sensu::check{${name}}: aggregates must be an array or a string (got: ${aggregates})")
   }
+  if $proxy_requests {
+    if is_hash($proxy_requests) {
+      if !( has_key($proxy_requests, 'client_attributes') ) {
+        fail("sensu::check{${name}}: proxy_requests hash should have a proper format.  (got: ${proxy_requests})  See https://sensuapp.org/docs/latest/reference/checks.html#proxy-requests-attributes")
+      }
+    } elsif !($proxy_requests == 'absent') {
+      fail("sensu::check{${name}}: proxy_requests must be a hash or 'absent' (got: ${proxy_requests})")
+    }
+  }
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
@@ -238,6 +255,7 @@ define sensu::check(
     dependencies        => $dependencies,
     custom              => $custom,
     subdue              => $subdue,
+    proxy_requests      => $proxy_requests,
     require             => File["${conf_dir}/checks"],
     notify              => $::sensu::check_notify,
     ttl                 => $ttl,
