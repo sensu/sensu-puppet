@@ -1,6 +1,23 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
+#
+# Environment variables may be used to control the behavior of the Vagrant VM's
+# defined in this file.  This is intended as a special-purpose affordance and
+# should not be necessary in normal situations.  In particular, sensu-server,
+# sensu-server-enterprise, and sensu-server-puppet5 use the same IP address by
+# default, creating a potential IP conflict.  If there is a need to run multiple
+# server instances simultaneously, avoid the IP conflict by setting the
+# ALTERNATE_IP environment variable:
+#
+#     ALTERNATE_IP=192.168.56.9 vagrant up sensu-server-enterprise
+#
+# NOTE: The client VM instances assume the server VM is accessible on the
+# default IP address, therefore using an ALTERNATE_IP is not expected to behave
+# well with client instances.
+#
+# When bringing up sensu-server-enterprise, the FACTER_SE_USER and
+# FACTER_SE_PASS environment variables are required.  See the README for more
+# information on how to configure sensu enterprise credentials.
 if not Vagrant.has_plugin?('vagrant-vbguest')
   abort <<-EOM
 
@@ -25,13 +42,52 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "sensu-server", primary: true, autostart: true do |server|
     server.vm.box = "centos/7"
     server.vm.hostname = 'sensu-server.example.com'
-    server.vm.network :private_network, ip: "192.168.56.10"
+    server.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.56.10'
     server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
     server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
     server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
     server.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     server.vm.provision :shell, :path => "tests/provision_server.sh"
     server.vm.provision :shell, :path => "tests/rabbitmq.sh"
+  end
+
+  # This system is meant to be started without 'sensu-server' running.
+  config.vm.define "sensu-server-puppet5", autostart: false do |server|
+    server.vm.box = "centos/7"
+    server.vm.hostname = 'sensu-server.example.com'
+    server.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.56.10'
+    server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
+    server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
+    server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
+    server.vm.provision :shell, :path => "tests/provision_basic_el_puppet5.sh"
+    server.vm.provision :shell, :path => "tests/provision_server.sh"
+    server.vm.provision :shell, :path => "tests/rabbitmq.sh"
+  end
+
+  # sensu-server-enterprise is meant to be started without 'sensu-server'
+  # running.
+  config.vm.define 'sensu-server-enterprise', autostart: false do |server|
+    # Sensu Enterprise runs the JVM.  If the API does not start, look for OOM
+    # errors in `/var/log/sensu/sensu-enterprise.log` as a possible cause.
+    # NB: The JVM HEAP_SIZE is also configured down to 256m from 2048m in
+    # `tests/sensu-server-enterprise.pp`
+    server.vm.provider :virtualbox do |vb|
+      vb.customize ['modifyvm', :id, '--memory', '768']
+    end
+    server.vm.box = 'centos/7'
+    server.vm.hostname = 'sensu-server.example.com'
+    server.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.56.10'
+    server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
+    server.vm.network :forwarded_port, guest: 4568, host: 4568, auto_correct: true
+    server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
+    server.vm.provision :shell, :path => 'tests/provision_basic_el.sh'
+    server.vm.provision :shell,
+      :path => 'tests/provision_enterprise_server.sh',
+      :env => {
+        'FACTER_SE_USER' => ENV['FACTER_SE_USER'].to_s,
+        'FACTER_SE_PASS' => ENV['FACTER_SE_PASS'].to_s,
+      }
+    server.vm.provision :shell, :path => 'tests/rabbitmq.sh'
   end
 
   config.vm.define "el7-client", autostart: true do |client|
@@ -126,37 +182,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.network  :private_network, ip: "192.168.56.18"
     client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
-  end
-
-  # This system is meant to be started without 'sensu-server' running.
-  config.vm.define "sensu-server-enterprise", autostart: false do |server|
-    server.vm.box = "centos/7"
-    server.vm.hostname = 'sensu-server.example.com'
-    server.vm.network :private_network, ip: "192.168.56.10"
-    server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
-    server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
-    server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
-    server.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    server.vm.provision :shell,
-      :path => "tests/provision_enterprise_server.sh",
-      :env => {
-        'FACTER_SE_USER' => ENV['FACTER_SE_USER'].to_s,
-        'FACTER_SE_PASS' => ENV['FACTER_SE_PASS'].to_s,
-      }
-
-    server.vm.provision :shell, :path => "tests/rabbitmq.sh"
-  end
-
-  # This system is meant to be started without 'sensu-server' running.
-  config.vm.define "sensu-server-puppet5", autostart: false do |server|
-    server.vm.box = "centos/7"
-    server.vm.hostname = 'sensu-server.example.com'
-    server.vm.network :private_network, ip: "192.168.56.10"
-    server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
-    server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
-    server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
-    server.vm.provision :shell, :path => "tests/provision_basic_el_puppet5.sh"
-    server.vm.provision :shell, :path => "tests/provision_server.sh"
-    server.vm.provision :shell, :path => "tests/rabbitmq.sh"
   end
 end

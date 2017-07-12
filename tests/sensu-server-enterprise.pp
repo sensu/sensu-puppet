@@ -1,4 +1,35 @@
+# This provisioning manifest brings up a sensu-enterprise instance.  This
+# instance is notably different from the sensu-server instance in that the JVM
+# based sensu-enterprise service replaces the embedded-ruby based sensu-server
+# service, sensu-api, and sensu-dashboard.
+#
+# If the API service is unresponsive with a connection refused error, one
+# potential cause is the JVM process aborting after a failure to allocate memory
+# from the OS.  This memory error will show up in
+# `/var/log/sensu/sensu-enterprise.log`.  The API service can easily be checked
+# from the vagrant host using these commands:
+#
+#     vagrant up sensu-server-enterprise
+#     curl -s http://admin:secret@127.0.0.1:4567/clients \
+#       | jq -r 'map(.name | split(".") | .[0]) | sort | .[]'
+#
+# Expected output is a line-by-line listing of the short hostnames of known
+# clients, e.g.:
+#
+#     client1
+#     client2
+#     sensu-server
+#
 node 'sensu-server' {
+
+  Ini_setting {
+    ensure            => present,
+    path              => '/etc/default/sensu',
+    key_val_separator => '=',
+    show_diff         => true,
+    require           => Package['sensu-enterprise'],
+    notify            => Service['sensu-enterprise'],
+  }
 
   file { 'api.keystore':
     ensure => 'file',
@@ -64,5 +95,11 @@ node 'sensu-server' {
     handlers    => 'email',
     contacts    => ['ops', 'support'],
     subscribers => 'sensu-test',
+  }
+
+  # Tune the JVM Heap size for Sensu Enterprise on Vagrant
+  ini_setting { 'Sensu JVM Heap Size':
+    setting => 'HEAP_SIZE',
+    value   => '"256m"',
   }
 }
