@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.20.1](https://github.com/sensu/sensu-puppet/tree/v2.20.1)
+## [v2.21.0](https://github.com/sensu/sensu-puppet/tree/v2.21.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.20.1...v2.21.0)
+
+**Closed issues:**
+
+- improvement: proxy\_requests for sensu::check [\#637](https://github.com/sensu/sensu-puppet/issues/637)
+
+**Merged pull requests:**
+
+- \(\#637\) Add check proxy\_requests functionality [\#736](https://github.com/sensu/sensu-puppet/pull/736) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.20.1](https://github.com/sensu/sensu-puppet/tree/v2.20.1) (2017-07-11)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.20.0...v2.20.1)
 
 **Closed issues:**
