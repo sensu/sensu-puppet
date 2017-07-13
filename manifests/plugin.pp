@@ -43,16 +43,25 @@
 #   Boolean.  When using url source, disable certificate checking for HTTPS
 #   Default: false
 #   Valid values: true, false
+#
+# [*gem_install_options*]
+#   Optional configuration to use for the installation of the
+#   sensu plugin gem with sensu_gem provider.
+#   See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
+#   Default: $::sensu::gem_install_options
+#   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
+#
 define sensu::plugin (
-  $type               = 'file',
-  $install_path       = '/etc/sensu/plugins',
-  $purge              = true,
-  $recurse            = true,
-  $force              = true,
-  $pkg_version        = 'latest',
-  $pkg_provider       = $::sensu::sensu_plugin_provider,
-  $pkg_checksum       = undef,
-  $nocheckcertificate = false,
+  $type                = 'file',
+  $install_path        = '/etc/sensu/plugins',
+  $purge               = true,
+  $recurse             = true,
+  $force               = true,
+  $pkg_version         = 'latest',
+  $pkg_provider        = $::sensu::sensu_plugin_provider,
+  $pkg_checksum        = undef,
+  $nocheckcertificate  = false,
+  $gem_install_options = $::sensu::gem_install_options,
 ) {
 
   File {
@@ -126,10 +135,16 @@ define sensu::plugin (
         require => Package[$sensu::package::pkg_title],
       }
     }
-    'package':    {
+    'package': {
+      $gem_install_options_real = $pkg_provider ? {
+        'gem'   => $gem_install_options,
+        default => undef,
+      }
+
       package { $name:
-        ensure   => $pkg_version,
-        provider => $pkg_provider,
+        ensure          => $pkg_version,
+        provider        => $pkg_provider,
+        install_options => $gem_install_options_real,
       }
     }
     default:      {
