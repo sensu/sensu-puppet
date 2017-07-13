@@ -1,7 +1,21 @@
 # Change Log
 
-## [v2.21.0](https://github.com/sensu/sensu-puppet/tree/v2.21.0)
+## [v2.22.0](https://github.com/sensu/sensu-puppet/tree/v2.22.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.21.0...v2.22.0)
+
+**Closed issues:**
+
+- Vagrant ports for sensu-enterprise-server are off [\#735](https://github.com/sensu/sensu-puppet/issues/735)
+
+**Merged pull requests:**
+
+- \(GH-599\) Pass gem\_install\_options to sensu::plugin class [\#740](https://github.com/sensu/sensu-puppet/pull/740) ([Phil-Friderici](https://github.com/Phil-Friderici))
+- \(GH-560\) Add docs for $sensu::check::custom [\#739](https://github.com/sensu/sensu-puppet/pull/739) ([Phil-Friderici](https://github.com/Phil-Friderici))
+- \(\#735\) Fix sensu-server-enterprise Vagrant VM [\#738](https://github.com/sensu/sensu-puppet/pull/738) ([jeffmccune](https://github.com/jeffmccune))
+- \(GH-701\) Stop using scope.lookupvar\(\) in templates [\#724](https://github.com/sensu/sensu-puppet/pull/724) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.21.0](https://github.com/sensu/sensu-puppet/tree/v2.21.0) (2017-07-12)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.20.1...v2.21.0)
 
 **Closed issues:**
@@ -184,7 +198,6 @@
 
 - Change repos to use HTTPS by default [\#697](https://github.com/sensu/sensu-puppet/issues/697)
 - Windows Install [\#626](https://github.com/sensu/sensu-puppet/issues/626)
-- Using rabbitmq\_cluster works only the first time puppet runs [\#598](https://github.com/sensu/sensu-puppet/issues/598)
 - HTTPS Apt repo [\#583](https://github.com/sensu/sensu-puppet/issues/583)
 
 **Merged pull requests:**
