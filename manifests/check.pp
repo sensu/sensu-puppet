@@ -33,6 +33,12 @@
 #   Set this to 'absent' to remove it completely.
 #   Default: true
 #
+# [*cron*]
+#   String.  When the check should be executed, using the [Cron
+#   syntax](https://en.wikipedia.org/wiki/Cron#CRON_expression).  Supersedes the
+#   `interval` parameter.  Example: `"0 0 * * *"`.
+#   Default: 'absent'
+#
 # [*interval*]
 #   Integer.  How frequently (in seconds) the check will be executed
 #   Set this to 'absent' to remove it completely.
@@ -129,6 +135,7 @@ define sensu::check(
   $handlers            = undef,
   $contacts            = undef,
   $standalone          = true,
+  $cron                = 'absent',
   $interval            = 60,
   $occurrences         = undef,
   $refresh             = undef,
@@ -157,6 +164,9 @@ define sensu::check(
   }
   if $publish and !is_bool($publish) and  $publish != 'absent' {
     fail("sensu::check{${name}}: publish must be a boolean or 'absent' (got: ${publish})")
+  }
+  if $cron and !is_string($cron) and $cron != 'absent' {
+    fail("sensu::check{${name}}: cron must be a string or 'absent' (got: ${cron})")
   }
   if !is_integer($interval) and $interval != 'absent' {
     fail("sensu::check{${name}}: interval must be an integer or 'absent' (got: ${interval})")
@@ -212,6 +222,13 @@ define sensu::check(
 
   $check_name = regsubst(regsubst($name, ' ', '_', 'G'), '[\(\)]', '', 'G')
 
+  # If cron is specified, interval should not be written to the configuration
+  if $cron and $cron != 'absent' {
+    $interval_real = 'absent'
+  } else {
+    $interval_real = $interval
+  }
+
   case $::osfamily {
     'windows': {
       $etc_dir = 'C:/opt/sensu'
@@ -245,7 +262,8 @@ define sensu::check(
     command             => $command,
     handlers            => $handlers,
     contacts            => $contacts,
-    interval            => $interval,
+    cron                => $cron,
+    interval            => $interval_real,
     occurrences         => $occurrences,
     refresh             => $refresh,
     source              => $source,

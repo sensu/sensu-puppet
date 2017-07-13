@@ -89,6 +89,11 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
+  newproperty(:cron) do
+    desc 'When the check should be executed, using the Cron syntax.'
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:interval) do
     desc "How frequently the check runs in seconds"
     newvalues(/.*/, :absent)
