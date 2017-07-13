@@ -264,6 +264,35 @@ class sensu::package (
     }
   }
 
+  if $::sensu::spawn_limit {
+    $spawn_config = { 'sensu' => { 'spawn' => { 'limit' => $::sensu::spawn_limit } } }
+    $spawn_template = '<%= require "json"; JSON.pretty_generate(@spawn_config) + $/ %>'
+    $spawn_ensure = 'file'
+    $spawn_content = inline_template($spawn_template)
+    if $::sensu::client {
+      $spawn_notify = [
+        Class['sensu::client::service'],
+        Class['sensu::server::service'],
+      ]
+    } else {
+      $spawn_notify = [ Class['sensu::server::service'] ]
+    }
+  } else {
+    $spawn_ensure = undef
+    $spawn_content = undef
+    $spawn_notify = undef
+  }
+
+  file { "${sensu::etc_dir}/conf.d/spawn.json":
+    ensure  => $spawn_ensure,
+    content => $spawn_content,
+    mode    => $::sensu::dir_mode,
+    owner   => $::sensu::user,
+    group   => $::sensu::group,
+    require => Package[$pkg_title],
+    notify  => $spawn_notify,
+  }
+
   if $::sensu::manage_user and $::osfamily != 'windows' {
     user { $::sensu::user:
       ensure  => 'present',
