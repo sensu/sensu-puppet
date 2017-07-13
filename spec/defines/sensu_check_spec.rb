@@ -8,13 +8,12 @@ describe 'sensu::check', :type => :define do
   end
   let(:facts) { { :osfamily => 'RedHat' } }
 
+  let(:title) { 'mycheck' }
   let(:params_base) {{ command: '/etc/sensu/somecommand.rb' }}
   let(:params_override) {{}}
   let(:params) { params_base.merge(params_override) }
 
   context 'without whitespace in name' do
-    let(:title) { 'mycheck' }
-
     context 'defaults' do
       it { should contain_sensu_check('mycheck').with(
         :command     => '/etc/sensu/somecommand.rb',
@@ -142,8 +141,6 @@ describe 'sensu::check', :type => :define do
   end
 
   context 'notifications' do
-    let(:title) { 'mycheck' }
-
     context 'no client, sever, or api' do
       let(:pre_condition) { 'class {"sensu": client => false, api => false, server => false}' }
       it { should contain_sensu_check('mycheck').with(:notify => []) }
@@ -186,8 +183,6 @@ describe 'sensu::check', :type => :define do
   end
 
   context 'with subdue' do
-    let(:title) { 'mycheck' }
-
     context 'valid subdue hash' do
       let(:params) {
         {
@@ -249,8 +244,6 @@ describe 'sensu::check', :type => :define do
   end
 
   describe 'param proxy_requests' do
-    let(:title) { 'mycheck' }
-
     context 'valid proxy_requests hash' do
       let(:params_override) do
         { proxy_requests: { 'client_attributes' => { 'subscriptions' => 'eval: value.include?("http")' } } }
@@ -272,6 +265,26 @@ describe 'sensu::check', :type => :define do
 
     context '= undef' do
       it { should contain_sensu_check('mycheck').without_proxy_requests }
+    end
+  end
+
+  describe 'param cron' do
+    context 'default behavior (not specified)' do
+      let(:params_override) { {} }
+      it { is_expected.to contain_sensu_check('mycheck').with(cron: 'absent') }
+      it { is_expected.to contain_sensu_check('mycheck').with(interval: 60) }
+    end
+
+    context 'without interval' do
+      let(:params_override) { {cron: '*/5 * * * *'} }
+      it { is_expected.to contain_sensu_check('mycheck').with(cron: params[:cron]) }
+      it { is_expected.to contain_sensu_check('mycheck').with(interval: 'absent') }
+    end
+
+    context 'with interval' do
+      let(:params_override) { {cron: '*/5 * * * *', interval: 99} }
+      it { is_expected.to contain_sensu_check('mycheck').with(cron: params[:cron]) }
+      it { is_expected.to contain_sensu_check('mycheck').with(interval: 'absent') }
     end
   end
 end
