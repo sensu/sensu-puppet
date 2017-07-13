@@ -124,6 +124,14 @@ describe 'sensu::plugin', :type => :define do
       let(:params) { { :type => 'package' } }
 
       it { should contain_package('sensu-plugins').with_ensure('latest') }
+
+      it do
+        should contain_package('sensu-plugins').with({
+          'ensure'          => 'latest',
+          'provider'        => nil,
+          'install_options' => nil,
+        })
+      end
     end
 
     context 'set pkg_version' do
@@ -143,6 +151,18 @@ describe 'sensu::plugin', :type => :define do
 
       it { should contain_package('sensu-plugins').with_provider(nil) }
     end
+
+    # without pkg_provider => gem gem_install_options will be ignored
+    context 'set gem_install_options' do
+      let(:params) { { :type => 'package', :gem_install_options => [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }] } }
+      it { should contain_package('sensu-plugins').with_install_options(nil) }
+    end
+
+    context 'set gem_install_options and pkg_provider = gem' do
+      let(:params) { { :type => 'package', :gem_install_options => [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }], :pkg_provider => 'gem' } }
+      it { should contain_package('sensu-plugins').with_install_options([{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]) }
+    end
+
   end #package
 
   context 'default' do
