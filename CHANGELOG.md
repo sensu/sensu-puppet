@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.22.0](https://github.com/sensu/sensu-puppet/tree/v2.22.0)
+## [v2.23.0](https://github.com/sensu/sensu-puppet/tree/v2.23.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.22.0...v2.23.0)
+
+**Closed issues:**
+
+- sensu::check resources should support cron scheduling [\#737](https://github.com/sensu/sensu-puppet/issues/737)
+- use puppet code instead of ruby code in template [\#731](https://github.com/sensu/sensu-puppet/issues/731)
+
+**Merged pull requests:**
+
+- \(\#737\) Add cron attribute to sensu::check type [\#743](https://github.com/sensu/sensu-puppet/pull/743) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.22.0](https://github.com/sensu/sensu-puppet/tree/v2.22.0) (2017-07-13)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.21.0...v2.22.0)
 
 **Closed issues:**
