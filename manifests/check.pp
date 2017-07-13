@@ -100,6 +100,11 @@
 #   Set this to 'absent' to remove it completely.
 #   Default: undef
 #
+# [*custom*]
+#   Hash. List of custom attributes to include in the check. You can use it to pass any attribute that is not listed here explicitly.
+#   Default: undef
+#   Example: { 'remediation' => { 'low_remediation' => { 'occurrences' => [1,2], 'severities' => [1], 'command' => "/bin/command", 'publish' => false, } } }
+#
 # [*ttl*]
 #   Integer. The time to live (TTL) in seconds until check results are considered stale.
 #   Set this to 'absent' to remove it completely.
