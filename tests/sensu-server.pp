@@ -6,6 +6,7 @@ node 'sensu-server' {
     manage_user       => true,
     rabbitmq_password => 'correct-horse-battery-staple',
     rabbitmq_vhost    => '/sensu',
+    spawn_limit       => 16,
     api               => true,
     api_user          => 'admin',
     api_password      => 'secret',

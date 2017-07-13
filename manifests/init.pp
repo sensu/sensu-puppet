@@ -71,6 +71,15 @@
 #   with systems that use apt.
 #   Default: $::lsbdistcodename
 #
+# [*spawn_limit*]
+#   Integer.  Tune concurrency of the sensu-server pipe handler and the
+#   sensu-client check execution.  This setting should not need to be tuned
+#   except in specific situations, e.g. when there are a large number of JIT
+#   clients.  See [#727](https://github.com/sensu/sensu-puppet/issues/727) for
+#   more information.  The default is undefined, which does not manage
+#   `/etc/sensu/conf.d/spawn.json`
+#   Default: undef
+#
 # [*client*]
 #   Boolean.  Include the sensu client
 #   Default: true
@@ -456,6 +465,7 @@ class sensu (
   $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
   $repo_key_source                = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
   $repo_release                   = undef,
+  $spawn_limit                    = undef,
   $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
   $client                         = true,
   $server                         = false,
@@ -581,6 +591,7 @@ class sensu (
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
   if !is_integer($redis_db) { fail('redis_db must be an integer') }
+  if $spawn_limit and !is_integer($spawn_limit) { fail('spawn_limit must be an integer') }
 
   # sensu-enterprise supersedes sensu-server and sensu-api
   if ( $enterprise and $api ) or ( $enterprise and $server ) {

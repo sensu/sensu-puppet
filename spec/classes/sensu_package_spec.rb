@@ -465,6 +465,16 @@ describe 'sensu' do
     it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=/spec/tests$}) }
   end
 
+  describe 'spawn_limit (#727)' do
+    context 'default (undef)' do
+      it { should contain_file('/etc/sensu/conf.d/spawn.json').without_content }
+    end
+    context '=> 20' do
+      let(:params) { {spawn_limit: 20} }
+      it { should contain_file('/etc/sensu/conf.d/spawn.json').with_content(/limit.*20/) }
+    end
+  end
+
   describe 'variable type and content validations' do
     mandatory_params = {}
 
