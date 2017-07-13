@@ -45,9 +45,7 @@ define sensu::mutator(
   }
 
   if $source {
-
-    $filename = inline_template('<%= scope.lookupvar(\'source\').split(\'/\').last %>')
-    $mutator = "${install_path}/${filename}"
+    $mutator = "${install_path}/${basename($source)}"
 
     $file_ensure = $ensure ? {
       'absent' => 'absent',

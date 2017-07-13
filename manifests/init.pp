@@ -341,6 +341,7 @@
 #
 # [*path*]
 #   String. Used to set PATH in /etc/default/sensu
+#   Default: '$PATH'
 #
 # [*redact*]
 #   Array of strings. Use to redact passwords from checks on the client side
@@ -387,6 +388,18 @@
 # [*package_checksum*]
 #   String. Used to set package_checksum for windows installs
 #   Default: undef
+#
+# [*windows_logrotate*]
+#   Boolean. Whether or not to use logrotate on Windows OS family.
+#   Default: false
+#
+# [*windows_log_size*]
+#   Integer. The integer value for the size of log files on Windows OS family. sizeThreshold in sensu-client.xml.
+#   Default: '10240'
+#
+# [*windows_log_number*]
+#   Integer. The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
+#   Default: '10'
 #
 # [*windows_pkg_url*]
 #   String.  If specified, override the behavior of computing the package source
@@ -515,7 +528,7 @@ class sensu (
   $enterprise_dashboard_github    = undef,
   $enterprise_dashboard_gitlab    = undef,
   $enterprise_dashboard_ldap      = undef,
-  $path                           = undef,
+  $path                           = '$PATH',
   $redact                         = undef,
   $deregister_on_stop             = false,
   $deregister_handler             = undef,

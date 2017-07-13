@@ -11,8 +11,14 @@ describe 'sensu' do
       it { should create_class('sensu::package') }
       it { should contain_package('sensu').with_ensure('installed') }
       it { should contain_file('/etc/default/sensu') }
-      it { should_not contain_file('/etc/default/sensu').with(:content => /RUBYOPT/) }
-      it { should_not contain_file('/etc/default/sensu').with(:content => /GEM_PATH/) }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^EMBEDDED_RUBY=true$}) }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_LEVEL=info$}) }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/sensu$}) }
+      it { should contain_file('/etc/default/sensu').without_content(%r{^RUBYOPT=.*$}) }
+      it { should contain_file('/etc/default/sensu').without_content(%r{^GEM_PATH=.*$}) }
+      it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
       directories.each do |dir|
         it { should contain_file(dir).with(
           :ensure  => 'directory',
@@ -407,4 +413,89 @@ describe 'sensu' do
       end
     end
   end
+
+  context 'with use_embedded_ruby => false' do
+    let(:params) { {:use_embedded_ruby => false } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^EMBEDDED_RUBY=false$}) }
+  end
+
+  context 'with log_level => debug' do
+    let(:params) { {:log_level => 'debug' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_LEVEL=debug$}) }
+  end
+
+  context 'with log_dir => /var/log/tests' do
+    let(:params) { {:log_dir => '/var/log/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/tests$}) }
+  end
+
+  context 'rubyopt => -rbundler/test' do
+    let(:params) { {:rubyopt => '-rbundler/test' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^RUBYOPT="-rbundler/test"$}) }
+  end
+
+  context 'gem_path => /path/to/gems' do
+    let(:params) { {:gem_path => '/path/to/gems' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^GEM_PATH="/path/to/gems"$}) }
+  end
+
+  context 'deregister_on_stop => true' do
+    let(:params) { {:deregister_on_stop => true } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=""$}) }
+  end
+
+  # without deregister_on_stop == true deregister_handler will be ignored
+  context 'deregister_handler => testing' do
+    let(:params) { {:deregister_handler => 'testing' } }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
+  end
+
+ context 'deregister_on_stop => true & deregister_handler => testing' do
+    let(:params) { {:deregister_on_stop => true, :deregister_handler => 'testing' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER="testing"$}) }
+  end
+
+  context 'init_stop_max_wait => 242' do
+    let(:params) { {:init_stop_max_wait => 242 } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="242"$}) }
+  end
+
+  context 'path => /spec/tests' do
+    let(:params) { {:path => '/spec/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=/spec/tests$}) }
+  end
+
+  describe 'variable type and content validations' do
+    mandatory_params = {}
+
+    validations = {
+      'absolute_path' => {
+        :name    => %w[path],
+        :valid   => %w[/absolute/filepath /absolute/directory/],
+        :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, nil],
+        :message => 'is not an absolute path',
+      },
+    }
+
+    validations.sort.each do |type, var|
+      var[:name].each do |var_name|
+        var[:params] = {} if var[:params].nil?
+        var[:valid].each do |valid|
+          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
+            it { should compile }
+          end
+        end
+
+        var[:invalid].each do |invalid|
+          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
+            it 'should fail' do
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
+            end
+          end
+        end
+      end # var[:name].each
+    end # validations.sort.each
+  end # describe 'variable type and content validations'
 end

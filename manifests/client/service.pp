@@ -8,8 +8,29 @@
 #   Bolean. Value of hasrestart attribute for this service.
 #   Default: true
 #
+# [*log_level*]
+#   String.  Sensu log level to be used
+#   Default: $::sensu::log_level
+#   Valid values: debug, info, warn, error, fatal
+#
+# [*windows_logrotate*]
+#   Boolean. Whether or not to use logrotate on Windows OS family.
+#   Default: $::sensu::windows_logrotate
+#
+# [*windows_log_size*]
+#   Integer. The integer value for the size of log files on Windows OS family. sizeThreshold in sensu-client.xml.
+#   Default: $::sensu::windows_log_size
+#
+# [*windows_log_number*]
+#   Integer. The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
+#   Default: $::sensu::windows_log_number
+#
 class sensu::client::service (
-  $hasrestart = true,
+  $hasrestart         = true,
+  $log_level          = $::sensu::log_level,
+  $windows_logrotate  = $::sensu::windows_logrotate,
+  $windows_log_size   = $::sensu::windows_log_size,
+  $windows_log_number = $::sensu::windows_log_number,
 ) {
 
   validate_bool($hasrestart)
