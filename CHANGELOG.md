@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.23.0](https://github.com/sensu/sensu-puppet/tree/v2.23.0)
+## [v2.24.0](https://github.com/sensu/sensu-puppet/tree/v2.24.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.23.0...v2.24.0)
+
+**Closed issues:**
+
+- support for setting spawn limit via puppet [\#727](https://github.com/sensu/sensu-puppet/issues/727)
+- Using rabbitmq\_cluster works only the first time puppet runs [\#598](https://github.com/sensu/sensu-puppet/issues/598)
+
+**Merged pull requests:**
+
+- \(\#727\) Add sensu::spawn\_limit class parameter [\#744](https://github.com/sensu/sensu-puppet/pull/744) ([jeffmccune](https://github.com/jeffmccune))
+- \(\#598\) Improve rabbitmq clustering robustness [\#742](https://github.com/sensu/sensu-puppet/pull/742) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.23.0](https://github.com/sensu/sensu-puppet/tree/v2.23.0) (2017-07-13)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.22.0...v2.23.0)
 
 **Closed issues:**
