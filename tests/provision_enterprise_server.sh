@@ -7,24 +7,33 @@ if [ -z "${FACTER_SE_USER:-}" ]; then
 fi
 echo "FACTER_SE_USER=$FACTER_SE_USER"
 
-# Save the enterprise username and password, make them work with sudo so that
-# the following works:
-# vagrant ssh sensu-server-enterprise
-# sudo puppet apply /vagrant/test/sensu-server-enterprise.pp
+scratch="$(mktemp -d)"
+finish() {
+  [ -e "${scratch:-}" ] && rm -rf "$scratch"
+}
+trap finish EXIT
+TMPDIR="$scratch"
+profile="$(mktemp)"
 
-cat > ~/.bash_profile <<'EOF'
+cat > "$profile" <<'EOF'
 [ -f ~/.bashrc ] && source ~/.bashrc
 export PATH=$PATH:$HOME/.local/bin:$HOME/bin
-# Pass these two key facts through sudo invocations to puppet
+# Pass these two facts through vagrant sudo invocations to puppet
 alias sudo='sudo FACTER_SE_USER=$FACTER_SE_USER FACTER_SE_PASS=$FACTER_SE_PASS'
 EOF
-cat >> ~/.bash_profile <<EOF
+cat >> "$profile" <<EOF
 export FACTER_SE_USER='${FACTER_SE_USER}'
 export FACTER_SE_PASS='${FACTER_SE_PASS}'
 EOF
 
+# install the updated profile in vagrant's home.
+install -o vagrant -g vagrant -m 0644 "$profile" ~vagrant/.bash_profile
+
 # setup module dependencies
 puppet module install puppetlabs/rabbitmq
+
+# inifile is used to tune the JVM heap size in Vagrant
+puppet module install puppetlabs/inifile
 
 # install dependencies for sensu
 yum -y install redis jq nagios-plugins-ntp
@@ -34,4 +43,3 @@ systemctl enable redis
 # run puppet
 puppet apply /vagrant/tests/rabbitmq.pp
 puppet apply /vagrant/tests/sensu-server-enterprise.pp
-puppet apply /vagrant/tests/uchiwa.pp
