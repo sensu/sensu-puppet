@@ -14,13 +14,11 @@
 #   Default: {}
 #
 define sensu::subscription (
-  $ensure       = 'present',
-  $custom       = {},
+  Enum['present','absent'] $ensure       = 'present',
+  Hash $custom       = {},
 ) {
 
   include ::sensu
-
-  validate_re($ensure, ['^present$', '^absent$'] )
 
   file { "${::sensu::conf_dir}/subscription_${name}.json":
     ensure => $ensure,
