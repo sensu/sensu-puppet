@@ -294,7 +294,7 @@ describe 'sensu' do
         let(:params) { { :purge => 'a_string' } }
 
         it 'should fail' do
-          expect { should create_class('sensu') }.to raise_error(/not a Hash/)
+          expect { should create_class('sensu') }.to raise_error(Puppet::PreformattedError)
         end
       end
 
