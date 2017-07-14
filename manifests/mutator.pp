@@ -26,17 +26,15 @@
 #   Default: /etc/sensu/mutators
 #
 define sensu::mutator(
-  $command,
-  $ensure       = 'present',
-  $timeout      = undef,
+  String $command,
+  Enum['present','absent'] $ensure       = 'present',
+  Optional[Numeric] $timeout      = undef,
   # Used to install the mutator
-  $source       = undef,
-  $install_path = '/etc/sensu/mutators',
+  Optional[String] $source       = undef,
+  Stdlib::Absolutepath $install_path = '/etc/sensu/mutators',
 ) {
 
-  validate_re($name, '^[\w\.-]+$')
-  validate_re($ensure, ['^present$', '^absent$'] )
-  if $timeout { validate_re($timeout, '^\d+$') }
+  assert_type(Pattern[/^[\w\.-]+$/], $name)
 
   if $::sensu::server {
     $notify_services = Class['sensu::server::service']
