@@ -6,6 +6,7 @@
 #
 # [*command*]
 #   String.  The check command to run
+#   Default: undef
 #
 # [*ensure*]
 #   String. Whether the check should be present or not
@@ -129,7 +130,7 @@
 #   of the Hash value.
 #   Default: undef
 define sensu::check(
-  String $command,
+  Optional[String] $command = undef,
   Enum['present','absent'] $ensure              = 'present',
   Optional[String] $type                = undef,
   Variant[Undef,String,Array] $handlers            = undef,
@@ -156,7 +157,7 @@ define sensu::check(
 ) {
 
   if $subdue =~ Hash {
-    if !( has_key($subdue, 'days') and $subdue['days'] =~ Hash ){
+    if !( has_key($subdue, 'days') and $subdue['days'] =~ Hash ) {
       fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
     }
   }

@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.24.0](https://github.com/sensu/sensu-puppet/tree/v2.24.0)
+## [v2.25.0](https://github.com/sensu/sensu-puppet/tree/HEAD)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.24.0...HEAD)
+
+**Merged pull requests:**
+
+- \(PR-528\) working with kali-hernandez [\#745](https://github.com/sensu/sensu-puppet/pull/745) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.24.0](https://github.com/sensu/sensu-puppet/tree/v2.24.0) (2017-07-13)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.23.0...v2.24.0)
 
 **Closed issues:**
