@@ -71,7 +71,7 @@ define sensu::handler(
   Enum['present','absent'] $ensure          = 'present',
   Enum['pipe','tcp','udp','amqp','set','transport'] $type = 'pipe',
   Optional[String] $command         = undef,
-  Optional[Array ] $handlers        = undef,
+  Optional[Array] $handlers        = undef,
   Array $severities      = ['ok', 'warning', 'critical', 'unknown'],
   Optional[Hash] $exchange        = undef,
   Optional[Hash] $pipe            = undef,
@@ -79,7 +79,7 @@ define sensu::handler(
   Optional[Hash] $socket          = undef,
   Array $filters         = [],
   # Used to install the handler
-  Pattern[/^puppet:\/\//] $source          = undef,
+  Optional[Pattern[/^puppet:\/\//]] $source          = undef,
   String $install_path    = '/etc/sensu/handlers',
   # Handler specific config
   Optional[Hash] $config          = undef,

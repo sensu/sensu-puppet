@@ -137,7 +137,7 @@ define sensu::check(
   Variant[Boolean,Enum['absent']] $standalone          = true,
   String $cron                = 'absent',
   Variant[Integer,Enum['absent']] $interval            = 60,
-  Variant[Undef,Integer,Enum['absent']] $occurrences         = undef,
+  Variant[Undef,Pattern[/^(\d+)$/],Enum['absent']] $occurrences         = undef,
   Variant[Undef,Enum['absent'],Integer] $refresh             = undef,
   Variant[Undef,String,Integer] $source              = undef,
   Variant[Undef,String,Array] $subscribers         = undef,
@@ -152,10 +152,10 @@ define sensu::check(
   Optional[Hash] $custom              = undef,
   Variant[Undef,Enum['absent'],Integer] $ttl                 = undef,
   Variant[Undef,Enum['absent'],Hash] $subdue              = undef,
-  Optional[Hash] $proxy_requests      = undef,
+  Variant[Undef,Enum['absent'],Hash] $proxy_requests      = undef,
 ) {
 
-  if $subdue {
+  if $subdue =~ Hash {
     if !( has_key($subdue, 'days') and $subdue['days'] =~ Hash ){
       fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
     }
