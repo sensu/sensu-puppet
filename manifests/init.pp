@@ -465,7 +465,7 @@ class sensu (
   String $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
   String $repo_key_source                = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
   Optional[String] $repo_release                   = undef,
-  Optional[String] $spawn_limit                    = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $spawn_limit                    = undef,
   String $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
   Boolean $client                         = true,
   Boolean $server                         = false,

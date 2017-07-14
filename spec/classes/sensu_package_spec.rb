@@ -483,7 +483,6 @@ describe 'sensu' do
         :name    => %w[path],
         :valid   => %w[/absolute/filepath /absolute/directory/],
         :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, nil],
-        :message => 'is not an absolute path',
       },
     }
 
@@ -501,7 +500,7 @@ describe 'sensu' do
           context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
             let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
             it 'should fail' do
-              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
+              expect { should contain_class(subject) }.to raise_error(Puppet::PreformattedError)
             end
           end
         end
