@@ -25,12 +25,10 @@
 #   "to": "support@example.com" } }`.
 #   Default: {}
 define sensu::contact(
-  $ensure = 'present',
-  $base_path = undef,
-  $config = {},
+  Enum['present','absent'] $ensure = 'present',
+  Optional[String] $base_path = undef,
+  Hash $config = {},
 ) {
-  validate_re($ensure, ['^present$', '^absent$'] )
-  validate_hash($config)
 
   $file_ensure = $ensure ? {
     'absent' => 'absent',
