@@ -445,153 +445,130 @@
 #   Default: 'Sensu'
 
 class sensu (
-  $version                        = 'installed',
-  $sensu_plugin_name              = 'sensu-plugin',
-  $sensu_plugin_provider          = $::osfamily ? {
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = 'installed',
+  String $sensu_plugin_name              = 'sensu-plugin',
+  Optional[String] $sensu_plugin_provider          = $::osfamily ? {
     'windows' => 'gem',
     default   => undef,
   },
-  $sensu_plugin_version           = 'installed',
-  $install_repo                   = true,
-  $enterprise                     = false,
-  $enterprise_version             = 'latest',
-  $enterprise_user                = undef,
-  $enterprise_pass                = undef,
-  $enterprise_dashboard           = false,
-  $enterprise_dashboard_version   = 'latest',
-  $manage_repo                    = true,
-  $repo                           = 'main',
-  $repo_source                    = undef,
-  $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
-  $repo_key_source                = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
-  $repo_release                   = undef,
-  $spawn_limit                    = undef,
-  $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
-  $client                         = true,
-  $server                         = false,
-  $api                            = false,
-  $manage_services                = true,
-  $manage_user                    = true,
-  $manage_plugins_dir             = true,
-  $manage_handlers_dir            = true,
-  $manage_mutators_dir            = true,
-  $rabbitmq_port                  = undef,
-  $rabbitmq_host                  = undef,
-  $rabbitmq_user                  = undef,
-  $rabbitmq_password              = undef,
-  $rabbitmq_vhost                 = undef,
-  $rabbitmq_ssl                   = undef,
-  $rabbitmq_ssl_private_key       = undef,
-  $rabbitmq_ssl_cert_chain        = undef,
-  $rabbitmq_prefetch              = undef,
-  $rabbitmq_cluster               = undef,
-  $rabbitmq_heartbeat             = undef,
-  $redis_host                     = '127.0.0.1',
-  $redis_port                     = 6379,
-  $redis_password                 = undef,
-  $redis_reconnect_on_error       = true,
-  $redis_db                       = 0,
-  $redis_auto_reconnect           = true,
-  $redis_sentinels                = undef,
-  $redis_master                   = undef,
-  $transport_type                 = 'rabbitmq',
-  $transport_reconnect_on_error   = true,
-  $api_bind                       = '0.0.0.0',
-  $api_host                       = '127.0.0.1',
-  $api_port                       = 4567,
-  $api_user                       = undef,
-  $api_password                   = undef,
-  $api_ssl_port                   = undef,
-  $api_ssl_keystore_file          = undef,
-  $api_ssl_keystore_password      = undef,
-  $subscriptions                  = [],
-  $client_bind                    = '127.0.0.1',
-  $client_port                    = '3030',
-  $client_address                 = $::ipaddress,
-  $client_name                    = $::fqdn,
-  $client_custom                  = {},
-  $client_keepalive               = {},
-  $safe_mode                      = false,
-  $plugins                        = [],
-  $plugins_defaults               = {},
-  $plugins_dir                    = undef,
-  $purge                          = false,
-  $purge_config                   = false,
-  $purge_plugins_dir              = false,
-  $use_embedded_ruby              = true,
-  $rubyopt                        = undef,
-  $gem_path                       = undef,
-  $log_level                      = 'info',
-  $log_dir                        = '/var/log/sensu',
-  $dashboard                      = false,
-  $init_stop_max_wait             = 10,
-  $gem_install_options            = undef,
-  $hasrestart                     = true,
-  $enterprise_dashboard_base_path = undef,
-  $enterprise_dashboard_host      = undef,
-  $enterprise_dashboard_port      = undef,
-  $enterprise_dashboard_refresh   = undef,
-  $enterprise_dashboard_user      = undef,
-  $enterprise_dashboard_pass      = undef,
-  $enterprise_dashboard_ssl       = undef,
-  $enterprise_dashboard_audit     = undef,
-  $enterprise_dashboard_github    = undef,
-  $enterprise_dashboard_gitlab    = undef,
-  $enterprise_dashboard_ldap      = undef,
-  $path                           = '$PATH',
-  $redact                         = undef,
-  $deregister_on_stop             = false,
-  $deregister_handler             = undef,
-  $package_checksum               = undef,
-  $windows_pkg_url                = undef,
-  $windows_repo_prefix            = 'https://repositories.sensuapp.org/msi',
-  $windows_logrotate              = false,
-  $windows_log_number             = '10',
-  $windows_log_size               = '10240',
-  $windows_package_provider       = undef,
-  $windows_choco_repo             = undef,
-  $windows_package_name           = 'Sensu',
-  $windows_package_title          = 'sensu',
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^\d[\d\.\-\w]+$/] $sensu_plugin_version = 'installed',
+  Boolean $install_repo                   = true,
+  Boolean $enterprise                     = false,
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-]+$/] $enterprise_version = 'latest',
+  Optional[String] $enterprise_user                = undef,
+  Optional[String] $enterprise_pass                = undef,
+  Boolean $enterprise_dashboard           = false,
+  String $enterprise_dashboard_version   = 'latest',
+  Boolean $manage_repo                    = true,
+  Enum['main','unstable'] $repo   = 'main',
+  Optional[String] $repo_source                    = undef,
+  String $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
+  String $repo_key_source                = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
+  Optional[String] $repo_release                   = undef,
+  Optional[String] $spawn_limit                    = undef,
+  String $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
+  Boolean $client                         = true,
+  Boolean $server                         = false,
+  Boolean $api                            = false,
+  Boolean $manage_services                = true,
+  Boolean $manage_user                    = true,
+  Boolean $manage_plugins_dir             = true,
+  Boolean $manage_handlers_dir            = true,
+  Boolean $manage_mutators_dir            = true,
+  Optional[Integer] $rabbitmq_port                  = undef,
+  Optional[String] $rabbitmq_host                  = undef,
+  Optional[String] $rabbitmq_user                  = undef,
+  Optional[String] $rabbitmq_password              = undef,
+  Optional[String] $rabbitmq_vhost                 = undef,
+  Optional[Boolean] $rabbitmq_ssl                   = undef,
+  Optional[String] $rabbitmq_ssl_private_key       = undef,
+  Optional[String] $rabbitmq_ssl_cert_chain        = undef,
+  Optional[Integer] $rabbitmq_prefetch              = undef,
+  Variant[Undef,Hash,Array] $rabbitmq_cluster               = undef,
+  Optional[Integer] $rabbitmq_heartbeat             = undef,
+  Optional[String] $redis_host                     = '127.0.0.1',
+  Optional[Integer] $redis_port                     = 6379,
+  Optional[String] $redis_password                 = undef,
+  Boolean $redis_reconnect_on_error       = true,
+  Integer $redis_db                       = 0,
+  Boolean $redis_auto_reconnect           = true,
+  Optional[Array] $redis_sentinels                = undef,
+  Optional[String] $redis_master                   = undef,
+  Enum['rabbitmq','redis'] $transport_type                 = 'rabbitmq',
+  Boolean $transport_reconnect_on_error   = true,
+  String $api_bind                       = '0.0.0.0',
+  String $api_host                       = '127.0.0.1',
+  Integer $api_port                       = 4567,
+  Optional[String] $api_user                       = undef,
+  Optional[String]$api_password                   = undef,
+  Optional[Integer] $api_ssl_port                   = undef,
+  Optional[String] $api_ssl_keystore_file          = undef,
+  Optional[String] $api_ssl_keystore_password      = undef,
+  Array $subscriptions                  = [],
+  String $client_bind                    = '127.0.0.1',
+  Integer $client_port                    = '3030',
+  String $client_address                 = $::ipaddress,
+  String $client_name                    = $::fqdn,
+  Hash $client_custom                  = {},
+  Hash $client_keepalive               = {},
+  Boolean $safe_mode                      = false,
+  Variant[String,Array,Hash] $plugins                        = [],
+  Hash $plugins_defaults               = {},
+  Optional[String] $plugins_dir                    = undef,
+  Variant[Boolean,Hash] $purge                          = false,
+  Boolean $purge_config                   = false,
+  Boolean $purge_plugins_dir              = false,
+  Boolean $use_embedded_ruby              = true,
+  Optional[String] $rubyopt                        = undef,
+  Optional[String] $gem_path                       = undef,
+  Enum['debug','info','warn','error','fatal'] $log_level                      = 'info',
+  Stdlib::Absolutepath $log_dir                        = '/var/log/sensu',
+  Boolean $dashboard                      = false,
+  Integer $init_stop_max_wait             = 10,
+  Optional[Any] $gem_install_options            = undef,
+  Boolean $hasrestart                     = true,
+  Optional[String] $enterprise_dashboard_base_path = undef,
+  Optional[String] $enterprise_dashboard_host      = undef,
+  Optional[Integer] $enterprise_dashboard_port      = undef,
+  Optional[Any] $enterprise_dashboard_refresh   = undef,
+  Optional[String] $enterprise_dashboard_user      = undef,
+  Optional[String] $enterprise_dashboard_pass      = undef,
+  Optional[Any] $enterprise_dashboard_ssl       = undef,
+  Optional[Any] $enterprise_dashboard_audit     = undef,
+  Optional[Any] $enterprise_dashboard_github    = undef,
+  Optional[Any] $enterprise_dashboard_gitlab    = undef,
+  Optional[Any] $enterprise_dashboard_ldap      = undef,
+  String $path                           = '$PATH',
+  Optional[Array] $redact                         = undef,
+  Boolean $deregister_on_stop             = false,
+  Optional[String] $deregister_handler             = undef,
+  Optional[String] $package_checksum               = undef,
+  Optional[String] $windows_pkg_url                = undef,
+  Optional[String] $windows_repo_prefix            = 'https://repositories.sensuapp.org/msi',
+  Boolean $windows_logrotate              = false,
+  Integer $windows_log_number             = '10',
+  Variant[String,Integer] $windows_log_size               = '10240',
+  Optional[String] $windows_package_provider       = undef,
+  Optional[String] $windows_choco_repo             = undef,
+  String $windows_package_name           = 'Sensu',
+  String $windows_package_title          = 'sensu',
 
   ### START Hiera Lookups ###
-  $extensions                  = {},
-  $handlers                    = {},
-  $handler_defaults            = {},
-  $checks                      = {},
-  $check_defaults              = {},
-  $filters                     = {},
-  $filter_defaults             = {},
-  $mutators                    = {},
+  Hash $extensions                  = {},
+  Hash $handlers                    = {},
+  Hash $handler_defaults            = {},
+  Hash $checks                      = {},
+  Hash $check_defaults              = {},
+  Hash $filters                     = {},
+  Hash $filter_defaults             = {},
+  Hash $mutators                    = {},
   ### END Hiera Lookups ###
 
 ){
 
-  validate_absolute_path($log_dir)
-  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
-
-  validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
-  validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-el]+$'], "Invalid package version: ${version}")
-  validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
-  validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
-  validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
-  validate_re($transport_type, ['^rabbitmq$', '^redis$'], "Invalid transport type '${transport_type}'. Expected either rabbitmq or redis" )
-  if !is_integer($redis_port) { fail('redis_port must be an integer') }
-  if !is_integer($api_port) { fail('api_port must be an integer') }
-  if $api_ssl_port != undef and is_integer($api_ssl_port) == false {
-    fail('api_ssl_port must be an integer')
-  }
-  if $api_ssl_keystore_file != undef and is_string($api_ssl_keystore_file) == false {
-    fail('api_ssl_keystore_file must be a string')
-  }
-  if $api_ssl_keystore_password != undef and is_string($api_ssl_keystore_password) == false {
-    fail('api_ssl_keystore_password must be a string')
-  }
-  if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
-  if !is_integer($redis_db) { fail('redis_db must be an integer') }
-  if $spawn_limit and !is_integer($spawn_limit) { fail('spawn_limit must be an integer') }
 
   # sensu-enterprise supersedes sensu-server and sensu-api
   if ( $enterprise and $api ) or ( $enterprise and $server ) {
@@ -600,7 +577,6 @@ class sensu (
   # validate enterprise repo credentials
   if $manage_repo {
     if ( $enterprise or $enterprise_dashboard ) and $install_repo {
-      validate_string($enterprise_user, $enterprise_pass)
       if $enterprise_user == undef or $enterprise_pass == undef {
         fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
       }
@@ -644,8 +620,6 @@ class sensu (
     $_purge_extensions = $purge
     $_purge_mutators   = $purge
   } else {
-    # If purge is not a boolean, it must be a hash
-    validate_hash($purge)
     # Default anything not specified to false
     $default_purge_hash = { plugins => false, config => false, handlers => false, extensions => false, mutators => false }
     $full_purge_hash = merge($default_purge_hash, $purge)
