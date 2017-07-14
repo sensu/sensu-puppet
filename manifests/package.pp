@@ -64,7 +64,7 @@ class sensu::package (
   }
 
   if $path != '$PATH' {
-    validate_absolute_path($path)
+    assert_type(Stdlib::Absolutepath,$path)
   }
 
   case $::osfamily {
