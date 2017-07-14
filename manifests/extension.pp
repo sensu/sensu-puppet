@@ -23,16 +23,13 @@
 #
 #
 define sensu::extension(
-  $ensure       = 'present',
+  Enum['present','absent'] $ensure       = 'present',
   # Used to install the handler
-  $source       = undef,
-  $install_path = '/etc/sensu/extensions',
+  Optional[Pattern[/^puppet:\/\//]] $source       = undef,
+  String $install_path = '/etc/sensu/extensions',
   # Handler specific config
-  $config       = {},
+  Hash $config       = {},
 ) {
-
-  validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($source, ['^puppet://'] )
 
   if $::sensu::client {
     $notify_services = Class['sensu::client::service']
