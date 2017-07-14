@@ -69,6 +69,18 @@ describe 'sensu::check', :type => :define do
       it { should contain_sensu_check('mycheck').with_ensure('absent') }
     end
 
+    context 'ensure absent with command undefiend' do
+      let(:params) { { :ensure => 'absent' } }
+      it { should contain_sensu_check('mycheck').with_ensure('absent') }
+    end
+
+    context 'ensure present with command undefiend' do
+      let(:params) { { :ensure => 'present' } }
+      it 'should fail' do
+        expect { should contain_class(subject) }.to raise_error(Puppet::Error, /command must be given when ensure is present/)
+      end
+    end
+
     context 'setting params to absent' do
       let(:params) { {
         :command             => '/etc/sensu/command2.rb',

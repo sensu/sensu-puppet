@@ -6,6 +6,7 @@
 #
 # [*command*]
 #   String.  The check command to run
+#   Default: undef
 #
 # [*ensure*]
 #   String. Whether the check should be present or not
