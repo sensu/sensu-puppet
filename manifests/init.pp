@@ -265,8 +265,27 @@
 #   Default: $::fqdn
 #
 # [*client_custom*]
-#   Hash.  Custom client variables
+#   Hash.  Custom client variables.
 #   Default: {}
+#
+# [*client_deregister*]
+#   Boolean.  Enable the [deregistration
+#   event](https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes)
+#   if true.
+#   Default: undef
+#
+# [*client_deregistration*]
+#   Hash.
+#   [Attributes](https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes)
+#   used to generate check result data for the de-registration event. Client
+#   deregistration attributes are merged with some default check definition
+#   attributes by the Sensu server during client deregistration, so any valid
+#   check definition attributes – including custom check definition attributes
+#   – may be used as deregistration attributes, with the following exceptions
+#   (which are used to ensure the check result is valid): check name, output,
+#   status, and issued timestamp. The following attributes are provided as
+#   recommendations for controlling client deregistration behavior.
+#   Default: undef
 #
 # [*client_keepalive*]
 #   Hash.  Client keepalive config
@@ -510,6 +529,8 @@ class sensu (
   String             $client_address =  $::ipaddress,
   String             $client_name =  $::fqdn,
   Hash               $client_custom = {},
+  Variant[Undef,Boolean] $client_deregister = undef,
+  Variant[Undef,Hash] $client_deregistration = undef,
   Hash               $client_keepalive = {},
   Boolean            $safe_mode = false,
   Variant[String,Array,Hash] $plugins = [],
@@ -552,7 +573,6 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
-
   ### START Hiera Lookups###
   Hash               $extensions = {},
   Hash               $handlers = {},
@@ -563,9 +583,7 @@ class sensu (
   Hash               $filter_defaults = {},
   Hash               $mutators = {},
   ### END Hiera Lookups ###
-
 ) {
-
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }

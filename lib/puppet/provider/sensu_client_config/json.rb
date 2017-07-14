@@ -9,26 +9,85 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   include PuppetX::Sensu::ToType
   include PuppetX::Sensu::ProviderCreate
 
+  # These class methods are alternatives to constants which may conflict with
+  # other types and providers.
+
+  # The configuration scope.  Used as a key into the @conf hash.
+  def self.scope
+    @scope ||= 'client'
+  end
+
+  def scope
+    @scope ||= self.class.scope
+  end
+
+  def self.properties
+    return @properties if @properties
+    skip_properties = [ :ensure, :client_name, :custom ]
+    # The set of properties to create getter and setter methods
+    all_properties = Puppet::Type.type(:sensu_client_config).validproperties
+    @properties = all_properties.reject { |p| skip_properties.include?(p) }
+  end
+
+  ##
+  # Memoized method to load the configuration from the filesystem.  This
+  # configuration state is modified by the property setter methods and written
+  # out to the filesystem in the flush method.
+  #
+  # @return [Hash] configuration map
   def conf
-    begin
-      @conf ||= JSON.parse(File.read(config_file))
-    rescue
-      @conf ||= {}
+    return @conf if @conf
+    data = File.read(config_file)
+    if data.length > 0
+      @conf = JSON.parse(data)
+    else
+      @conf = {}
     end
+  rescue Errno::ENOENT
+    @conf = {}
   end
 
+  ##
+  # Write @conf hash out to the filesystem.
   def flush
-    File.open(config_file, 'w') do |f|
-      f.puts JSON.pretty_generate(conf)
-    end
-  end
-
-  def config_file
-    File.join(resource[:base_path], 'client.json').gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR)
+    sort_properties!
+    str = JSON.pretty_generate(conf)
+    File.open(config_file, 'w') { |f| f.puts(str) }
   end
 
   def pre_create
-    conf['client'] = {}
+    conf[scope] = {}
+  end
+
+  def sort_properties!
+    conf[scope] = Hash[conf[scope].sort]
+    @conf = Hash[conf.sort]
+  end
+
+  def is_property?(prop)
+    valid_properties = [:name, :custom, *self.class.properties]
+    valid_properties.map(&:to_s).include?(prop.to_s)
+  end
+
+  def client_name
+    conf[scope]['name']
+  end
+
+  def client_name=(value)
+    if value == :absent
+      conf[scope].delete('name')
+    else
+      conf[scope]['name'] = value
+    end
+  end
+
+  def custom
+    conf[scope].reject { |k,_| is_property?(k) }
+  end
+
+  def custom=(value)
+    conf[scope].delete_if { |k,_| not is_property?(k) }
+    conf[scope].merge!(to_type(value))
   end
 
   def destroy
@@ -36,76 +95,34 @@ Puppet::Type.type(:sensu_client_config).provide(:json) do
   end
 
   def exists?
-    conf.has_key?('client')
+    conf.has_key?(scope)
   end
 
-  def check_args
-    ['name', 'address', 'subscriptions', 'safe_mode', 'socket', 'keepalive', 'redact']
+  def config_file
+    File.join(resource[:base_path], 'client.json').gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR)
   end
 
-  def client_name
-    conf['client']['name']
+  # Generate setters and getters for sensu_check properties.
+  properties.each do |property|
+    define_method(property) do
+      get_property(property)
+    end
+
+    define_method("#{property}=") do |value|
+      set_property(property, value)
+    end
   end
 
-  def client_name=(value)
-    conf['client']['name'] = value
+  def get_property(property)
+    value = conf[scope][property.to_s]
+    value.nil? ? :absent : value
   end
 
-  def address
-    conf['client']['address']
+  def set_property(property, value)
+    if value == :absent
+      conf[scope].delete(property.to_s)
+    else
+      conf[scope][property.to_s] = value
+    end
   end
-
-  def address=(value)
-    conf['client']['address'] = value
-  end
-
-  def socket
-    conf['client']['socket']
-  end
-
-  def socket=(value)
-    conf['client']['socket'] = value
-  end
-
-  def subscriptions
-    conf['client']['subscriptions'] || []
-  end
-
-  def subscriptions=(value)
-    conf['client']['subscriptions'] = value
-  end
-
-  def redact
-    conf['client']['redact'] || []
-  end
-
-  def redact=(value)
-    conf['client']['redact'] = value
-  end
-
-  def custom
-    conf['client'].reject { |k,v| check_args.include?(k) }
-  end
-
-  def custom=(value)
-    conf['client'].delete_if { |k,v| not check_args.include?(k) }
-    conf['client'].merge!(to_type(value))
-  end
-
-  def keepalive
-    conf['client']['keepalive'] || {}
-  end
-
-  def keepalive=(value)
-    conf['client']['keepalive'] = to_type(value)
-  end
-
-  def safe_mode
-    conf['client']['safe_mode']
-  end
-
-  def safe_mode=(value)
-    conf['client']['safe_mode'] = value
-  end
-
 end

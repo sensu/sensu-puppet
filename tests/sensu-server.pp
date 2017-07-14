@@ -1,17 +1,21 @@
 node 'sensu-server' {
+  $deregistration = { 'handler' => 'deregister_client' }
+
   class { '::sensu':
-    install_repo      => true,
-    server            => true,
-    manage_services   => true,
-    manage_user       => true,
-    rabbitmq_password => 'correct-horse-battery-staple',
-    rabbitmq_vhost    => '/sensu',
-    spawn_limit       => 16,
-    api               => true,
-    api_user          => 'admin',
-    api_password      => 'secret',
-    client_address    => $::ipaddress_eth1,
-    subscriptions     => ['all', 'roundrobin:poller'],
+    install_repo          => true,
+    server                => true,
+    manage_services       => true,
+    manage_user           => true,
+    rabbitmq_password     => 'correct-horse-battery-staple',
+    rabbitmq_vhost        => '/sensu',
+    spawn_limit           => 16,
+    api                   => true,
+    api_user              => 'admin',
+    api_password          => 'secret',
+    client_address        => $::ipaddress_eth1,
+    subscriptions         => ['all', 'roundrobin:poller'],
+    client_deregister     => true,
+    client_deregistration => $deregistration,
   }
 
   sensu::handler { 'default':

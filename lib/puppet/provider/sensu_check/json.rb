@@ -20,7 +20,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   end
 
   def flush
-    sort_properties
+    sort_properties!
     File.open(config_file, 'w') do |f|
       f.puts JSON.pretty_generate(conf)
     end
@@ -31,7 +31,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]] = {}
   end
 
-  def sort_properties
+  def sort_properties!
     conf['checks'][resource[:name]] = Hash[conf['checks'][resource[:name]].sort]
   end
 
