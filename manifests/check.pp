@@ -156,6 +156,10 @@ define sensu::check(
   Variant[Undef,Enum['absent'],Hash] $proxy_requests      = undef,
 ) {
 
+  if $ensure == 'present' and !$command {
+    fail("sensu::check{${name}}: a command must be given when ensure is present")
+  }
+
   if $subdue =~ Hash {
     if !( has_key($subdue, 'days') and $subdue['days'] =~ Hash ) {
       fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
