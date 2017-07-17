@@ -567,6 +567,9 @@ class sensu (
 ){
 
   validate_absolute_path($log_dir)
+  if $path != '$PATH' {
+    validate_absolute_path($path)
+  }
   validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
 
   validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
