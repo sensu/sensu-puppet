@@ -504,7 +504,7 @@ class sensu (
   Variant[Undef,Integer,Pattern[/^(\d+)$/]] $api_ssl_port                   = undef,
   Optional[String] $api_ssl_keystore_file          = undef,
   Optional[String] $api_ssl_keystore_password      = undef,
-  Array $subscriptions                  = [],
+  Variant[String,Array] $subscriptions                  = [],
   String $client_bind                    = '127.0.0.1',
   Integer $client_port                    = 3030,
   String $client_address                 = $::ipaddress,
