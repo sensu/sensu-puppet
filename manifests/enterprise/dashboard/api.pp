@@ -52,16 +52,16 @@
 #   Default: undef
 
 define sensu::enterprise::dashboard::api (
-  $ensure     = present,
-  $base_path  = undef,
-  $datacenter = undef,
-  $port       = undef,
-  $ssl        = undef,
-  $insecure   = undef,
-  $path       = undef,
-  $timeout    = undef,
-  $user       = undef,
-  $pass       = undef,
+  Enum['present','absent'] $ensure = present,
+  Optional[String]  $base_path     = undef,
+  Optional[String]  $datacenter    = undef,
+  Optional[Integer] $port          = undef,
+  Optional[Boolean] $ssl           = undef,
+  Optional[Boolean] $insecure      = undef,
+  Optional[String]  $path          = undef,
+  Optional[Integer] $timeout       = undef,
+  Optional[String]  $user          = undef,
+  Optional[String]  $pass          = undef,
 ) {
 
   require ::sensu::enterprise::dashboard::config

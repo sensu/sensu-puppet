@@ -2,7 +2,7 @@
 #
 # Installs the Sensu Enterprise Dashboard
 class sensu::enterprise::dashboard (
-  $hasrestart = true,
+  Boolean $hasrestart = true,
 ) {
 
   anchor { 'sensu::enterprise::dashboard::begin': }
