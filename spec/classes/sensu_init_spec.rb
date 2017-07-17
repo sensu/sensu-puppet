@@ -360,31 +360,31 @@ describe 'sensu', :type => :class do
         :name    => %w[log_dir],
         :valid   => %w[/absolute/filepath /absolute/directory/],
         :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil],
-        :message => 'is not an absolute path',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'boolean' => {
         :name    => %w(deregister_on_stop),
         :valid   => [true, false],
         :invalid => ['false', %w(array), { 'ha' => 'sh' }, 3, 2.42, nil],
-        :message => 'is not a boolean',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'integer' => {
         :name    => %w(init_stop_max_wait),
         :valid   => [3, '242'],
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, nil],
-        :message => 'must be an integer',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'plugins' => {
         :name    => %w[plugins],
         :valid   => ['/string', %w(/array), { '/hash' => {} }],
         :invalid => [3, 2.42, true],
-        :message => 'Invalid data type',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'validate_re log_level' => {
         :name    => %w[log_level],
         :valid   => %w[debug info warn error fatal],
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, nil],
-        :message => 'validate_re()',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
     }
 
