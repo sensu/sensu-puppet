@@ -68,24 +68,24 @@
 #   Valid values: true, false
 #
 define sensu::handler(
-  Enum['present','absent'] $ensure          = 'present',
+  Enum['present','absent'] $ensure = 'present',
   Enum['pipe','tcp','udp','amqp','set','transport'] $type = 'pipe',
-  Optional[String] $command         = undef,
+  Optional[String] $command        = undef,
   Optional[Array] $handlers        = undef,
   Array $severities      = ['ok', 'warning', 'critical', 'unknown'],
-  Optional[Hash] $exchange        = undef,
-  Optional[Hash] $pipe            = undef,
-  $mutator         = undef,
-  Optional[Hash] $socket          = undef,
-  Array $filters         = [],
+  Optional[Hash] $exchange         = undef,
+  Optional[Hash] $pipe             = undef,
+  Any $mutator                     = undef,
+  Optional[Hash] $socket           = undef,
+  Array $filters                   = [],
   # Used to install the handler
-  Optional[Pattern[/^puppet:\/\//]] $source          = undef,
-  String $install_path    = '/etc/sensu/handlers',
+  Optional[Pattern[/^puppet:\/\//]] $source = undef,
+  String $install_path             = '/etc/sensu/handlers',
   # Handler specific config
-  Optional[Hash] $config          = undef,
-  Any $subdue          = undef,
-  Optional[Integer] $timeout         = undef,
-  Boolean $handle_flapping = false,
+  Optional[Hash] $config           = undef,
+  Any $subdue                      = undef,
+  Optional[Integer] $timeout       = undef,
+  Boolean $handle_flapping         = false,
 ) {
 
   if $subdue{ fail('Subdue at handler is deprecated since sensu 0.26. See https://sensuapp.org/docs/0.26/overview/changelog.html#core-v0-26-0')}

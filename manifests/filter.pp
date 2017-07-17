@@ -19,10 +19,10 @@
 #   Default: undef
 #
 define sensu::filter (
-  Enum['present','absent'] $ensure     = 'present',
-  Optional[Boolean] $negate     = undef,
-  Optional[Hash] $attributes = undef,
-  Optional[Hash] $when       = undef,
+  Enum['present','absent'] $ensure = 'present',
+  Optional[Boolean] $negate        = undef,
+  Optional[Hash] $attributes       = undef,
+  Optional[Hash] $when             = undef,
 ) {
 
   file { "/etc/sensu/conf.d/filters/${name}.json":

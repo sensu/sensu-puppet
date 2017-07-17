@@ -14,8 +14,8 @@
 #   Default: {}
 #
 define sensu::subscription (
-  Enum['present','absent'] $ensure       = 'present',
-  Hash $custom       = {},
+  Enum['present','absent'] $ensure = 'present',
+  Hash $custom                     = {},
 ) {
 
   include ::sensu

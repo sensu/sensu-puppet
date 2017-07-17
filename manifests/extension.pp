@@ -22,13 +22,13 @@
 #   Default: undef
 #
 #
-define sensu::extension(
-  Enum['present','absent'] $ensure       = 'present',
+define sensu::extension (
+  Enum['present','absent'] $ensure          = 'present',
   # Used to install the handler
-  Optional[Pattern[/^puppet:\/\//]] $source       = undef,
-  String $install_path = '/etc/sensu/extensions',
+  Optional[Pattern[/^puppet:\/\//]] $source = undef,
+  String $install_path                      = '/etc/sensu/extensions',
   # Handler specific config
-  Hash $config       = {},
+  Hash $config                              = {},
 ) {
 
   if $::sensu::client {

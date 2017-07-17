@@ -27,10 +27,10 @@
 #
 define sensu::mutator(
   String $command,
-  Enum['present','absent'] $ensure       = 'present',
-  Optional[Numeric] $timeout      = undef,
+  Enum['present','absent'] $ensure   = 'present',
+  Optional[Numeric] $timeout         = undef,
   # Used to install the mutator
-  Optional[String] $source       = undef,
+  Optional[String] $source           = undef,
   Stdlib::Absolutepath $install_path = '/etc/sensu/mutators',
 ) {
 
