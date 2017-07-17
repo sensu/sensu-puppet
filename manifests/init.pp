@@ -538,7 +538,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_github = undef,
   Optional[Any]      $enterprise_dashboard_gitlab = undef,
   Optional[Any]      $enterprise_dashboard_ldap = undef,
-  String             $path = ' $PATH',
+  String             $path = '$PATH',
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
   Optional[String]   $deregister_handler = undef,
