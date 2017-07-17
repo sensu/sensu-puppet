@@ -1,9 +1,9 @@
 # This is to verify the install_dir exists without duplicate declarations
 define sensu::plugins_dir (
-  $force,
-  $purge,
-  $recurse,
-  $path = $name,
+  Boolean $force,
+  Boolean $purge,
+  Boolean $recurse,
+  String $path = $name,
 ) {
   if ! defined(File[$path]) {
     file { $path:

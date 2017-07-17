@@ -151,7 +151,7 @@ describe 'sensu', :type => :class do
           :name    => %w(hasrestart),
           :valid   => [true, false],
           :invalid => ['false', %w(array), { 'ha' => 'sh' }, 3, 2.42, nil],
-          :message => 'is not a boolean',
+          :message => 'Evaluation Error: Error while evaluating a Resource Statement',
         },
       }
 
@@ -169,7 +169,7 @@ describe 'sensu', :type => :class do
             context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
               let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
               it 'should fail' do
-                expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
+                expect { should contain_class(subject) }.to raise_error(Puppet::PreformattedError, /#{var[:message]}/)
               end
             end
           end

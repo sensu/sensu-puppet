@@ -9,7 +9,7 @@ class sensu::enterprise::dashboard::config {
 
   if $::sensu::enterprise_dashboard {
     $ensure = 'present'
-  } elsif is_hash($::sensu::purge) {
+  } elsif $::sensu::purge =~ Hash {
     if $::sensu::purge['config'] {
       $ensure = 'absent'
     } else {
