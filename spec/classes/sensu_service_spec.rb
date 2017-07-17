@@ -169,7 +169,7 @@ describe 'sensu', :type => :class do
             context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
               let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
               it 'should fail' do
-                expect { should contain_class(subject) }.to raise_error(Puppet::PreformattedError)
+                expect { should contain_class(subject) }.to raise_error(Puppet::PreformattedError, /#{var[:message]}/)
               end
             end
           end
