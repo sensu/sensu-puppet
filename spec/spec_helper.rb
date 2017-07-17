@@ -27,4 +27,9 @@ RSpec.configure do |config|
     :kernel      => 'Linux',
     :osfamily    => 'RedHat',
   }
+  config.backtrace_exclusion_patterns = [
+    %r{/\.bundle/},
+    %r{/\.rbenv/},
+    %r{/.rvm/},
+  ]
 end

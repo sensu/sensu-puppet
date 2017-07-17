@@ -563,9 +563,7 @@ class sensu (
   Hash               $filter_defaults = {},
   Hash               $mutators = {},
   ### END Hiera Lookups ###
-
 ) {
-
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
@@ -636,6 +634,10 @@ class sensu (
     $_purge_extensions = $full_purge_hash['extensions']
     $_purge_mutators   = $full_purge_hash['mutators']
   }
+
+  # (#463) This well-known anchor serves as a reference point so all checks are
+  # managed after all plugins.  It must always exist in the catalog.
+  anchor { 'plugins_before_checks': }
 
   # Create resources from hiera lookups
   create_resources('::sensu::extension', $extensions)

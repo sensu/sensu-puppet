@@ -13,6 +13,7 @@ describe 'sensu', :type => :class do
   it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
   it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
   it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
+  it { should contain_anchor('plugins_before_checks') }
   it { should_not contain_file('C:/opt/sensu/bin/sensu-client.xml') }
 
   describe 'osfamily windows' do
@@ -409,5 +410,4 @@ describe 'sensu', :type => :class do
       end # var[:name].each
     end # validations.sort.each
   end # describe 'variable type and content validations'
-
 end
