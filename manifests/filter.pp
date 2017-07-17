@@ -19,24 +19,11 @@
 #   Default: undef
 #
 define sensu::filter (
-  $ensure     = 'present',
-  $negate     = undef,
-  $attributes = undef,
-  $when       = undef,
+  Enum['present','absent'] $ensure = 'present',
+  Optional[Boolean] $negate        = undef,
+  Optional[Hash] $attributes       = undef,
+  Optional[Hash] $when             = undef,
 ) {
-
-  validate_re($ensure, ['^present$', '^absent$'] )
-  if $negate {
-    validate_bool($negate)
-  }
-
-  if $attributes and !is_hash($attributes) {
-    fail('attributes must be a hash')
-  }
-
-  if $when and !is_hash($when) {
-    fail('when must be a hash')
-  }
 
   file { "/etc/sensu/conf.d/filters/${name}.json":
     ensure => $ensure,

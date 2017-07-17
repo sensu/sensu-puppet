@@ -18,12 +18,10 @@
 #   Default: undef
 #
 define sensu::config (
-  $ensure = 'present',
-  $config = undef,
-  $event  = undef,
+  Enum['present','absent'] $ensure = 'present',
+  Optional[Hash] $config = undef,
+  Optional[Hash] $event  = undef,
 ) {
-
-  validate_re($ensure, ['^present$', '^absent$'] )
 
   file { "/etc/sensu/conf.d/checks/config_${name}.json":
     ensure => $ensure,

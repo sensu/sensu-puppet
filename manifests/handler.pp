@@ -68,34 +68,26 @@
 #   Valid values: true, false
 #
 define sensu::handler(
-  $ensure          = 'present',
-  $type            = 'pipe',
-  $command         = undef,
-  $handlers        = undef,
-  $severities      = ['ok', 'warning', 'critical', 'unknown'],
-  $exchange        = undef,
-  $pipe            = undef,
-  $mutator         = undef,
-  $socket          = undef,
-  $filters         = [],
+  Enum['present','absent'] $ensure = 'present',
+  Enum['pipe','tcp','udp','amqp','set','transport'] $type = 'pipe',
+  Optional[String] $command        = undef,
+  Optional[Array] $handlers        = undef,
+  Array $severities      = ['ok', 'warning', 'critical', 'unknown'],
+  Optional[Hash] $exchange         = undef,
+  Optional[Hash] $pipe             = undef,
+  Any $mutator                     = undef,
+  Optional[Hash] $socket           = undef,
+  Array $filters                   = [],
   # Used to install the handler
-  $source          = undef,
-  $install_path    = '/etc/sensu/handlers',
+  Optional[Pattern[/^puppet:\/\//]] $source = undef,
+  String $install_path             = '/etc/sensu/handlers',
   # Handler specific config
-  $config          = undef,
-  $subdue          = undef,
-  $timeout         = undef,
-  $handle_flapping = false,
+  Optional[Hash] $config           = undef,
+  Any $subdue                      = undef,
+  Optional[Integer] $timeout       = undef,
+  Boolean $handle_flapping         = false,
 ) {
 
-  validate_bool($handle_flapping)
-  validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
-  if $exchange { validate_hash($exchange) }
-  if $pipe { validate_hash($pipe) }
-  if $socket { validate_hash($socket) }
-  validate_array($severities, $filters)
-  if $source { validate_re($source, ['^puppet://'] ) }
   if $subdue{ fail('Subdue at handler is deprecated since sensu 0.26. See https://sensuapp.org/docs/0.26/overview/changelog.html#core-v0-26-0')}
 
 

@@ -2,10 +2,8 @@
 #
 # Installs the Sensu Enterprise Dashboard
 class sensu::enterprise::dashboard::service (
-  $hasrestart = true,
+  Boolean $hasrestart = true,
 ) {
-
-  validate_bool($hasrestart)
 
   if $caller_module_name != $module_name {
     fail("Use of private class ${name} by ${caller_module_name}")

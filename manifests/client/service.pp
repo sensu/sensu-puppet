@@ -26,14 +26,12 @@
 #   Default: $::sensu::windows_log_number
 #
 class sensu::client::service (
-  $hasrestart         = true,
+  Boolean $hasrestart = true,
   $log_level          = $::sensu::log_level,
   $windows_logrotate  = $::sensu::windows_logrotate,
   $windows_log_size   = $::sensu::windows_log_size,
   $windows_log_number = $::sensu::windows_log_number,
 ) {
-
-  validate_bool($hasrestart)
 
   if $caller_module_name != $module_name {
     fail("Use of private class ${name} by ${caller_module_name}")
