@@ -151,7 +151,7 @@ describe 'sensu', :type => :class do
           :name    => %w(hasrestart),
           :valid   => [true, false],
           :invalid => ['false', %w(array), { 'ha' => 'sh' }, 3, 2.42, nil],
-          :message => 'is not a boolean',
+          :message => 'Evaluation Error: Error while evaluating a Resource Statement',
         },
       }
 
