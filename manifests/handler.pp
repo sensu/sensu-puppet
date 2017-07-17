@@ -67,6 +67,11 @@
 #   Default: false.
 #   Valid values: true, false
 #
+# [*handle_silenced*]
+#   Boolean.  If events in the silenced state should be handled.
+#   Default: false.
+#   Valid values: true, false
+#
 define sensu::handler(
   Enum['present','absent'] $ensure = 'present',
   Enum['pipe','tcp','udp','amqp','set','transport'] $type = 'pipe',
@@ -86,6 +91,7 @@ define sensu::handler(
   Any $subdue                      = undef,
   Optional[Integer] $timeout       = undef,
   Boolean $handle_flapping         = false,
+  Boolean $handle_silenced         = false,
 ) {
 
   if $subdue{ fail('Subdue at handler is deprecated since sensu 0.26. See https://sensuapp.org/docs/0.26/overview/changelog.html#core-v0-26-0')}
@@ -163,6 +169,7 @@ define sensu::handler(
     config          => $config,
     timeout         => $timeout,
     handle_flapping => $handle_flapping,
+    handle_silenced => $handle_silenced,
     notify          => $notify_services,
     require         => File['/etc/sensu/conf.d/handlers'],
   }
