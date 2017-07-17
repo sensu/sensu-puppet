@@ -552,7 +552,7 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
-  
+
   ### START Hiera Lookups###
   Hash               $extensions = {},
   Hash               $handlers = {},
