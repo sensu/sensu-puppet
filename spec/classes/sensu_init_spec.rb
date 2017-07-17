@@ -357,7 +357,7 @@ describe 'sensu', :type => :class do
 
     validations = {
       'absolute_path' => {
-        :name    => %w[log_dir],
+        :name    => %w[log_dir path],
         :valid   => %w[/absolute/filepath /absolute/directory/],
         :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil],
         :message => 'Evaluation Error: Error while evaluating a Resource Statement',

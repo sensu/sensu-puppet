@@ -63,10 +63,6 @@ class sensu::package (
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $path != '$PATH' {
-    assert_type(Stdlib::Absolutepath,$path)
-  }
-
   case $::osfamily {
 
     'Debian': {
