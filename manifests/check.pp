@@ -138,7 +138,7 @@ define sensu::check (
   Variant[Boolean,Enum['absent']]       $standalone = true,
   String                                $cron = 'absent',
   Variant[Integer,Enum['absent']]       $interval = 60,
-  Variant[Undef,Pattern[/^(\d+) $/],Integer,Enum['absent']] $occurrences = undef,
+  Variant[Undef,Pattern[/^(\d+)$/],Integer,Enum['absent']] $occurrences = undef,
   Variant[Undef,Enum['absent'],Integer] $refresh = undef,
   Variant[Undef,String,Integer]         $source = undef,
   Variant[Undef,String,Array]           $subscribers = undef,
