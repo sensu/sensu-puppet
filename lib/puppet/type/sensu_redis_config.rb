@@ -110,9 +110,8 @@ Puppet::Type.newtype(:sensu_redis_config) do
     end
 
     munge do |value|
-      Hash[value.map do |k, v|
-        [k, if k == "port" then v.to_i else v.to_s end]
-      end]
+      hsh_ary = value.map {|k,v| [k, k == "port" ? v.to_i : v.to_s] }
+      Hash[hsh_ary]
     end
   end
 
