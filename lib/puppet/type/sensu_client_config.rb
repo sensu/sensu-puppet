@@ -9,9 +9,11 @@ Puppet::Type.newtype(:sensu_client_config) do
   def initialize(*args)
     super *args
 
-    self[:notify] = [
-      "Service[sensu-client]",
-    ].select { |ref| catalog.resource(ref) }
+    if c = catalog
+      self[:notify] = [
+        'Service[sensu-client]',
+      ].select { |ref| c.resource(ref) }
+    end
   end
 
   ensurable do
@@ -87,13 +89,8 @@ Puppet::Type.newtype(:sensu_client_config) do
   end
 
   newproperty(:custom) do
-    desc "Custom client variables"
-
+    desc 'Custom client attributes'
     include PuppetX::Sensu::ToType
-
-    munge do |value|
-      value.each { |k, v| value[k] = to_type(v) }
-    end
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -116,6 +113,15 @@ Puppet::Type.newtype(:sensu_client_config) do
     end
 
     defaultto {}
+  end
+
+  newproperty(:deregister, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc 'Enable client de-registration'
+  end
+
+  newproperty(:deregistration) do
+    desc 'Client deregistration attributes'
+    newvalues(/.*/, :absent)
   end
 
   newproperty(:keepalive) do
@@ -149,7 +155,6 @@ Puppet::Type.newtype(:sensu_client_config) do
 
     defaultto {}
   end
-
 
   autorequire(:package) do
     ['sensu']

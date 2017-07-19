@@ -21,19 +21,23 @@ class sensu::client::config {
     mode   => $::sensu::file_mode,
   }
 
+  $socket_config = {
+    bind => $::sensu::client_bind,
+    port => $::sensu::client_port,
+  }
+
   sensu_client_config { $::fqdn:
-    ensure        => $ensure,
-    base_path     => $::sensu::conf_dir,
-    client_name   => $::sensu::client_name,
-    address       => $::sensu::client_address,
-    socket        => {
-                        bind => $::sensu::client_bind,
-                        port => $::sensu::client_port,
-                      },
-    subscriptions => $::sensu::subscriptions,
-    safe_mode     => $::sensu::safe_mode,
-    custom        => $::sensu::client_custom,
-    keepalive     => $::sensu::client_keepalive,
-    redact        => $::sensu::redact,
+    ensure         => $ensure,
+    base_path      => $::sensu::conf_dir,
+    client_name    => $::sensu::client_name,
+    address        => $::sensu::client_address,
+    socket         => $socket_config,
+    subscriptions  => $::sensu::subscriptions,
+    safe_mode      => $::sensu::safe_mode,
+    custom         => $::sensu::client_custom,
+    keepalive      => $::sensu::client_keepalive,
+    redact         => $::sensu::redact,
+    deregister     => $::sensu::client_deregister,
+    deregistration => $::sensu::client_deregistration,
   }
 }
