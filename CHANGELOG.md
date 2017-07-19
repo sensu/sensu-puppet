@@ -1,7 +1,25 @@
 # Change Log
 
-## [v2.26.0](https://github.com/sensu/sensu-puppet/tree/v2.26.0)
+## [v2.27.0](https://github.com/sensu/sensu-puppet/tree/v2.27.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.26.0...v2.27.0)
+
+**Implemented enhancements:**
+
+- Add `rake doc` task to generate documentation from inline comments [\#748](https://github.com/sensu/sensu-puppet/issues/748)
+- Add support for deregister client config and deregistration handler [\#550](https://github.com/sensu/sensu-puppet/issues/550)
+
+**Closed issues:**
+
+- plugins should install before checks [\#463](https://github.com/sensu/sensu-puppet/issues/463)
+
+**Merged pull requests:**
+
+- \(\#748\) Add puppet-strings gem and dependencies [\#756](https://github.com/sensu/sensu-puppet/pull/756) ([jeffmccune](https://github.com/jeffmccune))
+- \(\#463\) Ensure sensu::plugins are managed before checks [\#755](https://github.com/sensu/sensu-puppet/pull/755) ([jeffmccune](https://github.com/jeffmccune))
+- \(\#550\) Add sensu client de-registration [\#750](https://github.com/sensu/sensu-puppet/pull/750) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.26.0](https://github.com/sensu/sensu-puppet/tree/v2.26.0) (2017-07-19)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.25.0...v2.26.0)
 
 **Closed issues:**
