@@ -129,94 +129,44 @@
 #   matches the defined client attributes.  See the documentation for the format
 #   of the Hash value.
 #   Default: undef
-define sensu::check(
-  $command             = undef,
-  $ensure              = 'present',
-  $type                = undef,
-  $handlers            = undef,
-  $contacts            = undef,
-  $standalone          = true,
-  $cron                = 'absent',
-  $interval            = 60,
-  $occurrences         = undef,
-  $refresh             = undef,
-  $source              = undef,
-  $subscribers         = undef,
-  $low_flap_threshold  = undef,
-  $high_flap_threshold = undef,
-  $timeout             = undef,
-  $aggregate           = undef,
-  $aggregates          = undef,
-  $handle              = undef,
-  $publish             = undef,
-  $dependencies        = undef,
-  $custom              = undef,
-  $ttl                 = undef,
-  $subdue              = undef,
-  $proxy_requests      = undef,
+define sensu::check (
+  Optional[String]                      $command = undef,
+  Enum['present','absent']              $ensure = 'present',
+  Optional[String]                      $type = undef,
+  Variant[Undef,String,Array]           $handlers = undef,
+  Optional[Array]                       $contacts = undef,
+  Variant[Boolean,Enum['absent']]       $standalone = true,
+  String                                $cron = 'absent',
+  Variant[Integer,Enum['absent']]       $interval = 60,
+  Variant[Undef,Pattern[/^(\d+)$/],Integer,Enum['absent']] $occurrences = undef,
+  Variant[Undef,Enum['absent'],Integer] $refresh = undef,
+  Variant[Undef,String,Integer]         $source = undef,
+  Variant[Undef,String,Array]           $subscribers = undef,
+  Variant[Undef,Enum['absent'],Integer] $low_flap_threshold = undef,
+  Variant[Undef,Enum['absent'],Integer] $high_flap_threshold = undef,
+  Variant[Undef,Enum['absent'],Numeric] $timeout = undef,
+  Optional[String]                      $aggregate = undef,
+  Variant[Undef,String,Array]           $aggregates = undef,
+  Variant[Undef,Enum['absent'],Boolean] $handle = undef,
+  Variant[Undef,Enum['absent'],Boolean] $publish = undef,
+  Variant[Undef,String,Array]           $dependencies = undef,
+  Optional[Hash]                        $custom = undef,
+  Variant[Undef,Enum['absent'],Integer] $ttl = undef,
+  Variant[Undef,Enum['absent'],Hash]    $subdue = undef,
+  Variant[Undef,Enum['absent'],Hash]    $proxy_requests = undef,
 ) {
-
-  validate_re($ensure, ['^present$', '^absent$'] )
 
   if $ensure == 'present' and !$command {
     fail("sensu::check{${name}}: a command must be given when ensure is present")
   }
-  if !is_bool($standalone) and  $standalone != 'absent' {
-    fail("sensu::check{${name}}: standalone must be a boolean or 'absent' (got: ${standalone})")
-  }
-  if $handle and !is_bool($handle) and  $handle != 'absent' {
-    fail("sensu::check{${name}}: handle must be a boolean or 'absent' (got: ${handle})")
-  }
-  if $publish and !is_bool($publish) and  $publish != 'absent' {
-    fail("sensu::check{${name}}: publish must be a boolean or 'absent' (got: ${publish})")
-  }
-  if $cron and !is_string($cron) and $cron != 'absent' {
-    fail("sensu::check{${name}}: cron must be a string or 'absent' (got: ${cron})")
-  }
-  if !is_integer($interval) and $interval != 'absent' {
-    fail("sensu::check{${name}}: interval must be an integer or 'absent' (got: ${interval})")
-  }
-  if $occurrences and !is_integer($occurrences) and $occurrences != 'absent' {
-    fail("sensu::check{${name}}: occurrences must be an integer or 'absent' (got: ${occurrences})")
-  }
-  if $refresh and !is_integer($refresh) and $refresh != 'absent' {
-    fail("sensu::check{${name}}: refresh must be an integer or 'absent' (got: ${refresh})")
-  }
-  if $low_flap_threshold and !is_integer($low_flap_threshold) and $low_flap_threshold != 'absent' {
-    fail("sensu::check{${name}}: low_flap_threshold must be an integer or 'absent' (got: ${low_flap_threshold})")
-  }
-  if $high_flap_threshold and !is_integer($high_flap_threshold) and $high_flap_threshold != 'absent' {
-    fail("sensu::check{${name}}: high_flap_threshold must be an integer or 'absent' (got: ${high_flap_threshold})")
-  }
-  if $timeout and !is_numeric($timeout) and $timeout != 'absent' {
-    fail("sensu::check{${name}}: timeout must be a numeric or 'absent' (got: ${timeout})")
-  }
-  if $ttl and !is_integer($ttl) and $ttl != 'absent' {
-    fail("sensu::check{${name}}: ttl must be an integer or 'absent' (got: ${ttl})")
-  }
-  if $dependencies and !is_array($dependencies) and !is_string($dependencies) {
-    fail("sensu::check{${name}}: dependencies must be an array or a string (got: ${dependencies})")
-  }
-  if $handlers and !is_array($handlers) and !is_string($handlers) {
-    fail("sensu::check{${name}}: handlers must be an array or a string (got: ${handlers})")
-  }
-  if $subscribers and !is_array($subscribers) and !is_string($subscribers) {
-    fail("sensu::check{${name}}: subscribers must be an array or a string (got: ${subscribers})")
-  }
-  if $subdue {
-    if is_hash($subdue) {
-      if !( has_key($subdue, 'days') and is_hash($subdue['days']) ){
-        fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
-      }
-    } elsif !($subdue == 'absent') {
-      fail("sensu::check{${name}}: subdue must be a hash or 'absent' (got: ${subdue})")
+
+  if $subdue =~ Hash {
+    if !( has_key($subdue, 'days') and $subdue['days'] =~ Hash ){
+      fail("sensu::check{${name}}: subdue hash should have a proper format. (got: ${subdue}) See https://sensuapp.org/docs/latest/reference/checks.html#subdue-attributes")
     }
   }
-  if $aggregates and !is_array($aggregates) and !is_string($aggregates) {
-    fail("sensu::check{${name}}: aggregates must be an array or a string (got: ${aggregates})")
-  }
   if $proxy_requests {
-    if is_hash($proxy_requests) {
+    if $proxy_requests =~ Hash {
       if !( has_key($proxy_requests, 'client_attributes') ) {
         fail("sensu::check{${name}}: proxy_requests hash should have a proper format.  (got: ${proxy_requests})  See https://sensuapp.org/docs/latest/reference/checks.html#proxy-requests-attributes")
       }

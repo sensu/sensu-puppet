@@ -52,16 +52,16 @@
 #   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
 #
 define sensu::plugin (
-  $type                = 'file',
-  $install_path        = '/etc/sensu/plugins',
-  $purge               = true,
-  $recurse             = true,
-  $force               = true,
-  $pkg_version         = 'latest',
-  $pkg_provider        = $::sensu::sensu_plugin_provider,
-  $pkg_checksum        = undef,
-  $nocheckcertificate  = false,
-  $gem_install_options = $::sensu::gem_install_options,
+  Enum['file','url','package','directory'] $type                = 'file',
+  String $install_path        = '/etc/sensu/plugins',
+  Boolean $purge               = true,
+  Boolean $recurse             = true,
+  Boolean $force               = true,
+  Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/] $pkg_version         = 'latest',
+  Optional[String] $pkg_provider        = $::sensu::sensu_plugin_provider,
+  Optional[String] $pkg_checksum        = undef,
+  Boolean $nocheckcertificate  = false,
+  Any $gem_install_options = $::sensu::gem_install_options,
 ) {
 
   File {
@@ -71,10 +71,6 @@ define sensu::plugin (
 
   Sensu::Plugin[$name]
   -> Class['sensu::client::service']
-
-  validate_bool($purge, $recurse, $force, $nocheckcertificate)
-  validate_re($pkg_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${pkg_version}")
-  validate_re($type, ['^file$', '^url$', '^package$', '^directory$'], "Invalid plugin type: ${type}")
 
   case $type {
     'file': {
@@ -103,8 +99,6 @@ define sensu::plugin (
         recurse => $recurse,
         force   => $force,
       }
-
-      validate_string($pkg_checksum)
 
       remote_file { $name:
         ensure   => present,
