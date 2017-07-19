@@ -15,6 +15,7 @@ describe 'sensu', :type => :class do
     it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
     it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
     it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^CONFD_DIR=.*$}) }
     it { should_not contain_file('C:/opt/sensu/bin/sensu-client.xml') }
 
     # FIXME: The following resource checks are only testing $sensu_etc_dir specific values
@@ -361,6 +362,16 @@ describe 'sensu', :type => :class do
   context 'path => /spec/tests' do
     let(:params) { {:path => '/spec/tests' } }
     it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=/spec/tests$}) }
+  end
+
+  context 'confd_dir => /spec/tests' do
+    let(:params) { {:confd_dir => '/spec/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests"$}) }
+  end
+
+  context 'confd_dir => [/spec/tests,/more/tests]' do
+    let(:params) { {:confd_dir => ['/spec/tests', '/more/tests'] } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests,/more/tests"$}) }
   end
 
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
