@@ -46,7 +46,7 @@ node 'sensu-server' {
   #    }
   #  }
   sensu::handler { 'mail_handle_silenced':
-    command => 'mail -s \'sensu alert\' ops@example.com',
+    command         => 'mail -s \'sensu alert\' ops@example.com',
     handle_silenced => true,
   }
 
