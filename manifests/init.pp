@@ -612,7 +612,7 @@ class sensu (
     $_manage_plugins_dir = $manage_plugins_dir
   }
 
-  if is_bool($purge) {
+  if $purge =~ Boolean {
     # If purge is a boolean, we either purge everything or purge nothing
     $_purge_plugins    = $purge
     $_purge_config     = $purge
