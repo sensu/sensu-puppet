@@ -299,4 +299,9 @@ describe 'sensu::check', :type => :define do
       it { is_expected.to contain_sensu_check('mycheck').with(interval: 'absent') }
     end
   end
+
+  describe 'relationships (#463)' do
+    let(:expected) { { notify: ["Sensu::Check[#{title}]"] } }
+    it { is_expected.to contain_anchor('plugins_before_checks').with(expected)}
+  end
 end

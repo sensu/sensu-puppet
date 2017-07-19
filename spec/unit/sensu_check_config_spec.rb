@@ -40,4 +40,24 @@ describe Puppet::Type.type(:sensu_check_config) do
       end
     end
   end
+
+  describe 'relationships' do
+    let(:resource_hash) do
+      c = Puppet::Resource::Catalog.new
+      r = Puppet::Type.type(:anchor).new(name: 'plugins_before_checks')
+      c.add_resource(r)
+      {
+        :title => 'foo.example.com',
+        :catalog => c
+      }
+    end
+    let(:resource) do
+    end
+    context 'plugins before checks (#463)' do
+      subject { described_class.new(resource_hash)[:subscribe].map(&:ref) }
+      it 'subscribes to Anchor[plugins_before_checks]' do
+        is_expected.to eq ['Anchor[plugins_before_checks]']
+      end
+    end
+  end
 end

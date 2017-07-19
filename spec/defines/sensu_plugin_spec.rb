@@ -13,7 +13,6 @@ describe 'sensu::plugin', :type => :define do
     let(:title) { 'puppet:///data/plug1' }
 
     context 'defaults' do
-
       it { should contain_file('/etc/sensu/plugins/plug1').with(
         :source => 'puppet:///data/plug1'
       ) }
@@ -28,7 +27,7 @@ describe 'sensu::plugin', :type => :define do
         :source => 'puppet:///data/plug1'
       ) }
     end
-  end #file
+  end
 
   context 'url' do
     let(:title) { 'https://raw.githubusercontent.com/sensu/sensu-community-plugins/master/plugins/system/check-mem.sh' }
@@ -44,7 +43,6 @@ describe 'sensu::plugin', :type => :define do
         :path     => '/etc/sensu/plugins/check-mem.sh',
         :checksum => '1d58b78e9785f893889458f8e9fe8627'
       ) }
-
     end
 
     context 'setting params' do
@@ -59,7 +57,6 @@ describe 'sensu::plugin', :type => :define do
         :path     => '/var/sensu/plugins/check-mem.sh',
         :checksum => '1d58b78e9785f893889458f8e9fe8627'
       ) }
-
     end
 
     context 'new plugin should provide source' do
@@ -74,10 +71,8 @@ describe 'sensu::plugin', :type => :define do
         :path     => '/var/sensu/plugins/check-puppet-last-run.rb',
         :source   => 'https://raw.githubusercontent.com/sensu-plugins/sensu-plugins-puppet/master/bin/check-puppet-last-run.rb'
       ) }
-
     end
-
-  end #url
+  end
 
   context 'directory' do
     let(:title) { 'puppet:///data/sensu/plugins' }
@@ -115,7 +110,7 @@ describe 'sensu::plugin', :type => :define do
         'group'   => 'sensu'
       ) }
     end
-  end #directory
+  end
 
   context 'package' do
     let(:title) { 'sensu-plugins' }
@@ -162,12 +157,34 @@ describe 'sensu::plugin', :type => :define do
       let(:params) { { :type => 'package', :gem_install_options => [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }], :pkg_provider => 'gem' } }
       it { should contain_package('sensu-plugins').with_install_options([{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]) }
     end
-
-  end #package
+  end
 
   context 'default' do
     let(:params) { { :type => 'unknown' } }
     it { expect { should raise_error(Puppet::Error) } }
-  end #default
+  end
 
+  describe 'ordering (#463)' do
+  let(:pre_condition) do
+    <<-'ENDofPUPPETcode'
+    class { '::sensu':
+      manage_plugins_dir => false,
+    }
+    sensu::check { 'ntp':
+      command     => 'check_ntp_time -H pool.ntp.org -w 30 -c 60',
+      handlers    => 'default',
+      subscribers => 'sensu-test',
+    }
+    ENDofPUPPETcode
+  end
+    let(:title) { 'puppet:///data/plug1' }
+    describe 'notifies the sensu-client service' do
+      let(:expected) { { notify: ['Service[sensu-client]'] } }
+      it { is_expected.to contain_sensu__plugin(title).with(expected)}
+    end
+    describe 'comes before sensu checks via Anchor[plugins_before_checks]' do
+      let(:expected) { { before: ['Anchor[plugins_before_checks]'] } }
+      it { is_expected.to contain_sensu__plugin(title).with(expected)}
+    end
+  end
 end

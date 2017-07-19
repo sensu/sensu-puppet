@@ -155,7 +155,6 @@ define sensu::check (
   Variant[Undef,Enum['absent'],Hash]    $subdue = undef,
   Variant[Undef,Enum['absent'],Hash]    $proxy_requests = undef,
 ) {
-
   if $ensure == 'present' and !$command {
     fail("sensu::check{${name}}: a command must be given when ensure is present")
   }
@@ -200,6 +199,11 @@ define sensu::check (
       $file_mode = '0440'
     }
   }
+
+  # (#463) All plugins must come before all checks.  Collections are not used to
+  # avoid realizing any resources.
+  Anchor['plugins_before_checks']
+  ~> Sensu::Check[$name]
 
   file { "${conf_dir}/checks/${check_name}.json":
     ensure => $ensure,
