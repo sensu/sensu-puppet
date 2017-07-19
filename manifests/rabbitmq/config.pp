@@ -85,7 +85,19 @@ class sensu::rabbitmq::config {
         require => File[$ssl_dir],
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
+    } elsif $sensu::rabbitmq_ssl_private_key and $sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/ {
+      file { '/etc/sensu/ssl/key.pem':
+        ensure  => present,
+        content => $sensu::rabbitmq_ssl_private_key,
+        owner   => 'sensu',
+        group   => 'sensu',
+        mode    => '0440',
+        require => File['/etc/sensu/ssl'],
+        before  => Sensu_rabbitmq_config[$::fqdn],
+      }
+    }
 
+    if $sensu::rabbitmq_ssl_private_key and ($sensu::rabbitmq_ssl_private_key =~ /^puppet:\/\// or $sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/) {
       $ssl_private_key = '/etc/sensu/ssl/key.pem'
     # else set the private key to value passed in wholesale, usually this is
     # a raw file path
