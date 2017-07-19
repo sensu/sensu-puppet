@@ -38,6 +38,12 @@ group :development, :unit_tests do
   end
 end
 
+group :documentation do
+  gem 'yard',           require: false
+  gem 'redcarpet',      require: false
+  gem 'puppet-strings', require: false
+end
+
 group :system_tests do
   gem 'beaker-rspec',    :require => false
   gem 'serverspec',      :require => false

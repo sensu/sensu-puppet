@@ -33,3 +33,10 @@ task :validate do
     sh "bash -n #{shell_script}" unless shell_script =~ /spec\/fixtures/
   end
 end
+
+# Puppet Strings (Documentation generation from inline comments)
+# See: https://github.com/puppetlabs/puppet-strings#rake-tasks
+require 'puppet-strings/tasks'
+
+desc 'Alias for strings:generate'
+task :doc => ['strings:generate']
