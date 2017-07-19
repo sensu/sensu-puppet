@@ -1,8 +1,21 @@
 # Change Log
 
-## [v2.25.0](https://github.com/sensu/sensu-puppet/tree/HEAD)
+## [v2.26.0](https://github.com/sensu/sensu-puppet/tree/v2.26.0)
 
-[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.24.0...HEAD)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.25.0...v2.26.0)
+
+**Closed issues:**
+
+- Investigate getting sensu\_gem working on windows [\#700](https://github.com/sensu/sensu-puppet/issues/700)
+- Use Puppet v4's data types [\#682](https://github.com/sensu/sensu-puppet/issues/682)
+
+**Merged pull requests:**
+
+- Data types [\#761](https://github.com/sensu/sensu-puppet/pull/761) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(PR-751\) working with csoleimani [\#752](https://github.com/sensu/sensu-puppet/pull/752) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.25.0](https://github.com/sensu/sensu-puppet/tree/v2.25.0) (2017-07-14)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.24.0...v2.25.0)
 
 **Merged pull requests:**
 
