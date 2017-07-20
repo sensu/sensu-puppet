@@ -415,10 +415,10 @@ class sensu (
   }
 
   # Put here to avoid computing the conditionals for every check
-  if $client {
-    $client_service_class = Class['sensu::client::service']
+  if $client and $manage_services {
+    $client_service = Service['sensu-client']
   } else {
-    $client_service_class = undef
+    $client_service = undef
   }
 
   if $server {
@@ -427,13 +427,13 @@ class sensu (
     $server_service_class = undef
   }
 
-  if $api {
-    $api_service_class = Class['sensu::api::service']
+  if $api and $manage_services and $::osfamily != 'windows' {
+    $api_service = Service['sensu-api']
   } else {
-    $api_service_class = undef
+    $api_service = undef
   }
 
-  $check_notify = delete_undef_values([ $client_service_class, $server_service_class, $api_service_class ])
+  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.
@@ -472,12 +472,31 @@ class sensu (
   # managed after all plugins.  It must always exist in the catalog.
   anchor { 'plugins_before_checks': }
 
-  # Create resources from hiera lookups
-  create_resources('::sensu::extension', $extensions)
-  create_resources('::sensu::handler', $handlers, $handler_defaults)
-  create_resources('::sensu::check', $checks, $check_defaults)
-  create_resources('::sensu::filter', $filters, $filter_defaults)
-  create_resources('::sensu::mutator', $mutators)
+  $extensions.each |$k,$v| {
+    ::sensu::extension { $k:
+      * => $v,
+    }
+  }
+  $handlers.each |$k,$v| {
+    ::sensu::handler { $k:
+      * => $handler_defaults + $v,
+    }
+  }
+  $checks.each |$k,$v| {
+    ::sensu::check { $k:
+      * => $check_defaults + $v,
+    }
+  }
+  $filters.each |$k,$v| {
+    ::sensu::filter { $k:
+      * => $filter_defaults + $v,
+    }
+  }
+  $mutators.each |$k,$v| {
+    ::sensu::mutator { $k:
+      * => $v,
+    }
+  }
 
   case $::osfamily {
     'Debian','RedHat': {
@@ -507,30 +526,24 @@ class sensu (
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
-  anchor { 'sensu::begin': }
-  -> class { '::sensu::package': }
-  -> class { '::sensu::enterprise::package': }
-  -> class { '::sensu::transport': }
-  -> class { '::sensu::rabbitmq::config': }
-  -> class { '::sensu::api::config': }
-  -> class { '::sensu::redis::config': }
-  -> class { '::sensu::client::config': }
-  -> class { '::sensu::client::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::api::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::server::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::enterprise::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::enterprise::dashboard':
-    hasrestart => $hasrestart,
-  }
-  -> anchor {'sensu::end': }
+  contain ::sensu::package
+  contain ::sensu::enterprise
+  contain ::sensu::transport
+  contain ::sensu::rabbitmq::config
+  contain ::sensu::api
+  contain ::sensu::redis::config
+  contain ::sensu::client
+  contain ::sensu::server::service
+  contain ::sensu::enterprise::dashboard
+
+  Class['::sensu::package']
+  -> Class['::sensu::transport']
+  -> Class['::sensu::rabbitmq::config']
+  -> Sensu_api_config[$::fqdn]
+  -> Class['::sensu::redis::config']
+  -> Sensu_client_config[$::fqdn]
+  -> Class['::sensu::server::service']
+  -> Class['::sensu::enterprise::dashboard']
 
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }

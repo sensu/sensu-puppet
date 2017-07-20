@@ -27,7 +27,7 @@ define sensu::config (
     ensure => $ensure,
     config => $config,
     event  => $event,
-    notify => Class['sensu::client::service'],
+    notify => $::sensu::client_service,
   }
 
 }

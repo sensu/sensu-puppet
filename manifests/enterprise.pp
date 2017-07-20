@@ -1,6 +1,6 @@
 # @summary Installs the Sensu packages
 #
-# Installs the Sensu packages
+# Installs Sensu enterprise
 #
 # @param deregister_handler The handler to use when deregistering a client on stop.
 #
@@ -28,7 +28,7 @@
 #
 # @param heap_size Value of the HEAP_SIZE environment variable.
 #
-class sensu::enterprise::package (
+class sensu::enterprise (
   Optional[String]  $deregister_handler = $::sensu::deregister_handler,
   Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
   Optional[String]  $gem_path           = $::sensu::gem_path,
@@ -39,12 +39,10 @@ class sensu::enterprise::package (
   Optional[String]  $rubyopt            = $::sensu::rubyopt,
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
   Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
+  Boolean $hasrestart                   = $::sensu::hasrestart,
   ){
 
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
-
+  # Package
   if $::sensu::enterprise {
 
     package { 'sensu-enterprise':
@@ -58,6 +56,35 @@ class sensu::enterprise::package (
       group   => '0',
       mode    => '0444',
       require => Package['sensu-enterprise'],
+    }
+  }
+
+  # Service
+  if $::sensu::manage_services and $::sensu::enterprise {
+
+    case $::sensu::enterprise {
+      true: {
+        $ensure = 'running'
+        $enable = true
+      }
+      default: {
+        $ensure = 'stopped'
+        $enable = false
+      }
+    }
+
+    if $::osfamily != 'windows' {
+      service { 'sensu-enterprise':
+        ensure     => $ensure,
+        enable     => $enable,
+        hasrestart => $hasrestart,
+        subscribe  => [
+          File['/etc/default/sensu-enterprise'],
+          Sensu_api_config[$::fqdn],
+          Class['sensu::redis::config'],
+          Class['sensu::rabbitmq::config'],
+        ],
+      }
     }
   }
 }

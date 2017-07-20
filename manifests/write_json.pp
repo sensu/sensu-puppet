@@ -36,7 +36,7 @@ define sensu::write_json (
   String                    $mode = '0755',
   Boolean                   $pretty = true,
   Hash                      $content = {},
-  Array                     $notify_list = [],
+  Array[Variant[Data,Type]] $notify_list = [],
 ) {
 
   # ensure we have a properly formatted file path for our target OS

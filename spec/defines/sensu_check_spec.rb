@@ -201,42 +201,42 @@ describe 'sensu::check', :type => :define do
   context 'notifications' do
     context 'no client, sever, or api' do
       let(:pre_condition) { 'class {"sensu": client => false, api => false, server => false}' }
-      it { should contain_file(fpath).with(:notify => []) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => []) }
     end
 
     context 'only client' do
       let(:pre_condition) { 'class {"sensu": client => true, api => false, server => false}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Client::Service]'] ) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Service[sensu-client]'] ) }
     end
 
     context 'only server' do
       let(:pre_condition) { 'class {"sensu": client => false, api => false, server => true}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Server::Service]'] ) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Class[Sensu::Server::Service]'] ) }
     end
 
     context 'only api' do
       let(:pre_condition) { 'class {"sensu": client => false, api => true, server => false}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Api::Service]'] ) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Service[sensu-api]'] ) }
     end
 
     context 'client and api' do
       let(:pre_condition) { 'class {"sensu": client => true, api => true, server => false}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Client::Service]', 'Class[Sensu::Api::Service]']) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Service[sensu-client]', 'Service[sensu-api]']) }
     end
 
     context 'client and server' do
       let(:pre_condition) { 'class {"sensu": client => true, api => false, server => true}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Client::Service]', 'Class[Sensu::Server::Service]']) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Service[sensu-client]', 'Class[Sensu::Server::Service]']) }
     end
 
     context 'api and server' do
       let(:pre_condition) { 'class {"sensu": client => false, api => true, server => true}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Server::Service]', 'Class[Sensu::Api::Service]']) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Class[Sensu::Server::Service]', 'Service[sensu-api]']) }
     end
 
     context 'client, api, and server' do
       let(:pre_condition) { 'class {"sensu": client => true, api => true, server => true}' }
-      it { should contain_file(fpath).with(:notify => ['Class[Sensu::Client::Service]', 'Class[Sensu::Server::Service]', 'Class[Sensu::Api::Service]']) }
+      it { should contain_sensu__write_json(fpath).with(:notify_list => ['Service[sensu-client]', 'Class[Sensu::Server::Service]', 'Service[sensu-api]']) }
     end
   end
 

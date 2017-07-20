@@ -223,27 +223,12 @@ define sensu::check (
   # on top of any arbitrary plugin and extension configuration in $content.
   $content_real = $content + $checks_scope
 
-  # Compute the services to notify
-  $notification_map = {
-    'Class[Sensu::Client::Service]' => $::sensu::client,
-    'Class[Sensu::Server::Service]' => $::sensu::server,
-    'Class[Sensu::Api::Service]'    => $::sensu::api,
-  }
-
-  $notification_ary = $notification_map.reduce([]) |$memo, $kv| {
-    if $kv[1] {
-      $memo + [$kv[0]]
-    } else {
-      $memo
-    }
-  }
-
   sensu::write_json { "${conf_dir}/checks/${check_name}.json":
     ensure      => $ensure,
     content     => $content_real,
     owner       => $user,
     group       => $group,
     mode        => $file_mode,
-    notify_list => $notification_ary,
+    notify_list => $::sensu::check_notify,
   }
 }

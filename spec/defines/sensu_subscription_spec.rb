@@ -35,7 +35,7 @@ describe 'sensu::subscription', :type => :define do
   context 'notifications' do
     let(:title) { 'mysubscription' }
 
-    it { should contain_sensu_client_subscription('mysubscription').with(:notify => 'Class[Sensu::Client::Service]' ) }
+    it { should contain_sensu_client_subscription('mysubscription').with(:notify => 'Service[sensu-client]' ) }
   end
 
   describe 'when sensu::sensu_etc_dir => /opt/etc/sensu' do

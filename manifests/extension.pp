@@ -19,8 +19,8 @@ define sensu::extension (
   Hash $config                              = {},
 ) {
 
-  if $::sensu::client {
-    $notify_services = Class['sensu::client::service']
+  if $::sensu::client and $::sensu::manage_services {
+    $notify_services = Service['sensu-client']
   } else {
     $notify_services = []
   }

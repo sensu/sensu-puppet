@@ -5,7 +5,7 @@ describe 'sensu', :type => :class do
     context 'service' do
       context 'running on Linux' do
         context 'with defaults for all parameters' do
-          it { should contain_class('sensu::client::service') }
+          it { should contain_class('sensu::client') }
           it { should compile.with_all_deps }
 
           it do
@@ -15,7 +15,7 @@ describe 'sensu', :type => :class do
               'hasrestart' => 'true',
               'subscribe'  => [
                 'Class[Sensu::Package]',
-                'Class[Sensu::Client::Config]',
+                'Sensu_client_config[testfqdn.example.com]',
                 'Class[Sensu::Rabbitmq::Config]',
               ],
             })
@@ -40,7 +40,7 @@ describe 'sensu', :type => :class do
         end
 
         context 'with defaults for all parameters' do
-          it { should contain_class('sensu::client::service') }
+          it { should contain_class('sensu::client') }
           # FIXME: test causes issues in sensu::package
           # it { should compile.with_all_deps }
 
@@ -80,7 +80,7 @@ describe 'sensu', :type => :class do
               'hasrestart' => 'true',
               'subscribe'  => [
                 'Class[Sensu::Package]',
-                'Class[Sensu::Client::Config]',
+                'Sensu_client_config[testfqdn.example.com]',
                 'Class[Sensu::Rabbitmq::Config]',
               ],
             })

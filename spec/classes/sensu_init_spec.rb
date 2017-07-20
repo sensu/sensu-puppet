@@ -43,17 +43,17 @@ describe 'sensu', :type => :class do
     # resources from sensu::redis::config
     it { should contain_file('/etc/sensu/conf.d/redis.json') }
     it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
-    # resources from sensu::api::config
+    # resources from sensu::api
     it { should contain_file('/etc/sensu/conf.d/api.json') }
     it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
-    # resources from sensu::enterprise::dashboard::config
+    # resources from sensu::enterprise::dashboard
     it { should_not contain_file('/etc/sensu/dashboard.json') }
     # resources from sensu::subscription (positive tests are included in test for sensu::subscription itself)
     it { should_not contain_file('/etc/sensu/conf.d/subscriptiond.json') }
     it { should_not contain_sensu_client_subscription('mysubscription').with_base_path('/etc/sensu/conf.d') }
     # resources from sensu::transport
     it { should contain_file('/etc/sensu/conf.d/transport.json') }
-    # resources from sensu::client::config
+    # resources from sensu::client
     it { should contain_file('/etc/sensu/conf.d/client.json') }
     it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
   end
@@ -84,17 +84,17 @@ describe 'sensu', :type => :class do
     # resources from sensu::redis::config
     it { should contain_file('/opt/etc/sensu/conf.d/redis.json') }
     it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
-    # resources from sensu::api::config
+    # resources from sensu::api
     it { should contain_file('/opt/etc/sensu/conf.d/api.json') }
     it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
-    # resources from sensu::enterprise::dashboard::config
+    # resources from sensu::enterprise::dashboard
     it { should_not contain_file('/opt/etc/sensu/dashboard.json') }
     # resources from sensu::subscription (positive tests are included in test for sensu::subscription itself)
     it { should_not contain_file('/opt/etc/sensu/conf.d/subscriptiond.json') }
     it { should_not contain_sensu_client_subscription('mysubscription').with_base_path('/opt/etc/sensu/conf.d') }
     # resources from sensu::transport
     it { should contain_file('/opt/etc/sensu/conf.d/transport.json') }
-    # resources from sensu::client::config
+    # resources from sensu::client
     it { should contain_file('/opt/etc/sensu/conf.d/client.json') }
     it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
 
@@ -162,14 +162,14 @@ describe 'sensu', :type => :class do
     # resources from sensu::redis::config
     it { should contain_file('C:/opt/sensu/conf.d/redis.json') }
     it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
-    # resources from sensu::api::config
+    # resources from sensu::api
     it { should contain_file('C:/opt/sensu/conf.d/api.json') }
     it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
-    # resources from sensu::enterprise::dashboard::config
+    # resources from sensu::enterprise::dashboard
     it { should_not contain_file('C:/opt/sensu/dashboard.json') }
     # resources from sensu::transport
     it { should contain_file('C:/opt/sensu/conf.d/transport.json') }
-    # resources from sensu::client::config
+    # resources from sensu::client
     it { should contain_file('C:/opt/sensu/conf.d/client.json') }
     it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
 
@@ -207,14 +207,14 @@ describe 'sensu', :type => :class do
       # resources from sensu::redis::config
       it { should contain_file('C:/etc/sensu/conf.d/redis.json') }
       it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
-      # resources from sensu::api::config
+      # resources from sensu::api
       it { should contain_file('C:/etc/sensu/conf.d/api.json') }
       it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
-      # resources from sensu::enterprise::dashboard::config
+      # resources from sensu::enterprise::dashboard
       it { should_not contain_file('C:/etc/sensu/dashboard.json') }
       # resources from sensu::transport
       it { should contain_file('C:/etc/sensu/conf.d/transport.json') }
-      # resources from sensu::client::config
+      # resources from sensu::client
       it { should contain_file('C:/etc/sensu/conf.d/client.json') }
       it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
 

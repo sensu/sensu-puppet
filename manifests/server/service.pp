@@ -5,12 +5,8 @@
 # @param hasrestart Value of hasrestart attribute for this service.
 #
 class sensu::server::service (
-  Boolean $hasrestart = true,
+  Boolean $hasrestart = $::sensu::hasrestart,
 ) {
-
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
 
   if $::sensu::manage_services {
 
@@ -32,7 +28,7 @@ class sensu::server::service (
         hasrestart => $hasrestart,
         subscribe  => [
           Class['sensu::package'],
-          Class['sensu::api::config'],
+          Sensu_api_config[$::fqdn],
           Class['sensu::redis::config'],
           Class['sensu::rabbitmq::config'],
         ],

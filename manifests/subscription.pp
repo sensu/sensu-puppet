@@ -25,6 +25,6 @@ define sensu::subscription (
     ensure    => $ensure,
     base_path => $::sensu::conf_dir,
     custom    => $custom,
-    notify    => Class['sensu::client::service'],
+    notify    => $::sensu::client_service,
   }
 }
