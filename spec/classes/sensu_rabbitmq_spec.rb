@@ -98,7 +98,7 @@ describe 'sensu', :type => :class do
         :rabbitmq_port            => '1234',
         :rabbitmq_host            => 'myhost',
         :rabbitmq_user            => 'sensuuser',
-        :rabbitmq_password        => Sensitive['sensupass'],
+        :rabbitmq_password        => Sensitive('sensupass'),
         :rabbitmq_vhost           => 'myvhost',
       } }
 
