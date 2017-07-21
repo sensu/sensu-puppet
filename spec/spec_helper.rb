@@ -12,6 +12,7 @@ when 'rspec-puppet'
 end
 
 RSpec.configure do |config|
+  config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
   config.before :each do
     # Ensure that we don't accidentally cache facts and environment between

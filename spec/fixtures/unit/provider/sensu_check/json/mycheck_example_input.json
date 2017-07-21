@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "remote_http": {
+      "command": "/opt/sensu/embedded/bin/check-http.rb -u http://:::address:::",
+      "high_flap_threshold": 60,
+      "interval": 300,
+      "low_flap_threshold": 20,
+      "occurrences": 2,
+      "proxy_requests": {
+        "client_attributes": {
+          "subscriptions": "eval: value.include?(\"http\")"
+        }
+      },
+      "refresh": 600,
+      "standalone": false,
+      "subscribers": [
+        "roundrobin:poller"
+      ]
+    }
+  }
+}
