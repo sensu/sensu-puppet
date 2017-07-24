@@ -93,12 +93,14 @@ describe 'sensu', :type => :class do
       ) }
     end # when using local key
 
+    $rabbitmq_password = 'Sensitive("sensupass")'
+
     context 'when passing password as Sensitive' do
       let(:params) { {
         :rabbitmq_port            => '1234',
         :rabbitmq_host            => 'myhost',
         :rabbitmq_user            => 'sensuuser',
-        :rabbitmq_password        => Sensitive('sensupass'),
+        :rabbitmq_password        => $rabbitmq_password,
         :rabbitmq_vhost           => 'myvhost',
       } }
 
