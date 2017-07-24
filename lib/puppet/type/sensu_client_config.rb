@@ -102,7 +102,7 @@ Puppet::Type.newtype(:sensu_client_config) do
 
     def insync?(is)
       if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+        if is == @should[0].each { |k, v| value[k] = v }
           true
         else
           false
