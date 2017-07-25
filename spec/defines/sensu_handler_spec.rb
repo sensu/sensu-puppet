@@ -177,4 +177,19 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_handle_flapping( true ) }
   end
 
+  context 'handle_silenced' do
+    let(:params) { { :command => 'mycommand.rb', :type => 'pipe', :handle_silenced => true } }
+    it { should contain_sensu_handler('myhandler').with_handle_silenced( true ) }
+  end
+
+  context 'handle_silenced set to false' do
+    let(:params) { { :command => 'mycommand.rb', :type => 'pipe', :handle_silenced => false } }
+    it { should contain_sensu_handler('myhandler').with_handle_silenced( false ) }
+  end
+
+  context 'handle_silenced set to default' do
+    let(:params) { { :command => 'mycommand.rb', :type => 'pipe' } }
+    it { should contain_sensu_handler('myhandler').with_handle_silenced( false ) }
+  end
+
 end

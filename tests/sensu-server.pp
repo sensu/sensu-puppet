@@ -22,6 +22,34 @@ node 'sensu-server' {
     command => 'mail -s \'sensu alert\' ops@example.com',
   }
 
+  # Example handler which operates in silenced checks
+  #
+  # This should create a file in /etc/sensu/conf.d/handlers/handle_silenced.json, containing the following:
+  #
+  #  {
+  #    "handlers": {
+  #      "mail_handle_silenced": {
+  #        "command": "mail -s 'sensu alert' ops@example.com",
+  #        "type": "pipe",
+  #        "filters": [
+  #
+  #        ],
+  #        "severities": [
+  #          "ok",
+  #          "warning",
+  #          "critical",
+  #          "unknown"
+  #        ],
+  #        "handle_flapping": false,
+  #        "handle_silenced": true
+  #      }
+  #    }
+  #  }
+  sensu::handler { 'mail_handle_silenced':
+    command         => 'mail -s \'sensu alert\' ops@example.com',
+    handle_silenced => true,
+  }
+
   sensu::check { 'check_ntp':
     command     => 'PATH=$PATH:/usr/lib64/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
     handlers    => 'default',

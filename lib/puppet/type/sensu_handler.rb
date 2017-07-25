@@ -107,6 +107,10 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "If events in the flapping state should be handled"
   end
 
+  newproperty(:handle_silenced, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc "If events in the silenced state should be handled"
+  end
+
   autorequire(:package) do
     ['sensu']
   end

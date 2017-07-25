@@ -143,4 +143,12 @@ Puppet::Type.type(:sensu_handler).provide(:json) do
     conf['handlers'][resource[:name]]['handle_flapping'] = value
   end
 
+  def handle_silenced
+    conf['handlers'][resource[:name]]['handle_silenced']
+  end
+
+  def handle_silenced=(value)
+    conf['handlers'][resource[:name]]['handle_silenced'] = value
+  end
+
 end
