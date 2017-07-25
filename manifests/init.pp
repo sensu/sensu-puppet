@@ -10,6 +10,11 @@
 #   Default: installed
 #   Valid values: absent, installed, latest, present, [\d\.\-el]+
 #
+# [*sensu_etc_dir*]
+#   String. Absolute path to the sensu etc directory.
+#   Default: '/etc/sensu' on Linux
+#            'C:/opt/sensu' on windows
+#
 # [*sensu_plugin_name*]
 #   String.  Name of the sensu-plugin package. Refers to the sensu-plugin rubygem
 #   Not the community sensu-plugins community scripts.
@@ -470,6 +475,10 @@ class sensu (
     'windows' => 'gem',
     default   => undef,
   },
+  Stdlib::Absolutepath $sensu_etc_dir = $::osfamily ? {
+    'windows' => 'C:/opt/sensu',
+    default   => '/etc/sensu',
+  },
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^\d[\d\.\-\w]+$/] $sensu_plugin_version = 'installed',
   Boolean            $install_repo = true,
   Boolean            $enterprise = false,
@@ -668,7 +677,7 @@ class sensu (
 
   case $::osfamily {
     'Debian','RedHat': {
-      $etc_dir = '/etc/sensu'
+      $etc_dir = $sensu_etc_dir
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'sensu'
       $group = 'sensu'
@@ -679,7 +688,7 @@ class sensu (
     }
 
     'windows': {
-      $etc_dir = 'C:/opt/sensu'
+      $etc_dir = $sensu_etc_dir
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'NT Authority\SYSTEM'
       $group = 'Administrators'
