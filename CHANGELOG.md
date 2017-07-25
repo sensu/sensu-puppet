@@ -1,7 +1,26 @@
 # Change Log
 
-## [v2.27.0](https://github.com/sensu/sensu-puppet/tree/v2.27.0)
+## [v2.28.0](https://github.com/sensu/sensu-puppet/tree/v2.28.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.27.0...v2.28.0)
+
+**Implemented enhancements:**
+
+- Create a reference implementation for provider spec tests [\#759](https://github.com/sensu/sensu-puppet/issues/759)
+
+**Closed issues:**
+
+- Allow remediation on check.pp [\#560](https://github.com/sensu/sensu-puppet/issues/560)
+
+**Merged pull requests:**
+
+- Add validation of spec/fixtures/unit/\*\*/\*.json [\#768](https://github.com/sensu/sensu-puppet/pull/768) ([ghoneycutt](https://github.com/ghoneycutt))
+- WIP 582  Don't do type convertion on keys of sensu\_client\_config custom param [\#766](https://github.com/sensu/sensu-puppet/pull/766) ([alvagante](https://github.com/alvagante))
+- \(\#759\) Add reference spec tests for sensu\_check JSON provider [\#765](https://github.com/sensu/sensu-puppet/pull/765) ([jeffmccune](https://github.com/jeffmccune))
+- Add handle\_silenced parameter to handler defined type [\#753](https://github.com/sensu/sensu-puppet/pull/753) ([madAndroid](https://github.com/madAndroid))
+- \(GH-578\) etc\_dir should be configurable [\#741](https://github.com/sensu/sensu-puppet/pull/741) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.27.0](https://github.com/sensu/sensu-puppet/tree/v2.27.0) (2017-07-19)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.26.0...v2.27.0)
 
 **Implemented enhancements:**
