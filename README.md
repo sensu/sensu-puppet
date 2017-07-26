@@ -9,7 +9,7 @@ Installs and manages the open source monitoring framework [Sensu](http://sensuap
 
 ## Documented with Puppet Strings
 
-[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
+[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/doc/)
 
 ## Compatibility - supported sensu versions
 
