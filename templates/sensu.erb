@@ -13,3 +13,6 @@ CLIENT_DEREGISTER_HANDLER="<%= @deregister_handler %>"
 <% end -%>
 SERVICE_MAX_WAIT="<%= @init_stop_max_wait %>"
 PATH=<%= @path %>
+<% if @confd_dir -%>
+CONFD_DIR="<%= @conf_dir %>,<%= Array(@confd_dir).join(",") %>"
+<% end -%>

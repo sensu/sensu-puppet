@@ -467,6 +467,11 @@
 #   Add/Remove programs.  Note this is distinct from the package filename
 #   identifier specified with windows_package_name.
 #   Default: 'Sensu'
+#
+# [*confd_dir*]
+#   String, Array of strings. Additional directories to load configuration
+#   snippets from.
+#   Default: undef
 
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = 'installed',
@@ -582,6 +587,7 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
+  Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   ### START Hiera Lookups###
   Hash               $extensions = {},
   Hash               $handlers = {},
