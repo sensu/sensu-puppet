@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.28.0](https://github.com/sensu/sensu-puppet/tree/v2.28.0)
+## [v2.29.0](https://github.com/sensu/sensu-puppet/tree/v2.29.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.28.0...v2.29.0)
+
+**Closed issues:**
+
+- to\_type helper's handling of numbers is too loose [\#582](https://github.com/sensu/sensu-puppet/issues/582)
+
+**Merged pull requests:**
+
+- Add confd\_dir parameter [\#758](https://github.com/sensu/sensu-puppet/pull/758) ([bodgit](https://github.com/bodgit))
+
+## [v2.28.0](https://github.com/sensu/sensu-puppet/tree/v2.28.0) (2017-07-25)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.27.0...v2.28.0)
 
 **Implemented enhancements:**
