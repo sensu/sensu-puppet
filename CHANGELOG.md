@@ -1,7 +1,21 @@
 # Change Log
 
-## [v2.29.0](https://github.com/sensu/sensu-puppet/tree/v2.29.0)
+## [v2.30.0](https://github.com/sensu/sensu-puppet/tree/v2.30.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.29.0...v2.30.0)
+
+**Closed issues:**
+
+- Sensu Enterprise HEAP\_SIZE is not configurable [\#767](https://github.com/sensu/sensu-puppet/issues/767)
+- Stop using scope.lookupvar\(\) in templates [\#701](https://github.com/sensu/sensu-puppet/issues/701)
+- Pass gem\_install\_options to sensu::plugin class [\#599](https://github.com/sensu/sensu-puppet/issues/599)
+- etc\_dir should be configurable [\#578](https://github.com/sensu/sensu-puppet/issues/578)
+
+**Merged pull requests:**
+
+- Added heap\_size param \#767 [\#771](https://github.com/sensu/sensu-puppet/pull/771) ([alvagante](https://github.com/alvagante))
+
+## [v2.29.0](https://github.com/sensu/sensu-puppet/tree/v2.29.0) (2017-07-26)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.28.0...v2.29.0)
 
 **Closed issues:**
