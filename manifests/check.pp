@@ -107,6 +107,14 @@
 #   Set this to 'absent' to remove it completely.
 #   Default: undef
 #
+# [*config*]
+#   Hash. Map of arbitrary configuration merged at the top level of the output
+#   JSON object.  This property is intended to configure plugins and extensions,
+#   e.g.
+#   [sensu-plugins-mailer](https://github.com/sensu-plugins/sensu-plugins-mailer)
+#   Default: undef
+#   Example: { 'mailer' => { 'mail_from' => 'sensu@example.com', 'mail_to' => 'monitor@example.com'} }
+
 # [*custom*]
 #   Hash. List of custom attributes to include in the check. You can use it to pass any attribute that is not listed here explicitly.
 #   Default: undef
@@ -150,6 +158,7 @@ define sensu::check (
   Variant[Undef,Enum['absent'],Boolean] $handle = undef,
   Variant[Undef,Enum['absent'],Boolean] $publish = undef,
   Variant[Undef,String,Array]           $dependencies = undef,
+  Optional[Hash]                        $config = undef,
   Optional[Hash]                        $custom = undef,
   Variant[Undef,Enum['absent'],Integer] $ttl = undef,
   Variant[Undef,Enum['absent'],Hash]    $subdue = undef,
@@ -235,6 +244,7 @@ define sensu::check (
     handle              => $handle,
     publish             => $publish,
     dependencies        => $dependencies,
+    config              => $config,
     custom              => $custom,
     subdue              => $subdue,
     proxy_requests      => $proxy_requests,
