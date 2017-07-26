@@ -11,6 +11,29 @@ describe Puppet::Type.type(:sensu_check) do
   let(:resource_hash_override) { {} }
   let(:resource_hash) { resource_hash_base.merge(resource_hash_override) }
 
+  describe 'config property' do
+    subject { described_class.new(resource_hash)[:config] }
+
+    valid = [{}, {'mailer' => {}}, {'mailer' => {'smtp_port' => '25'}}]
+    invalid = ['', 12, [1,2,3]]
+
+    valid.each do |val|
+      describe "valid: config => #{val.inspect} " do
+        let(:resource_hash_override) { {config: val} }
+        it { is_expected.to eq val }
+      end
+    end
+
+    invalid.each do |val|
+      describe "invalid: config => #{val.inspect}" do
+        let(:resource_hash_override) { {config: val} }
+        it do
+          expect { subject }.to raise_error Puppet::ResourceError, /Not a Hash/
+        end
+      end
+    end
+  end
+
   describe 'contacts parameter' do
     subject { described_class.new(resource_hash)[:contacts] }
 
