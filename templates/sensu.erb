@@ -16,3 +16,6 @@ PATH=<%= @path %>
 <% if @confd_dir -%>
 CONFD_DIR="<%= @conf_dir %>,<%= Array(@confd_dir).join(",") %>"
 <% end -%>
+<% if @heap_size -%>
+HEAP_SIZE="<%= @heap_size %>"
+<% end -%>

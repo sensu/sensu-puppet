@@ -45,6 +45,7 @@ describe 'sensu', :type => :class do
           it { should contain_file('/etc/default/sensu-enterprise').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
           it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
           it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^PATH=\$PATH$}) }
+          it { should contain_file('/etc/default/sensu-enterprise').without_content(%r{^HEAP_SIZE=.*$}) }
         end
 
         context 'with use_embedded_ruby => false' do
@@ -96,6 +97,16 @@ describe 'sensu', :type => :class do
         context 'with path => /spec/tests' do
           let(:params) { params_base.merge({ :path => '/spec/tests' }) }
           it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^PATH=/spec/tests$}) }
+        end
+
+        context 'heap_size => 256' do
+          let(:params) { params_base.merge({:heap_size => 256 }) }
+          it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^HEAP_SIZE="256"$}) }
+        end
+
+        context 'heap_size => "256M"' do
+          let(:params) { params_base.merge({:heap_size => '256M'}) }
+          it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^HEAP_SIZE="256M"$}) }
         end
 
         context 'with manage_services => false' do

@@ -47,6 +47,10 @@
 #   Default: $::sensu::use_embedded_ruby
 #   Valid values: true, false
 #
+# [*heap_size*]
+#   String. Value of the HEAP_SIZE environment variable.
+#   Default: $::sensu::heap_size
+#
 class sensu::enterprise::package (
   $deregister_handler = $::sensu::deregister_handler,
   $deregister_on_stop = $::sensu::deregister_on_stop,
@@ -57,6 +61,7 @@ class sensu::enterprise::package (
   $path               = $::sensu::path,
   $rubyopt            = $::sensu::rubyopt,
   $use_embedded_ruby  = $::sensu::use_embedded_ruby,
+  $heap_size          = $::sensu::heap_size,
   ){
 
   if $caller_module_name != $module_name {

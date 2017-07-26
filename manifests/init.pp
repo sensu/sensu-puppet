@@ -348,7 +348,6 @@
 #   Default: 'info'
 #   Valid values: debug, info, warn, error, fatal
 #
-#
 # [*log_dir*]
 #   String.  Sensu log directory to be used
 #   Default: '/var/log/sensu'
@@ -472,7 +471,12 @@
 #   String, Array of strings. Additional directories to load configuration
 #   snippets from.
 #   Default: undef
-
+#
+# [*heap_size*]
+#   String. Value of the HEAP_SIZE environment variable.
+#   Note: This has effect only on Sensu Enterprise.
+#   Default: undef
+#
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = 'installed',
   String             $sensu_plugin_name = 'sensu-plugin',
@@ -588,6 +592,7 @@ class sensu (
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
+  Variant[Integer,String,Undef] $heap_size = undef,
   ### START Hiera Lookups###
   Hash               $extensions = {},
   Hash               $handlers = {},

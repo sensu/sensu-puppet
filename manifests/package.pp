@@ -13,6 +13,11 @@
 #   snippets from.
 #   Default: $::sensu::confd_dir
 #
+# [*heap_size*]
+#   String. Value of the HEAP_SIZE environment variable.
+#   Note: This has no effect on sensu-core.
+#   Default: $::sensu::heap_size
+#
 # [*deregister_handler*]
 #   String. The handler to use when deregistering a client on stop.
 #   Default: $::sensu::deregister_handler
@@ -59,6 +64,7 @@
 class sensu::package (
   $conf_dir           = $::sensu::conf_dir,
   $confd_dir          = $::sensu::confd_dir,
+  $heap_size          = $::sensu::heap_size,
   $deregister_handler = $::sensu::deregister_handler,
   $deregister_on_stop = $::sensu::deregister_on_stop,
   $gem_path           = $::sensu::gem_path,
