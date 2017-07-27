@@ -1,5 +1,7 @@
 require 'json' if Puppet.features.json?
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
+                                   'puppet_x', 'sensu', 'sort_hash.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'provider_create.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..',
                                    'puppet_x', 'sensu', 'to_type.rb'))
@@ -8,6 +10,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
   confine :feature => :json
   include PuppetX::Sensu::ToType
   include PuppetX::Sensu::ProviderCreate
+  include PuppetX::Sensu::SortHash
 
   SENSU_CHECK_PROPERTIES = Puppet::Type.type(:sensu_check).validproperties.reject { |p| p == :ensure }
 
@@ -67,7 +70,9 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def flush
     sort_properties!
-    write_json_object(config_file, conf)
+    # TODO: Check if this is redundant with sort_properties!
+    output = sort_hash(conf)
+    write_json_object(config_file, output)
   end
 
   def pre_create
@@ -81,6 +86,25 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   def is_property?(prop)
     SENSU_CHECK_PROPERTIES.map(&:to_s).include? prop
+  end
+
+  def config
+    # return everything except the value at the level of checks.name
+    ary = conf.map do |k,v|
+      if k == 'checks'
+        hsh = v.reject {|k2,_| k2 == resource[:name]}
+        # Yield nil to signal this key should be removed in the final hash.
+        hsh.empty? ? nil : [k,hsh]
+      else
+        [k,v]
+      end
+    end
+    # Prune any nil elements to construct the final hash.
+    Hash[ary.delete_if(&:nil?)]
+  end
+
+  def config=(value)
+    conf.merge!(value)
   end
 
   def custom
@@ -109,7 +133,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     # The ensure property uses #create, #exists, and #destroy we can't generate
     # meaningful setters and getters for this
     # The custom property is handled above
-    next if [:ensure, :custom].include?(property)
+    next if [:ensure, :custom, :config].include?(property)
 
     define_method(property) do
       get_property(property)

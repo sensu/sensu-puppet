@@ -47,6 +47,43 @@ Puppet::Type.newtype(:sensu_check) do
     desc "The name of the check."
   end
 
+  # N.B. config should be the first property defined because Puppet checks and
+  # fixes properties in the order they are defined.  This is less critical than
+  # it may seem, more specific properties over-writing config will prevent the
+  # configuration from converging.
+  newproperty(:config) do
+    desc 'Custom configuration merged with the top level map.  All other properties are merged on top of a config map.'
+    include PuppetX::Sensu::ToType
+
+    validate do |value|
+      unless Hash === value
+        raise Puppet::ResourceError, "Not a Hash.  Got #{value.inspect}"
+      end
+    end
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
   newproperty(:command) do
     desc "Command to be run by the check"
     newvalues(/.*/, :absent)
