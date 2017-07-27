@@ -125,49 +125,104 @@ describe Puppet::Type.type(type_id).provider(:json) do
 
       describe '#config=' do
         context 'with a pre-existing json file' do
-          # An existing JSON file the provider will modify.
-          let(:input) do
-            File.read(my_fixture('mycheck_example_input.json'))
+          context 'without arbitrary config data' do
+            # An existing JSON file the provider will modify.
+            let(:input) do
+              File.read(my_fixture('mycheck_example_input.json'))
+            end
+
+            valid_configs = [
+              { 'foo' => 'bar' },
+              { 'foo' => 'bar', 'baz' => 'qux' },
+            ]
+
+            valid_configs.each_with_index do |config, idx|
+              context "and config => #{config.inspect}" do
+                let(:expected_output) do
+                  File.read(my_fixture("mycheck_config_output.#{idx}.json"))
+                end
+
+                let(:rsrc_hsh_override) { {config: config} }
+
+                it 'writes a JSON file to the filesystem' do
+                  # TODO: Would be nice to make this a shared expectation
+                  expect(provider).to receive(:write_json_object) do |fp, obj|
+                    expect(fp).to eq(provider.config_file)
+                    ex_out = JSON.parse(expected_output)
+                    check_map = ex_out['checks']['remote_http']
+                    # This gives a nice diff if there is an issue
+                    expect(obj['checks']['remote_http']).to eq(check_map)
+                    # This tests the complete configuration
+                    expect(obj).to eq(ex_out)
+                  end
+
+                  provider.config = config
+                  provider.flush
+                end
+
+                it 'writes sorted JSON output' do
+                  expect(described_class).to receive(:write_output) do |_, data|
+                    # Trailing newlines must match to get a nice diff
+                    # See: https://github.com/rspec/rspec-support/issues/70
+                    expect(data).to eq(expected_output.chomp)
+                  end
+                  provider.config = config
+                  provider.flush
+                end
+              end
+            end
           end
 
-          valid_configs = [
-            { 'foo' => 'bar' },
-            { 'foo' => 'bar', 'baz' => 'qux' },
-          ]
+          context 'with arbitrary config data' do
+            # An existing JSON file the provider will modify.
+            let(:input) do
+              File.read(my_fixture('mycheck_config_input.json'))
+            end
 
-          valid_configs.each_with_index do |config, idx|
-            context "and config => #{config.inspect}" do
-              let(:expected_output) do
-                File.read(my_fixture("mycheck_config_output.#{idx}.json"))
-              end
+            valid_configs = [
+              { 'foo' => 'bar' },
+              { 'foo' => 'bar', 'baz' => 'qux' },
+            ]
 
-              let(:rsrc_hsh_override) { {config: config} }
-
-              it 'writes a JSON file to the filesystem' do
-                # TODO: Would be nice to make this a shared expectation
-                expect(provider).to receive(:write_json_object) do |fp, obj|
-                  expect(fp).to eq(provider.config_file)
-                  ex_out = JSON.parse(expected_output)
-                  check_map = ex_out['checks']['remote_http']
-                  # This gives a nice diff if there is an issue
-                  expect(obj['checks']['remote_http']).to eq(check_map)
-                  # This tests the complete configuration
-                  expect(obj).to eq(ex_out)
+            valid_configs.each_with_index do |config, idx|
+              context "and config => #{config.inspect}" do
+                let(:expected_output) do
+                  File.read(my_fixture("mycheck_config_output.#{idx}.json"))
                 end
 
-                provider.config = config
-                provider.flush
-              end
+                let(:rsrc_hsh_override) { {config: config} }
 
-              it 'writes sorted JSON output' do
-                expect(described_class).to receive(:write_output) do |_, data|
-                  # Trailing newlines must match to get a nice diff
-                  # See: https://github.com/rspec/rspec-support/issues/70
-                  expect(data).to eq(expected_output.chomp)
+                it 'writes a JSON file to the filesystem' do
+                  # TODO: Would be nice to make this a shared expectation
+                  expect(provider).to receive(:write_json_object) do |fp, obj|
+                    expect(fp).to eq(provider.config_file)
+                    ex_out = JSON.parse(expected_output)
+                    check_map = ex_out['checks']['remote_http']
+                    # This gives a nice diff if there is an issue
+                    expect(obj['checks']['remote_http']).to eq(check_map)
+                    # This tests the complete configuration
+                    expect(obj).to eq(ex_out)
+                  end
+
+                  provider.config = config
+                  provider.flush
                 end
-                provider.config = config
-                provider.flush
+
+                it 'writes sorted JSON output' do
+                  expect(described_class).to receive(:write_output) do |_, data|
+                    # Trailing newlines must match to get a nice diff
+                    # See: https://github.com/rspec/rspec-support/issues/70
+                    expect(data).to eq(expected_output.chomp)
+                  end
+                  provider.config = config
+                  provider.flush
+                end
               end
+            end
+
+            # TODO: Test what happens when the provider value is not specified.
+            context 'and config => undef' do
+              xit 'preserves the existing arbitrary config'
             end
           end
         end
