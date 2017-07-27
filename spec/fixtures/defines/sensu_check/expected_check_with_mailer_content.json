@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "mycheck": {
+      "command": "/etc/sensu/somecommand.rb",
+      "interval": 60,
+      "standalone": true
+    }
+  },
+  "mailer": {
+    "mail_from": "sensu@example.com",
+    "mail_to": "alert@example.com"
+  }
+}

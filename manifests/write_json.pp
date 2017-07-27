@@ -25,6 +25,10 @@
 # @param content The hash content that will be converted to json
 #   and written into the target config file.
 #
+# [*notify_list*]
+#   Array. A listing of resources to notify upon changes to the target JSON
+#          file.
+#   Default: []
 define sensu::write_json (
   Enum['present', 'absent'] $ensure = 'present',
   String                    $owner = 'sensu',
@@ -32,6 +36,7 @@ define sensu::write_json (
   String                    $mode = '0755',
   Boolean                   $pretty = true,
   Hash                      $content = {},
+  Array                     $notify_list = [],
 ) {
 
   # ensure we have a properly formatted file path for our target OS
@@ -52,5 +57,6 @@ define sensu::write_json (
     group   => $group,
     mode    => $mode,
     content => sensu_sorted_json($content, $pretty),
+    notify  => $notify_list,
   }
 }
