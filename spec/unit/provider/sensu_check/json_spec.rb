@@ -71,8 +71,8 @@ describe Puppet::Type.type(type_id).provider(:json) do
     resource.provider
   end
 
-  context 'during catalog application' do
-    describe 'parameters (provide data)' do
+  context 'applying a catalog' do
+    describe 'parameter' do
       describe '#name' do
         subject { provider.name }
         it { is_expected.to eq title }
@@ -80,94 +80,232 @@ describe Puppet::Type.type(type_id).provider(:json) do
     end
 
     # Properties modify the system.  Parameters add supporting data.
-    describe 'properties (take action)' do
-      describe 'when writing JSON data to the filesystem with #flush' do
-        describe '#custom' do
-          context 'with a pre-existing check definition' do
+    describe 'property' do
+      # Stub out the filesystem read with fixture data
+      before :each do
+        expect(provider).to receive(:read_file).and_return(input)
+      end
+
+      describe '#config' do
+        subject { provider.config }
+        context 'with a pre-existing json file' do
+          context 'containing only the check configuration itself' do
+            let(:input) do
+              File.read(my_fixture('mycheck_example_input.json'))
+            end
+
+            it { is_expected.to eq({}) }
+          end
+
+          context 'containing mailer plugin configuration' do
+            let(:input) do
+              File.read(my_fixture('mycheck_config_input.json'))
+            end
+
+            let(:expected) do
+              {'mailer'=>{'mail_from'=>'sensu@example.com','mail_to'=>'monitor@example.com'}}
+            end
+
+            it { is_expected.to eq(expected) }
+          end
+
+          context 'containing configuration nested in the "checks" map' do
+            let(:input) do
+              File.read(my_fixture('mycheck_config_input.2.json'))
+            end
+
+            let(:expected) do
+              {'checks'=>{'foo'=>'bar', 'baz'=>['q', 'u', 'x']}}
+            end
+
+            it { is_expected.to eq(expected) }
+          end
+        end
+      end
+
+      describe '#config=' do
+        context 'with a pre-existing json file' do
+          context 'without arbitrary config data' do
             # An existing JSON file the provider will modify.
             let(:input) do
               File.read(my_fixture('mycheck_example_input.json'))
             end
-            # Stub out the filesystem read with fixture data
-            before :each do
-              allow(provider).to receive(:read_file).and_return(input)
-            end
 
-            subject { provider.custom }
+            valid_configs = [
+              { 'foo' => 'bar' },
+              { 'foo' => 'bar', 'baz' => 'qux' },
+            ]
 
-            context 'without custom configuration' do
-              it { is_expected.to eq({}) }
-            end
-            context 'with custom configuration' do
-              let(:input) do
-                File.read(my_fixture('mycheck_custom_input.json'))
+            valid_configs.each_with_index do |config, idx|
+              context "and config => #{config.inspect}" do
+                let(:expected_output) do
+                  File.read(my_fixture("mycheck_config_output.#{idx}.json"))
+                end
+
+                let(:rsrc_hsh_override) { {config: config} }
+
+                it 'writes a JSON file to the filesystem' do
+                  # TODO: Would be nice to make this a shared expectation
+                  expect(provider).to receive(:write_json_object) do |fp, obj|
+                    expect(fp).to eq(provider.config_file)
+                    ex_out = JSON.parse(expected_output)
+                    check_map = ex_out['checks']['remote_http']
+                    # This gives a nice diff if there is an issue
+                    expect(obj['checks']['remote_http']).to eq(check_map)
+                    # This tests the complete configuration
+                    expect(obj).to eq(ex_out)
+                  end
+
+                  provider.config = config
+                  provider.flush
+                end
+
+                it 'writes sorted JSON output' do
+                  expect(described_class).to receive(:write_output) do |_, data|
+                    # Trailing newlines must match to get a nice diff
+                    # See: https://github.com/rspec/rspec-support/issues/70
+                    expect(data).to eq(expected_output.chomp)
+                  end
+                  provider.config = config
+                  provider.flush
+                end
               end
-              it { is_expected.to eq({'foo' => 'bar'}) }
+            end
+          end
+
+          context 'with arbitrary config data' do
+            # An existing JSON file the provider will modify.
+            let(:input) do
+              File.read(my_fixture('mycheck_config_input.json'))
+            end
+
+            valid_configs = [
+              { 'foo' => 'bar' },
+              { 'foo' => 'bar', 'baz' => 'qux' },
+            ]
+
+            valid_configs.each_with_index do |config, idx|
+              context "and config => #{config.inspect}" do
+                let(:expected_output) do
+                  File.read(my_fixture("mycheck_config_output.#{idx}.json"))
+                end
+
+                let(:rsrc_hsh_override) { {config: config} }
+
+                it 'writes a JSON file to the filesystem' do
+                  # TODO: Would be nice to make this a shared expectation
+                  expect(provider).to receive(:write_json_object) do |fp, obj|
+                    expect(fp).to eq(provider.config_file)
+                    ex_out = JSON.parse(expected_output)
+                    check_map = ex_out['checks']['remote_http']
+                    # This gives a nice diff if there is an issue
+                    expect(obj['checks']['remote_http']).to eq(check_map)
+                    # This tests the complete configuration
+                    expect(obj).to eq(ex_out)
+                  end
+
+                  provider.config = config
+                  provider.flush
+                end
+
+                it 'writes sorted JSON output' do
+                  expect(described_class).to receive(:write_output) do |_, data|
+                    # Trailing newlines must match to get a nice diff
+                    # See: https://github.com/rspec/rspec-support/issues/70
+                    expect(data).to eq(expected_output.chomp)
+                  end
+                  provider.config = config
+                  provider.flush
+                end
+              end
+            end
+
+            # TODO: Test what happens when the provider value is not specified.
+            context 'and config => undef' do
+              xit 'preserves the existing arbitrary config'
             end
           end
         end
+      end
 
-        describe '#custom=' do
-          context 'with pre-existing configuration on the system' do
-            # An existing JSON file the provider will modify.
+      describe '#custom' do
+        context 'with a pre-existing check definition' do
+          # An existing JSON file the provider will modify.
+          let(:input) do
+            File.read(my_fixture('mycheck_example_input.json'))
+          end
+          # Stub out the filesystem read with fixture data
+          before :each do
+            allow(provider).to receive(:read_file).and_return(input)
+          end
+
+          subject { provider.custom }
+
+          context 'without custom configuration' do
+            it { is_expected.to eq({}) }
+          end
+          context 'with custom configuration' do
             let(:input) do
-              File.read(my_fixture('mycheck_example_input.json'))
+              File.read(my_fixture('mycheck_custom_input.json'))
+            end
+            it { is_expected.to eq({'foo' => 'bar'}) }
+          end
+        end
+      end
+
+      describe '#custom=' do
+        context 'with a pre-existing json file' do
+          # An existing JSON file the provider will modify.
+          let(:input) do
+            File.read(my_fixture('mycheck_example_input.json'))
+          end
+
+          let(:expected_output) do
+            File.read(my_fixture('mycheck_expected_output.json'))
+          end
+
+          context 'with custom defined' do
+            # Example value for the custom property from the README
+            let(:custom) do
+              {
+                'foo'      => 'bar',
+                'numval'   => 6,
+                'boolval'  => true,
+                'in_array' => ['foo','baz'],
+              }
             end
 
-            let(:expected_output) do
-              File.read(my_fixture('mycheck_expected_output.json'))
+            # The desired state from the catalog
+            let(:rsrc_hsh_override) { {custom: custom} }
+
+            it 'writes the configuration file as a JSON object' do
+              # TODO: Would be nice to make this a shared expectation
+              expect(provider).to receive(:write_json_object) do |fp, obj|
+                expect(fp).to eq(provider.config_file)
+                ex_out = JSON.parse(expected_output)
+                check_def = ex_out['checks']['remote_http']
+                # This gives a nice diff if there is an issue
+                expect(obj['checks']['remote_http']).to eq(check_def)
+                # This tests the complete configuration
+                expect(obj).to eq(ex_out)
+              end
+
+              provider.custom = custom
+              provider.flush
             end
+          end
 
-            before :each do
-              # The fixed input for testing.  This is an expectation so a
-              # failure is triggered if the stub becomes mis-matched with the
-              # implemented behavior.
-              expect(provider).to receive(:read_file).and_return(input)
+          context 'with unsorted input JSON' do
+            let(:input) do
+              File.read(my_fixture('mycheck_unsorted_input.json'))
             end
-
-            context 'with custom defined' do
-              # Example value for the custom property from the README
-              let(:custom) do
-                {
-                  'foo'      => 'bar',
-                  'numval'   => 6,
-                  'boolval'  => true,
-                  'in_array' => ['foo','baz'],
-                }
+            it 'writes sorted JSON output' do
+              expect(described_class).to receive(:write_output) do |_, data|
+                # Trailing newlines must match to get a nice diff
+                # See: https://github.com/rspec/rspec-support/issues/70
+                expect(data).to eq(expected_output.chomp)
               end
-
-              # The desired state from the catalog
-              let(:rsrc_hsh_override) { {custom: custom} }
-
-              it 'writes the configuration file as a JSON object' do
-                # TODO: Would be nice to make this a shared expectation
-                expect(provider).to receive(:write_json_object) do |fp, obj|
-                  expect(fp).to eq(provider.config_file)
-                  ex_out = JSON.parse(expected_output)
-                  check_def = ex_out['checks']['remote_http']
-                  # This gives a nice diff if there is an issue
-                  expect(obj['checks']['remote_http']).to eq(check_def)
-                  # This tests the complete configuration
-                  expect(obj).to eq(ex_out)
-                end
-
-                provider.custom = custom
-                provider.flush
-              end
-            end
-
-            context 'with unsorted input JSON' do
-              let(:input) do
-                File.read(my_fixture('mycheck_unsorted_input.json'))
-              end
-              it 'writes sorted JSON output' do
-                expect(described_class).to receive(:write_output) do |_, data|
-                  # Trailing newlines must match to get a nice diff
-                  # See: https://github.com/rspec/rspec-support/issues/70
-                  expect(data).to eq(expected_output.chomp)
-                end
-                provider.flush
-              end
+              provider.flush
             end
           end
         end
