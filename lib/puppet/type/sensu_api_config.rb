@@ -28,7 +28,11 @@ Puppet::Type.newtype(:sensu_api_config) do
   newproperty(:port) do
     desc "The port that the Sensu API is listening on"
 
-    defaultto '4567'
+    defaultto 4567
+
+    munge do |value|
+      value.to_i
+    end
   end
 
   newproperty(:host) do
@@ -58,6 +62,9 @@ Puppet::Type.newtype(:sensu_api_config) do
 
   newproperty(:ssl_port) do
     desc "Port of the HTTPS (SSL) sensu api service. Enterprise only feature."
+    munge do |value|
+      value.to_i
+    end
   end
 
   newproperty(:ssl_keystore_file) do
