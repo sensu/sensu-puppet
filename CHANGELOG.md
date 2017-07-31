@@ -1,7 +1,23 @@
 # Change Log
 
-## [v2.30.0](https://github.com/sensu/sensu-puppet/tree/v2.30.0)
+## [v2.30.1](https://github.com/sensu/sensu-puppet/tree/v2.30.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.30.0...v2.30.1)
+
+**Fixed bugs:**
+
+- Sensu Enterprise API SSL attributes are incorrectly configured [\#784](https://github.com/sensu/sensu-puppet/issues/784)
+
+**Closed issues:**
+
+- Auto generated documentation should show up as a GitHub page [\#777](https://github.com/sensu/sensu-puppet/issues/777)
+
+**Merged pull requests:**
+
+- \(\#784\) Fix Sensu Enterprise API SSL configuration scope [\#787](https://github.com/sensu/sensu-puppet/pull/787) ([jeffmccune](https://github.com/jeffmccune))
+- Update link to auto generated docs [\#778](https://github.com/sensu/sensu-puppet/pull/778) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.30.0](https://github.com/sensu/sensu-puppet/tree/v2.30.0) (2017-07-26)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.29.0...v2.30.0)
 
 **Closed issues:**
