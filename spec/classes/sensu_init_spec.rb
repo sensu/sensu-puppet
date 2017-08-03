@@ -387,13 +387,13 @@ describe 'sensu', :type => :class do
 
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
     let(:params) { {:plugins => 'puppet:///data/sensu/plugins/teststring.rb' } }
-    it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb').with_install_path('/etc/sensu/plugins') }
+    it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb') }
   end
 
   context 'with plugins => [ puppet:///test/array1.rb, puppet:///test/array2.rb ]' do
     let(:params) { {:plugins => [ 'puppet:///test/array1.rb', 'puppet:///test/array2.rb' ] } }
-    it { should contain_sensu__plugin('puppet:///test/array1.rb').with_install_path('/etc/sensu/plugins') }
-    it { should contain_sensu__plugin('puppet:///test/array2.rb').with_install_path('/etc/sensu/plugins') }
+    it { should contain_sensu__plugin('puppet:///test/array1.rb') }
+    it { should contain_sensu__plugin('puppet:///test/array2.rb') }
   end
 
   context 'with plugins set to a valid hash containing two entries with different options' do

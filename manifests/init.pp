@@ -303,7 +303,6 @@
 #
 # [*plugins*]
 #   String, Array of strings, Hash.  Plugins to install on the node
-#     Strings and Arrays of strings will set 'install_path' => '/etc/sensu/plugins' as default.
 #   Default: []
 #   Example string: 'puppet:///data/sensu/plugins/plugin1.rb'
 #   Example array: [ 'puppet:///data/sensu/plugins/plugin1.rb', 'puppet:///data/sensu/plugins/plugin2.rb' ]
@@ -743,7 +742,7 @@ class sensu (
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
     case $plugins {
-      String,Array: { sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' } }
+      String,Array: { sensu::plugin { $plugins: } }
       Hash:         { create_resources('::sensu::plugin', $plugins, $plugins_defaults ) }
       default:      { fail('Invalid data type for $plugins, must be a string, an array, or a hash.') }
     }

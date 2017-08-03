@@ -53,7 +53,10 @@
 #
 define sensu::plugin (
   Enum['file','url','package','directory'] $type                = 'file',
-  String $install_path        = '/etc/sensu/plugins',
+  Stdlib::Absolutepath $install_path = $::osfamily ? {
+    'windows' => 'C:/opt/sensu/plugins',
+    default   => '/etc/sensu/plugins',
+  },
   Boolean $purge               = true,
   Boolean $recurse             = true,
   Boolean $force               = true,
