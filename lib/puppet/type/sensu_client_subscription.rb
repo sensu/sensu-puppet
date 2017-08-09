@@ -2,7 +2,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_client_subscription) do
-  @doc = ""
+  @doc = "Manages Sensu client subscriptions"
 
   def initialize(*args)
     super *args

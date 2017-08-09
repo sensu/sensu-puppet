@@ -1,4 +1,4 @@
-# = Class: sensu::enterprise::dashboard
+# @summary Installs the Sensu Enterprise Dashboard
 #
 # Installs the Sensu Enterprise Dashboard
 class sensu::enterprise::dashboard (

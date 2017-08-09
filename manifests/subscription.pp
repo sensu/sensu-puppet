@@ -1,17 +1,10 @@
-# = Define: sensu::subscription
+# @summary Manages Sensu subscriptions
 #
-# Defines Sensu subscriptions
+# This define manages Sensu subscriptions
 #
-# == Parameters
+# @param ensure Whether the check should be present or not
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
-
-# [*custom*]
-#   Hash.  Custom client variables
-#   Default: {}
+# @param custom Custom client variables
 #
 define sensu::subscription (
   Enum['present','absent'] $ensure = 'present',

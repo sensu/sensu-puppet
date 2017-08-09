@@ -1,54 +1,32 @@
-# = Define: sensu::plugin
+# @summary Installs Sensu plugins
 #
 # Installs the Sensu community script and plugins
 # which can be used as monitoring checks
 #
-# == Parameters
-#
-# [*type*]
-#   String.  Plugin source
-#   Default: file
+# @param type Plugin source
 #   Valid values: file, directory, package, url
 #
-# [*install_path*]
-#   String.  The path to install the plugin
-#   Default: /etc/sensu/plugins
+# @param install_path The path to install the plugin
 #
-# [*purge*]
-#   Boolean.  When using a directory source, purge setting
-#   Default: true
-#   Valid values: true, false
+# @param purge When using a directory source, purge setting
 #
-# [*recurse*]
-#   Boolean.  When using a directory source, recurse setting
-#   Default: true
-#   Valid values: true, false
+# @param recurse When using a directory source, recurse setting
 #
-# [*force*]
-#   Boolean.  When using a directory source, force setting
-#   Default: true
-#   Valid values: true, false
+# @param force When using a directory source, force setting
 #
-# [*pkg_version*]
-#   String.  When using package source, version to install
-#   Default: latest
-#   Valid values: absent, installed, latest, present, [\d\.\-]+
+# @param pkg_version When using package source, version to install
 #
-# [*pkg_provider*]
-#   String.  When using package to install plugins, provider to use.
-#   Default: undef (taken from $::sensu::sensu_plugin_provider)
+# @param pkg_provider When using package to install plugins, provider to use.
 #   Valid values: sensu_gem, apt, aptitude, yum
 #
-# [*nocheckcertificate*]
-#   Boolean.  When using url source, disable certificate checking for HTTPS
-#   Default: false
-#   Valid values: true, false
+# @param pkg_checksum The packake's MD5 checksum.
+#   Valid values: Any valid MD5 string of the wanted package
 #
-# [*gem_install_options*]
-#   Optional configuration to use for the installation of the
+# @param nocheckcertificate When using url source, disable certificate checking for HTTPS
+#
+# @param gem_install_options Optional configuration to use for the installation of the
 #   sensu plugin gem with sensu_gem provider.
 #   See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
-#   Default: $::sensu::gem_install_options
 #   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
 #
 define sensu::plugin (

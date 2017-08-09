@@ -1,12 +1,8 @@
-# = Class: sensu::api::service
+# @summary Manages the Sensu api service
 #
 # Manages the Sensu api service
 #
-# == Parameters
-#
-# [*hasrestart*]
-#   Boolean. Value of hasrestart attribute for this service.
-#   Default: true
+# @param hasrestart Value of hasrestart attribute for this service.
 #
 class sensu::api::service (
   Boolean $hasrestart = true,

@@ -1,10 +1,11 @@
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'boolean_property.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_client_config) do
-  @doc = ""
+  @doc = "Manages Sensu client config"
 
   def initialize(*args)
     super *args

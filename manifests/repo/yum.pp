@@ -1,4 +1,4 @@
-# = Class: sensu::repo::yum
+# @summary Adds the Sensu YUM repo support
 #
 # Adds the Sensu YUM repo support
 #

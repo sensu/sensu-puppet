@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'boolean_property.rb'))
 
 Puppet::Type.newtype(:sensu_redis_config) do
-  @doc = ""
+  @doc = "Manages Sensu Redis config"
 
   def initialize(*args)
     super *args

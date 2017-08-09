@@ -1,29 +1,15 @@
-# = Class: sensu::client::service
+# @summary Manages the Sensu client service
 #
-# Manages the Sensu client service
+# @param hasrestart Value of hasrestart attribute for this service.
 #
-# == Parameters
-#
-# [*hasrestart*]
-#   Bolean. Value of hasrestart attribute for this service.
-#   Default: true
-#
-# [*log_level*]
-#   String.  Sensu log level to be used
-#   Default: $::sensu::log_level
+# @param log_level Sensu log level to be used
 #   Valid values: debug, info, warn, error, fatal
 #
-# [*windows_logrotate*]
-#   Boolean. Whether or not to use logrotate on Windows OS family.
-#   Default: $::sensu::windows_logrotate
+# @param windows_logrotate Whether or not to use logrotate on Windows OS family.
 #
-# [*windows_log_size*]
-#   Integer. The integer value for the size of log files on Windows OS family. sizeThreshold in sensu-client.xml.
-#   Default: $::sensu::windows_log_size
+# @param windows_log_size The integer value for the size of log files on Windows OS family. sizeThreshold in sensu-client.xml.
 #
-# [*windows_log_number*]
-#   Integer. The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
-#   Default: $::sensu::windows_log_number
+# @param windows_log_number The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
 #
 class sensu::client::service (
   Boolean $hasrestart = true,

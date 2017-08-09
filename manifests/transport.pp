@@ -1,4 +1,4 @@
-# Class: sensu::transport
+# @summary Configures Sensu transport
 #
 # Configure Sensu Transport
 #

@@ -1,3 +1,8 @@
+# @!puppet.type.param name
+# @!puppet.type.param base_path
+# @!puppet.type.param config
+# @!puppet.type.param event
+
 Puppet::Type.newtype(:sensu_check_config) do
   @doc = ""
 

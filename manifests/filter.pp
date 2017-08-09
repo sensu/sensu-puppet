@@ -1,22 +1,16 @@
-# = Define: sensu::filter
+# @summary Manages Sensu filters
 #
 # Defines Sensu filters
 #
 # == Parameters
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
+# @param ensure Whether the check should be present or not
 #
-# [*negate*]
-#   Boolean.  Negate the filter
-#   Default: undef
-#   Valid values: true, false
+# @param negate Negate the filter
 #
-# [*attributes*]
-#   Hash.  Hash of attributes for the filter
-#   Default: undef
+# @param attributes Hash of attributes for the filter
+#
+# @param when Hash of when entries for the filter
 #
 define sensu::filter (
   Enum['present','absent'] $ensure = 'present',

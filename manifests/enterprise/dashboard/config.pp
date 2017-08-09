@@ -1,4 +1,4 @@
-# = Class: sensu::enterprise::dashboard::config
+# @summary Manages the Sensu Enterprise Dashboard configuration
 #
 # Manages the Sensu Enterprise Dashboard configuration
 #

@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:sensu_extension) do
-  @doc = ""
+  @doc = "Manages Sensu extensions"
 
   def initialize(*args)
     super *args
