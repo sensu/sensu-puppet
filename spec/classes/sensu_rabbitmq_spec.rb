@@ -93,14 +93,12 @@ describe 'sensu', :type => :class do
       ) }
     end # when using local key
 
-    $rabbitmq_password = 'Sensitive("sensupass")'
-
     context 'when passing password as Sensitive' do
       let(:params) { {
         :rabbitmq_port            => '1234',
         :rabbitmq_host            => 'myhost',
         :rabbitmq_user            => 'sensuuser',
-        :rabbitmq_password        => $rabbitmq_password,
+        :rabbitmq_password        => Puppet::Pops::Types::PSensitiveType::Sensitive.new('password'),
         :rabbitmq_vhost           => 'myvhost',
       } }
 
@@ -108,7 +106,7 @@ describe 'sensu', :type => :class do
         :port            => '1234',
         :host            => 'myhost',
         :user            => 'sensuuser',
-        :password        => 'sensupass',
+        :password        => 'password',
         :vhost           => 'myvhost',
       ) }
     end # when passing password as Sensitive
