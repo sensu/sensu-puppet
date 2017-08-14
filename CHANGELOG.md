@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.30.1](https://github.com/sensu/sensu-puppet/tree/v2.30.1)
+## [v2.31.0](https://github.com/sensu/sensu-puppet/tree/v2.31.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.30.1...v2.31.0)
+
+**Closed issues:**
+
+- sensu::plugin does not work on windows without specifying install\_path [\#786](https://github.com/sensu/sensu-puppet/issues/786)
+
+**Merged pull requests:**
+
+- Remove soft dependencies on apt and powershell [\#793](https://github.com/sensu/sensu-puppet/pull/793) ([ghoneycutt](https://github.com/ghoneycutt))
+- Puppet strings 4 all \#757 [\#792](https://github.com/sensu/sensu-puppet/pull/792) ([alvagante](https://github.com/alvagante))
+- \(GH-786\) sensu::plugin does not work on windows without specifying install\_path [\#789](https://github.com/sensu/sensu-puppet/pull/789) ([Phil-Friderici](https://github.com/Phil-Friderici))
+
+## [v2.30.1](https://github.com/sensu/sensu-puppet/tree/v2.30.1) (2017-07-31)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.30.0...v2.30.1)
 
 **Fixed bugs:**
