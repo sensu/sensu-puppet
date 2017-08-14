@@ -1,4 +1,4 @@
-# = Class: sensu::enterprise::dashboard::package
+# @summary Manages the sensu-enterprise-dashboard package
 #
 # Manages the sensu-enterprise-dashboard package
 #

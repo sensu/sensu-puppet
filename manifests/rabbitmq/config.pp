@@ -1,4 +1,4 @@
-# = Class: sensu::rabbitmq::config
+# @summary Sets the Sensu rabbitmq config
 #
 # Sets the Sensu rabbitmq config
 #

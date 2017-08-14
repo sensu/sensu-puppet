@@ -1,13 +1,9 @@
-# = Class: sensu::enterprise::service
+# @summary Manages the Sensu Enterprise server service
 #
 # Manages the Sensu Enterprise server service
 #
-# == Parameters
+# @param hasrestart Value of hasrestart attribute for this service.
 #
-# [*hasrestart*]
-#   Boolean. Value of hasrestart attribute for this service.
-#   Default: true
-
 class sensu::enterprise::service (
   Boolean $hasrestart = true,
 ) {

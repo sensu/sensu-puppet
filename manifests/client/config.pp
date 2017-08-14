@@ -1,4 +1,4 @@
-# = Class: sensu::client::config
+# @summary Sets the Sensu client config
 #
 # Sets the Sensu client config
 #

@@ -4,7 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_check) do
-  @doc = ""
+  @doc = "Manages Sensu checks"
 
   class SensuCheckArrayProperty < Puppet::Property
 

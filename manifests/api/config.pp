@@ -1,4 +1,4 @@
-# = Class: sensu::api::config
+# @summary Sets the Sensu API config
 #
 # Sets the Sensu API config
 #

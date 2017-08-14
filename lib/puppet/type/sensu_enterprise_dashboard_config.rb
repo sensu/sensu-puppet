@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:sensu_enterprise_dashboard_config) do
-  @doc = ""
+  @doc = "Manages Sensu Enterprise Dashboard config"
 
   def initialize(*args)
     super *args

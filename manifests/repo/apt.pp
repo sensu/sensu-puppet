@@ -1,8 +1,6 @@
-# = Class: sensu::repo::apt
+# @summary Adds the Sensu repo to Apt
 #
 # Adds the Sensu repo to Apt
-#
-# == Parameters
 #
 class sensu::repo::apt {
 

@@ -1,4 +1,4 @@
-# = Class: sensu::redis::config
+# @summary Sets the Sensu redis config
 #
 # Sets the Sensu redis config
 #

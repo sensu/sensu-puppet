@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:sensu_api_config) do
-  @doc = ""
+  @doc = "Manages Sensu API config"
 
   def initialize(*args)
     super *args

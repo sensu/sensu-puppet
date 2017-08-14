@@ -1,5 +1,6 @@
+
 Puppet::Type.newtype(:sensu_contact) do
-  @doc = ""
+  @doc = "Manages Sensu contacts"
 
   def initialize(*args)
     super *args

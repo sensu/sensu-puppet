@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:sensu_mutator) do
-  @doc = ""
+  @doc = "Manages Sensu mutators"
 
   def initialize(*args)
     super *args

@@ -4,7 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_filter) do
-  @doc = ""
+  @doc = "Manages Sensu filters"
 
   def initialize(*args)
     super *args

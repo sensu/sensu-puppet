@@ -1,26 +1,14 @@
-# = Define: sensu::extension
+# @summary Defines Sensu extensions
 #
-# Defines Sensu extensions
+# This define manages Sensu extensions
 #
-# == Parameters
+# @param ensure Whether the check should be present or not
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
+# @param source Source of the puppet extension
 #
-# [*source*]
-#   String.  Source of the puppet extension
-#   Default: undef
+# @param install_path Path where to install the extension
 #
-# [*install_path*]
-#   String.  Path to install the extension
-#   Default: /etc/sensu/extensions
-#
-# [*config*]
-#   Hash.  Extension specific config
-#   Default: undef
-#
+# @param config Extension specific config
 #
 define sensu::extension (
   Enum['present','absent'] $ensure          = 'present',
