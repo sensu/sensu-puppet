@@ -21,6 +21,11 @@ else
   apt-get update
 fi
 
+# Debian 9 (stretch) complains about the dirmngr package missing.
+if [ "${CODENAME}" == 'stretch' ]; then
+  apt-get -y install dirmngr
+fi
+
 apt-key adv --fetch-keys http://apt.puppetlabs.com/DEB-GPG-KEY-puppet
 
 apt-get -y install wget

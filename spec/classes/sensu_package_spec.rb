@@ -252,6 +252,36 @@ describe 'sensu' do
           end
         end
 
+        context '9 (stretch)' do
+          let(:facts) do
+            {
+              :kernel          => 'Linux',
+              :osfamily        => 'Debian',
+              :lsbdistid       => 'Debian',
+              :lsbdistrelease  => '9.3',
+              :lsbdistcodename => 'stretch',
+              :os => {
+                :name    => 'Debian',
+                :release => {
+                  :full => '9.3',
+                },
+              },
+            }
+          end
+
+          context 'repo release' do
+            it { should contain_apt__source('sensu').with(
+              :ensure      => 'present',
+              :location    => 'https://sensu.global.ssl.fastly.net/apt',
+              :release     => 'stretch',
+              :repos       => 'main',
+              :include     => { 'src' => false },
+              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
+              :before      => 'Package[sensu]'
+            ) }
+          end
+        end
+
         context 'with repo_release specified' do
           let(:facts) do
             {
