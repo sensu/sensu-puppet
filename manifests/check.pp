@@ -70,6 +70,11 @@
 #   Note: The validity of the other checks is not enforced by puppet
 #   Set this to 'absent' to remove it completely.
 #
+# @param content Mapping of arbitrary attributes from the top-level of the target
+#   configuration JSON map.  This parameter is intended to configure plugins and
+#   extensions which look up values outside of the check configuration scope.
+#   Example: { "mailer" => { "mail_from" => "sensu@example.com", "mail_to" => "monitor@example.com" } }
+#
 # @param custom List of custom attributes to include in the check.
 #   You can use it to pass any attribute that is not listed here explicitly.
 #   Example: { 'remediation' => { 'low_remediation' => { 'occurrences' => [1,2], 'severities' => [1], 'command' => "/bin/command", 'publish' => false, } } }
@@ -107,6 +112,7 @@ define sensu::check (
   Variant[Undef,Enum['absent'],Boolean] $publish = undef,
   Variant[Undef,String,Array]           $dependencies = undef,
   Optional[Hash]                        $custom = undef,
+  Hash                                  $content = {},
   Variant[Undef,Enum['absent'],Integer] $ttl = undef,
   Variant[Undef,Enum['absent'],Hash]    $subdue = undef,
   Variant[Undef,Enum['absent'],Hash]    $proxy_requests = undef,
@@ -161,17 +167,9 @@ define sensu::check (
   Anchor['plugins_before_checks']
   ~> Sensu::Check[$name]
 
-  file { "${conf_dir}/checks/${check_name}.json":
-    ensure => $ensure,
-    owner  => $user,
-    group  => $group,
-    mode   => $file_mode,
-    before => Sensu_check[$check_name],
-  }
-
-  sensu_check { $check_name:
-    ensure              => $ensure,
-    base_path           => "${conf_dir}/checks",
+  # This Hash map will ultimately exist at `{"checks" => {"$check_name" =>
+  # $check_config}}`
+  $check_config_start = {
     type                => $type,
     standalone          => $standalone,
     command             => $command,
@@ -191,11 +189,61 @@ define sensu::check (
     handle              => $handle,
     publish             => $publish,
     dependencies        => $dependencies,
-    custom              => $custom,
     subdue              => $subdue,
     proxy_requests      => $proxy_requests,
-    require             => File["${conf_dir}/checks"],
-    notify              => $::sensu::check_notify,
     ttl                 => $ttl,
+  }
+
+  # Remove key/value pares where the value is `undef` or `"absent"`.
+  $check_config_pruned = $check_config_start.reduce({}) |$memo, $kv| {
+    $kv[1] ? {
+      undef    => $memo,
+      'absent' => $memo,
+      default  => $memo + Hash.new($kv),
+    }
+  }
+
+  # Merge the specified properties on top of the custom hash.
+  if $custom == undef {
+    $check_config = $check_config_pruned
+  } else {
+    $check_config = $custom + $check_config_pruned
+  }
+
+  # Merge together the "checks" scope with any arbitrary config specified via
+  # `content`.
+  $checks_scope_start = { $check_name => $check_config }
+  if $content['checks'] == undef {
+    $checks_scope = { 'checks' => $checks_scope_start }
+  } else {
+    $checks_scope = { 'checks' => $content['checks'] + $checks_scope_start }
+  }
+
+  # The final structure from the top level.  Check configuration scope is merged
+  # on top of any arbitrary plugin and extension configuration in $content.
+  $content_real = $content + $checks_scope
+
+  # Compute the services to notify
+  $notification_map = {
+    'Class[Sensu::Client::Service]' => $::sensu::client,
+    'Class[Sensu::Server::Service]' => $::sensu::server,
+    'Class[Sensu::Api::Service]'    => $::sensu::api,
+  }
+
+  $notification_ary = $notification_map.reduce([]) |$memo, $kv| {
+    if $kv[1] {
+      $memo + [$kv[0]]
+    } else {
+      $memo
+    }
+  }
+
+  sensu::write_json { "${conf_dir}/checks/${check_name}.json":
+    ensure      => $ensure,
+    content     => $content_real,
+    owner       => $user,
+    group       => $group,
+    mode        => $file_mode,
+    notify_list => $notification_ary,
   }
 }

@@ -34,7 +34,7 @@ describe 'sensu::write_json', :type => :define do
         :owner => 'sensu',
         :group => 'sensu',
         :content => CUSTOM_CFG_PRETTY,
-        :notify => nil,
+        :notify => [],
         :subscribe => nil,
       ) }
     end
@@ -49,7 +49,7 @@ describe 'sensu::write_json', :type => :define do
         :owner => 'sensu',
         :group => 'sensu',
         :mode => '0755',
-        :notify => nil,
+        :notify => [],
         :subscribe => nil,
       ) }
     end
@@ -96,7 +96,7 @@ describe 'sensu::write_json', :type => :define do
         :owner => 'sensu',
         :group => 'sensu',
         :content => "{\"custom\":\"data\"}",
-        :notify => nil,
+        :notify => [],
         :subscribe => nil,
       ) }
     end

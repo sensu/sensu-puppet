@@ -526,7 +526,7 @@ describe 'sensu', :type => :class do
       }
     } }
 
-    it { should contain_sensu_check('some-check').with(
+    it { should contain_sensu__check('some-check').with(
       :type        => 'pipe',
       :command     => '/usr/local/bin/some-check',
       :occurrences => '1',
@@ -534,7 +534,7 @@ describe 'sensu', :type => :class do
     ) }
     it { should contain_file('/etc/sensu/conf.d/checks/some-check.json') }
 
-    it { should contain_sensu_check('check-cpu').with(
+    it { should contain_sensu__check('check-cpu').with(
       :type        => 'pipe',
       :command     => '/usr/local/bin/check-cpu.rb',
       :occurrences => '5',
