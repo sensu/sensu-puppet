@@ -1,11 +1,32 @@
 # Change Log
 
-## [v2.31.0](https://github.com/sensu/sensu-puppet/tree/v2.31.0)
+## [v2.32.0](https://github.com/sensu/sensu-puppet/tree/v2.32.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.31.0...v2.32.0)
+
+**Implemented enhancements:**
+
+- Modify sensu::check to use defined type sensu::write\_json instead of native type sensu\_check [\#783](https://github.com/sensu/sensu-puppet/issues/783)
+
+**Closed issues:**
+
+- Vagrant uses an older version of rabbitmq [\#760](https://github.com/sensu/sensu-puppet/issues/760)
+- Add github templates [\#566](https://github.com/sensu/sensu-puppet/issues/566)
+
+**Merged pull requests:**
+
+- \(GH-566\) Add pull request template [\#797](https://github.com/sensu/sensu-puppet/pull/797) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-566\) Add Code of Conduct [\#796](https://github.com/sensu/sensu-puppet/pull/796) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-760\) Document rabbitmq's move to Voxpupuli [\#794](https://github.com/sensu/sensu-puppet/pull/794) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(\#783\) Add sensu::check content parameter, use sensu::write\_json [\#785](https://github.com/sensu/sensu-puppet/pull/785) ([jeffmccune](https://github.com/jeffmccune))
+
+## [v2.31.0](https://github.com/sensu/sensu-puppet/tree/v2.31.0) (2017-08-14)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.30.1...v2.31.0)
 
 **Closed issues:**
 
+- Remove apt module from metadata [\#791](https://github.com/sensu/sensu-puppet/issues/791)
+- minimum apt version wall [\#788](https://github.com/sensu/sensu-puppet/issues/788)
 - sensu::plugin does not work on windows without specifying install\_path [\#786](https://github.com/sensu/sensu-puppet/issues/786)
 
 **Merged pull requests:**
@@ -927,7 +948,7 @@
 - plugin: Allow to retrieve plugin from URL [\#207](https://github.com/sensu/sensu-puppet/pull/207) ([Spredzy](https://github.com/Spredzy))
 - adding occurrences and refresh parameters to sensu\_check type and sensu:... [\#200](https://github.com/sensu/sensu-puppet/pull/200) ([misterdorm](https://github.com/misterdorm))
 - Parameters for apt GPG key ID and GPG key source [\#199](https://github.com/sensu/sensu-puppet/pull/199) ([yasn77](https://github.com/yasn77))
-- Add Bind Options for Client, Dashboard, and API [\#198](https://github.com/sensu/sensu-puppet/pull/198) ([samoht9](https://github.com/samoht9))
+- Add Bind Options for Client, Dashboard, and API [\#198](https://github.com/sensu/sensu-puppet/pull/198) ([livingeek](https://github.com/livingeek))
 - Merge \#195 [\#196](https://github.com/sensu/sensu-puppet/pull/196) ([jlambert121](https://github.com/jlambert121))
 - rename .gemfile to Gemfile [\#194](https://github.com/sensu/sensu-puppet/pull/194) ([jlambert121](https://github.com/jlambert121))
 - restart client,server,api based on what the machine has provisioned [\#193](https://github.com/sensu/sensu-puppet/pull/193) ([jlambert121](https://github.com/jlambert121))
