@@ -37,6 +37,8 @@ matrix:
   - rvm: 2.4.1
     env: PUPPET_GEM_VERSION="~> 5.0.0"
   - rvm: 2.4.1
+    env: PUPPET_GEM_VERSION="~> 5.1.0"
+  - rvm: 2.4.1
     env: PUPPET_GEM_VERSION="~> 5"
 
 notifications:
