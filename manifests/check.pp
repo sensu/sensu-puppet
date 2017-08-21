@@ -95,7 +95,7 @@ define sensu::check (
   Enum['present','absent']              $ensure = 'present',
   Optional[String]                      $type = undef,
   Variant[Undef,String,Array]           $handlers = undef,
-  Optional[Array]                       $contacts = undef,
+  Variant[Undef,String,Array]           $contacts = undef,
   Variant[Boolean,Enum['absent']]       $standalone = true,
   String                                $cron = 'absent',
   Variant[Integer,Enum['absent']]       $interval = 60,
@@ -162,6 +162,32 @@ define sensu::check (
     }
   }
 
+  case $handlers {
+    Pattern[/absent/]: { $handlers_array = undef }
+    String:   { $handlers_array = [ $handlers ] ; deprecation('handlers', 'Parameter handlers should be an array') }
+    default:  { $handlers_array = $handlers }
+  }
+  case $subscribers {
+    Pattern[/absent/]: { $subscribers_array = undef }
+    String:   { $subscribers_array = [ $subscribers ] ; deprecation('subscribers', 'Parameter subscribers should be an array') }
+    default:  { $subscribers_array = $subscribers }
+  }
+  case $aggregates {
+    Pattern[/absent/]: { $aggregates_array = undef }
+    String:   { $aggregates_array = [ $aggregates ] ; deprecation('aggregates', 'Parameter aggregates should be an array') }
+    default:  { $aggregates_array = $aggregates }
+  }
+  case $contacts {
+    Pattern[/absent/]: { $contacts_array = undef }
+    String:   { $contacts_array = [ $contacts ] ; deprecation('contacts', 'Parameter contacts should be an array') }
+    default:  { $contacts_array = $contacts }
+  }
+  case $dependencies {
+    Pattern[/absent/]: { $dependencies_array = undef }
+    String:   { $dependencies_array = [ $dependencies ] ; deprecation('dependencies', 'Parameter dependencies should be an array') }
+    default:  { $dependencies_array = $dependencies }
+  }
+
   # (#463) All plugins must come before all checks.  Collections are not used to
   # avoid realizing any resources.
   Anchor['plugins_before_checks']
@@ -173,22 +199,22 @@ define sensu::check (
     type                => $type,
     standalone          => $standalone,
     command             => $command,
-    handlers            => $handlers,
-    contacts            => $contacts,
+    handlers            => $handlers_array,
+    contacts            => $contacts_array,
     cron                => $cron,
     interval            => $interval_real,
     occurrences         => $occurrences,
     refresh             => $refresh,
     source              => $source,
-    subscribers         => $subscribers,
+    subscribers         => $subscribers_array,
     low_flap_threshold  => $low_flap_threshold,
     high_flap_threshold => $high_flap_threshold,
     timeout             => $timeout,
     aggregate           => $aggregate,
-    aggregates          => $aggregates,
+    aggregates          => $aggregates_array,
     handle              => $handle,
     publish             => $publish,
-    dependencies        => $dependencies,
+    dependencies        => $dependencies_array,
     subdue              => $subdue,
     proxy_requests      => $proxy_requests,
     ttl                 => $ttl,

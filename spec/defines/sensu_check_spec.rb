@@ -361,4 +361,29 @@ describe 'sensu::check', :type => :define do
     let(:expected) { { notify: ["Sensu::Check[#{title}]"] } }
     it { should contain_anchor('plugins_before_checks').with(expected)}
   end
+
+  describe 'strings where arrays are expected (#803)' do
+    context 'handlers is passed as String' do
+      let(:params_override) { {handlers: 'default'} }
+      it { should contain_sensu__write_json(fpath).with_content("checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "handlers"=>["default"], "interval"=>60}}) }
+    end
+    context 'subscribers is passed as String' do
+      let(:params_override) { {subscribers: 'default'} }
+      it { should contain_sensu__write_json(fpath).with_content("checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "subscribers"=>["default"], "interval"=>60}}) }
+    end
+    context 'aggregates is passed as String' do
+      let(:params_override) { {aggregates: 'default'} }
+      it { should contain_sensu__write_json(fpath).with_content("checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "aggregates"=>["default"], "interval"=>60}}) }
+    end
+    context 'dependencies is passed as String' do
+      let(:params_override) { {dependencies: 'default'} }
+      it { should contain_sensu__write_json(fpath).with_content("checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "dependencies"=>["default"], "interval"=>60}}) }
+    end
+    context 'contacts is passed as String' do
+      let(:params_override) { {contacts: 'default'} }
+      it { should contain_sensu__write_json(fpath).with_content("checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "contacts"=>["default"], "interval"=>60}}) }
+    end
+  end
+
+
 end
