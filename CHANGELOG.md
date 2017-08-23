@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.32.0](https://github.com/sensu/sensu-puppet/tree/v2.32.0)
+## [v2.33.0](https://github.com/sensu/sensu-puppet/tree/v2.33.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.32.0...v2.33.0)
+
+**Closed issues:**
+
+- Default linux path not working on Windows with $has\_cluster [\#790](https://github.com/sensu/sensu-puppet/issues/790)
+
+**Merged pull requests:**
+
+- Quick fix for \#790 [\#800](https://github.com/sensu/sensu-puppet/pull/800) ([alvagante](https://github.com/alvagante))
+- Support puppet 5.1 [\#799](https://github.com/sensu/sensu-puppet/pull/799) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.32.0](https://github.com/sensu/sensu-puppet/tree/v2.32.0) (2017-08-18)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.31.0...v2.32.0)
 
 **Implemented enhancements:**
