@@ -4,10 +4,6 @@
 #
 class sensu::repo::apt {
 
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
-
   if defined(apt::source) {
 
     $ensure = $::sensu::install_repo ? {

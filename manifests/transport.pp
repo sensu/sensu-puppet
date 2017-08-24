@@ -4,10 +4,6 @@
 #
 class sensu::transport {
 
-  if $caller_module_name != $module_name {
-    fail("Use of private function ${name} by ${caller_module_name}")
-  }
-
   if $::sensu::transport_type != 'redis' {
     $ensure = 'absent'
   } else {

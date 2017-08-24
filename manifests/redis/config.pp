@@ -4,10 +4,6 @@
 #
 class sensu::redis::config {
 
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
-
   if $::sensu::_purge_config and !$::sensu::server and !$::sensu::api and !$::sensu::enterprise and $::sensu::transport_type != 'redis' {
     $ensure = 'absent'
   } else {

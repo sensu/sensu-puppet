@@ -49,10 +49,6 @@ class sensu::package (
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
 ) {
 
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
-
   case $::osfamily {
 
     'Debian': {
@@ -255,13 +251,15 @@ class sensu::package (
     $spawn_template = '<%= require "json"; JSON.pretty_generate(@spawn_config) + $/ %>'
     $spawn_ensure = 'file'
     $spawn_content = inline_template($spawn_template)
-    if $::sensu::client {
+    if $::sensu::client and $::sensu::manage_services {
       $spawn_notify = [
-        Class['sensu::client::service'],
+        Service['sensu-client'],
         Class['sensu::server::service'],
       ]
-    } else {
+    } elsif $::sensu::manage_services {
       $spawn_notify = [ Class['sensu::server::service'] ]
+    } else {
+      $spawn_notify = undef
     }
   } else {
     $spawn_ensure = undef
