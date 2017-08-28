@@ -93,6 +93,24 @@ describe 'sensu', :type => :class do
       ) }
     end # when using local key
 
+    context 'when passing password as Sensitive' do
+      let(:params) { {
+        :rabbitmq_port            => '1234',
+        :rabbitmq_host            => 'myhost',
+        :rabbitmq_user            => 'sensuuser',
+        :rabbitmq_password        => Puppet::Pops::Types::PSensitiveType::Sensitive.new('password'),
+        :rabbitmq_vhost           => 'myvhost',
+      } }
+
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :port            => '1234',
+        :host            => 'myhost',
+        :user            => 'sensuuser',
+        :password        => 'password',
+        :vhost           => 'myvhost',
+      ) }
+    end # when passing password as Sensitive
+
     context 'when using SSL transport' do
       let(:params) { {
         :rabbitmq_ssl => true,
