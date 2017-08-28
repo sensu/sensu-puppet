@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.33.0](https://github.com/sensu/sensu-puppet/tree/v2.33.0)
+## [v2.33.1](https://github.com/sensu/sensu-puppet/tree/HEAD)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.33.0...HEAD)
+
+**Closed issues:**
+
+- Checks not working as expected [\#801](https://github.com/sensu/sensu-puppet/issues/801)
+
+**Merged pull requests:**
+
+- Force array for some sense::check params \#801 [\#804](https://github.com/sensu/sensu-puppet/pull/804) ([alvagante](https://github.com/alvagante))
+- Update the README to clarify support resources [\#802](https://github.com/sensu/sensu-puppet/pull/802) ([obfuscurity](https://github.com/obfuscurity))
+- \#709 Remove anchors \(and create\_resources\) [\#763](https://github.com/sensu/sensu-puppet/pull/763) ([alvagante](https://github.com/alvagante))
+
+## [v2.33.0](https://github.com/sensu/sensu-puppet/tree/v2.33.0) (2017-08-23)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.32.0...v2.33.0)
 
 **Closed issues:**
