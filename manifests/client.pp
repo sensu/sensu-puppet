@@ -93,5 +93,6 @@ class sensu::client (
     redact         => $::sensu::redact,
     deregister     => $::sensu::client_deregister,
     deregistration => $::sensu::client_deregistration,
+    http_socket    => $::sensu::client_http_socket,
   }
 }

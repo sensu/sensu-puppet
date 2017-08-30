@@ -62,4 +62,22 @@ describe Puppet::Type.type(:sensu_client_config) do
       end
     end
   end
+  describe 'http_socket' do
+    subject { described_class.new(resource_hash)[:http_socket] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    http_socket = {
+      'bind' => '127.0.0.1',
+      'port' => '3031',
+      'user' => 'sensu',
+      'password' => 'sensu'
+    }    
+    context '=> custom values' do
+      let(:resource_hash_override) { {http_socket: http_socket} }
+      it { is_expected.to eq(http_socket) }
+    end
+
+  end
+
 end
