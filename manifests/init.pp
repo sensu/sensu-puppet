@@ -158,6 +158,8 @@
 #
 # @param client_keepalive Client keepalive config
 #
+# @param client_http_socket Client http_socket config
+#
 # @param safe_mode Force safe mode for checks
 #
 # @param plugins Plugins to install on the node
@@ -343,6 +345,7 @@ class sensu (
   Variant[Undef,Boolean] $client_deregister = undef,
   Variant[Undef,Hash] $client_deregistration = undef,
   Hash               $client_keepalive = {},
+  Hash               $client_http_socket = {},
   Boolean            $safe_mode = false,
   Variant[String,Array,Hash] $plugins = [],
   Hash               $plugins_defaults = {},

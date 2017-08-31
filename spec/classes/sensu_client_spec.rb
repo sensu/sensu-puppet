@@ -14,7 +14,8 @@ describe 'sensu', :type => :class do
           :address       => '2.3.4.5',
           :socket        => { 'bind' => '127.0.0.1', 'port' => 3030 },
           :subscriptions => [],
-          :custom        => {}
+          :custom        => {},
+          :http_socket   => {},
         ) }
 
         it { should contain_sensu_client_config('host.domain.com').without_redact }
@@ -45,7 +46,8 @@ describe 'sensu', :type => :class do
             :redact                   => ['password'],
             :client_name              => 'myclient',
             :safe_mode                => true,
-            :client_custom            => { 'bool' => true, 'foo' => 'bar' }
+            :client_custom            => { 'bool' => true, 'foo' => 'bar' },
+            :client_http_socket       => { 'bind' => '127.0.0.1', 'port' => 3031 }
           } }
 
           it { should contain_sensu_client_config('host.domain.com').with( {
@@ -56,7 +58,8 @@ describe 'sensu', :type => :class do
             :subscriptions => ['all'],
             :redact        => ['password'],
             :safe_mode     => true,
-            :custom        => { 'bool' => true, 'foo' => 'bar' }
+            :custom        => { 'bool' => true, 'foo' => 'bar' },
+            :http_socket   => { 'bind' => '127.0.0.1', 'port' => 3031 }
           } ) }
         end
 
@@ -94,6 +97,20 @@ describe 'sensu', :type => :class do
             it { is_expected.to raise_error(Puppet::Error) }
           end
         end
+
+        describe 'http_socket' do
+          http_socket = {
+            'bind' => '127.0.0.1',
+            'port' => '3031',
+            'user' => 'sensu',
+            'password' => 'sensu'
+          }
+          context "=> {'http_socket' => 'custom hash'}" do
+            let(:params_override) { {client_http_socket: http_socket} }
+            it { is_expected.to contain_sensu_client_config(title).with(http_socket: http_socket) }
+          end
+
+        end        
       end
 
       context 'purge config' do

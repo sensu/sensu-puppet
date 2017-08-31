@@ -157,6 +157,29 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto {}
   end
 
+  newproperty(:http_socket) do
+    desc "A set of attributes that configure the Sensu client http socket."
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
   autorequire(:package) do
     ['sensu']
   end
