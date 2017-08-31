@@ -1,8 +1,22 @@
 # Change Log
 
-## [v2.33.1](https://github.com/sensu/sensu-puppet/tree/HEAD)
+## [v2.34.0](https://github.com/sensu/sensu-puppet/tree/v2.34.0)
 
-[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.33.0...HEAD)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.33.1...v2.34.0)
+
+**Closed issues:**
+
+- Client config should support http\_socket [\#776](https://github.com/sensu/sensu-puppet/issues/776)
+- Refactor inline documentation to puppet strings \(yard\) format [\#757](https://github.com/sensu/sensu-puppet/issues/757)
+- Stop using private classes and the anchor pattern [\#709](https://github.com/sensu/sensu-puppet/issues/709)
+- redacting passwords from catalogue output [\#515](https://github.com/sensu/sensu-puppet/issues/515)
+
+**Merged pull requests:**
+
+- Added http\_socket param to client config \#776 [\#805](https://github.com/sensu/sensu-puppet/pull/805) ([alvagante](https://github.com/alvagante))
+
+## [v2.33.1](https://github.com/sensu/sensu-puppet/tree/v2.33.1) (2017-08-28)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.33.0...v2.33.1)
 
 **Closed issues:**
 
