@@ -4,10 +4,15 @@
 #
 class sensu::transport {
 
-  if $::sensu::transport_type != 'redis' {
-    $ensure = 'absent'
-  } else {
-    $ensure = 'present'
+  case $::osfamily {
+    'Darwin': {
+      $ensure = present
+    }
+    default: {
+      $ensure = $::sensu::transport_type ? {
+        'redis' => 'present',
+        default => 'absent'
+    }
   }
 
   $transport_type_hash = {
@@ -19,8 +24,8 @@ class sensu::transport {
 
   file { "${sensu::conf_dir}/transport.json":
     ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
+    owner   => $::sensu::user,
+    group   => $::sensu::group,
     mode    => '0440',
     content => inline_template('<%= JSON.pretty_generate(@transport_type_hash) %>'),
     notify  => $::sensu::check_notify,

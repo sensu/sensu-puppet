@@ -524,6 +524,17 @@ class sensu (
       $file_mode = undef
     }
 
+    'Darwin': {
+      $etc_dir = $sensu_etc_dir
+      $conf_dir = "${etc_dir}/conf.d"
+      $user = '_sensu'
+      $group = 'root'
+      $home_dir = '/opt/sensu'
+      $shell = '/bin/false'
+      $dir_mode = '0555'
+      $file_mode = '0440'
+    }
+
     default: {}
   }
 
