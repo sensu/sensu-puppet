@@ -34,7 +34,7 @@ class sensu::rabbitmq::config {
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
 
-      $ssl_cert_chain = '/etc/sensu/ssl/cert.pem'
+      $ssl_cert_chain = "${ssl_dir}/cert.pem"
     # else provided a cert chain, and the variable actually contains the cert,
     # create the file with conents of the variable
     } elsif $::sensu::rabbitmq_ssl_cert_chain and  $::sensu::rabbitmq_ssl_cert_chain =~ /BEGIN CERTIFICATE/ {
@@ -48,7 +48,7 @@ class sensu::rabbitmq::config {
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
 
-      $ssl_cert_chain = '/etc/sensu/ssl/cert.pem'
+      $ssl_cert_chain = "${ssl_dir}/cert.pem"
     # else set the cert to value passed in wholesale, usually this is
     # a raw file path
     } else {
@@ -68,7 +68,7 @@ class sensu::rabbitmq::config {
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
 
-      $ssl_private_key = '/etc/sensu/ssl/key.pem'
+      $ssl_private_key = "${ssl_dir}/key.pem"
     # else provided private key, and the variable actually contains the key,
     # create file with contents of the variable
     } elsif $::sensu::rabbitmq_ssl_private_key and $::sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/ {
@@ -82,7 +82,7 @@ class sensu::rabbitmq::config {
         before  => Sensu_rabbitmq_config[$::fqdn],
       }
 
-      $ssl_private_key = '/etc/sensu/ssl/key.pem'
+      $ssl_private_key = "${ssl_dir}/key.pem"
     # else set the private key to value passed in wholesale, usually this is
     # a raw file path
     } else {
