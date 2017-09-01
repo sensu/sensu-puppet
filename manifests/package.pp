@@ -183,7 +183,7 @@ class sensu::package (
   } else {
     $plugin_provider = $::sensu::use_embedded_ruby ? {
       true    => 'sensu_gem',
-      default => 'gem',
+      default => 'gem'
     }
   }
 
@@ -203,7 +203,7 @@ class sensu::package (
   if $::osfamily != 'windows' {
     $template_content = $::osfamily ? {
       'Darwin' => 'EMBEDDED_RUBY=true',
-      default  => template("${module_name}/sensu.erb"),
+      default  => template("${module_name}/sensu.erb")
     }
     file { '/etc/default/sensu':
       ensure  => file,

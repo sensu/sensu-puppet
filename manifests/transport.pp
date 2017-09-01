@@ -11,7 +11,7 @@ class sensu::transport {
     default: {
       $ensure = $::sensu::transport_type ? {
         'redis' => 'present',
-        default => 'absent',
+        default => 'absent'
     }
   }
 
