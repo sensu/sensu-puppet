@@ -26,8 +26,8 @@ class sensu::api (
     }
 
   case $::osfamily {
-    'windows', 'Darwin' {}
-    default {
+    'windows','Darwin': {}
+    default: {
       service { 'sensu-api':
         ensure     => $service_ensure,
         enable     => $service_enable,

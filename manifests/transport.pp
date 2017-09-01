@@ -5,10 +5,10 @@
 class sensu::transport {
 
   case $::osfamily {
-    'Darwin' {
+    'Darwin': {
       $ensure = present
     }
-    default {
+    default: {
       $ensure = $::sensu::transport_type ? {
         'redis' => 'present',
         default => 'absent',

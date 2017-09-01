@@ -33,7 +33,7 @@ class sensu::client (
       }
     }
     case $::osfamily {
-      'windows' {
+      'windows': {
         $service_name     = 'sensu-client'
         $service_path     = undef
         $service_provider = undef
@@ -50,12 +50,12 @@ class sensu::client (
           require  => File['C:/opt/sensu/bin/sensu-client.xml'],
         }
       }
-      'Darwin' {
+      'Darwin': {
         $service_name     = 'org.sensuapp.sensu-client'
         $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
         $service_provider = 'launchd'
       }
-      default {
+      default: {
         $service_name     = 'sensu-client'
         $service_path     = undef
         $service_provider = undef
