@@ -54,6 +54,14 @@ class sensu::client (
         $service_name     = 'org.sensuapp.sensu-client'
         $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
         $service_provider = 'launchd'
+
+        file {$service_path:
+          ensure => present,
+          owner  => 'root',
+          group  => 'wheel',
+          mode   => '0755',
+          before => Service[$service_name],
+        }
       }
       default: {
         $service_name     = 'sensu-client'
