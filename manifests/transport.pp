@@ -4,14 +4,14 @@
 #
 class sensu::transport {
 
-  if $::osfamily == 'Darwin' {
-    $ensure = present
-  }
-  else {
-    if $::sensu::transport_type != 'redis' {
-      $ensure = 'absent'
-    } else {
-      $ensure = 'present'
+  case $::osfamily {
+    'Darwin' {
+      $ensure = present
+    }
+    default {
+      $ensure = $::sensu::transport_type ? {
+        'redis' => 'present',
+        default => 'absent',
     }
   }
 
