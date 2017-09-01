@@ -62,6 +62,7 @@ describe Puppet::Type.type(:sensu_client_config) do
       end
     end
   end
+
   describe 'http_socket' do
     subject { described_class.new(resource_hash)[:http_socket] }
     context 'in the default case' do
@@ -77,7 +78,80 @@ describe Puppet::Type.type(:sensu_client_config) do
       let(:resource_hash_override) { {http_socket: http_socket} }
       it { is_expected.to eq(http_socket) }
     end
+  end
 
+  describe 'servicenow' do
+    subject { described_class.new(resource_hash)[:servicenow] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    servicenow = {
+      'configuration_item' => {
+        'name' => 'test server',
+        'os_version' => '7',
+      }
+    }
+    context '=> custom values' do
+      let(:resource_hash_override) { {servicenow: servicenow} }
+      it { is_expected.to eq(servicenow) }
+    end
+  end
+
+  describe 'ec2' do
+    subject { described_class.new(resource_hash)[:ec2] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    ec2 = {
+      'instance-id' => 'i-424242',
+      'allowed_instance_states' => [ 'pending','running','rebooting'],
+      'region' => 'us-west-1',
+      'access_key_id' => 'AlygD0X6Z4Xr2m3gl70J',
+      'secret_access_key' => 'y9Jt5OqNOqdy5NCFjhcUsHMb6YqSbReLAJsy4d6obSZIWySv',
+      'timeout' => '30',
+    }
+    context '=> custom values' do
+      let(:resource_hash_override) { {ec2: ec2} }
+      it { is_expected.to eq(ec2) }
+    end
+  end
+
+  describe 'chef' do
+    subject { described_class.new(resource_hash)[:chef] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    chef = {
+      'nodename' => 'test',
+      'endpoint' => 'https://api.chef.io/organizations/example',
+      'flavor' => 'enterprise',
+      'client' => 'sensu-server',
+      'key' => '/etc/chef/i-424242.pem',
+      'ssl_verify' => 'false',
+      'proxy_address' => 'proxy.example.com',
+      'proxy_port' => '8080',
+      'proxy_username' => 'chef',
+      'proxy_password' => 'secret',
+      'timeout' => '30',
+    }
+    context '=> custom values' do
+      let(:resource_hash_override) { {chef: chef} }
+      it { is_expected.to eq(chef) }
+    end
+  end
+
+  describe 'puppet' do
+    subject { described_class.new(resource_hash)[:puppet] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    puppet = {
+      'nodename' => 'test',
+    }
+    context '=> custom values' do
+      let(:resource_hash_override) { {puppet: puppet} }
+      it { is_expected.to eq(puppet) }
+    end
   end
 
 end

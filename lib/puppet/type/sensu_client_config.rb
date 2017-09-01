@@ -180,7 +180,100 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto {}
   end
 
+  newproperty(:servicenow) do
+    desc "Configure Service Now integration on Sensu client."
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
+  newproperty(:ec2) do
+    desc "Configure ec2 integration on Sensu client."
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
+  newproperty(:chef) do
+    desc "Configure Chef integration on Sensu client."
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
+  newproperty(:puppet) do
+    desc "Configure Puppet integration on Sensu client."
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
+
   autorequire(:package) do
     ['sensu']
   end
+
 end

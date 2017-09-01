@@ -8,7 +8,7 @@ describe 'sensu', :type => :class do
     context 'config' do
       context 'defaults' do
         let(:params) { { :client => true } }
-        it { should contain_sensu_client_config('host.domain.com').with(
+        it { should contain_sensu_client_config(title).with(
           :ensure        => 'present',
           :client_name   => 'host.domain.com',
           :address       => '2.3.4.5',
@@ -16,11 +16,15 @@ describe 'sensu', :type => :class do
           :subscriptions => [],
           :custom        => {},
           :http_socket   => {},
+          :servicenow    => {},
+          :ec2           => {},
+          :chef          => {},
+          :puppet        => {},
         ) }
 
-        it { should contain_sensu_client_config('host.domain.com').without_redact }
-        it { should contain_sensu_client_config('host.domain.com').without_deregister }
-        it { should contain_sensu_client_config('host.domain.com').without_deregistration }
+        it { should contain_sensu_client_config(title).without_redact }
+        it { should contain_sensu_client_config(title).without_deregister }
+        it { should contain_sensu_client_config(title).without_deregistration }
       end # defaults
 
       context 'setting config params' do
@@ -47,10 +51,14 @@ describe 'sensu', :type => :class do
             :client_name              => 'myclient',
             :safe_mode                => true,
             :client_custom            => { 'bool' => true, 'foo' => 'bar' },
-            :client_http_socket       => { 'bind' => '127.0.0.1', 'port' => 3031 }
+            :client_http_socket       => { 'bind' => '127.0.0.1', 'port' => 3031 },
+            :client_servicenow        => { 'configuration_item' => { 'name' => 'Sample', 'os_version' => '6' } },
+            :client_ec2               => { 'instance_id' => 'i-2131221' },
+            :client_chef              => { 'nodename' => 'test' },
+            :client_puppet            => { 'nodename' => 'test' },
           } }
 
-          it { should contain_sensu_client_config('host.domain.com').with( {
+          it { should contain_sensu_client_config(title).with( {
             :ensure        => 'present',
             :client_name   => 'myclient',
             :address       => '1.2.3.4',
@@ -59,7 +67,11 @@ describe 'sensu', :type => :class do
             :redact        => ['password'],
             :safe_mode     => true,
             :custom        => { 'bool' => true, 'foo' => 'bar' },
-            :http_socket   => { 'bind' => '127.0.0.1', 'port' => 3031 }
+            :http_socket   => { 'bind' => '127.0.0.1', 'port' => 3031 },
+            :servicenow    => { 'configuration_item' => { 'name' => 'Sample', 'os_version' => '6' } },
+            :ec2           => { 'instance_id' => 'i-2131221' },
+            :chef          => { 'nodename' => 'test' },
+            :puppet        => { 'nodename' => 'test' },
           } ) }
         end
 
@@ -109,8 +121,65 @@ describe 'sensu', :type => :class do
             let(:params_override) { {client_http_socket: http_socket} }
             it { is_expected.to contain_sensu_client_config(title).with(http_socket: http_socket) }
           end
+        end
 
-        end        
+        describe 'servicenow' do
+          servicenow = {
+            'configuration_item' => {
+              'name' => 'ServiceNow test',
+              'os_version' => '16.04'
+            }
+          }
+          context "=> {'servicenow' => 'custom hash'}" do
+            let(:params_override) { {client_servicenow: servicenow} }
+            it { is_expected.to contain_sensu_client_config(title).with(servicenow: servicenow) }
+          end
+        end
+
+        describe 'ec2' do
+          ec2 = {
+            'instance-id' => 'i-424242',
+            'allowed_instance_states' => [ 'pending','running','rebooting'],
+            'region' => 'us-west-1',
+            'access_key_id' => 'AlygD0X6Z4Xr2m3gl70J',
+            'secret_access_key' => 'y9Jt5OqNOqdy5NCFjhcUsHMb6YqSbReLAJsy4d6obSZIWySv',
+            'timeout' => '30',
+          }
+          context "=> {'ec2' => 'custom hash'}" do
+            let(:params_override) { {client_ec2: ec2} }
+            it { is_expected.to contain_sensu_client_config(title).with(ec2: ec2) }
+          end
+        end
+
+        describe 'chef' do
+          chef = {
+            'nodename' => 'test',
+            'endpoint' => 'https://api.chef.io/organizations/example',
+            'flavor' => 'enterprise',
+            'client' => 'sensu-server',
+            'key' => '/etc/chef/i-424242.pem',
+            'ssl_verify' => 'false',
+            'proxy_address' => 'proxy.example.com',
+            'proxy_port' => '8080',
+            'proxy_username' => 'chef',
+            'proxy_password' => 'secret',
+            'timeout' => '30',
+          }
+          context "=> {'chef' => 'custom hash'}" do
+            let(:params_override) { {client_chef: chef} }
+            it { is_expected.to contain_sensu_client_config(title).with(chef: chef) }
+          end
+        end
+
+        describe 'puppet' do
+          puppet = {
+            'nodename' => 'test',
+          }
+          context "=> {'puppet' => 'custom hash'}" do
+            let(:params_override) { {client_puppet: puppet} }
+            it { is_expected.to contain_sensu_client_config(title).with(puppet: puppet) }
+          end
+        end
       end
 
       context 'purge config' do
