@@ -25,17 +25,18 @@ class sensu::api (
       }
     }
 
-  if $::osfamily !~ /(Darwin|windows)/ {
-    service { 'sensu-api':
-      ensure     => $service_ensure,
-      enable     => $service_enable,
-      hasrestart => $hasrestart,
-      subscribe  => [
-        Class['sensu::package'],
-        Sensu_api_config[$::fqdn],
-        Class['sensu::redis::config'],
-        Class['sensu::rabbitmq::config'],
-      ],
+    if $::osfamily !~ /(Darwin|windows)/ {
+      service { 'sensu-api':
+        ensure     => $service_ensure,
+        enable     => $service_enable,
+        hasrestart => $hasrestart,
+        subscribe  => [
+          Class['sensu::package'],
+          Sensu_api_config[$::fqdn],
+          Class['sensu::redis::config'],
+          Class['sensu::rabbitmq::config'],
+        ],
+      }
     }
   }
 
