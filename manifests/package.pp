@@ -51,6 +51,20 @@ class sensu::package (
 
   case $::osfamily {
 
+    'Darwin': {
+      $pkg_provider = 'apple'
+      $pkg_require = "Remote_file[$pkg_source]"
+      $pkg_source = '/tmp/sensu-installer.dmg'
+      $pkg_title = 'sensu'
+      $pkg_version = $::sensu::version
+
+      remote_file { $pkg_source:
+        ensure => present,
+        source => "https://repositories.sensuapp.org/osx/${::macosx_productversion_major}/x86_64/sensu-${pkg_version}-1.dmg",
+      }
+
+    }
+
     'Debian': {
       $pkg_title = 'sensu'
       $pkg_name = 'sensu'
@@ -144,12 +158,24 @@ class sensu::package (
 
   }
 
-  package { $pkg_title:
-    ensure   => $pkg_version,
-    name     => $pkg_name,
-    source   => $pkg_source,
-    require  => $pkg_require,
-    provider => $pkg_provider,
+  case $::osfamily {
+    'Darwin': {
+      package { $pkg_title:
+        ensure   => present,
+        source   => $pkg_source,
+        require  => $pkg_require,
+        provider => $pkg_provider,
+      }
+    }
+    default: {
+      package { $pkg_title:
+        ensure   => $pkg_version,
+        name     => $pkg_name,
+        source   => $pkg_source,
+        require  => $pkg_require,
+        provider => $pkg_provider,
+      }
+    }
   }
 
   if $::sensu::sensu_plugin_provider {
