@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'boolean_property.rb'))
 
 Puppet::Type.newtype(:sensu_redis_config) do
-  @doc = ""
+  @doc = "Manages Sensu Redis config"
 
   def initialize(*args)
     super *args
@@ -110,9 +110,8 @@ Puppet::Type.newtype(:sensu_redis_config) do
     end
 
     munge do |value|
-      Hash[value.map do |k, v|
-        [k, if k == "port" then v.to_i else v.to_s end]
-      end]
+      hsh_ary = value.map {|k,v| [k, k == "port" ? v.to_i : v.to_s] }
+      Hash[hsh_ary]
     end
   end
 

@@ -15,13 +15,11 @@ before_install:
 
 sudo: false
 
-script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec'
+script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec strings:generate'
 
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.9
-    env: PUPPET_GEM_VERSION="~> 4.5.0"
   - rvm: 2.1.9
     env: PUPPET_GEM_VERSION="~> 4.6.0"
   - rvm: 2.1.9
@@ -32,10 +30,10 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 4.9.0"
   - rvm: 2.1.9
     env: PUPPET_GEM_VERSION="~> 4.10.0"
-  - rvm: 2.1.9
-    env: PUPPET_GEM_VERSION="~> 4"
   - rvm: 2.4.1
     env: PUPPET_GEM_VERSION="~> 5.0.0"
+  - rvm: 2.4.1
+    env: PUPPET_GEM_VERSION="~> 5.1.0"
   - rvm: 2.4.1
     env: PUPPET_GEM_VERSION="~> 5"
 

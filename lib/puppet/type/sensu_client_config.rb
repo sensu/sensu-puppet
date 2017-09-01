@@ -1,17 +1,20 @@
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'boolean_property.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_client_config) do
-  @doc = ""
+  @doc = "Manages Sensu client config"
 
   def initialize(*args)
     super *args
 
-    self[:notify] = [
-      "Service[sensu-client]",
-    ].select { |ref| catalog.resource(ref) }
+    if c = catalog
+      self[:notify] = [
+        'Service[sensu-client]',
+      ].select { |ref| c.resource(ref) }
+    end
   end
 
   ensurable do
@@ -87,13 +90,8 @@ Puppet::Type.newtype(:sensu_client_config) do
   end
 
   newproperty(:custom) do
-    desc "Custom client variables"
-
+    desc 'Custom client attributes'
     include PuppetX::Sensu::ToType
-
-    munge do |value|
-      value.each { |k, v| value[k] = to_type(v) }
-    end
 
     def is_to_s(hash = @is)
       hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
@@ -105,7 +103,7 @@ Puppet::Type.newtype(:sensu_client_config) do
 
     def insync?(is)
       if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+        if is == @should[0].each { |k, v| value[k] = v }
           true
         else
           false
@@ -116,6 +114,15 @@ Puppet::Type.newtype(:sensu_client_config) do
     end
 
     defaultto {}
+  end
+
+  newproperty(:deregister, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc 'Enable client de-registration'
+  end
+
+  newproperty(:deregistration) do
+    desc 'Client deregistration attributes'
+    newvalues(/.*/, :absent)
   end
 
   newproperty(:keepalive) do
@@ -150,6 +157,28 @@ Puppet::Type.newtype(:sensu_client_config) do
     defaultto {}
   end
 
+  newproperty(:http_socket) do
+    desc "A set of attributes that configure the Sensu client http socket."
+    include PuppetX::Sensu::ToType
+
+    munge do |value|
+      value.each { |k, v| value[k] = to_type(v) }
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
+  end
 
   autorequire(:package) do
     ['sensu']

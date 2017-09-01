@@ -1,12 +1,8 @@
-# = Class: sensu::rabbitmq::config
+# @summary Sets the Sensu rabbitmq config
 #
 # Sets the Sensu rabbitmq config
 #
 class sensu::rabbitmq::config {
-
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
 
   if $::sensu::_purge_config and !$::sensu::server and !$::sensu::client and !$::sensu::enterprise and $::sensu::transport_type != 'rabbitmq' {
     $ensure = 'absent'
@@ -118,7 +114,7 @@ class sensu::rabbitmq::config {
   $cert_chain = $has_cluster ? { false => $ssl_cert_chain, true => undef, }
   $private_key = $has_cluster ? { false => $ssl_private_key, true => undef, }
   $prefetch = $has_cluster ? { false => $::sensu::rabbitmq_prefetch, true => undef, }
-  $base_path = $has_cluster ? { false => $::sensu::conf_dir, true => undef, }
+  $base_path = $::sensu::conf_dir
   $cluster = $has_cluster ? { true => $::sensu::rabbitmq_cluster, false => undef, }
   $heartbeat = $has_cluster ? { false => $::sensu::rabbitmq_heartbeat, true => undef, }
 

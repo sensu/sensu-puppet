@@ -10,7 +10,7 @@ describe 'sensu::subscription', :type => :define do
     let(:title) { 'mysubscription' }
 
     context 'defaults' do
-      it { should contain_sensu_client_subscription('mysubscription') }
+      it { should contain_sensu_client_subscription('mysubscription').with_base_path('/etc/sensu/conf.d') }
     end
 
     context 'setting params' do
@@ -35,6 +35,19 @@ describe 'sensu::subscription', :type => :define do
   context 'notifications' do
     let(:title) { 'mysubscription' }
 
-    it { should contain_sensu_client_subscription('mysubscription').with(:notify => 'Class[Sensu::Client::Service]' ) }
+    it { should contain_sensu_client_subscription('mysubscription').with(:notify => 'Service[sensu-client]' ) }
   end
+
+  describe 'when sensu::sensu_etc_dir => /opt/etc/sensu' do
+    let(:pre_condition) do
+      <<-'ENDofPUPPETcode'
+      class {'sensu':
+        sensu_etc_dir => '/opt/etc/sensu';
+      }
+      ENDofPUPPETcode
+    end
+    let(:title) { 'mysubscription' }
+    it { should contain_sensu_client_subscription('mysubscription').with_base_path('/opt/etc/sensu/conf.d') }
+  end
+
 end

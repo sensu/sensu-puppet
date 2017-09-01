@@ -1,21 +1,129 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
-  let(:facts) { { :osfamily => 'RedHat' } }
+  describe 'osfamily RedHat defaults' do
+    let(:facts) { { :osfamily => 'RedHat' } }
 
-  it 'should compile' do should create_class('sensu') end
-  it { should contain_user('sensu') }
-  it { should contain_file('/etc/default/sensu').with_content(%r{^EMBEDDED_RUBY=true$}) }
-  it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_LEVEL=info$}) }
-  it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/sensu$}) }
-  it { should contain_file('/etc/default/sensu').without_content(%r{^RUBYOPT=.*$}) }
-  it { should contain_file('/etc/default/sensu').without_content(%r{^GEM_PATH=.*$}) }
-  it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
-  it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
-  it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
-  it { should_not contain_file('C:/opt/sensu/bin/sensu-client.xml') }
+    it 'should compile' do should create_class('sensu') end
+    it { should contain_user('sensu') }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/sensu$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^EMBEDDED_RUBY=true$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_LEVEL=info$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^LOG_DIR=/var/log/sensu$}) }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^RUBYOPT=.*$}) }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^GEM_PATH=.*$}) }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^CONFD_DIR=.*$}) }
+    it { should contain_file('/etc/default/sensu').without_content(%r{^HEAP_SIZE=.*$}) }
+    it { should_not contain_file('C:/opt/sensu/bin/sensu-client.xml') }
 
-  describe 'osfamily windows' do
+    # FIXME: The following resource checks are only testing $sensu_etc_dir specific values
+    # resources from sensu::package
+    it { should contain_file('/etc/sensu/conf.d') }
+    it { should contain_file('/etc/sensu/conf.d/handlers') }
+    it { should contain_file('/etc/sensu/conf.d/checks') }
+    it { should contain_file('/etc/sensu/conf.d/filters') }
+    it { should contain_file('/etc/sensu/conf.d/extensions') }
+    it { should contain_file('/etc/sensu/conf.d/mutators') }
+    it { should contain_file('/etc/sensu/conf.d/contacts') }
+    it { should contain_file('/etc/sensu/handlers') }
+    it { should contain_file('/etc/sensu/extensions') }
+    it { should contain_file('/etc/sensu/extensions/handlers') }
+    it { should contain_file('/etc/sensu/mutators') }
+    it { should contain_file('/etc/sensu/plugins') }
+    it { should contain_file('/etc/sensu/config.json') }
+    # resources from sensu::rabbitmq::config
+    it { should_not contain_file('/etc/sensu/ssl') }
+    it { should_not contain_file('/etc/sensu/ssl/cert.pem').with_require('File[/etc/sensu/ssl]') }
+    it { should_not contain_file('/etc/sensu/ssl/key.pem').with_require('File[/etc/sensu/ssl]') }
+    it { should contain_file('/etc/sensu/conf.d/rabbitmq.json') }
+    it { should contain_sensu_rabbitmq_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
+    # resources from sensu::redis::config
+    it { should contain_file('/etc/sensu/conf.d/redis.json') }
+    it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
+    # resources from sensu::api
+    it { should contain_file('/etc/sensu/conf.d/api.json') }
+    it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
+    # resources from sensu::enterprise::dashboard
+    it { should_not contain_file('/etc/sensu/dashboard.json') }
+    # resources from sensu::subscription (positive tests are included in test for sensu::subscription itself)
+    it { should_not contain_file('/etc/sensu/conf.d/subscriptiond.json') }
+    it { should_not contain_sensu_client_subscription('mysubscription').with_base_path('/etc/sensu/conf.d') }
+    # resources from sensu::transport
+    it { should contain_file('/etc/sensu/conf.d/transport.json') }
+    # resources from sensu::client
+    it { should contain_file('/etc/sensu/conf.d/client.json') }
+    it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('/etc/sensu/conf.d') }
+  end
+
+  context 'with sensu_etc_dir => /opt/etc/sensu' do
+    let(:params) { {:sensu_etc_dir => '/opt/etc/sensu' } }
+
+    # resources from sensu::package
+    it { should contain_file('/opt/etc/sensu/conf.d') }
+    it { should contain_file('/opt/etc/sensu/conf.d/handlers') }
+    it { should contain_file('/opt/etc/sensu/conf.d/checks') }
+    it { should contain_file('/opt/etc/sensu/conf.d/filters') }
+    it { should contain_file('/opt/etc/sensu/conf.d/extensions') }
+    it { should contain_file('/opt/etc/sensu/conf.d/mutators') }
+    it { should contain_file('/opt/etc/sensu/conf.d/contacts') }
+    it { should contain_file('/opt/etc/sensu/handlers') }
+    it { should contain_file('/opt/etc/sensu/extensions') }
+    it { should contain_file('/opt/etc/sensu/extensions/handlers') }
+    it { should contain_file('/opt/etc/sensu/mutators') }
+    it { should contain_file('/opt/etc/sensu/plugins') }
+    it { should contain_file('/opt/etc/sensu/config.json') }
+    # resources from sensu::rabbitmq::config
+    it { should_not contain_file('/opt/etc/sensu/ssl') }
+    it { should_not contain_file('/opt/etc/sensu/ssl/cert.pem').with_require('File[/opt/etc/sensu/ssl]') }
+    it { should_not contain_file('/opt/etc/sensu/ssl/key.pem').with_require('File[/opt/etc/sensu/ssl]') }
+    it { should contain_file('/opt/etc/sensu/conf.d/rabbitmq.json') }
+    it { should contain_sensu_rabbitmq_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
+    # resources from sensu::redis::config
+    it { should contain_file('/opt/etc/sensu/conf.d/redis.json') }
+    it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
+    # resources from sensu::api
+    it { should contain_file('/opt/etc/sensu/conf.d/api.json') }
+    it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
+    # resources from sensu::enterprise::dashboard
+    it { should_not contain_file('/opt/etc/sensu/dashboard.json') }
+    # resources from sensu::subscription (positive tests are included in test for sensu::subscription itself)
+    it { should_not contain_file('/opt/etc/sensu/conf.d/subscriptiond.json') }
+    it { should_not contain_sensu_client_subscription('mysubscription').with_base_path('/opt/etc/sensu/conf.d') }
+    # resources from sensu::transport
+    it { should contain_file('/opt/etc/sensu/conf.d/transport.json') }
+    # resources from sensu::client
+    it { should contain_file('/opt/etc/sensu/conf.d/client.json') }
+    it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('/opt/etc/sensu/conf.d') }
+
+    context 'when rabbitmq_ssl_cert_chain => puppet:///modules/sensu/cert.pem' do
+      let(:params) { {:sensu_etc_dir => '/opt/etc/sensu', :rabbitmq_ssl_cert_chain => 'puppet:///modules/sensu/cert.pem' } }
+      it { should contain_file('/opt/etc/sensu/ssl') }
+      it { should contain_file('/opt/etc/sensu/ssl/cert.pem').with_require('File[/opt/etc/sensu/ssl]') }
+      it { should_not contain_file('/opt/etc/sensu/ssl/key.pem') }
+    end
+
+    context 'when rabbitmq_ssl_private_key => puppet:///modules/sensu/key.pem' do
+      let(:params) { {:sensu_etc_dir => '/opt/etc/sensu', :rabbitmq_ssl_private_key => 'puppet:///modules/sensu/key.pem' } }
+      it { should contain_file('/opt/etc/sensu/ssl') }
+      it { should_not contain_file('/opt/etc/sensu/ssl/cert.pem') }
+      it { should contain_file('/opt/etc/sensu/ssl/key.pem').with_require('File[/opt/etc/sensu/ssl]') }
+    end
+
+    context 'when enterprise_dashboard => true (and enterprise_user & enterprise_pass set) ' do
+      let(:params) { {:sensu_etc_dir => '/opt/etc/sensu', :enterprise_dashboard => true, :enterprise_user => 'user', :enterprise_pass => 'pass'  } }
+      it { should contain_file('/opt/etc/sensu/dashboard.json') }
+    end
+
+    context 'when enterprise_dashboard => true (and enterprise_user & enterprise_pass set) ' do
+      let(:params) { {:sensu_etc_dir => '/opt/etc/sensu', :enterprise_dashboard => true, :enterprise_user => 'user', :enterprise_pass => 'pass'  } }
+      it { should contain_file('/opt/etc/sensu/dashboard.json') }
+    end
+  end
+
+  describe 'osfamily windows defaults' do
     let(:facts) do
       {
         :osfamily => 'windows',
@@ -28,6 +136,106 @@ describe 'sensu', :type => :class do
           },
         },
       }
+    end
+
+    # FIXME: The following resource checks are only testing $sensu_etc_dir specific values
+    # resources from sensu::package
+    it { should contain_file('C:/opt/sensu/conf.d') }
+    it { should contain_file('C:/opt/sensu/conf.d/handlers') }
+    it { should contain_file('C:/opt/sensu/conf.d/checks') }
+    it { should contain_file('C:/opt/sensu/conf.d/filters') }
+    it { should contain_file('C:/opt/sensu/conf.d/extensions') }
+    it { should contain_file('C:/opt/sensu/conf.d/mutators') }
+    it { should contain_file('C:/opt/sensu/conf.d/contacts') }
+    it { should contain_file('C:/opt/sensu/handlers') }
+    it { should contain_file('C:/opt/sensu/extensions') }
+    it { should contain_file('C:/opt/sensu/extensions/handlers') }
+    it { should contain_file('C:/opt/sensu/mutators') }
+    it { should contain_file('C:/opt/sensu/plugins') }
+    it { should contain_file('C:/opt/sensu/config.json') }
+    # resources from sensu::rabbitmq::config
+    it { should_not contain_file('C:/opt/sensu/ssl') }
+    it { should_not contain_file('C:/opt/sensu/ssl/cert.pem').with_require('File[C:/opt/sensu/ssl]') }
+    it { should_not contain_file('C:/opt/sensu/ssl/key.pem').with_require('File[C:/opt/sensu/ssl]') }
+    it { should contain_file('C:/opt/sensu/conf.d/rabbitmq.json') }
+    it { should contain_sensu_rabbitmq_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
+    # resources from sensu::redis::config
+    it { should contain_file('C:/opt/sensu/conf.d/redis.json') }
+    it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
+    # resources from sensu::api
+    it { should contain_file('C:/opt/sensu/conf.d/api.json') }
+    it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
+    # resources from sensu::enterprise::dashboard
+    it { should_not contain_file('C:/opt/sensu/dashboard.json') }
+    # resources from sensu::transport
+    it { should contain_file('C:/opt/sensu/conf.d/transport.json') }
+    # resources from sensu::client
+    it { should contain_file('C:/opt/sensu/conf.d/client.json') }
+    it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('C:/opt/sensu/conf.d') }
+
+    describe 'with manage_user => true' do
+      it { should_not contain_user('sensu') }
+    end
+
+    describe 'with manage_user => false' do
+      let(:params) { {:manage_user => false} }
+      it { should_not contain_user('sensu') }
+    end
+
+    context 'with sensu_etc_dir => C:/etc/sensu' do
+      let(:params) { {:sensu_etc_dir => 'C:/etc/sensu' } }
+      # resources from sensu::package
+      it { should contain_file('C:/etc/sensu/conf.d') }
+      it { should contain_file('C:/etc/sensu/conf.d/handlers') }
+      it { should contain_file('C:/etc/sensu/conf.d/checks') }
+      it { should contain_file('C:/etc/sensu/conf.d/filters') }
+      it { should contain_file('C:/etc/sensu/conf.d/extensions') }
+      it { should contain_file('C:/etc/sensu/conf.d/mutators') }
+      it { should contain_file('C:/etc/sensu/conf.d/contacts') }
+      it { should contain_file('C:/etc/sensu/handlers') }
+      it { should contain_file('C:/etc/sensu/extensions') }
+      it { should contain_file('C:/etc/sensu/extensions/handlers') }
+      it { should contain_file('C:/etc/sensu/mutators') }
+      it { should contain_file('C:/etc/sensu/plugins') }
+      it { should contain_file('C:/etc/sensu/config.json') }
+      # resources from sensu::rabbitmq::config
+      it { should_not contain_file('C:/etc/sensu/ssl') }
+      it { should_not contain_file('C:/etc/sensu/ssl/cert.pem').with_require('File[C:/etc/sensu/ssl]') }
+      it { should_not contain_file('C:/etc/sensu/ssl/key.pem').with_require('File[C:/etc/sensu/ssl]') }
+      it { should contain_file('C:/etc/sensu/conf.d/rabbitmq.json') }
+      it { should contain_sensu_rabbitmq_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
+      # resources from sensu::redis::config
+      it { should contain_file('C:/etc/sensu/conf.d/redis.json') }
+      it { should contain_sensu_redis_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
+      # resources from sensu::api
+      it { should contain_file('C:/etc/sensu/conf.d/api.json') }
+      it { should contain_sensu_api_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
+      # resources from sensu::enterprise::dashboard
+      it { should_not contain_file('C:/etc/sensu/dashboard.json') }
+      # resources from sensu::transport
+      it { should contain_file('C:/etc/sensu/conf.d/transport.json') }
+      # resources from sensu::client
+      it { should contain_file('C:/etc/sensu/conf.d/client.json') }
+      it { should contain_sensu_client_config('testfqdn.example.com').with_base_path('C:/etc/sensu/conf.d') }
+
+      context 'when rabbitmq_ssl_cert_chain => puppet:///modules/sensu/cert.pem' do
+        let(:params) { {:sensu_etc_dir => 'C:/etc/sensu', :rabbitmq_ssl_cert_chain => 'puppet:///modules/sensu/cert.pem' } }
+        it { should contain_file('C:/etc/sensu/ssl') }
+        it { should contain_file('C:/etc/sensu/ssl/cert.pem').with_require('File[C:/etc/sensu/ssl]') }
+        it { should_not contain_file('C:/etc/sensu/ssl/key.pem') }
+      end
+
+      context 'when rabbitmq_ssl_private_key => puppet:///modules/sensu/key.pem' do
+        let(:params) { {:sensu_etc_dir => 'C:/etc/sensu', :rabbitmq_ssl_private_key => 'puppet:///modules/sensu/key.pem' } }
+        it { should contain_file('C:/etc/sensu/ssl') }
+        it { should_not contain_file('C:/etc/sensu/ssl/cert.pem') }
+        it { should contain_file('C:/etc/sensu/ssl/key.pem').with_require('File[C:/etc/sensu/ssl]') }
+      end
+
+      context 'when enterprise_dashboard => true (and enterprise_user & enterprise_pass set) ' do
+        let(:params) { {:sensu_etc_dir => 'C:/etc/sensu', :enterprise_dashboard => true, :enterprise_user => 'user', :enterprise_pass => 'pass'  } }
+        it { should contain_file('C:/etc/sensu/dashboard.json') }
+      end
     end
 
     context 'with default setting' do
@@ -157,15 +365,35 @@ describe 'sensu', :type => :class do
     it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=/spec/tests$}) }
   end
 
+  context 'confd_dir => /spec/tests' do
+    let(:params) { {:confd_dir => '/spec/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests"$}) }
+  end
+
+  context 'confd_dir => [/spec/tests,/more/tests]' do
+    let(:params) { {:confd_dir => ['/spec/tests', '/more/tests'] } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests,/more/tests"$}) }
+  end
+
+  context 'heap_size => 256' do
+    let(:params) { {:heap_size => 256 } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256"$}) }
+  end
+
+  context 'heap_size => "256M"' do
+    let(:params) { {:heap_size => '256M' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256M"$}) }
+  end
+
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
     let(:params) { {:plugins => 'puppet:///data/sensu/plugins/teststring.rb' } }
-    it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb').with_install_path('/etc/sensu/plugins') }
+    it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb') }
   end
 
   context 'with plugins => [ puppet:///test/array1.rb, puppet:///test/array2.rb ]' do
     let(:params) { {:plugins => [ 'puppet:///test/array1.rb', 'puppet:///test/array2.rb' ] } }
-    it { should contain_sensu__plugin('puppet:///test/array1.rb').with_install_path('/etc/sensu/plugins') }
-    it { should contain_sensu__plugin('puppet:///test/array2.rb').with_install_path('/etc/sensu/plugins') }
+    it { should contain_sensu__plugin('puppet:///test/array1.rb') }
+    it { should contain_sensu__plugin('puppet:///test/array2.rb') }
   end
 
   context 'with plugins set to a valid hash containing two entries with different options' do
@@ -298,7 +526,7 @@ describe 'sensu', :type => :class do
       }
     } }
 
-    it { should contain_sensu_check('some-check').with(
+    it { should contain_sensu__check('some-check').with(
       :type        => 'pipe',
       :command     => '/usr/local/bin/some-check',
       :occurrences => '1',
@@ -306,7 +534,7 @@ describe 'sensu', :type => :class do
     ) }
     it { should contain_file('/etc/sensu/conf.d/checks/some-check.json') }
 
-    it { should contain_sensu_check('check-cpu').with(
+    it { should contain_sensu__check('check-cpu').with(
       :type        => 'pipe',
       :command     => '/usr/local/bin/check-cpu.rb',
       :occurrences => '5',
@@ -357,34 +585,34 @@ describe 'sensu', :type => :class do
 
     validations = {
       'absolute_path' => {
-        :name    => %w[log_dir],
+        :name    => %w[log_dir path sensu_etc_dir],
         :valid   => %w[/absolute/filepath /absolute/directory/],
         :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil],
-        :message => 'is not an absolute path',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'boolean' => {
         :name    => %w(deregister_on_stop),
         :valid   => [true, false],
         :invalid => ['false', %w(array), { 'ha' => 'sh' }, 3, 2.42, nil],
-        :message => 'is not a boolean',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'integer' => {
         :name    => %w(init_stop_max_wait),
         :valid   => [3, '242'],
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, nil],
-        :message => 'must be an integer',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'plugins' => {
         :name    => %w[plugins],
         :valid   => ['/string', %w(/array), { '/hash' => {} }],
         :invalid => [3, 2.42, true],
-        :message => 'Invalid data type',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
       'validate_re log_level' => {
         :name    => %w[log_level],
         :valid   => %w[debug info warn error fatal],
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, nil],
-        :message => 'validate_re()',
+        :message => 'Evaluation Error: Error while evaluating a Resource Statement',
       },
     }
 
@@ -402,12 +630,11 @@ describe 'sensu', :type => :class do
           context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
             let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
             it 'should fail' do
-              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
+              expect { should contain_class(subject) }.to raise_error(Puppet::PreformattedError, /#{var[:message]}/)
             end
           end
         end
       end # var[:name].each
     end # validations.sort.each
   end # describe 'variable type and content validations'
-
 end

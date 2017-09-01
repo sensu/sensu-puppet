@@ -22,15 +22,6 @@
 #
 node 'sensu-server' {
 
-  Ini_setting {
-    ensure            => present,
-    path              => '/etc/default/sensu',
-    key_val_separator => '=',
-    show_diff         => true,
-    require           => Package['sensu-enterprise'],
-    notify            => Service['sensu-enterprise'],
-  }
-
   file { 'api.keystore':
     ensure => 'file',
     path   => '/etc/sensu/api.keystore',
@@ -56,6 +47,7 @@ node 'sensu-server' {
     api_ssl_port              => '4568',
     api_ssl_keystore_file     => '/etc/sensu/api.keystore',
     api_ssl_keystore_password => 'sensutest',
+    heap_size                 => '256m',
   }
 
   sensu::handler { 'default':
@@ -95,11 +87,5 @@ node 'sensu-server' {
     handlers    => 'email',
     contacts    => ['ops', 'support'],
     subscribers => 'sensu-test',
-  }
-
-  # Tune the JVM Heap size for Sensu Enterprise on Vagrant
-  ini_setting { 'Sensu JVM Heap Size':
-    setting => 'HEAP_SIZE',
-    value   => '"256m"',
   }
 }

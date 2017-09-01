@@ -12,6 +12,7 @@ when 'rspec-puppet'
 end
 
 RSpec.configure do |config|
+  config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
   config.before :each do
     # Ensure that we don't accidentally cache facts and environment between
@@ -26,5 +27,11 @@ RSpec.configure do |config|
     :ipaddress   => '127.0.0.1',
     :kernel      => 'Linux',
     :osfamily    => 'RedHat',
+    :fqdn        => 'testfqdn.example.com',
   }
+  config.backtrace_exclusion_patterns = [
+    %r{/\.bundle/},
+    %r{/\.rbenv/},
+    %r{/.rvm/},
+  ]
 end

@@ -1,26 +1,17 @@
-# = Define: sensu::subscription
+# @summary Manages Sensu subscriptions
 #
-# Defines Sensu subscriptions
+# This define manages Sensu subscriptions
 #
-# == Parameters
+# @param ensure Whether the check should be present or not
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
-
-# [*custom*]
-#   Hash.  Custom client variables
-#   Default: {}
+# @param custom Custom client variables
 #
 define sensu::subscription (
-  $ensure       = 'present',
-  $custom       = {},
+  Enum['present','absent'] $ensure = 'present',
+  Hash $custom                     = {},
 ) {
 
   include ::sensu
-
-  validate_re($ensure, ['^present$', '^absent$'] )
 
   file { "${::sensu::conf_dir}/subscription_${name}.json":
     ensure => $ensure,
@@ -34,6 +25,6 @@ define sensu::subscription (
     ensure    => $ensure,
     base_path => $::sensu::conf_dir,
     custom    => $custom,
-    notify    => Class['sensu::client::service'],
+    notify    => $::sensu::client_service,
   }
 }

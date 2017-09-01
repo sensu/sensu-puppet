@@ -1,3 +1,8 @@
+# @!puppet.type.param name
+# @!puppet.type.param base_path
+# @!puppet.type.param config
+# @!puppet.type.param event
+
 Puppet::Type.newtype(:sensu_check_config) do
   @doc = ""
 
@@ -10,6 +15,11 @@ Puppet::Type.newtype(:sensu_check_config) do
         'Service[sensu-server]',
         'Service[sensu-enterprise]',
         'Service[sensu-api]',
+      ].select { |ref| c.resource(ref) }
+      # (#463) All plugins must come before all checks.  Collections are not used to
+      # avoid realizing any resources.
+      self[:subscribe] = [
+        'Anchor[plugins_before_checks]',
       ].select { |ref| c.resource(ref) }
     end
   end

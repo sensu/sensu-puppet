@@ -1,101 +1,68 @@
-# = Define: sensu::handler
+# @summary sensu::handler
 #
 # Defines Sensu handlers
 #
-# == Parameters
+# @param ensure Whether the check should be present or not
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
+# @param type Type of handler
 #
-# [*type*]
-#   String.  Type of handler
-#   Default: pipe
-#   Valid values: pipe, tcp, udp, amqp, transport, set
+# @param command Command to run as the handler when type=pipe
 #
-# [*command*]
-#   String.  Command to run as the handler when type=pipe
-#   Default: undef
+# @param handlers Handlers to use when type=set
 #
-# [*handlers*]
-#   Array of Strings.  Handlers to use when type=set
-#   Default: undef
+# @param severities Severities handler is valid for
 #
-# [*severities*]
-#   Array of Strings.  Severities handler is valid for
-#   Default: ['ok', 'warning', 'critical', 'unknown']
-#   Valid values: ok, warning, critical, unknown
-#
-# [*exchange*]
-#   Hash.  Exchange information used when type=amqp
+# @param exchange Exchange information used when type=amqp
 #   Keys: host, port
-#   Default: undef
 #
-# [*pipe*]
-#   Hash.  Pipe information used when type=transport
+# @param pipe Pipe information used when type=transport
 #   Keys: name, type, options
-#   Default: undef
 #
-# [*socket*]
-#   Hash.  Socket information when type=tcp or type=udp
+# @param socket Socket information when type=tcp or type=udp
 #   Keys: host, port
-#   Default: undef
 #
-# [*filters*]
-#   Array.  Filter command to apply
-#   Default: []
+# @param filters Filter commands to apply
 #
-# [*source*]
-#   String.  Source of the puppet handler
-#   Default: undef
+# @param source Source of the puppet handler
 #
-# [*install_path*]
-#   String.  Path to install the handler
-#   Default: /etc/sensu/handlers
+# @param install_path Path to install the handler
 #
-# [*config*]
-#   Hash.  Handler specific config
-#   Default: undef
+# @param config Handler specific config
 #
-# [*timeout*]
-#   Integer.  Handler timeout configuration
-#   Default: undef
+# @param timeout Handler timeout configuration
 #
-# [*handle_flapping*]
-#   Boolean.  If events in the flapping state should be handled.
-#   Default: false.
-#   Valid values: true, false
+# @param handle_flapping If events in the flapping state should be handled.
+#
+# @param handle_silenced If events in the silenced state should be handled.
+#
+# @param mutator The handle mutator.
+#   Valid values: Any kind of data which can be added to the handler mutator.
+#
+# @param subdue The handle subdue.
+#   Valid values: Any kind of data which can be added to the handler subdue.
 #
 define sensu::handler(
-  $ensure          = 'present',
-  $type            = 'pipe',
-  $command         = undef,
-  $handlers        = undef,
-  $severities      = ['ok', 'warning', 'critical', 'unknown'],
-  $exchange        = undef,
-  $pipe            = undef,
-  $mutator         = undef,
-  $socket          = undef,
-  $filters         = [],
+  Enum['present','absent'] $ensure = 'present',
+  Enum['pipe','tcp','udp','amqp','set','transport'] $type = 'pipe',
+  Optional[String] $command        = undef,
+  Optional[Array] $handlers        = undef,
+  Array $severities      = ['ok', 'warning', 'critical', 'unknown'],
+  Optional[Hash] $exchange         = undef,
+  Optional[Hash] $pipe             = undef,
+  Any $mutator                     = undef,
+  Optional[Hash] $socket           = undef,
+  Array $filters                   = [],
   # Used to install the handler
-  $source          = undef,
-  $install_path    = '/etc/sensu/handlers',
+  Optional[Pattern[/^puppet:\/\//]] $source = undef,
+  String $install_path             = '/etc/sensu/handlers',
   # Handler specific config
-  $config          = undef,
-  $subdue          = undef,
-  $timeout         = undef,
-  $handle_flapping = false,
+  Optional[Hash] $config           = undef,
+  Any $subdue                      = undef,
+  Optional[Integer] $timeout       = undef,
+  Boolean $handle_flapping         = false,
+  Boolean $handle_silenced         = false,
 ) {
 
-  validate_bool($handle_flapping)
-  validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($type, [ '^pipe$', '^tcp$', '^udp$', '^amqp$', '^set$', '^transport$' ] )
-  if $exchange { validate_hash($exchange) }
-  if $pipe { validate_hash($pipe) }
-  if $socket { validate_hash($socket) }
-  validate_array($severities, $filters)
-  if $source { validate_re($source, ['^puppet://'] ) }
   if $subdue{ fail('Subdue at handler is deprecated since sensu 0.26. See https://sensuapp.org/docs/0.26/overview/changelog.html#core-v0-26-0')}
 
 
@@ -171,6 +138,7 @@ define sensu::handler(
     config          => $config,
     timeout         => $timeout,
     handle_flapping => $handle_flapping,
+    handle_silenced => $handle_silenced,
     notify          => $notify_services,
     require         => File['/etc/sensu/conf.d/handlers'],
   }

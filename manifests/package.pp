@@ -1,71 +1,53 @@
-# = Class: sensu::package
+# @summary Installs Sensu packages
 #
 # Installs the Sensu packages
 #
-# == Parameters
+# @param conf_dir The default configuration directory.
 #
-# [*deregister_handler*]
-#   String. The handler to use when deregistering a client on stop.
-#   Default: $::sensu::deregister_handler
+# @param confd_dir Additional directories to load configuration
+#   snippets from.
 #
-# [*deregister_on_stop*]
-#   Boolean. Whether the sensu client should deregister from the API on service stop
-#   Default: $::sensu::deregister_on_stop
+# @param heap_size Value of the HEAP_SIZE environment variable.
+#   Note: This has no effect on sensu-core.
 #
-# [*gem_path*]
-#   String.  Paths to add to GEM_PATH if we need to look for different dirs.
-#   Default: $::sensu::gem_path
+# @param deregister_handler The handler to use when deregistering a client on stop.
 #
-# [*init_stop_max_wait*]
-#   Integer.  Number of seconds to wait for the init stop script to run
-#   Default: $::sensu::init_stop_max_wait
+# @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
 #
-# [*log_dir*]
-#   String.  Sensu log directory to be used
-#   Default: $::sensu::log_dir
+# @param gem_path Paths to add to GEM_PATH if we need to look for different dirs.
+#
+# @param init_stop_max_wait Number of seconds to wait for the init stop script to run
+#
+# @param log_dir Sensu log directory to be used
 #   Valid values: Any valid log directory path, accessible by the sensu user
 #
-# [*log_level*]
-#   String.  Sensu log level to be used
-#   Default: $::sensu::log_level
+# @param log_level Sensu log level to be used
 #   Valid values: debug, info, warn, error, fatal
 #
-# [*path*]
-#   String. Used to set PATH in /etc/default/sensu
-#   Default: $::sensu::path
+# @param path Used to set PATH in /etc/default/sensu
 #
-# [*rubyopt*]
-#   String.  Ruby opts to be passed to the sensu services
-#   Default: $::sensu::rubyopt
+# @param rubyopt Ruby opts to be passed to the sensu services
 #
-# [*use_embedded_ruby*]
-#   Boolean.  If the embedded ruby should be used, e.g. to install the
+# @param use_embedded_ruby If the embedded ruby should be used, e.g. to install the
 #   sensu-plugin gem.  This value is overridden by a defined
 #   sensu_plugin_provider.  Note, the embedded ruby should always be used to
 #   provide full compatibility.  Using other ruby runtimes, e.g. the system
 #   ruby, is not recommended.
-#   Default: $::sensu::use_embedded_ruby
-#   Valid values: true, false
 #
 class sensu::package (
-  $deregister_handler = $::sensu::deregister_handler,
-  $deregister_on_stop = $::sensu::deregister_on_stop,
-  $gem_path           = $::sensu::gem_path,
-  $init_stop_max_wait = $::sensu::init_stop_max_wait,
-  $log_dir            = $::sensu::log_dir,
-  $log_level          = $::sensu::log_level,
-  $path               = $::sensu::path,
-  $rubyopt            = $::sensu::rubyopt,
-  $use_embedded_ruby  = $::sensu::use_embedded_ruby,
+  Optional[String] $conf_dir            = $::sensu::conf_dir,
+  Variant[String,Array,Undef] $confd_dir = $::sensu::confd_dir,
+  Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
+  Optional[String] $deregister_handler  = $::sensu::deregister_handler,
+  Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
+  Optional[String] $gem_path            = $::sensu::gem_path,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $init_stop_max_wait = $::sensu::init_stop_max_wait,
+  Optional[String] $log_dir             = $::sensu::log_dir,
+  Optional[String] $log_level           = $::sensu::log_level,
+  Optional[String] $path                = $::sensu::path,
+  Optional[String] $rubyopt             = $::sensu::rubyopt,
+  Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
 ) {
-
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
-
-  if $path != '$PATH' {
-    validate_absolute_path($path)
-  }
 
   case $::osfamily {
 
@@ -203,7 +185,7 @@ class sensu::package (
     }
   }
 
-  file { [ $::sensu::conf_dir, "${sensu::conf_dir}/handlers", "${sensu::conf_dir}/checks", "${sensu::conf_dir}/filters", "${sensu::conf_dir}/extensions", "${sensu::conf_dir}/mutators", "${sensu::conf_dir}/contacts" ]:
+  file { [ $conf_dir, "${conf_dir}/handlers", "${conf_dir}/checks", "${conf_dir}/filters", "${conf_dir}/extensions", "${conf_dir}/mutators", "${conf_dir}/contacts" ]:
     ensure  => directory,
     owner   => $::sensu::user,
     group   => $::sensu::group,
@@ -269,13 +251,15 @@ class sensu::package (
     $spawn_template = '<%= require "json"; JSON.pretty_generate(@spawn_config) + $/ %>'
     $spawn_ensure = 'file'
     $spawn_content = inline_template($spawn_template)
-    if $::sensu::client {
+    if $::sensu::client and $::sensu::manage_services {
       $spawn_notify = [
-        Class['sensu::client::service'],
+        Service['sensu-client'],
         Class['sensu::server::service'],
       ]
-    } else {
+    } elsif $::sensu::manage_services {
       $spawn_notify = [ Class['sensu::server::service'] ]
+    } else {
+      $spawn_notify = undef
     }
   } else {
     $spawn_ensure = undef

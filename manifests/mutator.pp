@@ -1,42 +1,27 @@
-# = Define: sensu::mutator
+# @summary Manages sensu mutators
 #
-# Defines Sensu mutators
+# This define manages Sense mutators
 #
-# == Parameters
+# @param ensure Whether the check should be present or not
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
+# @param command Command to run.
 #
-# [*command*]
-#   String.  Command to run.
-#   Default: undef
+# @param timeout The mutator execution duration timeout in seconds (hard stop).
 #
-# [*timeout*]
-#   Integer. The mutator execution duration timeout in seconds (hard stop).
-#   Default: undef
+# @param source Source of the puppet mutator
 #
-# [*source*]
-#   String.  Source of the puppet mutator
-#   Default: undef
-#
-# [*install_path*]
-#   String.  Path to install the mutator
-#   Default: /etc/sensu/mutators
+# @param install_path Path to install the mutator
 #
 define sensu::mutator(
-  $command,
-  $ensure       = 'present',
-  $timeout      = undef,
+  String $command,
+  Enum['present','absent'] $ensure   = 'present',
+  Optional[Numeric] $timeout         = undef,
   # Used to install the mutator
-  $source       = undef,
-  $install_path = '/etc/sensu/mutators',
+  Optional[String] $source           = undef,
+  Stdlib::Absolutepath $install_path = '/etc/sensu/mutators',
 ) {
 
-  validate_re($name, '^[\w\.-]+$')
-  validate_re($ensure, ['^present$', '^absent$'] )
-  if $timeout { validate_re($timeout, '^\d+$') }
+  assert_type(Pattern[/^[\w\.-]+$/], $name)
 
   if $::sensu::server {
     $notify_services = Class['sensu::server::service']

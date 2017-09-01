@@ -15,6 +15,7 @@ end
 group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
   gem 'rspec-puppet', '~> 2.5.0',                         :require => false
+  gem 'rspec-mocks',                                      :require => false
   gem 'puppetlabs_spec_helper', '>= 2.0.0',               :require => false
   gem 'puppet-lint', "~> 2.0",                            :require => false
   gem 'json', "~> 1.8.3",                                 :require => false
@@ -36,6 +37,12 @@ group :development, :unit_tests do
   if puppetversion < '5.0'
     gem 'semantic_puppet', :require => false
   end
+end
+
+group :documentation do
+  gem 'yard',           require: false
+  gem 'redcarpet',      require: false
+  gem 'puppet-strings', require: false
 end
 
 group :system_tests do

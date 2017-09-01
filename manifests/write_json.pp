@@ -1,10 +1,9 @@
-# = Define: sensu::write_json
+# @summary Writes arbitrary hash data to a config file.
 #
 # Writes arbitrary hash data to a config file. Note: you must manually notify
 # any Sensu services to restart them when using this defined resource type.
 #
-# Example:
-#
+# @example
 #  sensu::write_json { '/etc/sensu/conf.d/check.json':
 #    content => {"config" => {"key" => "value"}},
 #    notify  => [
@@ -13,37 +12,23 @@
 #    ],
 #  }
 #
-# == Parameters
+# @param ensure Whether the file should be present or not.
 #
-# [*name*]
-#   String. The config file target path.
+# @param owner The file owner.
 #
-# [*ensure*]
-#   String. Whether the file should be present or not.
-#   Default: present
-#   Valid values: present, absent
+# @param group The file group.
 #
-# [*owner*]
-#   String. The file owner.
-#   Default: $::sensu::user
+# @param mode The file mode.
 #
-# [*group*]
-#   String. The file group.
-#   Default: $::sensu::group
+# @param pretty Write the json with "pretty" indenting & formating.
 #
-# [*mode*]
-#   String. The file mode.
-#   Default: 0755
+# @param content The hash content that will be converted to json
+#   and written into the target config file.
 #
-# [*pretty*]
-#   Boolean. Write the json with "pretty" indenting & formating.
-#   Default: true
-#
-# [*content*]
-#   Hash. The hash content that will be converted to json and written into
-#         the target config file.
-#   Default: {}
-#
+# [*notify_list*]
+#   Array. A listing of resources to notify upon changes to the target JSON
+#          file.
+#   Default: []
 define sensu::write_json (
   Enum['present', 'absent'] $ensure = 'present',
   String                    $owner = 'sensu',
@@ -51,6 +36,7 @@ define sensu::write_json (
   String                    $mode = '0755',
   Boolean                   $pretty = true,
   Hash                      $content = {},
+  Array[Variant[Data,Type]] $notify_list = [],
 ) {
 
   # ensure we have a properly formatted file path for our target OS
@@ -71,5 +57,6 @@ define sensu::write_json (
     group   => $group,
     mode    => $mode,
     content => sensu_sorted_json($content, $pretty),
+    notify  => $notify_list,
   }
 }

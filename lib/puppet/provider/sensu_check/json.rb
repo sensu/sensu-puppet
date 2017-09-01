@@ -11,19 +11,63 @@ Puppet::Type.type(:sensu_check).provide(:json) do
 
   SENSU_CHECK_PROPERTIES = Puppet::Type.type(:sensu_check).validproperties.reject { |p| p == :ensure }
 
+  # read_file provides a well-known location for spec tests to intercept and
+  # stub out filesystem calls.  File.read itself is not stubbed out because
+  # File.read is called from many places.  This helper method affords precision
+  # to the spec examples.
+  #
+  # @param [String] fpath the fully qualified path to read.
+  #
+  # @return [String] the file content.
+  def self.read_file(fpath)
+    File.read(fpath)
+  end
+
+  # Passes through to .read_file
+  def read_file(fpath)
+    self.class.read_file(fpath)
+  end
+
+  # Write a string to a file.  Note, `puts` is used to write data which will
+  # insert a trailing newline if absent.
+  #
+  # @param [String] fpath the full qualified path to write.
+  #
+  # @param [String] data the data to write.
+  def self.write_output(fpath, data)
+    File.open(fpath, 'w') do |f|
+      f.puts(data)
+    end
+  end
+
+  # provide a well-known location for spec tests to intercept and stub out
+  # filesystem calls.
+  #
+  # @param [String] fpath the fully qualified path to read.
+  #
+  # @param [<Hash,Array>] obj The JSON object to write out to fpath.
+  #
+  # @return [String] the file content.
+  def self.write_json_object(fpath, obj)
+    write_output(fpath, JSON.pretty_generate(obj))
+  end
+
+  # Passes through to .write_json_object
+  def write_json_object(fpath, obj)
+    self.class.write_json_object(fpath, obj)
+  end
+
   def conf
     begin
-      @conf ||= JSON.parse(File.read(config_file))
+      @conf ||= JSON.parse(read_file(config_file))
     rescue
       @conf ||= {}
     end
   end
 
   def flush
-    sort_properties
-    File.open(config_file, 'w') do |f|
-      f.puts JSON.pretty_generate(conf)
-    end
+    sort_properties!
+    write_json_object(config_file, conf)
   end
 
   def pre_create
@@ -31,7 +75,7 @@ Puppet::Type.type(:sensu_check).provide(:json) do
     conf['checks'][resource[:name]] = {}
   end
 
-  def sort_properties
+  def sort_properties!
     conf['checks'][resource[:name]] = Hash[conf['checks'][resource[:name]].sort]
   end
 

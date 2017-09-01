@@ -1,41 +1,26 @@
-# = Define: sensu::extension
+# @summary Defines Sensu extensions
 #
-# Defines Sensu extensions
+# This define manages Sensu extensions
 #
-# == Parameters
+# @param ensure Whether the check should be present or not
 #
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
-#   Valid values: present, absent
+# @param source Source of the puppet extension
 #
-# [*source*]
-#   String.  Source of the puppet extension
-#   Default: undef
+# @param install_path Path where to install the extension
 #
-# [*install_path*]
-#   String.  Path to install the extension
-#   Default: /etc/sensu/extensions
+# @param config Extension specific config
 #
-# [*config*]
-#   Hash.  Extension specific config
-#   Default: undef
-#
-#
-define sensu::extension(
-  $ensure       = 'present',
+define sensu::extension (
+  Enum['present','absent'] $ensure          = 'present',
   # Used to install the handler
-  $source       = undef,
-  $install_path = '/etc/sensu/extensions',
+  Optional[Pattern[/^puppet:\/\//]] $source = undef,
+  String $install_path                      = '/etc/sensu/extensions',
   # Handler specific config
-  $config       = {},
+  Hash $config                              = {},
 ) {
 
-  validate_re($ensure, ['^present$', '^absent$'] )
-  validate_re($source, ['^puppet://'] )
-
-  if $::sensu::client {
-    $notify_services = Class['sensu::client::service']
+  if $::sensu::client and $::sensu::manage_services {
+    $notify_services = Service['sensu-client']
   } else {
     $notify_services = []
   }

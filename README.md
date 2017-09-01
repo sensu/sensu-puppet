@@ -3,13 +3,15 @@
 Installs and manages the open source monitoring framework [Sensu](http://sensuapp.org).
 [![Puppet Forge](http://img.shields.io/puppetforge/v/sensu/sensu.svg)](https://forge.puppetlabs.com/sensu/sensu)
 
+Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at https://sensuapp.org/support.
+
 ## Tested with Travis CI
 
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
 ## Documented with Puppet Strings
 
-[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
+[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/doc/)
 
 ## Compatibility - supported sensu versions
 
@@ -43,12 +45,19 @@ puppet module install sensu/sensu
 
 ### Dependencies
 
-- puppetlabs/apt
+See `metadata.json` for details.
+
 - puppetlabs/stdlib
 - lwf/puppet-remote_file
-- puppetlabs/powershell
 
-See `metadata.json` for details.
+Soft dependencies if you use the corresponding technologies.
+
+- [puppetlabs/apt](https://github.com/puppetlabs/puppetlabs-apt)
+- [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
+- [voxpupuli/rabbitmq](https://github.com/voxpupuli/puppet-rabbitmq)
+
+Note: While this module works with other versions of puppetlabs/apt, we
+test against and support what is listed in the `.fixtures.yml` file.
 
 Pluginsync should be enabled. Also, you will need the Ruby JSON library
 or gem on all your nodes.

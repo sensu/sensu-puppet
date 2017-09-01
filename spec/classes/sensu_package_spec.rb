@@ -19,6 +19,8 @@ describe 'sensu' do
       it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
       it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
       it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
+      it { should contain_file('/etc/default/sensu').without_content(%r{^CONFD_DIR=.*$}) }
+      it { should contain_file('/etc/default/sensu').without_content(%r{^HEAP_SIZE=.*$}) }
       directories.each do |dir|
         it { should contain_file(dir).with(
           :ensure  => 'directory',
@@ -294,7 +296,7 @@ describe 'sensu' do
         let(:params) { { :purge => 'a_string' } }
 
         it 'should fail' do
-          expect { should create_class('sensu') }.to raise_error(/not a Hash/)
+          expect { should create_class('sensu') }.to raise_error(Puppet::PreformattedError)
         end
       end
 
@@ -465,6 +467,26 @@ describe 'sensu' do
     it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=/spec/tests$}) }
   end
 
+  context 'confd_dir => /spec/tests' do
+    let(:params) { {:confd_dir => '/spec/tests' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests"$}) }
+  end
+
+  context 'confd_dir => [/spec/tests,/more/tests]' do
+    let(:params) { {:confd_dir => ['/spec/tests', '/more/tests'] } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests,/more/tests"$}) }
+  end
+
+  context 'heap_size => 256' do
+    let(:params) { {:heap_size => 256 } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256"$}) }
+  end
+
+  context 'heap_size => "256M"' do
+    let(:params) { {:heap_size => '256M' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256M"$}) }
+  end
+
   describe 'spawn_limit (#727)' do
     context 'default (undef)' do
       it { should contain_file('/etc/sensu/conf.d/spawn.json').without_content }
@@ -474,38 +496,4 @@ describe 'sensu' do
       it { should contain_file('/etc/sensu/conf.d/spawn.json').with_content(/limit.*20/) }
     end
   end
-
-  describe 'variable type and content validations' do
-    mandatory_params = {}
-
-    validations = {
-      'absolute_path' => {
-        :name    => %w[path],
-        :valid   => %w[/absolute/filepath /absolute/directory/],
-        :invalid => ['./relative/path', %w(array), { 'ha' => 'sh' }, 3, 2.42, true, nil],
-        :message => 'is not an absolute path',
-      },
-    }
-
-    validations.sort.each do |type, var|
-      var[:name].each do |var_name|
-        var[:params] = {} if var[:params].nil?
-        var[:valid].each do |valid|
-          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
-            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
-            it { should compile }
-          end
-        end
-
-        var[:invalid].each do |invalid|
-          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
-            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
-            it 'should fail' do
-              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
-            end
-          end
-        end
-      end # var[:name].each
-    end # validations.sort.each
-  end # describe 'variable type and content validations'
 end

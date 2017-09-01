@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "2.25.0",
+  "version": "2.34.0",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
@@ -60,16 +60,8 @@
       "version_requirement": ">= 1.0.0 <2.0.0"
     },
     {
-      "name": "puppetlabs/apt",
-      "version_requirement": ">= 4.0.0 < 5.0.0"
-    },
-    {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">=4.16.0 <5.0.0"
-    },
-    {
-      "name": "puppetlabs/powershell",
-      "version_requirement": ">=2.1.0 <3.0.0"
     }
   ]
 }

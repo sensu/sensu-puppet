@@ -1,14 +1,8 @@
-# = Class: sensu::repo::apt
+# @summary Adds the Sensu repo to Apt
 #
 # Adds the Sensu repo to Apt
 #
-# == Parameters
-#
 class sensu::repo::apt {
-
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
 
   if defined(apt::source) {
 

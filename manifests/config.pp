@@ -1,29 +1,19 @@
-# = Define: sensu::config
+# @summary Defines Sensu check configurations
+# 
+# This define manages Sensu check configurations.
 #
-# Defines Sensu check configurations
-#
-# == Parameters
-#
-# [*ensure*]
-#   String. Whether the check should be present or not
-#   Default: present
+# @param ensure Whether the check should be present or not
 #   Valid values: present, absent
 #
-# [*config*]
-#   Hash.  Check configuration for the client to use
-#   Default: undef
+# @param config Check configuration for the client to use
 #
-# [*event*]
-#   Hash.  Configuration to send with the event to handlers
-#   Default: undef
+# @param event Configuration to send with the event to handlers
 #
 define sensu::config (
-  $ensure = 'present',
-  $config = undef,
-  $event  = undef,
+  Enum['present','absent'] $ensure = 'present',
+  Optional[Hash] $config = undef,
+  Optional[Hash] $event  = undef,
 ) {
-
-  validate_re($ensure, ['^present$', '^absent$'] )
 
   file { "/etc/sensu/conf.d/checks/config_${name}.json":
     ensure => $ensure,
@@ -37,7 +27,7 @@ define sensu::config (
     ensure => $ensure,
     config => $config,
     event  => $event,
-    notify => Class['sensu::client::service'],
+    notify => $::sensu::client_service,
   }
 
 }

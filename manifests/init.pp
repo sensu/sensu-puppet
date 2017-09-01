@@ -1,597 +1,408 @@
-# = Class: sensu
+# @summary Base Sensu class
 #
-# Base Sensu class
+# This is the main Sensu class
 #
-# == Parameters
-#
-# [*version*]
-#   String.  Version of sensu to install.  Defaults to `installed` to support
+# @param version Version of sensu to install.  Defaults to `installed` to support
 #   Windows MSI packaging and to avoid surprising upgrades.
-#   Default: installed
-#   Valid values: absent, installed, latest, present, [\d\.\-el]+
 #
-# [*sensu_plugin_name*]
-#   String.  Name of the sensu-plugin package. Refers to the sensu-plugin rubygem
-#   Not the community sensu-plugins community scripts.
-#   Default: sensu-plugin
+# @param sensu_etc_dir Absolute path to the sensu etc directory.
+#   Default: '/etc/sensu' on Linux, 'C:/opt/sensu' on windows
 #
-# [*sensu_plugin_provider*]
+# @param sensu_plugin_name Name of the sensu-plugin package. Refers to the
+#   sensu-plugin rubygem, not the community sensu-plugins community scripts.
+#
+# @param sensu_plugin_provider
 #   String.  Provider used to install the sensu-plugin package. Refers to the
 #   sensu-plugin rubygem, not the sensu-plugins community scripts.  On windows,
 #   defaults to `gem`, all other platforms defaults to `undef`
-#   Default: undef
-#   Valid values: sensu_gem, apt, aptitude, yum
 #
-# [*sensu_plugin_version*]
-#   String.  Version of the sensu-plugin gem to install. Refers to the sensu-plugin
-#   rubygem, not the sensu-plugins community scripts
-#   Default: installed
-#   Valid values: absent, installed, latest, present, [\d\.\-]+
+# @param sensu_plugin_version Version of the sensu-plugin gem to install.
+#   Refers to the sensu-plugin rubygem, not the sensu-plugins community scripts
 #
-# [*install_repo*]
-#   Boolean.  Whether or not to install the sensu repo
-#   Default: true
-#   Valid values: true, false
+# @param install_repo Whether or not to install the sensu repo
 #
-# [*enterprise*]
-#   Boolean.  Whether or not to install and configure Sensu Enterprise
-#   Default: false
-#   Valid values: true, false
+# @param enterprise Whether or not to install and configure Sensu Enterprise
 #
-# [*enterprise_dashboard*]
-#   Boolean.  Whether or not to install sensu-enterprise-dashboard
-#   Default: false
-#   Valid values: true, false
+# @param enterprise_dashboard Whether or not to install sensu-enterprise-dashboard
 #
-# [*manage_repo*]
-#   String. Wether or not to manage apt/yum repositories
-#   Default: true
-#   Valid values: true, false
+# @param manage_repo Whether or not to manage apt/yum repositories
 #
-# [*repo*]
-#   String.  Which sensu repo to install
-#   Default: main
-#   Valid values: main, unstable
+# @param repo Which sensu repo to install
 #
-# [*repo_source*]
-#   String.  Location of the yum/apt repo.  Overrides the default location
-#   Default: undef
-
-# [*repo_key_id*]
-#   String.  The apt GPG key id
-#   Default: EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB
+# @param repo_source Location of the yum/apt repo.  Overrides the default location
 #
-# [*repo_key_source*]
-#   String.  URL of the apt GPG key
-#   Default: https://sensu.global.ssl.fastly.net/apt/pubkey.gpg
+# @param repo_key_id The apt GPG key id
 #
-# [*repo_release*]
-#   String. Release for the apt source. Only set this if you want to run
+# @param repo_key_source URL of the apt GPG key
+#
+# @param repo_release Release for the apt source. Only set this if you want to run
 #   packages from another release, which is not supported by Sensu. Only works
 #   with systems that use apt.
-#   Default: $::lsbdistcodename
 #
-# [*spawn_limit*]
-#   Integer.  Tune concurrency of the sensu-server pipe handler and the
+# @param spawn_limit Tune concurrency of the sensu-server pipe handler and the
 #   sensu-client check execution.  This setting should not need to be tuned
 #   except in specific situations, e.g. when there are a large number of JIT
 #   clients.  See [#727](https://github.com/sensu/sensu-puppet/issues/727) for
 #   more information.  The default is undefined, which does not manage
 #   `/etc/sensu/conf.d/spawn.json`
-#   Default: undef
 #
-# [*client*]
-#   Boolean.  Include the sensu client
-#   Default: true
-#   Valid values: true, false
+# @param client Include the sensu client
 #
-# [*server*]
-#   Boolean.  Include the sensu server
-#   Default: false
-#   Valid values: true, false
+# @param server Include the sensu server
 #
-# [*api*]
-#   Boolean.  Include the sensu api service
-#   Default: false
-#   Valid values: true, false
+# @param api Include the sensu api service
 #
-# [*manage_services*]
-#   Boolean.  Manage the sensu services with puppet
-#   Default: true
-#   Valid values: true, false
+# @param manage_services Manage the sensu services with puppet
 #
-# [*manage_user*]
-#   Boolean.  Manage the sensu user with puppet
-#   Default: true
-#   Valid values: true, false
+# @param manage_user Manage the sensu user with puppet
 #
-# [*manage_plugins_dir*]
-#   Boolean. Manage the sensu plugins directory. Must be false if you use
+# @param manage_plugins_dir Manage the sensu plugins directory. Must be false if you use
 #   sensu::plugin with type 'directory'.
-#   Default: true
-#   Valid values: true, false
 #
-# [*manage_handlers_dir*]
-#   Boolean. Manage the sensu handlers directory
-#   Default: true
-#   Valid values: true, false
+# @param manage_handlers_dir Manage the sensu handlers directory
 #
-# [*manage_mutators_dir*]
-#   Boolean. Manage the sensu mutators directory
-#   Default: true
-#   Valid values: true, false
+# @param manage_mutators_dir Manage the sensu mutators directory
 #
-# [*rabbitmq_port*]
-#   Integer.  Rabbitmq port to be used by sensu
-#   Default: 5672
+# @param rabbitmq_port Rabbitmq port to be used by sensu
 #
-# [*rabbitmq_host*]
-#   String.  Host running rabbitmq for sensu
-#   Default: '127.0.0.1'
+# @param rabbitmq_host Host running rabbitmq for sensu
 #
-# [*rabbitmq_user*]
-#   String.  Username to connect to rabbitmq with for sensu
-#   Default: 'sensu'
+# @param rabbitmq_user Username to connect to rabbitmq with for sensu
 #
-# [*rabbitmq_password*]
-#   String.  Password to connect to rabbitmq with for sensu
-#   Default: ''
+# @param rabbitmq_password Password to connect to rabbitmq with for sensu
 #
-# [*rabbitmq_vhost*]
-#   String.  Rabbitmq vhost to be used by sensu
-#   Default: '/sensu'
+# @param rabbitmq_vhost Rabbitmq vhost to be used by sensu
 #
-# [*rabbitmq_ssl*]
-#   Boolean.  Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
-#     rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
-#     without specifying a private key or cert chain to use SSL transport, but not cert auth.
-#   Default: false
-#   Valid values: true, false
+# @param rabbitmq_ssl Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
+#   rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
+#   without specifying a private key or cert chain to use SSL transport, but not cert auth.
 #
-# [*rabbitmq_ssl_private_key*]
-#   String.  Private key to be used by sensu to connect to rabbitmq. If the value starts with
-#     'puppet://' the file will be copied and used.  Also the key itself can be given as the
-#     parameter value, or a variable, or using hiera.  Absolute paths will just be used as
-#     a file reference, as you'd normally configure sensu.
-#   Default: undef
+# @param rabbitmq_ssl_private_key Private key to be used by sensu to connect to rabbitmq. If the value starts with
+#   'puppet://' the file will be copied and used.  Also the key itself can be given as the
+#   parameter value, or a variable, or using hiera.  Absolute paths will just be used as
+#   a file reference, as you'd normally configure sensu.
 #
-# [*rabbitmq_ssl_cert_chain*]
-#   String.  Private SSL cert chain to be used by sensu to connect to rabbitmq
-#     If the value starts with 'puppet://' the file will be copied and used.   Also the key itself can
-#     be given as the parameter value, or a variable, or using hiera. Absolute paths will just be used
-#     as a file reference, as you'd normally configure sensu.
-#   Default: undef
+# @param rabbitmq_ssl_cert_chain Private SSL cert chain to be used by sensu to connect to rabbitmq
+#   If the value starts with 'puppet://' the file will be copied and used.   Also the key itself can
+#   be given as the parameter value, or a variable, or using hiera. Absolute paths will just be used
+#   as a file reference, as you'd normally configure sensu.
 #
-# [*rabbitmq_prefetch*]
-#   Integer.  The integer value for the RabbitMQ prefetch attribute
-#   Default: 1
+# @param rabbitmq_prefetch The integer value for the RabbitMQ prefetch attribute
 #
-# [*rabbitmq_cluster*]
-#   Array of hashes. Rabbitmq Cluster configuration and connection information for one or more Cluster
-#   Default: Not configured
+# @param rabbitmq_cluster Array of hashes. Rabbitmq Cluster configuration
+#   and connection information for one or more Cluster
 #
-# [*rabbitmq_heartbeat*]
-#   Integer.  The integer value for the RabbitMQ heartbeat attribute
-#   Default: 30
+# @param rabbitmq_heartbeat The integer value for the RabbitMQ heartbeat attribute
 #
-# [*redis_host*]
-#   String.  Hostname of redis to be used by sensu
-#   Default: 127.0.0.1
+# @param redis_host Hostname of redis to be used by sensu
 #
-# [*redis_port*]
-#   Integer.  Redis port to be used by sensu
-#   Default: 6379
+# @param redis_port Redis port to be used by sensu
 #
-# [*redis_password*]
-#   String.  Password to be used to connect to Redis
-#   Default: undef
+# @param redis_password Password to be used to connect to Redis
 #
-# [*redis_reconnect_on_error*]
-#   Boolean. Reconnect to Redis in the event of a Redis error, e.g. READONLY
-#     (not to be confused with a connection failure).
-#   Default: true
-#   Valid values: true, false
+# @param redis_reconnect_on_error Reconnect to Redis in the event of a Redis error, e.g. READONLY
+#   (not to be confused with a connection failure).
 #
-# [*redis_db*]
-#   Integer.  The Redis instance DB to use/select
-#   Default: 0
+# @param redis_db The Redis instance DB to use/select
 #
-# [*redis_sentinels*]
-#   Array. Redis Sentinel configuration and connection information for one or more Sentinels
-#   Default: Not configured
+# @param redis_sentinels Redis Sentinel configuration and connection information for one or more Sentinels
 #
-# [*redis_master*]
-#   String. Redis master name in the sentinel configuration
-#   Default: undef. In the end whatever sensu defaults to, which is "mymaster" currently.
+# @param redis_master Redis master name in the sentinel configuration
+#   In the end whatever sensu defaults to, which is "mymaster" currently.
 #
-# [*redis_auto_reconnect*]
-#   Boolean.  Reconnect to Redis in the event of a connection failure
-#   Default: true
+# @param redis_auto_reconnect Reconnect to Redis in the event of a connection failure
 #
-# [*transport_type*]
-#   String. Transport type to be used by Sensu
-#   Default: rabbitmq
-#   Valid values: rabbitmq, redis
+# @param transport_type Transport type to be used by Sensu
 #
-# [*transport_reconnect_on_error*]
-#   Boolean. If the transport connection is closed, attempt to reconnect automatically when possible.
-#   Default: true
-#   Valid values: true, false
+# @param transport_reconnect_on_error If the transport connection is closed, attempt to reconnect automatically when possible.
 #
-# [*api_bind*]
-#   String.  IP to bind api service
-#   Default: 0.0.0.0
+# @param api_bind IP to bind api service
 #
-# [*api_host*]
-#   String.  Hostname of the sensu api service
-#   Default: 127.0.0.1
+# @param api_host Hostname of the sensu api service
 #
-# [*api_port*]
-#   Integer. Port of the sensu api service
-#   Default: 4567
+# @param api_port Port of the sensu api service
 #
-# [*api_user*]
-#   String.  Password of the sensu api service
-#   Default: undef
+# @param api_user Password of the sensu api service
 #
-# [*api_password*]
-#   String. Password of the sensu api service
-#   Default: undef
+# @param api_password Password of the sensu api service
 #
-# [*api_ssl_port*]
-#   Integer. Port of the HTTPS (SSL) sensu api service. Enterprise only
+# @param api_ssl_port Port of the HTTPS (SSL) sensu api service. Enterprise only
 #   feature.
-#   Default: undef
 #
-# [*api_ssl_keystore_file*]
-#   String. The file path for the SSL certificate keystore. Enterprise only
+# @param api_ssl_keystore_file The file path for the SSL certificate keystore. Enterprise only
 #   feature.
-#   Default: undef
 #
-# [*api_ssl_keystore_password*]
-#   String. The SSL certificate keystore password. Enterprise only feature.
-#   Default: undef
+# @param api_ssl_keystore_password The SSL certificate keystore password. Enterprise only feature.
 #
-# [*subscriptions*]
-#   Array of strings.  Default subscriptions used by the client
-#   Default: []
+# @param subscriptions Default subscriptions used by the client
 #
-# [*client_address*]
-#   String.  Address of the client to report with checks
-#   Default: $::ipaddress
+# @param client_address Address of the client to report with checks
 #
-# [*client_name*]
-#   String.  Name of the client to report with checks
-#   Default: $::fqdn
+# @param client_name Name of the client to report with checks
 #
-# [*client_custom*]
-#   Hash.  Custom client variables
-#   Default: {}
+# @param client_custom Custom client variables.
 #
-# [*client_keepalive*]
-#   Hash.  Client keepalive config
-#   Default: {}
+# @param client_deregister Enable the [deregistration
+#   event](https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes)
+#   if true.
 #
-# [*safe_mode*]
-#   Boolean.  Force safe mode for checks
-#   Default: false
-#   Valid values: true, false
+# @param client_deregistration [Attributes](https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes)
+#   used to generate check result data for the de-registration event. Client
+#   deregistration attributes are merged with some default check definition
+#   attributes by the Sensu server during client deregistration, so any valid
+#   check definition attributes – including custom check definition attributes
+#   – may be used as deregistration attributes, with the following exceptions
+#   (which are used to ensure the check result is valid): check name, output,
+#   status, and issued timestamp. The following attributes are provided as
+#   recommendations for controlling client deregistration behavior.
 #
-# [*plugins*]
-#   String, Array of strings, Hash.  Plugins to install on the node
-#     Strings and Arrays of strings will set 'install_path' => '/etc/sensu/plugins' as default.
-#   Default: []
+# @param client_keepalive Client keepalive config
+#
+# @param client_http_socket Client http_socket config
+#
+# @param safe_mode Force safe mode for checks
+#
+# @param plugins Plugins to install on the node
+#   Strings and Arrays of strings will set 'install_path' => '/etc/sensu/plugins' as default.
 #   Example string: 'puppet:///data/sensu/plugins/plugin1.rb'
 #   Example array: [ 'puppet:///data/sensu/plugins/plugin1.rb', 'puppet:///data/sensu/plugins/plugin2.rb' ]
 #   Example hash: { 'puppet:///data/sensu/plugins/plugin1.rb' => { 'pkg_version' => '2.4.2' }, 'puppet:///data/sensu/plugins/plugin1.rb' => { 'pkg_provider' => 'sensu-gem' }
 #
-# [*plugins_defaults*]
-#   Hash. Defaults for Plugins to install on the node. Will be added when plugins is set to a hash.
-#   Default: {}
+# @param plugins_defaults Defaults for Plugins to install on the node. Will be added when plugins is set to a hash.
 #   Example value: { 'install_path' => '/other/path' }
 #
-# [*plugins_dir*]
-#   String. Puppet url to plugins directory
-#   Default: undef
+# @param plugins_dir Puppet url to plugins directory
 #
-# [*purge*]
-#   Boolean or Hash.  If unused plugins, configs, handlers, extensions and mutators should be removed from the system.
+# @param purge If unused plugins, configs, handlers, extensions and mutators should be removed from the system.
 #   If set to true, all unused plugins, configs, handlers, extensions and mutators will be removed from the system.
 #   If set to a Hash, only unused files of the specified type(s) will be removed from the system.
-#   Default: false
 #   Valid values: true, false, Hash containing any of the keys 'plugins', 'config', 'handlers', 'extensions', 'mutators'
 #   Example value: { config => true, plugins => true }
 #
-# [*use_embedded_ruby*]
-#   Boolean.  If the embedded ruby should be used, e.g. to install the
+# @param use_embedded_ruby If the embedded ruby should be used, e.g. to install the
 #   sensu-plugin gem.  This value is overridden by a defined
 #   sensu_plugin_provider.  Note, the embedded ruby should always be used to
 #   provide full compatibility.  Using other ruby runtimes, e.g. the system
 #   ruby, is not recommended.
-#   Default: true
-#   Valid values: true, false
 #
-# [*rubyopt*]
-#   String.  Ruby opts to be passed to the sensu services
-#   Default: ''
+# @param rubyopt Ruby opts to be passed to the sensu services
 #
-# [*gem_path*]
-#   String.  Paths to add to GEM_PATH if we need to look for different dirs.
-#   Default: ''
+# @param gem_path Paths to add to GEM_PATH if we need to look for different dirs.
 #
-# [*log_level*]
-#   String.  Sensu log level to be used
-#   Default: 'info'
-#   Valid values: debug, info, warn, error, fatal
+# @param log_level Sensu log level to be used
 #
+# @param log_dir Sensu log directory to be used
 #
-# [*log_dir*]
-#   String.  Sensu log directory to be used
-#   Default: '/var/log/sensu'
-#   Valid values: Any valid log directory path, accessible by the sensu user
+# @param init_stop_max_wait Number of seconds to wait for the init stop script to run
 #
-# [*init_stop_max_wait*]
-#   Integer.  Number of seconds to wait for the init stop script to run
-#   Default: 10
-#
-# [*gem_install_options*]
-#   Optional configuration to use for the installation of the
+# @param gem_install_options Optional configuration to use for the installation of the
 #   sensu plugin gem with sensu_gem provider.
 #   See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
-#   Default: undef
 #   Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
 #
-# [*hasrestart*]
-#   Boolean. Value of hasrestart attribute for sensu services.
+# @param hasrestart Value of hasrestart attribute for sensu services.
 #   If you use your own startup scripts for upstart and want puppet
 #   to properly stop and start sensu services when those scripts change,
 #   set it to false. See also http://upstart.ubuntu.com/faq.html#reload
-#   Default: true
 #
-# [*path*]
-#   String. Used to set PATH in /etc/default/sensu
-#   Default: '$PATH'
+# @param path Used to set PATH in /etc/default/sensu
 #
-# [*redact*]
-#   Array of strings. Use to redact passwords from checks on the client side
-#   Default: undef
+# @param redact Use to redact passwords from checks on the client side
 #
-# [*deregister_on_stop*]
-#   Boolean. Whether the sensu client should deregister from the API on service stop
-#   Default: false
+# @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
 #
-# [*deregister_handler*]
-#   String. The handler to use when deregistering a client on stop.
-#   Default: undef
+# @param deregister_handler The handler to use when deregistering a client on stop.
 #
-# [*handlers*]
-#   Hash of handlers for use with create_resources(sensu::handler).
+# @param handlers Hash of handlers for use with create_resources(sensu::handler).
 #   Example value: { 'email' => { 'type' => 'pipe', 'command' => 'mail' } }
-#   Default: {}
 #
-# [*handler_defaults*]
-#   Handler defaults when not provided explicitly in $handlers.
+# @param handler_defaults Handler defaults when not provided explicitly in $handlers.
 #   Example value: { 'filters' => ['production'] }
-#   Default: {}
 #
-# [*checks*]
-#   Hash of checks for use with create_resources(sensu::check).
+# @param checks Hash of checks for use with create_resources(sensu::check).
 #   Example value: { 'check-cpu' => { 'command' => 'check-cpu.rb' } }
-#   Default: {}
 #
-# [*check_defaults*]
-#   Check defaults when not provided explicitly in $checks.
+# @param check_defaults Check defaults when not provided explicitly in $checks.
 #   Example value: { 'occurrences' => 3 }
-#   Default: {}
 #
-# [*filters*]
-#   Hash of filters for use with create_resources(sensu::filter).
+# @param filters Hash of filters for use with create_resources(sensu::filter).
 #   Example value: { 'occurrence' => { 'attributes' => { 'occurrences' => '1' } } }
-#   Default: {}
 #
-# [*filter_defaults*]
-#   Filter defaults when not provided explicitly in $filters.
+# @param filter_defaults Filter defaults when not provided explicitly in $filters.
 #   Example value: { 'negate' => true }
-#   Default: {}
 #
-# [*package_checksum*]
-#   String. Used to set package_checksum for windows installs
-#   Default: undef
+# @param package_checksum Used to set package_checksum for windows installs
 #
-# [*windows_logrotate*]
-#   Boolean. Whether or not to use logrotate on Windows OS family.
-#   Default: false
+# @param windows_logrotate Whether or not to use logrotate on Windows OS family.
 #
-# [*windows_log_size*]
-#   Integer. The integer value for the size of log files on Windows OS family. sizeThreshold in sensu-client.xml.
-#   Default: '10240'
+# @param windows_log_size The integer value for the size of log files on
+#   Windows OS family. sizeThreshold in sensu-client.xml.
 #
-# [*windows_log_number*]
-#   Integer. The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
-#   Default: '10'
+# @param windows_log_number The integer value for the number of log files to
+#   keep on Windows OS family. keepFiles in sensu-client.xml.
 #
-# [*windows_pkg_url*]
-#   String.  If specified, override the behavior of computing the package source
-#   URL from windows_repo_prefix and os major release fact.  This parameter is
-#   intended to allow the end user to override the source URL used to install
-#   the Windows package.  For example:
+# @param windows_pkg_url If specified, override the behavior of computing the
+#   package source URL from windows_repo_prefix and os major release fact.
+#   This parameter is intended to allow the end user to override the source URL
+#   used to install the Windows package.  For example:
 #   `"https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi"`
-#   Default: undef
 #
-# [*windows_package_provider*]
-#   String.  When something other than `undef`, use the specified package
-#   provider to install Windows packages.  The default behavior of `undef`
-#   defers to the default package provider in Puppet which is expected to be the
-#   msi provider.  Valid values are `undef` or `'chocolatey'`.
-#   Default: undef
+# @param windows_package_provider When something other than `undef`, use the
+#   specified package provider to install Windows packages. The default
+#   behavior of `undef` defers to the default package provider in Puppet which
+#   is expected to be the msi provider.
+#   Valid values are `undef` or `'chocolatey'`.
 #
-# [*windows_choco_repo*]
-#   String.  The URL of the Chocolatey repository, used with the chocolatey
-#   windows package provider.
-#   Default: undef
+# @param windows_choco_repo The URL of the Chocolatey repository, used with
+#   the chocolatey windows package provider.
 #
-# [*windows_package_name*]
-#   String.  The package name used to identify the package filename.  Defaults
-#   to `'sensu'` which matches the MSI filename published at
+# @param windows_package_name The package name used to identify the package
+#   filename. Defaults to `'sensu'` which matches the MSI filename published at
 #   `https://repositories.sensuapp.org/msi`.  Note, this is distinct from the
 #   windows_package_title, which is used to identify the package name as
 #   displayed in Add/Remove programs in Windows.
-#   Default: 'sensu'
 #
-# [*windows_package_title*]
-#   String.  The package name used to identify the package as listed in
-#   Add/Remove programs.  Note this is distinct from the package filename
-#   identifier specified with windows_package_name.
-#   Default: 'Sensu'
-
+# @param windows_package_title The package name used to identify the package as
+#   listed in Add/Remove programs.  Note this is distinct from the package
+#   filename identifier specified with windows_package_name.
+#
+# @param confd_dir Additional directories to load configuration
+#   snippets from.
+#
+# @param heap_size Value of the HEAP_SIZE environment variable.
+#   Note: This has effect only on Sensu Enterprise.
+#
 class sensu (
-  $version                        = 'installed',
-  $sensu_plugin_name              = 'sensu-plugin',
-  $sensu_plugin_provider          = $::osfamily ? {
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = 'installed',
+  String             $sensu_plugin_name = 'sensu-plugin',
+  Optional[String]   $sensu_plugin_provider = $::osfamily ? {
     'windows' => 'gem',
     default   => undef,
   },
-  $sensu_plugin_version           = 'installed',
-  $install_repo                   = true,
-  $enterprise                     = false,
-  $enterprise_version             = 'latest',
-  $enterprise_user                = undef,
-  $enterprise_pass                = undef,
-  $enterprise_dashboard           = false,
-  $enterprise_dashboard_version   = 'latest',
-  $manage_repo                    = true,
-  $repo                           = 'main',
-  $repo_source                    = undef,
-  $repo_key_id                    = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
-  $repo_key_source                = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
-  $repo_release                   = undef,
-  $spawn_limit                    = undef,
-  $enterprise_repo_key_id         = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
-  $client                         = true,
-  $server                         = false,
-  $api                            = false,
-  $manage_services                = true,
-  $manage_user                    = true,
-  $manage_plugins_dir             = true,
-  $manage_handlers_dir            = true,
-  $manage_mutators_dir            = true,
-  $rabbitmq_port                  = undef,
-  $rabbitmq_host                  = undef,
-  $rabbitmq_user                  = undef,
-  $rabbitmq_password              = undef,
-  $rabbitmq_vhost                 = undef,
-  $rabbitmq_ssl                   = undef,
-  $rabbitmq_ssl_private_key       = undef,
-  $rabbitmq_ssl_cert_chain        = undef,
-  $rabbitmq_prefetch              = undef,
-  $rabbitmq_cluster               = undef,
-  $rabbitmq_heartbeat             = undef,
-  $redis_host                     = '127.0.0.1',
-  $redis_port                     = 6379,
-  $redis_password                 = undef,
-  $redis_reconnect_on_error       = true,
-  $redis_db                       = 0,
-  $redis_auto_reconnect           = true,
-  $redis_sentinels                = undef,
-  $redis_master                   = undef,
-  $transport_type                 = 'rabbitmq',
-  $transport_reconnect_on_error   = true,
-  $api_bind                       = '0.0.0.0',
-  $api_host                       = '127.0.0.1',
-  $api_port                       = 4567,
-  $api_user                       = undef,
-  $api_password                   = undef,
-  $api_ssl_port                   = undef,
-  $api_ssl_keystore_file          = undef,
-  $api_ssl_keystore_password      = undef,
-  $subscriptions                  = [],
-  $client_bind                    = '127.0.0.1',
-  $client_port                    = '3030',
-  $client_address                 = $::ipaddress,
-  $client_name                    = $::fqdn,
-  $client_custom                  = {},
-  $client_keepalive               = {},
-  $safe_mode                      = false,
-  $plugins                        = [],
-  $plugins_defaults               = {},
-  $plugins_dir                    = undef,
-  $purge                          = false,
-  $purge_config                   = false,
-  $purge_plugins_dir              = false,
-  $use_embedded_ruby              = true,
-  $rubyopt                        = undef,
-  $gem_path                       = undef,
-  $log_level                      = 'info',
-  $log_dir                        = '/var/log/sensu',
-  $dashboard                      = false,
-  $init_stop_max_wait             = 10,
-  $gem_install_options            = undef,
-  $hasrestart                     = true,
-  $enterprise_dashboard_base_path = undef,
-  $enterprise_dashboard_host      = undef,
-  $enterprise_dashboard_port      = undef,
-  $enterprise_dashboard_refresh   = undef,
-  $enterprise_dashboard_user      = undef,
-  $enterprise_dashboard_pass      = undef,
-  $enterprise_dashboard_ssl       = undef,
-  $enterprise_dashboard_audit     = undef,
-  $enterprise_dashboard_github    = undef,
-  $enterprise_dashboard_gitlab    = undef,
-  $enterprise_dashboard_ldap      = undef,
-  $path                           = '$PATH',
-  $redact                         = undef,
-  $deregister_on_stop             = false,
-  $deregister_handler             = undef,
-  $package_checksum               = undef,
-  $windows_pkg_url                = undef,
-  $windows_repo_prefix            = 'https://repositories.sensuapp.org/msi',
-  $windows_logrotate              = false,
-  $windows_log_number             = '10',
-  $windows_log_size               = '10240',
-  $windows_package_provider       = undef,
-  $windows_choco_repo             = undef,
-  $windows_package_name           = 'Sensu',
-  $windows_package_title          = 'sensu',
-
-  ### START Hiera Lookups ###
-  $extensions                  = {},
-  $handlers                    = {},
-  $handler_defaults            = {},
-  $checks                      = {},
-  $check_defaults              = {},
-  $filters                     = {},
-  $filter_defaults             = {},
-  $mutators                    = {},
+  Stdlib::Absolutepath $sensu_etc_dir = $::osfamily ? {
+    'windows' => 'C:/opt/sensu',
+    default   => '/etc/sensu',
+  },
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^\d[\d\.\-\w]+$/] $sensu_plugin_version = 'installed',
+  Boolean            $install_repo = true,
+  Boolean            $enterprise = false,
+  Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/] $enterprise_version = 'latest',
+  Optional[String]   $enterprise_user = undef,
+  Optional[String]   $enterprise_pass = undef,
+  Boolean            $enterprise_dashboard = false,
+  String             $enterprise_dashboard_version = 'latest',
+  Boolean            $manage_repo = true,
+  Enum['main','unstable'] $repo = 'main',
+  Optional[String]   $repo_source = undef,
+  String             $repo_key_id = 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB',
+  String             $repo_key_source = 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg',
+  Optional[String]   $repo_release = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $spawn_limit = undef,
+  String             $enterprise_repo_key_id = '910442FF8781AFD0995D14B311AB27E8C3FE3269',
+  Boolean            $client = true,
+  Boolean            $server = false,
+  Boolean            $api = false,
+  Boolean            $manage_services = true,
+  Boolean            $manage_user = true,
+  Boolean            $manage_plugins_dir = true,
+  Boolean            $manage_handlers_dir = true,
+  Boolean            $manage_mutators_dir = true,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_port = undef,
+  Optional[String]   $rabbitmq_host = undef,
+  Optional[String]   $rabbitmq_user = undef,
+  Optional[String]   $rabbitmq_password = undef,
+  Optional[String]   $rabbitmq_vhost = undef,
+  Optional[Boolean]  $rabbitmq_ssl = undef,
+  Optional[String]   $rabbitmq_ssl_private_key = undef,
+  Optional[String]   $rabbitmq_ssl_cert_chain = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_prefetch = undef,
+  Variant[Undef,Hash,Array]                  $rabbitmq_cluster = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_heartbeat = undef,
+  Optional[String]   $redis_host = '127.0.0.1',
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $redis_port = 6379,
+  Optional[String]   $redis_password = undef,
+  Boolean            $redis_reconnect_on_error = true,
+  Integer            $redis_db = 0,
+  Boolean            $redis_auto_reconnect = true,
+  Optional[Array]    $redis_sentinels = undef,
+  Optional[String]   $redis_master = undef,
+  Enum['rabbitmq','redis'] $transport_type = 'rabbitmq',
+  Boolean            $transport_reconnect_on_error = true,
+  String             $api_bind = '0.0.0.0',
+  String             $api_host = '127.0.0.1',
+  Integer            $api_port = 4567,
+  Optional[String]   $api_user = undef,
+  Optional[String]   $api_password = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $api_ssl_port = undef,
+  Optional[String]   $api_ssl_keystore_file = undef,
+  Optional[String]   $api_ssl_keystore_password = undef,
+  Variant[String,Array] $subscriptions = [],
+  String             $client_bind = '127.0.0.1',
+  Integer            $client_port = 3030,
+  String             $client_address =  $::ipaddress,
+  String             $client_name =  $::fqdn,
+  Hash               $client_custom = {},
+  Variant[Undef,Boolean] $client_deregister = undef,
+  Variant[Undef,Hash] $client_deregistration = undef,
+  Hash               $client_keepalive = {},
+  Hash               $client_http_socket = {},
+  Boolean            $safe_mode = false,
+  Variant[String,Array,Hash] $plugins = [],
+  Hash               $plugins_defaults = {},
+  Optional[String]   $plugins_dir = undef,
+  Variant[Boolean,Hash] $purge = false,
+  Boolean            $purge_config = false,
+  Boolean            $purge_plugins_dir = false,
+  Boolean            $use_embedded_ruby = true,
+  Optional[String]   $rubyopt = undef,
+  Optional[String]   $gem_path = undef,
+  Enum['debug','info','warn','error','fatal'] $log_level = 'info',
+  Stdlib::Absolutepath $log_dir = '/var/log/sensu',
+  Boolean            $dashboard = false,
+  Variant[Integer,Pattern[/^(\d+)$/]] $init_stop_max_wait = 10,
+  Optional[Any]      $gem_install_options = undef,
+  Boolean            $hasrestart = true,
+  Optional[String]   $enterprise_dashboard_base_path = undef,
+  Optional[String]   $enterprise_dashboard_host = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $enterprise_dashboard_port = undef,
+  Optional[Any]      $enterprise_dashboard_refresh = undef,
+  Optional[String]   $enterprise_dashboard_user = undef,
+  Optional[String]   $enterprise_dashboard_pass = undef,
+  Optional[Any]      $enterprise_dashboard_ssl = undef,
+  Optional[Any]      $enterprise_dashboard_audit = undef,
+  Optional[Any]      $enterprise_dashboard_github = undef,
+  Optional[Any]      $enterprise_dashboard_gitlab = undef,
+  Optional[Any]      $enterprise_dashboard_ldap = undef,
+  Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = '$PATH',
+  Optional[Array]    $redact = undef,
+  Boolean            $deregister_on_stop = false,
+  Optional[String]   $deregister_handler = undef,
+  Optional[String]   $package_checksum = undef,
+  Optional[String]   $windows_pkg_url = undef,
+  Optional[String]   $windows_repo_prefix = 'https://repositories.sensuapp.org/msi',
+  Boolean            $windows_logrotate = false,
+  Variant[Integer,Pattern[/^(\d+)$/]] $windows_log_number = 10,
+  Variant[Integer,Pattern[/^(\d+)$/]] $windows_log_size = 10240,
+  Optional[String]   $windows_package_provider = undef,
+  Optional[String]   $windows_choco_repo = undef,
+  String             $windows_package_name = 'Sensu',
+  String             $windows_package_title = 'sensu',
+  Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
+  Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
+  ### START Hiera Lookups###
+  Hash               $extensions = {},
+  Hash               $handlers = {},
+  Hash               $handler_defaults = {},
+  Hash               $checks = {},
+  Hash               $check_defaults = {},
+  Hash               $filters = {},
+  Hash               $filter_defaults = {},
+  Hash               $mutators = {},
   ### END Hiera Lookups ###
-
-){
-
-  validate_absolute_path($log_dir)
-  validate_bool($client, $server, $api, $manage_repo, $install_repo, $enterprise, $enterprise_dashboard, $purge_config, $safe_mode, $manage_services, $redis_reconnect_on_error, $hasrestart, $redis_auto_reconnect, $manage_mutators_dir, $deregister_on_stop)
-
-  validate_re($repo, ['^main$', '^unstable$'], "Repo must be 'main' or 'unstable'.  Found: ${repo}")
-  validate_re($version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-el]+$'], "Invalid package version: ${version}")
-  validate_re($enterprise_version, ['^absent$', '^installed$', '^latest$', '^present$', '^[\d\.\-]+$'], "Invalid package version: ${version}")
-  validate_re($sensu_plugin_version, ['^absent$', '^installed$', '^latest$', '^present$', '^\d[\d\.\-\w]+$'], "Invalid sensu-plugin package version: ${sensu_plugin_version}")
-  validate_re($log_level, ['^debug$', '^info$', '^warn$', '^error$', '^fatal$'] )
-  validate_re($transport_type, ['^rabbitmq$', '^redis$'], "Invalid transport type '${transport_type}'. Expected either rabbitmq or redis" )
-  if !is_integer($redis_port) { fail('redis_port must be an integer') }
-  if !is_integer($api_port) { fail('api_port must be an integer') }
-  if $api_ssl_port != undef and is_integer($api_ssl_port) == false {
-    fail('api_ssl_port must be an integer')
-  }
-  if $api_ssl_keystore_file != undef and is_string($api_ssl_keystore_file) == false {
-    fail('api_ssl_keystore_file must be a string')
-  }
-  if $api_ssl_keystore_password != undef and is_string($api_ssl_keystore_password) == false {
-    fail('api_ssl_keystore_password must be a string')
-  }
-  if !is_integer($init_stop_max_wait) { fail('init_stop_max_wait must be an integer') }
+) {
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
-  if !is_integer($redis_db) { fail('redis_db must be an integer') }
-  if $spawn_limit and !is_integer($spawn_limit) { fail('spawn_limit must be an integer') }
 
   # sensu-enterprise supersedes sensu-server and sensu-api
   if ( $enterprise and $api ) or ( $enterprise and $server ) {
@@ -600,7 +411,6 @@ class sensu (
   # validate enterprise repo credentials
   if $manage_repo {
     if ( $enterprise or $enterprise_dashboard ) and $install_repo {
-      validate_string($enterprise_user, $enterprise_pass)
       if $enterprise_user == undef or $enterprise_pass == undef {
         fail('The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set')
       }
@@ -608,10 +418,10 @@ class sensu (
   }
 
   # Put here to avoid computing the conditionals for every check
-  if $client {
-    $client_service_class = Class['sensu::client::service']
+  if $client and $manage_services {
+    $client_service = Service['sensu-client']
   } else {
-    $client_service_class = undef
+    $client_service = undef
   }
 
   if $server {
@@ -620,13 +430,13 @@ class sensu (
     $server_service_class = undef
   }
 
-  if $api {
-    $api_service_class = Class['sensu::api::service']
+  if $api and $manage_services and $::osfamily != 'windows' {
+    $api_service = Service['sensu-api']
   } else {
-    $api_service_class = undef
+    $api_service = undef
   }
 
-  $check_notify = delete_undef_values([ $client_service_class, $server_service_class, $api_service_class ])
+  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.
@@ -636,7 +446,7 @@ class sensu (
     $_manage_plugins_dir = $manage_plugins_dir
   }
 
-  if is_bool($purge) {
+  if $purge =~ Boolean {
     # If purge is a boolean, we either purge everything or purge nothing
     $_purge_plugins    = $purge
     $_purge_config     = $purge
@@ -644,8 +454,6 @@ class sensu (
     $_purge_extensions = $purge
     $_purge_mutators   = $purge
   } else {
-    # If purge is not a boolean, it must be a hash
-    validate_hash($purge)
     # Default anything not specified to false
     $default_purge_hash = { plugins => false, config => false, handlers => false, extensions => false, mutators => false }
     $full_purge_hash = merge($default_purge_hash, $purge)
@@ -663,16 +471,39 @@ class sensu (
     $_purge_mutators   = $full_purge_hash['mutators']
   }
 
-  # Create resources from hiera lookups
-  create_resources('::sensu::extension', $extensions)
-  create_resources('::sensu::handler', $handlers, $handler_defaults)
-  create_resources('::sensu::check', $checks, $check_defaults)
-  create_resources('::sensu::filter', $filters, $filter_defaults)
-  create_resources('::sensu::mutator', $mutators)
+  # (#463) This well-known anchor serves as a reference point so all checks are
+  # managed after all plugins.  It must always exist in the catalog.
+  anchor { 'plugins_before_checks': }
+
+  $extensions.each |$k,$v| {
+    ::sensu::extension { $k:
+      * => $v,
+    }
+  }
+  $handlers.each |$k,$v| {
+    ::sensu::handler { $k:
+      * => $handler_defaults + $v,
+    }
+  }
+  $checks.each |$k,$v| {
+    ::sensu::check { $k:
+      * => $check_defaults + $v,
+    }
+  }
+  $filters.each |$k,$v| {
+    ::sensu::filter { $k:
+      * => $filter_defaults + $v,
+    }
+  }
+  $mutators.each |$k,$v| {
+    ::sensu::mutator { $k:
+      * => $v,
+    }
+  }
 
   case $::osfamily {
     'Debian','RedHat': {
-      $etc_dir = '/etc/sensu'
+      $etc_dir = $sensu_etc_dir
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'sensu'
       $group = 'sensu'
@@ -683,7 +514,7 @@ class sensu (
     }
 
     'windows': {
-      $etc_dir = 'C:/opt/sensu'
+      $etc_dir = $sensu_etc_dir
       $conf_dir = "${etc_dir}/conf.d"
       $user = 'NT Authority\SYSTEM'
       $group = 'Administrators'
@@ -698,36 +529,30 @@ class sensu (
 
   # Include everything and let each module determine its state.  This allows
   # transitioning to purged config and stopping/disabling services
-  anchor { 'sensu::begin': }
-  -> class { '::sensu::package': }
-  -> class { '::sensu::enterprise::package': }
-  -> class { '::sensu::transport': }
-  -> class { '::sensu::rabbitmq::config': }
-  -> class { '::sensu::api::config': }
-  -> class { '::sensu::redis::config': }
-  -> class { '::sensu::client::config': }
-  -> class { '::sensu::client::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::api::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::server::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::enterprise::service':
-    hasrestart => $hasrestart,
-  }
-  -> class { '::sensu::enterprise::dashboard':
-    hasrestart => $hasrestart,
-  }
-  -> anchor {'sensu::end': }
+  contain ::sensu::package
+  contain ::sensu::enterprise
+  contain ::sensu::transport
+  contain ::sensu::rabbitmq::config
+  contain ::sensu::api
+  contain ::sensu::redis::config
+  contain ::sensu::client
+  contain ::sensu::server::service
+  contain ::sensu::enterprise::dashboard
+
+  Class['::sensu::package']
+  -> Class['::sensu::transport']
+  -> Class['::sensu::rabbitmq::config']
+  -> Sensu_api_config[$::fqdn]
+  -> Class['::sensu::redis::config']
+  -> Sensu_client_config[$::fqdn]
+  -> Class['::sensu::server::service']
+  -> Class['::sensu::enterprise::dashboard']
 
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
     case $plugins {
-      String,Array: { sensu::plugin { $plugins: install_path => '/etc/sensu/plugins' } }
+      String,Array: { sensu::plugin { $plugins: } }
       Hash:         { create_resources('::sensu::plugin', $plugins, $plugins_defaults ) }
       default:      { fail('Invalid data type for $plugins, must be a string, an array, or a hash.') }
     }

@@ -1,12 +1,8 @@
-# = Class: sensu::repo::yum
+# @summary Adds the Sensu YUM repo support
 #
 # Adds the Sensu YUM repo support
 #
 class sensu::repo::yum {
-
-  if $caller_module_name != $module_name {
-    fail("Use of private class ${name} by ${caller_module_name}")
-  }
 
   if $::sensu::install_repo  {
     if $::sensu::repo_source {

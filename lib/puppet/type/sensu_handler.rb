@@ -2,7 +2,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
                                    'puppet_x', 'sensu', 'boolean_property.rb'))
 
 Puppet::Type.newtype(:sensu_handler) do
-  @doc = ""
+  @doc = "Manages Sensu handlers"
 
   def initialize(*args)
     super *args
@@ -105,6 +105,10 @@ Puppet::Type.newtype(:sensu_handler) do
 
   newproperty(:handle_flapping, :parent => PuppetX::Sensu::BooleanProperty) do
     desc "If events in the flapping state should be handled"
+  end
+
+  newproperty(:handle_silenced, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc "If events in the silenced state should be handled"
   end
 
   autorequire(:package) do
