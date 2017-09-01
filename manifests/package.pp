@@ -50,10 +50,9 @@ class sensu::package (
 ) {
 
   case $::osfamily {
-
     'Darwin': {
       $pkg_provider = 'apple'
-      $pkg_require = "Remote_file[$pkg_source]"
+      $pkg_require = "Remote_file[${pkg_source}]"
       $pkg_source = '/tmp/sensu-installer.dmg'
       $pkg_title = 'sensu'
       $pkg_version = $::sensu::version
@@ -62,7 +61,6 @@ class sensu::package (
         ensure => present,
         source => "https://repositories.sensuapp.org/osx/${::macosx_productversion_major}/x86_64/sensu-${pkg_version}-1.dmg",
       }
-
     }
 
     'Debian': {
