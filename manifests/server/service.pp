@@ -21,9 +21,7 @@ class sensu::server::service (
       }
     }
 
-  case $::osfamily {
-    'Darwin','windows': {}
-    default: {
+    if $::osfamily !~ /(windows|Darwin)/ {
       service { 'sensu-server':
         ensure     => $ensure,
         enable     => $enable,
