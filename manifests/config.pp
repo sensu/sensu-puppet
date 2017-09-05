@@ -1,6 +1,6 @@
 # @summary Defines Sensu check configurations
 # 
-# This define manages Sensu check configurations.
+# This define manages Sensu check configurations.
 #
 # @param ensure Whether the check should be present or not
 #   Valid values: present, absent
