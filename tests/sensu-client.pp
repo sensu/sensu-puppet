@@ -42,12 +42,31 @@ node default {
     $ip = $facts['networking']['ip']
   }
 
+  $client_ec2 = {
+    'instance-id' => 'i-2102113',
+  }
+  $client_puppet = {
+    'nodename' => $::fqdn,
+  }
+  $client_chef = {
+    'nodename' => $::fqdn,
+  }
+  $client_servicenow = {
+    'configuration_item' => {
+      'name' => 'ServiceNow test',
+      'os_version' => '16.04',
+    },
+  }
   class { '::sensu':
     rabbitmq_password => 'correct-horse-battery-staple',
     rabbitmq_host     => '192.168.56.10',
     rabbitmq_vhost    => '/sensu',
     subscriptions     => 'all',
     client_address    => $ip,
+    client_ec2        => $client_ec2,
+    client_chef       => $client_chef,
+    client_puppet     => $client_puppet,
+    client_servicenow => $client_servicenow,
     filters           => $filters,
     filter_defaults   => $filter_defaults,
   }

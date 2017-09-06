@@ -156,9 +156,28 @@
 #   status, and issued timestamp. The following attributes are provided as
 #   recommendations for controlling client deregistration behavior.
 #
-# @param client_keepalive Client keepalive config
+# @param client_keepalive Client keepalive configuration
 #
-# @param client_http_socket Client http_socket config
+# @param client_http_socket Client http_socket configuration. Must be an Hash of
+#    parameters as described in:
+#    https://sensuapp.org/docs/latest/reference/clients.html#http-socket-attributes
+#
+# @param client_servicenow Client servicenow configuration. Supported only
+#   on Sensu Enterprise. It expects an Hash with a single key named
+#   'configuration_item' containing an Hash of parameters, as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#servicenow-attributes
+#
+# @param client_ec2 Client ec2 configuration. Supported only on Sensu
+#   Enterprise. It expects an Hash with valid paramters as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#ec2-attributes
+#
+# @param client_chef Client chef configuration. Supported only on Sensu
+#   Enterprise. It expects an Hash with valid paramters as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#chef-attributes
+#
+# @param client_puppet Client puppet configuration. Supported only on Sensu
+#   Enterprise. It expects an Hash with valid paramters as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#puppet-attributes
 #
 # @param safe_mode Force safe mode for checks
 #
@@ -346,6 +365,10 @@ class sensu (
   Variant[Undef,Hash] $client_deregistration = undef,
   Hash               $client_keepalive = {},
   Hash               $client_http_socket = {},
+  Hash               $client_servicenow = {},
+  Hash               $client_ec2 = {},
+  Hash               $client_chef = {},
+  Hash               $client_puppet = {},
   Boolean            $safe_mode = false,
   Variant[String,Array,Hash] $plugins = [],
   Hash               $plugins_defaults = {},
