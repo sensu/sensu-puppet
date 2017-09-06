@@ -417,9 +417,14 @@ class sensu (
     }
   }
 
+  $service_name = $::osfamily ? {
+    'Darwin' => 'org.sensuapp.sensu-client',
+    default  => 'sensu-client'
+  }
+
   # Put here to avoid computing the conditionals for every check
   if $client and $manage_services {
-    $client_service = Service['sensu-client']
+    $client_service = Service[$service_name]
   } else {
     $client_service = undef
   }

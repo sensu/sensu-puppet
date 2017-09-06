@@ -19,8 +19,13 @@ define sensu::extension (
   Hash $config                              = {},
 ) {
 
+  $service_name = $::osfamily ? {
+    'Darwin' => 'org.sensuapp.sensu-client',
+    default  => 'sensu-client'
+  }
+
   if $::sensu::client and $::sensu::manage_services {
-    $notify_services = Service['sensu-client']
+    $notify_services = Service[$service_name]
   } else {
     $notify_services = []
   }

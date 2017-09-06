@@ -46,7 +46,7 @@ class sensu::client (
           provider => 'powershell',
           command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
           unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
-          before   => Service['sensu-client'],
+          before   => Service[$service_name],
           require  => File['C:/opt/sensu/bin/sensu-client.xml'],
         }
       }
