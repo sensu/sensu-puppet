@@ -15,7 +15,7 @@ class sensu::api (
   case $::osfamily {
     'Darwin': {
       $service_name     = 'org.sensuapp.sensu-client'
-      $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
+      $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-api.plist'
       $service_provider = 'launchd'
     }
     default: {
