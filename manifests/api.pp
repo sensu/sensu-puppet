@@ -12,6 +12,19 @@ class sensu::api (
   Boolean $hasrestart = $::sensu::hasrestart,
 ) {
 
+  case $::osfamily ? {
+    'Darwin': {
+      $service_name     = 'org.sensuapp.sensu-client'
+      $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
+      $service_provider = 'launchd'
+    }
+    default: {
+      $service_name     = 'sensu-api'
+      $service_path     = undef
+      $service_provider = undef
+    }
+  }
+
   if $::sensu::manage_services {
 
     case $::sensu::api {
@@ -25,11 +38,13 @@ class sensu::api (
       }
     }
 
-    if $::osfamily !~ /(Darwin|windows)/ {
+    if $::osfamily != 'windows' {
       service { 'sensu-api':
         ensure     => $service_ensure,
         enable     => $service_enable,
         hasrestart => $hasrestart,
+        path       => $service_path,
+        provider   => $service_provider,
         subscribe  => [
           Class['sensu::package'],
           Sensu_api_config[$::fqdn],
