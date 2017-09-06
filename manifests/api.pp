@@ -12,7 +12,7 @@ class sensu::api (
   Boolean $hasrestart = $::sensu::hasrestart,
 ) {
 
-  case $::osfamily ? {
+  case $::osfamily {
     'Darwin': {
       $service_name     = 'org.sensuapp.sensu-client'
       $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
