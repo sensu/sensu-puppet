@@ -125,6 +125,15 @@ Puppet::Type.newtype(:sensu_client_config) do
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:register, :parent => PuppetX::Sensu::BooleanProperty) do
+    desc 'Enable client registration'
+  end
+
+  newproperty(:registration) do
+    desc 'Client registration attributes'
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:keepalive) do
     desc "Keepalive config"
 
