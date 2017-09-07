@@ -439,7 +439,12 @@ class sensu (
     }
   }
   else {
-    $api_service = undef
+    if $::osfamily == 'Darwin' {
+      $api_service = 'org.sensuapp.sensu-api'
+    }
+    else {
+      $api_service = undef
+    }
   }
 
   $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
