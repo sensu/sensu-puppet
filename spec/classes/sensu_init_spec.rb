@@ -182,6 +182,14 @@ describe 'sensu', :type => :class do
       it { should_not contain_user('sensu') }
     end
 
+    describe 'with sensu_user => Administrateur and sensu_group => Administrateurs' do
+      let(:params) do
+        {:sensu_user  => 'Administrateur',
+         :sensu_group => 'Administrateurs'}
+      end
+      it { should contain_file('C:/opt/sensu/conf.d').with({:owner => 'Administrateur', :group => 'Administrateurs'}) }
+    end
+
     context 'with sensu_etc_dir => C:/etc/sensu' do
       let(:params) { {:sensu_etc_dir => 'C:/etc/sensu' } }
       # resources from sensu::package

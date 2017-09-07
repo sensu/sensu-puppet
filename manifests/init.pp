@@ -63,6 +63,12 @@
 #
 # @param manage_mutators_dir Manage the sensu mutators directory
 #
+# @param sensu_user Name of the user Sensu is running as. Default is calculated
+#   according to the underlying OS
+#
+# @param sensu_group Name of the group Sensu is running as. Default is calculated
+#   according to the underlying OS
+#
 # @param rabbitmq_port Rabbitmq port to be used by sensu
 #
 # @param rabbitmq_host Host running rabbitmq for sensu
@@ -326,6 +332,8 @@ class sensu (
   Boolean            $manage_plugins_dir = true,
   Boolean            $manage_handlers_dir = true,
   Boolean            $manage_mutators_dir = true,
+  Optional[String]   $sensu_user = undef,
+  Optional[String]   $sensu_group = undef,
   Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_port = undef,
   Optional[String]   $rabbitmq_host = undef,
   Optional[String]   $rabbitmq_user = undef,
@@ -528,8 +536,14 @@ class sensu (
     'Debian','RedHat': {
       $etc_dir = $sensu_etc_dir
       $conf_dir = "${etc_dir}/conf.d"
-      $user = 'sensu'
-      $group = 'sensu'
+      $user = $sensu_user  ? {
+        undef   => 'sensu',
+        default => $sensu_user,
+      }
+      $group = $sensu_group ? {
+        undef   => 'sensu',
+        default => $sensu_group,
+      }
       $home_dir = '/opt/sensu'
       $shell = '/bin/false'
       $dir_mode = '0555'
@@ -539,8 +553,14 @@ class sensu (
     'windows': {
       $etc_dir = $sensu_etc_dir
       $conf_dir = "${etc_dir}/conf.d"
-      $user = 'NT Authority\SYSTEM'
-      $group = 'Administrators'
+      $user = $sensu_user  ? {
+        undef   => 'NT Authority\SYSTEM',
+        default => $sensu_user,
+      }
+      $group = $sensu_group ? {
+        undef   => 'Administrators',
+        default => $sensu_group,
+      }
       $home_dir = $etc_dir
       $shell = undef
       $dir_mode = undef
