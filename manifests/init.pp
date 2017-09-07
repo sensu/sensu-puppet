@@ -63,6 +63,12 @@
 #
 # @param manage_mutators_dir Manage the sensu mutators directory
 #
+# @param sensu_user Name of the user Sensu is running as. Default is calculated
+#   according to the underlying OS
+#
+# @param sensu_group Name of the group Sensu is running as. Default is calculated
+#   according to the underlying OS
+#
 # @param rabbitmq_port Rabbitmq port to be used by sensu
 #
 # @param rabbitmq_host Host running rabbitmq for sensu
@@ -156,9 +162,28 @@
 #   status, and issued timestamp. The following attributes are provided as
 #   recommendations for controlling client deregistration behavior.
 #
-# @param client_keepalive Client keepalive config
+# @param client_keepalive Client keepalive configuration
 #
-# @param client_http_socket Client http_socket config
+# @param client_http_socket Client http_socket configuration. Must be an Hash of
+#    parameters as described in:
+#    https://sensuapp.org/docs/latest/reference/clients.html#http-socket-attributes
+#
+# @param client_servicenow Client servicenow configuration. Supported only
+#   on Sensu Enterprise. It expects an Hash with a single key named
+#   'configuration_item' containing an Hash of parameters, as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#servicenow-attributes
+#
+# @param client_ec2 Client ec2 configuration. Supported only on Sensu
+#   Enterprise. It expects an Hash with valid paramters as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#ec2-attributes
+#
+# @param client_chef Client chef configuration. Supported only on Sensu
+#   Enterprise. It expects an Hash with valid paramters as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#chef-attributes
+#
+# @param client_puppet Client puppet configuration. Supported only on Sensu
+#   Enterprise. It expects an Hash with valid paramters as described in:
+#   https://sensuapp.org/docs/latest/reference/clients.html#puppet-attributes
 #
 # @param safe_mode Force safe mode for checks
 #
@@ -307,6 +332,8 @@ class sensu (
   Boolean            $manage_plugins_dir = true,
   Boolean            $manage_handlers_dir = true,
   Boolean            $manage_mutators_dir = true,
+  Optional[String]   $sensu_user = undef,
+  Optional[String]   $sensu_group = undef,
   Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_port = undef,
   Optional[String]   $rabbitmq_host = undef,
   Optional[String]   $rabbitmq_user = undef,
@@ -346,6 +373,10 @@ class sensu (
   Variant[Undef,Hash] $client_deregistration = undef,
   Hash               $client_keepalive = {},
   Hash               $client_http_socket = {},
+  Hash               $client_servicenow = {},
+  Hash               $client_ec2 = {},
+  Hash               $client_chef = {},
+  Hash               $client_puppet = {},
   Boolean            $safe_mode = false,
   Variant[String,Array,Hash] $plugins = [],
   Hash               $plugins_defaults = {},
@@ -503,31 +534,7 @@ class sensu (
   }
 
   case $::osfamily {
-    'Debian','RedHat': {
-      $etc_dir      = $sensu_etc_dir
-      $conf_dir     = "${etc_dir}/conf.d"
-      $user         = 'sensu'
-      $group        = 'sensu'
-      $home_dir     = '/opt/sensu'
-      $shell        = '/bin/false'
-      $dir_mode     = '0555'
-      $file_mode    = '0440'
-      $service_name = 'sensu-client'
-    }
-
-    'windows': {
-      $etc_dir      = $sensu_etc_dir
-      $conf_dir     = "${etc_dir}/conf.d"
-      $user         = 'NT Authority\SYSTEM'
-      $group        = 'Administrators'
-      $home_dir     = $etc_dir
-      $shell        = undef
-      $dir_mode     = undef
-      $file_mode    = undef
-      $service_name = 'sensu-client'
-    }
-
-    'Darwin': {
+      'Darwin': {
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = '_sensu'
@@ -538,7 +545,40 @@ class sensu (
       $file_mode    = '0440'
       $service_name = 'org.sensuapp.sensu-client'
     }
-
+    'Debian','RedHat': {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = $sensu_user  ? {
+        undef   => 'sensu',
+        default => $sensu_user,
+      }
+      $group        = $sensu_group ? {
+        undef   => 'sensu',
+        default => $sensu_group,
+      }
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'sensu-client'
+    }
+    'windows': {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = $sensu_user  ? {
+        undef   => 'NT Authority\SYSTEM',
+        default => $sensu_user,
+      }
+      $group        = $sensu_group ? {
+        undef   => 'Administrators',
+        default => $sensu_group,
+      }
+      $home_dir     = $etc_dir
+      $shell        = undef
+      $dir_mode     = undef
+      $file_mode    = undef
+      $service_name = 'sensu-client'
+    }
     default: {}
   }
 

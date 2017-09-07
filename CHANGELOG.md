@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.34.0](https://github.com/sensu/sensu-puppet/tree/v2.34.0)
+## [v2.35.0](https://github.com/sensu/sensu-puppet/tree/v2.35.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.34.0...v2.35.0)
+
+**Closed issues:**
+
+- Client config should support ec2 [\#772](https://github.com/sensu/sensu-puppet/issues/772)
+
+**Merged pull requests:**
+
+- Use variable for ssl\_dir in sensu::rabbitmq::config \#798 [\#808](https://github.com/sensu/sensu-puppet/pull/808) ([alvagante](https://github.com/alvagante))
+- Added support to client config for servicenow, ec2, chef, puppet \#772 \#773 \#774 \#775 [\#807](https://github.com/sensu/sensu-puppet/pull/807) ([alvagante](https://github.com/alvagante))
+
+## [v2.34.0](https://github.com/sensu/sensu-puppet/tree/v2.34.0) (2017-08-31)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.33.1...v2.34.0)
 
 **Closed issues:**

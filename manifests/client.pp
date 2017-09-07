@@ -115,5 +115,9 @@ class sensu::client (
     deregister     => $::sensu::client_deregister,
     deregistration => $::sensu::client_deregistration,
     http_socket    => $::sensu::client_http_socket,
+    servicenow     => $::sensu::client_servicenow,
+    ec2            => $::sensu::client_ec2,
+    chef           => $::sensu::client_chef,
+    puppet         => $::sensu::client_puppet,
   }
 }
