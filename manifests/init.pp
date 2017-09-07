@@ -431,8 +431,14 @@ class sensu (
   }
 
   if $api and $manage_services and $::osfamily != 'windows' {
-    $api_service = Service[$::sensu::api_service]
-  } else {
+    if $::osfamily == 'Darwin' {
+      $api_service = 'org.sensuapp.sensu-api'
+    }
+    else {
+      $api_service = 'sensu-api'
+    }
+  }
+  else {
     $api_service = undef
   }
 
@@ -503,7 +509,6 @@ class sensu (
 
   case $::osfamily {
     'Debian','RedHat': {
-      $api_service  = 'sensu-api'
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = 'sensu'
@@ -516,7 +521,6 @@ class sensu (
     }
 
     'windows': {
-      $api_service  = undef
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = 'NT Authority\SYSTEM'
@@ -529,7 +533,6 @@ class sensu (
     }
 
     'Darwin': {
-      $api_service  = 'org.sensuapp.sensu-api'
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = '_sensu'
