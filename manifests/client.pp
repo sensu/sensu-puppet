@@ -46,12 +46,11 @@ class sensu::client (
           provider => 'powershell',
           command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
           unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
-          before   => Service[$service_name],
+          before   => Service[$::sensu::service_name],
           require  => File['C:/opt/sensu/bin/sensu-client.xml'],
         }
       }
       'Darwin': {
-        $service_name     = 'org.sensuapp.sensu-client'
         $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
         $service_provider = 'launchd'
 
@@ -60,18 +59,16 @@ class sensu::client (
           owner  => 'root',
           group  => 'wheel',
           mode   => '0755',
-          before => Service[$service_name],
+          before => Service[$::sensu::service_name],
         }
       }
       default: {
-        $service_name     = 'sensu-client'
         $service_path     = undef
         $service_provider = undef
       }
     }
 
-
-    service { $service_name:
+    service { $::sensu::service_name:
       ensure     => $service_ensure,
       enable     => $service_enable,
       hasrestart => $hasrestart,

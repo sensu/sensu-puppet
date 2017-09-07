@@ -417,14 +417,9 @@ class sensu (
     }
   }
 
-  $service_name = $::osfamily ? {
-    'Darwin' => 'org.sensuapp.sensu-client',
-    default  => 'sensu-client'
-  }
-
   # Put here to avoid computing the conditionals for every check
   if $client and $manage_services {
-    $client_service = Service[$service_name]
+    $client_service = Service[$::sensu::service_name]
   } else {
     $client_service = undef
   }
@@ -508,36 +503,39 @@ class sensu (
 
   case $::osfamily {
     'Debian','RedHat': {
-      $etc_dir = $sensu_etc_dir
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = 'sensu'
-      $group = 'sensu'
-      $home_dir = '/opt/sensu'
-      $shell = '/bin/false'
-      $dir_mode = '0555'
-      $file_mode = '0440'
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = 'sensu'
+      $group        = 'sensu'
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'sensu-client'
     }
 
     'windows': {
-      $etc_dir = $sensu_etc_dir
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = 'NT Authority\SYSTEM'
-      $group = 'Administrators'
-      $home_dir = $etc_dir
-      $shell = undef
-      $dir_mode = undef
-      $file_mode = undef
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = 'NT Authority\SYSTEM'
+      $group        = 'Administrators'
+      $home_dir     = $etc_dir
+      $shell        = undef
+      $dir_mode     = undef
+      $file_mode    = undef
+      $service_name = 'sensu-client'
     }
 
     'Darwin': {
-      $etc_dir = $sensu_etc_dir
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = '_sensu'
-      $group = 'root'
-      $home_dir = '/opt/sensu'
-      $shell = '/bin/false'
-      $dir_mode = '0555'
-      $file_mode = '0440'
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = '_sensu'
+      $group        = 'root'
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'org.sensuapp.sensu-client'
     }
 
     default: {}

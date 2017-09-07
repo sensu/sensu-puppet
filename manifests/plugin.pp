@@ -45,18 +45,13 @@ define sensu::plugin (
   Any $gem_install_options = $::sensu::gem_install_options,
 ) {
 
-  $service_name = $::osfamily ? {
-    'Darwin' => 'org.sensuapp.sensu-client',
-    default  => 'sensu-client'
-  }
-
   File {
     owner => 'sensu',
     group => 'sensu',
   }
 
   Sensu::Plugin[$name]
-  ~> Service[$service_name]
+  ~> Service[$::sensu::service_name]
 
   # (#463) All plugins must come before all checks.  Collections are not used to
   # avoid realizing any resources.
