@@ -37,7 +37,7 @@ class sensu::api (
     }
 
     if $::osfamily != 'windows' {
-      service { $::sensu::service_name:
+      service { $::sensu::api_service:
         ensure     => $service_ensure,
         enable     => $service_enable,
         hasrestart => $hasrestart,
