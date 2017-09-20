@@ -39,7 +39,7 @@ define sensu::enterprise::dashboard::api (
   Optional[String]  $pass          = undef,
 ) {
 
-  require ::sensu::enterprise::dashboard
+  include ::sensu::enterprise::dashboard
 
   sensu_enterprise_dashboard_api_config { $title:
     ensure     => $ensure,
