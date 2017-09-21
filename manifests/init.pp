@@ -591,6 +591,15 @@ class sensu (
   -> Class['::sensu::server::service']
   -> Class['::sensu::enterprise::dashboard']
 
+  # Dependencies for Plugins #
+  # Without this line, plugins installed with the sensu_gem provider may get
+  # evaluated before the sensu package, which, on sensu package upgrades that
+  # install a new version of Ruby, would mean that two runs of Puppet would be
+  # necessary to get the plugins installed into the new embedded Ruby folder.
+  Package['sensu']
+  ~> Package<| provider == 'sensu_gem' |>
+  ~> Service['sensu-client', 'sensu-server', 'sensu-api']
+
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
   } else {
