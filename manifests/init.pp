@@ -598,7 +598,7 @@ class sensu (
   # necessary to get the plugins installed into the new embedded Ruby folder.
   Package['sensu']
   ~> Package<| provider == 'sensu_gem' |>
-  ~> Service['sensu-client', 'sensu-server', 'sensu-api']
+  ~> Service<| title == 'sensu-client' or title == 'sensu-server' or title == 'sensu-api'|>
 
   if $plugins_dir {
     sensu::plugin { $plugins_dir: type => 'directory' }
