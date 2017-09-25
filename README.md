@@ -230,6 +230,18 @@ node 'sensu-client.foo.com' {
    }
 }
 ```
+### Facts
+
+#### `sensu_version`
+
+The `sensu_version` fact returns the Sensu Client version returned by `C:\opt\sensu\embedded\bin\sensu-client.bat`
+for Windows systems and the value returned by `/opt/sensu/embedded/bin/sensu-client` for non-Windows.
+
+```shell
+facter -p sensu_version
+0.23.3
+```
+
 
 ## Advanced example using Hiera
 
