@@ -65,12 +65,14 @@ describe 'sensu', :type => :class do
           end
 
           it do
-            should contain_exec('install-sensu-client').with({
-              'provider' => 'powershell',
-              'command'  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
-              'unless'   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
-              'before'   => 'Service[sensu-client]',
-              'require'  => 'File[C:/opt/sensu/bin/sensu-client.xml]',
+            should contain_dsc_service('sensu-client').only_with({
+              'dsc_ensure'      => 'present',
+              'dsc_name'        => 'sensu-client',
+              'dsc_credential'  => nil,
+              'dsc_displayname' => 'Sensu Client',
+              'dsc_path'        => 'c:\\opt\\sensu\\bin\\sensu-client.exe',
+              'notify'          => 'Service[sensu-client]',
+              'require'         => 'File[C:/opt/sensu/bin/sensu-client.xml]',
             })
           end
 
@@ -84,6 +86,25 @@ describe 'sensu', :type => :class do
                 'Sensu_client_config[testfqdn.example.com]',
                 'Class[Sensu::Rabbitmq::Config]',
               ],
+            })
+          end
+        end
+
+        context 'with windows_service_user => test' do
+          let(:params) { {:windows_service_user => { 'user' => 'test', 'password' => 'test' } } }
+          it do
+            should contain_dsc_userrightsassignment('test').with({
+              'dsc_ensure'   => 'present',
+              'dsc_policy'   => 'Log_on_as_a_service',
+              'dsc_identity' => 'test',
+              'before'       => 'Dsc_service[sensu-client]',
+            })
+          end
+          it do
+            should contain_acl('C:/opt/sensu').with({
+              'purge'       => 'false',
+              'permissions' => '[{"identity"=>"test", "rights"=>["full"]}]',
+              'before'      => 'Dsc_service[sensu-client]',
             })
           end
         end

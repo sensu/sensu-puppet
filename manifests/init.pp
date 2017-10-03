@@ -452,6 +452,7 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
+  Optional[Struct[{NotUndef[user] => String, NotUndef[password] => String}]] $windows_service_user = undef,
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
   Variant[Stdlib::Absolutepath,Undef] $config_file = undef,

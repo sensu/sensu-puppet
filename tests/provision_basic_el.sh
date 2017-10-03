@@ -46,7 +46,6 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 puppet module install puppetlabs/stdlib --version 4.24.0
 puppet module install puppetlabs/apt --version 4.1.0
 puppet module install lwf-remote_file --version 1.1.3
-puppet module install puppetlabs/powershell --version 2.1.0
 
 # install EPEL repos for required dependencies
 rpm_install https://dl.fedoraproject.org/pub/epel/epel-release-latest-${release}.noarch.rpm
