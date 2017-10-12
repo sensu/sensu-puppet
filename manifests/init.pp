@@ -431,6 +431,56 @@ class sensu (
   Hash               $mutators = {},
   ### END Hiera Lookups ###
 ) {
+
+  case $::osfamily {
+    'Darwin': {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = '_sensu'
+      $group        = 'root'
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'org.sensuapp.sensu-client'
+    }
+    'Debian','RedHat': {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = $sensu_user  ? {
+        undef   => 'sensu',
+        default => $sensu_user,
+      }
+      $group        = $sensu_group ? {
+        undef   => 'sensu',
+        default => $sensu_group,
+      }
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'sensu-client'
+    }
+    'windows': {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = $sensu_user  ? {
+        undef   => 'NT Authority\SYSTEM',
+        default => $sensu_user,
+      }
+      $group        = $sensu_group ? {
+        undef   => 'Administrators',
+        default => $sensu_group,
+      }
+      $home_dir     = $etc_dir
+      $shell        = undef
+      $dir_mode     = undef
+      $file_mode    = undef
+      $service_name = 'sensu-client'
+    }
+    default: {}
+  }
+
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }
   if $purge_plugins_dir { fail('purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins => true` instead') }
@@ -531,55 +581,6 @@ class sensu (
     ::sensu::mutator { $k:
       * => $v,
     }
-  }
-
-  case $::osfamily {
-    'Darwin': {
-      $etc_dir      = $sensu_etc_dir
-      $conf_dir     = "${etc_dir}/conf.d"
-      $user         = '_sensu'
-      $group        = 'root'
-      $home_dir     = '/opt/sensu'
-      $shell        = '/bin/false'
-      $dir_mode     = '0555'
-      $file_mode    = '0440'
-      $service_name = 'org.sensuapp.sensu-client'
-    }
-    'Debian','RedHat': {
-      $etc_dir      = $sensu_etc_dir
-      $conf_dir     = "${etc_dir}/conf.d"
-      $user         = $sensu_user  ? {
-        undef   => 'sensu',
-        default => $sensu_user,
-      }
-      $group        = $sensu_group ? {
-        undef   => 'sensu',
-        default => $sensu_group,
-      }
-      $home_dir     = '/opt/sensu'
-      $shell        = '/bin/false'
-      $dir_mode     = '0555'
-      $file_mode    = '0440'
-      $service_name = 'sensu-client'
-    }
-    'windows': {
-      $etc_dir      = $sensu_etc_dir
-      $conf_dir     = "${etc_dir}/conf.d"
-      $user         = $sensu_user  ? {
-        undef   => 'NT Authority\SYSTEM',
-        default => $sensu_user,
-      }
-      $group        = $sensu_group ? {
-        undef   => 'Administrators',
-        default => $sensu_group,
-      }
-      $home_dir     = $etc_dir
-      $shell        = undef
-      $dir_mode     = undef
-      $file_mode    = undef
-      $service_name = 'sensu-client'
-    }
-    default: {}
   }
 
   # Include everything and let each module determine its state.  This allows
