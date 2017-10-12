@@ -534,7 +534,7 @@ class sensu (
   }
 
   case $::osfamily {
-      'Darwin': {
+    'Darwin': {
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = '_sensu'
