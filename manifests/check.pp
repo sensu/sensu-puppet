@@ -156,8 +156,8 @@ define sensu::check (
     default: {
       $etc_dir = '/etc/sensu'
       $conf_dir = "${etc_dir}/conf.d"
-      $user = 'sensu'
-      $group = 'sensu'
+      $user = $::sensu::user
+      $group = $::sensu::group
       $file_mode = '0440'
     }
   }

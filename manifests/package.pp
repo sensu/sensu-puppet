@@ -50,13 +50,27 @@ class sensu::package (
 ) {
 
   case $::osfamily {
+    'Darwin': {
+      $pkg_provider = 'pkgdmg'
+      $pkg_source   = '/tmp/sensu-installer.dmg'
+      $pkg_require  = "Remote_file[${pkg_source}]"
+      $pkg_title    = 'sensu'
+      $pkg_version  = $::sensu::version
+      $service_name = 'org.sensuapp.sensu-client'
+
+      remote_file { $pkg_source:
+        ensure => present,
+        source => "https://repositories.sensuapp.org/osx/${::macosx_productversion_major}/x86_64/sensu-${pkg_version}.dmg",
+      }
+    }
 
     'Debian': {
-      $pkg_title = 'sensu'
-      $pkg_name = 'sensu'
-      $pkg_version = $::sensu::version
-      $pkg_source = undef
+      $pkg_title    = 'sensu'
+      $pkg_name     = 'sensu'
+      $pkg_version  = $::sensu::version
+      $pkg_source   = undef
       $pkg_provider = undef
+      $service_name = 'sensu-client'
 
       if $::sensu::manage_repo {
         class { '::sensu::repo::apt': }
@@ -76,6 +90,7 @@ class sensu::package (
       $pkg_version = $::sensu::version
       $pkg_source = undef
       $pkg_provider = undef
+      $service_name = 'sensu-client'
 
       if $::sensu::manage_repo {
         class { '::sensu::repo::yum': }
@@ -100,6 +115,7 @@ class sensu::package (
       $pkg_title = $::sensu::windows_package_title
       # The name used by the provider to compare to Windows Add/Remove programs.
       $pkg_name = $::sensu::windows_package_name
+      $service_name = 'sensu-client'
 
       # The user can override the computation of the source URL.  This URL is
       # used with the remote_file resource, it is not used with the chocolatey
@@ -144,12 +160,24 @@ class sensu::package (
 
   }
 
-  package { $pkg_title:
-    ensure   => $pkg_version,
-    name     => $pkg_name,
-    source   => $pkg_source,
-    require  => $pkg_require,
-    provider => $pkg_provider,
+  case $::osfamily {
+    'Darwin': {
+      package { $pkg_title:
+        ensure   => present,
+        source   => $pkg_source,
+        require  => $pkg_require,
+        provider => $pkg_provider,
+      }
+    }
+    default: {
+      package { $pkg_title:
+        ensure   => $pkg_version,
+        name     => $pkg_name,
+        source   => $pkg_source,
+        require  => $pkg_require,
+        provider => $pkg_provider,
+      }
+    }
   }
 
   if $::sensu::sensu_plugin_provider {
@@ -157,7 +185,7 @@ class sensu::package (
   } else {
     $plugin_provider = $::sensu::use_embedded_ruby ? {
       true    => 'sensu_gem',
-      default => 'gem',
+      default => 'gem'
     }
   }
 
@@ -175,9 +203,13 @@ class sensu::package (
   }
 
   if $::osfamily != 'windows' {
+    $template_content = $::osfamily ? {
+      'Darwin' => 'EMBEDDED_RUBY=true',
+      default  => template("${module_name}/sensu.erb")
+    }
     file { '/etc/default/sensu':
       ensure  => file,
-      content => template("${module_name}/sensu.erb"),
+      content => $template_content,
       owner   => '0',
       group   => '0',
       mode    => '0444',
@@ -253,7 +285,7 @@ class sensu::package (
     $spawn_content = inline_template($spawn_template)
     if $::sensu::client and $::sensu::manage_services {
       $spawn_notify = [
-        Service['sensu-client'],
+        Service[$service_name],
         Class['sensu::server::service'],
       ]
     } elsif $::sensu::manage_services {

@@ -20,7 +20,7 @@ define sensu::extension (
 ) {
 
   if $::sensu::client and $::sensu::manage_services {
-    $notify_services = Service['sensu-client']
+    $notify_services = Service[$::sensu::service_name]
   } else {
     $notify_services = []
   }

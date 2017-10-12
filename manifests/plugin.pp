@@ -44,13 +44,14 @@ define sensu::plugin (
   Boolean $nocheckcertificate  = false,
   Any $gem_install_options = $::sensu::gem_install_options,
 ) {
+
   File {
     owner => 'sensu',
     group => 'sensu',
   }
 
   Sensu::Plugin[$name]
-  ~> Service['sensu-client']
+  ~> Service[$::sensu::service_name]
 
   # (#463) All plugins must come before all checks.  Collections are not used to
   # avoid realizing any resources.
