@@ -21,8 +21,8 @@ define sensu::filter (
 
   file { "/etc/sensu/conf.d/filters/${name}.json":
     ensure => $ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
+    owner  => $::sensu::user,
+    group  => $::sensu::group,
     mode   => '0444',
   }
 

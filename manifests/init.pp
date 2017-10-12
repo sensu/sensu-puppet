@@ -450,7 +450,7 @@ class sensu (
 
   # Put here to avoid computing the conditionals for every check
   if $client and $manage_services {
-    $client_service = Service['sensu-client']
+    $client_service = Service[$::sensu::service_name]
   } else {
     $client_service = undef
   }
@@ -461,10 +461,11 @@ class sensu (
     $server_service_class = undef
   }
 
-  if $api and $manage_services and $::osfamily != 'windows' {
-    $api_service = Service['sensu-api']
-  } else {
-    $api_service = undef
+
+    if $api and $manage_services and $::osfamily != 'windows' {
+      $api_service = Service['sensu-api']
+    } else {
+      $api_service = undef
   }
 
   $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
@@ -533,40 +534,51 @@ class sensu (
   }
 
   case $::osfamily {
+    'Darwin': {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = '_sensu'
+      $group        = 'root'
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'org.sensuapp.sensu-client'
+    }
     'Debian','RedHat': {
-      $etc_dir = $sensu_etc_dir
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = $sensu_user  ? {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = $sensu_user  ? {
         undef   => 'sensu',
         default => $sensu_user,
       }
-      $group = $sensu_group ? {
+      $group        = $sensu_group ? {
         undef   => 'sensu',
         default => $sensu_group,
       }
-      $home_dir = '/opt/sensu'
-      $shell = '/bin/false'
-      $dir_mode = '0555'
-      $file_mode = '0440'
+      $home_dir     = '/opt/sensu'
+      $shell        = '/bin/false'
+      $dir_mode     = '0555'
+      $file_mode    = '0440'
+      $service_name = 'sensu-client'
     }
-
     'windows': {
-      $etc_dir = $sensu_etc_dir
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = $sensu_user  ? {
+      $etc_dir      = $sensu_etc_dir
+      $conf_dir     = "${etc_dir}/conf.d"
+      $user         = $sensu_user  ? {
         undef   => 'NT Authority\SYSTEM',
         default => $sensu_user,
       }
-      $group = $sensu_group ? {
+      $group        = $sensu_group ? {
         undef   => 'Administrators',
         default => $sensu_group,
       }
-      $home_dir = $etc_dir
-      $shell = undef
-      $dir_mode = undef
-      $file_mode = undef
+      $home_dir     = $etc_dir
+      $shell        = undef
+      $dir_mode     = undef
+      $file_mode    = undef
+      $service_name = 'sensu-client'
     }
-
     default: {}
   }
 
