@@ -6,7 +6,12 @@ describe 'sensu::check', :type => :define do
     include ::sensu
     ENDofPUPPETcode
   end
-  let(:facts) { { :osfamily => 'RedHat' } }
+  let(:facts) do
+    {
+      :osfamily => 'RedHat',
+      :kernel   => 'Linux',
+    }
+  end
 
   let(:title) { 'mycheck' }
   let(:params_base) {{ command: '/etc/sensu/somecommand.rb' }}

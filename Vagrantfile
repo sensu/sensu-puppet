@@ -203,4 +203,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
   end
+
+  # The rsync used to populate /vagrant will fail if the repo has the spec
+  # fixtures created. To avoid, run `rake spec_clean` before `vagrant up`.
+  config.vm.define "macos-client", autostart: false do |client|
+    client.vm.box = "jhcook/macos-sierra"
+    client.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+    client.vm.hostname = 'macos-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.19"
+    client.vm.synced_folder ".", "/vagrant", type: "rsync", group: "wheel"
+    client.vm.provision :shell, :path => "tests/provision_macos.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+    client.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--usb", "on"]
+      vb.customize ["modifyvm", :id, "--usbehci", "off"]
+    end
+  end
 end

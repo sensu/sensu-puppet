@@ -1,7 +1,15 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
-  let(:facts) { { :ipaddress => '2.3.4.5', :fqdn => 'host.domain.com', :osfamily => 'RedHat' } }
+  let(:facts) do
+    {
+      :ipaddress => '2.3.4.5',
+      :fqdn      => 'host.domain.com',
+      :osfamily  => 'RedHat',
+      :kernel    => 'Linux',
+    }
+  end
+
   let(:title) { 'host.domain.com' }
 
   context 'with client (default)' do

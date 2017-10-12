@@ -1,7 +1,15 @@
 require 'spec_helper'
 
 describe 'sensu' do
-  let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat', :operatingsystemmajrelease => 7 } }
+  let(:facts) do
+    {
+      :fqdn                      => 'testhost.domain.com',
+      :kernel                    => 'Linux',
+      :osfamily                  => 'RedHat',
+      :operatingsystemmajrelease => 7,
+    }
+  end
+
   directories = [ '/etc/sensu/conf.d', '/etc/sensu/conf.d/handlers', '/etc/sensu/conf.d/checks',
         '/etc/sensu/handlers', '/etc/sensu/extensions', '/etc/sensu/mutators',
         '/etc/sensu/extensions/handlers', '/etc/sensu/plugins' ]
@@ -102,7 +110,21 @@ describe 'sensu' do
     context 'repos' do
 
       context 'ubuntu' do
-        let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', :os => {:name => 'ubuntu', :release => {:full => '14.04'} }, } }
+        let(:facts) do
+          {
+            :kernel          => 'Linux',
+            :osfamily        => 'Debian',
+            :lsbdistid       => 'ubuntu',
+            :lsbdistrelease  => '14.04',
+            :lsbdistcodename => 'trusty',
+            :os              => {
+              :name    => 'ubuntu',
+              :release => {
+                :full => '14.04'
+              },
+            },
+          }
+        end
 
         context 'with puppet-apt installed' do
           let(:pre_condition) { [ 'define apt::source ($ensure, $location, $release, $repos, $include, $key) {}' ] }
@@ -171,7 +193,21 @@ describe 'sensu' do
 
       context 'Debian' do
         context '7 (wheezy)' do
-          let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '7.11', :lsbdistcodename => 'wheezy', :os => {:name => 'Debian', :release => {:full => '7.11'} }, } }
+          let(:facts) do
+            {
+              :kernel          => 'Linux',
+              :osfamily        => 'Debian',
+              :lsbdistid       => 'Debian',
+              :lsbdistrelease  => '7.11',
+              :lsbdistcodename => 'wheezy',
+              :os => {
+                :name    => 'Debian',
+                :release => {
+                  :full => '7.11',
+                },
+              },
+            }
+          end
 
           context 'repo release' do
             it { should contain_apt__source('sensu').with(
@@ -187,7 +223,21 @@ describe 'sensu' do
         end
 
         context '8 (jessie)' do
-          let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '8.6', :lsbdistcodename => 'jessie', :os => {:name => 'Debian', :release => {:full => '8.6'} }, } }
+          let(:facts) do
+            {
+              :kernel          => 'Linux',
+              :osfamily        => 'Debian',
+              :lsbdistid       => 'Debian',
+              :lsbdistrelease  => '8.6',
+              :lsbdistcodename => 'jessie',
+              :os => {
+                :name    => 'Debian',
+                :release => {
+                  :full => '8.6',
+                },
+              },
+            }
+          end
 
           context 'repo release' do
             it { should contain_apt__source('sensu').with(
@@ -203,7 +253,21 @@ describe 'sensu' do
         end
 
         context 'with repo_release specified' do
-          let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'Debian', :lsbdistrelease => '7.11', :lsbdistcodename => 'wheezy', :os => {:name => 'Debian', :release => {:full => '7.11'} }, } }
+          let(:facts) do
+            {
+              :kernel          => 'Linux',
+              :osfamily        => 'Debian',
+              :lsbdistid       => 'Debian',
+              :lsbdistrelease  => '7.11',
+              :lsbdistcodename => 'wheezy',
+              :os => {
+                :name    => 'Debian',
+                :release => {
+                  :full => '7.11',
+                },
+              },
+            }
+          end
           let(:params) { { :repo_release => 'myrelease' } }
 
           context 'repo release' do
@@ -215,7 +279,12 @@ describe 'sensu' do
       end
 
       context 'RedHat' do
-        let(:facts) { { :osfamily => 'RedHat' } }
+        let(:facts) do
+          {
+            :kernel   => 'Linux',
+            :osfamily => 'RedHat',
+          }
+        end
 
         context 'default' do
           it { should contain_yumrepo('sensu').with(
@@ -349,10 +418,11 @@ describe 'sensu' do
     context 'on Windows 2012r2' do
       let(:facts) do
         {
-          :fqdn => 'testhost.domain.com',
+          :fqdn            => 'testhost.domain.com',
           :operatingsystem => 'Windows',
-          :osfamily => 'windows',
-          :os => {
+          :kernel          => 'windows',
+          :osfamily        => 'windows',
+          :os              => {
             :architecture => 'x64',
             :release => {
               :major => '2012 R2',

@@ -1,7 +1,13 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
-  let(:facts) { { :fqdn => 'testhost.domain.com', :osfamily => 'RedHat' } }
+  let(:facts) do
+    {
+      :fqdn     => 'testhost.domain.com',
+      :osfamily => 'RedHat',
+      :kernel   => 'Linux',
+    }
+  end
   let(:pre_condition) { 'Package{ provider => "yum"}' }
 
   context 'redis config' do

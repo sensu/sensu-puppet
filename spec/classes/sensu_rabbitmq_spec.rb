@@ -53,6 +53,7 @@ describe 'sensu', :type => :class do
       :fqdn            => 'hostname.domain.com',
       :operatingsystem => 'CentOS',
       :osfamily        => 'RedHat',
+      :kernel          => 'Linux',
     }
   end
   let(:params_base) { { :client => true } }

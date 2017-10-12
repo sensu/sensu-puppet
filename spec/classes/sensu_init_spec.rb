@@ -1,8 +1,18 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
+  describe 'on an unsupported kernel' do
+    let(:facts) { { :kernel => 'invalid' } }
+    it { expect { should create_class('sensu') }.to raise_error(Puppet::Error, /Detected kernel is <invalid> and must be Darwin, Linux or windows/) }
+  end
+
   describe 'osfamily RedHat defaults' do
-    let(:facts) { { :osfamily => 'RedHat' } }
+    let(:facts) do
+      {
+        :osfamily => 'RedHat',
+        :kernel   => 'Linux',
+      }
+    end
 
     it 'should compile' do should create_class('sensu') end
     it { should contain_user('sensu') }

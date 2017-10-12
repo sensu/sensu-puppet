@@ -1,14 +1,22 @@
+
 # @summary Configures Sensu transport
 #
 # Configure Sensu Transport
 #
 class sensu::transport {
 
-  if $::sensu::transport_type == 'redis'
-  or $::sensu::transport_type == 'rabbitmq' {
-    $ensure = 'present'
-  } else {
-    $ensure = 'absent'
+  case $::osfamily {
+    'Darwin': {
+      $ensure = present
+    }
+    default: {
+      if $::sensu::transport_type == 'redis'
+      or $::sensu::transport_type == 'rabbitmq' {
+        $ensure = 'present'
+      } else {
+        $ensure = 'absent'
+      }
+    }
   }
 
   $transport_type_hash = {

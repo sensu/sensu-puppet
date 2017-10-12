@@ -30,8 +30,13 @@ describe 'sensu::plugin', :type => :define do
     context 'running on Windows' do
       let(:facts) do
         {
+          :kernel   => 'windows',
           :osfamily => 'windows',
-          :os => { :release => { :major => '2012 R2' }}, # needed for sensu::package
+          :os       => {
+            :release => {
+              :major => '2012 R2',
+            },
+          }, # needed for sensu::package
         }
       end
       context 'defaults' do
@@ -92,8 +97,13 @@ describe 'sensu::plugin', :type => :define do
     context 'running on Windows' do
       let(:facts) do
         {
+          :kernel   => 'windows',
           :osfamily => 'windows',
-          :os => { :release => { :major => '2012 R2' }}, # needed for sensu::package
+          :os       => {
+            :release => {
+              :major => '2012 R2',
+            }, # needed for sensu::package
+          },
         }
       end
 
@@ -170,8 +180,13 @@ describe 'sensu::plugin', :type => :define do
     context 'running on Windows' do
       let(:facts) do
         {
+          :kernel   => 'windows',
           :osfamily => 'windows',
-          :os => { :release => { :major => '2012 R2' }}, # needed for sensu::package
+          :os       => {
+            :release => {
+              :major => '2012 R2',
+            }, # needed for sensu::package
+          },
         }
       end
 

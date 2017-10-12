@@ -2,11 +2,16 @@ require 'spec_helper'
 
 describe 'sensu' do
   let(:facts) do
-    { 'operatingsystem' => 'RedHat', }
-  end      
+    {
+      :osfamily        => 'RedHat',
+      :operatingsystem => 'RedHat',
+      :kernel          => 'Linux',
+    }
+  end
   let(:params) do
     { 'install_repo' => true, }
-  end      
+  end
+
   context 'on RedHat derivatives' do
     it { should create_class('sensu::repo::yum') }
     it { should contain_yumrepo('sensu').with(
@@ -18,11 +23,15 @@ describe 'sensu' do
       :before   => 'Package[sensu]',
     ) }
   end
-    
+
   context 'on Amazon Linux' do
     let(:facts) do
-      { 'operatingsystem' => 'Amazon', }
+      {
+        :operatingsystem => 'Amazon',
+        :kernel          => 'Linux',
+      }
     end
+
     it { should create_class('sensu::repo::yum') }
     it { should contain_yumrepo('sensu').with(
       :enabled  => '1',
@@ -33,5 +42,4 @@ describe 'sensu' do
       :before   => 'Package[sensu]',
     ) }
   end
-
 end
