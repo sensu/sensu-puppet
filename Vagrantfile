@@ -202,7 +202,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.hostname = 'macos-client.example.com'
     client.vm.network  :private_network, ip: "192.168.56.19"
     client.vm.provision :shell, :path => "tests/provision_macos.sh"
-    client.vm.provision :shell, :inline => "puppet apply /etc/puppetlabs/code/environments/production/modules/sensu/tests/sensu-client-mac.pp"
+    client.vm.provision :shell, :inline => "puppet apply /etc/puppetlabs/code/environments/production/modules/sensu/tests/sensu-client.pp"
   end
 
 end
