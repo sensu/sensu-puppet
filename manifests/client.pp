@@ -55,7 +55,7 @@ class sensu::client (
         $service_provider = 'launchd'
 
         file {$service_path:
-          ensure => present,
+          ensure => file,
           owner  => 'root',
           group  => 'wheel',
           mode   => '0755',
