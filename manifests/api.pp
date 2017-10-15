@@ -36,7 +36,7 @@ class sensu::api (
       }
     }
 
-    if $::osfamily !~ /(windows|Darwin)/ {
+    if $::osfamily != 'windows' {
       service { $::sensu::api_service:
         ensure     => $service_ensure,
         enable     => $service_enable,
