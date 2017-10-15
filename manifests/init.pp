@@ -434,7 +434,6 @@ class sensu (
 
   case $::osfamily {
     'Darwin': {
-      $api_service  = 'org.sensuapp.sensu-client'
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = '_sensu'
@@ -446,7 +445,6 @@ class sensu (
       $service_name = 'org.sensuapp.sensu-client'
     }
     'Debian','RedHat': {
-      $api_service  = 'sensu-api'
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = $sensu_user  ? {
@@ -464,7 +462,6 @@ class sensu (
       $service_name = 'sensu-client'
     }
     'windows': {
-      $api_service  = undef
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = $sensu_user  ? {
@@ -516,7 +513,10 @@ class sensu (
 
 
   if $api and $manage_services and $::osfamily !~ 'windows' {
-    $api_service = Service[$::sensu::api_service]
+    $api_service = $::osfamily ? { 
+      'Darwin' => 'org.sensuapp.sensu-client',
+      default  => 'sensu-api'
+    }
   } else {
     $api_service = undef
   }
