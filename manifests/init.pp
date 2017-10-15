@@ -434,7 +434,7 @@ class sensu (
 
   case $::osfamily {
     'Darwin': {
-      $api_service  = 'org.sensuapp.sensu-client'
+      $api_service  = 'org.sensuapp.sensu-api'
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = '_sensu'
@@ -446,7 +446,7 @@ class sensu (
       $service_name = 'org.sensuapp.sensu-client'
     }
     'Debian','RedHat': {
-      $api_service  = 'sensu-client'
+      $api_service  = 'sensu-api'
       $etc_dir      = $sensu_etc_dir
       $conf_dir     = "${etc_dir}/conf.d"
       $user         = $sensu_user  ? {
