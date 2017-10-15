@@ -514,6 +514,12 @@ class sensu (
     $server_service_class = undef
   }
 
+  if $api and $manage_services and $::osfamily != 'windows' {
+    $api_service = Service[$::sensu::api_service]
+  } else {
+    $api_service = undef
+  }
+
   $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
 
   # Because you can't reassign a variable in puppet and we need to set to
