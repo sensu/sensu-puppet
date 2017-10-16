@@ -468,7 +468,7 @@ class sensu (
   }
 
   $check_notify = $enterprise ? {
-    true    => delete_undef_values([ $client_service, $server_service_class, $api_service, Service['sensu-enterprise'] ]),
+    true    => delete_undef_values([ $client_service, Service['sensu-enterprise'] ]),
     default => delete_undef_values([ $client_service, $server_service_class, $api_service ])
   }
 
