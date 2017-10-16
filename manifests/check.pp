@@ -149,8 +149,8 @@ define sensu::check (
     'windows': {
       $etc_dir = 'C:/opt/sensu'
       $conf_dir = "${etc_dir}/conf.d"
-      $user = undef
-      $group = undef
+      $user = $::sensu::user
+      $group = $::sensu::group
       $file_mode = undef
     }
     default: {
