@@ -467,7 +467,10 @@ class sensu (
     $api_service = undef
   }
 
-  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
+  $check_notify = $enterprise ? {
+    true    => delete_undef_values([ $client_service, $server_service_class, $api_service, Service['sensu-enterprise'] ]),
+    default => delete_undef_values([ $client_service, $server_service_class, $api_service ])
+  }
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.
