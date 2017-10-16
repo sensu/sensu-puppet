@@ -455,7 +455,7 @@ class sensu (
     $client_service = undef
   }
 
-  if $enterprise $manage {
+  if $enterprise and $manage_services {
     $enterprise_service = Service['sensu-enterprise']
   } else {
     $enterprise_service = undef
