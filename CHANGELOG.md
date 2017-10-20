@@ -1,7 +1,27 @@
 # Change Log
 
-## [v2.35.0](https://github.com/sensu/sensu-puppet/tree/v2.35.0)
+## [v2.36.0](https://github.com/sensu/sensu-puppet/tree/v2.36.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.35.0...v2.36.0)
+
+**Closed issues:**
+
+- Absolute path set for rabbitmq ssl certs [\#798](https://github.com/sensu/sensu-puppet/issues/798)
+- Client config should support servicenow [\#775](https://github.com/sensu/sensu-puppet/issues/775)
+- Client config should support puppet [\#774](https://github.com/sensu/sensu-puppet/issues/774)
+- Client config should support chef [\#773](https://github.com/sensu/sensu-puppet/issues/773)
+- Cannot manage 2008 R2 localised \(french\) [\#769](https://github.com/sensu/sensu-puppet/issues/769)
+- Add a test in vagrant for PR \#745 [\#747](https://github.com/sensu/sensu-puppet/issues/747)
+
+**Merged pull requests:**
+
+- Change test versions [\#830](https://github.com/sensu/sensu-puppet/pull/830) ([ghoneycutt](https://github.com/ghoneycutt))
+- user on check for windows to use module defaults and notifying sensu-enterprise [\#829](https://github.com/sensu/sensu-puppet/pull/829) ([ghoneycutt](https://github.com/ghoneycutt))
+- \[815\] Resolve circular dependency when using sensu::enterprise::dashboard::api [\#816](https://github.com/sensu/sensu-puppet/pull/816) ([glarizza](https://github.com/glarizza))
+- Add vagrant tests for add/remove checks with sensu::check [\#814](https://github.com/sensu/sensu-puppet/pull/814) ([Phil-Friderici](https://github.com/Phil-Friderici))
+- Added sensu\_user and sensu\_group params to sensu class \#769 [\#813](https://github.com/sensu/sensu-puppet/pull/813) ([alvagante](https://github.com/alvagante))
+
+## [v2.35.0](https://github.com/sensu/sensu-puppet/tree/v2.35.0) (2017-09-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.34.0...v2.35.0)
 
 **Closed issues:**
