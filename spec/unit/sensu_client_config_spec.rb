@@ -41,6 +41,36 @@ describe Puppet::Type.type(:sensu_client_config) do
     end
   end
 
+  describe 'register' do
+    subject { described_class.new(resource_hash)[:register] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    context '=> true' do
+      let(:resource_hash_override) { {register: true} }
+      it { is_expected.to eq(:true) }
+    end
+    context '=> false' do
+      let(:resource_hash_override) { {register: false} }
+      it { is_expected.to eq(:false) }
+    end
+  end
+
+  describe 'registration' do
+    subject { described_class.new(resource_hash)[:registration] }
+    context 'in the default case' do
+      it { is_expected.to be_nil }
+    end
+    context '=> {}' do
+      let(:resource_hash_override) { {registration: {}} }
+      it { is_expected.to eq({}) }
+    end
+    context '=> absent' do
+      let(:resource_hash_override) { {registration: 'absent'} }
+      it { is_expected.to eq(:absent) }
+    end
+  end
+
   describe 'notifications' do
     let(:resource_hash) do
       c = Puppet::Resource::Catalog.new
