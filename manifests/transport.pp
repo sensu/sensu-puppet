@@ -4,10 +4,11 @@
 #
 class sensu::transport {
 
-  if $::sensu::transport_type != 'redis' {
-    $ensure = 'absent'
-  } else {
+  if $::sensu::transport_type == 'redis'
+  or $::sensu::transport_type == 'rabbitmq' {
     $ensure = 'present'
+  } else {
+    $ensure = 'absent'
   }
 
   $transport_type_hash = {
