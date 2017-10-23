@@ -1,7 +1,23 @@
 # Change Log
 
-## [v2.36.0](https://github.com/sensu/sensu-puppet/tree/v2.36.0)
+## [v2.37.0](https://github.com/sensu/sensu-puppet/tree/v2.37.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.36.0...v2.37.0)
+
+**Fixed bugs:**
+
+- transport.json not created when transport\_type = rabbitmq [\#809](https://github.com/sensu/sensu-puppet/issues/809)
+
+**Closed issues:**
+
+- Add client register and registration client configs [\#749](https://github.com/sensu/sensu-puppet/issues/749)
+
+**Merged pull requests:**
+
+- Fix for \#809 [\#832](https://github.com/sensu/sensu-puppet/pull/832) ([alvagante](https://github.com/alvagante))
+- Added client\_registration option \#749 [\#831](https://github.com/sensu/sensu-puppet/pull/831) ([alvagante](https://github.com/alvagante))
+
+## [v2.36.0](https://github.com/sensu/sensu-puppet/tree/v2.36.0) (2017-10-20)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.35.0...v2.36.0)
 
 **Closed issues:**
