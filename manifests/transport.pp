@@ -1,14 +1,12 @@
 # @summary Configures Sensu transport
 #
-# Configure Sensu Transport
+# Configures Sensu transport
 #
-class sensu::transport {
-
-  if $::sensu::transport_type != 'redis' {
-    $ensure = 'absent'
-  } else {
-    $ensure = 'present'
-  }
+# @param ensure If to create or remove the transport.json file
+#
+class sensu::transport (
+  Enum['present','absent'] $ensure = 'present',
+) {
 
   $transport_type_hash = {
     'transport' => {
