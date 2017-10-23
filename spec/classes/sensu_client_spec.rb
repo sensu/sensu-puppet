@@ -110,23 +110,6 @@ describe 'sensu', :type => :class do
           end
         end
 
-        describe 'register' do
-          context '=> false' do
-            let(:params_override) { {client_register: false} }
-            it { is_expected.to contain_sensu_client_config(title).with(register: false) }
-          end
-
-          context '=> true' do
-            let(:params_override) { {client_register: true} }
-            it { is_expected.to contain_sensu_client_config(title).with(register: true) }
-          end
-
-          context '=> "garbage"' do
-            let(:params_override) { {client_register: 'garbage'} }
-            it { is_expected.to raise_error(Puppet::Error) }
-          end
-        end
-
         describe 'client_registration' do
           let(:params_override) { {client_registration: registration} }
           context "=> {'handler': 'register_client'}" do
