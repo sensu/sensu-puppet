@@ -46,6 +46,12 @@
         "14.04",
         "16.04"
       ]
+    },
+    {
+      "operatingsystem": "Amazon",
+      "operatingsystemrelease": [
+        "2017.03"
+      ]
     }
   ],
   "requirements": [
