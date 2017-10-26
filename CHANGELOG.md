@@ -1,7 +1,27 @@
 # Change Log
 
-## [v2.37.0](https://github.com/sensu/sensu-puppet/tree/v2.37.0)
+## [v2.38.0](https://github.com/sensu/sensu-puppet/tree/v2.38.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.37.0...v2.38.0)
+
+**Implemented enhancements:**
+
+- sensu module failing on amazon linux as it is pointing to a incorrect yum repo http url which doesn't exist [\#821](https://github.com/sensu/sensu-puppet/issues/821)
+
+**Fixed bugs:**
+
+- sensu module failing on amazon linux as it is pointing to a incorrect yum repo http url which doesn't exist [\#821](https://github.com/sensu/sensu-puppet/issues/821)
+
+**Closed issues:**
+
+- Sensu Enterprise Service Not Reloading After Checks [\#827](https://github.com/sensu/sensu-puppet/issues/827)
+- Cyclical dependencies when using Sensu Enterprise and the Enterprise API [\#815](https://github.com/sensu/sensu-puppet/issues/815)
+
+**Merged pull requests:**
+
+- Manage sensu on amazon Linux \#821 [\#833](https://github.com/sensu/sensu-puppet/pull/833) ([alvagante](https://github.com/alvagante))
+
+## [v2.37.0](https://github.com/sensu/sensu-puppet/tree/v2.37.0) (2017-10-23)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.36.0...v2.37.0)
 
 **Fixed bugs:**
