@@ -27,6 +27,7 @@ RSpec.configure do |config|
     :ipaddress   => '127.0.0.1',
     :kernel      => 'Linux',
     :osfamily    => 'RedHat',
+    :operatingsystem => 'RedHat',
     :fqdn        => 'testfqdn.example.com',
   }
   config.backtrace_exclusion_patterns = [

@@ -31,7 +31,7 @@ apt-get update
 apt-get -y install puppet-agent
 ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
 
-# suppress default warings for deprecation
+# suppress default warnings for deprecation
 cat > /etc/puppetlabs/puppet/hiera.yaml <<EOF
 ---
 version: 5
