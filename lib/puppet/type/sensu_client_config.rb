@@ -50,8 +50,10 @@ Puppet::Type.newtype(:sensu_client_config) do
 
   newproperty(:redact, :array_matching => :all) do
     desc "An array of strings that should be redacted in the sensu client config"
+    newvalues(/.*/, :absent)
     def insync?(is)
-      is.sort == should.sort
+      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
+      is == should
     end
   end
 
