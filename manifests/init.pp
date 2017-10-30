@@ -411,7 +411,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_gitlab = undef,
   Optional[Any]      $enterprise_dashboard_ldap = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = '$PATH',
-  Optional[Array]    $redact = undef,
+  Optional[Array]    $redact = [],
   Boolean            $deregister_on_stop = false,
   Optional[String]   $deregister_handler = undef,
   Optional[String]   $package_checksum = undef,
