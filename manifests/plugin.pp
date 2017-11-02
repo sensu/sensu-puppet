@@ -51,7 +51,7 @@ define sensu::plugin (
   }
 
   Sensu::Plugin[$name]
-  ~> Service[$::sensu::service_name]
+  ~> Service['sensu-client']
 
   # (#463) All plugins must come before all checks.  Collections are not used to
   # avoid realizing any resources.

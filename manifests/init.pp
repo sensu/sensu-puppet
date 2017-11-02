@@ -509,7 +509,7 @@ class sensu (
 
   # Put here to avoid computing the conditionals for every check
   if $client and $manage_services {
-    $client_service = Service[$::sensu::service_name]
+    $client_service = Service['sensu-client']
   } else {
     $client_service = undef
   }
