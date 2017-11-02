@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.38.0](https://github.com/sensu/sensu-puppet/tree/v2.38.0)
+## [v2.38.1](https://github.com/sensu/sensu-puppet/tree/v2.38.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.38.0...v2.38.1)
+
+**Fixed bugs:**
+
+- redact parameter causes errors [\#834](https://github.com/sensu/sensu-puppet/issues/834)
+
+**Merged pull requests:**
+
+- Set a defauly empty array for redact \#834 [\#835](https://github.com/sensu/sensu-puppet/pull/835) ([alvagante](https://github.com/alvagante))
+
+## [v2.38.0](https://github.com/sensu/sensu-puppet/tree/v2.38.0) (2017-10-26)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.37.0...v2.38.0)
 
 **Implemented enhancements:**
