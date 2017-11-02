@@ -110,6 +110,24 @@ describe 'sensu', :type => :class do
           end
         end
 
+        describe 'client_registration' do
+          let(:params_override) { {client_registration: registration} }
+          context "=> {'handler': 'register_client'}" do
+            let(:registration) { {'handler' => 'register_client'} }
+            it { is_expected.to contain_sensu_client_config(title).with(registration: registration) }
+          end
+
+          context "=> {}" do
+            let(:registration) { {} }
+            it { is_expected.to contain_sensu_client_config(title).with(registration: registration) }
+          end
+
+          context "=> 'absent' (error)" do
+            let(:registration) { 'absent' }
+            it { is_expected.to raise_error(Puppet::Error) }
+          end
+        end
+
         describe 'http_socket' do
           http_socket = {
             'bind' => '127.0.0.1',

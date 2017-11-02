@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "2.35.0",
+  "version": "2.38.1",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
@@ -45,6 +45,12 @@
       "operatingsystemrelease": [
         "14.04",
         "16.04"
+      ]
+    },
+    {
+      "operatingsystem": "Amazon",
+      "operatingsystemrelease": [
+        "2017.03"
       ]
     }
   ],

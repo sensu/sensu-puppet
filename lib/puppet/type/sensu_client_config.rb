@@ -43,15 +43,19 @@ Puppet::Type.newtype(:sensu_client_config) do
 
   newproperty(:subscriptions, :array_matching => :all) do
     desc ""
+    newvalues(/.*/, :absent)
     def insync?(is)
-      is.sort == should.sort
+      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
+      is == should
     end
   end
 
   newproperty(:redact, :array_matching => :all) do
     desc "An array of strings that should be redacted in the sensu client config"
+    newvalues(/.*/, :absent)
     def insync?(is)
-      is.sort == should.sort
+      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
+      is == should
     end
   end
 
@@ -122,6 +126,11 @@ Puppet::Type.newtype(:sensu_client_config) do
 
   newproperty(:deregistration) do
     desc 'Client deregistration attributes'
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:registration) do
+    desc 'Client registration attributes'
     newvalues(/.*/, :absent)
   end
 

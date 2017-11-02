@@ -10,8 +10,9 @@ class sensu::transport {
     }
     default: {
       $ensure = $::sensu::transport_type ? {
-        'redis' => 'present',
-        default => 'absent'
+        'redis'    => 'present',
+        'rabbitmq' => 'present',
+        default    => 'absent'
       }
     }
   }

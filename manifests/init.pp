@@ -162,6 +162,11 @@
 #   status, and issued timestamp. The following attributes are provided as
 #   recommendations for controlling client deregistration behavior.
 #
+# @param client_registration [Attributes](https://sensuapp.org/docs/latest/reference/clients#registration-attributes)
+#   used to generate check result data for the registration event. Client
+#   registration attributes are merged with some default check definition
+#   attributes by the Sensu server during client registration.
+#
 # @param client_keepalive Client keepalive configuration
 #
 # @param client_http_socket Client http_socket configuration. Must be an Hash of
@@ -371,6 +376,7 @@ class sensu (
   Hash               $client_custom = {},
   Variant[Undef,Boolean] $client_deregister = undef,
   Variant[Undef,Hash] $client_deregistration = undef,
+  Variant[Undef,Hash] $client_registration = undef,
   Hash               $client_keepalive = {},
   Hash               $client_http_socket = {},
   Hash               $client_servicenow = {},
@@ -508,6 +514,12 @@ class sensu (
     $client_service = undef
   }
 
+  if $enterprise and $manage_services {
+    $enterprise_service = Service['sensu-enterprise']
+  } else {
+    $enterprise_service = undef
+  }
+
   if $server {
     $server_service_class = Class['sensu::server::service']
   } else {
@@ -520,7 +532,7 @@ class sensu (
     $api_service = undef
   }
 
-  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service ])
+  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service, $enterprise_service ])
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.

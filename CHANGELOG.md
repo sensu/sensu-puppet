@@ -1,7 +1,74 @@
 # Change Log
 
-## [v2.35.0](https://github.com/sensu/sensu-puppet/tree/v2.35.0)
+## [v2.38.1](https://github.com/sensu/sensu-puppet/tree/v2.38.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.38.0...v2.38.1)
+
+**Fixed bugs:**
+
+- redact parameter causes errors [\#834](https://github.com/sensu/sensu-puppet/issues/834)
+
+**Merged pull requests:**
+
+- Set a defauly empty array for redact \#834 [\#835](https://github.com/sensu/sensu-puppet/pull/835) ([alvagante](https://github.com/alvagante))
+
+## [v2.38.0](https://github.com/sensu/sensu-puppet/tree/v2.38.0) (2017-10-26)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.37.0...v2.38.0)
+
+**Implemented enhancements:**
+
+- sensu module failing on amazon linux as it is pointing to a incorrect yum repo http url which doesn't exist [\#821](https://github.com/sensu/sensu-puppet/issues/821)
+
+**Fixed bugs:**
+
+- sensu module failing on amazon linux as it is pointing to a incorrect yum repo http url which doesn't exist [\#821](https://github.com/sensu/sensu-puppet/issues/821)
+
+**Closed issues:**
+
+- Sensu Enterprise Service Not Reloading After Checks [\#827](https://github.com/sensu/sensu-puppet/issues/827)
+- Cyclical dependencies when using Sensu Enterprise and the Enterprise API [\#815](https://github.com/sensu/sensu-puppet/issues/815)
+
+**Merged pull requests:**
+
+- Manage sensu on amazon Linux \#821 [\#833](https://github.com/sensu/sensu-puppet/pull/833) ([alvagante](https://github.com/alvagante))
+
+## [v2.37.0](https://github.com/sensu/sensu-puppet/tree/v2.37.0) (2017-10-23)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.36.0...v2.37.0)
+
+**Fixed bugs:**
+
+- transport.json not created when transport\_type = rabbitmq [\#809](https://github.com/sensu/sensu-puppet/issues/809)
+
+**Closed issues:**
+
+- Add client register and registration client configs [\#749](https://github.com/sensu/sensu-puppet/issues/749)
+
+**Merged pull requests:**
+
+- Fix for \#809 [\#832](https://github.com/sensu/sensu-puppet/pull/832) ([alvagante](https://github.com/alvagante))
+- Added client\_registration option \#749 [\#831](https://github.com/sensu/sensu-puppet/pull/831) ([alvagante](https://github.com/alvagante))
+
+## [v2.36.0](https://github.com/sensu/sensu-puppet/tree/v2.36.0) (2017-10-20)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.35.0...v2.36.0)
+
+**Closed issues:**
+
+- Absolute path set for rabbitmq ssl certs [\#798](https://github.com/sensu/sensu-puppet/issues/798)
+- Client config should support servicenow [\#775](https://github.com/sensu/sensu-puppet/issues/775)
+- Client config should support puppet [\#774](https://github.com/sensu/sensu-puppet/issues/774)
+- Client config should support chef [\#773](https://github.com/sensu/sensu-puppet/issues/773)
+- Cannot manage 2008 R2 localised \(french\) [\#769](https://github.com/sensu/sensu-puppet/issues/769)
+- Add a test in vagrant for PR \#745 [\#747](https://github.com/sensu/sensu-puppet/issues/747)
+
+**Merged pull requests:**
+
+- Change test versions [\#830](https://github.com/sensu/sensu-puppet/pull/830) ([ghoneycutt](https://github.com/ghoneycutt))
+- user on check for windows to use module defaults and notifying sensu-enterprise [\#829](https://github.com/sensu/sensu-puppet/pull/829) ([ghoneycutt](https://github.com/ghoneycutt))
+- \[815\] Resolve circular dependency when using sensu::enterprise::dashboard::api [\#816](https://github.com/sensu/sensu-puppet/pull/816) ([glarizza](https://github.com/glarizza))
+- Add vagrant tests for add/remove checks with sensu::check [\#814](https://github.com/sensu/sensu-puppet/pull/814) ([Phil-Friderici](https://github.com/Phil-Friderici))
+- Added sensu\_user and sensu\_group params to sensu class \#769 [\#813](https://github.com/sensu/sensu-puppet/pull/813) ([alvagante](https://github.com/alvagante))
+
+## [v2.35.0](https://github.com/sensu/sensu-puppet/tree/v2.35.0) (2017-09-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.34.0...v2.35.0)
 
 **Closed issues:**
