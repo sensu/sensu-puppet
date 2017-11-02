@@ -71,7 +71,7 @@ class sensu::client (
     service { 'sensu-client':
       ensure     => $service_ensure,
       enable     => $service_enable,
-      name       => $::sensu::service_name
+      name       => $::sensu::service_name,
       hasrestart => $hasrestart,
       path       => $service_path,
       provider   => $service_provider,
