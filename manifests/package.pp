@@ -159,17 +159,25 @@ class sensu::package (
     default: { fail("${::osfamily} not supported yet") }
 
   }
-  $pkg_ensure = $::osfamily ? {
-    'Darwin' => present,
-    default  => $pkg_version
-  }
 
-  package { $pkg_title:
-    ensure   => $pkg_version,
-    name     => $pkg_name,
-    source   => $pkg_source,
-    require  => $pkg_require,
-    provider => $pkg_provider,
+  case $::osfamily {
+    'Darwin': {
+      package { $pkg_title:
+        ensure   => present,
+        source   => $pkg_source,
+        require  => $pkg_require,
+        provider => $pkg_provider,
+      }
+    }
+    default: {
+      package { $pkg_title:
+        ensure   => $pkg_version,
+        name     => $pkg_name,
+        source   => $pkg_source,
+        require  => $pkg_require,
+        provider => $pkg_provider,
+      }
+    }
   }
 
   if $::sensu::sensu_plugin_provider {
