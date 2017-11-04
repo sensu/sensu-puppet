@@ -457,6 +457,26 @@ This will create the following check definition for Sensu:
 }
 ```
 
+## Using hooks in check definitions
+
+[Hooks](https://sensuapp.org/docs/latest/reference/checks.html#check-hooks) are commands run by the Sensu client in response
+to the result of check command execution. They have been introduced in Sensu 1.1.
+
+Valid hooks names are integers from 1 to 255 and the strings 'ok', 'warning', 'critical', 'unknown' and 'non-zero'.
+
+```puppet
+sensu::check{ 'check_file_test':
+  command      => '/usr/local/bin/check_file_test.sh',
+  handlers     => 'notifu',
+  hooks => {
+    'non-zero' => {
+      'command' => 'ps aux',
+     }
+  },
+  subscribers  => 'sensu-test'
+}
+```
+
 ## Writing custom configuration files
 
 You can also use the `sensu::write_json` defined resource type to write custom
