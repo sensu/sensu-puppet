@@ -334,6 +334,40 @@ describe 'sensu::check', :type => :define do
     end
   end
 
+  describe 'param hooks' do
+    context 'valid hooks hash' do
+      let(:params_override) do
+        { hooks: { 'non-zero' => { 'command' => 'ps aux' , 'timeout' => '10' } } }
+      end
+
+      let :expected_content do
+        {"checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "interval"=>60,                                                   "hooks"=>{"non-zero"=>{"command"=>"ps aux", "timeout"=>"10"}}}}}
+      end
+
+      it { should contain_sensu__write_json(fpath).with_content(expected_content) }
+    end
+
+    context 'invalid hooks hash' do
+      let(:params_override) do
+        { hooks: { 'a_value' => { 'command' => 'ps aux' , 'timeout' => '10' } } }
+      end
+
+      it 'should fail' do
+        expect { should contain_class(subject) }.to raise_error(Puppet::Error, /Illegal value for a_value hook. Valid values are: Integers from 1 to 255 and any of 'ok', 'warning', 'critical', 'unknown', 'non-zero'/)
+      end
+    end
+
+    context '=> \'absent\'' do
+      let(:params_override) { { hooks: 'absent' } }
+
+      it { should contain_sensu__write_json(fpath).with_content(expected_content) }
+    end
+
+    context '= undef' do
+      it { should contain_sensu__write_json(fpath).with_content(expected_content) }
+    end
+  end
+
   describe 'param cron' do
     context 'default behavior (not specified)' do
       let(:params_override) { {} }
