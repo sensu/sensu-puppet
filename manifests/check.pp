@@ -147,17 +147,13 @@ define sensu::check (
 
   case $::osfamily {
     'windows': {
-      $etc_dir = 'C:/opt/sensu'
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = $::sensu::user
-      $group = $::sensu::group
+      $etc_dir   = 'C:/opt/sensu'
+      $conf_dir  = "${etc_dir}/conf.d"
       $file_mode = undef
     }
     default: {
-      $etc_dir = '/etc/sensu'
-      $conf_dir = "${etc_dir}/conf.d"
-      $user = 'sensu'
-      $group = 'sensu'
+      $etc_dir   = '/etc/sensu'
+      $conf_dir  = "${etc_dir}/conf.d"
       $file_mode = '0440'
     }
   }
@@ -252,8 +248,8 @@ define sensu::check (
   sensu::write_json { "${conf_dir}/checks/${check_name}.json":
     ensure      => $ensure,
     content     => $content_real,
-    owner       => $user,
-    group       => $group,
+    owner       => $::sensu::user,
+    group       => $::sensu::group,
     mode        => $file_mode,
     notify_list => $::sensu::check_notify,
   }
