@@ -18,23 +18,15 @@ class sensu::transport {
     },
   }
 
-  case $::osfamily {
-    'windows': {
-      $user      = $::sensu::user
-      $group     = $::sensu::group
-      $file_mode = undef
-    }
-    default: {
-      $user      = 'sensu'
-      $group     = 'sensu'
-      $file_mode = '0440'
-    }
+  $file_mode = $::osfamily ? {
+    'windows' => undef,
+    default   => '0440',
   }
 
   file { "${sensu::conf_dir}/transport.json":
     ensure  => $ensure,
-    owner   => $user,
-    group   => $group,
+    owner   => $::sensu::user,
+    group   => $::sensu::group,
     mode    => $file_mode,
     content => inline_template('<%= JSON.pretty_generate(@transport_type_hash) %>'),
     notify  => $::sensu::check_notify,
