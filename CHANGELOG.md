@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.39.0](https://github.com/sensu/sensu-puppet/tree/v2.39.0)
+## [v2.40.0](https://github.com/sensu/sensu-puppet/tree/v2.40.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.39.0...v2.40.0)
+
+**Closed issues:**
+
+- Transport class does not use platform specific user and group [\#838](https://github.com/sensu/sensu-puppet/issues/838)
+
+**Merged pull requests:**
+
+- \(GH-840\) Change default mode value for creation of json files [\#841](https://github.com/sensu/sensu-puppet/pull/841) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.39.0](https://github.com/sensu/sensu-puppet/tree/v2.39.0) (2017-11-07)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.38.1...v2.39.0)
 
 **Closed issues:**
