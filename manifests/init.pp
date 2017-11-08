@@ -444,7 +444,7 @@ class sensu (
       $etc_dir           = $sensu_etc_dir
       $conf_dir          = "${etc_dir}/conf.d"
       $user              = '_sensu'
-      $group             = 'root'
+      $group             = 'wheel'
       $home_dir          = '/opt/sensu'
       $shell             = '/bin/false'
       $dir_mode          = '0555'
