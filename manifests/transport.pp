@@ -18,11 +18,16 @@ class sensu::transport {
     },
   }
 
+  $file_mode = $::osfamily ? {
+    'windows' => undef,
+    default   => '0440',
+  }
+
   file { "${sensu::conf_dir}/transport.json":
     ensure  => $ensure,
-    owner   => 'sensu',
-    group   => 'sensu',
-    mode    => '0440',
+    owner   => $::sensu::user,
+    group   => $::sensu::group,
+    mode    => $file_mode,
     content => inline_template('<%= JSON.pretty_generate(@transport_type_hash) %>'),
     notify  => $::sensu::check_notify,
   }

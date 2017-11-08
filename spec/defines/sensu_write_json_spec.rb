@@ -21,7 +21,7 @@ describe 'sensu::write_json', :type => :define do
 
       it { should contain_sensu__write_json(CFG_PATH).with(
         :ensure => 'present',
-        :mode => '0755',
+        :mode => '0775',
         :owner => 'sensu',
         :group => 'sensu',
         :pretty => true,
@@ -30,7 +30,7 @@ describe 'sensu::write_json', :type => :define do
 
       it { should contain_file(CFG_PATH).with(
         :ensure => 'present',
-        :mode => '0755',
+        :mode => '0775',
         :owner => 'sensu',
         :group => 'sensu',
         :content => CUSTOM_CFG_PRETTY,
@@ -48,7 +48,7 @@ describe 'sensu::write_json', :type => :define do
         :ensure => 'absent',
         :owner => 'sensu',
         :group => 'sensu',
-        :mode => '0755',
+        :mode => '0775',
         :notify => [],
         :subscribe => nil,
       ) }
@@ -92,7 +92,7 @@ describe 'sensu::write_json', :type => :define do
 
       it { should contain_file(CFG_PATH).with(
         :ensure => 'present',
-        :mode => '0755',
+        :mode => '0775',
         :owner => 'sensu',
         :group => 'sensu',
         :content => "{\"custom\":\"data\"}",
