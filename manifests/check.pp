@@ -90,6 +90,11 @@
 #   matches the defined client attributes.  See the documentation for the format
 #   of the Hash value.
 #
+# @param hooks Manages
+# [Hooks](https://sensuapp.org/docs/latest/reference/checks.html#hooks-attributes)
+#   Since Sensu 1.1.0.  Manages hooks for a check. See the documentation for the format
+#   of the Hash value.
+#
 define sensu::check (
   Optional[String]                      $command = undef,
   Enum['present','absent']              $ensure = 'present',
@@ -116,6 +121,7 @@ define sensu::check (
   Variant[Undef,Enum['absent'],Integer] $ttl = undef,
   Variant[Undef,Enum['absent'],Hash]    $subdue = undef,
   Variant[Undef,Enum['absent'],Hash]    $proxy_requests = undef,
+  Variant[Undef,Enum['absent'],Hash]    $hooks = undef,
 ) {
   if $ensure == 'present' and !$command {
     fail("sensu::check{${name}}: a command must be given when ensure is present")
@@ -193,6 +199,16 @@ define sensu::check (
   Anchor['plugins_before_checks']
   ~> Sensu::Check[$name]
 
+  if is_hash($hooks) {
+    $hooks.each |$k,$v| {
+      $valid_k = $k ? {
+        Integer[1,255]                                           => true,
+        Enum['ok', 'warning', 'critical', 'unknown', 'non-zero'] => true,
+        default => fail("Illegal value for ${k} hook. Valid values are: Integers from 1 to 255 and any of 'ok', 'warning', 'critical', 'unknown', 'non-zero'"),
+      }
+    }
+  }
+
   # This Hash map will ultimately exist at `{"checks" => {"$check_name" =>
   # $check_config}}`
   $check_config_start = {
@@ -217,6 +233,7 @@ define sensu::check (
     dependencies        => $dependencies_array,
     subdue              => $subdue,
     proxy_requests      => $proxy_requests,
+    hooks               => $hooks,
     ttl                 => $ttl,
   }
 
@@ -252,8 +269,8 @@ define sensu::check (
   sensu::write_json { "${conf_dir}/checks/${check_name}.json":
     ensure      => $ensure,
     content     => $content_real,
-    owner       => $user,
-    group       => $group,
+    owner       => $::sensu::user,
+    group       => $::sensu::group,
     mode        => $file_mode,
     notify_list => $::sensu::check_notify,
   }

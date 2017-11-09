@@ -33,7 +33,7 @@ define sensu::write_json (
   Enum['present', 'absent'] $ensure = 'present',
   String                    $owner = 'sensu',
   String                    $group = 'sensu',
-  String                    $mode = '0755',
+  String                    $mode = '0775',
   Boolean                   $pretty = true,
   Hash                      $content = {},
   Array[Variant[Data,Type]] $notify_list = [],
