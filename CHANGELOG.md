@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.40.0](https://github.com/sensu/sensu-puppet/tree/v2.40.0)
+## [v2.40.1](https://github.com/sensu/sensu-puppet/tree/v2.40.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.40.0...v2.40.1)
+
+**Merged pull requests:**
+
+- \(security\) Update rest-client older version have a vulnerability [\#843](https://github.com/sensu/sensu-puppet/pull/843) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.40.0](https://github.com/sensu/sensu-puppet/tree/v2.40.0) (2017-11-08)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.39.0...v2.40.0)
 
 **Closed issues:**
