@@ -5,13 +5,14 @@
 #
 class sensu::transport {
 
-  if $::sensu::transport_type != 'redis' {
+  if $::sensu::transport_type == 'redis'
+  or $::sensu::transport_type == 'rabbitmq' {
+    $ensure = 'present'
+  } else {
     $ensure = $::osfamily ? {
       'Darwin' => 'present',
       default  => 'absent'
     }
-  } else {
-    $ensure = 'present'
   }
 
   $transport_type_hash = {
