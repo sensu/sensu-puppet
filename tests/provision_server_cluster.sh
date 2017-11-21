@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # setup module dependencies
-puppet module install puppet/rabbitmq
+puppet module install puppetlabs/rabbitmq
 
 # install dependencies for sensu
 yum -y install redis jq nagios-plugins-ntp
