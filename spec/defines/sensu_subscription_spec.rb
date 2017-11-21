@@ -50,4 +50,23 @@ describe 'sensu::subscription', :type => :define do
     it { should contain_sensu_client_subscription('mysubscription').with_base_path('/opt/etc/sensu/conf.d') }
   end
 
+  context 'with char : in title' do
+    let(:title) { 'roundrobin:foo' }
+
+    it { should contain_sensu_client_subscription('roundrobin:foo').with(:ensure => 'present', :file_name => 'subscription_roundrobin_foo.json') }
+    it { should contain_file('/etc/sensu/conf.d/subscription_roundrobin_foo.json').with(:ensure => 'present' ) }
+  end  
+
+  context 'with char : in title in windows' do
+    let(:title) { 'roundrobin:foo' }
+    let(:facts) {
+      {
+        :osfamily => 'windows',
+        :os => { :release => { :major => '2012 R2' }}, # needed for sensu::package
+      }
+    }
+
+    it { should contain_sensu_client_subscription('roundrobin:foo').with(:ensure => 'present' , :file_name => 'subscription_roundrobin_foo.json') }
+    it { should contain_file('C:/opt/sensu/conf.d/subscription_roundrobin_foo.json').with(:ensure => 'present' ) }
+  end  
 end

@@ -34,6 +34,11 @@ Puppet::Type.newtype(:sensu_client_subscription) do
     defaultto '/etc/sensu/conf.d/'
   end
 
+  newparam(:file_name) do
+    desc "The name of the client config file"
+    defaultto { "subscription_" + resource.name + ".json" }
+  end
+
   newproperty(:subscriptions, :array_matching => :all) do
     desc "Subscriptions included, defaults to resource name"
 
