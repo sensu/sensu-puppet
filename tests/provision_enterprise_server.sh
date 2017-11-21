@@ -30,7 +30,7 @@ EOF
 install -o vagrant -g vagrant -m 0644 "$profile" ~vagrant/.bash_profile
 
 # setup module dependencies
-puppet module install puppet/rabbitmq
+puppet module install puppetlabs/rabbitmq
 
 # inifile is used to tune the JVM heap size in Vagrant
 puppet module install puppetlabs/inifile
