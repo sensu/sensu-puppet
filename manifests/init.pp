@@ -302,6 +302,9 @@
 # @param heap_size Value of the HEAP_SIZE environment variable.
 #   Note: This has effect only on Sensu Enterprise.
 #
+# @param max_open_files Value of the MAX_OPEN_FILES environment variable.
+#   Note: This has effect only on Sensu Enterprise.
+#
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = 'installed',
   String             $sensu_plugin_name = 'sensu-plugin',
@@ -426,6 +429,7 @@ class sensu (
   String             $windows_package_title = 'sensu',
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
+  Variant[Integer,Pattern[/^(\d+)$/],Undef] $max_open_files = undef,
   ### START Hiera Lookups###
   Hash               $extensions = {},
   Hash               $handlers = {},

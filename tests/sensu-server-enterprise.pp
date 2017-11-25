@@ -48,6 +48,7 @@ node 'sensu-server' {
     api_ssl_keystore_file     => '/etc/sensu/api.keystore',
     api_ssl_keystore_password => 'sensutest',
     heap_size                 => '256m',
+    max_open_files            => '20000',
   }
 
   sensu::handler { 'default':

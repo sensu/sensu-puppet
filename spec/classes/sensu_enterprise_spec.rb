@@ -109,6 +109,11 @@ describe 'sensu', :type => :class do
           it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^HEAP_SIZE="256M"$}) }
         end
 
+        context 'max_open_files => 20000' do
+          let(:params) { params_base.merge({:max_open_files => 20000 }) }
+          it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^MAX_OPEN_FILES="20000"$}) }
+        end
+
         context 'with manage_services => false' do
           let(:params) { {
             :enterprise_user      => 'sensu',

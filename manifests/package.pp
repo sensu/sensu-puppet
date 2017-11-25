@@ -10,6 +10,9 @@
 # @param heap_size Value of the HEAP_SIZE environment variable.
 #   Note: This has no effect on sensu-core.
 #
+# @param max_open_files Value of the MAX_OPEN_FILES environment variable.
+#   Note: This has effect only on Sensu Enterprise.
+#
 # @param deregister_handler The handler to use when deregistering a client on stop.
 #
 # @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
@@ -38,6 +41,7 @@ class sensu::package (
   Optional[String] $conf_dir            = $::sensu::conf_dir,
   Variant[String,Array,Undef] $confd_dir = $::sensu::confd_dir,
   Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $max_open_files = $::sensu::max_open_files,
   Optional[String] $deregister_handler  = $::sensu::deregister_handler,
   Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
   Optional[String] $gem_path            = $::sensu::gem_path,

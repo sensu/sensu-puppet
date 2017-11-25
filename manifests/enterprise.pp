@@ -28,6 +28,8 @@
 #
 # @param heap_size Value of the HEAP_SIZE environment variable.
 #
+# @param max_open_files Value of the MAX_OPEN_FILES environment variable.
+#
 class sensu::enterprise (
   Optional[String]  $deregister_handler = $::sensu::deregister_handler,
   Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
@@ -39,6 +41,7 @@ class sensu::enterprise (
   Optional[String]  $rubyopt            = $::sensu::rubyopt,
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
   Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $max_open_files = $::sensu::max_open_files,
   Boolean $hasrestart                   = $::sensu::hasrestart,
   ){
 
