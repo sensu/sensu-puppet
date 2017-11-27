@@ -1,7 +1,16 @@
 # Change Log
 
-## [v2.40.1](https://github.com/sensu/sensu-puppet/tree/v2.40.1)
+## [v2.41.0](https://github.com/sensu/sensu-puppet/tree/v2.41.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.40.1...v2.41.0)
+
+**Merged pull requests:**
+
+- Second attempt for \#844  [\#848](https://github.com/sensu/sensu-puppet/pull/848) ([alvagante](https://github.com/alvagante))
+- Revert "Merge pull request \#845 from alvagante/844" [\#847](https://github.com/sensu/sensu-puppet/pull/847) ([ghoneycutt](https://github.com/ghoneycutt))
+- Renamed references to puppetlabs to voxpupuli rabbitmq \#844 [\#845](https://github.com/sensu/sensu-puppet/pull/845) ([alvagante](https://github.com/alvagante))
+
+## [v2.40.1](https://github.com/sensu/sensu-puppet/tree/v2.40.1) (2017-11-17)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.40.0...v2.40.1)
 
 **Merged pull requests:**
