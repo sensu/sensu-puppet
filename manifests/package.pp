@@ -160,7 +160,7 @@ class sensu::package (
     'CONFD_DIR'                 => "${conf_dir},${confd_dir}",
   }
 
-  $parameters = $default_vars + $env_vars
+  $parameters = $params_vars + $env_vars
 
   package { $pkg_title:
     ensure   => $pkg_version,
