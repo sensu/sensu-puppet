@@ -393,11 +393,6 @@ describe 'sensu', :type => :class do
     it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256M"$}) }
   end
 
-  context 'max_open_files => 10000' do
-    let(:params) { {:max_open_files => 10000 } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^MAX_OPEN_FILES="10000"$}) }
-  end
-
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
     let(:params) { {:plugins => 'puppet:///data/sensu/plugins/teststring.rb' } }
     it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb') }

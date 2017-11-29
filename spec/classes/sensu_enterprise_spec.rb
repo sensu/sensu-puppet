@@ -114,6 +114,16 @@ describe 'sensu', :type => :class do
           it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^MAX_OPEN_FILES="20000"$}) }
         end
 
+        context 'heap_dump_path => /tmp/test' do
+          let(:params) { params_base.merge({:heap_dump_path => '/tmp/test' }) }
+          it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^HEAP_DUMP_PATH="/tmp/test"$}) }
+        end
+
+        context 'java_opts => -Xms256m -Xmx512m' do
+          let(:params) { params_base.merge({:java_opts => '-Xms256m -Xmx512m' }) }
+          it { should contain_file('/etc/default/sensu-enterprise').with_content(%r{^JAVA_OPTS="-Xms256m -Xmx512m"$}) }
+        end
+
         context 'with manage_services => false' do
           let(:params) { {
             :enterprise_user      => 'sensu',

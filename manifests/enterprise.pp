@@ -30,6 +30,10 @@
 #
 # @param max_open_files Value of the MAX_OPEN_FILES environment variable.
 #
+# @param heap_dump_path Value of the HEAP_DUMP_PATH environment variable.
+#
+# @param java_opts Value of the JAVA_OPTS environment variable.
+#
 class sensu::enterprise (
   Optional[String]  $deregister_handler = $::sensu::deregister_handler,
   Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
@@ -42,6 +46,8 @@ class sensu::enterprise (
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
   Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
   Variant[Undef,Integer,Pattern[/^(\d+)$/]] $max_open_files = $::sensu::max_open_files,
+  Variant[Undef,String] $heap_dump_path = $::sensu::heap_dump_path,
+  Variant[Undef,String] $java_opts      = $::sensu::java_opts,
   Boolean $hasrestart                   = $::sensu::hasrestart,
   ){
 
@@ -54,7 +60,7 @@ class sensu::enterprise (
 
     file { '/etc/default/sensu-enterprise':
       ensure  => file,
-      content => template("${module_name}/sensu.erb"),
+      content => template("${module_name}/sensu-enterprise.erb"),
       owner   => '0',
       group   => '0',
       mode    => '0444',

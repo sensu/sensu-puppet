@@ -19,3 +19,12 @@ CONFD_DIR="<%= @conf_dir %>,<%= Array(@confd_dir).join(",") %>"
 <% if @heap_size -%>
 HEAP_SIZE="<%= @heap_size %>"
 <% end -%>
+<% if @max_open_files -%>
+MAX_OPEN_FILES="<%= @max_open_files %>"
+<% end -%>
+<% if @heap_dump_path -%>
+HEAP_DUMP_PATH="<%= @heap_dump_path %>"
+<% end -%>
+<% if @java_opts -%>
+JAVA_OPTS="<%= @java_opts %>"
+<% end -%>
