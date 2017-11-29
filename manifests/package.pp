@@ -11,7 +11,7 @@
 #   Note: This has no effect on sensu-core.
 #
 # @param config_file Value of the CONFIG_FILE environment variable.
-# 
+#
 # @param deregister_handler The handler to use when deregistering a client on stop.
 #
 # @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
