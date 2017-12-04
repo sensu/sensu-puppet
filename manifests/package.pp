@@ -47,7 +47,7 @@ class sensu::package (
   Optional[String] $path                = $::sensu::path,
   Optional[String] $rubyopt             = $::sensu::rubyopt,
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
-  Sensu::Env_vars $env_vars             = $::sensu::env_vars,
+  Sensu::Envvars $env_vars             = $::sensu::env_vars,
 ) {
 
   case $::osfamily {
@@ -145,7 +145,11 @@ class sensu::package (
 
   }
 
-  $confd_dirs = join($confd_dir,',')
+  $confd_dirs = $confd_dir ? {
+    Array   => join([$conf_dir] + $confd_dir,','),
+    String  => "${conf_dir},${confd_dir}",
+    default => $conf_dir,
+  }
 
   $params_vars= {
     'EMBEDDED_RUBY'             => $use_embedded_ruby,
@@ -157,7 +161,7 @@ class sensu::package (
     'CLIENT_DEREGISTER_HANDLER' => $deregister_handler,
     'SERVICE_MAX_WAIT'          => $init_stop_max_wait,
     'PATH'                      => $path,
-    'CONFD_DIR'                 => "${conf_dir},${confd_dir}",
+    'CONFD_DIR'                 => $confd_dirs,
   }
 
   $parameters = $params_vars + $env_vars
