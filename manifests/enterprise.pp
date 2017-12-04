@@ -40,7 +40,17 @@ class sensu::enterprise (
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
   Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
   Boolean $hasrestart                   = $::sensu::hasrestart,
-  ){
+  Sensu::Envvarsenterprise $env_vars    = $::sensu::env_vars_enterprise,
+){
+
+  $params_vars= {
+    'HEAP_SIZE'      => $heap_size,
+    'HEAP_DUMP_PATH' => undef,
+    'JAVA_OPTS'      => undef,
+    'MAX_OPEN_FILES' => undef,
+  }
+
+  $parameters = $params_vars + $env_vars
 
   # Package
   if $::sensu::enterprise {

@@ -437,6 +437,7 @@ class sensu (
   Hash               $mutators = {},
   ### END Hiera Lookups ###
   Sensu::Envvars     $env_vars = {},
+  Sensu::Envvarsenterprise $env_vars_enterprise = {},
 ) {
   if $dashboard { fail('Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards')}
   if $purge_config { fail('purge_config is deprecated, set the purge parameter to a hash containing `config => true` instead') }

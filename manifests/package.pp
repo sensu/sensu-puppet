@@ -162,6 +162,8 @@ class sensu::package (
     'SERVICE_MAX_WAIT'          => $init_stop_max_wait,
     'PATH'                      => $path,
     'CONFD_DIR'                 => $confd_dirs,
+    'CONFIG_FILE'               => undef,
+    'USER'                      => $::sensu::user,
   }
 
   $parameters = $params_vars + $env_vars
@@ -206,7 +208,6 @@ class sensu::package (
       require => Package[$pkg_title],
     }
   }
-
   file { [ $conf_dir, "${conf_dir}/handlers", "${conf_dir}/checks", "${conf_dir}/filters", "${conf_dir}/extensions", "${conf_dir}/mutators", "${conf_dir}/contacts" ]:
     ensure  => directory,
     owner   => $::sensu::user,
