@@ -235,7 +235,7 @@ define sensu::check (
     proxy_requests      => $proxy_requests,
     hooks               => $hooks,
     ttl                 => $ttl,
-    auto_resolve        => $auto_resolve
+    auto_resolve        => $auto_resolve,
   }
 
   # Remove key/value pares where the value is `undef` or `"absent"`.
