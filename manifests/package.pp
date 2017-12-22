@@ -161,7 +161,7 @@ class sensu::package (
     'CLIENT_DEREGISTER_HANDLER' => $deregister_handler,
     'SERVICE_MAX_WAIT'          => $init_stop_max_wait,
     'PATH'                      => $path,
-    'CONFD_DIR'                 => $confd_dirs,
+    'CONFD_DIR'                 => $confd_dir,
     'CONFIG_FILE'               => undef,
     'USER'                      => $::sensu::user,
   }
