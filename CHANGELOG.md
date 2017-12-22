@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.41.0](https://github.com/sensu/sensu-puppet/tree/v2.41.0)
+## [v2.42.0](https://github.com/sensu/sensu-puppet/tree/v2.42.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.41.0...v2.42.0)
+
+**Closed issues:**
+
+- switch from puppetlabs/rabbitmq to puppet/rabbitmq [\#844](https://github.com/sensu/sensu-puppet/issues/844)
+
+**Merged pull requests:**
+
+- Added support for MAX\_OPEN\_FILES environment variable \#849 [\#850](https://github.com/sensu/sensu-puppet/pull/850) ([alvagante](https://github.com/alvagante))
+
+## [v2.41.0](https://github.com/sensu/sensu-puppet/tree/v2.41.0) (2017-11-27)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.40.1...v2.41.0)
 
 **Merged pull requests:**
