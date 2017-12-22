@@ -56,7 +56,7 @@ class sensu::enterprise (
     'HEAP_SIZE'      => $heap_size,
     'HEAP_DUMP_PATH' => undef,
     'JAVA_OPTS'      => undef,
-    'MAX_OPEN_FILES' => undef,
+    'MAX_OPEN_FILES' => $max_open_files,
   }
 
   $parameters = $params_vars + $env_vars

@@ -1,6 +1,6 @@
 # File managed by Puppet
 <% @parameters.each do |k,v| -%>
 <% if v and v != '' -%>
-<%= k %>="<%= v %>"
+<%= k %>=<%= v %>
 <% end -%>
 <% end -%>

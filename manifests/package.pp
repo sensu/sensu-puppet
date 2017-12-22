@@ -157,7 +157,7 @@ class sensu::package (
     'LOG_DIR'                   => $log_dir,
     'RUBYOPT'                   => $rubyopt,
     'GEM_PATH'                  => $gem_path,
-    'CLIENT_DEREGISTER_ON_STOP' => true,
+    'CLIENT_DEREGISTER_ON_STOP' => $deregister_on_stop,
     'CLIENT_DEREGISTER_HANDLER' => $deregister_handler,
     'SERVICE_MAX_WAIT'          => $init_stop_max_wait,
     'PATH'                      => $path,
