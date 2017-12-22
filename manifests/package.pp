@@ -10,6 +10,8 @@
 # @param heap_size Value of the HEAP_SIZE environment variable.
 #   Note: This has no effect on sensu-core.
 #
+# @param config_file Value of the CONFIG_FILE environment variable.
+# 
 # @param deregister_handler The handler to use when deregistering a client on stop.
 #
 # @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
@@ -38,6 +40,7 @@ class sensu::package (
   Optional[String] $conf_dir            = $::sensu::conf_dir,
   Variant[String,Array,Undef] $confd_dir = $::sensu::confd_dir,
   Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
+  Variant[Stdlib::Absolutepath,Undef] $config_file = $::sensu::config_file,
   Optional[String] $deregister_handler  = $::sensu::deregister_handler,
   Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
   Optional[String] $gem_path            = $::sensu::gem_path,

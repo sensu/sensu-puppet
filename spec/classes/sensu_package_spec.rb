@@ -487,6 +487,11 @@ describe 'sensu' do
     it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256M"$}) }
   end
 
+  context 'config_file => "/etc/sensu/alternative.json"' do
+    let(:params) { {:config_file => '/etc/sensu/alternative.json' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFIG_FILE="/etc/sensu/alternative.json"$}) }
+  end
+
   describe 'spawn_limit (#727)' do
     context 'default (undef)' do
       it { should contain_file('/etc/sensu/conf.d/spawn.json').without_content }
