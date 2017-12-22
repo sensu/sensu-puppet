@@ -13,7 +13,7 @@ describe 'sensu', :type => :class do
     it { should contain_file('/etc/default/sensu').without_content(%r{^RUBYOPT=.*$}) }
     it { should contain_file('/etc/default/sensu').without_content(%r{^GEM_PATH=.*$}) }
     it { should contain_file('/etc/default/sensu').without_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=.*$}) }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="10"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT=10$}) }
     it { should contain_file('/etc/default/sensu').with_content(%r{^PATH=\$PATH$}) }
     it { should contain_file('/etc/default/sensu').without_content(%r{^CONFD_DIR=.*$}) }
     it { should contain_file('/etc/default/sensu').without_content(%r{^HEAP_SIZE=.*$}) }
@@ -339,12 +339,12 @@ describe 'sensu', :type => :class do
 
   context 'rubyopt => -rbundler/test' do
     let(:params) { {:rubyopt => '-rbundler/test' } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^RUBYOPT="-rbundler/test"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^RUBYOPT=-rbundler/test$}) }
   end
 
   context 'gem_path => /path/to/gems' do
     let(:params) { {:gem_path => '/path/to/gems' } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^GEM_PATH="/path/to/gems"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^GEM_PATH=/path/to/gems$}) }
   end
 
   context 'deregister_on_stop => true' do
@@ -360,12 +360,12 @@ describe 'sensu', :type => :class do
 
  context 'deregister_on_stop => true & deregister_handler => testing' do
     let(:params) { {:deregister_on_stop => true, :deregister_handler => 'testing' } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER="testing"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CLIENT_DEREGISTER_ON_STOP=true\nCLIENT_DEREGISTER_HANDLER=testing$}) }
   end
 
   context 'init_stop_max_wait => 242' do
     let(:params) { {:init_stop_max_wait => 242 } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT="242"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^SERVICE_MAX_WAIT=242$}) }
   end
 
   context 'path => /spec/tests' do
@@ -375,22 +375,22 @@ describe 'sensu', :type => :class do
 
   context 'confd_dir => /spec/tests' do
     let(:params) { {:confd_dir => '/spec/tests' } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR=/etc/sensu/conf\.d,/spec/tests$}) }
   end
 
   context 'confd_dir => [/spec/tests,/more/tests]' do
     let(:params) { {:confd_dir => ['/spec/tests', '/more/tests'] } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR="/etc/sensu/conf\.d,/spec/tests,/more/tests"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFD_DIR=/etc/sensu/conf\.d,/spec/tests,/more/tests$}) }
   end
 
   context 'heap_size => 256' do
     let(:params) { {:heap_size => 256 } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE=256$}) }
   end
 
   context 'heap_size => "256M"' do
     let(:params) { {:heap_size => '256M' } }
-    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256M"$}) }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE=256M$}) }
   end
 
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do

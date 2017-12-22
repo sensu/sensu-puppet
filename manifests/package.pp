@@ -7,9 +7,6 @@
 # @param confd_dir Additional directories to load configuration
 #   snippets from.
 #
-# @param heap_size Value of the HEAP_SIZE environment variable.
-#   Note: This has no effect on sensu-core.
-#
 # @param deregister_handler The handler to use when deregistering a client on stop.
 #
 # @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
@@ -34,10 +31,13 @@
 #   provide full compatibility.  Using other ruby runtimes, e.g. the system
 #   ruby, is not recommended.
 #
+# @param env_vars Hash of the environment variables set in /etc/default/sensu
+#   The user provided hash is merge with an hash of settings based on existing
+#   parameters.
+#
 class sensu::package (
   Optional[String] $conf_dir            = $::sensu::conf_dir,
   Variant[String,Array,Undef] $confd_dir = $::sensu::confd_dir,
-  Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
   Optional[String] $deregister_handler  = $::sensu::deregister_handler,
   Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
   Optional[String] $gem_path            = $::sensu::gem_path,
@@ -47,6 +47,7 @@ class sensu::package (
   Optional[String] $path                = $::sensu::path,
   Optional[String] $rubyopt             = $::sensu::rubyopt,
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
+  Sensu::Envvars $env_vars             = $::sensu::env_vars,
 ) {
 
   case $::osfamily {
@@ -144,6 +145,29 @@ class sensu::package (
 
   }
 
+  $confd_dirs = $confd_dir ? {
+    Array   => join([$conf_dir] + $confd_dir,','),
+    String  => "${conf_dir},${confd_dir}",
+    default => $conf_dir,
+  }
+
+  $params_vars= {
+    'EMBEDDED_RUBY'             => $use_embedded_ruby,
+    'LOG_LEVEL'                 => $log_level,
+    'LOG_DIR'                   => $log_dir,
+    'RUBYOPT'                   => $rubyopt,
+    'GEM_PATH'                  => $gem_path,
+    'CLIENT_DEREGISTER_ON_STOP' => $deregister_on_stop,
+    'CLIENT_DEREGISTER_HANDLER' => $deregister_handler,
+    'SERVICE_MAX_WAIT'          => $init_stop_max_wait,
+    'PATH'                      => $path,
+    'CONFD_DIR'                 => $confd_dir,
+    'CONFIG_FILE'               => undef,
+    'USER'                      => $::sensu::user,
+  }
+
+  $parameters = $params_vars + $env_vars
+
   package { $pkg_title:
     ensure   => $pkg_version,
     name     => $pkg_name,
@@ -184,7 +208,6 @@ class sensu::package (
       require => Package[$pkg_title],
     }
   }
-
   file { [ $conf_dir, "${conf_dir}/handlers", "${conf_dir}/checks", "${conf_dir}/filters", "${conf_dir}/extensions", "${conf_dir}/mutators", "${conf_dir}/contacts" ]:
     ensure  => directory,
     owner   => $::sensu::user,

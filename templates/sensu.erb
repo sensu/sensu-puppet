@@ -1,21 +1,6 @@
-EMBEDDED_RUBY=<%= @use_embedded_ruby %>
-LOG_LEVEL=<%= @log_level %>
-LOG_DIR=<%= @log_dir %>
-<% if not @rubyopt.nil? -%>
-RUBYOPT="<%= @rubyopt %>"
+# File managed by Puppet
+<% @parameters.each do |k,v| -%>
+<% if !v.nil? and v != '' -%>
+ <%= k %>=<%= v %>
 <% end -%>
-<% if not @gem_path.nil? -%>
-GEM_PATH="<%= @gem_path %>"
-<% end -%>
-<% if @deregister_on_stop -%>
-CLIENT_DEREGISTER_ON_STOP=true
-CLIENT_DEREGISTER_HANDLER="<%= @deregister_handler %>"
-<% end -%>
-SERVICE_MAX_WAIT="<%= @init_stop_max_wait %>"
-PATH=<%= @path %>
-<% if @confd_dir -%>
-CONFD_DIR="<%= @conf_dir %>,<%= Array(@confd_dir).join(",") %>"
-<% end -%>
-<% if @heap_size -%>
-HEAP_SIZE="<%= @heap_size %>"
 <% end -%>
