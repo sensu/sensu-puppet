@@ -44,6 +44,7 @@ define sensu::plugin (
   Boolean $nocheckcertificate  = false,
   Any $gem_install_options = $::sensu::gem_install_options,
 ) {
+
   File {
     owner => 'sensu',
     group => 'sensu',
