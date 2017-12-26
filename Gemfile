@@ -22,7 +22,7 @@ group :development, :unit_tests do
   gem 'json_pure', "~> 1.8.3",                            :require => false
   gem 'metadata-json-lint',                               :require => false
   gem 'puppet-blacksmith',                                :require => false
-  gem 'rest-client', "1.6.8",                             :require => false
+  gem 'rest-client', ">= 1.7.4",                          :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
   gem 'puppet-lint-alias-check',                          :require => false
   gem 'puppet-lint-empty_string-check',                   :require => false

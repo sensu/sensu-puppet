@@ -211,6 +211,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.network  :private_network, ip: "192.168.56.19"
     client.vm.provision :shell, :path => "tests/provision_macos.sh"
     client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+    client.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--usb", "on"]
+      vb.customize ["modifyvm", :id, "--usbehci", "off"]
+    end
   end
 
 end
