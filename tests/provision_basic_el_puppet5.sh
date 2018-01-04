@@ -30,7 +30,7 @@ fi
 puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu ensure=link target=/vagrant
 
 # setup module dependencies
-puppet module install puppetlabs/stdlib --version 4.16.0
+puppet module install puppetlabs/stdlib --version 4.24.0
 puppet module install puppetlabs/apt --version 4.1.0
 puppet module install lwf-remote_file --version 1.1.3
 puppet module install puppetlabs/powershell --version 2.1.0

@@ -5,7 +5,7 @@ fixtures:
       ref: 4.1.0
     stdlib:
       repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
-      ref: 4.16.0
+      ref: 4.24.0
     remote_file:
       repo: git://github.com/lwf/puppet-remote_file.git
       ref: v1.1.3
