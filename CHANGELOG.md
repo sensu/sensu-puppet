@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.43.0](https://github.com/sensu/sensu-puppet/tree/v2.43.0)
+## [v2.44.0](https://github.com/sensu/sensu-puppet/tree/v2.44.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.43.0...v2.44.0)
+
+**Merged pull requests:**
+
+- Use latest puppetlabs/stdlib \(2.24.0\) and Stdlib::Filemode type [\#865](https://github.com/sensu/sensu-puppet/pull/865) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.43.0](https://github.com/sensu/sensu-puppet/tree/v2.43.0) (2018-01-04)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.42.0...v2.43.0)
 
 **Implemented enhancements:**
