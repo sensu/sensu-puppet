@@ -13,7 +13,11 @@ define sensu::subscription (
 
   include ::sensu
 
-  file { "${::sensu::conf_dir}/subscription_${name}.json":
+  # Remove any from title any char which is not a letter, a number
+  # or the . and - chars. Needed for safe path names.
+  $sanitized_name=regsubst($name, '[^0-9A-Za-z.-]', '_', 'G')
+
+  file { "${::sensu::conf_dir}/subscription_${sanitized_name}.json":
     ensure => $ensure,
     owner  => $::sensu::user,
     group  => $::sensu::group,
@@ -24,6 +28,7 @@ define sensu::subscription (
   sensu_client_subscription { $name:
     ensure    => $ensure,
     base_path => $::sensu::conf_dir,
+    file_name => "subscription_${sanitized_name}.json",
     custom    => $custom,
     notify    => $::sensu::client_service,
   }

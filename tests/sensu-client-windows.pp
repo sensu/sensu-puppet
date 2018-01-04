@@ -7,3 +7,8 @@ class { '::sensu':
   subscriptions     => 'all',
   client_address    => $facts['networking']['ip'],
 }
+
+# Test for #820
+::sensu::subscription { 'roundrobin:foo':
+  ensure => present,
+}

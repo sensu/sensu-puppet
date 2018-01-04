@@ -24,7 +24,7 @@ Puppet::Type.type(:sensu_client_subscription).provide(:json) do
   end
 
   def config_file
-    "#{resource[:base_path]}/subscription_#{resource[:name]}.json"
+    "#{resource[:base_path]}/#{resource[:file_name]}"
   end
 
   def pre_create
