@@ -1,7 +1,32 @@
 # Change Log
 
-## [v2.42.0](https://github.com/sensu/sensu-puppet/tree/v2.42.0)
+## [v2.43.0](https://github.com/sensu/sensu-puppet/tree/v2.43.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.42.0...v2.43.0)
+
+**Implemented enhancements:**
+
+- MAX\_OPEN\_FILES should be configurable for Sensu Enterprise [\#849](https://github.com/sensu/sensu-puppet/issues/849)
+
+**Fixed bugs:**
+
+- Roundrobin subscriptions on Windows aren't configured [\#820](https://github.com/sensu/sensu-puppet/issues/820)
+
+**Closed issues:**
+
+- check "type" field lost in json file while upgrading module [\#860](https://github.com/sensu/sensu-puppet/issues/860)
+- Sensu puppet doesn't work correctly if started from crontab: "Package\[sensu-plugin\] has failures" [\#859](https://github.com/sensu/sensu-puppet/issues/859)
+- test slack integration. [\#856](https://github.com/sensu/sensu-puppet/issues/856)
+- Centos 7 - not properly managing sensu-client service [\#855](https://github.com/sensu/sensu-puppet/issues/855)
+- CONFIG\_FILE environment variable should be configurable [\#851](https://github.com/sensu/sensu-puppet/issues/851)
+
+**Merged pull requests:**
+
+- Support only the latest releases of Puppet versions 4 and 5 [\#864](https://github.com/sensu/sensu-puppet/pull/864) ([ghoneycutt](https://github.com/ghoneycutt))
+- Added config\_file params to CONFIG\_FILE envvar \#851 [\#861](https://github.com/sensu/sensu-puppet/pull/861) ([alvagante](https://github.com/alvagante))
+- Fix \#820 [\#846](https://github.com/sensu/sensu-puppet/pull/846) ([alvagante](https://github.com/alvagante))
+
+## [v2.42.0](https://github.com/sensu/sensu-puppet/tree/v2.42.0) (2017-12-04)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.41.0...v2.42.0)
 
 **Closed issues:**
