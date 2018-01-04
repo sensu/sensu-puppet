@@ -9,6 +9,10 @@ Please note, that this is a **Partner Supported** module, which means that techn
 
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
+This module supports the latest releases of Puppet versions 4 and 5
+using the ruby that is packaged with the AIO (all-in-one installer). See
+`.travis.yml` for an exact matrix.
+
 ## Documented with Puppet Strings
 
 [Puppet Strings documentation](http://sensu.github.io/sensu-puppet/doc/)
