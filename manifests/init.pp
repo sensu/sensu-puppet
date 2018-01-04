@@ -304,6 +304,8 @@
 #
 # @param max_open_files Value of the MAX_OPEN_FILES environment variable.
 #
+# @param config_file Value of the CONFIG_FILE environment variable.
+#
 # @param heap_dump_path Value of the HEAP_DUMP_PATH environment variable.
 #
 # @param java_opts Value of the JAVA_OPTS environment variable.
@@ -432,6 +434,7 @@ class sensu (
   String             $windows_package_title = 'sensu',
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
+  Variant[Stdlib::Absolutepath,Undef] $config_file = undef,
   Variant[Undef,Integer,Pattern[/^(\d+)$/]] $max_open_files = undef,
   Variant[Undef,String] $heap_dump_path = undef,
   Variant[Undef,String] $java_opts      = undef,

@@ -393,6 +393,11 @@ describe 'sensu', :type => :class do
     it { should contain_file('/etc/default/sensu').with_content(%r{^HEAP_SIZE="256M"$}) }
   end
 
+  context 'config_file => "/etc/sensu/alternative.json"' do
+    let(:params) { {:config_file => '/etc/sensu/alternative.json' } }
+    it { should contain_file('/etc/default/sensu').with_content(%r{^CONFIG_FILE="/etc/sensu/alternative.json"$}) }
+  end
+
   context 'with plugins => puppet:///data/sensu/plugins/teststring.rb' do
     let(:params) { {:plugins => 'puppet:///data/sensu/plugins/teststring.rb' } }
     it { should contain_sensu__plugin('puppet:///data/sensu/plugins/teststring.rb') }
