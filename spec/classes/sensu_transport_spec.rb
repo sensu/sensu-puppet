@@ -5,6 +5,7 @@ describe 'sensu' do
   let(:facts) {{
     :fqdn     => 'testhost.example.com',
     :osfamily => 'RedHat',
+    :kernel   => 'Linux',
   }}
 
   context 'transports' do
@@ -49,6 +50,5 @@ describe 'sensu' do
         JSON.pretty_generate({'transport' => {'name' => 'rabbitmq', 'reconnect_on_error' => true}})
       )}
     end
-
   end
 end

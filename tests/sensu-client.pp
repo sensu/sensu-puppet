@@ -69,5 +69,6 @@ node default {
     client_servicenow => $client_servicenow,
     filters           => $filters,
     filter_defaults   => $filter_defaults,
+    version           => 'latest',
   }
 }

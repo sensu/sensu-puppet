@@ -32,27 +32,49 @@ class sensu::client (
         $service_enable = false
       }
     }
+    case $::osfamily {
+      'windows': {
+        $service_name     = 'sensu-client'
+        $service_path     = undef
+        $service_provider = undef
+        file { 'C:/opt/sensu/bin/sensu-client.xml':
+          ensure  => file,
+          content => template("${module_name}/sensu-client.erb"),
+        }
 
-    if $::osfamily == 'windows' {
-
-      file { 'C:/opt/sensu/bin/sensu-client.xml':
-        ensure  => file,
-        content => template("${module_name}/sensu-client.erb"),
+        exec { 'install-sensu-client':
+          provider => 'powershell',
+          command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
+          unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
+          before   => Service['sensu-client'],
+          require  => File['C:/opt/sensu/bin/sensu-client.xml'],
+        }
       }
+      'Darwin': {
+        $service_path     = '/Library/LaunchDaemons/org.sensuapp.sensu-client.plist'
+        $service_provider = 'launchd'
 
-      exec { 'install-sensu-client':
-        provider => 'powershell',
-        command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
-        unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
-        before   => Service['sensu-client'],
-        require  => File['C:/opt/sensu/bin/sensu-client.xml'],
+        file {$service_path:
+          ensure => file,
+          owner  => 'root',
+          group  => 'wheel',
+          mode   => '0755',
+          before => Service['sensu-client'],
+        }
+      }
+      default: {
+        $service_path     = undef
+        $service_provider = undef
       }
     }
 
     service { 'sensu-client':
       ensure     => $service_ensure,
       enable     => $service_enable,
+      name       => $::sensu::service_name,
       hasrestart => $hasrestart,
+      path       => $service_path,
+      provider   => $service_provider,
       subscribe  => [
         Class['sensu::package'],
         Sensu_client_config[$::fqdn],

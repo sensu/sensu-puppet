@@ -30,6 +30,7 @@ describe 'sensu', :type => :class do
         let(:facts) do
           {
             :osfamily => 'windows',
+            :kernel   => 'windows',
             # needed for sensu::package
             :os => {
               :release => {

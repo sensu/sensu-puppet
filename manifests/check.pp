@@ -123,6 +123,7 @@ define sensu::check (
   Variant[Undef,Enum['absent'],Hash]    $proxy_requests = undef,
   Variant[Undef,Enum['absent'],Hash]    $hooks = undef,
 ) {
+
   if $ensure == 'present' and !$command {
     fail("sensu::check{${name}}: a command must be given when ensure is present")
   }
@@ -155,11 +156,15 @@ define sensu::check (
     'windows': {
       $etc_dir   = 'C:/opt/sensu'
       $conf_dir  = "${etc_dir}/conf.d"
+      $user      = $::sensu::user
+      $group     = $::sensu::group
       $file_mode = undef
     }
     default: {
       $etc_dir   = '/etc/sensu'
       $conf_dir  = "${etc_dir}/conf.d"
+      $user      = $::sensu::user
+      $group     = $::sensu::group
       $file_mode = '0440'
     }
   }

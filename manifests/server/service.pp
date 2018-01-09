@@ -21,7 +21,8 @@ class sensu::server::service (
       }
     }
 
-    if $::osfamily != 'windows' {
+    # The server is only supported on Linux
+    if $::kernel == 'Linux' {
       service { 'sensu-server':
         ensure     => $ensure,
         enable     => $enable,

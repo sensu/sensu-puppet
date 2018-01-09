@@ -10,6 +10,7 @@ describe 'sensu', :type => :class do
   context 'on RedHat' do
     let(:facts) { {
       :osfamily => 'RedHat',
+      :kernel   => 'Linux',
       :fqdn     => 'testhost.domain.com'
     } }
 
@@ -219,7 +220,22 @@ describe 'sensu', :type => :class do
   end
 
   context 'on Debian' do
-    let(:facts) { { :osfamily => 'Debian', :lsbdistid => 'ubuntu', :lsbdistrelease => '14.04', :lsbdistcodename => 'trusty', :os => {:name => 'ubuntu', :release => {:full => '14.04'} }, } }
+    let(:facts) do
+      {
+        :osfamily        => 'Debian',
+        :kernel          => 'Linux',
+        :lsbdistid       => 'ubuntu',
+        :lsbdistrelease  => '14.04',
+        :lsbdistcodename => 'trusty',
+        :os              => {
+          :name    => 'ubuntu',
+          :release => {
+            :full => '14.04',
+          },
+        },
+      }
+    end
+
     context 'when enterprise => true' do
       let(:params) { {
         :enterprise => true,

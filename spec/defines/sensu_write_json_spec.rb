@@ -9,7 +9,12 @@ CUSTOM_CFG_PRETTY = <<-END.gsub(/^\s+\|/, '')
 END
 
 describe 'sensu::write_json', :type => :define do
-  let(:facts) { { :osfamily => 'RedHat' } }
+  let(:facts) do
+    {
+      :osfamily => 'RedHat',
+      :kernel   => 'Linux',
+    }
+  end
 
   context 'with various params' do
     let(:title) { CFG_PATH }

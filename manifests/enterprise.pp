@@ -49,7 +49,7 @@ class sensu::enterprise (
   Variant[Undef,String] $heap_dump_path = $::sensu::heap_dump_path,
   Variant[Undef,String] $java_opts      = $::sensu::java_opts,
   Boolean $hasrestart                   = $::sensu::hasrestart,
-  ){
+) {
 
   # Package
   if $::sensu::enterprise {
