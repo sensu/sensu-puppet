@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.44.0](https://github.com/sensu/sensu-puppet/tree/v2.44.0)
+## [v2.45.0](https://github.com/sensu/sensu-puppet/tree/v2.45.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.44.0...v2.45.0)
+
+**Closed issues:**
+
+- Support MacOS client [\#862](https://github.com/sensu/sensu-puppet/issues/862)
+
+**Merged pull requests:**
+
+- Macos [\#863](https://github.com/sensu/sensu-puppet/pull/863) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.44.0](https://github.com/sensu/sensu-puppet/tree/v2.44.0) (2018-01-04)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.43.0...v2.44.0)
 
 **Merged pull requests:**
