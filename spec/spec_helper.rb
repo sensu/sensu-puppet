@@ -23,12 +23,12 @@ RSpec.configure do |config|
     Facter.clear_messages
   end
   config.default_facts = {
-    :environment => 'rp_env',
-    :ipaddress   => '127.0.0.1',
-    :kernel      => 'Linux',
-    :osfamily    => 'RedHat',
+    :environment     => 'rp_env',
+    :ipaddress       => '127.0.0.1',
+    :kernel          => 'Linux',
+    :osfamily        => 'RedHat',
     :operatingsystem => 'RedHat',
-    :fqdn        => 'testfqdn.example.com',
+    :fqdn            => 'testfqdn.example.com',
   }
   config.backtrace_exclusion_patterns = [
     %r{/\.bundle/},
