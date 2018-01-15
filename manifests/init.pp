@@ -69,6 +69,12 @@
 # @param sensu_group Name of the group Sensu is running as. Default is calculated
 #   according to the underlying OS
 #
+# @param config_dir_mode Directory mode for Sensu conf directory. Default is calculated
+#   according to the underlying OS
+#
+# @param config_file_mode File mode for config files under Sensu conf directory . Default is calculated
+#   according to the underlying OS
+#
 # @param rabbitmq_port Rabbitmq port to be used by sensu
 #
 # @param rabbitmq_host Host running rabbitmq for sensu
@@ -347,6 +353,14 @@ class sensu (
   Boolean            $manage_mutators_dir = true,
   Optional[String]   $sensu_user = undef,
   Optional[String]   $sensu_group = undef,
+  Optional[String]   $config_dir_mode = $::osfamily ? {
+    'windows' => undef,
+    default   => '0555',
+  },
+  Optional[String]   $config_file_mode = $::osfamily ? {
+    'windows' => undef,
+    default   => '0440',
+  },
   Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_port = undef,
   Optional[String]   $rabbitmq_host = undef,
   Optional[String]   $rabbitmq_user = undef,
@@ -459,8 +473,8 @@ class sensu (
       $group             = 'wheel'
       $home_dir          = '/opt/sensu'
       $shell             = '/bin/false'
-      $dir_mode          = '0555'
-      $file_mode         = '0440'
+      $dir_mode          = $config_dir_mode
+      $file_mode         = $config_file_mode
       $service_name      = 'org.sensuapp.sensu-client'
     }
     'Linux': {
@@ -477,8 +491,8 @@ class sensu (
       }
       $home_dir          = '/opt/sensu'
       $shell             = '/bin/false'
-      $dir_mode          = '0555'
-      $file_mode         = '0440'
+      $dir_mode          = $config_dir_mode
+      $file_mode         = $config_file_mode
       $service_name      = 'sensu-client'
     }
     'windows': {
@@ -495,8 +509,8 @@ class sensu (
       }
       $home_dir          = $etc_dir
       $shell             = undef
-      $dir_mode          = undef
-      $file_mode         = undef
+      $dir_mode          = $config_dir_mode
+      $file_mode         = $config_file_mode
       $service_name      = 'sensu-client'
     }
     default: {
