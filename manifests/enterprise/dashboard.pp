@@ -61,11 +61,13 @@ class sensu::enterprise::dashboard (
       refresh   => $::sensu::enterprise_dashboard_refresh,
       user      => $::sensu::enterprise_dashboard_user,
       pass      => $::sensu::enterprise_dashboard_pass,
+      auth      => $::sensu::enterprise_dashboard_auth,
       ssl       => $::sensu::enterprise_dashboard_ssl,
       audit     => $::sensu::enterprise_dashboard_audit,
       github    => $::sensu::enterprise_dashboard_github,
       gitlab    => $::sensu::enterprise_dashboard_gitlab,
       ldap      => $::sensu::enterprise_dashboard_ldap,
+      oidc      => $::sensu::enterprise_dashboard_oidc,
       notify    => $file_notify,
     }
   }

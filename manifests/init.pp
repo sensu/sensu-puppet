@@ -235,6 +235,10 @@
 #   to properly stop and start sensu services when those scripts change,
 #   set it to false. See also http://upstart.ubuntu.com/faq.html#reload
 #
+# @param enterprise_dashboard_auth Optional auth configuration for Enterprise Dashboard
+#
+# @param enterprise_dashboard_oidc Optional OIDC configuration for Enterprise Dashboard
+#
 # @param path Used to set PATH in /etc/default/sensu
 #
 # @param redact Use to redact passwords from checks on the client side
@@ -413,11 +417,13 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_refresh = undef,
   Optional[String]   $enterprise_dashboard_user = undef,
   Optional[String]   $enterprise_dashboard_pass = undef,
+  Optional[Any]      $enterprise_dashboard_auth = undef,
   Optional[Any]      $enterprise_dashboard_ssl = undef,
   Optional[Any]      $enterprise_dashboard_audit = undef,
   Optional[Any]      $enterprise_dashboard_github = undef,
   Optional[Any]      $enterprise_dashboard_gitlab = undef,
   Optional[Any]      $enterprise_dashboard_ldap = undef,
+  Optional[Any]      $enterprise_dashboard_oidc = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = '$PATH',
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
