@@ -1,5 +1,5 @@
 # @summary Defines Sensu check configurations
-# 
+#
 # This define manages Sensu check configurations.
 #
 # @param ensure Whether the check should be present or not
@@ -29,5 +29,4 @@ define sensu::config (
     event  => $event,
     notify => $::sensu::client_service,
   }
-
 }

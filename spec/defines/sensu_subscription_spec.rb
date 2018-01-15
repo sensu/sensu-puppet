@@ -55,7 +55,7 @@ describe 'sensu::subscription', :type => :define do
 
     it { should contain_sensu_client_subscription('roundrobin:foo').with(:ensure => 'present', :file_name => 'subscription_roundrobin_foo.json') }
     it { should contain_file('/etc/sensu/conf.d/subscription_roundrobin_foo.json').with(:ensure => 'present' ) }
-  end  
+  end
 
   context 'with char : in title in windows' do
     let(:title) { 'roundrobin:foo' }
@@ -68,5 +68,5 @@ describe 'sensu::subscription', :type => :define do
 
     it { should contain_sensu_client_subscription('roundrobin:foo').with(:ensure => 'present' , :file_name => 'subscription_roundrobin_foo.json') }
     it { should contain_file('C:/opt/sensu/conf.d/subscription_roundrobin_foo.json').with(:ensure => 'present' ) }
-  end  
+  end
 end

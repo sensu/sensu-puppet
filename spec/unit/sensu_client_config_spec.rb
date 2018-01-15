@@ -88,7 +88,7 @@ describe Puppet::Type.type(:sensu_client_config) do
       'port' => '3031',
       'user' => 'sensu',
       'password' => 'sensu'
-    }    
+    }
     context '=> custom values' do
       let(:resource_hash_override) { {http_socket: http_socket} }
       it { is_expected.to eq(http_socket) }

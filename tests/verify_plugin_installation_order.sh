@@ -3,7 +3,7 @@
 # This script will verify that plugins installed with the "sensu_gem" package
 # provider are installed AFTER any sensu package changes.
 #
-# USAGE: 
+# USAGE:
 #   1. Use Vagrant to spin up an open source or enterprise Sensu server
 #   2. SSH into the box and change to the root user account
 #   3. Execute this script
