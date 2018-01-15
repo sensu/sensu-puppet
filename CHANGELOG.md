@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.45.0](https://github.com/sensu/sensu-puppet/tree/v2.45.0)
+## [v2.46.0](https://github.com/sensu/sensu-puppet/tree/v2.46.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.45.0...v2.46.0)
+
+**Closed issues:**
+
+- upgrading to newer version of sensu with newer embeded ruby doesn't reinstall plugins [\#542](https://github.com/sensu/sensu-puppet/issues/542)
+
+**Merged pull requests:**
+
+- \[542\] Add dependencies for sensu\_gem plugins [\#817](https://github.com/sensu/sensu-puppet/pull/817) ([glarizza](https://github.com/glarizza))
+
+## [v2.45.0](https://github.com/sensu/sensu-puppet/tree/v2.45.0) (2018-01-09)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.44.0...v2.45.0)
 
 **Closed issues:**
