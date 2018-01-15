@@ -116,11 +116,13 @@ describe 'sensu' do
             :osfamily        => 'Debian',
             :lsbdistid       => 'ubuntu',
             :lsbdistrelease  => '14.04',
-            :lsbdistcodename => 'trusty',
             :os              => {
               :name    => 'ubuntu',
               :release => {
                 :full => '14.04'
+              },
+              :distro => {
+                :codename => 'trusty',
               },
             },
           }
@@ -199,11 +201,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '7.11',
-              :lsbdistcodename => 'wheezy',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '7.11',
+                },
+                :distro => {
+                  :codename => 'wheezy',
                 },
               },
             }
@@ -229,11 +233,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '8.6',
-              :lsbdistcodename => 'jessie',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '8.6',
+                },
+                :distro => {
+                  :codename => 'jessie',
                 },
               },
             }
@@ -259,11 +265,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '9.3',
-              :lsbdistcodename => 'stretch',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '9.3',
+                },
+                :distro => {
+                  :codename => 'stretch',
                 },
               },
             }
@@ -289,11 +297,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '7.11',
-              :lsbdistcodename => 'wheezy',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '7.11',
+                },
+                :distro => {
+                  :codename => 'wheezy',
                 },
               },
             }
