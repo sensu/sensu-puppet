@@ -188,6 +188,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-client-windows-chocolatey.pp"'
   end
 
+  config.vm.define "debian9-client", autostart: false do |client|
+    client.vm.box = "debian/stretch64"
+    client.vm.hostname = 'debian9-client.example.com'
+    client.vm.network  :private_network, ip: "192.168.56.20"
+    client.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client.pp"
+  end
+
   config.vm.define "debian8-client", autostart: false do |client|
     client.vm.box = "debian/jessie64"
     client.vm.hostname = 'debian8-client.example.com'

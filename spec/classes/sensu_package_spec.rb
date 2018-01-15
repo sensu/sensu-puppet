@@ -116,11 +116,13 @@ describe 'sensu' do
             :osfamily        => 'Debian',
             :lsbdistid       => 'ubuntu',
             :lsbdistrelease  => '14.04',
-            :lsbdistcodename => 'trusty',
             :os              => {
               :name    => 'ubuntu',
               :release => {
                 :full => '14.04'
+              },
+              :distro => {
+                :codename => 'trusty',
               },
             },
           }
@@ -199,11 +201,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '7.11',
-              :lsbdistcodename => 'wheezy',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '7.11',
+                },
+                :distro => {
+                  :codename => 'wheezy',
                 },
               },
             }
@@ -229,11 +233,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '8.6',
-              :lsbdistcodename => 'jessie',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '8.6',
+                },
+                :distro => {
+                  :codename => 'jessie',
                 },
               },
             }
@@ -252,6 +258,38 @@ describe 'sensu' do
           end
         end
 
+        context '9 (stretch)' do
+          let(:facts) do
+            {
+              :kernel          => 'Linux',
+              :osfamily        => 'Debian',
+              :lsbdistid       => 'Debian',
+              :lsbdistrelease  => '9.3',
+              :os => {
+                :name    => 'Debian',
+                :release => {
+                  :full => '9.3',
+                },
+                :distro => {
+                  :codename => 'stretch',
+                },
+              },
+            }
+          end
+
+          context 'repo release' do
+            it { should contain_apt__source('sensu').with(
+              :ensure      => 'present',
+              :location    => 'https://sensu.global.ssl.fastly.net/apt',
+              :release     => 'stretch',
+              :repos       => 'main',
+              :include     => { 'src' => false },
+              :key         => { 'id' => 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB', 'source' => 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg' },
+              :before      => 'Package[sensu]'
+            ) }
+          end
+        end
+
         context 'with repo_release specified' do
           let(:facts) do
             {
@@ -259,11 +297,13 @@ describe 'sensu' do
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
               :lsbdistrelease  => '7.11',
-              :lsbdistcodename => 'wheezy',
               :os => {
                 :name    => 'Debian',
                 :release => {
                   :full => '7.11',
+                },
+                :distro => {
+                  :codename => 'wheezy',
                 },
               },
             }
