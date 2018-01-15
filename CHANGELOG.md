@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.47.0](https://github.com/sensu/sensu-puppet/tree/v2.47.0)
+## [v2.48.0](https://github.com/sensu/sensu-puppet/tree/v2.48.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.47.0...v2.48.0)
+
+**Implemented enhancements:**
+
+- Not all Sensu Enterprise Dashboard options are available [\#866](https://github.com/sensu/sensu-puppet/issues/866)
+- Add support for Debian 9 stretch [\#708](https://github.com/sensu/sensu-puppet/issues/708)
+
+**Merged pull requests:**
+
+- \[866\] Add Sensu Enterprise Dashboard auth and oidc configuration options [\#867](https://github.com/sensu/sensu-puppet/pull/867) ([treydock](https://github.com/treydock))
+
+## [v2.47.0](https://github.com/sensu/sensu-puppet/tree/v2.47.0) (2018-01-15)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.46.0...v2.47.0)
 
 **Implemented enhancements:**
