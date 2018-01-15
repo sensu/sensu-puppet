@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.46.0](https://github.com/sensu/sensu-puppet/tree/v2.46.0)
+## [v2.47.0](https://github.com/sensu/sensu-puppet/tree/v2.47.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.46.0...v2.47.0)
+
+**Implemented enhancements:**
+
+- \(GH-708\) Add support for Debian 9 \(Stretch\) [\#795](https://github.com/sensu/sensu-puppet/pull/795) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.46.0](https://github.com/sensu/sensu-puppet/tree/v2.46.0) (2018-01-15)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.45.0...v2.46.0)
 
 **Closed issues:**
