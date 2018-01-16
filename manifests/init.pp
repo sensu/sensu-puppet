@@ -353,11 +353,11 @@ class sensu (
   Boolean            $manage_mutators_dir = true,
   Optional[String]   $sensu_user = undef,
   Optional[String]   $sensu_group = undef,
-  Optional[String]   $config_dir_mode = $::osfamily ? {
+  Optional[Stdlib::Filemode] $config_dir_mode = $::osfamily ? {
     'windows' => undef,
     default   => '0555',
   },
-  Optional[String]   $config_file_mode = $::osfamily ? {
+  Optional[Stdlib::Filemode] $config_file_mode = $::osfamily ? {
     'windows' => undef,
     default   => '0440',
   },
