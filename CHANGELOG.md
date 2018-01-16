@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.48.0](https://github.com/sensu/sensu-puppet/tree/v2.48.0)
+## [v2.49.0](https://github.com/sensu/sensu-puppet/tree/v2.49.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.48.0...v2.49.0)
+
+**Implemented enhancements:**
+
+- Allow for management of file and directory permissions [\#825](https://github.com/sensu/sensu-puppet/issues/825)
+
+**Merged pull requests:**
+
+- Add parameters to configure dir and file modes [\#869](https://github.com/sensu/sensu-puppet/pull/869) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.48.0](https://github.com/sensu/sensu-puppet/tree/v2.48.0) (2018-01-15)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.47.0...v2.48.0)
 
 **Implemented enhancements:**
