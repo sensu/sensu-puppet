@@ -131,6 +131,20 @@ describe 'sensu', :type => :class do
       let(:params) { {:sensu_etc_dir => '/opt/etc/sensu', :enterprise_dashboard => true, :enterprise_user => 'user', :enterprise_pass => 'pass'  } }
       it { should contain_file('/opt/etc/sensu/dashboard.json') }
     end
+
+    context 'when config_dir_mode is set' do
+      let(:params) { {:config_dir_mode => '0755'} }
+      it { should contain_file('/etc/sensu/conf.d').with(
+        :mode   => '0755',
+      ) }
+    end
+
+    context 'when config_file_mode is set' do
+      let(:params) { {:config_file_mode => '0644'} }
+      it { should contain_file('/etc/sensu/conf.d/client.json').with(
+        :mode   => '0644',
+      ) }
+    end
   end
 
   describe 'osfamily windows defaults' do
@@ -253,6 +267,20 @@ describe 'sensu', :type => :class do
       context 'when enterprise_dashboard => true (and enterprise_user & enterprise_pass set) ' do
         let(:params) { {:sensu_etc_dir => 'C:/etc/sensu', :enterprise_dashboard => true, :enterprise_user => 'user', :enterprise_pass => 'pass'  } }
         it { should contain_file('C:/etc/sensu/dashboard.json') }
+      end
+
+      context 'when config_dir_mode is set' do
+        let(:params) { {:config_dir_mode => '0755'} }
+        it { should contain_file('C:/opt/sensu/conf.d').with(
+          :mode   => '0755',
+        ) }
+      end
+
+      context 'when config_file_mode is set' do
+        let(:params) { {:config_file_mode => '0644'} }
+        it { should contain_file('C:/opt/sensu/conf.d/client.json').with(
+          :mode   => '0644',
+        ) }
       end
     end
 
