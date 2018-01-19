@@ -1,7 +1,21 @@
 # Change Log
 
-## [v2.49.0](https://github.com/sensu/sensu-puppet/tree/v2.49.0)
+## [v2.50.0](https://github.com/sensu/sensu-puppet/tree/v2.50.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.49.0...v2.50.0)
+
+**Closed issues:**
+
+- Pull Request: sensu::check auto\_resolve [\#857](https://github.com/sensu/sensu-puppet/issues/857)
+- Enterprise - Purging files no longer managed fails to notify correct service [\#854](https://github.com/sensu/sensu-puppet/issues/854)
+- When removing a check, sensu service not refresh [\#782](https://github.com/sensu/sensu-puppet/issues/782)
+
+**Merged pull requests:**
+
+- Adding auto\_resolve param to sensu::check. Replaces \#858 [\#872](https://github.com/sensu/sensu-puppet/pull/872) ([alvagante](https://github.com/alvagante))
+- Restart sensu-enterprise service when configs are purged \#854 [\#871](https://github.com/sensu/sensu-puppet/pull/871) ([alvagante](https://github.com/alvagante))
+
+## [v2.49.0](https://github.com/sensu/sensu-puppet/tree/v2.49.0) (2018-01-16)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.48.0...v2.49.0)
 
 **Implemented enhancements:**
