@@ -72,3 +72,8 @@ node default {
     version           => 'latest',
   }
 }
+sensu::check { 'check_cpu':
+  ensure       => present,
+  command      => '/opt/sensu/embedded/bin/check-cpu.rb',
+  auto_resolve => true,
+}

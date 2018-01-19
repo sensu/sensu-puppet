@@ -104,6 +104,7 @@ describe 'sensu::check', :type => :define do
         :aggregates          => ['aggregate_1', 'aggregate_2'],
         :handle              => true,
         :publish             => true,
+        :auto_resolve        => true,
         :ttl                 => 30
       } }
 
@@ -127,6 +128,7 @@ describe 'sensu::check', :type => :define do
               'aggregates'          => ['aggregate_1', 'aggregate_2'],
               'handle'              => true,
               'publish'             => true,
+              'auto_resolve'        => true,
               'ttl'                 => 30
             }
           }
@@ -166,6 +168,7 @@ describe 'sensu::check', :type => :define do
         :low_flap_threshold  => 'absent',
         :occurrences         => 'absent',
         :publish             => 'absent',
+        :auto_resolve        => 'absent',
         :refresh             => 'absent',
         :source              => 'absent',
         :standalone          => 'absent',
