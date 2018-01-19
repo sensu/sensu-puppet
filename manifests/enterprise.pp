@@ -92,6 +92,7 @@ class sensu::enterprise (
           Sensu_api_config[$::fqdn],
           Class['sensu::redis::config'],
           Class['sensu::rabbitmq::config'],
+          Class['sensu::package'],
         ],
       }
     }
