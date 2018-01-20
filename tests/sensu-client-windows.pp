@@ -12,3 +12,10 @@ class { '::sensu':
 ::sensu::subscription { 'roundrobin:foo':
   ensure => present,
 }
+
+# Test for #870
+::sensu::handler { 'operations':
+  type       => 'pipe',
+  command    => '/opt/sensu/embedded/bin/handler-pagerduty.rb',
+  severities => ['critical'],
+}

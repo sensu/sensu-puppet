@@ -18,10 +18,12 @@ describe 'sensu::handler', :type => :define do
     it { should contain_file('/etc/sensu/handlers/mycommand.rb').with_source('puppet:///somewhere/mycommand.rb')}
     it { should contain_sensu_handler('myhandler').with(
       :ensure      => 'present',
+      :base_path   => '/etc/sensu/conf.d/handlers',
       :type        => 'pipe',
       :command     => '/etc/sensu/handlers/mycommand.rb',
       :filters     => [],
-      :severities  => ['ok', 'warning', 'critical', 'unknown']
+      :severities  => ['ok', 'warning', 'critical', 'unknown'],
+      :require     => 'File[/etc/sensu/conf.d/handlers]'
     ) }
     it do
       should contain_file("/etc/sensu/conf.d/handlers/#{title}.json").with(
@@ -52,7 +54,13 @@ describe 'sensu::handler', :type => :define do
       :install_path => '/etc',
       :source       => 'puppet:///mycommand.rb'
     } }
-    it { should contain_file('/etc/mycommand.rb') }
+    it { should contain_file('/etc/mycommand.rb').with({
+      :ensure => 'file',
+      :owner  => 'sensu',
+      :group  => 'sensu',
+      :mode   => '0555',
+      :source => 'puppet:///mycommand.rb'
+    }) }
   end
 
   context 'command' do
@@ -192,4 +200,49 @@ describe 'sensu::handler', :type => :define do
     it { should contain_sensu_handler('myhandler').with_handle_silenced( false ) }
   end
 
+  context 'windows' do
+    let(:facts) do
+      {
+        :osfamily => 'windows',
+        :kernel   => 'windows',
+        :os => {
+          :release => {
+            :major => '2012r2'
+          }
+        }
+      }
+    end
+    context 'default (present)' do
+
+      let(:params) { {
+        :type     => 'pipe',
+        :command  => 'C:/opt/sensu/handlers/mycommand.rb',
+        :source   => 'puppet:///somewhere/mycommand.rb'
+      } }
+      it { should contain_file('C:/opt/sensu/handlers/mycommand.rb').with({
+        :ensure => 'file',
+        :owner  => 'NT Authority\SYSTEM',
+        :group  => 'Administrators',
+        :mode   => nil,
+        :source => 'puppet:///somewhere/mycommand.rb'
+      }) }
+      it { should contain_sensu_handler('myhandler').with(
+        :ensure      => 'present',
+        :base_path   => 'C:/opt/sensu/conf.d/handlers',
+        :type        => 'pipe',
+        :command     => 'C:/opt/sensu/handlers/mycommand.rb',
+        :filters     => [],
+        :severities  => ['ok', 'warning', 'critical', 'unknown'],
+        :require     => 'File[C:/opt/sensu/conf.d/handlers]'
+      ) }
+      it do
+        should contain_file("C:/opt/sensu/conf.d/handlers/#{title}.json").with(
+          :ensure => 'file',
+          :owner  => 'NT Authority\SYSTEM',
+          :group  => 'Administrators',
+          :mode   => nil
+        )
+      end
+    end
+  end
 end
