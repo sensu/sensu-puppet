@@ -10,6 +10,7 @@
 #
 class sensu::client::service (
   $hasrestart = true,
+  $initsystem = "init",
 ) {
 
   validate_bool($hasrestart)
@@ -52,6 +53,7 @@ class sensu::client::service (
       ensure     => $ensure,
       enable     => $enable,
       hasrestart => $hasrestart,
+      provider   => $initsystem,
       subscribe  => [Class['sensu::package'], Class['sensu::client::config'], Class['sensu::rabbitmq::config'] ],
     }
   }
