@@ -16,7 +16,7 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
       "#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.cmd"
     else
       # grab the newest version available of the embedded ruby
-      embedded_rvm_version = Dir.glob(File.join(path, '/opt/sensu/embedded/lib/ruby/gems/*')).max { |a,b| File.ctime(a) <=> File.ctime(b) }
+      embedded_rvm_version = Dir.glob(File.join('/opt/sensu/embedded/lib/ruby/gems/', '*')).max { |a,b| File.ctime(a) <=> File.ctime(b) }
       ENV['GEM_PATH'] = "/opt/sensu/embedded/lib/ruby/gems/#{embedded_rvm_version}"
       "/opt/sensu/embedded/bin/gem"
     end
