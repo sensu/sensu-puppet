@@ -16,6 +16,10 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
       "#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.cmd"
     else
       # grab the newest version available of the embedded ruby
+      # https://ruby-doc.org/core-2.4.0/Comparable.html
+      # ruby slight of hand explaination: Ruby truncates full paths, so join the path, then
+      # rip through everything in the directory and keep the newest one per comparison, omitting . and ..
+      # there's probably a faster/prettier way of doing this.
       embedded_rvm_version = Dir.glob(File.join('/opt/sensu/embedded/lib/ruby/gems/', '*')).max { |a,b| File.ctime(a) <=> File.ctime(b) }
       ENV['GEM_PATH'] = "/opt/sensu/embedded/lib/ruby/gems/#{embedded_rvm_version}"
       "/opt/sensu/embedded/bin/gem"
