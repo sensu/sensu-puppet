@@ -21,7 +21,7 @@ Puppet::Type.type(:package).provide :sensu_gem, :parent => :gem do
       # rip through everything in the directory and keep the newest one per comparison, omitting . and ..
       # there's probably a faster/prettier way of doing this.
       embedded_ruby_version = Dir.glob(File.join('/opt/sensu/embedded/lib/ruby/gems/', '*')).max { |a,b| File.ctime(a) <=> File.ctime(b) }
-      ENV['GEM_PATH'] = "/opt/sensu/embedded/lib/ruby/gems/#{embedded_rvm_version}"
+      ENV['GEM_PATH'] = "/opt/sensu/embedded/lib/ruby/gems/#{embedded_ruby_version}"
       "/opt/sensu/embedded/bin/gem"
     end
 
