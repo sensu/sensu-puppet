@@ -232,14 +232,68 @@ describe 'sensu', :type => :class do
         it { should_not contain_service('sensu-client') }
       end # not managing service
 
-      context 'with hasrestart=false' do
-        let(:params) { { :client => true, :hasrestart => false } }
+      context 'with enable=true ensure=running hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => true, :client_service_ensure => 'running', :hasrestart => false } }
         it { should contain_service('sensu-client').with(
           :ensure     => 'running',
           :enable     => true,
           :hasrestart => false
         ) }
-      end # with hasrestart=false
+      end # with enable=true ensure=running hasrestart=false
+
+      context 'with enable=false ensure=running hasrestart=true' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'running', :hasrestart => true } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'running',
+          :enable     => false,
+          :hasrestart => true 
+        ) }
+      end # with enable=false ensure=running hasrestart=true
+
+      context 'with enable=false ensure=running hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'running', :hasrestart => false } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'running',
+          :enable     => false,
+          :hasrestart => false
+        ) }
+      end # with enable=false ensure=running hasrestart=false
+
+      context 'with enable=true ensure=stopped hasrestart=true' do
+        let(:params) { { :client => true, :client_service_enable => true, :client_service_ensure => 'stopped', :hasrestart => true } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => true,
+          :hasrestart => true 
+        ) }
+      end # with enable=true ensure=stopped hasrestart=true
+
+      context 'with enable=true ensure=stopped hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => true, :client_service_ensure => 'stopped', :hasrestart => false } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => true,
+          :hasrestart => false
+        ) }
+      end # with enable=true ensure=stopped hasrestart=false
+
+      context 'with enable=false ensure=stopped hasrestart=true' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'stopped', :hasrestart => true} }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => false,
+          :hasrestart => true 
+        ) }
+      end # with enable=false ensure=stopped hasrestart=true
+
+      context 'with enable=false ensure=stopped hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'stopped', :hasrestart => false } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => false,
+          :hasrestart => false
+        ) }
+      end # with enable=false ensure=stopped hasrestart=false
     end #service
   end #with client
 
