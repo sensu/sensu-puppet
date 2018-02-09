@@ -54,6 +54,18 @@
 #
 # @param manage_services Manage the sensu services with puppet
 #
+# @param client_service_enable Set enable value for sensu client service
+#   (applies when manage_services is set to true) 
+#
+# @param client_service_ensure Set ensure value for sensu client service
+#   (applies when manage_services is set to true) 
+#
+# @param server_service_enable Set enable value for sensu server service
+#   (applies when manage_services is set to true) 
+#
+# @param server_service_ensure Set ensure value for sensu server service
+#   (applies when manage_services is set to true) 
+#
 # @param manage_user Manage the sensu user with puppet
 #
 # @param manage_plugins_dir Manage the sensu plugins directory. Must be false if you use
