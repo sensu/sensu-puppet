@@ -5,15 +5,17 @@
 # @param hasrestart Value of hasrestart attribute for this service.
 #
 class sensu::server::service (
-  Boolean $hasrestart = $::sensu::hasrestart,
+  Boolean $hasrestart    = $::sensu::hasrestart,
+  $server_service_enable = $::sensu::server_service_enable,
+  $server_service_ensure = $::sensu::server_service_ensure,
 ) {
 
   if $::sensu::manage_services {
 
     case $::sensu::server {
       true: {
-        $ensure = 'running'
-        $enable = true
+        $ensure = $server_service_ensure
+        $enable = $server_service_enable
       }
       default: {
         $ensure = 'stopped'
