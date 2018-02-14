@@ -18,6 +18,7 @@ class sensu::package {
       $pkg_version = $::lsbdistcodename ? {
         'stretch' => '1.0.3-1',
         'jessie'  => '1.0.2-1',
+        default   => $sensu::version,
       }
 
       $pkg_source = undef
