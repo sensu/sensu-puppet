@@ -357,7 +357,7 @@ class sensu (
   Boolean            $manage_plugins_dir = true,
   Boolean            $manage_handlers_dir = true,
   Boolean            $manage_mutators_dir = true,
-  Boolean            $manage_etc_default_sensu = false,
+  Boolean            $manage_etc_default_sensu = true,
   Optional[String]   $sensu_user = undef,
   Optional[String]   $sensu_group = undef,
   Optional[Stdlib::Filemode] $config_dir_mode = $::osfamily ? {
