@@ -70,6 +70,16 @@ class sensu::enterprise::dashboard (
       oidc      => $::sensu::enterprise_dashboard_oidc,
       notify    => $file_notify,
     }
+
+    sensu_enterprise_dashboard_api_config { 'api1.example.com':
+      ensure => absent,
+      notify => $file_notify,
+    }
+
+    sensu_enterprise_dashboard_api_config { 'api2.example.com':
+      ensure => absent,
+      notify => $file_notify,
+    }
   }
 
   # Service
