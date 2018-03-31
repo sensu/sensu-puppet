@@ -24,6 +24,54 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 4"
   - rvm: 2.4.1
     env: PUPPET_GEM_VERSION="~> 5"
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="centos-6-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="centos-7-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-7-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-8-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-9-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1404-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1604-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="amazonlinux-201703-docker"
+    bundler_args:
+    script: sudo service docker restart ; sleep 10 ; bundle exec rake beaker
 
 notifications:
   email: false

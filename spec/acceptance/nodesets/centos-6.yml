@@ -1,10 +1,10 @@
 HOSTS:
-  centos-7:
+  centos-6:
     roles:
       - agent
-    platform: el-7-x86_64
-    box : centos/7
+    platform: el-6-x86_64
+    box : centos/6
     hypervisor : vagrant
 CONFIG:
-  log_level: verbose
+  log_level: debug
   type: foss

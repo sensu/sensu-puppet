@@ -1,0 +1,21 @@
+HOSTS:
+  debian-7:
+    roles:
+      - agent
+    platform: debian-7-amd64
+    hypervisor: docker
+    image: debian:7
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get install -y tar wget cron git net-tools locales'
+      - 'rm -f /usr/sbin/policy-rc.d'
+      - 'echo "LC_ALL=en_US.UTF-8" >> /etc/environment'
+      - 'echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen'
+      - 'echo "LANG=en_US.UTF-8" > /etc/locale.conf'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-debian7'
+CONFIG:
+  log_level: debug
+  type: foss
