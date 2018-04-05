@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.50.0](https://github.com/sensu/sensu-puppet/tree/v2.50.0)
+## [v2.50.1](https://github.com/sensu/sensu-puppet/tree/v2.50.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.50.0...v2.50.1)
+
+**Fixed bugs:**
+
+- sensu\_enterprise\_dashboard\_api\_config purge [\#883](https://github.com/sensu/sensu-puppet/issues/883)
+
+**Merged pull requests:**
+
+- \(GH-883\) Remove example sensu\_enterprise\_dashboard\_api\_config resources by default [\#885](https://github.com/sensu/sensu-puppet/pull/885) ([treydock](https://github.com/treydock))
+
+## [v2.50.0](https://github.com/sensu/sensu-puppet/tree/v2.50.0) (2018-01-19)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.49.0...v2.50.0)
 
 **Closed issues:**
