@@ -12,11 +12,13 @@
 # @param windows_log_number The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
 #
 class sensu::client (
-  Boolean $hasrestart = $::sensu::hasrestart,
-  $log_level          = $::sensu::log_level,
-  $windows_logrotate  = $::sensu::windows_logrotate,
-  $windows_log_size   = $::sensu::windows_log_size,
-  $windows_log_number = $::sensu::windows_log_number,
+  Boolean $hasrestart    = $::sensu::hasrestart,
+  $client_service_enable = $::sensu::client_service_enable,
+  $client_service_ensure = $::sensu::client_service_ensure,
+  $log_level             = $::sensu::log_level,
+  $windows_logrotate     = $::sensu::windows_logrotate,
+  $windows_log_size      = $::sensu::windows_log_size,
+  $windows_log_number    = $::sensu::windows_log_number,
 ) {
 
   # Service
@@ -24,8 +26,8 @@ class sensu::client (
 
     case $::sensu::client {
       true: {
-        $service_ensure = 'running'
-        $service_enable = true
+        $service_ensure = $client_service_ensure
+        $service_enable = $client_service_enable
       }
       default: {
         $service_ensure = 'stopped'
