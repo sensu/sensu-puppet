@@ -54,6 +54,18 @@
 #
 # @param manage_services Manage the sensu services with puppet
 #
+# @param client_service_enable Set enable value for sensu client service
+#   (applies when manage_services is set to true) 
+#
+# @param client_service_ensure Set ensure value for sensu client service
+#   (applies when manage_services is set to true) 
+#
+# @param server_service_enable Set enable value for sensu server service
+#   (applies when manage_services is set to true) 
+#
+# @param server_service_ensure Set ensure value for sensu server service
+#   (applies when manage_services is set to true) 
+#
 # @param manage_user Manage the sensu user with puppet
 #
 # @param manage_plugins_dir Manage the sensu plugins directory. Must be false if you use
@@ -351,6 +363,10 @@ class sensu (
   Boolean            $server = false,
   Boolean            $api = false,
   Boolean            $manage_services = true,
+  Boolean            $client_service_enable = true,
+  String             $client_service_ensure = running,
+  Boolean            $server_service_enable = true,
+  String             $server_service_ensure = running,
   Boolean            $manage_user = true,
   Boolean            $manage_plugins_dir = true,
   Boolean            $manage_handlers_dir = true,
