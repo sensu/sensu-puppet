@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.50.1](https://github.com/sensu/sensu-puppet/tree/v2.50.1)
+## [v2.51.0](https://github.com/sensu/sensu-puppet/tree/v2.51.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.50.1...v2.51.0)
+
+**Merged pull requests:**
+
+- Enable specifying enable/ensure when managing services [\#889](https://github.com/sensu/sensu-puppet/pull/889) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.50.1](https://github.com/sensu/sensu-puppet/tree/v2.50.1) (2018-04-05)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.50.0...v2.50.1)
 
 **Fixed bugs:**
