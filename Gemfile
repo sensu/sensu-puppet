@@ -16,7 +16,7 @@ group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
   gem 'rspec-puppet', '~> 2.5.0',                         :require => false
   gem 'rspec-mocks',                                      :require => false
-  gem 'puppetlabs_spec_helper', '>= 2.0.0',               :require => false
+  gem 'puppetlabs_spec_helper', '>= 2.7.0',               :require => false
   gem 'puppet-lint', "~> 2.0",                            :require => false
   gem 'json', "~> 1.8.3",                                 :require => false
   gem 'json_pure', "~> 1.8.3",                            :require => false
