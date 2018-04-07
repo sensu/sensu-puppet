@@ -18,3 +18,7 @@ HOSTS:
 CONFIG:
   log_level: debug
   type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+

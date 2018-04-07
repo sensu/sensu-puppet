@@ -1,10 +1,10 @@
 HOSTS:
-  debian-8:
+  debian-7:
     roles:
       - agent
-    platform: debian-8-amd64
+    platform: debian-7-amd64
     hypervisor: docker
-    image: debian:8
+    image: debian:7
     docker_preserve_image: true
     docker_cmd:
       - '/sbin/init'
@@ -15,7 +15,11 @@ HOSTS:
       - 'echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen'
       - 'echo "LANG=en_US.UTF-8" > /etc/locale.conf'
       - 'locale-gen en_US.UTF-8'
-    docker_container_name: 'sensu-debian8'
+    docker_container_name: 'sensu-debian7'
 CONFIG:
   log_level: debug
   type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+

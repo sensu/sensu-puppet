@@ -11,5 +11,9 @@ HOSTS:
       - 'apt-get install -y -q net-tools wget locales'
       - 'locale-gen en_US.UTF-8'
 CONFIG:
-  type: aio
+  type: foss
   log_level: debug
+ssh:
+  password: root
+  auth_methods: ["password"]
+
