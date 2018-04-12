@@ -22,7 +22,7 @@ matrix:
   include:
   - rvm: 2.1.9
     env: PUPPET_GEM_VERSION="~> 4"
-  - rvm: 2.4.1
+  - rvm: 2.4.3
     env: PUPPET_GEM_VERSION="~> 5"
   - rvm: 2.4.2
     sudo: required
