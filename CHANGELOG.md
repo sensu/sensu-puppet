@@ -1,7 +1,27 @@
 # Change Log
 
-## [v2.51.0](https://github.com/sensu/sensu-puppet/tree/v2.51.0)
+## [v2.52.0](https://github.com/sensu/sensu-puppet/tree/v2.52.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.51.0...v2.52.0)
+
+**Implemented enhancements:**
+
+- Implement self.instances for all native providers [\#770](https://github.com/sensu/sensu-puppet/issues/770)
+
+**Fixed bugs:**
+
+- Windows sensu purge issue [\#879](https://github.com/sensu/sensu-puppet/issues/879)
+- Use correct version of stdlib with macos-client in vagrant [\#892](https://github.com/sensu/sensu-puppet/pull/892) ([ghoneycutt](https://github.com/ghoneycutt))
+
+**Closed issues:**
+
+- Vagrant tests fail for macos-client [\#891](https://github.com/sensu/sensu-puppet/issues/891)
+
+**Merged pull requests:**
+
+- add sensu version facter \(continued\) [\#894](https://github.com/sensu/sensu-puppet/pull/894) ([treydock](https://github.com/treydock))
+
+## [v2.51.0](https://github.com/sensu/sensu-puppet/tree/v2.51.0) (2018-04-05)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.50.1...v2.51.0)
 
 **Merged pull requests:**
