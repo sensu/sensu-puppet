@@ -34,9 +34,6 @@ group :development, :unit_tests do
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-variable_contains_upcase',             :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
-  if puppetversion < '5.0'
-    gem 'semantic_puppet', :require => false
-  end
 end
 
 group :documentation do
@@ -58,9 +55,4 @@ group :development do
   gem 'guard-rake',         :require => false
   gem 'listen', '~> 3.0.0', :require => false
 end
-
-if File.exists? 'Gemfile.local'
-  eval(File.read('Gemfile.local'), binding)
-end
-
 # vim:ft=ruby

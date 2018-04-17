@@ -1,3 +1,6 @@
+RSpec.configure do |config|
+  config.mock_with :rspec
+end
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 case ENV['COVERAGE']
@@ -23,12 +26,13 @@ RSpec.configure do |config|
     Facter.clear_messages
   end
   config.default_facts = {
-    :environment     => 'rp_env',
-    :ipaddress       => '127.0.0.1',
-    :kernel          => 'Linux',
-    :osfamily        => 'RedHat',
-    :operatingsystem => 'RedHat',
-    :fqdn            => 'testfqdn.example.com',
+    :environment               => 'rp_env',
+    :ipaddress                 => '127.0.0.1',
+    :kernel                    => 'Linux',
+    :osfamily                  => 'RedHat',
+    :operatingsystem           => 'RedHat',
+    :operatingsystemmajrelease => '7',
+    :fqdn                      => 'testfqdn.example.com',
   }
   config.backtrace_exclusion_patterns = [
     %r{/\.bundle/},

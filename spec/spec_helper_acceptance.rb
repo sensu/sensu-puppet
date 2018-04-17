@@ -24,10 +24,6 @@ RSpec.configure do |c|
         # CentOS has epel-release package in Extras, enabled by default
         shell('yum -y install epel-release')
       end
-      on host, puppet('module', 'install', 'puppet-rabbitmq'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module', 'install', 'fsalum-redis'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module', 'install', 'puppetlabs-apt'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module', 'install', 'puppetlabs-powershell'), { :acceptable_exit_codes => [0,1] }
     end
   end
 end

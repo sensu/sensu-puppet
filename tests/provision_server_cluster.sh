@@ -1,14 +1,7 @@
 #!/bin/bash
 
-# setup module dependencies
-puppet module install puppet/rabbitmq
-
-# install dependencies for sensu
-yum -y install redis jq nagios-plugins-ntp
-systemctl start redis
-systemctl enable redis
+# install test software for sensu
+yum -y install jq nagios-plugins-ntp
 
 # run puppet
-puppet apply /vagrant/tests/rabbitmq.pp
 puppet apply /vagrant/tests/sensu-server-cluster.pp
-puppet apply /vagrant/tests/uchiwa.pp

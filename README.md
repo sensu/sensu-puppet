@@ -1,17 +1,12 @@
 # Sensu-Puppet
 
-Installs and manages the open source monitoring framework [Sensu](http://sensuapp.org).
-[![Puppet Forge](http://img.shields.io/puppetforge/v/sensu/sensu.svg)](https://forge.puppetlabs.com/sensu/sensu)
+Installs and manages [Sensu](http://sensuapp.org), the open source monitoring framework.
 
-Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at https://sensuapp.org/support.
+Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at [https://sensuapp.org/support](https://sensuapp.org/support).
 
 ## Tested with Travis CI
 
-[![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
-
-This module supports the latest releases of Puppet versions 4 and 5
-using the ruby that is packaged with the AIO (all-in-one installer). See
-`.travis.yml` for an exact matrix.
+This module supports the latest releases of Puppet version 5 using the ruby that is packaged with the AIO (all-in-one installer). See `.travis.yml` for an exact matrix.
 
 ## Documented with Puppet Strings
 
@@ -22,30 +17,24 @@ using the ruby that is packaged with the AIO (all-in-one installer). See
 If not explicitly stated it should always support the latest Sensu release.
 Please log an issue if you identify any incompatibilities.
 
-| Sensu Version    | Recommended Puppet Module Version   |
-| ---------------- | ----------------------------------- |
-| >= 0.26.0        | latest                              |
-| 0.22.x - 0.25.x  | 2.1.0                               |
-| 0.20.x - 0.21.x  | 2.0.0                               |
-| 0.17.x - 0.19.x  | 1.5.5                               |
+| Sensu Version   | Recommended Puppet Module Version   |
+| --------------- | ----------------------------------- |
+| 2.x             | latest v3 |
+| 0.26.0 - 1.x    | latest v2 |
+| 0.22.x - 0.25.x | 2.1.0                               |
+| 0.20.x - 0.21.x | 2.0.0                               |
+| 0.17.x - 0.19.x | 1.5.5                               |
 
 
 ## Upgrade note
 
-Versions prior to 1.0.0 are incompatible with previous versions of the
-Sensu-Puppet module.
+Sensu v2 is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu v2.
 
 ## Installation
 
 ```bash
 puppet module install sensu/sensu
 ```
-
-## Prerequisites
-
-- Redis server and connectivity to a Redis database
-- RabbitMQ server, vhost, and credentials
-- Ruby JSON library or gem
 
 ### Dependencies
 
@@ -82,14 +71,7 @@ sudo apt-get install ruby-json
 
 ## Quick start
 
-Before this Puppet module can be used, the following items must be configured on the server.
-
-- Install Redis
-- Install RabbitMQ
-- Add users to RabbitMQ
-- Install dashboard (optional)
-
-To quickly try out Sensu, spin up a test virtual machine with Vagrant that already has these prerequisites installed.
+To quickly try out Sensu, spin up test virtual machines with Vagrant that already has these prerequisites installed.
 
 ```bash
 vagrant up
@@ -108,13 +90,6 @@ Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
 ```yaml
 username: uchiwa
 password: uchiwa
-```
-
-Navigate to `192.168.56.10:15672` to manage RabbitMQ
-
-```yaml
-username: sensu
-password: correct-horse-battery-staple
 ```
 
 See the [tests
