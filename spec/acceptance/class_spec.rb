@@ -24,24 +24,6 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
     context 'server => true, api => true' do
       it 'should work with no errors' do
         pp = <<-EOS
-        class { 'rabbitmq':
-          ssl               => false,
-          delete_guest_user => true,
-        }
-        -> rabbitmq_vhost { 'sensu': }
-        -> rabbitmq_user  { 'sensu': password => 'secret' }
-        -> rabbitmq_user_permissions { 'sensu@sensu':
-          configure_permission => '.*',
-          read_permission      => '.*',
-          write_permission     => '.*',
-        }
-        class { 'redis': }
-        EOS
-
-        # Set up dependencies
-        apply_manifest(pp, :catch_failures => true)
-
-        pp = <<-EOS
         class { 'sensu':
           server                   => true,
           api                      => true,
@@ -70,34 +52,11 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
         it { is_expected.to be_running }
         it { is_expected.to be_enabled }
       end
-
-      describe command('curl 127.0.0.1:4567/info') do
-        its(:exit_status) { should eq 0 }
-        its(:stdout) { should match /sensu.*version/ }
-      end
     end # server and api
 
     if ENV['SE_USER'] && ENV['SE_PASS']
       context 'enterprise => true and enterprise_dashboard => true' do
         it 'should work with no errors' do
-          pp = <<-EOS
-          class { 'rabbitmq':
-            ssl               => false,
-            delete_guest_user => true,
-          }
-          -> rabbitmq_vhost { 'sensu': }
-          -> rabbitmq_user  { 'sensu': password => 'secret' }
-          -> rabbitmq_user_permissions { 'sensu@sensu':
-            configure_permission => '.*',
-            read_permission      => '.*',
-            write_permission     => '.*',
-          }
-          class { 'redis': }
-          EOS
-
-          # Set up dependencies
-          apply_manifest(pp, :catch_failures => true)
-
           pp = <<-EOS
           class { 'sensu':
             enterprise           => true,
@@ -107,14 +66,20 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
             rabbitmq_password    => 'secret',
             rabbitmq_host        => '127.0.0.1',
           }
+          sensu::enterprise::dashboard::api { 'sensu.example.com':
+            datacenter => 'example-dc',
+          }
           EOS
 
           # Run it twice and test for idempotency
           apply_manifest(pp, :catch_failures => true)
           apply_manifest(pp, :catch_failures => true)
-          # sensu-enterprise sets incorrect perms on .keep files
-          apply_manifest(pp, :catch_changes  => true)
-          shell('sleep 15') # allow sensu-enterprise to come up
+        end
+
+        describe file('/etc/sensu/dashboard.json') do
+          it { is_expected.to be_file }
+          its(:content) { should match /name.*?example-dc/ }
+          its(:content) { should match /host.*?sensu\.example\.com/ }
         end
 
         describe service('sensu-server') do
@@ -140,11 +105,6 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
         describe service('sensu-api') do
           it { is_expected.to_not be_running }
           it { is_expected.to_not be_enabled }
-        end
-
-        describe command('curl 127.0.0.1:4567/info') do
-          its(:exit_status) { should eq 0 }
-          its(:stdout) { should match(/sensu.*version/) }
         end
       end # enterprise and enterprise_dashboard
     end

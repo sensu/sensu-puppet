@@ -1,6 +1,6 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-if puppetversion = ENV['PUPPET_GEM_VERSION']
+if puppetversion = ENV['PUPPET_GEM_VERSION'] || "~> 5.x"
   gem 'puppet', puppetversion, :require => false
 else
   gem 'puppet', :require => false
@@ -16,7 +16,7 @@ group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
   gem 'rspec-puppet', '~> 2.5.0',                         :require => false
   gem 'rspec-mocks',                                      :require => false
-  gem 'puppetlabs_spec_helper', '>= 2.0.0',               :require => false
+  gem 'puppetlabs_spec_helper', '>= 2.7.0',               :require => false
   gem 'puppet-lint', "~> 2.0",                            :require => false
   gem 'json', "~> 1.8.3",                                 :require => false
   gem 'json_pure', "~> 1.8.3",                            :require => false
@@ -46,9 +46,11 @@ group :documentation do
 end
 
 group :system_tests do
-  gem 'beaker-rspec',    :require => false
-  gem 'serverspec',      :require => false
-  gem 'vagrant-wrapper', :require => false
+  gem 'beaker',                       :require => false
+  gem 'beaker-rspec',                 :require => false
+  gem 'serverspec',                   :require => false
+  gem 'beaker-puppet_install_helper', :require => false
+  gem 'beaker-module_install_helper', :require => false
 end
 
 group :development do

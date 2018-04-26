@@ -1,16 +1,16 @@
 HOSTS:
-  centos-7:
+  centos-6:
     roles:
       - agent
-    platform: el-7-x86_64
+    platform: el-6-x86_64
     hypervisor: docker
-    image: centos:7
+    image: centos:6
     docker_preserve_image: true
     docker_cmd:
-      - '/usr/sbin/init'
+      - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git iproute'
-    docker_container_name: 'sensu-el7'
+      - 'yum install -y tar wget cronie git'
+    docker_container_name: 'sensu-el6'
 CONFIG:
   log_level: debug
   type: foss
