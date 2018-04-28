@@ -53,7 +53,6 @@ group :system_tests do
   gem 'beaker-module_install_helper', :require => false
   gem 'vagrant-wrapper',              :require => false
   gem 'beaker-windows',               :require => false
-  gem 'winrm',                        :require => false
 end
 
 group :development do

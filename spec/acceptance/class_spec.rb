@@ -22,6 +22,9 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
     end #default
 
     context 'server => true, api => true' do
+      if fact('osfamily') == 'windows'
+        before { skip("Server not supported on Windows") }
+      end
       it 'should work with no errors' do
         pp = <<-EOS
         class { 'sensu':
@@ -56,6 +59,9 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
 
     if ENV['SE_USER'] && ENV['SE_PASS']
       context 'enterprise => true and enterprise_dashboard => true' do
+        if fact('osfamily') == 'windows'
+          before { skip("Enterprise not supported on Windows") }
+        end
         it 'should work with no errors' do
           pp = <<-EOS
           class { 'sensu':
@@ -119,7 +125,11 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
-        shell('sleep 5') # Give services time to stop
+        if fact('osfamily') == 'windows'
+          shell('waitfor SomethingThatIsNeverHappening /t 5 2>NUL', :acceptable_exit_codes => [0,1])
+        else
+          shell('sleep 5') # Give services time to stop
+        end
         apply_manifest(pp, :catch_changes  => true)
       end
 
