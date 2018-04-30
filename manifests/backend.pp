@@ -26,11 +26,17 @@ class sensu::backend (
     name   => $cli_package_name,
   }
 
+  sensu_api_validator { 'sensu':
+    sensu_api_server => '127.0.0.1',
+    sensu_api_port   => '8080',
+    require          => Service['sensu-backend'],
+  }
+
   exec { 'sensuctl_configure':
     command => "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'",
     creates => '/root/.config/sensu/sensuctl/cluster',
     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
-    require => Package['sensu-cli'],
+    require => Sensu_api_validator['sensu'],
   }
 
   package { 'sensu-backend':
