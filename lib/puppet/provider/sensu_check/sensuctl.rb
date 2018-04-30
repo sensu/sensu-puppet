@@ -30,9 +30,9 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         check[property.to_sym] = value
       end
       if d['proxy_requests']
+        check[:proxy_requests] = :present
         d['proxy_requests'].each_pair do |k,v|
           property = "proxy_requests_#{k}".to_sym
-          Puppet.debug("property=#{property}")
           if type_properties.include?(property)
             check[property] = v
           end
@@ -74,7 +74,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
-      next if property.to_s =~ /^proxy_requests_/
+      next if property.to_s =~ /^proxy_requests/
       # Can't pass flags for false
       if value == :false
         false_properties << property.to_s
@@ -92,7 +92,8 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       end
     end
     proxy_requests = nil
-    if resource[:proxy_requests_entity_attributes] ||  resource[:proxy_requests_splay] || resource[:proxy_requests_splay_coverage]
+    if resource[:proxy_requests] == :present &&
+        (resource[:proxy_requests_entity_attributes] ||  resource[:proxy_requests_splay] || resource[:proxy_requests_splay_coverage])
       proxy_requests = {}
       proxy_requests[:entity_attributes] = resource[:proxy_requests_entity_attributes] if resource[:proxy_requests_entity_attributes]
       proxy_requests[:splay] = convert_boolean_property_value(resource[:proxy_requests_splay]) if resource[:proxy_requests_splay]
@@ -123,7 +124,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       type_properties.each do |property|
         value = @property_flush[property]
         next if value.nil?
-        next if property.to_s =~ /^proxy_requests_/
+        next if property.to_s =~ /^proxy_requests/
         if value.is_a?(Array)
           value = value.join(',')
         end
@@ -133,9 +134,12 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
           sensuctl_set('check', resource[:name], property.to_s, value: value)
         end
       end
-      if @property_flush[:proxy_requests_entity_attributes] == :absent && @property_flush[:proxy_requests_splay] == :absent && @property_flush[:proxy_requests_splay_coverage] == :absent
+      if @property_flush[:proxy_requests] == :absent
         sensuctl_remove('check', resource[:name], 'proxy-requests')
-      elsif @property_flush[:proxy_requests_entity_attributes] || @property_flush[:proxy_requests_splay] || @property_flush[:proxy_requests_splay_coverage]
+      elsif resource[:proxy_requests] == :present &&
+          (@property_flush[:proxy_requests_entity_attributes] ||
+          @property_flush[:proxy_requests_splay] ||
+          @property_flush[:proxy_requests_splay_coverage])
         proxy_requests = {}
         proxy_requests[:entity_attributes] = @property_flush[:proxy_requests_entity_attributes] if @property_flush[:proxy_requests_entity_attributes]
         proxy_requests[:splay] = convert_boolean_property_value(@property_flush[:proxy_requests_splay]) if @property_flush[:proxy_requests_splay]

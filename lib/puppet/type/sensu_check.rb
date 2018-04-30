@@ -165,9 +165,11 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
-=begin
   newproperty(:proxy_requests) do
     desc "A Sensu Proxy Requests, representing Sensu entity attributes to match entities in the registry."
+    newvalues(:present, :absent)
+  end
+=begin
     validate do |value|
       unless value.is_a?(Hash)
         raise ArgumentError, "sensu_check proxy_requests must be a Hash"

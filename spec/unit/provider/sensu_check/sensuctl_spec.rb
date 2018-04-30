@@ -48,6 +48,7 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       @resource[:handlers] = ['email', 'slack']
       @resource[:stdin] = true
       @resource[:publish] = false
+      @resource[:proxy_requests] = 'present'
       @resource[:proxy_requests_entity_attributes] = ["entity.Class == 'proxy'"]
       expected_flags = [
         '--command',
@@ -71,6 +72,7 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a check proxy_requests' do
+      @resource[:proxy_requests] = 'present'
       temp = Tempfile.new('proxy_requests')
       allow(Tempfile).to receive(:new).with('proxy_requests').and_return(temp)
       expect(@resource.provider).to receive(:sensuctl_set).with('check', 'test', 'proxy-requests', flags: ['--file', temp.path])
