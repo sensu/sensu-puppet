@@ -23,9 +23,9 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
   end
 
-  def self.sensuctl(args)
-    execute(['sensuctl'] + args, combine: false, failonfail: true)
-  end
+  #def self.sensuctl(args)
+  #  execute(['sensuctl'] + args, combine: false, failonfail: true)
+  #end
 
   def self.sensuctl_list(command)
     args = [command]
