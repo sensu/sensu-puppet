@@ -295,4 +295,14 @@ describe Puppet::Type.type(:sensu_check) do
     expect(rel.source.ref).to eq(service.ref)
     expect(rel.target.ref).to eq(@sensu_check.ref)
   end
+
+  it 'should autorequire sensu_api_validator' do
+    validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource @sensu_check
+    catalog.add_resource validator
+    rel = @sensu_check.autorequire[0]
+    expect(rel.source.ref).to eq(validator.ref)
+    expect(rel.target.ref).to eq(@sensu_check.ref)
+  end
 end

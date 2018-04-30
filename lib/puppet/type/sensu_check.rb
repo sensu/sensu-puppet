@@ -264,6 +264,16 @@ Puppet::Type.newtype(:sensu_check) do
     ['sensu-backend']
   end
 
+  autorequire(:sensu_api_validator) do
+    requires = []
+    catalog.resources.each do |resource|
+      if resource.class.to_s == 'Puppet::Type::Sensu_api_validator'
+        requires << resource.name
+      end
+    end
+    requires
+  end
+
   validate do
     if !self[:command]
       self.fail "command must be defined"
