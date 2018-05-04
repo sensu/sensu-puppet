@@ -1,0 +1,12 @@
+[
+  {
+    "name": "tcp_handler",
+    "type": "tcp",
+    "socket": {
+      "host": "10.0.1.99",
+      "port": 4444
+    },
+    "timeout": 30
+  }
+]
+
