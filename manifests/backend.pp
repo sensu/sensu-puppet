@@ -6,7 +6,8 @@ class sensu::backend (
   String $service_ensure = 'running',
   Boolean $service_enable = true,
   Hash $config_hash = {},
-  String $url = 'http://127.0.0.1:8080',
+  String $url_host = '127.0.0.1',
+  Stdlib::Port $url_port = 8080,
   String $username = 'admin',
   String $password = 'P@ssw0rd!',
 ) {
@@ -14,6 +15,8 @@ class sensu::backend (
   include ::sensu
 
   $etc_dir = $::sensu::etc_dir
+
+  $url = "http://${url_host}:${url_port}"
 
   if $version == undef {
     $_version = $::sensu::version
@@ -27,8 +30,8 @@ class sensu::backend (
   }
 
   sensu_api_validator { 'sensu':
-    sensu_api_server => '127.0.0.1',
-    sensu_api_port   => '8080',
+    sensu_api_server => $url_host,
+    sensu_api_port   => $url_port,
     require          => Service['sensu-backend'],
   }
 
