@@ -229,16 +229,4 @@ Puppet::Type.newtype(:sensu_check) do
     end
     requires
   end
-
-  validate do
-    if !self[:command]
-      self.fail "command must be defined"
-    end
-    if !self[:subscriptions] || self[:subscriptions].empty?
-      self.fail "subscriptions must be defined"
-    end
-    if !self[:handlers] || self[:handlers].empty?
-      self.fail "handlers must be defined"
-    end
-  end
 end

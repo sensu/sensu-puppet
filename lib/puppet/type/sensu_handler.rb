@@ -138,9 +138,6 @@ Puppet::Type.newtype(:sensu_handler) do
   end
 
   validate do
-    if !self[:type]
-      self.fail "type must be defined"
-    end
     if !self[:command] && self[:type] == :pipe
       self.fail "command must be defined for type pipe"
     end
