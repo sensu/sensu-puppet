@@ -18,7 +18,7 @@ Puppet::Type.newtype(:sensu_handler) do
 
   ensurable
 
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The name of the handler."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/

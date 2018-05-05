@@ -18,7 +18,7 @@ Puppet::Type.newtype(:sensu_check) do
 
   ensurable
 
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The name of the check."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
