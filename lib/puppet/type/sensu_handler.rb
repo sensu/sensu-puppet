@@ -123,6 +123,10 @@ Puppet::Type.newtype(:sensu_handler) do
     ['sensu-backend']
   end
 
+  autorequire(:exec) do
+    ['sensuctl_configure']
+  end
+
   autorequire(:sensu_api_validator) do
     requires = []
     catalog.resources.each do |resource|

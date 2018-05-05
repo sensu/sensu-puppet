@@ -136,6 +136,16 @@ describe Puppet::Type.type(:sensu_handler) do
     expect(rel.target.ref).to eq(@sensu_handler.ref)
   end
 
+  it 'should autorequire Exec[sensuctl_configure]' do
+    exec = Puppet::Type.type(:exec).new(:name => 'sensuctl_configure', :command => '/usr/bin/sensuctl')
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource @sensu_handler
+    catalog.add_resource exec
+    rel = @sensu_handler.autorequire[0]
+    expect(rel.source.ref).to eq(exec.ref)
+    expect(rel.target.ref).to eq(@sensu_handler.ref)
+  end
+
   it 'should autorequire sensu_api_validator' do
     validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
     catalog = Puppet::Resource::Catalog.new
