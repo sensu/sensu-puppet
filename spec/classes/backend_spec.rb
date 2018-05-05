@@ -14,11 +14,19 @@ describe 'sensu::backend', :type => :class do
     }
 
     it {
+      should contain_sensu_api_validator('sensu').with({
+        'sensu_api_server' => '127.0.0.1',
+        'sensu_api_port'   => 8080,
+        'require'          => 'Service[sensu-backend]',
+      })
+    }
+
+    it {
       should contain_exec('sensuctl_configure').with({
-        'command' => "sensuctl configure -n --url 'http://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!'",
+        'command' => "sensuctl configure -n --url 'http://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!' || rm -f /root/.config/sensu/sensuctl/cluster",
         'creates' => '/root/.config/sensu/sensuctl/cluster',
         'path'    => '/bin:/sbin:/usr/bin:/usr/sbin',
-        'require' => 'Package[sensu-cli]',
+        'require' => 'Sensu_api_validator[sensu]',
       })
     }
 

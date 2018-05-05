@@ -35,9 +35,11 @@ class sensu::backend (
     require          => Service['sensu-backend'],
   }
 
+  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'"
+  $sensuctl_configure_creates = '/root/.config/sensu/sensuctl/cluster'
   exec { 'sensuctl_configure':
-    command => "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'",
-    creates => '/root/.config/sensu/sensuctl/cluster',
+    command => "${sensuctl_configure} || rm -f ${sensuctl_configure_creates}",
+    creates => $sensuctl_configure_creates,
     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
     require => Sensu_api_validator['sensu'],
   }
