@@ -1,20 +1,10 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'array_property.rb'))
 #require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
 #                                   'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_handler) do
   @doc = "Manages Sensu handlers"
-
-  class SensuCheckArrayProperty < Puppet::Property
-
-    def should
-      if @should and @should[0] == :absent
-        :absent
-      else
-        @should
-      end
-    end
-
-  end
 
   ensurable
 
@@ -32,13 +22,9 @@ Puppet::Type.newtype(:sensu_handler) do
     newvalues('pipe', 'tcp', 'udp', 'set')
   end
 
-  newproperty(:filters, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:filters, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of Sensu event filters (names) to use when filtering events for the handler."
     newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
   newproperty(:mutator) do
@@ -64,24 +50,14 @@ Puppet::Type.newtype(:sensu_handler) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:env_vars, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:env_vars, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of environment variables to use with command execution."
     newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
-  #socket
-
-  newproperty(:handlers, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of Sensu event handlers (names) to use for events using the handler set."
     newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
   newproperty(:organization) do

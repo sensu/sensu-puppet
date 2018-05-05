@@ -1,20 +1,10 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                   'puppet_x', 'sensu', 'array_property.rb'))
 #require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
 #                                   'puppet_x', 'sensu', 'to_type.rb'))
 
 Puppet::Type.newtype(:sensu_check) do
   @doc = "Manages Sensu checks"
-
-  class SensuCheckArrayProperty < Puppet::Property
-
-    def should
-      if @should and @should[0] == :absent
-        :absent
-      else
-        @should
-      end
-    end
-
-  end
 
   ensurable
 
@@ -31,39 +21,30 @@ Puppet::Type.newtype(:sensu_check) do
     desc "Command to be run by the check"
   end
 
-  newproperty(:subscriptions, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:subscriptions, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of Sensu entity subscriptions that check requests will be sent to."
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
-  newproperty(:handlers, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "List of handlers that responds to this check"
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
   newproperty(:interval) do
     desc "How frequently the check runs in seconds"
-    #newvalues(/^[0-9]+$/, :absent)
+    newvalues(/^[0-9]+$/, :absent)
     validate do |value|
       unless value.to_s =~ /^\d+$/
         raise ArgumentError, "interval %s is not a valid integer" % value
       end
     end
     munge do |value|
-      #value.to_s == 'absent' ? :absent : value.to_i
-      value.to_i
+      value.to_s == 'absent' ? :absent : value.to_i
     end
   end
 
   newproperty(:cron) do
     desc 'When the check should be executed, using the Cron syntax.'
-    #newvalues(/.*/, :absent)
+    newvalues(/.*/, :absent)
   end
 
   newproperty(:publish, :boolean => true) do
@@ -128,22 +109,14 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
-  newproperty(:runtime_assets, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of Sensu assets (names), required at runtime for the execution of the command"
     newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
-  newproperty(:check_hooks, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:check_hooks, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of Sensu hooks (names), which are commands run by the Sensu agent in response to the result of the check command execution."
     newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
   newproperty(:subdue) do
@@ -165,21 +138,6 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
-=begin
-    validate do |value|
-      unless value.is_a?(Hash)
-        raise ArgumentError, "sensu_check proxy_requests must be a Hash"
-      end
-      valid_keys = ['entity_attributes', 'splay', 'splay_coverage']
-      value.keys.each do |k|
-        unless valid_keys.include?(k.to_s)
-          raise ArgumentError, "proxy_requests invalid key #{k}"
-        end
-      end
-    end
-  end
-=end
-
   newproperty(:round_robin, :boolean => true) do
     desc "If the check should be executed on a single entity within a subscription in a round-robin fashion."
     newvalues(:true, :false)
@@ -199,13 +157,9 @@ Puppet::Type.newtype(:sensu_check) do
     defaultto 'default'
   end
 
-  newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "Sensu entity attributes to match entities in the registry, using Sensu Query Expressions"
     #newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
   newproperty(:proxy_requests_splay, :boolean => true) do
