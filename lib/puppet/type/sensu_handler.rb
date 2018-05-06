@@ -108,5 +108,15 @@ Puppet::Type.newtype(:sensu_handler) do
     if !self[:command] && self[:type] == :pipe
       fail "command must be defined for type pipe"
     end
+    if (self[:type] == :tcp || self[:type] == :udp) &&
+        (!self[:socket_host] || !self[:socket_port])
+      fail "socket_host and socket_port are required for type tcp or type udp"
+    end
+    if self[:socket_host] && !self[:socket_port]
+      fail "socket_port is required if socket_host is set"
+    end
+    if !self[:socket_host] && self[:socket_port]
+      fail "socket_host is required if socket_port is set"
+    end
   end
 end

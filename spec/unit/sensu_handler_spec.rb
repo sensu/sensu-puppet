@@ -187,12 +187,33 @@ describe Puppet::Type.type(:sensu_handler) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { handler }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
+  end
 
-    it 'should require command for type pipe' do
-      config.delete(:command)
-      expect { check }.to raise_error(Puppet::Error, /command must be defined for type pipe/)
-    end
+  it 'should require command for type pipe' do
+    config.delete(:command)
+    expect { handler }.to raise_error(Puppet::Error, /command must be defined for type pipe/)
+  end
+
+  it 'should require socket_host and socket_port' do
+    config.delete(:socket_port)
+    expect { handler }.to raise_error(Puppet::Error, /socket_port is required if socket_host is set/)
+  end
+  it 'should require socket_host and socket_port' do
+    config.delete(:socket_host)
+    expect { handler }.to raise_error(Puppet::Error, /socket_host is required if socket_port is set/)
+  end
+  it 'should require socket properties for tcp type' do
+    config.delete(:socket_host)
+    config.delete(:socket_port)
+    config[:type] = :tcp
+    expect { handler }.to raise_error(Puppet::Error, /socket_host and socket_port are required for type tcp or type udp/)
+  end
+  it 'should require socket properties for udp type' do
+    config.delete(:socket_host)
+    config.delete(:socket_port)
+    config[:type] = :udp
+    expect { handler }.to raise_error(Puppet::Error, /socket_host and socket_port are required for type tcp or type udp/)
   end
 end
