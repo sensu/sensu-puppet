@@ -67,18 +67,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
     end
   end
 
-  def required_properties
-    [
-      :command,
-      :subscriptions,
-      :handlers,
-    ]
-  end
-
   def create
-    required_properties.each do |p|
-      fail("#{p} is required for #{resource.type} #{resource.name}") if resource[p].nil?
-    end
     spec = {}
     spec[:name] = resource[:name]
     type_properties.each do |property|

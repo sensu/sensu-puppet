@@ -138,8 +138,16 @@ Puppet::Type.newtype(:sensu_handler) do
   end
 
   validate do
+    required_properties = [
+      :type,
+    ]
+    required_properties.each do |property|
+      if self[:ensure] == :present && self[property].nil?
+        fail "You must provide a #{property}"
+      end
+    end
     if !self[:command] && self[:type] == :pipe
-      self.fail "command must be defined for type pipe"
+      fail "command must be defined for type pipe"
     end
   end
 end

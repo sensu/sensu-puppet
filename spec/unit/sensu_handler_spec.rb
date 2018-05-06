@@ -10,6 +10,20 @@ describe Puppet::Type.type(:sensu_handler) do
     )
   end
 
+  let(:default_config) do
+    {
+      name: 'test',
+      type: 'pipe',
+      command: 'test',
+    }
+  end
+  let(:config) do
+    default_config
+  end
+  let(:check) do
+    described_class.new(config)
+  end
+
   it 'should add to catalog without raising an error' do
     catalog = Puppet::Resource::Catalog.new
     expect {
@@ -154,5 +168,20 @@ describe Puppet::Type.type(:sensu_handler) do
     rel = @sensu_handler.autorequire[0]
     expect(rel.source.ref).to eq(validator.ref)
     expect(rel.target.ref).to eq(@sensu_handler.ref)
+  end
+
+  [
+    :type,
+  ].each do |property|
+    it "should require property when ensure => present" do
+      config.delete(property)
+      config[:ensure] = :present
+      expect { check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+    end
+
+    it 'should require command for type pipe' do
+      config.delete(:command)
+      expect { check }.to raise_error(Puppet::Error, /command must be defined for type pipe/)
+    end
   end
 end

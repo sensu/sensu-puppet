@@ -229,4 +229,17 @@ Puppet::Type.newtype(:sensu_check) do
     end
     requires
   end
+
+  validate do
+    required_properties = [
+      :command,
+      :subscriptions,
+      :handlers,
+    ]
+    required_properties.each do |property|
+      if self[:ensure] == :present && self[property].nil?
+        fail "You must provide a #{property}"
+      end
+    end
+  end
 end

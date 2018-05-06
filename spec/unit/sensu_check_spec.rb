@@ -10,6 +10,20 @@ describe Puppet::Type.type(:sensu_check) do
       handlers: ['test']
     )
   end
+  let(:default_config) do
+    {
+      name: 'test',
+      command: 'test',
+      subscriptions: ['test'],
+      handlers: ['test'],
+    }
+  end
+  let(:config) do
+    default_config
+  end
+  let(:check) do
+    described_class.new(config)
+  end
 
   it 'should add to catalog with raising an error' do
     catalog = Puppet::Resource::Catalog.new
@@ -309,5 +323,17 @@ describe Puppet::Type.type(:sensu_check) do
     rel = @sensu_check.autorequire[0]
     expect(rel.source.ref).to eq(validator.ref)
     expect(rel.target.ref).to eq(@sensu_check.ref)
+  end
+
+  [
+    :command,
+    :subscriptions,
+    :handlers
+  ].each do |property|
+    it "should require property when ensure => present" do
+      config.delete(property)
+      config[:ensure] = :present
+      expect { check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+    end
   end
 end
