@@ -1,7 +1,6 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'array_property.rb'))
-#require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-#                                   'puppet_x', 'sensu', 'to_type.rb'))
+require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/hash_property'
+require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_handler) do
   @doc = "Manages Sensu handlers"
@@ -32,17 +31,9 @@ Puppet::Type.newtype(:sensu_handler) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:timeout) do
+  newproperty(:timeout, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The handler execution duration timeout in seconds (hard stop)"
     newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "timeout %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_i
-    end
   end
 
   newproperty(:command) do
@@ -74,46 +65,14 @@ Puppet::Type.newtype(:sensu_handler) do
     desc "The socket host address (IP or hostname) to connect to."
   end
 
-  newproperty(:socket_port) do
+  newproperty(:socket_port, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The socket port to connect to."
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "socket_port %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_i
-    end
   end
 
-=begin
-  newproperty(:custom) do
-    desc "Custom check variables"
-    include PuppetX::Sensu::ToType
-
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
-        end
-      else
-        true
-      end
-    end
-
+  newproperty(:custom, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom handler variables"
     defaultto {}
   end
-=end
 
   autorequire(:package) do
     ['sensu-cli']

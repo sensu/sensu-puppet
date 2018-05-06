@@ -72,7 +72,7 @@ describe Puppet::Type.type(:sensu_check) do
   it 'should not accept invalid interval' do
     expect {
       @sensu_check[:interval] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
   end
 
   it 'should accept cron' do
@@ -106,7 +106,7 @@ describe Puppet::Type.type(:sensu_check) do
   it 'should not accept invalid timeout' do
     expect {
       @sensu_check[:timeout] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
   end
 
   it 'should accept ttl' do
@@ -122,7 +122,7 @@ describe Puppet::Type.type(:sensu_check) do
   it 'should not accept invalid ttl' do
     expect {
       @sensu_check[:ttl] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
   end
 
   it 'should accept stdin' do
@@ -151,7 +151,7 @@ describe Puppet::Type.type(:sensu_check) do
   it 'should not accept invalid low_flap_threshold' do
     expect {
       @sensu_check[:low_flap_threshold] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
   end
 
   it 'should accept high_flap_threshold' do
@@ -167,7 +167,7 @@ describe Puppet::Type.type(:sensu_check) do
   it 'should not accept invalid high_flap_threshold' do
     expect {
       @sensu_check[:high_flap_threshold] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
   end
 
   it 'should accept runtime_assets' do
@@ -282,7 +282,38 @@ describe Puppet::Type.type(:sensu_check) do
   it 'should not accept invalid proxy_requests_splay_coverage' do
     expect {
       @sensu_check[:proxy_requests_splay_coverage] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
+  end
+
+  it 'should accept custom value' do
+    @sensu_check[:custom] = {'foo' => 'bar'}
+    expect(@sensu_check[:custom]).to eq({'foo' => 'bar'})
+  end
+
+  it 'should not accept invalid custom' do
+    expect {
+      @sensu_check[:custom] = 'foo'
+    }.to raise_error(Puppet::Error)
+  end
+
+  # String properties
+  [
+    :metric_format
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = 'foo'
+      expect(check[property]).to eq('foo')
+    end
+  end
+
+  # Array properties
+  [
+    :metric_handlers
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = ['foo', 'bar']
+      expect(check[property]).to eq(['foo', 'bar'])
+    end
   end
 
   it 'should autorequire Package[sensu-cli]' do

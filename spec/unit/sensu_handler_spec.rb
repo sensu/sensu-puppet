@@ -77,7 +77,7 @@ describe Puppet::Type.type(:sensu_handler) do
   it 'should not accept invalid timeout' do
     expect {
       @sensu_handler[:timeout] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
   end
 
   it 'should accept command' do
@@ -127,7 +127,18 @@ describe Puppet::Type.type(:sensu_handler) do
   it 'should not accept invalid socket_port' do
     expect {
       @sensu_handler[:socket_port] = 'foobar'
-    }.to raise_error(Puppet::ResourceError, /not a valid integer/)
+    }.to raise_error(Puppet::ResourceError, /should be an Integer/)
+  end
+
+  it 'should accept custom value' do
+    @sensu_handler[:custom] = {'foo' => 'bar'}
+    expect(@sensu_handler[:custom]).to eq({'foo' => 'bar'})
+  end
+
+  it 'should not accept invalid custom' do
+    expect {
+      @sensu_handler[:custom] = 'foo'
+    }.to raise_error(Puppet::Error)
   end
 
   it 'should autorequire Package[sensu-cli]' do

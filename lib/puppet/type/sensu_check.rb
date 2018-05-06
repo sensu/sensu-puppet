@@ -1,7 +1,6 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'array_property.rb'))
-#require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-#                                   'puppet_x', 'sensu', 'to_type.rb'))
+require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/hash_property'
+require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_check) do
   @doc = "Manages Sensu checks"
@@ -29,17 +28,9 @@ Puppet::Type.newtype(:sensu_check) do
     desc "List of handlers that responds to this check"
   end
 
-  newproperty(:interval) do
+  newproperty(:interval, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "How frequently the check runs in seconds"
     newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "interval %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
   end
 
   newproperty(:cron) do
@@ -52,30 +43,14 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(:true, :false)
   end
 
-  newproperty(:timeout) do
+  newproperty(:timeout, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The check execution duration timeout in seconds (hard stop)."
     newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "timeout %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
   end
 
-  newproperty(:ttl) do
+  newproperty(:ttl, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "Check ttl in seconds"
     newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "ttl %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
   end
 
   newproperty(:stdin, :boolean => true) do
@@ -83,30 +58,14 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(:true, :false)
   end
 
-  newproperty(:low_flap_threshold) do
+  newproperty(:low_flap_threshold, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The flap detection low threshold (% state change) for the check"
     newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "low_flap_threshold %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
   end
 
-  newproperty(:high_flap_threshold) do
+  newproperty(:high_flap_threshold, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The flap detection high threshold (% state change) for the check"
     newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "high_flap_threshold %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
   end
 
   newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
@@ -167,46 +126,25 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(:true, :false)
   end
 
-  newproperty(:proxy_requests_splay_coverage) do
+  newproperty(:proxy_requests_splay_coverage, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The splay coverage percentage use for proxy check request splay calculation."
     #newvalues(/^[0-9]+$/, :absent)
-    validate do |value|
-      unless value.to_s =~ /^\d+$/
-        raise ArgumentError, "splay_coverage %s is not a valid integer" % value
-      end
-    end
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
   end
-=begin
-  newproperty(:custom) do
+
+  newproperty(:metric_format) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:metric_handlers, :parent => PuppetX::Sensu::ArrayProperty) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:custom, :parent => PuppetX::Sensu::HashProperty) do
     desc "Custom check variables"
-    include PuppetX::Sensu::ToType
-
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
-        end
-      else
-        true
-      end
-    end
-
     defaultto {}
   end
-=end
 
   autorequire(:package) do
     ['sensu-cli']
