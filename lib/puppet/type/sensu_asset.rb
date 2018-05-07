@@ -7,9 +7,8 @@ Puppet::Type.newtype(:sensu_asset) do
   @doc = "Manages Sensu assets"
 
   extend PuppetX::Sensu::Type
+  add_properties_and_params()
   add_autorequires()
-
-  ensurable
 
   newparam(:name, :namevar => true) do
     desc "The name of the asset."
@@ -40,11 +39,6 @@ Puppet::Type.newtype(:sensu_asset) do
   newproperty(:organization) do
     desc "The Sensu RBAC organization that this asset belongs to."
     defaultto 'default'
-  end
-
-  newproperty(:custom, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Custom asset variables"
-    defaultto {}
   end
 
   validate do

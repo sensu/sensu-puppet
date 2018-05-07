@@ -1,3 +1,4 @@
+require_relative '../../puppet_x/sensu/type'
 require_relative '../../puppet_x/sensu/array_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
@@ -5,7 +6,9 @@ require_relative '../../puppet_x/sensu/integer_property'
 Puppet::Type.newtype(:sensu_check) do
   @doc = "Manages Sensu checks"
 
-  ensurable
+  extend PuppetX::Sensu::Type
+  add_properties_and_params()
+  add_autorequires()
 
   newparam(:name, :namevar => true) do
     desc "The name of the check."
@@ -139,33 +142,6 @@ Puppet::Type.newtype(:sensu_check) do
   newproperty(:metric_handlers, :parent => PuppetX::Sensu::ArrayProperty) do
     #desc
     newvalues(/.*/, :absent)
-  end
-
-  newproperty(:custom, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Custom check variables"
-    defaultto {}
-  end
-
-  autorequire(:package) do
-    ['sensu-cli']
-  end
-
-  autorequire(:service) do
-    ['sensu-backend']
-  end
-
-  autorequire(:exec) do
-    ['sensuctl_configure']
-  end
-
-  autorequire(:sensu_api_validator) do
-    requires = []
-    catalog.resources.each do |resource|
-      if resource.class.to_s == 'Puppet::Type::Sensu_api_validator'
-        requires << resource.name
-      end
-    end
-    requires
   end
 
   validate do
