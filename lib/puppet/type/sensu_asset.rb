@@ -7,8 +7,9 @@ Puppet::Type.newtype(:sensu_asset) do
   @doc = "Manages Sensu assets"
 
   extend PuppetX::Sensu::Type
-  add_properties_and_params()
   add_autorequires()
+
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc "The name of the asset."

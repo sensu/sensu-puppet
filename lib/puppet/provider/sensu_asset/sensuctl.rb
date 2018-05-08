@@ -21,15 +21,12 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
       asset = {}
       asset[:ensure] = :present
       asset[:name] = d['name']
-      asset[:custom] = {}
       d.each_pair do |key, value|
         next if key == 'name'
         if !!value == value
           value = value.to_s.to_sym
         end
-        if ! type_properties.include?(key.to_sym)
-          asset[:custom][key] = value
-        else
+        if type_properties.include?(key.to_sym)
           asset[key.to_sym] = value
         end
       end
@@ -63,13 +60,12 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
   end
 
   def create
-    spec = resource[:custom] || {}
+    spec = {}
     spec[:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
-      next if property == :custom
       if [:true, :false].include?(value)
         spec[property] = convert_boolean_property_value(value)
       else
@@ -86,7 +82,7 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
 
   def flush
     if !@property_flush.empty?
-      spec = @property_flush[:custom] || resource[:custom] || {}
+      spec = {}
       spec[:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
@@ -95,7 +91,6 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
           value = resource[property]
         end
         next if value.nil?
-        next if property == :custom
         if [:true, :false].include?(value)
           spec[property] = convert_boolean_property_value(value)
         elsif value == :absent

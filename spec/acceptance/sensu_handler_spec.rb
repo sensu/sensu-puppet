@@ -25,14 +25,14 @@ describe 'sensu_handler', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfami
     end
   end
 
-  context 'with custom properties' do
+  context 'update handler' do
     it 'should work without errors' do
       pp = <<-EOS
       include ::sensu::backend
       sensu_handler { 'test':
         type          => 'pipe',
         command       => 'notify.rb',
-        custom        => { 'foo' => 'bar' },
+        filters       => ['production'],
       }
       EOS
 
@@ -41,10 +41,10 @@ describe 'sensu_handler', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfami
       apply_manifest_on(node, pp, :catch_changes  => true)
     end
 
-    it 'should have a valid handler with custom propery' do
+    it 'should have a valid handler with updated propery' do
       on node, 'sensuctl handler info test --format json' do
         data = JSON.parse(stdout)
-        expect(data['foo']).to eq('bar')
+        expect(data['filters']).to eq(['production'])
       end
     end
   end

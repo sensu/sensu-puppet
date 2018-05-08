@@ -21,16 +21,13 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       handler = {}
       handler[:ensure] = :present
       handler[:name] = d['name']
-      handler[:custom] = {}
       d.each_pair do |key, value|
         next if key == 'name'
         next if key == 'socket'
         if !!value == value
           value = value.to_s.to_sym
         end
-        if ! type_properties.include?(key.to_sym)
-          handler[:custom][key] = value
-        else
+        if type_properties.include?(key.to_sym)
           handler[key.to_sym] = value
         end
       end
@@ -72,14 +69,13 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
   end
 
   def create
-    spec = resource[:custom] || {}
+    spec = {}
     spec[:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
       next if property.to_s =~ /^socket/
-      next if property == :custom
       if [:true, :false].include?(value)
         spec[property] = convert_boolean_property_value(value)
       else
@@ -101,7 +97,7 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
 
   def flush
     if !@property_flush.empty?
-      spec = @property_flush[:custom] || resource[:custom] || {}
+      spec = {}
       spec[:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
@@ -111,7 +107,6 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
         end
         next if value.nil?
         next if property.to_s =~ /^socket/
-        next if property == :custom
         if [:true, :false].include?(value)
           spec[property] = convert_boolean_property_value(value)
         elsif value == :absent

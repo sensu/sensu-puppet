@@ -2,15 +2,6 @@ module PuppetX
   module Sensu
     module Type
 
-      def add_properties_and_params
-        ensurable
-
-        newproperty(:custom, :parent => PuppetX::Sensu::HashProperty) do
-          desc "Custom variables"
-          defaultto {}
-        end
-      end
-
       def add_autorequires
         autorequire(:package) do
           ['sensu-cli']

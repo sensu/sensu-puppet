@@ -115,7 +115,6 @@ describe Puppet::Type.type(:sensu_asset) do
   # Hash properties
   [
     :metadata,
-    :custom
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
