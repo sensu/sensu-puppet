@@ -1,0 +1,54 @@
+[{
+  "class": "agent",
+  "deregister": false,
+  "deregistration": {},
+  "environment": "default",
+  "id": "example-hostname",
+  "keepalive_timeout": 60,
+  "last_seen": 1523387195,
+  "organization": "default",
+  "redact": [
+    "password",
+    "passwd",
+    "pass",
+    "api_key",
+    "api_token",
+    "access_key",
+    "secret_key",
+    "private_key",
+    "secret"
+  ],
+  "subscriptions": [
+    "entity:example-hostname"
+  ],
+  "system": {
+    "hostname": "example-hostname",
+    "os": "linux",
+    "platform": "ubuntu",
+    "platform_family": "debian",
+    "platform_version": "16.04",
+    "network": {
+      "interfaces": [
+      {
+        "name": "lo",
+        "addresses": [
+          "127.0.0.1/8",
+        "::1/128"
+        ]
+      },
+      {
+        "name": "eth0",
+        "mac": "52:54:00:20:1b:3c",
+        "addresses": [
+          "93.184.216.34/24",
+        "2606:2800:220:1:248:1893:25c8:1946/10"
+        ]
+      }
+      ]
+    },
+    "arch": "amd64"
+  },
+  "user": "agent",
+  "region": "us-west-1",
+  "team": "ops"
+}]
