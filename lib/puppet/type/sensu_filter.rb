@@ -1,104 +1,73 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'boolean_property.rb'))
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'to_type.rb'))
+require_relative '../../puppet_x/sensu/type'
+require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/hash_property'
+require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_filter) do
   @doc = "Manages Sensu filters"
 
-  def initialize(*args)
-    super *args
+  extend PuppetX::Sensu::Type
+  add_autorequires()
 
-    if c = catalog
-      self[:notify] = [
-        'Service[sensu-server]',
-        'Service[sensu-enterprise]',
-      ].select { |ref| c.resource(ref) }
-    end
-  end
+  ensurable
 
-  ensurable do
-    newvalue(:present) do
-      provider.create
-    end
-
-    newvalue(:absent) do
-      provider.destroy
-    end
-
-    defaultto :present
-  end
-
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The name of the filter."
-  end
-
-  newparam(:base_path) do
-    desc "The base path to the client config file"
-    defaultto '/etc/sensu/conf.d/filters/'
-  end
-
-  newproperty(:attributes) do
-    desc "Filter attributes"
-    include PuppetX::Sensu::ToType
-
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
-        end
-      else
-        true
+    validate do |value|
+      unless value =~ /^[\w\.\-]+$/
+        raise ArgumentError, "sensu_filter name invalid"
       end
     end
-
-    defaultto {}
   end
 
-  newproperty(:when) do
-    desc 'Used to determine when a filter is applied.'
-    include PuppetX::Sensu::ToType
+  newproperty(:action) do
+    desc "Action to take with the event if the filter statements match."
+    newvalues('allow', 'deny')
+  end
 
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
+  newproperty(:statements, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Filter statements to be compared with event data."
+  end
 
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
+  newproperty(:when_days, :parent => PuppetX::Sensu::HashProperty) do
+    desc "A hash of days of the week (i.e., monday) and/or all. Each day specified can define one or more time windows, in which the filter is applied."
+    validate do |value|
+      super(value)
+      value.each_pair do |k,v|
+        if ! ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','all'].include?(k.to_s)
+          raise ArgumentError, "when_days keys must be day of the week or 'all', not #{k}"
         end
-      else
-        true
+        if ! v.is_a?(Array)
+          raise ArgumentError, "when_days hash values must be an Array"
+        end
+        v.each do |d|
+          if ! d.is_a?(Hash) || ! d.key?('begin') || ! d.key?('end')
+            raise ArgumentError, "when_days day time window must be a hash containing keys 'begin' and 'end'"
+          end
+        end
       end
     end
-
-    defaultto {}
   end
 
-  newproperty(:negate, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc ""
-
-    defaultto :false # provider assumes it's managed
+  newproperty(:organization) do
+    desc "The Sensu RBAC organization that this filter belongs to."
+    defaultto 'default'
   end
 
-  autorequire(:package) do
-    ['sensu']
+  newproperty(:environment) do
+    desc "The Sensu RBAC environment that this filter belongs to."
+    defaultto 'default'
+  end
+
+  validate do
+    required_properties = [
+      :action,
+      :statements
+    ]
+    required_properties.each do |property|
+      if self[:ensure] == :present && self[property].nil?
+        fail "You must provide a #{property}"
+      end
+    end
   end
 end

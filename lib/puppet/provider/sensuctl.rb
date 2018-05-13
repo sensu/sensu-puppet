@@ -38,7 +38,11 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
 
   def self.sensuctl_create(type, spec)
     data = {}
-    data['type'] = type.capitalize
+    if type =~ /^[A-Z]/
+      data['type'] = type
+    else
+      data['type'] = type.capitalize
+    end
     data['spec'] = spec
     f = Tempfile.new('sensuctl')
     f.write(JSON.pretty_generate(data))

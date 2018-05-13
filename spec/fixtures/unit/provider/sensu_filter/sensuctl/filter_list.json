@@ -1,0 +1,26 @@
+[
+  {
+    "name": "production_filter",
+    "action": "allow",
+    "statements": [
+      "event.Entity.Environment == 'production'"
+    ],
+    "when": {
+      "days": {
+        "all": [
+        {
+          "begin": "5:00 PM",
+          "end": "8:00 AM"
+        }
+        ],
+        "friday": [
+        {
+          "begin": "12:00 PM",
+          "end": "5:00 PM"
+        }
+        ]
+      } 
+    }
+  }
+]
+
