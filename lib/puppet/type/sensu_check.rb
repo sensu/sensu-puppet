@@ -165,10 +165,6 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
-  newproperty(:proxy_requests) do
-    desc "A Sensu Proxy Requests, representing Sensu entity attributes to match entities in the registry."
-    newvalues(:present, :absent)
-  end
 =begin
     validate do |value|
       unless value.is_a?(Hash)
@@ -194,11 +190,13 @@ Puppet::Type.newtype(:sensu_check) do
   newproperty(:organization) do
     desc "The Sensu RBAC organization that this check belongs to."
     #newvalues(/.*/, :absent)
+    defaultto 'default'
   end
 
   newproperty(:environment) do
     desc "The Sensu RBAC environment that this check belongs to."
     #newvalues(/.*/, :absent)
+    defaultto 'default'
   end
 
   newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => SensuCheckArrayProperty) do

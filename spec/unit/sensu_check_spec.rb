@@ -181,19 +181,6 @@ describe Puppet::Type.type(:sensu_check) do
     }.to raise_error(Puppet::ResourceError)
   end
 
-  it 'should accept proxy_requests' do
-    @sensu_check[:proxy_requests] = 'present'
-    expect(@sensu_check[:proxy_requests]).to eq(:present)
-    @sensu_check[:proxy_requests] = 'absent'
-    expect(@sensu_check[:proxy_requests]).to eq(:absent)
-  end
-
-  it 'should not accept invalid proxy_requests' do
-    expect {
-      @sensu_check[:proxy_requests] = 'foo'
-    }.to raise_error(Puppet::ResourceError)
-  end
-
 =begin
   it 'should accept proxy_requests' do
     @sensu_check[:proxy_requests] = {
@@ -232,14 +219,22 @@ describe Puppet::Type.type(:sensu_check) do
     }.to raise_error(Puppet::ResourceError)
   end
 
-  it 'should accept organization' do
-    @sensu_check[:organization] = 'default'
+  it 'should have default organization' do
     expect(@sensu_check[:organization]).to eq('default')
   end
 
-  it 'should accept environment' do
-    @sensu_check[:environment] = 'default'
+  it 'should accept organization' do
+    @sensu_check[:organization] = 'foobar'
+    expect(@sensu_check[:organization]).to eq('foobar')
+  end
+
+  it 'should have default environment' do
     expect(@sensu_check[:environment]).to eq('default')
+  end
+
+  it 'should accept environment' do
+    @sensu_check[:environment] = 'foobar'
+    expect(@sensu_check[:environment]).to eq('foobar')
   end
 
   it 'should accept proxy_requests_entity_attributes' do

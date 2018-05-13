@@ -36,11 +36,15 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     sensuctl(args)
   end
 
-  def self.sensuctl_create(command, name, flags)
-    args = [command]
-    args << 'create'
-    args << name
-    sensuctl(args + flags)
+  def self.sensuctl_create(type, spec)
+    data = {}
+    data['type'] = type.capitalize
+    data['spec'] = spec
+    f = Tempfile.new('sensuctl')
+    f.write(JSON.pretty_generate(data))
+    f.close
+    Puppet.debug(IO.read(f.path))
+    sensuctl(['create', '--file', f.path])
   end
   def sensuctl_create(*args)
     self.class.sensuctl_create(*args)
