@@ -140,7 +140,7 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:metric_handlers, :parent => PuppetX::Sensu::ArrayProperty) do
+  newproperty(:metric_handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     #desc
     newvalues(/.*/, :absent)
   end
@@ -150,7 +150,7 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:output_metric_handlers, :parent => PuppetX::Sensu::ArrayProperty) do
+  newproperty(:output_metric_handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     #desc
     newvalues(/.*/, :absent)
   end
