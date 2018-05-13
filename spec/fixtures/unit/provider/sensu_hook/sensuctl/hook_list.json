@@ -1,0 +1,9 @@
+[
+  {
+    "name": "process_tree",
+    "command": "ps aux",
+    "timeout": 60,
+    "environment": "default",
+    "organization": "default"
+  }
+]
