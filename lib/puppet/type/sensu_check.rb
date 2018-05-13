@@ -145,8 +145,8 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:custom, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Custom check variables"
+  newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include as with the check, that appear as outer-level attributes."
     defaultto {}
   end
 

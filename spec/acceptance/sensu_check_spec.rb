@@ -27,16 +27,16 @@ describe 'sensu_check', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
     end
   end
 
-  context 'custom property' do
+  context 'extended_attributes property' do
     it 'should work without errors' do
       pp = <<-EOS
       include ::sensu::backend
       sensu_check { 'test':
-        command       => 'check-http.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-        custom        => { 'foo' => 'bar' }
+        command             => 'check-http.rb',
+        subscriptions       => ['demo'],
+        handlers            => ['email'],
+        interval            => 60,
+        extended_attributes => { 'foo' => 'bar' }
       }
       EOS
 
@@ -45,7 +45,7 @@ describe 'sensu_check', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
       apply_manifest_on(node, pp, :catch_changes  => true)
     end
 
-    it 'should have a valid check with custom properties' do
+    it 'should have a valid check with extended_attributes properties' do
       on node, 'sensuctl check info test --format json' do
         data = JSON.parse(stdout)
         expect(data['foo']).to eq('bar')

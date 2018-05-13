@@ -133,7 +133,7 @@ describe Puppet::Type.type(:sensu_check) do
 
   # Hash properties
   [
-    :custom
+    :extended_attributes
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

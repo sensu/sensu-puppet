@@ -28,7 +28,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       check = {}
       check[:ensure] = :present
       check[:name] = d['name']
-      check[:custom] = {}
+      check[:extended_attributes] = {}
       d.each_pair do |key,value|
         next if key == 'name'
         next if key == 'proxy_requests'
@@ -36,9 +36,9 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         if !!value == value
           value = value.to_s.to_sym
         end
-        # Handle custom property
+        # Handle extended_attributes property
         if ! type_properties.include?(key.to_sym)
-          check[:custom][key] = value
+          check[:extended_attributes][key] = value
         else
           check[key.to_sym] = value
         end
@@ -82,14 +82,14 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
   end
 
   def create
-    spec = resource[:custom] || {}
+    spec = resource[:extended_attributes] || {}
     spec[:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
       next if property.to_s =~ /^proxy_requests/
-      next if property == :custom
+      next if property == :extended_attributes
       if [:true, :false].include?(value)
         spec[property] = convert_boolean_property_value(value)
       else
@@ -112,7 +112,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
 
   def flush
     if !@property_flush.empty?
-      spec = @property_flush[:custom] || resource[:custom] || {}
+      spec = @property_flush[:extended_attributes] || resource[:extended_attributes] || {}
       spec[:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
@@ -122,7 +122,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         end
         next if value.nil?
         next if property.to_s =~ /^proxy_requests/
-        next if property == :custom
+        next if property == :extended_attributes
         if [:true, :false].include?(value)
           spec[property] = convert_boolean_property_value(value)
         elsif value == :absent
