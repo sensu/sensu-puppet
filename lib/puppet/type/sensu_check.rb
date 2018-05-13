@@ -145,6 +145,16 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:output_metric_format) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:output_metric_handlers, :parent => PuppetX::Sensu::ArrayProperty) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
     desc "Custom attributes to include as with the check, that appear as outer-level attributes."
     defaultto {}
