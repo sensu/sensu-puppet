@@ -1,0 +1,31 @@
+[
+  {
+    "name": "admin",
+    "rules": [
+      {
+        "type": "*",
+        "environment": "*",
+        "organization": "*",
+        "permissions": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "read-only",
+    "rules": [
+      {
+        "type": "*",
+        "environment": "*",
+        "organization": "*",
+        "permissions": [
+          "read"
+        ]
+      }
+    ]
+  }
+]
