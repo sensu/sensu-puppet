@@ -30,7 +30,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def self.sensuctl_list(command)
     args = [command]
     args << 'list'
-    args << '--all-organizations'
+    args << '--all-organizations' unless command == 'organization'
     args << '--format'
     args << 'json'
     sensuctl(args)
