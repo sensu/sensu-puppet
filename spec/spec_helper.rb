@@ -30,6 +30,9 @@ RSpec.configure do |config|
     :ipaddress                 => '127.0.0.1',
     :kernel                    => 'Linux',
     :osfamily                  => 'RedHat',
+    :os                        => {
+      :family => 'RedHat',
+    },
     :operatingsystem           => 'RedHat',
     :operatingsystemmajrelease => '7',
     :fqdn                      => 'testfqdn.example.com',

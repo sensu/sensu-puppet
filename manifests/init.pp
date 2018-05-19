@@ -22,8 +22,10 @@ class sensu (
   },
   Boolean $etc_dir_purge = true,
   Boolean $manage_repo = true,
+  Optional[String] $repo_class = undef,
 ) {
 
+  include ::sensu::repo
   include ::sensu::agent
 
   file { 'sensu_etc_dir':
@@ -35,11 +37,9 @@ class sensu (
 
   case $osfamily {
     'RedHat': {
-      $repo_class = '::sensu::repo::yum'
     }
     default: {
       fail("Detected osfamily <${::osfamily}>. Only RedHat is supported.")
     }
   }
-  include ::sensu::repo
 }
