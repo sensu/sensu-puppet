@@ -1,3 +1,6 @@
+require 'rspec-puppet-facts'
+include RspecPuppetFacts
+
 RSpec.configure do |config|
   config.mock_with :rspec
 end
