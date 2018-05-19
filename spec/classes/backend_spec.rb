@@ -8,8 +8,9 @@ describe 'sensu::backend', :type => :class do
 
     it {
       should contain_package('sensu-cli').with({
-        'ensure' => 'installed',
-        'name'   => 'sensu-cli',
+        'ensure'  => 'installed',
+        'name'    => 'sensu-cli',
+        'require' => 'Class[Sensu::Repo]',
       })
     }
 
@@ -32,8 +33,9 @@ describe 'sensu::backend', :type => :class do
 
     it {
       should contain_package('sensu-backend').with({
-        'ensure' => 'installed',
-        'name'   => 'sensu-backend',
+        'ensure'  => 'installed',
+        'name'    => 'sensu-backend',
+        'require' => 'Class[Sensu::Repo]',
       })
     }
 

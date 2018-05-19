@@ -9,9 +9,10 @@ describe 'sensu::agent', :type => :class do
 
     it {
       should contain_package('sensu-agent').with({
-        'ensure' => 'installed',
-        'name'   => 'sensu-agent',
-        'before' => 'File[sensu_etc_dir]',
+        'ensure'  => 'installed',
+        'name'    => 'sensu-agent',
+        'before'  => 'File[sensu_etc_dir]',
+        'require' => 'Class[Sensu::Repo]',
       })
     }
 

@@ -25,8 +25,9 @@ class sensu::backend (
   }
 
   package { 'sensu-cli':
-    ensure => $_version,
-    name   => $cli_package_name,
+    ensure  => $_version,
+    name    => $cli_package_name,
+    require => Class['::sensu::repo'],
   }
 
   sensu_api_validator { 'sensu':
@@ -45,9 +46,10 @@ class sensu::backend (
   }
 
   package { 'sensu-backend':
-    ensure => $_version,
-    name   => $package_name,
-    before => File['sensu_etc_dir'],
+    ensure  => $_version,
+    name    => $package_name,
+    before  => File['sensu_etc_dir'],
+    require => Class['::sensu::repo'],
   }
 
   file { 'sensu_backend_config':

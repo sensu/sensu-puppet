@@ -25,9 +25,10 @@ class sensu::agent (
   }
 
   package { 'sensu-agent':
-    ensure => $_version,
-    name   => $package_name,
-    before => File['sensu_etc_dir'],
+    ensure  => $_version,
+    name    => $package_name,
+    before  => File['sensu_etc_dir'],
+    require => Class['::sensu::repo'],
   }
 
   file { 'sensu_agent_config':

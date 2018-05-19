@@ -5,6 +5,7 @@ describe 'sensu', :type => :class do
     it { should compile }
 
     it { should contain_class('sensu')}
+    it { should contain_class('sensu::repo')}
     it { should contain_class('sensu::agent')}
 
     it {
@@ -15,7 +16,13 @@ describe 'sensu', :type => :class do
         'recurse' => true,
       })
     }
+  end
 
+  describe 'sensu::repo' do
+    it { should contain_class('sensu::repo::yum') }
+  end
+
+  describe 'sensu::repo::yum' do
     it {
       should contain_yumrepo('sensu_nightly').with({
         'baseurl'         => 'https://packagecloud.io/sensu/nightly/el/7/$basearch',
@@ -26,7 +33,6 @@ describe 'sensu', :type => :class do
         'sslverify'       => 1,
         'sslcacert'       => '/etc/pki/tls/certs/ca-bundle.crt',
         'metadata_expire' => 300,
-        'before'          => 'Package[sensu-agent]',
       })
     }
   end
