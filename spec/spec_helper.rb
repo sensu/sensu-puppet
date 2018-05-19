@@ -26,7 +26,6 @@ RSpec.configure do |config|
     # facts being exercised with something like
     # Facter.collection.loader.load(:ipaddress)
     Facter.clear
-    Facter.clear_messages
   end
   config.default_facts = {
     :environment               => 'rp_env',

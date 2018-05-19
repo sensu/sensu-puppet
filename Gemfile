@@ -6,7 +6,7 @@ else
   gem 'puppet', :require => false
 end
 
-if facterversion = ENV['FACTER_GEM_VERSION']
+if facterversion = ENV['FACTER_GEM_VERSION'] || "~> 3.x"
   gem 'facter', facterversion, :require => false
 else
   gem 'facter', :require => false
