@@ -1,3 +1,0 @@
----
-sensu::repo_class: 'sensu::repo::yum'
-

@@ -22,10 +22,11 @@ class sensu (
   },
   Boolean $etc_dir_purge = true,
   Boolean $manage_repo = true,
-  Optional[String] $repo_class = undef,
 ) {
 
-  include ::sensu::repo
+  if $manage_repo {
+    include ::sensu::repo
+  }
   include ::sensu::agent
 
   file { 'sensu_etc_dir':

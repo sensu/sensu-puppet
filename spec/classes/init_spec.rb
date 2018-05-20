@@ -20,24 +20,6 @@ describe 'sensu', :type => :class do
           })
         }
       end
-      context 'sensu::repo', :if => facts['osfamily'] == 'RedHat' do
-        it { should contain_class('sensu::repo::yum') }
-      end
-
-      context 'sensu::repo::yum', :if => facts['osfamily'] == 'RedHat' do
-        it {
-          should contain_yumrepo('sensu_nightly').with({
-            'baseurl'         => 'https://packagecloud.io/sensu/nightly/el/7/$basearch',
-            'repo_gpgcheck'   => 1,
-            'gpgcheck'        => 0,
-            'enabled'         => 1,
-            'gpgkey'          => 'https://packagecloud.io/sensu/nightly/gpgkey',
-            'sslverify'       => 1,
-            'sslcacert'       => '/etc/pki/tls/certs/ca-bundle.crt',
-            'metadata_expire' => 300,
-          })
-        }
-      end
     end
   end
 end
