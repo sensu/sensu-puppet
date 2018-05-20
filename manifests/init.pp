@@ -35,7 +35,7 @@ class sensu (
     recurse => $etc_dir_purge,
   }
 
-  case $osfamily {
+  case $::facts['osfamily'] {
     'RedHat': {
     }
     default: {

@@ -32,11 +32,11 @@ class sensu::agent (
   }
 
   file { 'sensu_agent_config':
-    ensure   => 'file',
-    path     => "${etc_dir}/agent.yml",
-    content  => to_yaml($config_hash),
-    require  => Package['sensu-agent'],
-    notify   => Service['sensu-agent'],
+    ensure  => 'file',
+    path    => "${etc_dir}/agent.yml",
+    content => to_yaml($config_hash),
+    require => Package['sensu-agent'],
+    notify  => Service['sensu-agent'],
   }
 
   service { 'sensu-agent':
