@@ -48,5 +48,22 @@ describe 'sensu_handler', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfami
       end
     end
   end
+
+  context 'ensure => absent' do
+    it 'should remove without errors' do
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_handler { 'test': ensure => 'absent' }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest_on(node, pp, :catch_failures => true)
+      apply_manifest_on(node, pp, :catch_changes  => true)
+    end
+
+    describe command('sensuctl handler info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+  end
 end
 

@@ -47,5 +47,26 @@ describe 'sensu_environment', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
       end
     end
   end
+
+  context 'ensure => absent' do
+    it 'should remove without errors' do
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_environment { 'test': ensure => 'absent' }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest_on(node, pp, :catch_failures => true)
+      apply_manifest_on(node, pp, :catch_changes  => true)
+    end
+
+    it 'should not have test environment' do
+      on node, 'sensuctl environment list --format json' do
+        data = JSON.parse(stdout)
+        d = data.select { |o| o['name'] == 'test' }
+        expect(d.size).to eq(0)
+      end
+    end
+  end
 end
 

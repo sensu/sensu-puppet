@@ -49,5 +49,22 @@ describe 'sensu_filter', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamil
       end
     end
   end
+
+  context 'ensure => absent' do
+    it 'should remove without errors' do
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_filter { 'test': ensure => 'absent' }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest_on(node, pp, :catch_failures => true)
+      apply_manifest_on(node, pp, :catch_changes  => true)
+    end
+
+    describe command('sensuctl filter info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+  end
 end
 
