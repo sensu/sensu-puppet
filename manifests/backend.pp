@@ -35,6 +35,8 @@ class sensu::backend (
     sensu_api_port   => $url_port,
     require          => Service['sensu-backend'],
   }
+  # Ensure sensu-backend is up before starting sensu-agent
+  Sensu_api_validator['sensu'] -> Service['sensu-agent']
 
   $sensuctl_configure = "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'"
   $sensuctl_configure_creates = '/root/.config/sensu/sensuctl/cluster'
