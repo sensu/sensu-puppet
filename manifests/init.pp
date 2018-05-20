@@ -39,6 +39,8 @@ class sensu (
   case $::facts['osfamily'] {
     'RedHat': {
     }
+    'Debian': {
+    }
     default: {
       fail("Detected osfamily <${::osfamily}>. Only RedHat is supported.")
     }

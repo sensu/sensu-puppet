@@ -15,6 +15,22 @@ class sensu::repo {
         metadata_expire => 300,
       }
     }
+    'Debian': {
+      #TODO: change from nightly to stable once there are stable releases
+      apt::source { 'sensu_nightly':
+        ensure   => 'present',
+        location => "https://packagecloud.io/sensu/nightly/${downcase($::facts['os']['name'])}/",
+        repos    => 'main',
+        release  => $::facts['os']['distro']['codename'],
+        include  => {
+          'src' => true,
+        },
+        key      => {
+          'id'     => 'EB17E7F42AD4720A6679044309F9A5D85A56B390',
+          'source' => 'https://packagecloud.io/sensu/nightly/gpgkey',
+        },
+      }
+    }
     default: {
       # do nothing
     }
