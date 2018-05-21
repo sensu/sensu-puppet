@@ -1,7 +1,32 @@
 # Change Log
 
-## [v2.52.0](https://github.com/sensu/sensu-puppet/tree/v2.52.0)
+## [v2.53.0](https://github.com/sensu/sensu-puppet/tree/v2.53.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.52.0...v2.53.0)
+
+**Implemented enhancements:**
+
+- Feature Request: Support for disabling the TCP/UDP Socket entirely [\#902](https://github.com/sensu/sensu-puppet/issues/902)
+- \(GH-902\) Add client\_socket\_enabled boolean parameter [\#905](https://github.com/sensu/sensu-puppet/pull/905) ([treydock](https://github.com/treydock))
+
+**Fixed bugs:**
+
+- Windows Handlers not handled by module [\#870](https://github.com/sensu/sensu-puppet/issues/870)
+
+**Closed issues:**
+
+- beaker testing should support windows [\#896](https://github.com/sensu/sensu-puppet/issues/896)
+- Functional testing with serverspec [\#884](https://github.com/sensu/sensu-puppet/issues/884)
+
+**Merged pull requests:**
+
+- Fix spec test warnings [\#903](https://github.com/sensu/sensu-puppet/pull/903) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-896\) Support beaker testing on windows server 2012r2 \(continued\) [\#898](https://github.com/sensu/sensu-puppet/pull/898) ([treydock](https://github.com/treydock))
+- \(GH-884\) Update acceptance testing [\#887](https://github.com/sensu/sensu-puppet/pull/887) ([treydock](https://github.com/treydock))
+- Allow gem\_install\_options on sensu\_gem plugins [\#878](https://github.com/sensu/sensu-puppet/pull/878) ([statyk](https://github.com/statyk))
+- \[870\] Support Windows in sensu::handler [\#874](https://github.com/sensu/sensu-puppet/pull/874) ([treydock](https://github.com/treydock))
+
+## [v2.52.0](https://github.com/sensu/sensu-puppet/tree/v2.52.0) (2018-04-16)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.51.0...v2.52.0)
 
 **Implemented enhancements:**
@@ -10,7 +35,6 @@
 
 **Fixed bugs:**
 
-- Windows sensu purge issue [\#879](https://github.com/sensu/sensu-puppet/issues/879)
 - Use correct version of stdlib with macos-client in vagrant [\#892](https://github.com/sensu/sensu-puppet/pull/892) ([ghoneycutt](https://github.com/ghoneycutt))
 
 **Closed issues:**
