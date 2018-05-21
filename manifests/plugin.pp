@@ -117,8 +117,9 @@ define sensu::plugin (
     }
     'package': {
       $gem_install_options_real = $pkg_provider ? {
-        'gem'   => $gem_install_options,
-        default => undef,
+        'gem'       => $gem_install_options,
+        'sensu_gem' => $gem_install_options,
+        default     => undef,
       }
 
       package { $name:
