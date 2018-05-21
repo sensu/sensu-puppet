@@ -11,12 +11,12 @@ fixtures:
       ref: v1.1.3
     dsc:
       repo: git://github.com/puppetlabs/puppetlabs-dsc.git
-      ref: 1.4.1
+      ref: 1.6.0
     acl:
       repo: git://github.com/puppetlabs/puppetlabs-acl.git
       ref: 2.0.1
     powershell:
       repo: git://github.com/puppetlabs/puppetlabs-powershell.git
-      ref: 2.1.0
+      ref: 2.1.5
   symlinks:
     sensu: "#{source_dir}"
