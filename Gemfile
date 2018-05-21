@@ -53,6 +53,7 @@ group :system_tests do
   gem 'beaker-module_install_helper', :require => false
   gem 'vagrant-wrapper',              :require => false
   gem 'beaker-windows',               :require => false
+  gem 'beaker-testmode_switcher',     :require => false
 end
 
 group :development do

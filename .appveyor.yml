@@ -1,0 +1,26 @@
+build: off
+
+branches:
+  only:
+    - master
+
+# ruby versions under test
+environment:
+  matrix:
+    - RUBY_VERSION: 24-x64
+      PUPPET_GEM_VERSION: '~> 5'
+      BEAKER_TESTMODE: local
+
+matrix:
+  fast_finish: true
+
+install:
+  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - SET LOG_SPEC_ORDER=true
+  - ruby -v
+  - gem -v
+  - bundle -v
+  - bundle install --jobs 4 --retry 2 --without development
+
+test_script:
+  - bundle exec rake beaker:windows-server-2012r2

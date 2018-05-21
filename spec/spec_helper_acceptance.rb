@@ -3,6 +3,9 @@ require 'beaker-rspec'
 #require 'beaker/puppet_install_helper'
 require 'beaker/module_install_helper'
 
+# This allows local windows testing with appveyor
+require 'beaker/testmode_switcher/dsl'
+
 # Helper does not yet support Puppet 5
 #install_puppetlabs_release_repo_on(hosts, 'puppet5')
 install_puppet_agent_on(hosts, :puppet_collection => 'puppet5', :puppet_agent_version => ENV['PUPPET_INSTALL_VERSION'])
