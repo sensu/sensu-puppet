@@ -1,0 +1,9 @@
+HOSTS:
+  windows-server-amd64:
+    roles:
+      - agent
+    platform: windows-server-amd64
+    is_cygwin: false
+CONFIG:
+  log_level: verbose
+  type: foss

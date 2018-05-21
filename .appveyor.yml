@@ -23,4 +23,4 @@ install:
   - bundle install --jobs 4 --retry 2 --without development
 
 test_script:
-  - bundle exec rake beaker:windows-server-2012r2
+  - bundle exec rake beaker:windows-server-2012r2-local
