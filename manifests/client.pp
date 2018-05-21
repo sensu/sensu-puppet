@@ -99,9 +99,15 @@ class sensu::client (
     mode   => $::sensu::file_mode,
   }
 
-  $socket_config = {
-    bind => $::sensu::client_bind,
-    port => $::sensu::client_port,
+  if $::sensu::client_socket_enabled {
+    $socket_config = {
+      bind => $::sensu::client_bind,
+      port => $::sensu::client_port,
+    }
+  } else {
+    $socket_config = {
+      enabled => false,
+    }
   }
 
   sensu_client_config { $::fqdn:

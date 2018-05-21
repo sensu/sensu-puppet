@@ -149,6 +149,18 @@ describe 'sensu', :type => :class do
           end
         end
 
+        describe 'socket' do
+          context " => {'client_bind' => '0.0.0.0', 'client_port' => 3031}" do
+            let(:params_override) { {client_bind: '0.0.0.0', client_port: 3031} }
+            it { is_expected.to contain_sensu_client_config(title).with(socket: {'bind' => '0.0.0.0', 'port' => 3031}) }
+          end
+
+          context " => {'client_socket_enabled' => false}" do
+            let(:params_override) { {client_socket_enabled: false} }
+            it { is_expected.to contain_sensu_client_config(title).with(socket: {'enabled' => false}) }
+          end
+        end
+
         describe 'servicenow' do
           servicenow = {
             'configuration_item' => {

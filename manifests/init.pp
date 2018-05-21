@@ -160,6 +160,8 @@
 #
 # @param subscriptions Default subscriptions used by the client
 #
+# @param client_socket_enabled Boolean that determines if client socket will be enabled
+#
 # @param client_address Address of the client to report with checks
 #
 # @param client_name Name of the client to report with checks
@@ -411,6 +413,7 @@ class sensu (
   Optional[String]   $api_ssl_keystore_file = undef,
   Optional[String]   $api_ssl_keystore_password = undef,
   Variant[String,Array] $subscriptions = [],
+  Boolean            $client_socket_enabled = true,
   String             $client_bind = '127.0.0.1',
   Integer            $client_port = 3030,
   String             $client_address =  $::ipaddress,
