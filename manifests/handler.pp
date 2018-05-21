@@ -54,7 +54,10 @@ define sensu::handler(
   Array $filters                   = [],
   # Used to install the handler
   Optional[Pattern[/^puppet:\/\//]] $source = undef,
-  String $install_path             = '/etc/sensu/handlers',
+  String $install_path             = $::osfamily ? {
+    'windows' => 'C:/opt/sensu/handlers',
+    default   => '/etc/sensu/handlers',
+  },
   # Handler specific config
   Optional[Hash] $config           = undef,
   Any $subdue                      = undef,
@@ -101,9 +104,9 @@ define sensu::handler(
 
     ensure_resource('file', $handler, {
       ensure => $file_ensure,
-      owner  => 'sensu',
-      group  => 'sensu',
-      mode   => '0555',
+      owner  => $::sensu::user,
+      group  => $::sensu::group,
+      mode   => $::sensu::dir_mode,
       source => $source,
     })
 
@@ -116,16 +119,17 @@ define sensu::handler(
   }
 
   # handler configuration may contain "secrets"
-  file { "/etc/sensu/conf.d/handlers/${name}.json":
+  file { "${::sensu::conf_dir}/handlers/${name}.json":
     ensure => $file_ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
+    owner  => $::sensu::user,
+    group  => $::sensu::group,
+    mode   => $::sensu::file_mode,
     before => Sensu_handler[$name],
   }
 
   sensu_handler { $name:
     ensure          => $ensure,
+    base_path       => "${::sensu::conf_dir}/handlers",
     type            => $type,
     command         => $command_real,
     handlers        => $handlers,
@@ -140,6 +144,6 @@ define sensu::handler(
     handle_flapping => $handle_flapping,
     handle_silenced => $handle_silenced,
     notify          => $notify_services,
-    require         => File['/etc/sensu/conf.d/handlers'],
+    require         => File["${::sensu::conf_dir}/handlers"],
   }
 }
