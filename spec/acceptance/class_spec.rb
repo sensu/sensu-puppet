@@ -10,8 +10,13 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
         EOS
 
         # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes  => true)
+        if fact('osfamily') == 'windows'
+          execute_manifest_on(pp, :catch_failures => true)
+          execute_manifest_on(pp, :catch_changes => true)
+        else
+          apply_manifest(pp, :catch_failures => true)
+          apply_manifest(pp, :catch_changes  => true)
+        end
       end
 
       describe service('sensu-client') do
@@ -127,10 +132,11 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
         apply_manifest(pp, :catch_failures => true)
         if fact('osfamily') == 'windows'
           shell('waitfor SomethingThatIsNeverHappening /t 5 2>NUL', :acceptable_exit_codes => [0,1])
+          execute_manifest_on(pp, :catch_changes  => true)
         else
           shell('sleep 5') # Give services time to stop
+          apply_manifest(pp, :catch_changes  => true)
         end
-        apply_manifest(pp, :catch_changes  => true)
       end
 
       describe service('sensu-client') do
