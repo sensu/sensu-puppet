@@ -51,6 +51,8 @@ group :system_tests do
   gem 'serverspec',                   :require => false
   gem 'beaker-puppet_install_helper', :require => false
   gem 'beaker-module_install_helper', :require => false
+  gem 'vagrant-wrapper',              :require => false
+  gem 'beaker-windows',               :require => false
 end
 
 group :development do

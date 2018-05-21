@@ -10,7 +10,7 @@ install_puppet_agent_on(hosts, :puppet_collection => 'puppet5', :puppet_agent_ve
 install_module_on(hosts)
 install_module_dependencies_on(hosts)
 
-UNSUPPORTED_PLATFORMS = ['Suse','windows','AIX','Solaris']
+UNSUPPORTED_PLATFORMS = ['Suse','AIX','Solaris']
 
 RSpec.configure do |c|
   # Readable test descriptions
