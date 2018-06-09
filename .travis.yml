@@ -58,6 +58,12 @@ matrix:
     env: BEAKER_set="ubuntu-1404"
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1804"
+    bundler_args:
+    script: bundle exec rake beaker
 
 notifications:
   email: false

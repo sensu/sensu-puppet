@@ -17,6 +17,10 @@ when 'rspec-puppet'
   at_exit { RSpec::Puppet::Coverage.report! }
 end
 
+module_spec_dir = File.dirname(__FILE__)
+custom_facts = File.join(module_spec_dir, 'fixtures', 'facts')
+ENV['FACTERDB_SEARCH_PATHS'] = custom_facts
+
 RSpec.configure do |config|
   config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'

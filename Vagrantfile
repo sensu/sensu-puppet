@@ -77,6 +77,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
+  config.vm.define "ubuntu1804-agent", autostart: false do |agent|
+    agent.vm.box = "ubuntu/bionic64"
+    agent.vm.hostname = 'ubuntu1804-agent.example.com'
+    agent.vm.network  :private_network, ip: "192.168.52.13"
+    agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
+    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+  end
+
   config.vm.define "ubuntu1604-agent", autostart: false do |agent|
     agent.vm.box = "ubuntu/xenial64"
     agent.vm.hostname = 'ubuntu1604-agent.example.com'
