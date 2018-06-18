@@ -25,17 +25,18 @@ class sensu::agent (
   }
 
   package { 'sensu-agent':
-    ensure => $_version,
-    name   => $package_name,
-    before => File['sensu_etc_dir'],
+    ensure  => $_version,
+    name    => $package_name,
+    before  => File['sensu_etc_dir'],
+    require => Class['::sensu::repo'],
   }
 
   file { 'sensu_agent_config':
-    ensure   => 'file',
-    path     => "${etc_dir}/agent.yml",
-    content  => to_yaml($config_hash),
-    require  => Package['sensu-agent'],
-    notify   => Service['sensu-agent'],
+    ensure  => 'file',
+    path    => "${etc_dir}/agent.yml",
+    content => to_yaml($config_hash),
+    require => Package['sensu-agent'],
+    notify  => Service['sensu-agent'],
   }
 
   service { 'sensu-agent':

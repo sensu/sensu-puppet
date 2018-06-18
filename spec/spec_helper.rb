@@ -1,3 +1,6 @@
+require 'rspec-puppet-facts'
+include RspecPuppetFacts
+
 RSpec.configure do |config|
   config.mock_with :rspec
 end
@@ -14,6 +17,10 @@ when 'rspec-puppet'
   at_exit { RSpec::Puppet::Coverage.report! }
 end
 
+module_spec_dir = File.dirname(__FILE__)
+custom_facts = File.join(module_spec_dir, 'fixtures', 'facts')
+ENV['FACTERDB_SEARCH_PATHS'] = custom_facts
+
 RSpec.configure do |config|
   config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
@@ -23,13 +30,15 @@ RSpec.configure do |config|
     # facts being exercised with something like
     # Facter.collection.loader.load(:ipaddress)
     Facter.clear
-    Facter.clear_messages
   end
   config.default_facts = {
     :environment               => 'rp_env',
     :ipaddress                 => '127.0.0.1',
     :kernel                    => 'Linux',
     :osfamily                  => 'RedHat',
+    :os                        => {
+      :family => 'RedHat',
+    },
     :operatingsystem           => 'RedHat',
     :operatingsystemmajrelease => '7',
     :fqdn                      => 'testfqdn.example.com',

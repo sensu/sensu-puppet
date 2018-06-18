@@ -1,15 +1,15 @@
 Facter.add(:sensu_version) do
-  case Facter.value(:kernel)
-  when "windows" || "Windows"
-    setcode do
-      if File.exists? 'C:\opt\sensu\embedded\bin\sensu-client.bat'
-        sensuversion = Facter::Util::Resolution.exec('C:\opt\sensu\embedded\bin\sensu-client.bat --version 2>&1')
-      end
-    end
+  sensu_agent = nil
+  if File.exists? 'C:\opt\sensu\embedded\bin\sensu-agent.bat'
+    sensu_agent = 'C:\opt\sensu\embedded\bin\sensu-agent.bat'
   else
-    setcode do
-      if File.exists? '/opt/sensu/embedded/bin/sensu-client'
-        sensuversion = Facter::Util::Resolution.exec('/opt/sensu/embedded/bin/sensu-client --version 2>&1')
+    sensu_agent = Facter::Util::Resolution.which('sensu-agent')
+  end
+  setcode do
+    if sensu_agent
+      output = Facter::Util::Resolution.exec("#{sensu_agent} version 2>&1")
+      if output =~ /^sensu-agent version ([^,]+)/
+        $1
       end
     end
   end

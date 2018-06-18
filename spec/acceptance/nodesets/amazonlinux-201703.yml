@@ -1,7 +1,8 @@
 HOSTS:
-  amazonlinux-201703:
+  sensu_agent:
     roles:
       - agent
+      - sensu_agent
     platform: el-6-x86_64
     hypervisor: docker
     image: amazonlinux:2017.03
@@ -10,7 +11,21 @@ HOSTS:
       - '/sbin/init'
     docker_image_commands:
       - 'yum install -y tar wget cronie git upstart'
-    docker_container_name: 'sensu-amazonlinux-201703'
+    docker_container_name: 'sensu-agent-amazonlinux-201703'
+  sensu_backend:
+    roles:
+      - agent
+      - sensu_backend
+      - default
+    platform: el-6-x86_64
+    hypervisor: docker
+    image: amazonlinux:2017.03
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'yum install -y tar wget cronie git upstart'
+    docker_container_name: 'sensu-backend-amazonlinux-201703'
 CONFIG:
   log_level: debug
   type: foss

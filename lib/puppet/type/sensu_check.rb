@@ -1,92 +1,40 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'boolean_property.rb'))
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'to_type.rb'))
+require_relative '../../puppet_x/sensu/type'
+require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/hash_property'
+require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_check) do
   @doc = "Manages Sensu checks"
 
-  class SensuCheckArrayProperty < Puppet::Property
+  extend PuppetX::Sensu::Type
+  add_autorequires()
 
-    def should
-      if @should and @should[0] == :absent
-        :absent
-      else
-        @should
+  ensurable
+
+  newparam(:name, :namevar => true) do
+    desc "The name of the check."
+    validate do |value|
+      unless value =~ /^[\w\.\-]+$/
+        raise ArgumentError, "sensu_check name invalid"
       end
     end
-
-  end
-
-  def initialize(*args)
-    super *args
-
-    if c = catalog
-      self[:notify] = [
-        "Service[sensu-client]",
-        "Service[sensu-server]",
-        "Service[sensu-enterprise]",
-        "Service[sensu-api]",
-      ].select { |ref| c.resource(ref) }
-    end
-  end
-
-  ensurable do
-    newvalue(:present) do
-      provider.create
-    end
-
-    newvalue(:absent) do
-      provider.destroy
-    end
-
-    defaultto :present
-  end
-
-  newparam(:name) do
-    desc "The name of the check."
   end
 
   newproperty(:command) do
     desc "Command to be run by the check"
-    newvalues(/.*/, :absent)
   end
 
-  newproperty(:dependencies, :array_matching => :all, :parent => SensuCheckArrayProperty) do
-    desc "Dependencies of this check"
-    newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
+  newproperty(:subscriptions, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu entity subscriptions that check requests will be sent to."
   end
 
-  newproperty(:handlers, :array_matching => :all, :parent => SensuCheckArrayProperty) do
+  newproperty(:handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "List of handlers that responds to this check"
-    newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
   end
 
-  newproperty(:contacts, :array_matching => :all, :parent => SensuCheckArrayProperty) do
-    desc "Contact names to override handler configuration via Contact Routing"
-    # Valid names documented at
-    # https://sensuapp.org/docs/0.29/enterprise/contact-routing.html#contact-names
-    newvalues(/^[\w\.-]+$/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
-  end
-
-  newproperty(:high_flap_threshold) do
-    desc "A host is determined to be flapping when the percent change exceedes this threshold."
-    newvalues(/.*/, :absent)
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
+  newproperty(:interval, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "How frequently the check runs in seconds"
+    newvalues(/^[0-9]+$/, :absent)
   end
 
   newproperty(:cron) do
@@ -94,158 +42,134 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:interval) do
-    desc "How frequently the check runs in seconds"
-    newvalues(/.*/, :absent)
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
+  newproperty(:publish, :boolean => true) do
+    desc "If check requests are published for the check."
+    newvalues(:true, :false)
   end
 
-  newproperty(:occurrences) do
-    desc "The number of event occurrences before the handler should take action."
-    newvalues(/.*/, :absent)
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
+  newproperty(:timeout, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "The check execution duration timeout in seconds (hard stop)."
+    newvalues(/^[0-9]+$/, :absent)
   end
 
-  newproperty(:refresh) do
-    desc "The number of seconds sensu-plugin-aware handlers should wait before taking second action."
-    newvalues(/.*/, :absent)
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
+  newproperty(:ttl, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "Check ttl in seconds"
+    newvalues(/^[0-9]+$/, :absent)
   end
 
-  newparam(:base_path) do
-    desc "The base path to the client config file"
-    defaultto '/etc/sensu/conf.d/checks'
+  newproperty(:stdin, :boolean => true) do
+    desc "If the Sensu agent writes JSON serialized Sensu entity and check data to the command process’ STDIN"
+    newvalues(:true, :false)
   end
 
-  newproperty(:low_flap_threshold) do
-    desc "A host is determined to be flapping when the percent change is below this threshold."
-    newvalues(/.*/, :absent)
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
-    end
+  newproperty(:low_flap_threshold, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "The flap detection low threshold (% state change) for the check"
+    newvalues(/^[0-9]+$/, :absent)
   end
 
-  newproperty(:source) do
-    desc "The check source, used to create a JIT Sensu client for an external resource (e.g. a network switch)."
+  newproperty(:high_flap_threshold, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "The flap detection high threshold (% state change) for the check"
+    newvalues(/^[0-9]+$/, :absent)
+  end
+
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu assets (names), required at runtime for the execution of the command"
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:subscribers, :array_matching => :all, :parent => SensuCheckArrayProperty) do
-    desc "Who is subscribed to this check"
-    newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
-  end
-
-  newproperty(:custom) do
-    desc "Custom check variables"
-    include PuppetX::Sensu::ToType
-
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
-        end
-      else
-        true
-      end
-    end
-
-    defaultto {}
-  end
-
-  newproperty(:type) do
-    desc "What type of check is this"
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:standalone, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc "Whether this is a standalone check"
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:timeout) do
-    desc "Check timeout in seconds, after it fails"
-    newvalues(/.*/, :absent)
-    munge do |value|
-      return :absent if value.to_s == 'absent'
-      i, f = value.to_i, value.to_f
-      i == f ? i : f
-    end
-  end
-
-  newproperty(:aggregate) do
-    desc "Whether check is aggregate"
-    newvalues(/.*/, :absent)
-    munge do |value|
-      return :absent if value.to_s == 'absent'
-      case value
-      when true, 'true', 'True', :true, 1
-        true
-      when false, 'false', 'False', :false, 0
-        false
-      else
-        value
-      end
-    end
-  end
-
-  newproperty(:aggregates, :array_matching => :all, :parent => SensuCheckArrayProperty) do
-    desc "An array of aggregates to add to the check"
-    newvalues(/.*/, :absent)
-    def insync?(is)
-      return is.sort == should.sort if is.is_a?(Array) && should.is_a?(Array)
-      is == should
-    end
-  end
-
-  newproperty(:handle, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc "Whether check event send to a handler"
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:publish, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc "Whether check is unpublished"
+  newproperty(:check_hooks, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu hooks (names), which are commands run by the Sensu agent in response to the result of the check command execution."
     newvalues(/.*/, :absent)
   end
 
   newproperty(:subdue) do
-    desc "Check subdue"
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:proxy_requests) do
-    desc "Proxy Requests"
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:ttl) do
-    desc "Check ttl in seconds"
-    newvalues(/.*/, :absent)
-    munge do |value|
-      value.to_s == 'absent' ? :absent : value.to_i
+    desc "A Sensu subdue, a hash of days of the week, which define one or more time windows in which the check is not scheduled to be executed."
+    validate do |value|
+      unless value.is_a?(Hash)
+        raise ArgumentError, "sensu_check subdue must be a Hash"
+      end
     end
   end
 
-  autorequire(:package) do
-    ['sensu']
+  newproperty(:proxy_entity_id) do
+    desc "The check ID, used to create a proxy entity for an external resource (i.e., a network switch)."
+    newvalues(/^[\w\.\-]+$/, :absent)
+    validate do |value|
+      unless value =~ /^[\w\.\-]+$/
+        raise ArgumentError, "check_check proxy_entity_id invalid"
+      end
+    end
+  end
+
+  newproperty(:round_robin, :boolean => true) do
+    desc "If the check should be executed on a single entity within a subscription in a round-robin fashion."
+    newvalues(:true, :false)
+  end
+
+  # extended_attributes
+
+  newproperty(:organization) do
+    desc "The Sensu RBAC organization that this check belongs to."
+    #newvalues(/.*/, :absent)
+    defaultto 'default'
+  end
+
+  newproperty(:environment) do
+    desc "The Sensu RBAC environment that this check belongs to."
+    #newvalues(/.*/, :absent)
+    defaultto 'default'
+  end
+
+  newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Sensu entity attributes to match entities in the registry, using Sensu Query Expressions"
+    #newvalues(/.*/, :absent)
+  end
+
+  newproperty(:proxy_requests_splay, :boolean => true) do
+    desc "If proxy check requests should be splayed"
+    newvalues(:true, :false)
+  end
+
+  newproperty(:proxy_requests_splay_coverage, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "The splay coverage percentage use for proxy check request splay calculation."
+    #newvalues(/^[0-9]+$/, :absent)
+  end
+
+  newproperty(:metric_format) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:metric_handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:output_metric_format) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:output_metric_handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    #desc
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include as with the check, that appear as outer-level attributes."
+    defaultto {}
+  end
+
+  validate do
+    required_properties = [
+      :command,
+      :subscriptions,
+      :handlers,
+    ]
+    required_properties.each do |property|
+      if self[:ensure] == :present && self[property].nil?
+        fail "You must provide a #{property}"
+      end
+    end
   end
 end

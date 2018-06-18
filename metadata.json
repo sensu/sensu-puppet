@@ -13,19 +13,6 @@
   ],
   "operatingsystem_support": [
     {
-      "operatingsystem": "Darwin",
-      "operatingsystemrelease": [
-        "17"
-      ]
-    },
-    {
-      "operatingsystem": "Windows",
-      "operatingsystemrelease": [
-        "Server 2008 R2",
-        "Server 2012 R2"
-      ]
-    },
-    {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",
@@ -42,7 +29,6 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "7",
         "8",
         "9"
       ]
@@ -51,13 +37,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "14.04",
-        "16.04"
-      ]
-    },
-    {
-      "operatingsystem": "Amazon",
-      "operatingsystemrelease": [
-        "2017.03"
+        "16.04",
+        "18.04"
       ]
     }
   ],

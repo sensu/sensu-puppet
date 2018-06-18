@@ -24,6 +24,9 @@ class sensu (
   Boolean $manage_repo = true,
 ) {
 
+  if $manage_repo {
+    include ::sensu::repo
+  }
   include ::sensu::agent
 
   file { 'sensu_etc_dir':
@@ -33,22 +36,10 @@ class sensu (
     recurse => $etc_dir_purge,
   }
 
-  case $osfamily {
+  case $::facts['osfamily'] {
     'RedHat': {
-      if $manage_repo == true {
-        # TODO: change from nightly to stable once there are stable releases
-        yumrepo { 'sensu_nightly':
-          baseurl         => "https://packagecloud.io/sensu/nightly/el/${::operatingsystemmajrelease}/\$basearch",
-          repo_gpgcheck   => 1,
-          gpgcheck        => 0,
-          enabled         => 1,
-          gpgkey          => 'https://packagecloud.io/sensu/nightly/gpgkey',
-          sslverify       => 1,
-          sslcacert       => '/etc/pki/tls/certs/ca-bundle.crt',
-          metadata_expire => 300,
-          before          => Package['sensu-agent'],
-        }
-      }
+    }
+    'Debian': {
     }
     default: {
       fail("Detected osfamily <${::osfamily}>. Only RedHat is supported.")

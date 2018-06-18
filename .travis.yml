@@ -20,8 +20,6 @@ script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec 
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.9
-    env: PUPPET_GEM_VERSION="~> 4"
   - rvm: 2.4.3
     env: PUPPET_GEM_VERSION="~> 5"
   - rvm: 2.4.2
@@ -39,25 +37,7 @@ matrix:
   - rvm: 2.4.2
     sudo: required
     services: docker
-    env: BEAKER_set="debian-7"
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.4.2
-    sudo: required
-    services: docker
-    env: BEAKER_set="debian-8"
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.4.2
-    sudo: required
-    services: docker
     env: BEAKER_set="debian-9"
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.4.2
-    sudo: required
-    services: docker
-    env: BEAKER_set="ubuntu-1404"
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.2
@@ -69,7 +49,19 @@ matrix:
   - rvm: 2.4.2
     sudo: required
     services: docker
-    env: BEAKER_set="amazonlinux-201703"
+    env: BEAKER_set="debian-8"
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1404"
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1804"
     bundler_args:
     script: bundle exec rake beaker
 

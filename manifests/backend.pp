@@ -6,7 +6,8 @@ class sensu::backend (
   String $service_ensure = 'running',
   Boolean $service_enable = true,
   Hash $config_hash = {},
-  String $url = 'http://127.0.0.1:8080',
+  String $url_host = '127.0.0.1',
+  Stdlib::Port $url_port = 8080,
   String $username = 'admin',
   String $password = 'P@ssw0rd!',
 ) {
@@ -15,6 +16,8 @@ class sensu::backend (
 
   $etc_dir = $::sensu::etc_dir
 
+  $url = "http://${url_host}:${url_port}"
+
   if $version == undef {
     $_version = $::sensu::version
   } else {
@@ -22,21 +25,33 @@ class sensu::backend (
   }
 
   package { 'sensu-cli':
-    ensure => $_version,
-    name   => $cli_package_name,
+    ensure  => $_version,
+    name    => $cli_package_name,
+    require => Class['::sensu::repo'],
   }
 
+  sensu_api_validator { 'sensu':
+    sensu_api_server => $url_host,
+    sensu_api_port   => $url_port,
+    require          => Service['sensu-backend'],
+  }
+  # Ensure sensu-backend is up before starting sensu-agent
+  Sensu_api_validator['sensu'] -> Service['sensu-agent']
+
+  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'"
+  $sensuctl_configure_creates = '/root/.config/sensu/sensuctl/cluster'
   exec { 'sensuctl_configure':
-    command => "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'",
-    creates => '/root/.config/sensu/sensuctl/cluster',
+    command => "${sensuctl_configure} || rm -f ${sensuctl_configure_creates}",
+    creates => $sensuctl_configure_creates,
     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
-    require => Package['sensu-cli'],
+    require => Sensu_api_validator['sensu'],
   }
 
   package { 'sensu-backend':
-    ensure => $_version,
-    name   => $package_name,
-    before => File['sensu_etc_dir'],
+    ensure  => $_version,
+    name    => $package_name,
+    before  => File['sensu_etc_dir'],
+    require => Class['::sensu::repo'],
   }
 
   file { 'sensu_backend_config':

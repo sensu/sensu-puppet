@@ -1,0 +1,12 @@
+[
+  {
+    "id": "entity:sensu-backend.example.com:*",
+    "expire": -1,
+    "creator": "admin",
+    "reason": "test",
+    "subscription": "entity:sensu-backend.example.com",
+    "organization": "default",
+    "environment": "default",
+    "begin": 1527114555
+  }
+]

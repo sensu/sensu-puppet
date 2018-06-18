@@ -1,7 +1,8 @@
 HOSTS:
-  centos-7:
+  sensu_agent:
     roles:
       - agent
+      - sensu_agent
     platform: el-7-x86_64
     hypervisor: docker
     image: centos:7
@@ -10,7 +11,21 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - 'yum install -y tar wget cronie git iproute'
-    docker_container_name: 'sensu-el7'
+    docker_container_name: 'sensu-agent-el7'
+  sensu_backend:
+    roles:
+      - agent
+      - sensu_backend
+      - default
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: centos:7
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'yum install -y tar wget cronie git iproute'
+    docker_container_name: 'sensu-backend-el7'
 CONFIG:
   log_level: debug
   type: foss

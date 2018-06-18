@@ -1,0 +1,12 @@
+[
+  {
+    "name": "marketing-site",
+    "command": "check-http.rb -u https://dean-learner.book",
+    "subscriptions": ["demo"],
+    "interval": 15,
+    "handlers": ["slack"],
+    "organization": "default",
+    "environment": "default"
+  }
+]
+
