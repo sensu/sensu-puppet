@@ -15,7 +15,7 @@ before_install:
 
 sudo: false
 
-script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec strings:generate'
+script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec strings:generate reference'
 
 matrix:
   fast_finish: true
