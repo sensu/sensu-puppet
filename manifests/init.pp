@@ -334,6 +334,8 @@
 #
 # @param java_opts Value of the JAVA_OPTS environment variable.
 #
+# @param manage_etc_default_sensu Manage /etc/default/sensu file content
+#
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = 'installed',
   String             $sensu_plugin_name = 'sensu-plugin',
@@ -373,6 +375,7 @@ class sensu (
   Boolean            $manage_plugins_dir = true,
   Boolean            $manage_handlers_dir = true,
   Boolean            $manage_mutators_dir = true,
+  Boolean            $manage_etc_default_sensu = true,
   Optional[String]   $sensu_user = undef,
   Optional[String]   $sensu_group = undef,
   Optional[Stdlib::Filemode] $config_dir_mode = $::osfamily ? {

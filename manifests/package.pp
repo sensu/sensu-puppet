@@ -205,7 +205,7 @@ class sensu::package (
     }
   }
 
-  if $::osfamily != 'windows' {
+  if ( $::osfamily != 'windows' ) and ( $::sensu::manage_etc_default_sensu ) {
     $template_content = $::osfamily ? {
       'Darwin' => 'EMBEDDED_RUBY=true',
       default  => template("${module_name}/sensu.erb")
