@@ -155,6 +155,11 @@ Puppet::Type.newtype(:sensu_check) do
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:env_vars, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of environment variables to use with command execution."
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
     desc "Custom attributes to include as with the check, that appear as outer-level attributes."
     defaultto {}
