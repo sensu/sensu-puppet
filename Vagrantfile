@@ -163,8 +163,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # puppet is not in the PATH.  The second invokes a new shell which will have
     # Puppet in the PATH.
     #
-    ## Install Puppet
+    ## Install Puppet and Powershell 5
     client.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
+    ## Reload to apply Powershell 5 install
+    client.vm.provision :reload
     ## Symlink module into place, run puppet module install for puppet apply
     client.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
     ## Install Sensu using the default Windows package provider (MSI)
