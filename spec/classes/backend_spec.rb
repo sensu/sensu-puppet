@@ -10,6 +10,13 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu::backend')}
 
         it {
+          should contain_package('bcrypt').with({
+            'ensure'   => 'installed',
+            'provider' => 'puppet_gem',
+          })
+        }
+
+        it {
           should contain_package('sensu-cli').with({
             'ensure'  => 'installed',
             'name'    => 'sensu-cli',

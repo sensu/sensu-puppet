@@ -1,0 +1,24 @@
+[
+  {
+    "username": "admin",
+    "roles": [
+      "admin"
+    ],
+    "password": "$2a$10$lFktTbaZf20GhybITpa4uebwpw2sv4YTs2aqFeVfuClvBjRBAjH26",
+    "disabled": false
+  },
+  {
+    "username": "agent",
+    "roles": [
+      "agent"
+    ],
+    "disabled": false
+  },
+  {
+    "username": "sensu",
+    "roles": [
+      "read-only"
+    ],
+    "disabled": false
+  }
+]

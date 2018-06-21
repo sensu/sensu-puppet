@@ -56,6 +56,12 @@ class sensu::backend (
     $_version = $version
   }
 
+  package { 'bcrypt':
+    ensure   => 'installed',
+    provider => 'puppet_gem',
+  }
+  Package['bcrypt'] -> Sensu_user<| |>
+
   package { 'sensu-cli':
     ensure  => $_version,
     name    => $cli_package_name,
