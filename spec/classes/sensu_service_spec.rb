@@ -37,6 +37,7 @@ describe 'sensu', :type => :class do
                 :major => '2012 R2',
               },
             },
+            :powershell_version => '5.0.10586.117',
           }
         end
 
