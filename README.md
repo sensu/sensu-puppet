@@ -87,9 +87,13 @@ vagrant provision sensu-backend-peer1 sensu-backend-peer2
 
 The following example will configure sensu-backend, sensu-agent on backend and add a check.
 By default this module will configure the backend to use Puppet's SSL certificate and CA.
+It's advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
 
 ```puppet
-  include sensu::backend
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
   include sensu::agent
   sensu_check { 'check-cpu':
     ensure        => 'present',
@@ -319,18 +323,6 @@ The Sensu v2 support is designed so that all resources managed by `sensuctl` are
 This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
 
 The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
-
-The sensuctl username and password can not be configured by this module due to limitations with sensuctl.
-This module uses the default username `admin` and default password `P@ssw0rd!`.
-The checklist at [sensu-puppet#901](https://github.com/sensu/sensu-puppet/issues/901) will be updated as progress is made.
-
-To change the `admin` password used by sensuctl the following steps can be taken:
-```
-sensuctl user change-password admin --current-password 'P@ssw0rd!' --new-password 'changeme'
-sensuctl configure -n --username admin --password 'changeme'
-```
-Update the `sensu::backend::password` parameter to the new value in case `sensuctl configure` has to be run via `sensu_configure` type.
-
 
 ### Notes regarding support
 

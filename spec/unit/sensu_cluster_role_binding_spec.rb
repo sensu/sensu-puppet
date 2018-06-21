@@ -157,6 +157,28 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
     expect(rel.target.ref).to eq(binding.ref)
   end
 
+  it 'should autorequire sensu_user by user' do
+    config[:subjects] = [{'type' => 'User', 'name' => 'test'}]
+    user = Puppet::Type.type(:sensu_user).new(:name => 'test', :groups => ['group'], :password => 'foobar')
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource binding
+    catalog.add_resource user
+    rel = binding.autorequire[0]
+    expect(rel.source.ref).to eq(user.ref)
+    expect(rel.target.ref).to eq(binding.ref)
+  end
+
+  it 'should autorequire sensu_user by group' do
+    config[:subjects] = [{'type' => 'Group', 'name' => 'group'}]
+    user = Puppet::Type.type(:sensu_user).new(:name => 'test', :groups => ['group'], :password => 'foobar')
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource binding
+    catalog.add_resource user
+    rel = binding.autorequire[0]
+    expect(rel.source.ref).to eq(user.ref)
+    expect(rel.target.ref).to eq(binding.ref)
+  end
+
   include_examples 'autorequires', false do
     let(:res) { binding }
   end

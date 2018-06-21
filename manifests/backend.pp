@@ -33,8 +33,9 @@
 # @param ssl_key_source
 #   The SSL private key source
 # @param password
-#   Sensu admin password. Does not change admin password but is used when
-#   running `sensuctl configure` after initial bootstrap.
+#   Sensu backend admin password used to confiure sensuctl.
+# @param old_password
+#   Sensu backend admin old password needed when changing password.
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -50,6 +51,7 @@ class sensu::backend (
   String $ssl_cert_source = $facts['puppet_hostcert'],
   String $ssl_key_source = $facts['puppet_hostprivkey'],
   String $password = 'P@ssw0rd!',
+  Optional[String] $old_password = undef,
 ) {
 
   include ::sensu
@@ -99,6 +101,15 @@ class sensu::backend (
     username           => 'admin',
     password           => $password,
     bootstrap_password => 'P@ssw0rd!',
+  }
+  sensu_user { 'admin':
+    ensure        => 'present',
+    password      => $password,
+    old_password  => $old_password,
+    groups        => ['cluster-admins'],
+    disabled      => false,
+    configure     => true,
+    configure_url => $url,
   }
 
   if $use_ssl {

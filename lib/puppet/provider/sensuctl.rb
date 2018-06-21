@@ -6,6 +6,19 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
 
   commands :sensuctl => 'sensuctl'
 
+  def config_path
+    home = File.expand_path('~')
+    File.join(home, '.config/sensu/sensuctl/cluster')
+  end
+
+  def load_config(path)
+    return {} unless File.file?(path)
+    file = File.read(path)
+    config = JSON.parse(file)
+    Puppet.debug("CONFIG: #{config}")
+    config
+  end
+
   def self.type_properties
     resource_type.validproperties.reject { |p| p.to_sym == :ensure }
   end
