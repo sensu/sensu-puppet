@@ -10,7 +10,7 @@ HOSTS:
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git'
+      - 'yum install -y wget'
     docker_container_name: 'sensu-agent-el6'
   sensu_backend:
     roles:
@@ -24,7 +24,7 @@ HOSTS:
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git'
+      - 'yum install -y wget'
     docker_container_name: 'sensu-backend-el6'
 CONFIG:
   log_level: debug
