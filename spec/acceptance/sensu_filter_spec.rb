@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_filter', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
+describe 'sensu_filter' do
   node = only_host_with_role(hosts, 'sensu_backend')
   context 'default' do
     it 'should work without errors' do

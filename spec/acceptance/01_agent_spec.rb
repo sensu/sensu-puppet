@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::agent class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
+describe 'sensu::agent class' do
   node = only_host_with_role(hosts, 'sensu_agent')
   context 'default' do
     it 'should work without errors' do
