@@ -112,7 +112,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
     begin
       sensuctl_delete('mutator', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete mutator #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete mutator #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

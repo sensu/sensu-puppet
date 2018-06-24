@@ -119,7 +119,7 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
     begin
       sensuctl_delete('silenced', @property_hash[:id])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete silenced #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete silenced #{@property_hash[:id]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end
