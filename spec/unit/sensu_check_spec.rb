@@ -73,7 +73,8 @@ describe Puppet::Type.type(:sensu_check) do
     :check_hooks,
     :proxy_requests_entity_attributes,
     :metric_handlers,
-    :output_metric_handlers
+    :output_metric_handlers,
+    :env_vars
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
