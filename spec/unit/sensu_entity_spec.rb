@@ -64,11 +64,12 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # String regex validated properties
   [
+    :id,
     :entity_class,
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { entity }.to raise_error(Puppet::Error)
+      expect { entity }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -123,7 +124,7 @@ describe Puppet::Type.type(:sensu_entity) do
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { entity }.to raise_error(Puppet::Error)
+      expect { entity }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 
