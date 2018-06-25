@@ -4,7 +4,16 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_filter) do
-  @doc = "Manages Sensu filters"
+  desc <<-DESC
+Manages Sensu filters
+@example Create a filter
+  sensu_filter { 'test':
+    ensure     => 'present',
+    action     => 'allow',
+    statements => ["event.Entity.Environment == 'production'"],
+    when_days  => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

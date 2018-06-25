@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_organization) do
-  @doc = "Manages Sensu organizations"
+  desc <<-DESC
+Manages Sensu organizations
+@example Add an organization
+  sensu_organization { 'test':
+    ensure      => 'present',
+    description => 'Test organization',
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

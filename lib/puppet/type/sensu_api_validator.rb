@@ -1,10 +1,17 @@
 Puppet::Type.newtype(:sensu_api_validator) do
+  desc <<-DESC
+Verify that a connection can be successfully established between a node
+and the sensu-backend server.  Its primary use is as a precondition to
+prevent configuration changes from being applied if the sensu_backend
+server cannot be reached, but it could potentially be used for other
+purposes such as monitoring.
 
-  @doc = "Verify that a connection can be successfully established between a node
-          and the sensu-backend server.  Its primary use is as a precondition to
-          prevent configuration changes from being applied if the sensu_api
-          server cannot be reached, but it could potentially be used for other
-          purposes such as monitoring."
+@example Verify API connectivity to localhost:8080
+  sensu_api_validator { 'sensu':
+    sensu_api_server => 'localhost',
+    sensu_api_ort    => 8080,
+  }
+DESC
 
   ensurable do
     defaultvalues

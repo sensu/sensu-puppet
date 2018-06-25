@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_environment) do
-  @doc = "Manages Sensu environments"
+  desc <<-DESC
+Manages Sensu environments
+@example Create an environment
+  sensu_environment { 'test':
+    ensure      => 'present',
+    description => 'Test environment',
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

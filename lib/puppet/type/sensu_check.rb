@@ -4,7 +4,17 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_check) do
-  @doc = "Manages Sensu checks"
+  desc <<-DESC
+Manages Sensu checks
+@example Create a check
+  sensu_check { 'test':
+    ensure        => 'present',
+    command       => 'check-http.rb',
+    subscriptions => ['demo'],
+    handlers      => ['email'],
+    interval      => 60,
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()
