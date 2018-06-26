@@ -18,6 +18,9 @@ describe 'sensu_event' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
+      # Stop sensu-agent on agent node to avoid re-creating event
+      apply_manifest_on(only_host_with_role(hosts, 'sensu_agent'),
+        "service { 'sensu-agent': ensure => 'stopped' }")
       pp = <<-EOS
       include ::sensu::backend
       sensu_event { 'keepalive for sensu_agent':
