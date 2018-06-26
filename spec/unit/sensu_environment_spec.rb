@@ -54,7 +54,7 @@ describe Puppet::Type.type(:sensu_environment) do
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { environment }.to raise_error(Puppet::Error)
+      expect { environment }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -105,7 +105,7 @@ describe Puppet::Type.type(:sensu_environment) do
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { environment }.to raise_error(Puppet::Error)
+      expect { environment }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 

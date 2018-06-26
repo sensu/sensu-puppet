@@ -24,23 +24,6 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
     end
   end
 
-=begin
-  describe 'self.prefetch' do
-    it 'should set provider' do
-      allow(@provider).to receive(:sensuctl_list).with('handler').and_return(my_fixture_read('handler_list.json'))
-      instances = @provider.instances
-      resources = {}
-      instances.each do |i|
-        resources[i[:name]] = i
-      end
-      resources.each do |name, r|
-        expect(r).to receive(:provider=).with(@provider)
-      end
-      @provider.prefetch(resources)
-    end
-  end
-=end
-
   describe 'create' do
     it 'should create a handler' do
       @resource[:filters] = ["recurrence", "production"]

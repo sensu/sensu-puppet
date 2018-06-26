@@ -23,23 +23,6 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
     end
   end
 
-=begin
-  describe 'self.prefetch' do
-    it 'should set provider' do
-      allow(@provider).to receive(:sensuctl_list).with('hook').and_return(my_fixture_read('hook_list.json'))
-      instances = @provider.instances
-      resources = {}
-      instances.each do |i|
-        resources[i[:name]] = i
-      end
-      resources.each do |name, r|
-        expect(r).to receive(:provider=).with(@provider)
-      end
-      @provider.prefetch(resources)
-    end
-  end
-=end
-
   describe 'create' do
     it 'should create a hook' do
       expected_spec = {

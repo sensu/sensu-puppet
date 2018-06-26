@@ -56,7 +56,7 @@ describe Puppet::Type.type(:sensu_asset) do
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { asset }.to raise_error(Puppet::Error)
+      expect { asset }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -108,7 +108,7 @@ describe Puppet::Type.type(:sensu_asset) do
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { asset }.to raise_error(Puppet::Error)
+      expect { asset }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 

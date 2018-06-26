@@ -15,7 +15,7 @@ Puppet::Type.newtype(:sensu_entity) do
     desc "The unique ID of the entity"
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
-        raise ArgumentError, "sensu_entity id is invalid"
+        raise ArgumentError, "sensu_entity id invalid"
       end
     end
   end
@@ -24,7 +24,7 @@ Puppet::Type.newtype(:sensu_entity) do
     desc "The entity type"
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
-        raise ArgumentError, "sensu_entity entity_class is invalid"
+        raise ArgumentError, "sensu_entity entity_class invalid"
       end
     end
   end

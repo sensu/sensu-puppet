@@ -39,7 +39,7 @@ describe Puppet::Type.type(:sensu_handler) do
   it 'should not accept invalid type' do
     expect {
       handler[:type] = 'foo'
-    }.to raise_error(Puppet::Error)
+    }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are pipe, tcp, udp, set./)
   end
 
   defaults = {
@@ -72,7 +72,7 @@ describe Puppet::Type.type(:sensu_handler) do
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { handler }.to raise_error(Puppet::Error)
+      expect { handler }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -128,7 +128,7 @@ describe Puppet::Type.type(:sensu_handler) do
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { handler }.to raise_error(Puppet::Error)
+      expect { handler }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 

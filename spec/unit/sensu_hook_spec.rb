@@ -57,7 +57,7 @@ describe Puppet::Type.type(:sensu_hook) do
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { hook }.to raise_error(Puppet::Error)
+      expect { hook }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -115,7 +115,7 @@ describe Puppet::Type.type(:sensu_hook) do
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { hook }.to raise_error(Puppet::Error)
+      expect { hook }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 

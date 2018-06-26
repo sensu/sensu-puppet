@@ -25,23 +25,6 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
     end
   end
 
-=begin
-  describe 'self.prefetch' do
-    it 'should set provider' do
-      allow(@provider).to receive(:sensuctl_list).with('check').and_return(my_fixture_read('check_list.json'))
-      instances = @provider.instances
-      resources = {}
-      instances.each do |i|
-        resources[i[:name]] = i
-      end
-      resources.each do |name, r|
-        expect(r).to receive(:provider=).with(@provider)
-      end
-      @provider.prefetch(resources)
-    end
-  end
-=end
-
   describe 'create' do
     it 'should create a check' do
       @resource[:command] = 'check_ntp'
