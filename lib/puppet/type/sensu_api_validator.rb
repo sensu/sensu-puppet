@@ -13,10 +13,7 @@ purposes such as monitoring.
   }
 DESC
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc 'An arbitrary name used as the identity of the resource.'
