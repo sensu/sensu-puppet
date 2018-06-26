@@ -120,19 +120,16 @@ DESC
 
   newproperty(:organization) do
     desc "The Sensu RBAC organization that this check belongs to."
-    #newvalues(/.*/, :absent)
     defaultto 'default'
   end
 
   newproperty(:environment) do
     desc "The Sensu RBAC environment that this check belongs to."
-    #newvalues(/.*/, :absent)
     defaultto 'default'
   end
 
   newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "Sensu entity attributes to match entities in the registry, using Sensu Query Expressions"
-    #newvalues(/.*/, :absent)
   end
 
   newproperty(:proxy_requests_splay, :boolean => true) do
@@ -142,7 +139,6 @@ DESC
 
   newproperty(:proxy_requests_splay_coverage, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The splay coverage percentage use for proxy check request splay calculation."
-    #newvalues(/^[0-9]+$/, :absent)
   end
 
   newproperty(:metric_format) do
