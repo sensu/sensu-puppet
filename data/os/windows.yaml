@@ -1,0 +1,2 @@
+---
+sensu::etc_dir: 'C:/opt/sensu'

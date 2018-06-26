@@ -16,10 +16,7 @@
 #
 class sensu (
   String $version = 'installed',
-  Stdlib::Absolutepath $etc_dir = $::osfamily ? {
-    'windows' => 'C:/opt/sensu',
-    default   => '/etc/sensu',
-  },
+  Stdlib::Absolutepath $etc_dir = '/etc/sensu',
   Boolean $etc_dir_purge = true,
   Boolean $manage_repo = true,
 ) {
@@ -42,7 +39,7 @@ class sensu (
     'Debian': {
     }
     default: {
-      fail("Detected osfamily <${::osfamily}>. Only RedHat is supported.")
+      fail("Detected osfamily <${::osfamily}>. Only RedHat and Debian are supported.")
     }
   }
 }
