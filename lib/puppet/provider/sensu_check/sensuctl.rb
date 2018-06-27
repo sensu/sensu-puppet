@@ -37,7 +37,9 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
           value = value.to_s.to_sym
         end
         # Handle extended_attributes property
-        if ! type_properties.include?(key.to_sym)
+        if key == 'subdue'
+          check[:subdue_days] = value['days'] unless value.nil?
+        elsif ! type_properties.include?(key.to_sym)
           check[:extended_attributes][key] = value
         else
           check[key.to_sym] = value
@@ -91,7 +93,10 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       next if property.to_s =~ /^proxy_requests/
       next if property == :extended_attributes
       if [:true, :false].include?(value)
-        spec[property] = convert_boolean_property_value(value)
+        value = convert_boolean_property_value(value)
+      end
+      if property == :subdue_days
+        spec[:subdue] = { days: value }
       else
         spec[property] = value
       end
@@ -124,7 +129,10 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         next if property.to_s =~ /^proxy_requests/
         next if property == :extended_attributes
         if [:true, :false].include?(value)
-          spec[property] = convert_boolean_property_value(value)
+          value = convert_boolean_property_value(value)
+        end
+        if property == :subdue_days
+          spec[:subdue] = { days: value }
         elsif value == :absent
           spec[property] = nil
         else

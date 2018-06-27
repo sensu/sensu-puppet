@@ -1,12 +1,30 @@
 [
   {
-    "name": "marketing-site",
+    "check_hooks": null,
     "command": "check-http.rb -u https://dean-learner.book",
-    "subscriptions": ["demo"],
-    "interval": 15,
-    "handlers": ["slack"],
+    "environment": "default",
+    "handlers": [
+      "slack"
+    ],
+    "high_flap_threshold": 0,
+    "interval": 16,
+    "low_flap_threshold": 0,
+    "name": "marketing-site",
     "organization": "default",
-    "environment": "default"
+    "output_metric_format": "",
+    "output_metric_handlers": null,
+    "proxy_entity_id": "",
+    "publish": false,
+    "round_robin": false,
+    "runtime_assets": null,
+    "stdin": false,
+    "subdue": null,
+    "subscriptions": [
+      "demo"
+    ],
+    "timeout": 0,
+    "ttl": 0,
+    "history": null,
+    "issued": 0
   }
 ]
-

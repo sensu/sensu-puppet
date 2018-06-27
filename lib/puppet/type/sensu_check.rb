@@ -92,11 +92,22 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:subdue) do
+  newproperty(:subdue_days, :parent => PuppetX::Sensu::HashProperty) do
     desc "A Sensu subdue, a hash of days of the week, which define one or more time windows in which the check is not scheduled to be executed."
     validate do |value|
-      unless value.is_a?(Hash)
-        raise ArgumentError, "sensu_check subdue must be a Hash"
+      super(value)
+      value.each_pair do |k,v|
+        if ! ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','all'].include?(k.to_s)
+          raise ArgumentError, "subdue_days keys must be day of the week or 'all', not #{k}"
+        end
+        if ! v.is_a?(Array)
+          raise ArgumentError, "subdue_days hash values must be an Array"
+        end
+        v.each do |d|
+          if ! d.is_a?(Hash) || ! d.key?('begin') || ! d.key?('end')
+            raise ArgumentError, "subdue_days day time window must be a hash containing keys 'begin' and 'end'"
+          end
+        end
       end
     end
   end
