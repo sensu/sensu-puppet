@@ -245,6 +245,14 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
+  newproperty(:ttl_status) do
+    desc "Exit code for ttl"
+    newvalues(/.*/, :absent)
+    munge do |value|
+      value.to_s == 'absent' ? :absent : value.to_i
+    end
+  end
+
   autorequire(:package) do
     ['sensu']
   end

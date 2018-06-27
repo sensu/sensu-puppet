@@ -106,6 +106,7 @@ describe 'sensu::check', :type => :define do
         :publish             => true,
         :auto_resolve        => true,
         :ttl                 => 30
+        :ttl_status          => 1
       } }
 
       it do should contain_sensu__write_json(fpath).with(
@@ -130,6 +131,7 @@ describe 'sensu::check', :type => :define do
               'publish'             => true,
               'auto_resolve'        => true,
               'ttl'                 => 30
+              'ttl_status'          => 1
             }
           }
         }
@@ -176,6 +178,7 @@ describe 'sensu::check', :type => :define do
         :subscribers         => 'absent',
         :timeout             => 'absent',
         :ttl                 => 'absent',
+        :ttl_status          => 'absent',
         :type                => 'absent'
       } }
 

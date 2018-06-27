@@ -1904,6 +1904,15 @@ considered stale. Set this to 'absent' to remove it completely.
 
 Default value: `undef`
 
+##### `ttl_status`
+
+Data type: `Variant[Undef,Enum['absent'],Integer]`
+
+The exit code that a check with the ttl attribute should return.
+Set this to 'absent' to remove it completely.
+
+Default value: `undef`
+
 ##### `auto_resolve`
 
 Data type: `Variant[Undef,Enum['absent'],Boolean]`
@@ -2849,6 +2858,12 @@ Proxy Requests
 Valid values: /.*/, absent
 
 Check ttl in seconds
+
+##### `ttl_status`
+
+Valid values: /.*/, absent
+
+Exit code for ttl
 
 #### Parameters
 
