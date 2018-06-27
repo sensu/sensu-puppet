@@ -165,7 +165,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
     begin
       sensuctl_delete('check', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete check #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete check #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

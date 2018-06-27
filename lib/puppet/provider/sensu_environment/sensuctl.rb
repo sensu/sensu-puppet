@@ -112,7 +112,7 @@ Puppet::Type.type(:sensu_environment).provide(:sensuctl, :parent => Puppet::Prov
     begin
       sensuctl_delete('environment', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete environment #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete environment #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

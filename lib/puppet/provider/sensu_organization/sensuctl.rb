@@ -112,7 +112,7 @@ Puppet::Type.type(:sensu_organization).provide(:sensuctl, :parent => Puppet::Pro
     begin
       sensuctl_delete('organization', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete organization #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete organization #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

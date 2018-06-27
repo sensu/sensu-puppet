@@ -112,7 +112,7 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
     begin
       sensuctl_delete('asset', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete asset #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete asset #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

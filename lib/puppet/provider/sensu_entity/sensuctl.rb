@@ -138,7 +138,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
     begin
       sensuctl_delete('entity', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete entity #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete entity #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

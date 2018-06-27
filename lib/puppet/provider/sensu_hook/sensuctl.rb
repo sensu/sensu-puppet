@@ -112,7 +112,7 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
     begin
       sensuctl_delete('hook', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete hook #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete hook #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

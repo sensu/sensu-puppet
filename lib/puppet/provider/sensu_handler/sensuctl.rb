@@ -139,7 +139,7 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
     begin
       sensuctl_delete('handler', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete handler #{name} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete handler #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end
