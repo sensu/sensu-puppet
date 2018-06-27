@@ -4,7 +4,15 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_handler) do
-  @doc = "Manages Sensu handlers"
+  desc <<-DESC
+Manages Sensu handlers
+@example Create a handler
+  sensu_handler { 'test':
+    ensure  => 'present',
+    type    => 'pipe',
+    command => 'notify.rb'
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

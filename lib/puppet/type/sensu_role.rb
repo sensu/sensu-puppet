@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_role) do
-  @doc = "Manages Sensu roles"
+  desc <<-DESC
+Manages Sensu roles
+@example Add a role
+  sensu_role { 'test':
+    ensure => 'present',
+    rules  => [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read']}],
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

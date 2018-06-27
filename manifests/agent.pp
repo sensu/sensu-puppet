@@ -2,8 +2,19 @@
 #
 # Class to manage the Sensu agent.
 #
-# @param version Version of sensu to install.  Defaults to `installed` to support
+# @param version
+#   Version of sensu agent to install.  Defaults to `installed` to support
 #   Windows MSI packaging and to avoid surprising upgrades.
+# @param package_name
+#   Name of Sensu agent package. Defaults to `sensu-agent`.
+# @param service_name
+#   Name of the Sensu agent service. Defaults to `sensu-agent`.
+# @param service_ensure
+#   Sensu agent service ensure value. Defaults to `running`.
+# @param service_enable
+#   Sensu agent service enable value. Defaults to `true`
+# @param config_hash
+#   Sensu agent configuration hash used to define agent.yml. Defaults to `{}`
 #
 class sensu::agent (
   Optional[String] $version = undef,

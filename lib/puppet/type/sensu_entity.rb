@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_entity) do
-  @doc = "Manages Sensu entitys"
+  desc <<-DESC
+Manages Sensu entities
+@example Create an entity
+  sensu_entity { 'test':
+    ensure       => 'present',
+    entity_class => 'proxy',
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()
@@ -76,6 +83,7 @@ Puppet::Type.newtype(:sensu_entity) do
   end
 
   newproperty(:user) do
+    desc "Entity user"
     validate do |value|
       fail "user is read-only"
     end

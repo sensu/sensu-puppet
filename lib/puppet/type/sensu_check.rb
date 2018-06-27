@@ -4,7 +4,17 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_check) do
-  @doc = "Manages Sensu checks"
+  desc <<-DESC
+Manages Sensu checks
+@example Create a check
+  sensu_check { 'test':
+    ensure        => 'present',
+    command       => 'check-http.rb',
+    subscriptions => ['demo'],
+    handlers      => ['email'],
+    interval      => 60,
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()
@@ -110,19 +120,16 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:organization) do
     desc "The Sensu RBAC organization that this check belongs to."
-    #newvalues(/.*/, :absent)
     defaultto 'default'
   end
 
   newproperty(:environment) do
     desc "The Sensu RBAC environment that this check belongs to."
-    #newvalues(/.*/, :absent)
     defaultto 'default'
   end
 
   newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "Sensu entity attributes to match entities in the registry, using Sensu Query Expressions"
-    #newvalues(/.*/, :absent)
   end
 
   newproperty(:proxy_requests_splay, :boolean => true) do
@@ -132,7 +139,6 @@ Puppet::Type.newtype(:sensu_check) do
 
   newproperty(:proxy_requests_splay_coverage, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The splay coverage percentage use for proxy check request splay calculation."
-    #newvalues(/^[0-9]+$/, :absent)
   end
 
   newproperty(:metric_format) do

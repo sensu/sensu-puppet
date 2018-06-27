@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_silenced) do
-  @doc = "Manages Sensu silencing"
+  desc <<-DESC
+Manages Sensu silencing
+@example Create a silencing
+  sensu_silenced { 'test':
+    ensure       => 'present',
+    subscription => 'entity:sensu_agent',
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

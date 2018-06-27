@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_mutator) do
-  @doc = "Manages Sensu mutators"
+  desc <<-DESC
+Manages Sensu mutators
+@example Create a mutator
+  sensu_mutator { 'example':
+    ensure  => 'present',
+    command => 'example-mutator.rb',
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()

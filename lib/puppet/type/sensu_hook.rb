@@ -4,7 +4,14 @@ require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_hook) do
-  @doc = "Manages Sensu hooks"
+  desc <<-DESC
+Manages Sensu hooks
+@example Create a hook
+  sensu_hook { 'test':
+    ensure  => 'present',
+    command => 'ps aux',
+  }
+DESC
 
   extend PuppetX::Sensu::Type
   add_autorequires()
