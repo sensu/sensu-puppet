@@ -105,7 +105,7 @@ describe 'sensu::check', :type => :define do
         :handle              => true,
         :publish             => true,
         :auto_resolve        => true,
-        :ttl                 => 30
+        :ttl                 => 30,
         :ttl_status          => 1
       } }
 
@@ -130,7 +130,7 @@ describe 'sensu::check', :type => :define do
               'handle'              => true,
               'publish'             => true,
               'auto_resolve'        => true,
-              'ttl'                 => 30
+              'ttl'                 => 30,
               'ttl_status'          => 1
             }
           }
