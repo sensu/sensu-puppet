@@ -37,6 +37,19 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
     end
+    it 'should create user and reconfigure sensuctl' do
+      @resource[:configure] = true
+      expected_spec = {
+        :name => 'test',
+        :password => '$1$hash',
+        :disabled => false,
+      }
+      expect(@resource.provider).to receive(:sensuctl_create).with('user', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl).with('configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','P@ssw0rd!')
+      @resource.provider.create
+      property_hash = @resource.provider.instance_variable_get("@property_hash")
+      expect(property_hash[:ensure]).to eq(:present)
+    end
   end
 
   describe 'flush' do
@@ -48,6 +61,28 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('user', expected_spec)
       @resource.provider.roles = ['admin']
+      @resource.provider.flush
+    end
+    it 'should update a user password' do
+      expected_spec = {
+        :name => 'test',
+        :password => '$1$hash',
+        :disabled => false,
+      }
+      expect(@resource.provider).to receive(:sensuctl_create).with('user', expected_spec)
+      @resource.provider.password = 'foobar'
+      @resource.provider.flush
+    end
+    it 'should update a user password and reconfigure' do
+      @resource[:configure] = true
+      expected_spec = {
+        :name => 'test',
+        :password => '$1$hash',
+        :disabled => false,
+      }
+      expect(@resource.provider).to receive(:sensuctl_create).with('user', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl).with('configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','foobar')
+      @resource.provider.password = 'foobar'
       @resource.provider.flush
     end
   end

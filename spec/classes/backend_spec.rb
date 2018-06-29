@@ -42,6 +42,18 @@ describe 'sensu::backend', :type => :class do
         }
 
         it {
+          should contain_sensu_user('admin').with({
+            'ensure'        => 'present',
+            'password'      => 'P@ssw0rd!',
+            'roles'         => ['admin'],
+            'disabled'      => 'false',
+            'configure'     => 'true',
+            'configure_url' => 'http://127.0.0.1:8080',
+            'require'       => 'Exec[sensuctl_configure]',
+          })
+        }
+
+        it {
           should contain_package('sensu-backend').with({
             'ensure'  => 'installed',
             'name'    => 'sensu-backend',

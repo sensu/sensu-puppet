@@ -60,7 +60,7 @@ class sensu::backend (
     ensure   => 'installed',
     provider => 'puppet_gem',
   }
-  Package['bcrypt'] -> Sensu_user<| |>
+  Package['bcrypt'] -> Sensu_user<| |> # lint:ignore:spaceship_operator_without_tag
 
   package { 'sensu-cli':
     ensure  => $_version,
@@ -76,13 +76,22 @@ class sensu::backend (
   # Ensure sensu-backend is up before starting sensu-agent
   Sensu_api_validator['sensu'] -> Service['sensu-agent']
 
-  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'"
+  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username '${username}' --password 'P@ssw0rd!'"
   $sensuctl_configure_creates = '/root/.config/sensu/sensuctl/cluster'
   exec { 'sensuctl_configure':
     command => "${sensuctl_configure} || rm -f ${sensuctl_configure_creates}",
     creates => $sensuctl_configure_creates,
     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
     require => Sensu_api_validator['sensu'],
+  }
+  sensu_user { 'admin':
+    ensure        => 'present',
+    password      => $password,
+    roles         => ['admin'],
+    disabled      => false,
+    configure     => true,
+    configure_url => $url,
+    require       => Exec['sensuctl_configure'],
   }
 
   package { 'sensu-backend':

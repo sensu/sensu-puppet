@@ -86,6 +86,9 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
+    if resource[:configure] == :true
+      sensuctl('configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password])
+    end
     @property_hash[:ensure] = :present
   end
 
@@ -114,6 +117,9 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         sensuctl_create('user', spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
+      end
+      if resource[:configure] == :true && @property_flush[:password]
+        sensuctl('configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password])
       end
     end
     @property_hash = resource.to_hash

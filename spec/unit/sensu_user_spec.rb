@@ -29,12 +29,15 @@ describe Puppet::Type.type(:sensu_user) do
   end
 
   defaults = {
-    'disabled': :false
+    'disabled': :false,
+    'configure': :false,
+    'configure_url': 'http://127.0.0.1:8080',
   }
 
   # String properties
   [
-    :password
+    :password,
+    :configure_url
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -85,7 +88,8 @@ describe Puppet::Type.type(:sensu_user) do
 
   # Boolean properties
   [
-    :disabled
+    :disabled,
+    :configure
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true

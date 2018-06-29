@@ -54,6 +54,17 @@ Puppet::Type.newtype(:sensu_user) do
     defaultto :false
   end
 
+  newparam(:configure, :boolean => true) do
+    desc "Run sensuctl configure for this user"
+    newvalues(:true, :false)
+    defaultto :false
+  end
+
+  newparam(:configure_url) do
+    desc "URL to use with 'sensuctl configure'"
+    defaultto 'http://127.0.0.1:8080'
+  end
+
   validate do
     required_properties = [
       :password
