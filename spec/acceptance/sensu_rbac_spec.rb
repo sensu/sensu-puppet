@@ -1,3 +1,6 @@
+# This file contains tests related to RBAC (Role Based Access Controls) resources
+# https://docs.sensu.io/sensu-core/2.0/reference/rbac/
+# Combining these tests was done to improve overall acceptance test runtime
 require 'spec_helper_acceptance'
 
 describe 'sensu RBAC resources' do
