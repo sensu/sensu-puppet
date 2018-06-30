@@ -10,6 +10,12 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu::backend')}
 
         it {
+          should contain_package('make').that_comes_before('Package[bcrypt]')
+        }
+        it {
+          should contain_package('gcc').that_comes_before('Package[bcrypt]')
+        }
+        it {
           should contain_package('bcrypt').with({
             'ensure'   => 'installed',
             'provider' => 'puppet_gem',

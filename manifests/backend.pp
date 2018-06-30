@@ -29,6 +29,8 @@
 # @param password
 #   Sensu backend admin password used to confiure sensuctl.
 #   Default to `P@ssw0rd!`
+# @param bcrypt_dependencies
+#   Array of packages needed to install bcrypt rubygem.
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -42,6 +44,7 @@ class sensu::backend (
   Stdlib::Port $url_port = 8080,
   String $username = 'admin',
   String $password = 'P@ssw0rd!',
+  Array $bcrypt_dependencies = ['make','gcc']
 ) {
 
   include ::sensu
@@ -56,6 +59,12 @@ class sensu::backend (
     $_version = $version
   }
 
+  if ! empty($bcrypt_dependencies) {
+    ensure_packages($bcrypt_dependencies)
+    $bcrypt_dependencies.each |$p| {
+      Package[$p] -> Package['bcrypt']
+    }
+  }
   package { 'bcrypt':
     ensure   => 'installed',
     provider => 'puppet_gem',

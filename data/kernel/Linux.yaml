@@ -1,0 +1,3 @@
+sensu::backend::bcrypt_dependencies:
+  - make
+  - gcc
