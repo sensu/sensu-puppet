@@ -2,33 +2,34 @@
 #
 # Class to manage the Sensu backend.
 #
+# @example
+#   class { 'sensu::backend':
+#     password => 'secret',
+#   }
+#
 # @param version
 #   Version of sensu backend to install.  Defaults to `installed` to support
 #   Windows MSI packaging and to avoid surprising upgrades.
 # @param package_name
-#   Name of Sensu backend package. Defaults to `sensu-backend`.
+#   Name of Sensu backend package.
 # @param cli_package_name
-#   Name of Sensu CLI package. Defaults to `sensu-cli`.
+#   Name of Sensu CLI package.
 # @param service_name
-#   Name of the Sensu backend service. Defaults to `sensu-backend`.
+#   Name of the Sensu backend service.
 # @param service_ensure
-#   Sensu backend service ensure value. Defaults to `running`.
+#   Sensu backend service ensure value.
 # @param service_enable
-#   Sensu backend service enable value. Defaults to `true`
+#   Sensu backend service enable value.
 # @param config_hash
-#   Sensu backend configuration hash used to define backend.yml. Defaults to `{}`
+#   Sensu backend configuration hash used to define backend.yml.
 # @param url_host
 #   Sensu backend host used to configure sensuctl and verify API access.
-#   Defaults to `127.0.0.1`.
 # @param url_port
 #   Sensu backend port used to configure sensuctl and verify API access.
-#   Defaults to `8080`.
 # @param username
 #   Sensu backend admin username used to confiure sensuctl.
-#   Default to `admin`.
 # @param password
 #   Sensu backend admin password used to confiure sensuctl.
-#   Default to `P@ssw0rd!`
 #
 class sensu::backend (
   Optional[String] $version = undef,

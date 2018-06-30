@@ -2,19 +2,26 @@
 #
 # Class to manage the Sensu agent.
 #
+# @example
+#   class { 'sensu::agent':
+#     config_hash => {
+#       'backend-url' => 'ws://sensu-backend.example.com:8081',
+#     }
+#   }
+#
 # @param version
 #   Version of sensu agent to install.  Defaults to `installed` to support
 #   Windows MSI packaging and to avoid surprising upgrades.
 # @param package_name
-#   Name of Sensu agent package. Defaults to `sensu-agent`.
+#   Name of Sensu agent package.
 # @param service_name
-#   Name of the Sensu agent service. Defaults to `sensu-agent`.
+#   Name of the Sensu agent service.
 # @param service_ensure
-#   Sensu agent service ensure value. Defaults to `running`.
+#   Sensu agent service ensure value.
 # @param service_enable
-#   Sensu agent service enable value. Defaults to `true`
+#   Sensu agent service enable value.
 # @param config_hash
-#   Sensu agent configuration hash used to define agent.yml. Defaults to `{}`
+#   Sensu agent configuration hash used to define agent.yml.
 #
 class sensu::agent (
   Optional[String] $version = undef,

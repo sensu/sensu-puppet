@@ -6,10 +6,23 @@ require_relative '../../puppet_x/sensu/integer_property'
 Puppet::Type.newtype(:sensu_silenced) do
   desc <<-DESC
 Manages Sensu silencing
-@example Create a silencing
+
+The name of `sensu_silenced` can be used to define `check` and `subscription`.
+
+@example Create a silencing for all checks with subscription entity:sensu_agent
   sensu_silenced { 'test':
     ensure       => 'present',
     subscription => 'entity:sensu_agent',
+  }
+
+@example Define silencing using composite name where `subscription=entity:sensu_agent` and `check=*`.
+  sensu_silenced { 'entity:sensu_agent:*':
+    ensure => 'present',
+  }
+
+@example Define silencing using composite name where `subscription=linux` and `check=check-http`.
+  sensu_silenced { 'linux:check-http':
+    ensure => 'present',
   }
 DESC
 

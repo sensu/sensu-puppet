@@ -2,17 +2,21 @@
 #
 # This is the main Sensu class
 #
-# @param version Version of Sensu to install.  Defaults to `installed` to support
+# @param version
+#   Version of Sensu to install.  Defaults to `installed` to support
 #   Windows MSI packaging and to avoid surprising upgrades.
 #
-# @param etc_dir Absolute path to the Sensu etc directory. Default:
-# '/etc/sensu' and 'C:/opt/sensu' on windows.
+# @param etc_dir
+#   Absolute path to the Sensu etc directory.
+#   Default: '/etc/sensu' and 'C:/opt/sensu' on windows.
 #
-# @param etc_dir_purge Boolean to determine if the etc_dir should be purged
-# such that only Puppet managed files are present.
+# @param etc_dir_purge
+#   Boolean to determine if the etc_dir should be purged
+#   such that only Puppet managed files are present.
 #
-# @param manage_repo Boolean to determine if software repository for Sensu
-# should be managed.
+# @param manage_repo
+#   Boolean to determine if software repository for Sensu
+#   should be managed.
 #
 class sensu (
   String $version = 'installed',
