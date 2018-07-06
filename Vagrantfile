@@ -46,19 +46,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define 'sensu-backend-cluster', autostart: false do |backend|
-    backend.vm.box = 'centos/7'
-    backend.vm.hostname = 'sensu-backend.example.com'
-    backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.10'
-    backend.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
-    backend.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
-    backend.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
-    backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    backend.vm.provision :shell, :path => "tests/provision_backend_cluster.sh"
-    backend.vm.provision :shell, :path => "tests/rabbitmq.sh"
-    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
-  end
-
   config.vm.define "el7-agent", autostart: true do |agent|
     agent.vm.box = "centos/7"
     agent.vm.hostname = 'el7-agent.example.com'
@@ -73,7 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.hostname = 'el6-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.12"
     agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent-sensu_gem.pp"
+    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
@@ -100,7 +87,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.hostname = 'ubuntu1404-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.14"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent-sensu_gem.pp"
+    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
@@ -109,7 +96,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.hostname = 'amazon201703-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.15"
     agent.vm.provision :shell, :path => "tests/provision_amazon.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent-sensu_gem.pp"
+    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
