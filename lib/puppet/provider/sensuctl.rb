@@ -30,7 +30,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def self.sensuctl_list(command)
     args = [command]
     args << 'list'
-    if ! ['organization','role','user'].include?(command)
+    # TODO: Remove extension once resolved: https://github.com/sensu/sensu-go/issues/1767
+    if ! ['extension','organization','role','user'].include?(command)
       args << '--all-organizations'
     end
     args << '--format'
