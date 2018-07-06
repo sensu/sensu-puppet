@@ -7,6 +7,7 @@ describe 'sensu::agent class' do
       pp = <<-EOS
       class { '::sensu::agent':
         config_hash => {
+          'id'          => 'sensu_agent',
           'backend-url' => 'ws://sensu_backend:8081',
         }
       }
