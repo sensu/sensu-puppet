@@ -4,10 +4,18 @@ describe 'sensu::repo', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
+      case os
+      when /(redhat-6|centos-6|amazon-2017|amazon-2018)-x86_64/
+        baseurl = "https://packagecloud.io/sensu/nightly/el/6/$basearch"
+      when /(redhat-7|centos-7|amazonlinux-2)-x86_64/
+        baseurl = "https://packagecloud.io/sensu/nightly/el/7/$basearch"
+      else
+        baseurl = nil
+      end
       if facts[:osfamily] == 'RedHat'
         it {
           should contain_yumrepo('sensu_nightly').with({
-            'baseurl'         => "https://packagecloud.io/sensu/nightly/el/#{facts[:operatingsystemmajrelease]}/$basearch",
+            'baseurl'         => baseurl,
             'repo_gpgcheck'   => 1,
             'gpgcheck'        => 0,
             'enabled'         => 1,

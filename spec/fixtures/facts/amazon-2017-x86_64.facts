@@ -1,0 +1,367 @@
+{
+  "aio_agent_version": "1.10.4",
+  "architecture": "x86_64",
+  "augeas": {
+    "version": "1.4.0"
+  },
+  "augeasversion": "1.4.0",
+  "bios_release_date": "02/16/2017",
+  "bios_vendor": "Xen",
+  "bios_version": "4.2.amazon",
+  "blockdevice_xvda_size": 8589934592,
+  "blockdevices": "xvda",
+  "chassistype": "Other",
+  "dhcp_servers": {
+    "eth0": "10.254.253.129",
+    "system": "10.254.253.129"
+  },
+  "disks": {
+    "xvda": {
+      "size": "8.00 GiB",
+      "size_bytes": 8589934592
+    }
+  },
+  "dmi": {
+    "bios": {
+      "release_date": "02/16/2017",
+      "vendor": "Xen",
+      "version": "4.2.amazon"
+    },
+    "chassis": {
+      "type": "Other"
+    },
+    "manufacturer": "Xen",
+    "product": {
+      "name": "HVM domU",
+      "serial_number": "ec209762-def6-9b34-bb6f-eba5e5ee4c56",
+      "uuid": "EC209762-DEF6-9B34-BB6F-EBA5E5EE4C56"
+    }
+  },
+  "domain": "us-gov-west-1.compute.internal",
+  "ec2_metadata": {
+    "ami-id": "ami-b2d056d3",
+    "ami-launch-index": "0",
+    "ami-manifest-path": "(unknown)",
+    "block-device-mapping": {
+      "ami": "/dev/xvda",
+      "root": "/dev/xvda"
+    },
+    "hostname": "ip-10-254-253-132.us-gov-west-1.compute.internal",
+    "iam": {
+      "info": "{\n  \"Code\" : \"Success\",\n  \"LastUpdated\" : \"2017-09-14T21:04:53Z\",\n  \"InstanceProfileArn\" : \"arn:aws-us-gov:iam::050287752177:instance-profile/caf-dev-default-role\",\n  \"InstanceProfileId\" : \"AIPAK7C66WYDVS3ZKCQRI\"\n}"
+    },
+    "instance-action": "none",
+    "instance-id": "i-021bd29b48d609819",
+    "instance-type": "t2.small",
+    "local-hostname": "ip-10-254-253-132.us-gov-west-1.compute.internal",
+    "local-ipv4": "10.254.253.132",
+    "mac": "02:85:e9:60:90:d4",
+    "metrics": {
+      "vhostmd": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    },
+    "network": {
+      "interfaces": {
+        "macs": {
+          "02:85:e9:60:90:d4": {
+            "device-number": "0",
+            "interface-id": "eni-f53215b3",
+            "local-hostname": "ip-10-254-253-132.us-gov-west-1.compute.internal",
+            "local-ipv4s": "10.254.253.132",
+            "mac": "02:85:e9:60:90:d4",
+            "owner-id": "050287752177",
+            "security-group-ids": "sg-04863961",
+            "security-groups": "caf-ops-management",
+            "subnet-id": "subnet-076f1f62",
+            "subnet-ipv4-cidr-block": "10.254.253.128/26",
+            "vpc-id": "vpc-d660abb3",
+            "vpc-ipv4-cidr-block": "10.254.253.0/24",
+            "vpc-ipv4-cidr-blocks": "10.254.253.0/24"
+          }
+        }
+      }
+    },
+    "placement": {
+      "availability-zone": "us-gov-west-1a"
+    },
+    "profile": "default-hvm",
+    "public-keys": {
+      "0": {
+        "openssh-key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDqlxaiYiVRFtC4eDVw7ilzMR8eo6B/b6JWv8xqjGzAn1wbGsca0v6RkyozigNF+lupZ4Li405NzYWPRWvNLVrqcQPmmlSDaX03RA9RtDuDOB1c0KHH7yMzXM509UYQIK8HEx5rmOs+0be5+/psDIeUw8hxOpyZVUC3QM+B/B7AyQXR8G1G047Zne6dHJ3qcuhkrafm68J35lGoD1ygkn+FsM6E2H17oyTdj5Rr/4VuyE0L3CBnkZaRMXnUUpSXPhnnsavg4HkUIUKJtMfitkQtUD2/TnXgcJrw2qXywaJ2FBq3q87Hl1dSozSmL3gsJ1dCySDVQBoljdwFJ71VdwfJ caf-doj-bob"
+      }
+    },
+    "reservation-id": "r-0959aaa272a6f36e3",
+    "security-groups": "caf-ops-management",
+    "services": {
+      "domain": "amazonaws.com",
+      "partition": "aws-us-gov"
+    }
+  },
+  "ec2_userdata": "#!/bin/bash -ex\nyum -y update\nrpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm\nyum -y install puppet-agent\nmkdir -p /etc/puppet/modules\n/opt/puppetlabs/bin/puppet module install saz-sudo\n/opt/puppetlabs/bin/puppet module install puppetlabs-accounts\naws --region us-gov-west-1 s3 cp s3://caf-ops-deployment/user_data/users_ops.pp /root/\n/opt/puppetlabs/bin/puppet apply /root/users_ops.pp",
+  "facterversion": "3.8.0",
+  "filesystems": "ext3,ext4",
+  "fqdn": "ip-10-254-253-132.us-gov-west-1.compute.internal",
+  "gid": "root",
+  "hardwareisa": "x86_64",
+  "hardwaremodel": "x86_64",
+  "hostname": "ip-10-254-253-132",
+  "id": "root",
+  "identity": {
+    "gid": 0,
+    "group": "root",
+    "privileged": true,
+    "uid": 0,
+    "user": "root"
+  },
+  "interfaces": "eth0,lo",
+  "ipaddress": "10.254.253.132",
+  "ipaddress6": "fe80::85:e9ff:fe60:90d4",
+  "ipaddress6_eth0": "fe80::85:e9ff:fe60:90d4",
+  "ipaddress6_lo": "::1",
+  "ipaddress_eth0": "10.254.253.132",
+  "ipaddress_lo": "127.0.0.1",
+  "is_virtual": true,
+  "kernel": "Linux",
+  "kernelmajversion": "4.9",
+  "kernelrelease": "4.9.27-14.33.amzn1.x86_64",
+  "kernelversion": "4.9.27",
+  "load_averages": {
+    "15m": 0.22,
+    "1m": 0.9,
+    "5m": 0.51
+  },
+  "macaddress": "02:85:e9:60:90:d4",
+  "macaddress_eth0": "02:85:e9:60:90:d4",
+  "manufacturer": "Xen",
+  "memory": {
+    "system": {
+      "available": "1.08 GiB",
+      "available_bytes": 1163100160,
+      "capacity": "44.58%",
+      "total": "1.95 GiB",
+      "total_bytes": 2098757632,
+      "used": "892.31 MiB",
+      "used_bytes": 935657472
+    }
+  },
+  "memoryfree": "1.08 GiB",
+  "memoryfree_mb": 1109.21875,
+  "memorysize": "1.95 GiB",
+  "memorysize_mb": 2001.53125,
+  "mountpoints": {
+    "/": {
+      "available": "5.34 GiB",
+      "available_bytes": 5733740544,
+      "capacity": "31.07%",
+      "device": "/dev/xvda1",
+      "filesystem": "ext4",
+      "options": [
+        "rw",
+        "noatime",
+        "data=ordered"
+      ],
+      "size": "7.75 GiB",
+      "size_bytes": 8318783488,
+      "used": "2.41 GiB",
+      "used_bytes": 2585042944
+    },
+    "/dev/shm": {
+      "available": "1000.77 MiB",
+      "available_bytes": 1049378816,
+      "capacity": "0%",
+      "device": "tmpfs",
+      "filesystem": "tmpfs",
+      "options": [
+        "rw",
+        "relatime"
+      ],
+      "size": "1000.77 MiB",
+      "size_bytes": 1049378816,
+      "used": "0 bytes",
+      "used_bytes": 0
+    }
+  },
+  "mtu_eth0": 9001,
+  "mtu_lo": 65536,
+  "netmask": "255.255.255.192",
+  "netmask6": "ffff:ffff:ffff:ffff::",
+  "netmask6_eth0": "ffff:ffff:ffff:ffff::",
+  "netmask6_lo": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+  "netmask_eth0": "255.255.255.192",
+  "netmask_lo": "255.0.0.0",
+  "network": "10.254.253.128",
+  "network6": "fe80::",
+  "network6_eth0": "fe80::",
+  "network6_lo": "::1",
+  "network_eth0": "10.254.253.128",
+  "network_lo": "127.0.0.0",
+  "networking": {
+    "dhcp": "10.254.253.129",
+    "domain": "us-gov-west-1.compute.internal",
+    "fqdn": "ip-10-254-253-132.us-gov-west-1.compute.internal",
+    "hostname": "ip-10-254-253-132",
+    "interfaces": {
+      "eth0": {
+        "bindings": [
+          {
+            "address": "10.254.253.132",
+            "netmask": "255.255.255.192",
+            "network": "10.254.253.128"
+          }
+        ],
+        "bindings6": [
+          {
+            "address": "fe80::85:e9ff:fe60:90d4",
+            "netmask": "ffff:ffff:ffff:ffff::",
+            "network": "fe80::"
+          }
+        ],
+        "dhcp": "10.254.253.129",
+        "ip": "10.254.253.132",
+        "ip6": "fe80::85:e9ff:fe60:90d4",
+        "mac": "02:85:e9:60:90:d4",
+        "mtu": 9001,
+        "netmask": "255.255.255.192",
+        "netmask6": "ffff:ffff:ffff:ffff::",
+        "network": "10.254.253.128",
+        "network6": "fe80::"
+      },
+      "lo": {
+        "bindings": [
+          {
+            "address": "127.0.0.1",
+            "netmask": "255.0.0.0",
+            "network": "127.0.0.0"
+          }
+        ],
+        "bindings6": [
+          {
+            "address": "::1",
+            "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+            "network": "::1"
+          }
+        ],
+        "ip": "127.0.0.1",
+        "ip6": "::1",
+        "mtu": 65536,
+        "netmask": "255.0.0.0",
+        "netmask6": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "network": "127.0.0.0",
+        "network6": "::1"
+      }
+    },
+    "ip": "10.254.253.132",
+    "ip6": "fe80::85:e9ff:fe60:90d4",
+    "mac": "02:85:e9:60:90:d4",
+    "mtu": 9001,
+    "netmask": "255.255.255.192",
+    "netmask6": "ffff:ffff:ffff:ffff::",
+    "network": "10.254.253.128",
+    "network6": "fe80::",
+    "primary": "eth0"
+  },
+  "operatingsystem": "Amazon",
+  "operatingsystemmajrelease": "2017",
+  "operatingsystemrelease": "2017.03",
+  "os": {
+    "architecture": "x86_64",
+    "family": "RedHat",
+    "hardware": "x86_64",
+    "name": "Amazon",
+    "release": {
+      "full": "2017.03",
+      "major": "2017",
+      "minor": "03"
+    },
+    "selinux": {
+      "enabled": false
+    }
+  },
+  "osfamily": "RedHat",
+  "partitions": {
+    "/dev/xvda1": {
+      "filesystem": "ext4",
+      "label": "/",
+      "mount": "/",
+      "partlabel": "Linux",
+      "partuuid": "47e549fb-f1d0-4bb2-96cb-7cff0bccf36c",
+      "size": "8.00 GiB",
+      "size_bytes": 8587820544,
+      "uuid": "d99f5b93-1427-4ad7-881e-aa4a6fc8721b"
+    }
+  },
+  "path": "/opt/puppetlabs/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/opt/aws/bin",
+  "physicalprocessorcount": 1,
+  "processor0": "Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz",
+  "processorcount": 1,
+  "processors": {
+    "count": 1,
+    "isa": "x86_64",
+    "models": [
+      "Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz"
+    ],
+    "physicalcount": 1
+  },
+  "productname": "HVM domU",
+  "puppetversion": "4.10.4",
+  "ruby": {
+    "platform": "x86_64-linux",
+    "sitedir": "/opt/puppetlabs/puppet/lib/ruby/site_ruby/2.1.0",
+    "version": "2.1.9"
+  },
+  "rubyplatform": "x86_64-linux",
+  "rubysitedir": "/opt/puppetlabs/puppet/lib/ruby/site_ruby/2.1.0",
+  "rubyversion": "2.1.9",
+  "selinux": false,
+  "serialnumber": "ec209762-def6-9b34-bb6f-eba5e5ee4c56",
+  "ssh": {
+    "dsa": {
+      "fingerprints": {
+        "sha1": "SSHFP 2 1 c43bf10c9a439eeb15ec22474d75f0af56ffcba7",
+        "sha256": "SSHFP 2 2 b63472dd58bccbd6bb40e55902f70418d432df98657476080a56b80062cffdbe"
+      },
+      "key": "AAAAB3NzaC1kc3MAAACBAIzzXVJ969js6E3t0Mn/DRSM7fe5a/XRBBwM9fwkVOywQI3lwp6slu1VzVy0OxdtynCbY5GLnf5m3hftmrdoWjHRzIwpfeEx9Nx1Al/k1/ObRKtMrXOrGfmb5kqJjhchtObSVyNe8P/A1YHoelC8p7DLltjEzmE6hTdjh/hAtDU9AAAAFQD92+2vIWrEDG1MOwoqMLbILhcx7wAAAIB2+c/2bEeJbXYCrmKBbOgTP0hVC1IXot77jYJMkCkj7+pNpBSOENmZ3pDjtmq4G9aN8xmT0W+mDQWT6sn+6FfwPl15CElazyELu3XxjjamQN1GkayaIq7SImPwg2bePxAoL2Nc6pehjzZ12zgsqaoZ+LpJyLqg/37Q59LeBu+30gAAAIEAhKPPVndjaLrwlMJwic6micb06ehZO1dEVE2HJDQntLVdlEWJTfcZWZLiucuTj+D9CHj8icHBHG3ss8mi39TAKbRKHcpxQU5V4/TZCB28EiLd6RYn+GvjL55a3u5snqUQ/b7NbLH8XRkFuiodVNJlcehrfpp8fWBDfgGhCta2U7M="
+    },
+    "ecdsa": {
+      "fingerprints": {
+        "sha1": "SSHFP 3 1 f366cf43a2f9abc44509ff0edd8c7cb801cd53c4",
+        "sha256": "SSHFP 3 2 ea130fb2ce0f4c8131336e04ded6c4497a9d24a169db1e92a3f969a5f749e2d8"
+      },
+      "key": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIAZqAKBTo1r+WXrWbBeFmbXaEaKWC+m20zRnBWLKflebi8fjUP2g9HMUCuh1021Yam+SKjzmm0Butv2KE4unyQ="
+    },
+    "ed25519": {
+      "fingerprints": {
+        "sha1": "SSHFP 4 1 f6b9e74d6de41081ebe75e867990a76b85c6d107",
+        "sha256": "SSHFP 4 2 4a10c3e11ef7d31c7bb24fe0f171347c52374f9803e1ca0ed787e67a01db32f6"
+      },
+      "key": "AAAAC3NzaC1lZDI1NTE5AAAAIGvxvqngzqP1jXfmQCf/xgjQp/oNUjGsuKX2/Mra4isy"
+    },
+    "rsa": {
+      "fingerprints": {
+        "sha1": "SSHFP 1 1 4def1ffa75235b7e5c95c0db75373ac3d4f4378c",
+        "sha256": "SSHFP 1 2 b8fb14b70b8407b5fef32f56cd8fe20daa7da5061ccb3266a4d168345474dcbc"
+      },
+      "key": "AAAAB3NzaC1yc2EAAAADAQABAAABAQDWqjpmmtqmYXEp6D1G9JM3tSP1lrjc2yBGE3DSvMRWtfeLaE8J2vRKhPmspicJF44SflWlA5RUPjhtKxBzhqrm3BtfIrGKfUKve0UYNm+ELKhpNy4m6Mc6yw43KDw/04i1kQaeHxLUP76OYvh//gfEdpcMYnGJF2pR/lol6N9ZN6tJXhw3gTuZdmI61qJodTBmrAJ1sikzdwBYzVmKELje3K/R+LE/RvB5o1C5sTDXLHXjOauCxZrFWwlokwupe802TueGxY3bOe27aCb3MSdXwb+Rx1Qx659NVD5VQyoCXgGVYa6IVULyw1sH8TBB9GwW7HZFGTo0JV9qQHpTl4Y5"
+    }
+  },
+  "sshdsakey": "AAAAB3NzaC1kc3MAAACBAIzzXVJ969js6E3t0Mn/DRSM7fe5a/XRBBwM9fwkVOywQI3lwp6slu1VzVy0OxdtynCbY5GLnf5m3hftmrdoWjHRzIwpfeEx9Nx1Al/k1/ObRKtMrXOrGfmb5kqJjhchtObSVyNe8P/A1YHoelC8p7DLltjEzmE6hTdjh/hAtDU9AAAAFQD92+2vIWrEDG1MOwoqMLbILhcx7wAAAIB2+c/2bEeJbXYCrmKBbOgTP0hVC1IXot77jYJMkCkj7+pNpBSOENmZ3pDjtmq4G9aN8xmT0W+mDQWT6sn+6FfwPl15CElazyELu3XxjjamQN1GkayaIq7SImPwg2bePxAoL2Nc6pehjzZ12zgsqaoZ+LpJyLqg/37Q59LeBu+30gAAAIEAhKPPVndjaLrwlMJwic6micb06ehZO1dEVE2HJDQntLVdlEWJTfcZWZLiucuTj+D9CHj8icHBHG3ss8mi39TAKbRKHcpxQU5V4/TZCB28EiLd6RYn+GvjL55a3u5snqUQ/b7NbLH8XRkFuiodVNJlcehrfpp8fWBDfgGhCta2U7M=",
+  "sshecdsakey": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIAZqAKBTo1r+WXrWbBeFmbXaEaKWC+m20zRnBWLKflebi8fjUP2g9HMUCuh1021Yam+SKjzmm0Butv2KE4unyQ=",
+  "sshed25519key": "AAAAC3NzaC1lZDI1NTE5AAAAIGvxvqngzqP1jXfmQCf/xgjQp/oNUjGsuKX2/Mra4isy",
+  "sshfp_dsa": "SSHFP 2 1 c43bf10c9a439eeb15ec22474d75f0af56ffcba7\nSSHFP 2 2 b63472dd58bccbd6bb40e55902f70418d432df98657476080a56b80062cffdbe",
+  "sshfp_ecdsa": "SSHFP 3 1 f366cf43a2f9abc44509ff0edd8c7cb801cd53c4\nSSHFP 3 2 ea130fb2ce0f4c8131336e04ded6c4497a9d24a169db1e92a3f969a5f749e2d8",
+  "sshfp_ed25519": "SSHFP 4 1 f6b9e74d6de41081ebe75e867990a76b85c6d107\nSSHFP 4 2 4a10c3e11ef7d31c7bb24fe0f171347c52374f9803e1ca0ed787e67a01db32f6",
+  "sshfp_rsa": "SSHFP 1 1 4def1ffa75235b7e5c95c0db75373ac3d4f4378c\nSSHFP 1 2 b8fb14b70b8407b5fef32f56cd8fe20daa7da5061ccb3266a4d168345474dcbc",
+  "sshrsakey": "AAAAB3NzaC1yc2EAAAADAQABAAABAQDWqjpmmtqmYXEp6D1G9JM3tSP1lrjc2yBGE3DSvMRWtfeLaE8J2vRKhPmspicJF44SflWlA5RUPjhtKxBzhqrm3BtfIrGKfUKve0UYNm+ELKhpNy4m6Mc6yw43KDw/04i1kQaeHxLUP76OYvh//gfEdpcMYnGJF2pR/lol6N9ZN6tJXhw3gTuZdmI61qJodTBmrAJ1sikzdwBYzVmKELje3K/R+LE/RvB5o1C5sTDXLHXjOauCxZrFWwlokwupe802TueGxY3bOe27aCb3MSdXwb+Rx1Qx659NVD5VQyoCXgGVYa6IVULyw1sH8TBB9GwW7HZFGTo0JV9qQHpTl4Y5",
+  "system_uptime": {
+    "days": 0,
+    "hours": 2,
+    "seconds": 9544,
+    "uptime": "2:39 hours"
+  },
+  "timezone": "UTC",
+  "uptime": "2:39 hours",
+  "uptime_days": 0,
+  "uptime_hours": 2,
+  "uptime_seconds": 9544,
+  "uuid": "EC209762-DEF6-9B34-BB6F-EBA5E5EE4C56",
+  "virtual": "xenhvm"
+}

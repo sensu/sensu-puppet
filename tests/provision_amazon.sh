@@ -8,7 +8,12 @@ function rpm_install() {
     rm -f $package
 }
 
-release=$(awk -F \: '{print $5}' /etc/system-release-cpe)
+source /etc/os-release
+if [ "$VERSION" == "2" ]; then
+  release=7
+else
+  release=6
+fi
 
 rpm --import http://yum.puppetlabs.com/RPM-GPG-KEY-puppet
 
@@ -19,13 +24,9 @@ rpm -qa | grep -q puppet
 if [ $? -ne 0 ]
 then
 
-    rpm_install https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
-    yum-config-manager --enable epel >/dev/null 2>&1
-    yum-config-manager --setopt="puppetlabs-pc1.priority=1" --save >/dev/null 2>&1
-
+    rpm_install http://yum.puppetlabs.com/puppet5/puppet5-release-el-${release}.noarch.rpm
     yum -y install puppet-agent
     ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
-
 
     # suppress default warnings for deprecation
     cat > /etc/puppetlabs/puppet/hiera.yaml <<EOF
@@ -45,10 +46,4 @@ fi
 puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu ensure=link target=/vagrant
 
 # setup module dependencies
-puppet module install puppetlabs/stdlib --version 4.24.0
-puppet module install puppetlabs/apt --version 4.1.0
-puppet module install lwf-remote_file --version 1.1.3
-puppet module install puppetlabs/powershell --version 2.1.0
-
-# install dependencies for sensu
-yum -y install rubygems rubygem-json
+puppet module install puppetlabs/stdlib --version 4.25.1

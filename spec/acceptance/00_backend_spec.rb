@@ -13,6 +13,11 @@ describe 'sensu::backend class' do
       apply_manifest_on(node, pp, :catch_changes  => true)
     end
 
+    it do
+      on node, "/opt/puppetlabs/bin/facter os" do
+        puts stdout
+      end
+    end
     describe service('sensu-backend'), :node => node do
       it { should be_enabled }
       it { should be_running }
