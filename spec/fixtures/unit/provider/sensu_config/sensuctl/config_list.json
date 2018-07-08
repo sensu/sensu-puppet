@@ -1,0 +1,7 @@
+{
+  "api-url": "http://localhost:8080",
+  "environment": "default",
+  "format": "tabular",
+  "organization": "default"
+}
+
