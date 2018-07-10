@@ -1,4 +1,5 @@
 require 'json'
+require 'tempfile'
 
 class Puppet::Provider::Sensuctl < Puppet::Provider
   initvars
