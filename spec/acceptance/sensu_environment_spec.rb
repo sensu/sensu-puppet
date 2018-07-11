@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_environment' do
+describe 'sensu_environment', if: RSpec.configuration.sensu_full do
   node = only_host_with_role(hosts, 'sensu_backend')
   context 'default' do
     it 'should work without errors' do

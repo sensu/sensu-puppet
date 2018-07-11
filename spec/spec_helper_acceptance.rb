@@ -11,6 +11,9 @@ end
 copy_module_to(hosts, :source => proj, :module_name => 'sensu', :target_module_path => modulepath)
 
 RSpec.configure do |c|
+  c.add_setting :sensu_full, default: false
+  c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
+
   # Readable test descriptions
   c.formatter = :documentation
 
