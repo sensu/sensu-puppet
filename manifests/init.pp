@@ -33,7 +33,7 @@ class sensu (
     recurse => $etc_dir_purge,
   }
 
-  case $::facts['osfamily'] {
+  case $facts['os']['family'] {
     'RedHat': {
     }
     'Debian': {

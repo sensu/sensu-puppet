@@ -1,11 +1,11 @@
 # private class
 class sensu::repo {
 
-  case $::facts['osfamily'] {
+  case $facts['os']['family'] {
     'RedHat': {
       # TODO: change from nightly to stable once there are stable releases
       yumrepo { 'sensu_nightly':
-        baseurl         => "https://packagecloud.io/sensu/nightly/el/${::operatingsystemmajrelease}/\$basearch",
+        baseurl         => "https://packagecloud.io/sensu/nightly/el/${facts['os']['release']['major']}/\$basearch",
         repo_gpgcheck   => 1,
         gpgcheck        => 0,
         enabled         => 1,
@@ -19,9 +19,9 @@ class sensu::repo {
       #TODO: change from nightly to stable once there are stable releases
       apt::source { 'sensu_nightly':
         ensure   => 'present',
-        location => "https://packagecloud.io/sensu/nightly/${downcase($::facts['os']['name'])}/",
+        location => "https://packagecloud.io/sensu/nightly/${downcase($facts['os']['name'])}/",
         repos    => 'main',
-        release  => $::facts['os']['distro']['codename'],
+        release  => $facts['os']['distro']['codename'],
         include  => {
           'src' => true,
         },
