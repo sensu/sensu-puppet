@@ -115,6 +115,7 @@ describe 'sensu' do
             :kernel          => 'Linux',
             :osfamily        => 'Debian',
             :lsbdistid       => 'ubuntu',
+            :lsbdistcodename => 'trusty',
             :lsbdistrelease  => '14.04',
             :os              => {
               :name    => 'ubuntu',
@@ -200,6 +201,7 @@ describe 'sensu' do
               :kernel          => 'Linux',
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
+              :lsbdistcodename => 'jessie',
               :lsbdistrelease  => '8.6',
               :os => {
                 :name    => 'Debian',
@@ -232,6 +234,7 @@ describe 'sensu' do
               :kernel          => 'Linux',
               :osfamily        => 'Debian',
               :lsbdistid       => 'Debian',
+              :lsbdistcodename => 'stretch',
               :lsbdistrelease  => '9.3',
               :os => {
                 :name    => 'Debian',

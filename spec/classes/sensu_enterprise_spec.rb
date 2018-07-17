@@ -259,6 +259,7 @@ describe 'sensu', :type => :class do
         :osfamily        => 'Debian',
         :kernel          => 'Linux',
         :lsbdistid       => 'ubuntu',
+        :lsbdistcodename => 'trusty',
         :lsbdistrelease  => '14.04',
         :os              => {
           :name    => 'ubuntu',
