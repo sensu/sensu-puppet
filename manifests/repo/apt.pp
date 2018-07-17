@@ -20,7 +20,7 @@ class sensu::repo::apt {
     # ignoring the puppet-lint plugin because of a bug that warns on the next
     # line.
     if $::sensu::repo_release == undef { #lint:ignore:undef_in_function
-      $release = $facts['os']['distro']['codename']
+      $release = $facts['lsbdistcodename']
     } else {
       $release = $::sensu::repo_release
     }
