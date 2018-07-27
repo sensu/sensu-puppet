@@ -54,6 +54,8 @@ This module will install packages, create configuration and start services neces
 
 Plugin sync is required if the custom sensu types and providers are used.
 
+This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 4.0.0 < 5.0.0`) for systems using `apt`.
+
 ### Beginning with sensu
 
 This module provides Vagrant definitions that can be used to get started with Sensu.
@@ -81,7 +83,7 @@ The following example will configure sensu-backend and add a check.  It's advisa
   }
 ```
 
-### Bacic Sensu agent
+### Basic Sensu agent
 
 The following example will manage resources necessary to configure a sensu-agent to communicate with a sensu-backend and
 associated to `linux` and `apache-servers` subscriptions.
