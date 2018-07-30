@@ -91,6 +91,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
+  config.vm.define "amazon2-agent", autostart: false do |agent|
+    agent.vm.box = "winky/amazonlinux-2"
+    agent.vm.hostname = 'amazon2-agent.example.com'
+    #agent.vm.provider :virtualbox do |vb|
+    #  vb.customize ["modifyvm", :id, "--usb", "off"]
+    #end
+    agent.vm.network  :private_network, ip: "192.168.52.15"
+    agent.vm.provision :shell, :path => "tests/provision_amazon.sh"
+    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+  end
+
   config.vm.define "amazon201703-agent", autostart: false do |agent|
     agent.vm.box = "mvbcoding/awslinux"
     agent.vm.hostname = 'amazon201703-agent.example.com'

@@ -3,29 +3,29 @@ HOSTS:
     roles:
       - agent
       - sensu_agent
-    platform: el-6-x86_64
+    platform: el-7-x86_64
     hypervisor: docker
-    image: amazonlinux:2017.03
+    image: amazonlinux:2
     docker_preserve_image: true
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y wget upstart'
-    docker_container_name: 'sensu-agent-amazonlinux-201703'
+      - 'yum install -y wget initscripts'
+    docker_container_name: 'sensu-agent-amazonlinux-2'
   sensu_backend:
     roles:
       - agent
       - sensu_backend
       - default
-    platform: el-6-x86_64
+    platform: el-7-x86_64
     hypervisor: docker
-    image: amazonlinux:2017.03
+    image: amazonlinux:2
     docker_preserve_image: true
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y wget upstart'
-    docker_container_name: 'sensu-backend-amazonlinux-201703'
+      - 'yum install -y wget initscripts'
+    docker_container_name: 'sensu-backend-amazonlinux-2'
 CONFIG:
   log_level: debug
   type: foss

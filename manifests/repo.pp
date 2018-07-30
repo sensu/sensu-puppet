@@ -3,9 +3,18 @@ class sensu::repo {
 
   case $facts['os']['family'] {
     'RedHat': {
+      if $facts['os']['name'] == 'Amazon' {
+        if $facts['os']['release']['major'] in ['2017','2018'] {
+          $repo_release = '6'
+        } else {
+          $repo_release = '7'
+        }
+      } else {
+        $repo_release = $facts['os']['release']['major']
+      }
       # TODO: change from nightly to stable once there are stable releases
       yumrepo { 'sensu_nightly':
-        baseurl         => "https://packagecloud.io/sensu/nightly/el/${facts['os']['release']['major']}/\$basearch",
+        baseurl         => "https://packagecloud.io/sensu/nightly/el/${repo_release}/\$basearch",
         repo_gpgcheck   => 1,
         gpgcheck        => 0,
         enabled         => 1,
