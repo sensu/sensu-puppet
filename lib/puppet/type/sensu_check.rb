@@ -14,6 +14,23 @@ Manages Sensu checks
     handlers      => ['email'],
     interval      => 60,
   }
+
+@example Create a check that is subdued
+  sensu_check { 'test':
+    ensure        => 'present',
+    command       => 'test.sh',
+    subscriptions => ['linux'],
+    handlers      => ['email'],
+    interval      => 60,
+    subdue_days   => {
+      'all' => [
+        { 'begin' => '8:00 AM', 'end' => '5:00 PM' },
+      ],
+      'friday' => [
+        { 'begin' => '7:00 AM', 'end' => '6:00 PM' },
+      ],
+    }
+  }
 DESC
 
   extend PuppetX::Sensu::Type
@@ -126,8 +143,6 @@ DESC
     desc "If the check should be executed on a single entity within a subscription in a round-robin fashion."
     newvalues(:true, :false)
   end
-
-  # extended_attributes
 
   newproperty(:organization) do
     desc "The Sensu RBAC organization that this check belongs to."
