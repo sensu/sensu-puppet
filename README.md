@@ -12,6 +12,8 @@
     * [Basic Sensu agent](#basic-sensu-agent)
     * [Exported resources](#exported-resources)
     * [Resource purging](#resource-purging)
+    * [Sensu backend cluster](#sensu-backend-cluster)
+        * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -131,6 +133,63 @@ resources { 'sensu_check':
   purge => true,
 }
 ```
+
+### Sensu backend cluster
+
+A `sensu-backend` cluster can be defined for fresh installs by defining the necessary `config_hash` values.
+The following examples are using Hiera and assume the `sensu::backend` class is included.
+
+```yaml
+# data/fqdn/sensu-backend1.example.com.yaml
+---
+sensu::backend::config_hash:
+  listen-client-urls: 'http://0.0.0.0:2379'
+  listen-peer-urls: 'http://0.0.0.0:2380'
+  initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
+  initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  initial-cluster-state: 'new'
+  name: 'backend1'
+```
+```yaml
+# data/fqdn/sensu-backend2.example.com.yaml
+---
+sensu::backend::config_hash:
+  listen-client-urls: 'http://0.0.0.0:2379'
+  listen-peer-urls: 'http://0.0.0.0:2380'
+  initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
+  initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  initial-cluster-state: 'new'
+  name: 'backend2'
+```
+
+#### Adding backend members to an existing cluster
+
+Adding new members to an existing cluster requires two steps.
+
+First, add the member to the catalog on one of the existing cluster backends with the `sensu_cluster_member` type.
+
+```puppet
+sensu_cluster_member { 'backend3':
+  peer_urls => ['http://192.168.0.3:2380'],
+}
+```
+
+Second, configure and start `sensu-backend` to interact with the existing cluster.
+The output from Puppet when a new `sensu_cluster_member` is applied will print some of the values needed.
+
+```yaml
+# data/fqdn/sensu-backend3.example.com.yaml
+---
+sensu::backend::config_hash:
+  listen-client-urls: 'http://0.0.0.0:2379'
+  listen-peer-urls: 'http://0.0.0.0:2380'
+  initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380,backend3=http://192.168.0.3:2380'
+  initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  initial-cluster-state: 'existing'
+  name: 'backend3'
+```
+
+The first step will not fully add the node to the cluster until the second step is performed.
 
 ## Reference
 

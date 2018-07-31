@@ -13,7 +13,9 @@ copy_module_to(hosts, :source => proj, :module_name => 'sensu', :target_module_p
 
 RSpec.configure do |c|
   c.add_setting :sensu_full, default: false
+  c.add_setting :sensu_cluster, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
+  c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
 
   # Readable test descriptions
   c.formatter = :documentation

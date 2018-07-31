@@ -37,6 +37,12 @@ matrix:
   - rvm: 2.4.4
     sudo: required
     services: docker
+    env: BEAKER_set="centos-7-cluster" BEAKER_sensu_cluster=yes
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.4.2
+    sudo: required
+    services: docker
     env: BEAKER_set="debian-9"
     bundler_args:
     script: bundle exec rake beaker
