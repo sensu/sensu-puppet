@@ -1,4 +1,5 @@
 require 'beaker-rspec'
+require 'beaker-puppet'
 require 'beaker/module_install_helper'
 
 install_puppet_agent_on(hosts, :puppet_collection => 'puppet5', :puppet_agent_version => ENV['PUPPET_INSTALL_VERSION'], :run_in_parallel => true)
