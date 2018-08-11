@@ -178,15 +178,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define "debian7-agent", autostart: false do |agent|
-    agent.vm.box = "debian/wheezy64"
-    agent.vm.hostname = 'debian7-agent.example.com'
-    agent.vm.network  :private_network, ip: "192.168.52.18"
-    agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
-  end
-
   # The rsync used to populate /vagrant will fail if the repo has the spec
   # fixtures created. To avoid, run `rake spec_clean` before `vagrant up`.
   config.vm.define "macos-agent", autostart: false do |agent|
