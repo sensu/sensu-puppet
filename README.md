@@ -10,6 +10,8 @@
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
+    * [Exported resources](#exported-resources)
+    * [Resource purging](#resource-purging)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -116,6 +118,17 @@ The backend system would collect all `sensu_check` resources.
 
 ```puppet
   Sensu_check <<||>>
+```
+
+### Resource purging
+
+All the types provided by this module support purging except `sensu_config`.
+This example will remove all unmanaged Sensu checks:
+
+```puppet
+resources { 'sensu_check':
+  purge => true,
+}
 ```
 
 ## Reference
