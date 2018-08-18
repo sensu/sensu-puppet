@@ -7,12 +7,14 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_check { 'test':
-        command       => 'check-http.rb',
-        subscriptions => ['demo'],
-        interval      => 60,
-        check_hooks   => [
+        command             => 'check-http.rb',
+        subscriptions       => ['demo'],
+        handlers            => ['email'],
+        interval            => 60,
+        check_hooks         => [
           { 'critical' => ['httpd-restart'] },
         ],
+        extended_attributes => { 'foo' => 'baz' }
       }
       EOS
 
@@ -26,11 +28,12 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('check-http.rb')
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']}])
+        expect(data['foo']).to eq('baz')
       end
     end
   end
 
-  context 'extended_attributes property' do
+  context 'updates check' do
     it 'should work without errors' do
       pp = <<-EOS
       include ::sensu::backend
@@ -38,6 +41,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         command             => 'check-http.rb',
         subscriptions       => ['demo'],
         interval            => 60,
+        check_hooks         => [
+          { 'critical' => ['httpd-restart'] },
+          { 'warning'  => ['httpd-restart'] },
+        ],
         extended_attributes => { 'foo' => 'bar' }
       }
       EOS
@@ -50,6 +57,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
     it 'should have a valid check with extended_attributes properties' do
       on node, 'sensuctl check info test --format json' do
         data = JSON.parse(stdout)
+        expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']},{'warning' => ['httpd-restart']}])
         expect(data['foo']).to eq('bar')
       end
     end

@@ -116,7 +116,7 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:check_hooks, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+  newproperty(:check_hooks, :array_matching => :all) do
     desc "An array of Sensu hooks, which are commands run by the Sensu agent in response to the result of the check command execution."
     validate do |value|
       if ! value.is_a?(Hash)
