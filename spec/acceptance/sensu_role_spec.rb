@@ -30,7 +30,10 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_role { 'test':
-        rules => [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read', 'create']}],
+        rules => [
+          {'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read', 'create']},
+          {'type' => '*', 'environment' => 'test', 'organization' => '*', 'permissions' => ['create']},
+        ],
       }
       EOS
 
@@ -43,8 +46,9 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl role list --format json' do
         data = JSON.parse(stdout)
         d = data.select { |o| o['name'] == 'test' }
-        expect(d[0]['rules'].size).to eq(1)
+        expect(d[0]['rules'].size).to eq(2)
         expect(d[0]['rules'][0]['permissions']).to eq(['read','create'])
+        expect(d[0]['rules'][1]['permissions']).to eq(['create'])
       end
     end
   end
