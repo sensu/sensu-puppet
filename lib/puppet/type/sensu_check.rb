@@ -201,7 +201,6 @@ DESC
     required_properties = [
       :command,
       :subscriptions,
-      :handlers,
     ]
     required_properties.each do |property|
       if self[:ensure] == :present && self[property].nil?

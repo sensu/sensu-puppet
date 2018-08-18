@@ -223,7 +223,6 @@ describe Puppet::Type.type(:sensu_check) do
   [
     :command,
     :subscriptions,
-    :handlers
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)
