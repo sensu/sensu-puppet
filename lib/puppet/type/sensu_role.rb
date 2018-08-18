@@ -1,5 +1,6 @@
 require_relative '../../puppet_x/sensu/type'
 require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/array_of_hashes_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
@@ -27,7 +28,7 @@ DESC
     end
   end
 
-  newproperty(:rules, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+  newproperty(:rules, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
     desc "The rulesets that a role applies."
     validate do |rule|
       if ! rule.is_a?(Hash)

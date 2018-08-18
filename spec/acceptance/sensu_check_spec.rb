@@ -8,7 +8,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_check { 'test':
         command       => 'check-http.rb',
-        subscriptions => ['demo'],
+        subscriptions => ['demo','linux'],
         handlers      => ['email'],
         interval      => 60,
       }
