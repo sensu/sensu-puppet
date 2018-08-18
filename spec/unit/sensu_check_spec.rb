@@ -199,6 +199,26 @@ describe Puppet::Type.type(:sensu_check) do
       config[:check_hooks] = ['foo']
       expect { check }.to raise_error(Puppet::Error, /check_hooks elements must be a Hash/)
     end
+
+    it 'should only allow one key' do
+      config[:check_hooks] = [{'critical' => ['test'],'warning' => ['test']}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks Hash must only contain one key/)
+    end
+
+    it 'should require valid type string' do
+      config[:check_hooks] = [{'crit' => ['test']}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks type value is invalid/)
+    end
+
+    it 'should require valid type integer' do
+      config[:check_hooks] = [{'256' => ['test']}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks type value is invalid/)
+    end
+
+    it 'should require hooks list to be an array' do
+      config[:check_hooks] = [{'critical' => 'test'}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks hooks must be an Array/)
+    end
   end
 
   it 'should autorequire Package[sensu-cli]' do

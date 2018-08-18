@@ -121,12 +121,15 @@ DESC
       if ! value.is_a?(Hash)
         raise ArgumentError, "check_hooks elements must be a Hash"
       end
+      if value.keys.size > 1
+        raise ArgumentError, "check_hooks Hash must only contain one key"
+      end
       type = value.keys[0]
       hooks = value[type]
       type_valid = false
       if ['ok','warning','critical','unknown','non-zero'].include?(type)
         type_valid = true
-      elsif type.to_s =~ /^\d+$/ && type.to_i.between?(0,256)
+      elsif type.to_s =~ /^\d+$/ && type.to_i.between?(1,255)
         type_valid = true
       end
       if ! type_valid
