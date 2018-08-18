@@ -11,6 +11,9 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         subscriptions => ['demo'],
         handlers      => ['email'],
         interval      => 60,
+        check_hooks   => [
+          { 'critical' => ['httpd-restart'] },
+        ],
       }
       EOS
 
@@ -23,6 +26,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl check info test --format json' do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('check-http.rb')
+        expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']}])
       end
     end
   end
