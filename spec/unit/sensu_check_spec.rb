@@ -70,7 +70,6 @@ describe Puppet::Type.type(:sensu_check) do
     :subscriptions,
     :handlers,
     :runtime_assets,
-    :check_hooks,
     :proxy_requests_entity_attributes,
     :metric_handlers,
     :output_metric_handlers,
@@ -177,6 +176,28 @@ describe Puppet::Type.type(:sensu_check) do
     it 'should verify time range keys' do
       config[:subdue_days] = {'all' => [{'start' => '5:00 PM', 'end' => '8:00 AM'}]}
       expect { check }.to raise_error(Puppet::Error, /subdue_days day time window must be a hash containing keys 'begin' and 'end'/)
+    end
+  end
+
+  describe 'check_hooks' do
+    [
+      1,
+      '1',
+      'ok',
+      'warning',
+      'critical',
+      'unknown',
+      'non-zero',
+    ].each do |type|
+      it "accepts valid values for type #{type} #{type.class}" do
+        config[:check_hooks] = [{type => ['test']}]
+        expect(check[:check_hooks]).to eq([{type => ['test']}])
+      end
+    end
+
+    it 'should require Hash elements' do
+      config[:check_hooks] = ['foo']
+      expect { check }.to raise_error(Puppet::Error, /check_hooks elements must be a Hash/)
     end
   end
 
