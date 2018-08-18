@@ -22,6 +22,7 @@ Manages Sensu checks
     subscriptions => ['linux'],
     check_hooks   => [
       { 'critical' => ['ps'] },
+      { 'warning'  => ['ps'] },
     ],
     interval      => 60,
   }
