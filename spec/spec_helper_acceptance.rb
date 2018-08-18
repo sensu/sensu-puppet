@@ -22,6 +22,6 @@ RSpec.configure do |c|
   c.before :suite do
     # Install module dependencies
     on hosts, puppet('module', 'install', 'puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1], :run_in_parallel => true }
-    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 4.0.0 < 5.0.0"'), { :acceptable_exit_codes => [0,1], :run_in_parallel => true }
+    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 6.0.0"'), { :acceptable_exit_codes => [0,1], :run_in_parallel => true }
   end
 end

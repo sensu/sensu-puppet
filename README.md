@@ -54,7 +54,7 @@ This module will install packages, create configuration and start services neces
 
 Plugin sync is required if the custom sensu types and providers are used.
 
-This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 4.0.0 < 5.0.0`) for systems using `apt`.
+This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 6.0.0`) for systems using `apt`.
 
 ### Beginning with sensu
 
