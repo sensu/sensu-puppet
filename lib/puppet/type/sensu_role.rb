@@ -27,7 +27,7 @@ DESC
     end
   end
 
-  newproperty(:rules, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+  newproperty(:rules, :array_matching => :all) do
     desc "The rulesets that a role applies."
     validate do |rule|
       if ! rule.is_a?(Hash)
