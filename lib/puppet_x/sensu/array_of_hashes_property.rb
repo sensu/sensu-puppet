@@ -1,10 +1,6 @@
 module PuppetX
   module Sensu
-    class HashProperty < Puppet::Property
-      validate do |value|
-        fail "#{self.name.to_s} should be a Hash" unless value.is_a? ::Hash
-      end
-
+    class ArrayOfHashesProperty < Puppet::Property
       def change_to_s(currentvalue, newvalue)
         currentvalue = currentvalue.to_s if currentvalue != :absent
         newvalue = newvalue.to_s
