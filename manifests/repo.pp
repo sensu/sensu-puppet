@@ -13,7 +13,7 @@ class sensu::repo {
         $repo_release = $facts['os']['release']['major']
       }
       # TODO: change from nightly to stable once there are stable releases
-      yumrepo { 'sensu_nightly':
+      yumrepo { 'sensu':
         baseurl         => "https://packagecloud.io/sensu/nightly/el/${repo_release}/\$basearch",
         repo_gpgcheck   => 1,
         gpgcheck        => 0,
@@ -26,7 +26,7 @@ class sensu::repo {
     }
     'Debian': {
       #TODO: change from nightly to stable once there are stable releases
-      apt::source { 'sensu_nightly':
+      apt::source { 'sensu':
         ensure   => 'present',
         location => "https://packagecloud.io/sensu/nightly/${downcase($facts['os']['name'])}/",
         repos    => 'main',
