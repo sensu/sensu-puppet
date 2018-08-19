@@ -15,6 +15,18 @@ Manages Sensu checks
     interval      => 60,
   }
 
+@example Create a check that has a hook
+  sensu_check { 'test':
+    ensure        => 'present',
+    command       => 'check-cpu.sh -w 75 -c 90',
+    subscriptions => ['linux'],
+    check_hooks   => [
+      { 'critical' => ['ps'] },
+      { 'warning'  => ['ps'] },
+    ],
+    interval      => 60,
+  }
+
 @example Create a check that is subdued
   sensu_check { 'test':
     ensure        => 'present',
@@ -104,9 +116,30 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:check_hooks, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "An array of Sensu hooks (names), which are commands run by the Sensu agent in response to the result of the check command execution."
-    newvalues(/.*/, :absent)
+  newproperty(:check_hooks, :array_matching => :all) do
+    desc "An array of Sensu hooks, which are commands run by the Sensu agent in response to the result of the check command execution."
+    validate do |value|
+      if ! value.is_a?(Hash)
+        raise ArgumentError, "check_hooks elements must be a Hash"
+      end
+      if value.keys.size > 1
+        raise ArgumentError, "check_hooks Hash must only contain one key"
+      end
+      type = value.keys[0]
+      hooks = value[type]
+      type_valid = false
+      if ['ok','warning','critical','unknown','non-zero'].include?(type)
+        type_valid = true
+      elsif type.to_s =~ /^\d+$/ && type.to_i.between?(1,255)
+        type_valid = true
+      end
+      if ! type_valid
+        raise ArgumentError, "check_hooks type #{type} is invalid"
+      end
+      if ! hooks.is_a?(Array)
+        raise ArgumentError, "check_hooks hooks must be an Array"
+      end
+    end
   end
 
   newproperty(:subdue_days, :parent => PuppetX::Sensu::HashProperty) do
