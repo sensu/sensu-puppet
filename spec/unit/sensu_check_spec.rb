@@ -207,12 +207,12 @@ describe Puppet::Type.type(:sensu_check) do
 
     it 'should require valid type string' do
       config[:check_hooks] = [{'crit' => ['test']}]
-      expect { check }.to raise_error(Puppet::Error, /check_hooks type value is invalid/)
+      expect { check }.to raise_error(Puppet::Error, /check_hooks type crit is invalid/)
     end
 
     it 'should require valid type integer' do
       config[:check_hooks] = [{'256' => ['test']}]
-      expect { check }.to raise_error(Puppet::Error, /check_hooks type value is invalid/)
+      expect { check }.to raise_error(Puppet::Error, /check_hooks type 256 is invalid/)
     end
 
     it 'should require hooks list to be an array' do
