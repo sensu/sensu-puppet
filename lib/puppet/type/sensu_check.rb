@@ -134,7 +134,7 @@ DESC
         type_valid = true
       end
       if ! type_valid
-        raise ArgumentError, "check_hooks type value is invalid"
+        raise ArgumentError, "check_hooks type #{type} is invalid"
       end
       if ! hooks.is_a?(Array)
         raise ArgumentError, "check_hooks hooks must be an Array"
