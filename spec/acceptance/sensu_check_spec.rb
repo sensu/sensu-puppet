@@ -9,7 +9,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       sensu_check { 'test':
         command       => 'check-http.rb',
         subscriptions => ['demo'],
-        handlers      => ['email'],
         interval      => 60,
       }
       EOS
@@ -34,7 +33,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       sensu_check { 'test':
         command             => 'check-http.rb',
         subscriptions       => ['demo'],
-        handlers            => ['email'],
         interval            => 60,
         extended_attributes => { 'foo' => 'bar' }
       }
