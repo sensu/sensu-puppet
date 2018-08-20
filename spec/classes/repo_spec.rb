@@ -14,7 +14,7 @@ describe 'sensu::repo', :type => :class do
       end
       if facts[:osfamily] == 'RedHat'
         it {
-          should contain_yumrepo('sensu_nightly').with({
+          should contain_yumrepo('sensu').with({
             'baseurl'         => baseurl,
             'repo_gpgcheck'   => 1,
             'gpgcheck'        => 0,
@@ -27,7 +27,7 @@ describe 'sensu::repo', :type => :class do
         }
       elsif facts[:osfamily] == 'Debian'
         it {
-          should contain_apt__source('sensu_nightly').with({
+          should contain_apt__source('sensu').with({
             'ensure' => 'present',
             'location' => "https://packagecloud.io/sensu/nightly/#{facts[:os]['name'].downcase}/",
             'repos'    => 'main',
