@@ -40,7 +40,6 @@ describe Puppet::Type.type(:sensu_check) do
     :command,
     :cron,
     :proxy_entity_id,
-    :metric_format,
     :output_metric_format
   ].each do |property|
     it "should accept valid #{property}" do
@@ -71,7 +70,6 @@ describe Puppet::Type.type(:sensu_check) do
     :handlers,
     :runtime_assets,
     :proxy_requests_entity_attributes,
-    :metric_handlers,
     :output_metric_handlers,
     :env_vars
   ].each do |property|
