@@ -1,5 +1,6 @@
 require_relative '../../puppet_x/sensu/type'
 require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/array_of_hashes_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
@@ -116,7 +117,7 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:check_hooks, :array_matching => :all) do
+  newproperty(:check_hooks, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
     desc "An array of Sensu hooks, which are commands run by the Sensu agent in response to the result of the check command execution."
     validate do |value|
       if ! value.is_a?(Hash)
