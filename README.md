@@ -123,6 +123,7 @@ The backend system would collect all `sensu_check` resources.
 ### Resource purging
 
 All the types provided by this module support purging except `sensu_config`.
+At this time `sensu_asset` can not be purged, see [Limitations](#limitations).
 This example will remove all unmanaged Sensu checks:
 
 ```puppet
@@ -148,6 +149,8 @@ facter -p sensu_version
 
 The Sensu v2 support is designed so that all resources managed by `sensuctl` are defined on the `sensu-backend` host.
 This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
+
+The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
 
 ## Development
 
