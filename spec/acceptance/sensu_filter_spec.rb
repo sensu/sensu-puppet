@@ -22,6 +22,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl filter info test --format json' do
         data = JSON.parse(stdout)
         expect(data['action']).to eq('allow')
+        expect(data['when']['days']).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
       end
     end
   end
@@ -33,7 +34,10 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       sensu_filter { 'test':
         action     => 'allow',
         statements => ["event.Entity.Environment == 'production'"],
-        when_days  => {'monday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
+        when_days  => {
+          'monday'  => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],
+          'tuesday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],
+        },
       }
       EOS
 
@@ -45,7 +49,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
     it 'should have a valid filter with updated propery' do
       on node, 'sensuctl filter info test --format json' do
         data = JSON.parse(stdout)
-        expect(data['when']['days']).to eq({'monday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
+        expect(data['when']['days']).to eq({'monday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],'tuesday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
       end
     end
   end
