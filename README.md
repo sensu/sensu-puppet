@@ -10,6 +10,8 @@
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
+    * [Exported resources](#exported-resources)
+    * [Resource purging](#resource-purging)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -118,6 +120,18 @@ The backend system would collect all `sensu_check` resources.
   Sensu_check <<||>>
 ```
 
+### Resource purging
+
+All the types provided by this module support purging except `sensu_config`.
+At this time `sensu_asset` can not be purged, see [Limitations](#limitations).
+This example will remove all unmanaged Sensu checks:
+
+```puppet
+resources { 'sensu_check':
+  purge => true,
+}
+```
+
 ## Reference
 
 ### Facts
@@ -135,6 +149,8 @@ facter -p sensu_version
 
 The Sensu v2 support is designed so that all resources managed by `sensuctl` are defined on the `sensu-backend` host.
 This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
+
+The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
 
 ## Development
 

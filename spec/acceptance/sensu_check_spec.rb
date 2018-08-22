@@ -16,6 +16,12 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         ],
         extended_attributes => { 'foo' => 'baz' }
       }
+      sensu_check { 'test2':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
       EOS
 
       # Run it twice and test for idempotency
@@ -29,6 +35,13 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['command']).to eq('check-http.rb')
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']}])
         expect(data['foo']).to eq('baz')
+      end
+    end
+
+    it 'should have multiple checks' do
+      on node, 'sensuctl check list --format json' do
+        data = JSON.parse(stdout)
+        expect(data.size).to eq(2)
       end
     end
   end
@@ -77,6 +90,27 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
 
     describe command('sensuctl check info test'), :node => node do
       its(:exit_status) { should_not eq 0 }
+    end
+  end
+
+  context 'resources purge' do
+    it 'should remove without errors' do
+      pp = <<-EOS
+      resources { 'sensu_check':
+        purge => true,
+      }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest_on(node, pp, :catch_failures => true)
+      apply_manifest_on(node, pp, :catch_changes  => true)
+    end
+
+    it 'should have no checks' do
+      on node, 'sensuctl check list --format json' do
+        data = JSON.parse(stdout)
+        expect(data.size).to eq(0)
+      end
     end
   end
 end
