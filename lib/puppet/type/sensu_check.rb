@@ -200,16 +200,6 @@ DESC
     desc "The splay coverage percentage use for proxy check request splay calculation."
   end
 
-  newproperty(:metric_format) do
-    #desc
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:metric_handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    #desc
-    newvalues(/.*/, :absent)
-  end
-
   newproperty(:output_metric_format) do
     #desc
     newvalues(/.*/, :absent)
