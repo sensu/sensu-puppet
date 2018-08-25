@@ -8,7 +8,9 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_handler { 'test':
         type          => 'pipe',
-        command       => 'notify.rb'
+        command       => 'notify.rb',
+        socket_host   => '127.0.0.1',
+        socket_port   => 1234,
       }
       EOS
 
@@ -21,6 +23,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl handler info test --format json' do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('notify.rb')
+        expect(data['socket']).to eq({'host' => '127.0.0.1', 'port' => 1234})
       end
     end
   end
@@ -33,6 +36,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         type          => 'pipe',
         command       => 'notify.rb',
         filters       => ['production'],
+        socket_host   => 'localhost',
+        socket_port   => 5678,
       }
       EOS
 
@@ -45,6 +50,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl handler info test --format json' do
         data = JSON.parse(stdout)
         expect(data['filters']).to eq(['production'])
+        expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
       end
     end
   end
