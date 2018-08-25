@@ -36,5 +36,6 @@ class sensu::redis::config {
     auto_reconnect     => $::sensu::redis_auto_reconnect,
     sentinels          => $sentinels,
     master             => $master,
+    tls                => $::sensu::redis_tls,
   }
 }

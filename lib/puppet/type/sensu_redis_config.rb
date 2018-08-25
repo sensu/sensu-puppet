@@ -99,6 +99,12 @@ Puppet::Type.newtype(:sensu_redis_config) do
     defaultto :true
   end
 
+  newproperty(:tls) do
+    desc "Use TLS encryption to connect to Redis"
+
+    defaultto :false
+  end
+
   newproperty(:sentinels, :array_matching => :all) do
     desc "Redis Sentinel configuration for HA clustering"
     defaultto []
