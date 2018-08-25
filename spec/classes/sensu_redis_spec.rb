@@ -132,5 +132,22 @@ describe 'sensu', :type => :class do
 
       it { should contain_file('/etc/sensu/conf.d/redis.json').with_ensure('absent') }
     end # purge configs
+
+    [true,false].each do |value|
+      context "with redis_tls specified as #{value}" do
+        let(:params) { { :redis_tls => value } }
+
+        if value
+          it { should contain_sensu_redis_config('testhost.domain.com').with(
+            :tls => {},
+          )}
+        else
+          it { should not contain_sensu_redis_config('testhost.domain.com').with(
+            :tls,
+          )}
+        end
+      end
+    end #redis_tls
+
   end #redis config
 end
