@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::agent class' do
+describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
   node = only_host_with_role(hosts, 'sensu_agent')
   context 'default' do
     it 'should work without errors' do
