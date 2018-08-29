@@ -211,6 +211,13 @@ This module does not support adding `sensuctl` resources on a host other than th
 
 The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
 
+To use Amazon 2 with Vagrant, the plugin
+[vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest) must be
+at least version `0.16.0.beta1`, which can be installed with the
+following command.
+
+`vagrant plugin install vagrant-vbguest --verbose --plugin-version 0.16.0.beta1`
+
 ## Development
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
