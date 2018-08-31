@@ -124,11 +124,11 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   end
 
   def tls
-    conf['redis']['tls'] == {}
+    conf['redis'].key?('tls') ? :true : :false
   end
 
   def tls=(value)
-    if value
+    if value == :true
       conf['redis']['tls'] = {}
     else
       conf['redis'].delete 'tls'

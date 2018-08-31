@@ -137,15 +137,7 @@ describe 'sensu', :type => :class do
       context "with redis_tls specified as #{value}" do
         let(:params) { { :redis_tls => value } }
 
-        if value
-          it { should contain_sensu_redis_config('testhost.domain.com').with(
-            :tls => {},
-          )}
-        else
-          it { should not contain_sensu_redis_config('testhost.domain.com').with(
-            :tls,
-          )}
-        end
+        it { should contain_sensu_redis_config('testhost.domain.com').with_tls(value) }
       end
     end #redis_tls
 
