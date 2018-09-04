@@ -46,7 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define "sensu-backend-peer1", primary: true, autostart: true do |backend|
+  config.vm.define "sensu-backend-peer1", autostart: false  do |backend|
     backend.vm.box = "centos/7"
     backend.vm.hostname = 'sensu-backend-peer1.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.21'
@@ -59,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define "sensu-backend-peer2", primary: true, autostart: true do |backend|
+  config.vm.define "sensu-backend-peer2", autostart: false do |backend|
     backend.vm.box = "centos/7"
     backend.vm.hostname = 'sensu-backend-peer2.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.22'
