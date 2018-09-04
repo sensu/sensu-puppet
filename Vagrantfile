@@ -15,7 +15,7 @@
 if not Vagrant.has_plugin?('vagrant-vbguest')
   abort <<-EOM
 
-vagrant plugin vagrant-vbguest is required.
+vagrant plugin vagrant-vbguest >= 0.16.0 is required.
 https://github.com/dotless-de/vagrant-vbguest
 To install the plugin, please run, 'vagrant plugin install vagrant-vbguest'.
 
