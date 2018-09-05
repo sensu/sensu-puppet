@@ -74,7 +74,8 @@ vagrant ssh sensu-backend
 Multiple Vagrant boxes are available for testing a sensu-backend cluster
 
 ```bash
-vagrant up sensu-backend sensu-backend-peer1 sensu-backend-peer2
+vagrant up sensu-backend-peer1 sensu-backend-peer2
+vagrant provision sensu-backend-peer1 sensu-backend-peer2
 ```
 
 ## Usage
