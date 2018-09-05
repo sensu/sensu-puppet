@@ -55,16 +55,16 @@
 # @param manage_services Manage the sensu services with puppet
 #
 # @param client_service_enable Set enable value for sensu client service
-#   (applies when manage_services is set to true) 
+#   (applies when manage_services is set to true)
 #
 # @param client_service_ensure Set ensure value for sensu client service
-#   (applies when manage_services is set to true) 
+#   (applies when manage_services is set to true)
 #
 # @param server_service_enable Set enable value for sensu server service
-#   (applies when manage_services is set to true) 
+#   (applies when manage_services is set to true)
 #
 # @param server_service_ensure Set ensure value for sensu server service
-#   (applies when manage_services is set to true) 
+#   (applies when manage_services is set to true)
 #
 # @param manage_user Manage the sensu user with puppet
 #
@@ -135,6 +135,8 @@
 #   In the end whatever sensu defaults to, which is "mymaster" currently.
 #
 # @param redis_auto_reconnect Reconnect to Redis in the event of a connection failure
+#
+# @param redis_tls Enable TLS encryption when connecting to Redis
 #
 # @param transport_type Transport type to be used by Sensu
 #
@@ -400,6 +402,7 @@ class sensu (
   Boolean            $redis_reconnect_on_error = true,
   Integer            $redis_db = 0,
   Boolean            $redis_auto_reconnect = true,
+  Boolean            $redis_tls = false,
   Optional[Array]    $redis_sentinels = undef,
   Optional[String]   $redis_master = undef,
   Enum['rabbitmq','redis'] $transport_type = 'rabbitmq',
