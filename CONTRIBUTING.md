@@ -48,6 +48,11 @@ The `sensu1` branch does not exist yet, though will once master targets
 Sensu v2. Sensu v1 will continue to be supported and changes to that
 version would then target this branch.
 
+To generate the `CHANGELOG.md` and exclude sensu2 changes run the
+following.
+
+`github_changelog_generator -u sensu -p sensu-puppet --exclude-labels 'sensu v2'`
+
 # Release process
 
 1. update version in `metadata.json`

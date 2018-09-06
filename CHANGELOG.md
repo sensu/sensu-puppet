@@ -1,7 +1,38 @@
 # Change Log
 
-## [v2.53.0](https://github.com/sensu/sensu-puppet/tree/v2.53.0)
+## [v2.54.0](https://github.com/sensu/sensu-puppet/tree/v2.54.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.53.0...v2.54.0)
+
+**Implemented enhancements:**
+
+- Feature Request: Ability to manage userOptions in dashboard.json [\#842](https://github.com/sensu/sensu-puppet/issues/842)
+- Sensu Redis - Support boolean redis\_tls parameter \(cont \#967\) [\#969](https://github.com/sensu/sensu-puppet/pull/969) ([treydock](https://github.com/treydock))
+
+**Fixed bugs:**
+
+- Windows sensu purge issue [\#879](https://github.com/sensu/sensu-puppet/issues/879)
+
+**Closed issues:**
+
+- Operator '\[\]' is not applicable to an Undef Value error in Rspec Tests [\#941](https://github.com/sensu/sensu-puppet/issues/941)
+- gems not installed on sensu upgrade.  [\#909](https://github.com/sensu/sensu-puppet/issues/909)
+- Drop support for Debian 7 on 2018-05-31 [\#904](https://github.com/sensu/sensu-puppet/issues/904)
+- Feature Request: Support Redis ssl configuration  [\#900](https://github.com/sensu/sensu-puppet/issues/900)
+- sensu plugin could do with a source param [\#899](https://github.com/sensu/sensu-puppet/issues/899)
+- Implement custom sensu-transport [\#895](https://github.com/sensu/sensu-puppet/issues/895)
+- enable specifying enable/ensure when managing services [\#888](https://github.com/sensu/sensu-puppet/issues/888)
+- Remove sensu\_check\_config [\#764](https://github.com/sensu/sensu-puppet/issues/764)
+- Consider replacing sensu\_contact \(and other types\) with sensu\_sorted\_json\(\) [\#729](https://github.com/sensu/sensu-puppet/issues/729)
+
+**Merged pull requests:**
+
+- Use newer ruby \(2.4.4\) for testing Puppet [\#951](https://github.com/sensu/sensu-puppet/pull/951) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-901\) Document branches for use with Sensu versions 1 and 2 [\#913](https://github.com/sensu/sensu-puppet/pull/913) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-911\) Generate REFERENCE.md for Puppet Forge [\#912](https://github.com/sensu/sensu-puppet/pull/912) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(GH-904\) Drop support for Debian 7 which is end of life \(EOL\) [\#910](https://github.com/sensu/sensu-puppet/pull/910) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.53.0](https://github.com/sensu/sensu-puppet/tree/v2.53.0) (2018-05-21)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.52.0...v2.53.0)
 
 **Implemented enhancements:**
@@ -112,6 +143,7 @@
 
 **Closed issues:**
 
+- Support arioch/redis [\#853](https://github.com/sensu/sensu-puppet/issues/853)
 - upgrading to newer version of sensu with newer embeded ruby doesn't reinstall plugins [\#542](https://github.com/sensu/sensu-puppet/issues/542)
 
 **Merged pull requests:**
@@ -371,6 +403,7 @@
 
 **Closed issues:**
 
+- \[puppetlabs/apt\] Version bumping for apt module [\#781](https://github.com/sensu/sensu-puppet/issues/781)
 - Auto generated documentation should show up as a GitHub page [\#777](https://github.com/sensu/sensu-puppet/issues/777)
 
 **Merged pull requests:**
@@ -387,6 +420,7 @@
 - Stop using scope.lookupvar\(\) in templates [\#701](https://github.com/sensu/sensu-puppet/issues/701)
 - Pass gem\_install\_options to sensu::plugin class [\#599](https://github.com/sensu/sensu-puppet/issues/599)
 - etc\_dir should be configurable [\#578](https://github.com/sensu/sensu-puppet/issues/578)
+- How do you use 'package' plugin provider with sensu::plugin define? [\#384](https://github.com/sensu/sensu-puppet/issues/384)
 
 **Merged pull requests:**
 
@@ -816,6 +850,7 @@
 - Windows: Provider sensu\_gem is not functional on this host [\#607](https://github.com/sensu/sensu-puppet/issues/607)
 - Source parameter not purged when removed from check [\#601](https://github.com/sensu/sensu-puppet/issues/601)
 - Windows: Fails to create sensu user [\#586](https://github.com/sensu/sensu-puppet/issues/586)
+- DISCUSSION: Move module to vox-pupuli [\#585](https://github.com/sensu/sensu-puppet/issues/585)
 - Doesn't create a transport.json file [\#556](https://github.com/sensu/sensu-puppet/issues/556)
 
 **Merged pull requests:**
@@ -868,6 +903,7 @@
 - Add support for aggregates array [\#549](https://github.com/sensu/sensu-puppet/issues/549)
 - subdue should be optional for sensu check definition [\#548](https://github.com/sensu/sensu-puppet/issues/548)
 - Update Puppet Forge releases [\#545](https://github.com/sensu/sensu-puppet/issues/545)
+- rabbitmq HA solution [\#541](https://github.com/sensu/sensu-puppet/issues/541)
 - error while installing ruby\_dep,  Bundler cannot continue [\#540](https://github.com/sensu/sensu-puppet/issues/540)
 - rake: uninitialized constant Syck with ruby 2.3.1 [\#539](https://github.com/sensu/sensu-puppet/issues/539)
 - Add some new maintainers [\#522](https://github.com/sensu/sensu-puppet/issues/522)
@@ -884,6 +920,8 @@
 - Check subdue modified every run [\#497](https://github.com/sensu/sensu-puppet/issues/497)
 - Trailing comma issue in config [\#492](https://github.com/sensu/sensu-puppet/issues/492)
 - Sensu Windows: sensu\_rabbitmq\_config type needs base\_path param passed [\#489](https://github.com/sensu/sensu-puppet/issues/489)
+- Creating a handler for Librato fails [\#484](https://github.com/sensu/sensu-puppet/issues/484)
+- Puppet not populating configuration files [\#476](https://github.com/sensu/sensu-puppet/issues/476)
 - Wrong default value of rabbitmq\_vhost [\#473](https://github.com/sensu/sensu-puppet/issues/473)
 - Release new version "Tag the repo" [\#472](https://github.com/sensu/sensu-puppet/issues/472)
 - support for new deregistration options [\#470](https://github.com/sensu/sensu-puppet/issues/470)
