@@ -15,6 +15,7 @@ describe 'sensu::repo', :type => :class do
       if facts[:osfamily] == 'RedHat'
         it {
           should contain_yumrepo('sensu').with({
+            'descr'           => 'sensu',
             'baseurl'         => baseurl,
             'repo_gpgcheck'   => 1,
             'gpgcheck'        => 0,
