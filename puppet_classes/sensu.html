@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: sensu
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::sensu";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (s)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">sensu</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: sensu</h1>
+<div class="box_info">
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/init.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Base Sensu class
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>This is the main Sensu class</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;installed&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Version of sensu to install.  Defaults to <code>installed</code> to support
+Windows MSI packaging and to avoid surprising upgrades.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sensu_etc_dir</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::osfamily</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Absolute path to the sensu etc directory.
+Default: &#39;/etc/sensu&#39; on Linux, &#39;C:/opt/sensu&#39; on windows</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sensu_plugin_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu-plugin&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of the sensu-plugin package. Refers to the
+sensu-plugin rubygem, not the community sensu-plugins community scripts.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sensu_plugin_provider</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::osfamily</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>String.  Provider used to install the sensu-plugin package. Refers to the
+sensu-plugin rubygem, not the sensu-plugins community scripts.  On windows,
+defaults to <code>gem</code>, all other platforms defaults to <code>undef</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sensu_plugin_version</span>
+      
+      
+        <span class='type'>(<tt>Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^\d[\d\.\-\w]+$/]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;installed&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Version of the sensu-plugin gem to install.
+Refers to the sensu-plugin rubygem, not the sensu-plugins community scripts</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>install_repo</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to install the sensu repo</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to install and configure Sensu Enterprise</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to install sensu-enterprise-dashboard</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_repo</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to manage apt/yum repositories</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo</span>
+      
+      
+        <span class='type'>(<tt>Enum['main','unstable']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;main&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Which sensu repo to install</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Location of the yum/apt repo.  Overrides the default location</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_key_id</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The apt GPG key id</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_key_source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;https://sensu.global.ssl.fastly.net/apt/pubkey.gpg&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>URL of the apt GPG key</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_release</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Release for the apt source. Only set this if you want to run
+packages from another release, which is not supported by Sensu. Only works
+with systems that use apt.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>spawn_limit</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Tune concurrency of the sensu-server pipe handler and the
+sensu-client check execution.  This setting should not need to be tuned
+except in specific situations, e.g. when there are a large number of JIT
+clients.  See <a href="https://github.com/sensu/sensu-puppet/issues/727">#727</a> for
+more information.  The default is undefined, which does not manage
+<code>/etc/sensu/conf.d/spawn.json</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Include the sensu client</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>server</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Include the sensu server</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Include the sensu api service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_services</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Manage the sensu services with puppet</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_service_enable</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Set enable value for sensu client service
+(applies when manage_services is set to true)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_service_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>running</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Set ensure value for sensu client service
+(applies when manage_services is set to true)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>server_service_enable</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Set enable value for sensu server service
+(applies when manage_services is set to true)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>server_service_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>running</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Set ensure value for sensu server service
+(applies when manage_services is set to true)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_user</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Manage the sensu user with puppet</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_plugins_dir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Manage the sensu plugins directory. Must be false if you use
+sensu::plugin with type &#39;directory&#39;.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_handlers_dir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Manage the sensu handlers directory</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_mutators_dir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Manage the sensu mutators directory</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sensu_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of the user Sensu is running as. Default is calculated
+according to the underlying OS</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sensu_group</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of the group Sensu is running as. Default is calculated
+according to the underlying OS</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_dir_mode</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Filemode]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::osfamily</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Directory mode for Sensu conf directory. Default is calculated
+according to the underlying OS</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_file_mode</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Filemode]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::osfamily</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>File mode for config files under Sensu conf directory . Default is calculated
+according to the underlying OS</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_port</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Rabbitmq port to be used by sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_host</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Host running rabbitmq for sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Username to connect to rabbitmq with for sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Password to connect to rabbitmq with for sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_vhost</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Rabbitmq vhost to be used by sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_ssl</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
+rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl =&gt; true
+without specifying a private key or cert chain to use SSL transport, but not cert auth.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_ssl_private_key</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Private key to be used by sensu to connect to rabbitmq. If the value starts with
+&#39;puppet://&#39; the file will be copied and used.  Also the key itself can be given as the
+parameter value, or a variable, or using hiera.  Absolute paths will just be used as
+a file reference, as you&#39;d normally configure sensu.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_ssl_cert_chain</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Private SSL cert chain to be used by sensu to connect to rabbitmq
+If the value starts with &#39;puppet://&#39; the file will be copied and used.   Also the key itself can
+be given as the parameter value, or a variable, or using hiera. Absolute paths will just be used
+as a file reference, as you&#39;d normally configure sensu.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_prefetch</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The integer value for the RabbitMQ prefetch attribute</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_cluster</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Hash,Array]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Array of hashes. Rabbitmq Cluster configuration
+and connection information for one or more Cluster</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rabbitmq_heartbeat</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The integer value for the RabbitMQ heartbeat attribute</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_host</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;127.0.0.1&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hostname of redis to be used by sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_port</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>6379</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Redis port to be used by sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Password to be used to connect to Redis</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_reconnect_on_error</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Reconnect to Redis in the event of a Redis error, e.g. READONLY
+(not to be confused with a connection failure).</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_db</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The Redis instance DB to use/select</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_sentinels</span>
+      
+      
+        <span class='type'>(<tt>Optional[Array]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Redis Sentinel configuration and connection information for one or more Sentinels</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_master</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Redis master name in the sentinel configuration
+In the end whatever sensu defaults to, which is &quot;mymaster&quot; currently.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_auto_reconnect</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Reconnect to Redis in the event of a connection failure</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redis_tls</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Enable TLS encryption when connecting to Redis</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>transport_type</span>
+      
+      
+        <span class='type'>(<tt>Enum['rabbitmq','redis']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;rabbitmq&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Transport type to be used by Sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>transport_reconnect_on_error</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If the transport connection is closed, attempt to reconnect automatically when possible.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_bind</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;0.0.0.0&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>IP to bind api service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_host</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;127.0.0.1&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hostname of the sensu api service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>4567</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Port of the sensu api service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Password of the sensu api service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Password of the sensu api service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_ssl_port</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Port of the HTTPS (SSL) sensu api service. Enterprise only
+feature.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_ssl_keystore_file</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The file path for the SSL certificate keystore. Enterprise only
+feature.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_ssl_keystore_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The SSL certificate keystore password. Enterprise only feature.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>subscriptions</span>
+      
+      
+        <span class='type'>(<tt>Variant[String,Array]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Default subscriptions used by the client</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_socket_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Boolean that determines if client socket will be enabled</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_address</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::ipaddress</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Address of the client to report with checks</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::fqdn</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of the client to report with checks</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_custom</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Custom client variables.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_deregister</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Enable the <a href="https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes">deregistration
+event</a>
+if true.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_deregistration</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>(<a href="https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes">https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes</a>)
+used to generate check result data for the de-registration event. Client
+deregistration attributes are merged with some default check definition
+attributes by the Sensu server during client deregistration, so any valid
+check definition attributes – including custom check definition attributes
+– may be used as deregistration attributes, with the following exceptions
+(which are used to ensure the check result is valid): check name, output,
+status, and issued timestamp. The following attributes are provided as
+recommendations for controlling client deregistration behavior.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_registration</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>(<a href="https://sensuapp.org/docs/latest/reference/clients#registration-attributes">https://sensuapp.org/docs/latest/reference/clients#registration-attributes</a>)
+used to generate check result data for the registration event. Client
+registration attributes are merged with some default check definition
+attributes by the Sensu server during client registration.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_keepalive</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Client keepalive configuration</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_http_socket</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Client http_socket configuration. Must be an Hash of
+parameters as described in:
+<a href="https://sensuapp.org/docs/latest/reference/clients.html#http-socket-attributes">https://sensuapp.org/docs/latest/reference/clients.html#http-socket-attributes</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_servicenow</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Client servicenow configuration. Supported only
+on Sensu Enterprise. It expects an Hash with a single key named
+&#39;configuration_item&#39; containing an Hash of parameters, as described in:
+<a href="https://sensuapp.org/docs/latest/reference/clients.html#servicenow-attributes">https://sensuapp.org/docs/latest/reference/clients.html#servicenow-attributes</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_ec2</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Client ec2 configuration. Supported only on Sensu
+Enterprise. It expects an Hash with valid paramters as described in:
+<a href="https://sensuapp.org/docs/latest/reference/clients.html#ec2-attributes">https://sensuapp.org/docs/latest/reference/clients.html#ec2-attributes</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_chef</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Client chef configuration. Supported only on Sensu
+Enterprise. It expects an Hash with valid paramters as described in:
+<a href="https://sensuapp.org/docs/latest/reference/clients.html#chef-attributes">https://sensuapp.org/docs/latest/reference/clients.html#chef-attributes</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_puppet</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Client puppet configuration. Supported only on Sensu
+Enterprise. It expects an Hash with valid paramters as described in:
+<a href="https://sensuapp.org/docs/latest/reference/clients.html#puppet-attributes">https://sensuapp.org/docs/latest/reference/clients.html#puppet-attributes</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>safe_mode</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Force safe mode for checks</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>plugins</span>
+      
+      
+        <span class='type'>(<tt>Variant[String,Array,Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Plugins to install on the node
+Strings and Arrays of strings will set &#39;install_path&#39; =&gt; &#39;/etc/sensu/plugins&#39; as default.
+Example string: &#39;puppet:///data/sensu/plugins/plugin1.rb&#39;
+Example array: [ &#39;puppet:///data/sensu/plugins/plugin1.rb&#39;, &#39;puppet:///data/sensu/plugins/plugin2.rb&#39; ]
+Example hash: { &#39;puppet:///data/sensu/plugins/plugin1.rb&#39; =&gt; { &#39;pkg_version&#39; =&gt; &#39;2.4.2&#39; }, &#39;puppet:///data/sensu/plugins/plugin1.rb&#39; =&gt; { &#39;pkg_provider&#39; =&gt; &#39;sensu-gem&#39; }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>plugins_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Defaults for Plugins to install on the node. Will be added when plugins is set to a hash.
+Example value: { &#39;install_path&#39; =&gt; &#39;/other/path&#39; }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>plugins_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Puppet url to plugins directory</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge</span>
+      
+      
+        <span class='type'>(<tt>Variant[Boolean,Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If unused plugins, configs, handlers, extensions and mutators should be removed from the system.
+If set to true, all unused plugins, configs, handlers, extensions and mutators will be removed from the system.
+If set to a Hash, only unused files of the specified type(s) will be removed from the system.
+Valid values: true, false, Hash containing any of the keys &#39;plugins&#39;, &#39;config&#39;, &#39;handlers&#39;, &#39;extensions&#39;, &#39;mutators&#39;
+Example value: { config =&gt; true, plugins =&gt; true }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>use_embedded_ruby</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If the embedded ruby should be used, e.g. to install the
+sensu-plugin gem.  This value is overridden by a defined
+sensu_plugin_provider.  Note, the embedded ruby should always be used to
+provide full compatibility.  Using other ruby runtimes, e.g. the system
+ruby, is not recommended.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rubyopt</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Ruby opts to be passed to the sensu services</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>gem_path</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Paths to add to GEM_PATH if we need to look for different dirs.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_level</span>
+      
+      
+        <span class='type'>(<tt>Enum['debug','info','warn','error','fatal']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;info&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu log level to be used</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_dir</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/var/log/sensu&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu log directory to be used</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_stop_max_wait</span>
+      
+      
+        <span class='type'>(<tt>Variant[Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>10</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Number of seconds to wait for the init stop script to run</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>gem_install_options</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Optional configuration to use for the installation of the
+sensu plugin gem with sensu_gem provider.
+See: <a href="https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options">https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options</a>
+Example value: [{ &#39;-p&#39; =&gt; &#39;<a href="http://user:pass@myproxy.company.org:8080">http://user:pass@myproxy.company.org:8080</a>&#39; }]</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>hasrestart</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of hasrestart attribute for sensu services.
+If you use your own startup scripts for upstart and want puppet
+to properly stop and start sensu services when those scripts change,
+set it to false. See also <a href="http://upstart.ubuntu.com/faq.html#reload">http://upstart.ubuntu.com/faq.html#reload</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_auth</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Optional auth configuration for Enterprise Dashboard</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_oidc</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Optional OIDC configuration for Enterprise Dashboard</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>path</span>
+      
+      
+        <span class='type'>(<tt>Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;$PATH&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Used to set PATH in /etc/default/sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redact</span>
+      
+      
+        <span class='type'>(<tt>Optional[Array]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Use to redact passwords from checks on the client side</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>deregister_on_stop</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether the sensu client should deregister from the API on service stop</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>deregister_handler</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The handler to use when deregistering a client on stop.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>handlers</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of handlers for use with create_resources(sensu::handler).
+Example value: { &#39;email&#39; =&gt; { &#39;type&#39; =&gt; &#39;pipe&#39;, &#39;command&#39; =&gt; &#39;mail&#39; } }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>handler_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Handler defaults when not provided explicitly in $handlers.
+Example value: { &#39;filters&#39; =&gt; [&#39;production&#39;] }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>checks</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of checks for use with create_resources(sensu::check).
+Example value: { &#39;check-cpu&#39; =&gt; { &#39;command&#39; =&gt; &#39;check-cpu.rb&#39; } }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>check_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Check defaults when not provided explicitly in $checks.
+Example value: { &#39;occurrences&#39; =&gt; 3 }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>filters</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of filters for use with create_resources(sensu::filter).
+Example value: { &#39;occurrence&#39; =&gt; { &#39;attributes&#39; =&gt; { &#39;occurrences&#39; =&gt; &#39;1&#39; } } }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>filter_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Filter defaults when not provided explicitly in $filters.
+Example value: { &#39;negate&#39; =&gt; true }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_checksum</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Used to set package_checksum for windows installs</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_logrotate</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to use logrotate on Windows OS family.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_log_size</span>
+      
+      
+        <span class='type'>(<tt>Variant[Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>10240</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The integer value for the size of log files on
+Windows OS family. sizeThreshold in sensu-client.xml.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_log_number</span>
+      
+      
+        <span class='type'>(<tt>Variant[Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>10</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The integer value for the number of log files to
+keep on Windows OS family. keepFiles in sensu-client.xml.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_pkg_url</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If specified, override the behavior of computing the
+package source URL from windows_repo_prefix and os major release fact.
+This parameter is intended to allow the end user to override the source URL
+used to install the Windows package.  For example:
+<code>&quot;https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi&quot;</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_package_provider</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When something other than <code>undef</code>, use the
+specified package provider to install Windows packages. The default
+behavior of <code>undef</code> defers to the default package provider in Puppet which
+is expected to be the msi provider.
+Valid values are <code>undef</code> or <code>&#39;chocolatey&#39;</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_choco_repo</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The URL of the Chocolatey repository, used with
+the chocolatey windows package provider.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_package_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;Sensu&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The package name used to identify the package
+filename. Defaults to <code>&#39;sensu&#39;</code> which matches the MSI filename published at
+<code>https://repositories.sensuapp.org/msi</code>.  Note, this is distinct from the
+windows_package_title, which is used to identify the package name as
+displayed in Add/Remove programs in Windows.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_package_title</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The package name used to identify the package as
+listed in Add/Remove programs.  Note this is distinct from the package
+filename identifier specified with windows_package_name.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>confd_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Additional directories to load configuration
+snippets from.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>heap_size</span>
+      
+      
+        <span class='type'>(<tt>Variant[Integer,Pattern[/^(\d+)/],Undef]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the HEAP_SIZE environment variable.
+Note: This has effect only on Sensu Enterprise.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>max_open_files</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the MAX_OPEN_FILES environment variable.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_file</span>
+      
+      
+        <span class='type'>(<tt>Variant[Stdlib::Absolutepath,Undef]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the CONFIG_FILE environment variable.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>heap_dump_path</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the HEAP_DUMP_PATH environment variable.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_opts</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the JAVA_OPTS environment variable.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_version</span>
+      
+      
+        <span class='type'>(<tt>Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;latest&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_pass</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_version</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;latest&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_repo_key_id</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;910442FF8781AFD0995D14B311AB27E8C3FE3269&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_bind</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;127.0.0.1&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>client_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>3030</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_config</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_plugins_dir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>dashboard</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_base_path</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_host</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_port</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_refresh</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_pass</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_ssl</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_audit</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_github</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_gitlab</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>enterprise_dashboard_ldap</span>
+      
+      
+        <span class='type'>(<tt>Optional[Any]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>windows_repo_prefix</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;https://repositories.sensuapp.org/msi&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>extensions</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>mutators</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 339</span>
+
+class sensu (
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = &#39;installed&#39;,
+  String             $sensu_plugin_name = &#39;sensu-plugin&#39;,
+  Optional[String]   $sensu_plugin_provider = $::osfamily ? {
+    &#39;windows&#39; =&gt; &#39;gem&#39;,
+    default   =&gt; undef,
+  },
+  Stdlib::Absolutepath $sensu_etc_dir = $::osfamily ? {
+    &#39;windows&#39; =&gt; &#39;C:/opt/sensu&#39;,
+    default   =&gt; &#39;/etc/sensu&#39;,
+  },
+  Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^\d[\d\.\-\w]+$/] $sensu_plugin_version = &#39;installed&#39;,
+  Boolean            $install_repo = true,
+  Boolean            $enterprise = false,
+  Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/] $enterprise_version = &#39;latest&#39;,
+  Optional[String]   $enterprise_user = undef,
+  Optional[String]   $enterprise_pass = undef,
+  Boolean            $enterprise_dashboard = false,
+  String             $enterprise_dashboard_version = &#39;latest&#39;,
+  Boolean            $manage_repo = true,
+  Enum[&#39;main&#39;,&#39;unstable&#39;] $repo = &#39;main&#39;,
+  Optional[String]   $repo_source = undef,
+  String             $repo_key_id = &#39;EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB&#39;,
+  String             $repo_key_source = &#39;https://sensu.global.ssl.fastly.net/apt/pubkey.gpg&#39;,
+  Optional[String]   $repo_release = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $spawn_limit = undef,
+  String             $enterprise_repo_key_id = &#39;910442FF8781AFD0995D14B311AB27E8C3FE3269&#39;,
+  Boolean            $client = true,
+  Boolean            $server = false,
+  Boolean            $api = false,
+  Boolean            $manage_services = true,
+  Boolean            $client_service_enable = true,
+  String             $client_service_ensure = running,
+  Boolean            $server_service_enable = true,
+  String             $server_service_ensure = running,
+  Boolean            $manage_user = true,
+  Boolean            $manage_plugins_dir = true,
+  Boolean            $manage_handlers_dir = true,
+  Boolean            $manage_mutators_dir = true,
+  Optional[String]   $sensu_user = undef,
+  Optional[String]   $sensu_group = undef,
+  Optional[Stdlib::Filemode] $config_dir_mode = $::osfamily ? {
+    &#39;windows&#39; =&gt; undef,
+    default   =&gt; &#39;0555&#39;,
+  },
+  Optional[Stdlib::Filemode] $config_file_mode = $::osfamily ? {
+    &#39;windows&#39; =&gt; undef,
+    default   =&gt; &#39;0440&#39;,
+  },
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_port = undef,
+  Optional[String]   $rabbitmq_host = undef,
+  Optional[String]   $rabbitmq_user = undef,
+  Optional[String]   $rabbitmq_password = undef,
+  Optional[String]   $rabbitmq_vhost = undef,
+  Optional[Boolean]  $rabbitmq_ssl = undef,
+  Optional[String]   $rabbitmq_ssl_private_key = undef,
+  Optional[String]   $rabbitmq_ssl_cert_chain = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_prefetch = undef,
+  Variant[Undef,Hash,Array]                  $rabbitmq_cluster = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $rabbitmq_heartbeat = undef,
+  Optional[String]   $redis_host = &#39;127.0.0.1&#39;,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $redis_port = 6379,
+  Optional[String]   $redis_password = undef,
+  Boolean            $redis_reconnect_on_error = true,
+  Integer            $redis_db = 0,
+  Boolean            $redis_auto_reconnect = true,
+  Boolean            $redis_tls = false,
+  Optional[Array]    $redis_sentinels = undef,
+  Optional[String]   $redis_master = undef,
+  Enum[&#39;rabbitmq&#39;,&#39;redis&#39;] $transport_type = &#39;rabbitmq&#39;,
+  Boolean            $transport_reconnect_on_error = true,
+  String             $api_bind = &#39;0.0.0.0&#39;,
+  String             $api_host = &#39;127.0.0.1&#39;,
+  Integer            $api_port = 4567,
+  Optional[String]   $api_user = undef,
+  Optional[String]   $api_password = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $api_ssl_port = undef,
+  Optional[String]   $api_ssl_keystore_file = undef,
+  Optional[String]   $api_ssl_keystore_password = undef,
+  Variant[String,Array] $subscriptions = [],
+  Boolean            $client_socket_enabled = true,
+  String             $client_bind = &#39;127.0.0.1&#39;,
+  Integer            $client_port = 3030,
+  String             $client_address =  $::ipaddress,
+  String             $client_name =  $::fqdn,
+  Hash               $client_custom = {},
+  Variant[Undef,Boolean] $client_deregister = undef,
+  Variant[Undef,Hash] $client_deregistration = undef,
+  Variant[Undef,Hash] $client_registration = undef,
+  Hash               $client_keepalive = {},
+  Hash               $client_http_socket = {},
+  Hash               $client_servicenow = {},
+  Hash               $client_ec2 = {},
+  Hash               $client_chef = {},
+  Hash               $client_puppet = {},
+  Boolean            $safe_mode = false,
+  Variant[String,Array,Hash] $plugins = [],
+  Hash               $plugins_defaults = {},
+  Optional[String]   $plugins_dir = undef,
+  Variant[Boolean,Hash] $purge = false,
+  Boolean            $purge_config = false,
+  Boolean            $purge_plugins_dir = false,
+  Boolean            $use_embedded_ruby = true,
+  Optional[String]   $rubyopt = undef,
+  Optional[String]   $gem_path = undef,
+  Enum[&#39;debug&#39;,&#39;info&#39;,&#39;warn&#39;,&#39;error&#39;,&#39;fatal&#39;] $log_level = &#39;info&#39;,
+  Stdlib::Absolutepath $log_dir = &#39;/var/log/sensu&#39;,
+  Boolean            $dashboard = false,
+  Variant[Integer,Pattern[/^(\d+)$/]] $init_stop_max_wait = 10,
+  Optional[Any]      $gem_install_options = undef,
+  Boolean            $hasrestart = true,
+  Optional[String]   $enterprise_dashboard_base_path = undef,
+  Optional[String]   $enterprise_dashboard_host = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $enterprise_dashboard_port = undef,
+  Optional[Any]      $enterprise_dashboard_refresh = undef,
+  Optional[String]   $enterprise_dashboard_user = undef,
+  Optional[String]   $enterprise_dashboard_pass = undef,
+  Optional[Any]      $enterprise_dashboard_auth = undef,
+  Optional[Any]      $enterprise_dashboard_ssl = undef,
+  Optional[Any]      $enterprise_dashboard_audit = undef,
+  Optional[Any]      $enterprise_dashboard_github = undef,
+  Optional[Any]      $enterprise_dashboard_gitlab = undef,
+  Optional[Any]      $enterprise_dashboard_ldap = undef,
+  Optional[Any]      $enterprise_dashboard_oidc = undef,
+  Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = &#39;$PATH&#39;,
+  Optional[Array]    $redact = undef,
+  Boolean            $deregister_on_stop = false,
+  Optional[String]   $deregister_handler = undef,
+  Optional[String]   $package_checksum = undef,
+  Optional[String]   $windows_pkg_url = undef,
+  Optional[String]   $windows_repo_prefix = &#39;https://repositories.sensuapp.org/msi&#39;,
+  Boolean            $windows_logrotate = false,
+  Variant[Integer,Pattern[/^(\d+)$/]] $windows_log_number = 10,
+  Variant[Integer,Pattern[/^(\d+)$/]] $windows_log_size = 10240,
+  Optional[String]   $windows_package_provider = undef,
+  Optional[String]   $windows_choco_repo = undef,
+  String             $windows_package_name = &#39;Sensu&#39;,
+  String             $windows_package_title = &#39;sensu&#39;,
+  Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
+  Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
+  Variant[Stdlib::Absolutepath,Undef] $config_file = undef,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $max_open_files = undef,
+  Variant[Undef,String] $heap_dump_path = undef,
+  Variant[Undef,String] $java_opts      = undef,
+  ### START Hiera Lookups###
+  Hash               $extensions = {},
+  Hash               $handlers = {},
+  Hash               $handler_defaults = {},
+  Hash               $checks = {},
+  Hash               $check_defaults = {},
+  Hash               $filters = {},
+  Hash               $filter_defaults = {},
+  Hash               $mutators = {},
+  ### END Hiera Lookups ###
+) {
+
+  case $::kernel {
+    &#39;Darwin&#39;: {
+      $api_service_name  = &#39;org.sensuapp.sensu-api&#39;
+      $etc_dir           = $sensu_etc_dir
+      $conf_dir          = &quot;${etc_dir}/conf.d&quot;
+      $user              = &#39;_sensu&#39;
+      $group             = &#39;wheel&#39;
+      $home_dir          = &#39;/opt/sensu&#39;
+      $shell             = &#39;/bin/false&#39;
+      $dir_mode          = $config_dir_mode
+      $file_mode         = $config_file_mode
+      $service_name      = &#39;org.sensuapp.sensu-client&#39;
+    }
+    &#39;Linux&#39;: {
+      $api_service_name  = &#39;sensu-api&#39;
+      $etc_dir           = $sensu_etc_dir
+      $conf_dir          = &quot;${etc_dir}/conf.d&quot;
+      $user              = $sensu_user  ? {
+        undef   =&gt; &#39;sensu&#39;,
+        default =&gt; $sensu_user,
+      }
+      $group        = $sensu_group ? {
+        undef   =&gt; &#39;sensu&#39;,
+        default =&gt; $sensu_group,
+      }
+      $home_dir          = &#39;/opt/sensu&#39;
+      $shell             = &#39;/bin/false&#39;
+      $dir_mode          = $config_dir_mode
+      $file_mode         = $config_file_mode
+      $service_name      = &#39;sensu-client&#39;
+    }
+    &#39;windows&#39;: {
+      $api_service_name  = undef
+      $etc_dir           = $sensu_etc_dir
+      $conf_dir          = &quot;${etc_dir}/conf.d&quot;
+      $user              = $sensu_user  ? {
+        undef   =&gt; &#39;NT Authority\SYSTEM&#39;,
+        default =&gt; $sensu_user,
+      }
+      $group        = $sensu_group ? {
+        undef   =&gt; &#39;Administrators&#39;,
+        default =&gt; $sensu_group,
+      }
+      $home_dir          = $etc_dir
+      $shell             = undef
+      $dir_mode          = $config_dir_mode
+      $file_mode         = $config_file_mode
+      $service_name      = &#39;sensu-client&#39;
+    }
+    default: {
+      fail(&quot;Detected kernel is &lt;${::kernel}&gt; and must be Darwin, Linux or windows.&quot;)
+    }
+  }
+
+  if $dashboard { fail(&#39;Sensu-dashboard is deprecated, use a dashboard module. See https://github.com/sensu/sensu-puppet#dashboards&#39;)}
+  if $purge_config { fail(&#39;purge_config is deprecated, set the purge parameter to a hash containing `config =&gt; true` instead&#39;) }
+  if $purge_plugins_dir { fail(&#39;purge_plugins_dir is deprecated, set the purge parameter to a hash containing `plugins =&gt; true` instead&#39;) }
+
+  # sensu-enterprise supersedes sensu-server and sensu-api
+  if ( $enterprise and $api ) or ( $enterprise and $server ) {
+    fail(&#39;Sensu Enterprise: sensu-enterprise replaces sensu-server and sensu-api&#39;)
+  }
+  # validate enterprise repo credentials
+  if $manage_repo {
+    if ( $enterprise or $enterprise_dashboard ) and $install_repo {
+      if $enterprise_user == undef or $enterprise_pass == undef {
+        fail(&#39;The Sensu Enterprise repos require both enterprise_user and enterprise_pass to be set&#39;)
+      }
+    }
+  }
+
+  # Put here to avoid computing the conditionals for every check
+  if $client and $manage_services {
+    $client_service = Service[&#39;sensu-client&#39;]
+  } else {
+    $client_service = undef
+  }
+
+  if $enterprise and $manage_services {
+    $enterprise_service = Service[&#39;sensu-enterprise&#39;]
+  } else {
+    $enterprise_service = undef
+  }
+
+  if $server {
+    $server_service_class = Class[&#39;sensu::server::service&#39;]
+  } else {
+    $server_service_class = undef
+  }
+
+  if $api and $manage_services and $::osfamily != &#39;windows&#39; {
+    $api_service = $::osfamily ? {
+      &#39;Darwin&#39; =&gt; Service[&#39;org.sensuapp.sensu-client&#39;],
+      default  =&gt; Service[$api_service_name],
+    }
+  } else {
+    $api_service = undef
+  }
+
+  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service, $enterprise_service ])
+
+  # Because you can&#39;t reassign a variable in puppet and we need to set to
+  # false if you specify a directory, we have to use another variable.
+  if $plugins_dir {
+    $_manage_plugins_dir = false
+  } else {
+    $_manage_plugins_dir = $manage_plugins_dir
+  }
+
+  if $purge =~ Boolean {
+    # If purge is a boolean, we either purge everything or purge nothing
+    $_purge_plugins    = $purge
+    $_purge_config     = $purge
+    $_purge_handlers   = $purge
+    $_purge_extensions = $purge
+    $_purge_mutators   = $purge
+  } else {
+    # Default anything not specified to false
+    $default_purge_hash = { plugins =&gt; false, config =&gt; false, handlers =&gt; false, extensions =&gt; false, mutators =&gt; false }
+    $full_purge_hash = merge($default_purge_hash, $purge)
+    validate_bool($full_purge_hash[&#39;plugins&#39;], $full_purge_hash[&#39;config&#39;], $full_purge_hash[&#39;handlers&#39;], $full_purge_hash[&#39;extensions&#39;], $full_purge_hash[&#39;mutators&#39;])
+    # Check that all keys are valid
+    $invalid_keys = difference(keys($purge), keys($default_purge_hash))
+    if !empty($invalid_keys) {
+      fail(&quot;Invalid keys for purge parameter: ${invalid_keys}&quot;)
+    }
+
+    $_purge_plugins    = $full_purge_hash[&#39;plugins&#39;]
+    $_purge_config     = $full_purge_hash[&#39;config&#39;]
+    $_purge_handlers   = $full_purge_hash[&#39;handlers&#39;]
+    $_purge_extensions = $full_purge_hash[&#39;extensions&#39;]
+    $_purge_mutators   = $full_purge_hash[&#39;mutators&#39;]
+  }
+
+  # (#463) This well-known anchor serves as a reference point so all checks are
+  # managed after all plugins.  It must always exist in the catalog.
+  anchor { &#39;plugins_before_checks&#39;: }
+
+  $extensions.each |$k,$v| {
+    ::sensu::extension { $k:
+      * =&gt; $v,
+    }
+  }
+  $handlers.each |$k,$v| {
+    ::sensu::handler { $k:
+      * =&gt; $handler_defaults + $v,
+    }
+  }
+  $checks.each |$k,$v| {
+    ::sensu::check { $k:
+      * =&gt; $check_defaults + $v,
+    }
+  }
+  $filters.each |$k,$v| {
+    ::sensu::filter { $k:
+      * =&gt; $filter_defaults + $v,
+    }
+  }
+  $mutators.each |$k,$v| {
+    ::sensu::mutator { $k:
+      * =&gt; $v,
+    }
+  }
+
+  # Include everything and let each module determine its state.  This allows
+  # transitioning to purged config and stopping/disabling services
+  contain ::sensu::package
+  contain ::sensu::enterprise
+  contain ::sensu::transport
+  contain ::sensu::rabbitmq::config
+  contain ::sensu::api
+  contain ::sensu::redis::config
+  contain ::sensu::client
+  contain ::sensu::server::service
+  contain ::sensu::enterprise::dashboard
+
+  Class[&#39;::sensu::package&#39;]
+  -&gt; Class[&#39;::sensu::transport&#39;]
+  -&gt; Class[&#39;::sensu::rabbitmq::config&#39;]
+  -&gt; Sensu_api_config[$::fqdn]
+  -&gt; Class[&#39;::sensu::redis::config&#39;]
+  -&gt; Sensu_client_config[$::fqdn]
+  -&gt; Class[&#39;::sensu::server::service&#39;]
+  -&gt; Class[&#39;::sensu::enterprise::dashboard&#39;]
+
+  # Dependencies for Plugins #
+  # Without this line, plugins installed with the sensu_gem provider may get
+  # evaluated before the sensu package, which, on sensu package upgrades that
+  # install a new version of Ruby, would mean that two runs of Puppet would be
+  # necessary to get the plugins installed into the new embedded Ruby folder.
+  Package[&#39;sensu&#39;]
+  ~&gt; Package&lt;| provider == &#39;sensu_gem&#39; |&gt;
+  ~&gt; Service&lt;| title == &#39;sensu-client&#39; or title == &#39;sensu-server&#39; or title == &#39;sensu-api&#39;|&gt;
+
+  if $plugins_dir {
+    sensu::plugin { $plugins_dir: type =&gt; &#39;directory&#39; }
+  } else {
+    case $plugins {
+      String,Array: { sensu::plugin { $plugins: } }
+      Hash:         { create_resources(&#39;::sensu::plugin&#39;, $plugins, $plugins_defaults ) }
+      default:      { fail(&#39;Invalid data type for $plugins, must be a string, an array, or a hash.&#39;) }
+    }
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

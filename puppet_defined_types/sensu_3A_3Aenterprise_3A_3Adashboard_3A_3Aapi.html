@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: sensu::enterprise::dashboard::api
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::sensu::enterprise::dashboard::api";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (s)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">sensu::enterprise::dashboard::api</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: sensu::enterprise::dashboard::api</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/enterprise/dashboard/api.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Manages the Sensu Enterprise API configuration
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>Manages the Sensu Enterprise API configuration</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>host</span>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The hostname or IP address of the Sensu API.
+This is used as the namevar for the underlying resource, so must be unique
+within the catalog.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum['present','absent']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>present</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether the dashboard API should be configured or not</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>base_path</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The base path to the client config file.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datacenter</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The datacenter name.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The port of the Sensu API.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ssl</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to use the HTTPS protocol.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>insecure</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether or not to accept an insecure SSL certificate.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>path</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The path of the Sensu API. Leave empty unless your Sensu API is not mounted to /.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>timeout</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The timeout for the Sensu API, in seconds.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The username of the Sensu API. Leave empty for no authentication.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pass</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The password of the Sensu API. Leave empty for no authentication.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/enterprise/dashboard/api.pp', line 29</span>
+
+define sensu::enterprise::dashboard::api (
+  Enum[&#39;present&#39;,&#39;absent&#39;] $ensure = present,
+  Optional[String]  $base_path     = undef,
+  Optional[String]  $datacenter    = undef,
+  Optional[Integer] $port          = undef,
+  Optional[Boolean] $ssl           = undef,
+  Optional[Boolean] $insecure      = undef,
+  Optional[String]  $path          = undef,
+  Optional[Integer] $timeout       = undef,
+  Optional[String]  $user          = undef,
+  Optional[String]  $pass          = undef,
+) {
+
+  include ::sensu::enterprise::dashboard
+
+  sensu_enterprise_dashboard_api_config { $title:
+    ensure     =&gt; $ensure,
+    base_path  =&gt; $base_path,
+    datacenter =&gt; $datacenter,
+    port       =&gt; $port,
+    ssl        =&gt; $ssl,
+    insecure   =&gt; $insecure,
+    path       =&gt; $path,
+    timeout    =&gt; $timeout,
+    user       =&gt; $user,
+    pass       =&gt; $pass,
+  }
+
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

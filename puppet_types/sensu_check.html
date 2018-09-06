@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Resource Type: sensu_check
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_types::sensu_check";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (s)</a> &raquo;
+    <span class='title'><span class='object_link'>Resource Types</span></span>
+     &raquo; 
+    <span class="title">sensu_check</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Resource Type: sensu_check</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      lib/puppet/type/sensu_check.rb
+    </dd>
+  </dl>
+  
+  <dl>
+    <dt>Providers:</dt>
+    <dd>
+      
+        <span class='object_link'><a href="../puppet_providers_sensu_check/json.html" title="puppet_providers_sensu_check::json (puppet_provider)">json</a></span><br/>
+      
+    </dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>Manages Sensu checks</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  
+
+</div>
+<div class="tags">
+  <p class="tag_title">Properties</p>
+  <ul>
+    
+    <li>
+      <span class="name">aggregate</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Whether check is aggregate</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">aggregates</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>An array of aggregates to add to the check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">command</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Command to be run by the check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">contacts</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Contact names to override handler configuration via Contact Routing</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /^[\w\.-]+$/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">cron</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>When the check should be executed, using the Cron syntax.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">custom</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Custom check variables</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">dependencies</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Dependencies of this check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">ensure</span>
+      
+      <span class="default"> (defaults to: <em>present</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The basic property that the resource should be in.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            present
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">handle</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Whether check event send to a handler</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">handlers</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>List of handlers that responds to this check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">high_flap_threshold</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>A host is determined to be flapping when the percent change exceedes this threshold.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">interval</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>How frequently the check runs in seconds</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">low_flap_threshold</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>A host is determined to be flapping when the percent change is below this threshold.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">occurrences</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The number of event occurrences before the handler should take action.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">proxy_requests</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Proxy Requests</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">publish</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Whether check is unpublished</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">refresh</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The number of seconds sensu-plugin-aware handlers should wait before taking second action.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">source</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The check source, used to create a JIT Sensu client for an external resource (e.g. a network switch).</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">standalone</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Whether this is a standalone check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">subdue</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Check subdue</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">subscribers</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Who is subscribed to this check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">timeout</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Check timeout in seconds, after it fails</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">ttl</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Check ttl in seconds</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">type</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>What type of check is this</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+  </ul>
+</div>
+
+
+<div class="tags">
+  <p class="tag_title">Parameters</p>
+  <ul>
+    
+    <li>
+      <span class="name">base_path</span>
+      
+      <span class="default"> (defaults to: <em>/etc/sensu/conf.d/checks</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The base path to the client config file</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the check.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+  </ul>
+</div>
+
+
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

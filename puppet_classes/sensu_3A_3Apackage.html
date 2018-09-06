@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: sensu::package
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::sensu::package";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (s)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">sensu::package</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: sensu::package</h1>
+<div class="box_info">
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/package.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Installs Sensu packages
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>Installs the Sensu packages</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>conf_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::conf_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The default configuration directory.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>confd_dir</span>
+      
+      
+        <span class='type'>(<tt>Variant[String,Array,Undef]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::confd_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Additional directories to load configuration
+snippets from.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>heap_size</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::heap_size</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the HEAP_SIZE environment variable.
+Note: This has no effect on sensu-core.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_file</span>
+      
+      
+        <span class='type'>(<tt>Variant[Stdlib::Absolutepath,Undef]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::config_file</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Value of the CONFIG_FILE environment variable.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>deregister_handler</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::deregister_handler</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The handler to use when deregistering a client on stop.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>deregister_on_stop</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::deregister_on_stop</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether the sensu client should deregister from the API on service stop</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>gem_path</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::gem_path</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Paths to add to GEM_PATH if we need to look for different dirs.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_stop_max_wait</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Integer,Pattern[/^(\d+)$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::init_stop_max_wait</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Number of seconds to wait for the init stop script to run</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::log_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu log directory to be used
+Valid values: Any valid log directory path, accessible by the sensu user</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_level</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::log_level</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu log level to be used
+Valid values: debug, info, warn, error, fatal</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>path</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::path</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Used to set PATH in /etc/default/sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rubyopt</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::rubyopt</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Ruby opts to be passed to the sensu services</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>use_embedded_ruby</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::use_embedded_ruby</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If the embedded ruby should be used, e.g. to install the
+sensu-plugin gem.  This value is overridden by a defined
+sensu_plugin_provider.  Note, the embedded ruby should always be used to
+provide full compatibility.  Using other ruby runtimes, e.g. the system
+ruby, is not recommended.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/package.pp', line 39</span>
+
+class sensu::package (
+  Optional[String] $conf_dir            = $::sensu::conf_dir,
+  Variant[String,Array,Undef] $confd_dir = $::sensu::confd_dir,
+  Variant[Undef,Integer,Pattern[/^(\d+)/]] $heap_size = $::sensu::heap_size,
+  Variant[Stdlib::Absolutepath,Undef] $config_file = $::sensu::config_file,
+  Optional[String] $deregister_handler  = $::sensu::deregister_handler,
+  Optional[Boolean] $deregister_on_stop = $::sensu::deregister_on_stop,
+  Optional[String] $gem_path            = $::sensu::gem_path,
+  Variant[Undef,Integer,Pattern[/^(\d+)$/]] $init_stop_max_wait = $::sensu::init_stop_max_wait,
+  Optional[String] $log_dir             = $::sensu::log_dir,
+  Optional[String] $log_level           = $::sensu::log_level,
+  Optional[String] $path                = $::sensu::path,
+  Optional[String] $rubyopt             = $::sensu::rubyopt,
+  Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
+) {
+
+  case $::osfamily {
+    &#39;Darwin&#39;: {
+      $pkg_provider = &#39;pkgdmg&#39;
+      $pkg_source   = &#39;/tmp/sensu-installer.dmg&#39;
+      $pkg_require  = &quot;Remote_file[${pkg_source}]&quot;
+      $pkg_title    = &#39;sensu&#39;
+      $pkg_version  = $::sensu::version
+      $service_name = &#39;org.sensuapp.sensu-client&#39;
+
+      remote_file { $pkg_source:
+        ensure =&gt; present,
+        source =&gt; &quot;https://repositories.sensuapp.org/osx/${::macosx_productversion_major}/x86_64/sensu-${pkg_version}.dmg&quot;,
+      }
+    }
+
+    &#39;Debian&#39;: {
+      $pkg_title    = &#39;sensu&#39;
+      $pkg_name     = &#39;sensu&#39;
+      $pkg_version  = $::sensu::version
+      $pkg_source   = undef
+      $pkg_provider = undef
+      $service_name = &#39;sensu-client&#39;
+
+      if $::sensu::manage_repo {
+        class { &#39;::sensu::repo::apt&#39;: }
+      }
+      if $::sensu::manage_repo and $::sensu::install_repo {
+        include ::apt
+        $pkg_require = Class[&#39;apt::update&#39;]
+      }
+      else {
+        $pkg_require = undef
+      }
+    }
+
+    &#39;RedHat&#39;: {
+      $pkg_title = &#39;sensu&#39;
+      $pkg_name = &#39;sensu&#39;
+      $pkg_version = $::sensu::version
+      $pkg_source = undef
+      $pkg_provider = undef
+      $service_name = &#39;sensu-client&#39;
+
+      if $::sensu::manage_repo {
+        class { &#39;::sensu::repo::yum&#39;: }
+      }
+
+      $pkg_require = undef
+    }
+
+    &#39;windows&#39;: {
+      $repo_require = undef
+
+      # $pkg_version is passed to Package[sensu] { ensure }.  The Windows MSI
+      # provider translates hyphens to dots, e.g. &#39;0.29.0-11&#39; maps to
+      # &#39;0.29.0.11&#39; on the system.  This mapping is necessary to converge.
+      $pkg_version = regsubst($::sensu::version, &#39;-&#39;, &#39;.&#39;)
+      # The version used to construct the download URL.
+      $pkg_url_version = $::sensu::version ? {
+        &#39;installed&#39; =&gt; &#39;latest&#39;,
+        default     =&gt; $::sensu::version,
+      }
+      # The title used for consistent relationships in the Puppet catalog
+      $pkg_title = $::sensu::windows_package_title
+      # The name used by the provider to compare to Windows Add/Remove programs.
+      $pkg_name = $::sensu::windows_package_name
+      $service_name = &#39;sensu-client&#39;
+
+      # The user can override the computation of the source URL.  This URL is
+      # used with the remote_file resource, it is not used with the chocolatey
+      # package provider.
+      if $::sensu::windows_pkg_url {
+        $pkg_url = $::sensu::windows_pkg_url
+      } else {
+        # The OS Release specific sub-folder
+        $os_release = $facts[&#39;os&#39;][&#39;release&#39;][&#39;major&#39;]
+        # e.g. &#39;2012 R2&#39; =&gt; &#39;2012r2&#39;
+        $pkg_url_dir = regsubst($os_release, &#39;^(\d+)\s*[rR](\d+)&#39;, &#39;\\1r\\2&#39;)
+        $pkg_arch = $facts[&#39;os&#39;][&#39;architecture&#39;]
+        $pkg_url = &quot;${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi&quot;
+      }
+
+      if $::sensu::windows_package_provider == &#39;chocolatey&#39; {
+        $pkg_provider = &#39;chocolatey&#39;
+        if $::sensu::windows_choco_repo {
+          $pkg_source = $::sensu::windows_choco_repo
+        } else {
+          $pkg_source = undef
+        }
+        $pkg_require = undef
+      } else {
+        # Use Puppet&#39;s default package provider
+        $pkg_provider = undef
+        # Where the MSI is downloaded to and installed from.
+        $pkg_source = &quot;C:\\Windows\\Temp\\sensu-${pkg_url_version}.msi&quot;
+        $pkg_require = &quot;Remote_file[${pkg_title}]&quot;
+
+        # path matches Package[sensu] { source =&gt; $pkg_source }
+        remote_file { $pkg_title:
+          ensure   =&gt; present,
+          path     =&gt; $pkg_source,
+          source   =&gt; $pkg_url,
+          checksum =&gt; $::sensu::package_checksum,
+        }
+      }
+    }
+
+    default: { fail(&quot;${::osfamily} not supported yet&quot;) }
+
+  }
+
+  case $::osfamily {
+    &#39;Darwin&#39;: {
+      package { $pkg_title:
+        ensure   =&gt; present,
+        source   =&gt; $pkg_source,
+        require  =&gt; $pkg_require,
+        provider =&gt; $pkg_provider,
+      }
+    }
+    default: {
+      package { $pkg_title:
+        ensure   =&gt; $pkg_version,
+        name     =&gt; $pkg_name,
+        source   =&gt; $pkg_source,
+        require  =&gt; $pkg_require,
+        provider =&gt; $pkg_provider,
+      }
+    }
+  }
+
+  if $::sensu::sensu_plugin_provider {
+    $plugin_provider = $::sensu::sensu_plugin_provider
+  } else {
+    $plugin_provider = $::sensu::use_embedded_ruby ? {
+      true    =&gt; &#39;sensu_gem&#39;,
+      default =&gt; &#39;gem&#39;,
+    }
+  }
+
+  if $plugin_provider =~ /gem/ and $::sensu::gem_install_options {
+    package { $::sensu::sensu_plugin_name :
+      ensure          =&gt; $::sensu::sensu_plugin_version,
+      provider        =&gt; $plugin_provider,
+      install_options =&gt; $::sensu::gem_install_options,
+    }
+  } else {
+    package { $::sensu::sensu_plugin_name :
+      ensure   =&gt; $::sensu::sensu_plugin_version,
+      provider =&gt; $plugin_provider,
+    }
+  }
+
+  if $::osfamily != &#39;windows&#39; {
+    $template_content = $::osfamily ? {
+      &#39;Darwin&#39; =&gt; &#39;EMBEDDED_RUBY=true&#39;,
+      default  =&gt; template(&quot;${module_name}/sensu.erb&quot;)
+    }
+    file { &#39;/etc/default/sensu&#39;:
+      ensure  =&gt; file,
+      content =&gt; $template_content,
+      owner   =&gt; &#39;0&#39;,
+      group   =&gt; &#39;0&#39;,
+      mode    =&gt; &#39;0444&#39;,
+      require =&gt; Package[$pkg_title],
+    }
+  }
+
+  file { [ $conf_dir, &quot;${conf_dir}/handlers&quot;, &quot;${conf_dir}/checks&quot;, &quot;${conf_dir}/filters&quot;, &quot;${conf_dir}/extensions&quot;, &quot;${conf_dir}/mutators&quot;, &quot;${conf_dir}/contacts&quot; ]:
+    ensure  =&gt; directory,
+    owner   =&gt; $::sensu::user,
+    group   =&gt; $::sensu::group,
+    mode    =&gt; $::sensu::dir_mode,
+    purge   =&gt; $::sensu::_purge_config,
+    recurse =&gt; true,
+    force   =&gt; true,
+    require =&gt; Package[$pkg_title],
+  }
+
+  if $::sensu::manage_handlers_dir {
+    file { &quot;${sensu::etc_dir}/handlers&quot;:
+      ensure  =&gt; directory,
+      mode    =&gt; $::sensu::dir_mode,
+      owner   =&gt; $::sensu::user,
+      group   =&gt; $::sensu::group,
+      purge   =&gt; $::sensu::_purge_handlers,
+      recurse =&gt; true,
+      force   =&gt; true,
+      require =&gt; Package[$pkg_title],
+    }
+  }
+
+  file { [&quot;${sensu::etc_dir}/extensions&quot;, &quot;${sensu::etc_dir}/extensions/handlers&quot;]:
+    ensure  =&gt; directory,
+    mode    =&gt; $::sensu::dir_mode,
+    owner   =&gt; $::sensu::user,
+    group   =&gt; $::sensu::group,
+    purge   =&gt; $::sensu::_purge_extensions,
+    recurse =&gt; true,
+    force   =&gt; true,
+    require =&gt; Package[$pkg_title],
+  }
+
+  if $::sensu::manage_mutators_dir {
+    file { &quot;${sensu::etc_dir}/mutators&quot;:
+      ensure  =&gt; directory,
+      mode    =&gt; $::sensu::dir_mode,
+      owner   =&gt; $::sensu::user,
+      group   =&gt; $::sensu::group,
+      purge   =&gt; $::sensu::_purge_mutators,
+      recurse =&gt; true,
+      force   =&gt; true,
+      require =&gt; Package[$pkg_title],
+    }
+  }
+
+  if $::sensu::_manage_plugins_dir {
+    file { &quot;${sensu::etc_dir}/plugins&quot;:
+      ensure  =&gt; directory,
+      mode    =&gt; $::sensu::dir_mode,
+      owner   =&gt; $::sensu::user,
+      group   =&gt; $::sensu::group,
+      purge   =&gt; $::sensu::_purge_plugins,
+      recurse =&gt; true,
+      force   =&gt; true,
+      require =&gt; Package[$pkg_title],
+    }
+  }
+
+  if $::sensu::spawn_limit {
+    $spawn_config = { &#39;sensu&#39; =&gt; { &#39;spawn&#39; =&gt; { &#39;limit&#39; =&gt; $::sensu::spawn_limit } } }
+    $spawn_template = &#39;&lt;%= require &quot;json&quot;; JSON.pretty_generate(@spawn_config) + $/ %&gt;&#39;
+    $spawn_ensure = &#39;file&#39;
+    $spawn_content = inline_template($spawn_template)
+    if $::sensu::client and $::sensu::manage_services {
+      $spawn_notify = [
+        Service[$service_name],
+        Class[&#39;sensu::server::service&#39;],
+      ]
+    } elsif $::sensu::manage_services {
+      $spawn_notify = [ Class[&#39;sensu::server::service&#39;] ]
+    } else {
+      $spawn_notify = undef
+    }
+  } else {
+    $spawn_ensure = undef
+    $spawn_content = undef
+    $spawn_notify = undef
+  }
+
+  file { &quot;${sensu::etc_dir}/conf.d/spawn.json&quot;:
+    ensure  =&gt; $spawn_ensure,
+    content =&gt; $spawn_content,
+    mode    =&gt; $::sensu::dir_mode,
+    owner   =&gt; $::sensu::user,
+    group   =&gt; $::sensu::group,
+    require =&gt; Package[$pkg_title],
+    notify  =&gt; $spawn_notify,
+  }
+
+  if $::sensu::manage_user and $::osfamily != &#39;windows&#39; {
+    user { $::sensu::user:
+      ensure  =&gt; &#39;present&#39;,
+      system  =&gt; true,
+      home    =&gt; $::sensu::home_dir,
+      shell   =&gt; $::sensu::shell,
+      require =&gt; Group[$::sensu::group],
+      comment =&gt; &#39;Sensu Monitoring Framework&#39;,
+    }
+
+    group { $::sensu::group:
+      ensure =&gt; &#39;present&#39;,
+      system =&gt; true,
+    }
+  } elsif $::sensu::manage_user and $::osfamily == &#39;windows&#39; {
+    notice(&#39;Managing a local windows user is not implemented on windows&#39;)
+  }
+
+  file { &quot;${sensu::etc_dir}/config.json&quot;: ensure =&gt; absent }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

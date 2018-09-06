@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: sensu::plugin
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::sensu::plugin";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (s)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">sensu::plugin</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: sensu::plugin</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/plugin.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Installs Sensu plugins
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>Installs the Sensu community script and plugins
+which can be used as monitoring checks</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>type</span>
+      
+      
+        <span class='type'>(<tt>Enum['file','url','package','directory']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;file&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Plugin source
+Valid values: file, directory, package, url</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>install_path</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::osfamily</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The path to install the plugin</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When using a directory source, purge setting</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>recurse</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When using a directory source, recurse setting</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>force</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When using a directory source, force setting</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pkg_version</span>
+      
+      
+        <span class='type'>(<tt>Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;latest&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When using package source, version to install</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pkg_provider</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::sensu_plugin_provider</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When using package to install plugins, provider to use.
+Valid values: sensu_gem, apt, aptitude, yum</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pkg_checksum</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The packake&#39;s MD5 checksum.
+Valid values: Any valid MD5 string of the wanted package</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nocheckcertificate</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>When using url source, disable certificate checking for HTTPS</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>gem_install_options</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::gem_install_options</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Optional configuration to use for the installation of the
+sensu plugin gem with sensu_gem provider.
+See: <a href="https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options">https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options</a>
+Example value: [{ &#39;-p&#39; =&gt; &#39;<a href="http://user:pass@myproxy.company.org:8080">http://user:pass@myproxy.company.org:8080</a>&#39; }]</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/plugin.pp', line 32</span>
+
+define sensu::plugin (
+  Enum[&#39;file&#39;,&#39;url&#39;,&#39;package&#39;,&#39;directory&#39;] $type                = &#39;file&#39;,
+  Stdlib::Absolutepath $install_path = $::osfamily ? {
+    &#39;windows&#39; =&gt; &#39;C:/opt/sensu/plugins&#39;,
+    default   =&gt; &#39;/etc/sensu/plugins&#39;,
+  },
+  Boolean $purge               = true,
+  Boolean $recurse             = true,
+  Boolean $force               = true,
+  Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/] $pkg_version         = &#39;latest&#39;,
+  Optional[String] $pkg_provider        = $::sensu::sensu_plugin_provider,
+  Optional[String] $pkg_checksum        = undef,
+  Boolean $nocheckcertificate  = false,
+  Any $gem_install_options = $::sensu::gem_install_options,
+) {
+
+  File {
+    owner =&gt; &#39;sensu&#39;,
+    group =&gt; &#39;sensu&#39;,
+  }
+
+  Sensu::Plugin[$name]
+  ~&gt; Service[&#39;sensu-client&#39;]
+
+  # (#463) All plugins must come before all checks.  Collections are not used to
+  # avoid realizing any resources.
+  Sensu::Plugin[$name]
+  -&gt; Anchor[&#39;plugins_before_checks&#39;]
+
+  case $type {
+    &#39;file&#39;: {
+      $filename = basename($name)
+
+      sensu::plugins_dir { &quot;${name}-${install_path}&quot;:
+        path    =&gt; $install_path,
+        purge   =&gt; $purge,
+        recurse =&gt; $recurse,
+        force   =&gt; $force,
+      }
+
+      file { &quot;${install_path}/${filename}&quot;:
+        ensure  =&gt; file,
+        mode    =&gt; &#39;0555&#39;,
+        source  =&gt; $name,
+        require =&gt; File[$install_path],
+      }
+    }
+    &#39;url&#39;: {
+      $filename = basename($name)
+
+      sensu::plugins_dir { &quot;${name}-${install_path}&quot;:
+        path    =&gt; $install_path,
+        purge   =&gt; $purge,
+        recurse =&gt; $recurse,
+        force   =&gt; $force,
+      }
+
+      remote_file { $name:
+        ensure   =&gt; present,
+        path     =&gt; &quot;${install_path}/${filename}&quot;,
+        source   =&gt; $name,
+        checksum =&gt; $pkg_checksum,
+        require  =&gt; File[$install_path],
+      }
+
+      file { &quot;${install_path}/${filename}&quot;:
+        ensure  =&gt; file,
+        mode    =&gt; &#39;0555&#39;,
+        require =&gt; [
+          File[$install_path],
+          Remote_file[$name],
+        ],
+      }
+    }
+    &#39;directory&#39;: {
+      file { &quot;${install_path}_for_plugin_${name}&quot;:
+        ensure  =&gt; &#39;directory&#39;,
+        path    =&gt; $install_path,
+        mode    =&gt; &#39;0555&#39;,
+        source  =&gt; $name,
+        recurse =&gt; $recurse,
+        purge   =&gt; $purge,
+        force   =&gt; $force,
+        require =&gt; Package[$sensu::package::pkg_title],
+      }
+    }
+    &#39;package&#39;: {
+      $gem_install_options_real = $pkg_provider ? {
+        &#39;gem&#39;       =&gt; $gem_install_options,
+        &#39;sensu_gem&#39; =&gt; $gem_install_options,
+        default     =&gt; undef,
+      }
+
+      package { $name:
+        ensure          =&gt; $pkg_version,
+        provider        =&gt; $pkg_provider,
+        install_options =&gt; $gem_install_options_real,
+      }
+    }
+    default:      {
+      fail(&#39;Unsupported sensu::plugin install type&#39;)
+    }
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>
