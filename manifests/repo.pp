@@ -14,6 +14,7 @@ class sensu::repo {
       }
       # TODO: change from nightly to stable once there are stable releases
       yumrepo { 'sensu':
+        descr           => 'sensu',
         baseurl         => "https://packagecloud.io/sensu/nightly/el/${repo_release}/\$basearch",
         repo_gpgcheck   => 1,
         gpgcheck        => 0,
