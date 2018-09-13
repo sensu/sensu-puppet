@@ -40,7 +40,6 @@ describe Puppet::Type.type(:sensu_check) do
     :command,
     :cron,
     :proxy_entity_id,
-    :output_metric_format
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -216,6 +215,25 @@ describe Puppet::Type.type(:sensu_check) do
     it 'should require hooks list to be an array' do
       config[:check_hooks] = [{'critical' => 'test'}]
       expect { check }.to raise_error(Puppet::Error, /check_hooks hooks must be an Array/)
+    end
+  end
+
+  describe 'output_metric_format' do
+    [
+      'nagios_perfdata',
+      'graphite_plaintext',
+      'influxdb_line',
+      'opentsdb_line',
+    ].each do |v|
+      it "should accept #{v}" do
+        config[:output_metric_format] = v
+        expect(check[:output_metric_format]).to eq(v.to_sym)
+      end
+    end
+
+    it 'should not accept invalid values' do
+      config[:output_metric_format] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, absent/)
     end
   end
 
