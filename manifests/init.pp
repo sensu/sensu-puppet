@@ -28,7 +28,6 @@ class sensu (
   if $manage_repo {
     include ::sensu::repo
   }
-  include ::sensu::agent
 
   file { 'sensu_etc_dir':
     ensure  => 'directory',
