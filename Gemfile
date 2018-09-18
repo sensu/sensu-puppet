@@ -6,12 +6,6 @@ else
   gem 'puppet', :require => false
 end
 
-if facterversion = ENV['FACTER_GEM_VERSION'] || "~> 3.x"
-  gem 'facter', facterversion, :require => false
-else
-  gem 'facter', :require => false
-end
-
 group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
   gem 'rspec-puppet', '~> 2.5.0',                         :require => false
