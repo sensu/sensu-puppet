@@ -69,6 +69,15 @@ vagrant up sensu-backend
 vagrant ssh sensu-backend
 ```
 
+#### Beginning with a Sensu cluster
+
+Multiple Vagrant boxes are available for testing a sensu-backend cluster
+
+```bash
+vagrant up sensu-backend-peer1 sensu-backend-peer2
+vagrant provision sensu-backend-peer1 sensu-backend-peer2
+```
+
 ## Usage
 
 ### Basic Sensu backend

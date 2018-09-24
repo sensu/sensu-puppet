@@ -46,7 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define "sensu-backend-peer1", primary: true, autostart: true do |backend|
+  config.vm.define "sensu-backend-peer1", autostart: false  do |backend|
     backend.vm.box = "centos/7"
     backend.vm.hostname = 'sensu-backend-peer1.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.21'
@@ -55,11 +55,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8080, host: 8082, auto_correct: true
     backend.vm.network :forwarded_port, guest: 8081, host: 8083, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend.pp"
+    backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-cluster.pp"
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define "sensu-backend-peer2", primary: true, autostart: true do |backend|
+  config.vm.define "sensu-backend-peer2", autostart: false do |backend|
     backend.vm.box = "centos/7"
     backend.vm.hostname = 'sensu-backend-peer2.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.22'
@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8080, host: 8084, auto_correct: true
     backend.vm.network :forwarded_port, guest: 8081, host: 8085, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend.pp"
+    backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-cluster.pp"
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
