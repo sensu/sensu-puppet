@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
   def self.ignore_keys
     [
       'duration', 'history', 'issued', 'status', 'total_state_change', 'total_state-change',
-      'executed', 'last_ok', 'occurrences', 'occurrences_watermark',
+      'executed', 'last_ok', 'occurrences', 'occurrences_watermark', 'output'
     ]
   end
 
