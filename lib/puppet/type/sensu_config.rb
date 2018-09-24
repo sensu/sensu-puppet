@@ -16,6 +16,7 @@ DESC
   add_autorequires()
 
   ensurable do
+    desc "The basic property that the resource should be in."
     defaultvalues
     validate do |value|
       if value.to_sym == :absent

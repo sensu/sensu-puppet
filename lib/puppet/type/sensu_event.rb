@@ -21,6 +21,7 @@ DESC
   add_autorequires()
 
   ensurable do
+    desc "The basic property that the resource should be in."
     nodefault
     newvalue(:present)
     newvalue(:resolve) do
