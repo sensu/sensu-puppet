@@ -36,7 +36,7 @@ DESC
 
   newparam(:test_url) do
     desc 'URL to use for testing if the Sensu backend is up'
-    defaultto '/info'
+    defaultto '/health'
   end
 
   newparam(:timeout) do

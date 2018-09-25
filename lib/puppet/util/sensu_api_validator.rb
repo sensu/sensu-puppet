@@ -10,7 +10,7 @@ module Puppet
       attr_reader :test_path
       attr_reader :test_headers
 
-      def initialize(sensu_api_server, sensu_api_port, use_ssl=false, test_path = "/info")
+      def initialize(sensu_api_server, sensu_api_port, use_ssl=false, test_path = "/health")
         @sensu_api_server = sensu_api_server
         @sensu_api_port   = sensu_api_port
         @use_ssl         = use_ssl
