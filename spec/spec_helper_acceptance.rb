@@ -1,15 +1,11 @@
 require 'beaker-rspec'
 require 'beaker-puppet'
 require 'beaker/module_install_helper'
+require 'beaker/puppet_install_helper'
 
-install_puppet_agent_on(hosts, :puppet_collection => 'puppet5', :puppet_agent_version => ENV['PUPPET_INSTALL_VERSION'], :run_in_parallel => true)
-proj = File.join(File.dirname(__FILE__), '..')
-if fact('osfamily') == 'windows'
-  modulepath = 'C:/ProgramData/PuppetLabs/code/modules'
-else
-  modulepath = '/etc/puppetlabs/code/modules'
-end
-copy_module_to(hosts, :source => proj, :module_name => 'sensu', :target_module_path => modulepath)
+run_puppet_install_helper
+install_module_dependencies
+install_module
 
 RSpec.configure do |c|
   c.add_setting :sensu_full, default: false
@@ -22,8 +18,7 @@ RSpec.configure do |c|
 
   # Configure all nodes in nodeset
   c.before :suite do
-    # Install module dependencies
-    on hosts, puppet('module', 'install', 'puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1], :run_in_parallel => true }
-    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 6.0.0"'), { :acceptable_exit_codes => [0,1], :run_in_parallel => true }
+    # Install soft module dependencies
+    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 6.0.0"'), { :acceptable_exit_codes => [0,1] }
   end
 end
