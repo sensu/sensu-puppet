@@ -1,4 +1,4 @@
-require 'puppet/network/http_pool'
+require 'net/http'
 
 module Puppet
   module Util
@@ -15,7 +15,6 @@ module Puppet
         @sensu_api_port   = sensu_api_port
         @use_ssl         = use_ssl
         @test_path       = test_path
-        @test_headers    = { "Accept" => "application/json" }
       end
 
       # Utility method; attempts to make an http/https connection to the sensu_api server.
@@ -27,9 +26,13 @@ module Puppet
         # All that we care about is that we are able to connect successfully via
         # http(s), so here we're simpling hitting a somewhat arbitrary low-impact URL
         # on the sensu_api server.
-        conn = Puppet::Network::HttpPool.http_instance(sensu_api_server, sensu_api_port, use_ssl)
+        http = Net::HTTP.new(@sensu_api_server, @sensu_api_port)
+        http.use_ssl = @use_ssl
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        request = Net::HTTP::Get.new(@test_path)
+        request.add_field("Accept", "application/json")
+        response = http.request(request)
 
-        response = conn.get(test_path, test_headers)
         unless response.kind_of?(Net::HTTPSuccess) || response.kind_of?(Net::HTTPUnauthorized)
           Puppet.notice "Unable to connect to sensu_api server (http#{use_ssl ? "s" : ""}://#{sensu_api_server}:#{sensu_api_port}): [#{response.code}] #{response.msg}"
           return false

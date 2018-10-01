@@ -8,7 +8,7 @@ end
 
 group :development, :unit_tests do
   gem 'rake',                                             '< 11.0.0'
-  gem 'rspec-puppet', '~> 2.5.0',                         :require => false
+  gem 'rspec-puppet', '~> 2.6.0',                         :require => false
   gem 'rspec-puppet-facts',                               :require => false
   gem 'rspec-mocks',                                      :require => false
   gem 'puppetlabs_spec_helper', '>= 2.7.0',               :require => false
