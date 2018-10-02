@@ -136,12 +136,15 @@ Sensu-Puppet module.</p>
 
 <ul>
 <li><a href="https://github.com/puppetlabs/puppetlabs-apt">puppetlabs/apt</a></li>
+<li><a href="https://github.com/puppetlabs/puppetlabs-yumrepo_core">puppetlabs/yumrepo_core</a></li>
 <li><a href="https://github.com/puppetlabs/puppetlabs-powershell">puppetlabs/powershell</a></li>
 <li><a href="https://github.com/voxpupuli/puppet-rabbitmq">voxpupuli/rabbitmq</a></li>
 </ul>
 
 <p>Note: While this module works with other versions of puppetlabs/apt, we
 test against and support what is listed in the <code>.fixtures.yml</code> file.</p>
+
+<p>Note: <code>puppetlabs/yumrepo_core</code> is only needed for Puppet <code>&gt;= 6.0.0</code> for systems that use <code>yum</code>.</p>
 
 <p>Pluginsync should be enabled. Also, you will need the Ruby JSON library
 or gem on all your nodes.</p>
