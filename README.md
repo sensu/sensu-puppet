@@ -57,11 +57,14 @@ See `metadata.json` for details.
 Soft dependencies if you use the corresponding technologies.
 
 - [puppetlabs/apt](https://github.com/puppetlabs/puppetlabs-apt)
+- [puppetlabs/yumrepo_core](https://github.com/puppetlabs/puppetlabs-yumrepo_core)
 - [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
 - [voxpupuli/rabbitmq](https://github.com/voxpupuli/puppet-rabbitmq)
 
 Note: While this module works with other versions of puppetlabs/apt, we
 test against and support what is listed in the `.fixtures.yml` file.
+
+Note: `puppetlabs/yumrepo_core` is only needed for Puppet `>= 6.0.0` for systems that use `yum`.
 
 Pluginsync should be enabled. Also, you will need the Ruby JSON library
 or gem on all your nodes.

@@ -591,7 +591,8 @@ class sensu (
     $api_service = undef
   }
 
-  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service, $enterprise_service ])
+  $_check_notify = [ $client_service, $server_service_class, $api_service, $enterprise_service ]
+  $check_notify = $_check_notify.filter |$val| { $val =~ NotUndef }
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.
