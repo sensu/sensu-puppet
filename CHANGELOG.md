@@ -1,7 +1,6 @@
 # Change Log
 
-## [v2.55.0](https://github.com/sensu/sensu-puppet/tree/v2.55.0)
-
+## [v2.55.0](https://github.com/sensu/sensu-puppet/tree/v2.55.0) (2018-10-02)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.54.0...v2.55.0)
 
 **Merged pull requests:**
