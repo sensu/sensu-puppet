@@ -1,7 +1,15 @@
 # Change Log
 
-## [v2.54.0](https://github.com/sensu/sensu-puppet/tree/v2.54.0)
+## [v2.55.0](https://github.com/sensu/sensu-puppet/tree/v2.55.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.54.0...v2.55.0)
+
+**Merged pull requests:**
+
+- Support Puppet 6 [\#988](https://github.com/sensu/sensu-puppet/pull/988) ([treydock](https://github.com/treydock))
+- Fixing invalid multibyte char error [\#975](https://github.com/sensu/sensu-puppet/pull/975) ([pmjensen](https://github.com/pmjensen))
+
+## [v2.54.0](https://github.com/sensu/sensu-puppet/tree/v2.54.0) (2018-09-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.53.0...v2.54.0)
 
 **Implemented enhancements:**
