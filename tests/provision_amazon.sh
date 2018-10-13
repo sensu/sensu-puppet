@@ -19,9 +19,9 @@ rpm -qa | grep -q puppet
 if [ $? -ne 0 ]
 then
 
-    rpm_install https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
+    rpm_install https://yum.puppetlabs.com/puppet5/puppet5-release-el-6.noarch.rpm
     yum-config-manager --enable epel >/dev/null 2>&1
-    yum-config-manager --setopt="puppetlabs-pc1.priority=1" --save >/dev/null 2>&1
+    yum-config-manager --setopt="puppet5.priority=1" --save >/dev/null 2>&1
 
     yum -y install puppet-agent
     ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet

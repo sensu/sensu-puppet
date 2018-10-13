@@ -21,22 +21,9 @@ rpm -qa | grep -q puppet
 if [ $? -ne 0 ]
 then
 
-    rpm_install https://yum.puppetlabs.com/puppetlabs-release-pc1-el-${release}.noarch.rpm
+    rpm_install http://yum.puppetlabs.com/puppet5/puppet5-release-el-${release}.noarch.rpm
     yum -y install puppet-agent
     ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
-
-    # suppress default warnings for deprecation
-    cat > /etc/puppetlabs/puppet/hiera.yaml <<EOF
----
-version: 5
-hierarchy:
-  - name: Common
-    path: common.yaml
-defaults:
-  data_hash: yaml_data
-  datadir: hieradata
-EOF
-
 fi
 
 # use local sensu module

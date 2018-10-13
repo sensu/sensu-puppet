@@ -31,7 +31,7 @@ apt-key adv --fetch-keys http://apt.puppetlabs.com/DEB-GPG-KEY-puppet
 apt-get -y install wget
 
 # install and configure puppet
-deb_install http://apt.puppetlabs.com/puppetlabs-release-pc1-${CODENAME}.deb
+deb_install http://apt.puppetlabs.com/puppet5-release-${CODENAME}.deb
 apt-get update
 apt-get -y install puppet-agent
 ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
