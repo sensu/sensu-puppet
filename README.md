@@ -233,6 +233,13 @@ version and the previous major version. Platform support will be removed
 when a platform is no longer supported by Puppet, Sensu or the platform
 maintainer has signaled that it is end of life (EOL).
 
+Though Amazon does not announce end of life (EOL) for its releases, it
+does encourage you to use the latest releases. This module will support
+the current release and the previous release. Since AWS does not release
+Vagrant boxes and the intent of those platforms is to run in AWS, we
+will not maintain Vagrant systems for local development for Amazon
+Linux.
+
 ### Support Platforms
 
 * EL 6
@@ -242,7 +249,6 @@ maintainer has signaled that it is end of life (EOL).
 * Ubuntu 14.04 LTS
 * Ubuntu 16.04 LTS
 * Ubuntu 18.04 LTS
-* Amazon 2017.03
 * Amazon 2018.03
 * Amazon 2
 
