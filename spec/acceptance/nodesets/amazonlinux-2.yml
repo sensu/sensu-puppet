@@ -1,0 +1,20 @@
+HOSTS:
+  amazonlinux-2:
+    roles:
+      - agent
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: amazonlinux:2
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'yum install -y wget initscripts'
+    docker_container_name: 'sensu-amazonlinux-2'
+CONFIG:
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+
