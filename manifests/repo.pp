@@ -4,7 +4,7 @@ class sensu::repo {
   case $facts['os']['family'] {
     'RedHat': {
       if $facts['os']['name'] == 'Amazon' {
-        if $facts['os']['release']['major'] in ['2017','2018'] {
+        if $facts['os']['release']['major'] =~ /^201\d$/ {
           $repo_release = '6'
         } else {
           $repo_release = '7'
