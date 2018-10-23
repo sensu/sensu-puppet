@@ -142,15 +142,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  config.vm.define "amazon201703-client", autostart: false do |client|
-    client.vm.box = "mvbcoding/awslinux"
-    client.vm.hostname = 'amazon201703-client.example.com'
-    client.vm.network  :private_network, ip: "192.168.56.15"
-    client.vm.provision :shell, :path => "tests/provision_amazon.sh"
-    client.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-client-sensu_gem.pp"
-    client.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
-  end
-
   config.vm.define "win2012r2-client", autostart: false do |client|
     client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
     client.vm.provider :virtualbox do |vb|
