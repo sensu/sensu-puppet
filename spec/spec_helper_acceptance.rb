@@ -17,7 +17,7 @@ RSpec.configure do |c|
   c.before :suite do
     # Install module and dependencies
     hosts.each do |host|
-      if fact('osfamily') == 'RedHat'
+      if fact('osfamily') == 'RedHat' && fact('operatingsystem') != 'Amazon'
         # CentOS has epel-release package in Extras, enabled by default
         shell('yum -y install epel-release')
       end
