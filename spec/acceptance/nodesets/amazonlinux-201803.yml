@@ -1,16 +1,16 @@
 HOSTS:
-  amazonlinux-201703:
+  amazonlinux-201803:
     roles:
       - agent
     platform: el-6-x86_64
     hypervisor: docker
-    image: amazonlinux:2017.03
+    image: amazonlinux:2018.03
     docker_preserve_image: true
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
       - 'yum install -y tar wget cronie git upstart'
-    docker_container_name: 'sensu-amazonlinux-201703'
+    docker_container_name: 'sensu-amazonlinux-201803'
 CONFIG:
   log_level: debug
   type: foss

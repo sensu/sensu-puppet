@@ -99,13 +99,13 @@ matrix:
   - rvm: 2.4.4
     sudo: required
     services: docker
-    env: BEAKER_set="amazonlinux-201703" BEAKER_PUPPET_COLLECTION=puppet5
+    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.5.1
     sudo: required
     services: docker
-    env: BEAKER_set="amazonlinux-201703" BEAKER_PUPPET_COLLECTION=puppet6
+    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
 
