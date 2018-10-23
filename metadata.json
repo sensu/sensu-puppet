@@ -56,7 +56,8 @@
     {
       "operatingsystem": "Amazon",
       "operatingsystemrelease": [
-        "2018.03"
+        "2018.03",
+        "2.0"
       ]
     }
   ],
