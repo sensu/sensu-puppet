@@ -57,8 +57,7 @@ following.
 
 1. update version in `metadata.json`
 1. run `github_changelog_generator` and exclude tags, such as
-   `github_changelog_generator -u sensu -p sensu-puppet --exclude-labels
-'sensu v2'`
+   `github_changelog_generator -u sensu -p sensu-puppet --exclude-labels 'sensu v2'`
 1. update `CHANGELOG.md` and change `unreleased` at the top to the
    version, such as `v2.0.0`, and change `HEAD` to the same version,
    such as `v2.0.0`.
