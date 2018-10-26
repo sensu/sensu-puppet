@@ -1,12 +1,32 @@
 # Change Log
 
+## [v2.56.0](https://github.com/sensu/sensu-puppet/tree/v2.56.0)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.55.1...v2.56.0)
+
+**Implemented enhancements:**
+
+- Add support for Ubuntu 18.04 LTS [\#990](https://github.com/sensu/sensu-puppet/issues/990)
+
+**Closed issues:**
+
+- Re-evaluate parallel execution of acceptance tests [\#981](https://github.com/sensu/sensu-puppet/issues/981)
+
+**Merged pull requests:**
+
+- Add support for Amazon Linux 2.0 [\#999](https://github.com/sensu/sensu-puppet/pull/999) ([treydock](https://github.com/treydock))
+- \(GH-996\) Use Amazon Linux 2018.03 instead of 2017.03 as it is EOL [\#998](https://github.com/sensu/sensu-puppet/pull/998) ([ghoneycutt](https://github.com/ghoneycutt))
+- Add support for Ubuntu 18.04 [\#991](https://github.com/sensu/sensu-puppet/pull/991) ([treydock](https://github.com/treydock))
+
+## [v2.55.1](https://github.com/sensu/sensu-puppet/tree/v2.55.1) (2018-10-02)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.55.0...v2.55.1)
+
 ## [v2.55.0](https://github.com/sensu/sensu-puppet/tree/v2.55.0) (2018-10-02)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.54.0...v2.55.0)
 
 **Merged pull requests:**
 
 - Support Puppet 6 [\#988](https://github.com/sensu/sensu-puppet/pull/988) ([treydock](https://github.com/treydock))
-- Fixing invalid multibyte char error [\#975](https://github.com/sensu/sensu-puppet/pull/975) ([pmjensen](https://github.com/pmjensen))
 
 ## [v2.54.0](https://github.com/sensu/sensu-puppet/tree/v2.54.0) (2018-09-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.53.0...v2.54.0)
@@ -777,7 +797,6 @@
 - Ensure file validation tests are being done [\#680](https://github.com/sensu/sensu-puppet/issues/680)
 - Use a newer puppetlabs\_spec\_helper that includes syntax validation [\#679](https://github.com/sensu/sensu-puppet/issues/679)
 - Implement support for arbitrary top-level configuration hashes [\#661](https://github.com/sensu/sensu-puppet/issues/661)
-- Unable to define handler specific config properly [\#647](https://github.com/sensu/sensu-puppet/issues/647)
 - Getting 'cluster' error from module and then after updating getting 'heartbeat' error [\#634](https://github.com/sensu/sensu-puppet/issues/634)
 - Update repository URLs and release new module version [\#606](https://github.com/sensu/sensu-puppet/issues/606)
 
