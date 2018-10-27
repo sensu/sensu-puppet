@@ -119,7 +119,8 @@ describe 'sensu' do
             :os              => {
               :name    => 'ubuntu',
               :release => {
-                :full => '14.04'
+                :full  => '14.04',
+                :major => '14',
               },
               :distro => {
                 :codename => 'trusty',
@@ -204,7 +205,8 @@ describe 'sensu' do
               :os => {
                 :name    => 'Debian',
                 :release => {
-                  :full => '8.6',
+                  :full  => '8.6',
+                  :major => '8',
                 },
                 :distro => {
                   :codename => 'jessie',
@@ -236,7 +238,8 @@ describe 'sensu' do
               :os => {
                 :name    => 'Debian',
                 :release => {
-                  :full => '9.3',
+                  :full  => '9.3',
+                  :major => '9',
                 },
                 :distro => {
                   :codename => 'stretch',
@@ -268,7 +271,8 @@ describe 'sensu' do
               :os => {
                 :name    => 'Debian',
                 :release => {
-                  :full => '9.3',
+                  :full  => '9.3',
+                  :major => '9',
                 },
                 :distro => {
                   :codename => 'wheezy',
