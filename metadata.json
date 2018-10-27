@@ -53,6 +53,6 @@
     { "name": "puppet", "version_requirement": ">= 5.0.0 < 7.0.0" }
   ],
   "dependencies": [
-    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.25.1 < 5.0.0" }
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.25.1 < 6.0.0" }
   ]
 }
