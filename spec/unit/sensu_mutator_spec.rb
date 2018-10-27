@@ -62,7 +62,8 @@ describe Puppet::Type.type(:sensu_mutator) do
 
   # Array properties
   [
-    :env_vars
+    :env_vars,
+    :runtime_assets,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
