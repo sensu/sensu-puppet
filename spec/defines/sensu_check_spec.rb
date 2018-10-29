@@ -105,7 +105,8 @@ describe 'sensu::check', :type => :define do
         :handle              => true,
         :publish             => true,
         :auto_resolve        => true,
-        :ttl                 => 30
+        :ttl                 => 30,
+        :ttl_status          => 1
       } }
 
       it do should contain_sensu__write_json(fpath).with(
@@ -129,7 +130,8 @@ describe 'sensu::check', :type => :define do
               'handle'              => true,
               'publish'             => true,
               'auto_resolve'        => true,
-              'ttl'                 => 30
+              'ttl'                 => 30,
+              'ttl_status'          => 1
             }
           }
         }
@@ -176,6 +178,7 @@ describe 'sensu::check', :type => :define do
         :subscribers         => 'absent',
         :timeout             => 'absent',
         :ttl                 => 'absent',
+        :ttl_status          => 'absent',
         :type                => 'absent'
       } }
 
@@ -466,6 +469,36 @@ describe 'sensu::check', :type => :define do
     context 'contacts is passed as absent' do
       let(:params_override) { {contacts: 'absent'} }
       it { should contain_sensu__write_json(fpath).with_content("checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "interval"=>60}}) }
+    end
+  end
+
+  describe 'ttl_status' do
+    context 'valid ttl_status' do
+      ['1','0','255',0,1,255].each do |v|
+        let(:params_override) do
+          { ttl_status: v }
+        end
+        let(:expected_content) do
+          {"checks"=>{"mycheck"=>{"standalone"=>true, "command"=>"/etc/sensu/somecommand.rb", "interval"=>60, "ttl_status"=>v}}}
+        end
+
+        it { should contain_sensu__write_json(fpath).with_content(expected_content) }
+      end
+    end
+
+    context 'invalid ttl_status' do
+      let(:params_override) { {ttl_status: 'foo'} }
+      it { should raise_error(Puppet::Error, /Undef, Enum\['absent'\], Integer, or Pattern\[\/\^\(\\d\+\)\+\$\/\], got String/) }
+    end
+
+    context '=> \'absent\'' do
+      let(:params_override) { { ttl_status: 'absent' } }
+
+      it { should contain_sensu__write_json(fpath).with_content(expected_content) }
+    end
+
+    context '= undef' do
+      it { should contain_sensu__write_json(fpath).with_content(expected_content) }
     end
   end
 

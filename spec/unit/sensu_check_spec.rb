@@ -114,4 +114,32 @@ describe Puppet::Type.type(:sensu_check) do
       end
     end
   end
+
+  describe 'ttl_status parameter' do
+    subject { described_class.new(resource_hash)[:ttl_status] }
+
+    valid = [255, 1, 0, '255', '1', '0']
+    invalid = ['foo']
+
+    valid.each do |val|
+      describe "valid: ttl_status => #{val.inspect} " do
+        let(:resource_hash_override) { {ttl_status: val} }
+        it { is_expected.to eq val.to_i }
+      end
+    end
+
+    invalid.each do |val|
+      describe "invalid: ttl_status => #{val.inspect}" do
+        let(:resource_hash_override) { {ttl_status: val} }
+        it do
+          expect { subject }.to raise_error Puppet::ResourceError, /is not a valid ttl_status/
+        end
+      end
+    end
+
+    describe 'ttl_status => absent' do
+      let(:resource_hash_override) { {ttl_status: 'absent'} }
+      it { is_expected.to eq :absent }
+    end
+  end
 end

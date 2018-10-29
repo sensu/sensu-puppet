@@ -245,6 +245,19 @@ Puppet::Type.newtype(:sensu_check) do
     end
   end
 
+  newproperty(:ttl_status) do
+    desc "Exit code for ttl"
+    newvalues(/.*/, :absent)
+    munge do |value|
+      value.to_s == 'absent' ? :absent : value.to_i
+    end
+    validate do |value|
+      unless value.to_s =~ /^\d+$/ || value.to_s == 'absent'
+        raise ArgumentError, "#{value} is not a valid ttl_status, must be numeric value"
+      end
+    end
+  end
+
   autorequire(:package) do
     ['sensu']
   end
