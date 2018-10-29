@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.56.0](https://github.com/sensu/sensu-puppet/tree/v2.56.0)
+## [v2.57.0](https://github.com/sensu/sensu-puppet/tree/v2.57.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.56.0...v2.57.0)
+
+**Merged pull requests:**
+
+- add field ttl\_status to sensu\_check \(cont\) [\#1000](https://github.com/sensu/sensu-puppet/pull/1000) ([treydock](https://github.com/treydock))
+
+## [v2.56.0](https://github.com/sensu/sensu-puppet/tree/v2.56.0) (2018-10-26)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.55.1...v2.56.0)
 
 **Implemented enhancements:**
