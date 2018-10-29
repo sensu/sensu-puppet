@@ -73,6 +73,11 @@ DESC
     defaultto 'default'
   end
 
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu assets (names), required at runtime for the execution of the command"
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:socket_host) do
     desc "The socket host address (IP or hostname) to connect to."
   end

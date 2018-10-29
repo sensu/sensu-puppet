@@ -7,7 +7,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_mutator { 'test':
-        command => 'test',
+        command        => 'test',
+        runtime_assets => ['test'],
       }
       EOS
 
@@ -20,6 +21,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl mutator info test --format json' do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('test')
+        expect(data['runtime_assets']).to eq(['test'])
       end
     end
   end
@@ -29,8 +31,9 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_mutator { 'test':
-        command => 'test',
-        timeout => 60,
+        command        => 'test',
+        timeout        => 60,
+        runtime_assets => ['test2'],
       }
       EOS
 
@@ -43,6 +46,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl mutator info test --format json' do
         data = JSON.parse(stdout)
         expect(data['timeout']).to eq(60)
+        expect(data['runtime_assets']).to eq(['test2'])
       end
     end
   end

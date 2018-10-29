@@ -81,6 +81,7 @@ describe Puppet::Type.type(:sensu_handler) do
     :filters,
     :env_vars,
     :handlers,
+    :runtime_assets,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']

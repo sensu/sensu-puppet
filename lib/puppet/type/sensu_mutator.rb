@@ -36,6 +36,11 @@ DESC
     newvalues(/^[0-9]+$/, :absent)
   end
 
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu assets (names), required at runtime for the execution of the command"
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:env_vars, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of environment variables to use with command execution."
     newvalues(/.*/, :absent)

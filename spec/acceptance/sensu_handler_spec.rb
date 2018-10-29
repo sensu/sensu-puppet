@@ -7,10 +7,11 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_handler { 'test':
-        type          => 'pipe',
-        command       => 'notify.rb',
-        socket_host   => '127.0.0.1',
-        socket_port   => 1234,
+        type           => 'pipe',
+        command        => 'notify.rb',
+        socket_host    => '127.0.0.1',
+        socket_port    => 1234,
+        runtime_assets => ['test'],
       }
       EOS
 
@@ -24,6 +25,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('notify.rb')
         expect(data['socket']).to eq({'host' => '127.0.0.1', 'port' => 1234})
+        expect(data['runtime_assets']).to eq(['test'])
       end
     end
   end
@@ -33,11 +35,12 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_handler { 'test':
-        type          => 'pipe',
-        command       => 'notify.rb',
-        filters       => ['production'],
-        socket_host   => 'localhost',
-        socket_port   => 5678,
+        type           => 'pipe',
+        command        => 'notify.rb',
+        filters        => ['production'],
+        socket_host    => 'localhost',
+        socket_port    => 5678,
+        runtime_assets => ['test2'],
       }
       EOS
 
@@ -51,6 +54,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['filters']).to eq(['production'])
         expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
+        expect(data['runtime_assets']).to eq(['test2'])
       end
     end
   end
