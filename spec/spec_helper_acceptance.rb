@@ -20,7 +20,7 @@ RSpec.configure do |c|
   # Configure all nodes in nodeset
   c.before :suite do
     # Install soft module dependencies
-    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 6.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
     if collection == 'puppet6'
       on hosts, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
