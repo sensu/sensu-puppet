@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.57.0](https://github.com/sensu/sensu-puppet/tree/v2.57.0)
+## [v2.58.0](https://github.com/sensu/sensu-puppet/tree/v2.58.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.57.0...v2.58.0)
+
+**Closed issues:**
+
+- Support stdlib v5.0.0 [\#989](https://github.com/sensu/sensu-puppet/issues/989)
+
+**Merged pull requests:**
+
+- Support stdlib 5.x [\#1003](https://github.com/sensu/sensu-puppet/pull/1003) ([treydock](https://github.com/treydock))
+
+## [v2.57.0](https://github.com/sensu/sensu-puppet/tree/v2.57.0) (2018-10-29)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.56.0...v2.57.0)
 
 **Merged pull requests:**
