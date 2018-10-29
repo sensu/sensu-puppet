@@ -516,6 +516,24 @@ considered stale. Set this to &#39;absent&#39; to remove it completely.</p>
   
     <li>
       
+        <span class='name'>ttl_status</span>
+      
+      
+        <span class='type'>(<tt>Variant[Undef,Enum['absent'],Integer,Pattern[/^(\d+)+$/]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The exit code that a check with the ttl attribute should return.
+Set this to &#39;absent&#39; to remove it completely.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>auto_resolve</span>
       
       
@@ -597,9 +615,6 @@ of the Hash value.</p>
         <pre class="lines">
 
 
-101
-102
-103
 104
 105
 106
@@ -779,10 +794,15 @@ of the Hash value.</p>
 280
 281
 282
-283</pre>
+283
+284
+285
+286
+287
+288</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/check.pp', line 101</span>
+        <pre class="code"><span class="info file"># File 'manifests/check.pp', line 104</span>
 
 define sensu::check (
   Optional[String]                      $command = undef,
@@ -808,6 +828,7 @@ define sensu::check (
   Optional[Hash]                        $custom = undef,
   Hash                                  $content = {},
   Variant[Undef,Enum[&#39;absent&#39;],Integer] $ttl = undef,
+  Variant[Undef,Enum[&#39;absent&#39;],Integer,Pattern[/^(\d+)+$/]] $ttl_status = undef,
   Variant[Undef,Enum[&#39;absent&#39;],Boolean] $auto_resolve = undef,
   Variant[Undef,Enum[&#39;absent&#39;],Hash]    $subdue = undef,
   Variant[Undef,Enum[&#39;absent&#39;],Hash]    $proxy_requests = undef,
@@ -926,6 +947,7 @@ define sensu::check (
     proxy_requests      =&gt; $proxy_requests,
     hooks               =&gt; $hooks,
     ttl                 =&gt; $ttl,
+    ttl_status          =&gt; $ttl_status,
     auto_resolve        =&gt; $auto_resolve,
   }
 
