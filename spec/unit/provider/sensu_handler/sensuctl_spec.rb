@@ -34,8 +34,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :type => :pipe,
         :command => 'test',
         :filters => ["recurrence", "production"],
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :socket => {:host => "localhost", :port => 9000}
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
@@ -54,8 +53,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :name => 'test',
         :type => :tcp,
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :socket => { :host => 'localhost', :port => 9001 }
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
@@ -67,8 +65,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :name => 'test',
         :type => :pipe,
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :timeout => nil,
       }
       @resource[:timeout] = 60
@@ -81,8 +78,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :name => 'test',
         :type => :pipe,
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :handlers => nil
       }
       @resource[:handlers] = ['foo','bar']

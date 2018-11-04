@@ -46,13 +46,8 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this mutator belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this mutator belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this mutator belongs to."
     defaultto 'default'
   end
 

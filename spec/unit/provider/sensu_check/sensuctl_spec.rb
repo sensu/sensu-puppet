@@ -21,7 +21,7 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
     it 'should return the resource for a check' do
       allow(@provider).to receive(:sensuctl_list).with('check').and_return(my_fixture_read('check_list.json'))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('marketing-site')
+      expect(property_hash[:name]).to eq('check-cpu')
     end
   end
 
@@ -33,14 +33,15 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       @resource[:publish] = false
       @resource[:proxy_requests_entity_attributes] = ["entity.Class == 'proxy'"]
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'check_ntp',
         :subscriptions => ['demo'],
         :handlers => ['email', 'slack'],
         :stdin => true,
         :publish => false,
-        :organization => 'default',
-        :environment => 'default',
         :proxy_requests => { :entity_attributes => ["entity.Class == 'proxy'"] }
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
@@ -55,14 +56,15 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       @resource[:publish] = false
       @resource[:subdue_days] = {'all': [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]}
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'check_ntp',
         :subscriptions => ['demo'],
         :handlers => ['email', 'slack'],
         :stdin => true,
         :publish => false,
-        :organization => 'default',
-        :environment => 'default',
         :subdue => { days: {'all': [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]} },
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
@@ -76,12 +78,13 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
     it 'should update a check proxy_requests' do
       @resource[:proxy_requests_splay] = true
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'foobar',
         :subscriptions => ['demo'],
         :handlers => ['slack'],
-        :organization => 'default',
-        :environment => 'default',
         :proxy_requests => { :splay => true, :entity_attributes => ["entity.Class == 'proxy'"] }
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
@@ -90,12 +93,13 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
     end
     it 'should update a check' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'foobar',
         :subscriptions => ['demo'],
         :handlers => ['slack'],
-        :organization => 'default',
-        :environment => 'default',
         :interval => 20
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
@@ -104,12 +108,13 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
     end
     it 'should remove ttl' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'foobar',
         :subscriptions => ['demo'],
         :handlers => ['slack'],
-        :organization => 'default',
-        :environment => 'default',
         :ttl => nil,
       }
       @resource[:ttl] = 60
@@ -119,12 +124,13 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
     end
     it 'should update a check subdue' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'foobar',
         :subscriptions => ['demo'],
         :handlers => ['slack'],
-        :organization => 'default',
-        :environment => 'default',
         :subdue => { days: {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]} },
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)

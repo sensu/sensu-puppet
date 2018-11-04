@@ -29,8 +29,7 @@ describe Puppet::Type.type(:sensu_entity) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # read-only properties
@@ -48,8 +47,7 @@ describe Puppet::Type.type(:sensu_entity) do
   # String properties
   [
     :deregistration_handler,
-    :organization,
-    :environment,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -130,7 +128,8 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # Hash properties
   [
-    :extended_attributes
+    :labels,
+    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

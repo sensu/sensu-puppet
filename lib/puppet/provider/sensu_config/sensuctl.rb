@@ -18,15 +18,12 @@ Puppet::Type.type(:sensu_config).provide(:sensuctl, :parent => Puppet::Provider:
     end
 
     data.each_pair do |k,v|
-Puppet.debug("#{k}=#{v}")
       config = {}
       config[:ensure] = :present
       config[:name] = k
       config[:value] = v
-Puppet.debug("config=#{config}")
       configs << new(config)
     end
-Puppet.debug("configs=#{configs}")
     configs
   end
 

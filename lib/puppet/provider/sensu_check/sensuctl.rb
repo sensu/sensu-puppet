@@ -5,13 +5,6 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
 
   mk_resource_methods
 
-  def self.ignore_keys
-    [
-      'duration', 'history', 'issued', 'status', 'total_state_change', 'total_state-change',
-      'executed', 'last_ok', 'occurrences', 'occurrences_watermark', 'output'
-    ]
-  end
-
   def self.instances
     checks = []
 
@@ -27,22 +20,23 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
     data.each do |d|
       check = {}
       check[:ensure] = :present
-      check[:name] = d['name']
-      check[:extended_attributes] = {}
+      check[:name] = d['metadata']['name']
+      check[:namespace] = d['metadata']['namespace']
+      check[:labels] = d['metadata']['labels']
+      check[:annotations] = d['metadata']['annotations']
       d.each_pair do |key,value|
         next if key == 'name'
         next if key == 'proxy_requests'
-        next if ignore_keys.include?(key)
+        next if key == 'metadata'
         if !!value == value
           value = value.to_s.to_sym
         end
-        # Handle extended_attributes property
         if key == 'subdue'
           check[:subdue_days] = value['days'] unless value.nil?
-        elsif ! type_properties.include?(key.to_sym)
-          check[:extended_attributes][key] = value
-        else
+        elsif type_properties.include?(key.to_sym)
           check[key.to_sym] = value
+        else
+          next
         end
       end
       if d['proxy_requests']
@@ -84,19 +78,25 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
   end
 
   def create
-    spec = resource[:extended_attributes] || {}
-    spec[:name] = resource[:name]
+    spec = {}
+    spec[:metadata] = {}
+    spec[:metadata][:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
       next if property.to_s =~ /^proxy_requests/
-      next if property == :extended_attributes
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
       if property == :subdue_days
         spec[:subdue] = { days: value }
+      elsif property == :namespace
+        spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -117,8 +117,9 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
 
   def flush
     if !@property_flush.empty?
-      spec = @property_flush[:extended_attributes] || resource[:extended_attributes] || {}
-      spec[:name] = resource[:name]
+      spec = {}
+      spec[:metadata] = {}
+      spec[:metadata][:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -127,14 +128,19 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         end
         next if value.nil?
         next if property.to_s =~ /^proxy_requests/
-        next if property == :extended_attributes
         if [:true, :false].include?(value)
           value = convert_boolean_property_value(value)
+        elsif value == :absent
+          value = nil
         end
         if property == :subdue_days
           spec[:subdue] = { days: value }
-        elsif value == :absent
-          spec[property] = nil
+        elsif property == :namespace
+          spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end

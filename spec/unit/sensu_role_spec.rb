@@ -5,7 +5,7 @@ describe Puppet::Type.type(:sensu_role) do
   let(:default_config) do
     {
       name: 'test',
-      rules: [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read']}]
+      rules: [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}]
     }
   end
   let(:config) do
@@ -121,7 +121,7 @@ describe Puppet::Type.type(:sensu_role) do
 
   describe 'rules' do
     it 'accepts valid value' do
-      expect(role[:rules]).to eq([{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read']}])
+      expect(role[:rules]).to eq([{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}])
     end
 
     it 'should verify rule is a hash' do
@@ -130,17 +130,17 @@ describe Puppet::Type.type(:sensu_role) do
     end
 
     it 'should verify all keys present' do
-      config[:rules] = [{'type' => '*', 'environment' => '*', 'organization' => '*'}]
+      config[:rules] = [{'type' => '*', 'namespace' => '*'}]
       expect { role }. to raise_error(Puppet::Error, /A rule must contain permissions/)
     end
 
     it 'should not allow unknown keys' do
-      config[:rules] = [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read'], 'foo' => 'bar'}]
+      config[:rules] = [{'type' => '*', 'namespace' => '*', 'permissions' => ['read'], 'foo' => 'bar'}]
       expect { role }. to raise_error(Puppet::Error, /Rule key foo is not valid/)
     end
 
     it 'should verify permissions is an array' do
-      config[:rules] = [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => 'read'}]
+      config[:rules] = [{'type' => '*', 'namespace' => '*', 'permissions' => 'read'}]
       expect { role }. to raise_error(Puppet::Error, /A rule's permissions must be an array/)
     end
   end

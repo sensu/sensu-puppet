@@ -58,13 +58,8 @@ DESC
     end
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this filter belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this filter belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this filter belongs to."
     defaultto 'default'
   end
 

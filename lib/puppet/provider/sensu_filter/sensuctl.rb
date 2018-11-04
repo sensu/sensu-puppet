@@ -99,11 +99,11 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
         next if property.to_s =~ /^socket/
         if [:true, :false].include?(value)
           value = convert_boolean_property_value(value)
+        elsif value == :absent
+          value = nil
         end
         if property == :when_days
           spec[:when] = { days: value }
-        elsif value == :absent
-          spec[property] = nil
         else
           spec[property] = value
         end

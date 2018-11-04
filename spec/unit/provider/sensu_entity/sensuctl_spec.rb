@@ -15,7 +15,7 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
     it 'should return the @resource for a entity' do
       allow(@provider).to receive(:sensuctl_list).with('entity').and_return(my_fixture_read('entity_list.json'))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:id]).to eq('example-hostname')
+      expect(property_hash[:id]).to eq('sensu-backend.example.com')
     end
   end
 
@@ -26,8 +26,9 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
         :id => 'test',
         :class => 'proxy',
         :keepalive_timeout => 120,
-        :organization => 'default',
-        :environment => 'default',
+        :metadata => {
+          :namespace => 'default',
+        },
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.create
@@ -41,23 +42,25 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
       expected_spec = {
         :id => 'test',
         :keepalive_timeout => 120,
-        :organization => 'default',
-        :environment => 'default',
+        :metadata => {
+          :namespace => 'default',
+        },
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.keepalive_timeout = 120
       @resource.provider.flush
     end
-    it 'should update a entity extended_attributes' do
+    it 'should update a entity labels' do
       expected_spec = {
         :id => 'test',
-        'foo' => 'bar',
         :keepalive_timeout => 120,
-        :organization => 'default',
-        :environment => 'default',
+        :metadata => {
+          :namespace => 'default',
+          :labels => {'foo' => 'bar'},
+        },
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
-      @resource.provider.extended_attributes = {'foo' => 'bar'}
+      @resource.provider.labels = {'foo' => 'bar'}
       @resource.provider.flush
     end
   end

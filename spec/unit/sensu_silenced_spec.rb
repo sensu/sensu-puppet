@@ -42,8 +42,7 @@ describe Puppet::Type.type(:sensu_silenced) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
     'expire': -1,
   }
 
@@ -53,8 +52,7 @@ describe Puppet::Type.type(:sensu_silenced) do
     :subscription,
     :creator,
     :reason,
-    :organization,
-    :environment,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

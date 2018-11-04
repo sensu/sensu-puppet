@@ -55,13 +55,9 @@ Puppet::Type.type(:sensu_event).provide(:sensuctl, :parent => Puppet::Provider::
     cmd = ['event', 'resolve']
     cmd << resource[:entity]
     cmd << resource[:check]
-    if resource[:organization]
-      cmd << '--organization'
-      cmd << resource[:organization]
-    end
-    if resource[:environment]
-      cmd << '--environment'
-      cmd << resource[:environment]
+    if resource[:namespace]
+      cmd << '--namespace'
+      cmd << resource[:namespace]
     end
     begin
       sensuctl(cmd)

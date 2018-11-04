@@ -33,7 +33,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       sensu_entity { 'test':
         entity_class           => 'proxy',
         deregistration_handler => 'email-handler',
-        extended_attributes    => { 'foo' => 'bar' }
+        labels                 => { 'foo' => 'bar' }
       }
       EOS
 
@@ -46,7 +46,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       on node, "sensuctl entity info test --format json" do
         data = JSON.parse(stdout)
         expect(data['deregistration']['handler']).to eq('email-handler')
-        expect(data['foo']).to eq('bar')
+        expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

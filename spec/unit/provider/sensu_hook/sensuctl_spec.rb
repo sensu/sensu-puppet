@@ -29,8 +29,7 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
         :name => 'test',
         :command => 'test',
         :timeout => 60,
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('hook', expected_spec)
       @resource.provider.create
@@ -44,8 +43,7 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
       expected_spec = {
         :name => 'test',
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :timeout => 120
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('hook', expected_spec)

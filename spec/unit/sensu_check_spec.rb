@@ -31,8 +31,7 @@ describe Puppet::Type.type(:sensu_check) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # String properties
@@ -40,6 +39,7 @@ describe Puppet::Type.type(:sensu_check) do
     :command,
     :cron,
     :proxy_entity_id,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -132,7 +132,8 @@ describe Puppet::Type.type(:sensu_check) do
 
   # Hash properties
   [
-    :extended_attributes
+    :labels,
+    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

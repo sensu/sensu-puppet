@@ -28,7 +28,7 @@ describe Puppet::Type.type(:sensu_extension).provider(:sensuctl) do
       expected_spec = {
         :name => 'test',
         :url => 'http://127.0.0.1',
-        :organization => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('extension', expected_spec)
       @resource.provider.create
@@ -43,7 +43,7 @@ describe Puppet::Type.type(:sensu_extension).provider(:sensuctl) do
       expected_spec = {
         :name => 'test',
         :url => 'http://127.0.0.1/test',
-        :organization => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('extension', expected_spec)
       @resource.provider.url = 'http://127.0.0.1/test'

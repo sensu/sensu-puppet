@@ -31,8 +31,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :check => '*',
         :expire => -1,
         :expire_on_resolve => false,
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_spec)
       @resource.provider.create
@@ -55,8 +54,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :check => '*',
         :expire => -1,
         :expire_on_resolve => false,
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :reason => 'test',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_spec)
@@ -70,8 +68,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :subscription => 'entity:test',
         :check => '*',
         :expire => -1,
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :expire_on_resolve => false,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_spec)

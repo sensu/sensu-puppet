@@ -75,13 +75,8 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this silenced belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this silenced belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this silenced belongs to."
     defaultto 'default'
   end
 
