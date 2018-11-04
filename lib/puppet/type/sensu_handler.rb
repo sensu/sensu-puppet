@@ -63,13 +63,8 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this handler belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this handler belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this handler belongs to."
     defaultto 'default'
   end
 

@@ -29,15 +29,13 @@ describe Puppet::Type.type(:sensu_mutator) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # String properties
   [
     :command,
-    :organization,
-    :environment,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

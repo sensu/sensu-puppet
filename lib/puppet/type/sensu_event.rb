@@ -49,13 +49,8 @@ DESC
     desc "The name of the check the event should match"
   end
 
-  newparam(:organization) do
-    desc "The Sensu RBAC organization that this event belongs to."
-    defaultto 'default'
-  end
-
-  newparam(:environment) do
-    desc "The Sensu RBAC environment that this event belongs to."
+  newparam(:namespace) do
+    desc "The Sensu RBAC namespace that this event belongs to."
     defaultto 'default'
   end
 

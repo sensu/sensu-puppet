@@ -46,14 +46,12 @@ describe Puppet::Type.type(:sensu_filter) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # String properties
   [
-    :organization,
-    :environment,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

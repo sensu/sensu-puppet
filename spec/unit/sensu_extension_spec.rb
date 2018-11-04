@@ -29,13 +29,13 @@ describe Puppet::Type.type(:sensu_extension) do
   end
 
   defaults = {
-    'organization': 'default',
+    'namespace': 'default',
   }
 
   # String properties
   [
     :url,
-    :organization,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

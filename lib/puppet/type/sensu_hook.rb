@@ -41,13 +41,8 @@ DESC
     newvalues(:true, :false)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this hook belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this hook belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this hook belongs to."
     defaultto 'default'
   end
 

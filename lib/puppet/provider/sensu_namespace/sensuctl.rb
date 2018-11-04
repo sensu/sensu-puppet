@@ -1,44 +1,35 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 
-Puppet::Type.type(:sensu_organization).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_organization using sensuctl"
+Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensu_namespace using sensuctl"
 
   mk_resource_methods
 
   def self.instances
-    organizations = []
+    namespaces = []
 
-    output = sensuctl_list('organization')
-    Puppet.debug("sensu organizations: #{output}")
+    output = sensuctl_list('namespace')
+    Puppet.debug("sensu namespaces: #{output}")
     begin
       data = JSON.parse(output)
     rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl organization list')
+      Puppet.debug('Unable to parse output from sensuctl namespace list')
       data = []
     end
 
     data.each do |d|
-      organization = {}
-      organization[:ensure] = :present
-      organization[:name] = d['name']
-      d.each_pair do |key, value|
-        next if key == 'name'
-        if !!value == value
-          value = value.to_s.to_sym
-        end
-        if type_properties.include?(key.to_sym)
-          organization[key.to_sym] = value
-        end
-      end
-      organizations << new(organization)
+      namespace = {}
+      namespace[:ensure] = :present
+      namespace[:name] = d['name']
+      namespaces << new(namespace)
     end
-    organizations
+    namespaces
   end
 
   def self.prefetch(resources)
-    organizations = instances
+    namespaces = instances
     resources.keys.each do |name|
-      if provider = organizations.find { |c| c.name == name }
+      if provider = namespaces.find { |c| c.name == name }
         resources[name].provider = provider
       end
     end
@@ -73,7 +64,7 @@ Puppet::Type.type(:sensu_organization).provide(:sensuctl, :parent => Puppet::Pro
       end
     end
     begin
-      sensuctl_create('organization', spec)
+      sensuctl_create('namespace', spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -100,7 +91,7 @@ Puppet::Type.type(:sensu_organization).provide(:sensuctl, :parent => Puppet::Pro
         end
       end
       begin
-        sensuctl_create('organization', spec)
+        sensuctl_create('namespace', spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
@@ -110,9 +101,9 @@ Puppet::Type.type(:sensu_organization).provide(:sensuctl, :parent => Puppet::Pro
 
   def destroy
     begin
-      sensuctl_delete('organization', resource[:name])
+      sensuctl_delete('namespace', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete organization #{resource[:name]} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete namespace #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

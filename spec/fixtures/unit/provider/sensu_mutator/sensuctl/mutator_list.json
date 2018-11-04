@@ -4,7 +4,6 @@
     "command": "example_mutator.rb",
     "timeout": 60,
     "env_vars": null,
-    "environment": "default",
-    "organization": "default"
+    "namespace": "default"
   }
 ]

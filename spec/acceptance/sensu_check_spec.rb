@@ -19,7 +19,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         },
         proxy_requests_entity_attributes => ["entity.Class == 'proxy'"],
         output_metric_format             => 'nagios_perfdata',
-        extended_attributes              => { 'foo' => 'baz' }
+        labels                           => { 'foo' => 'baz' }
       }
       sensu_check { 'test2':
         command       => 'check-cpu.rb',
@@ -42,7 +42,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['subdue']['days']).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
         expect(data['proxy_requests']['entity_attributes']).to eq(["entity.Class == 'proxy'"])
         expect(data['output_metric_format']).to eq('nagios_perfdata')
-        expect(data['foo']).to eq('baz')
+        expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
 
@@ -72,7 +72,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         },
         proxy_requests_entity_attributes => ['System.OS==linux'],
         output_metric_format             => 'graphite_plaintext',
-        extended_attributes              => { 'foo' => 'bar' }
+        labels                           => { 'foo' => 'bar' }
       }
       EOS
 
@@ -88,7 +88,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['subdue']['days']).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],'friday' => [{'begin' => '5:00 PM', 'end' => '7:00 AM'}]})
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
-        expect(data['foo']).to eq('bar')
+        expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

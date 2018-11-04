@@ -28,8 +28,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     args = [command]
     args << 'list'
     # TODO: Remove extension once resolved: https://github.com/sensu/sensu-go/issues/1767
-    if ! ['extension','organization','role','user'].include?(command)
-      args << '--all-organizations'
+    if ! ['extension','namespace','role','user'].include?(command)
+      args << '--all-namespaces'
     end
     args << '--format'
     args << 'json'

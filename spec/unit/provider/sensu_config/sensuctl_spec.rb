@@ -13,7 +13,7 @@ describe Puppet::Type.type(:sensu_config).provider(:sensuctl) do
   describe 'self.instances' do
     it 'should create instances' do
       allow(@provider).to receive(:sensuctl).with('config','view','--format','json').and_return(my_fixture_read('config_list.json'))
-      expect(@provider.instances.length).to eq(4)
+      expect(@provider.instances.length).to eq(3)
     end
 
     it 'should return the resource for a config' do

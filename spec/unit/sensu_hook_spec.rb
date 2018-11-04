@@ -29,16 +29,14 @@ describe Puppet::Type.type(:sensu_hook) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
     'timeout': 60,
   }
 
   # String properties
   [
     :command,
-    :organization,
-    :environment,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

@@ -68,13 +68,8 @@ DESC
     defaultto 120
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this entity belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this entity belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this entity belongs to."
     defaultto 'default'
   end
 
@@ -89,9 +84,12 @@ DESC
     end
   end
 
-  newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Custom attributes to include as with the entity, that appear as outer-level attributes."
-    defaultto {}
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    #desc
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    #desc
   end
 
   validate do

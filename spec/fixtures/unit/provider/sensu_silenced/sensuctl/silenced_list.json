@@ -5,8 +5,7 @@
     "creator": "admin",
     "reason": "test",
     "subscription": "entity:sensu-backend.example.com",
-    "organization": "default",
-    "environment": "default",
+    "namespace": "default",
     "begin": 1527114555
   }
 ]

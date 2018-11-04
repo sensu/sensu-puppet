@@ -5,11 +5,10 @@
       "class": "agent",
       "deregister": false,
       "deregistration": {},
-      "environment": "default",
       "id": "sensu-backend.example.com",
       "keepalive_timeout": 120,
       "last_seen": 1529875603,
-      "organization": "default",
+      "namespace": "default",
       "redact": [
         "password",
         "passwd",
@@ -62,7 +61,6 @@
       "user": "agent"
     },
     "check": {
-      "environment": "default",
       "handlers": [
         "keepalive"
       ],
@@ -70,7 +68,7 @@
       "interval": 120,
       "low_flap_threshold": 0,
       "name": "keepalive",
-      "organization": "default",
+      "namespace": "default",
       "publish": false,
       "runtime_assets": null,
       "subscriptions": [],

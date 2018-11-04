@@ -31,8 +31,8 @@ DESC
     desc "The URL location of the extension."
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this extension belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this extension belongs to."
     defaultto 'default'
   end
 

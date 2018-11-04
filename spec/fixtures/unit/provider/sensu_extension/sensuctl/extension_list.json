@@ -2,6 +2,6 @@
   {
     "name": "test",
     "url": "test",
-    "organization": "default"
+    "namespace": "default"
   }
 ]

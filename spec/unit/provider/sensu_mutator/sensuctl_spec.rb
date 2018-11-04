@@ -28,8 +28,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
       expected_spec = {
         :name => 'test',
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
       @resource.provider.create
@@ -43,8 +42,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
       expected_spec = {
         :name => 'test',
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :timeout => 60
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
@@ -55,8 +53,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
       expected_spec = {
         :name => 'test',
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
         :timeout => nil,
       }
       @resource[:timeout] = 60

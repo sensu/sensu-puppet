@@ -4,8 +4,7 @@
     "rules": [
       {
         "type": "*",
-        "environment": "*",
-        "organization": "*",
+        "namespace": "*",
         "permissions": [
           "create",
           "read",
@@ -20,8 +19,7 @@
     "rules": [
       {
         "type": "*",
-        "environment": "*",
-        "organization": "*",
+        "namespace": "*",
         "permissions": [
           "read"
         ]

@@ -178,13 +178,8 @@ DESC
     newvalues(:true, :false)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this check belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this check belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this check belongs to."
     defaultto 'default'
   end
 
@@ -216,9 +211,12 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Custom attributes to include as with the check, that appear as outer-level attributes."
-    defaultto {}
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    #desc
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    #desc
   end
 
   validate do

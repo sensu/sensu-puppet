@@ -37,18 +37,22 @@ DESC
     desc "The checksum of the asset"
   end
 
-  newproperty(:metadata, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Information about the asset, in the form of key value pairs."
-  end
-
   newproperty(:filters, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "A set of filters used by the agent to determine of the asset should be installed."
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this asset belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this asset belongs to."
     defaultto 'default'
+  end
+
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    #desc
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    #desc
   end
 
   validate do

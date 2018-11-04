@@ -31,8 +31,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
         :name => 'test',
         :action => :allow,
         :statements => ["event.Entity.Environment == 'production'"],
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.create
@@ -47,8 +46,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
         :name => 'test',
         :action => 'deny',
         :statements => ["event.Entity.Environment == 'production'"],
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.action = 'deny'
@@ -60,8 +58,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
         :action => :allow,
         :statements => ["event.Entity.Environment == 'production'"],
         :when => {'days': {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}},
-        :organization => 'default',
-        :environment => 'default',
+        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.when_days = {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}

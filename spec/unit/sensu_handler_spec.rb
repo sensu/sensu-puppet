@@ -43,16 +43,14 @@ describe Puppet::Type.type(:sensu_handler) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # String properties
   [
     :mutator,
     :command,
-    :organization,
-    :environment,
+    :namespace,
     :socket_host,
   ].each do |property|
     it "should accept valid #{property}" do
