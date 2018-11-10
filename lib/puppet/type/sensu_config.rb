@@ -5,11 +5,17 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_config) do
   desc <<-DESC
-Manages Sensu configs
+@summary Manages Sensu configs
 @example Manage a config
   sensu_config { 'format':
     value => 'json',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_entity) do
   desc <<-DESC
-Manages Sensu entities
+@summary Manages Sensu entities
 @example Create an entity
   sensu_entity { 'test':
     ensure       => 'present',
     entity_class => 'proxy',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

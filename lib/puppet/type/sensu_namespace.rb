@@ -5,11 +5,17 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_namespace) do
   desc <<-DESC
-Manages Sensu namespaces
+@summary Manages Sensu namespaces
 @example Add an namespace
   sensu_namespace { 'test':
     ensure => 'present',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

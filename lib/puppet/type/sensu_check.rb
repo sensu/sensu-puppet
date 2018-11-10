@@ -6,7 +6,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_check) do
   desc <<-DESC
-Manages Sensu checks
+@summary Manages Sensu checks
 @example Create a check
   sensu_check { 'test':
     ensure        => 'present',
@@ -44,6 +44,12 @@ Manages Sensu checks
       ],
     }
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

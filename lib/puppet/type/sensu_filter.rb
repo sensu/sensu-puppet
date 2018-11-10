@@ -5,7 +5,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_filter) do
   desc <<-DESC
-Manages Sensu filters
+@summary Manages Sensu filters
 @example Create a filter
   sensu_filter { 'test':
     ensure     => 'present',
@@ -13,6 +13,12 @@ Manages Sensu filters
     statements => ["event.Entity.Environment == 'production'"],
     when_days  => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
