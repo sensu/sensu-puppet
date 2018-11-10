@@ -1,6 +1,11 @@
 [
   {
-    "name": "production_filter",
+    "metadata": {
+      "name": "production_filter",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
     "action": "allow",
     "statements": [
       "event.Entity.Environment == 'production'"
@@ -8,19 +13,18 @@
     "when": {
       "days": {
         "all": [
-        {
-          "begin": "5:00 PM",
-          "end": "8:00 AM"
-        }
+          {
+            "begin": "5:00 PM",
+            "end": "8:00 AM"
+          }
         ],
         "friday": [
-        {
-          "begin": "12:00 PM",
-          "end": "5:00 PM"
-        }
+          {
+            "begin": "12:00 PM",
+            "end": "5:00 PM"
+          }
         ]
-      } 
+      }
     }
   }
 ]
-

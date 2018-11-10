@@ -19,7 +19,7 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
     it 'should have a valid extension' do
       on node, 'sensuctl extension list --format json' do
         data = JSON.parse(stdout)
-        d = data.select { |e| e['name'] == 'test' }
+        d = data.select { |e| e['metadata']['name'] == 'test' }
         expect(d[0]['url']).to eq('http://example.com/extension')
       end
     end
@@ -42,7 +42,7 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
     it 'should have a valid extension with updated propery' do
       on node, 'sensuctl extension list --format json' do
         data = JSON.parse(stdout)
-        d = data.select { |e| e['name'] == 'test' }
+        d = data.select { |e| e['metadata']['name'] == 'test' }
         expect(d[0]['url']).to eq('http://127.0.0.1/extension')
       end
     end
@@ -63,7 +63,7 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
     it 'should not have test extension' do
       on node, 'sensuctl extension list --format json' do
         data = JSON.parse(stdout)
-        d = data.select { |e| e['name'] == 'test' }
+        d = data.select { |e| e['metadata']['name'] == 'test' }
         expect(d.size).to eq(0)
       end
     end

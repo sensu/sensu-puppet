@@ -1,7 +1,12 @@
 [
   {
-    "name": "test",
-    "url": "test",
-    "namespace": "default"
+    "metadata": {
+      "name": "test",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
+    "url": "test"
   }
 ]
+

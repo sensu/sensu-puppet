@@ -20,9 +20,10 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
     data.each do |d|
       filter = {}
       filter[:ensure] = :present
-      filter[:name] = d['name']
+      filter[:name] = d['metadata']['name']
+      filter[:namespace] = d['metadata']['namespace']
       d.each_pair do |key, value|
-        next if key == 'name'
+        next if key == 'metadata'
         if !!value == value
           value = value.to_s.to_sym
         end
@@ -63,7 +64,8 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
 
   def create
     spec = {}
-    spec[:name] = resource[:name]
+    spec[:metadata] = {}
+    spec[:metadata][:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -73,6 +75,8 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
       end
       if property == :when_days
         spec[:when] = { days: value }
+      elsif property == :namespace
+        spec[:metadata][:namespace] = value
       else
         spec[property] = value
       end
@@ -88,7 +92,8 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:name] = resource[:name]
+      spec[:metadata] = {}
+      spec[:metadata][:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -104,6 +109,8 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
         end
         if property == :when_days
           spec[:when] = { days: value }
+        elsif property == :namespace
+          spec[:metadata][:namespace] = value
         else
           spec[property] = value
         end

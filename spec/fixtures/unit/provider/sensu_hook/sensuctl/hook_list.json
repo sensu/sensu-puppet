@@ -1,8 +1,13 @@
 [
   {
-    "name": "process_tree",
+    "metadata": {
+      "name": "process_tree",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
     "command": "ps aux",
     "timeout": 60,
-    "namespace": "default"
+    "stdin": false
   }
 ]

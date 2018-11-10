@@ -17,10 +17,10 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       apply_manifest_on(node, pp, :catch_changes  => true)
     end
 
-    it 'should update an entity' do
+    it 'should create an entity' do
       on node, "sensuctl entity info test --format json" do
         data = JSON.parse(stdout)
-        expect(data['class']).to eq('proxy')
+        expect(data['entity_class']).to eq('proxy')
         expect(data['deregistration']['handler']).to eq('slack-handler')
       end
     end

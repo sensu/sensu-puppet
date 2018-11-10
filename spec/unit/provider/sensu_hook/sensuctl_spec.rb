@@ -26,10 +26,12 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
   describe 'create' do
     it 'should create a hook' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'test',
         :timeout => 60,
-        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('hook', expected_spec)
       @resource.provider.create
@@ -41,9 +43,11 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a hook timeout' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'test',
-        :namespace => 'default',
         :timeout => 120
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('hook', expected_spec)

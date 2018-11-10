@@ -41,13 +41,6 @@ DESC
     desc "Silenced name"
   end
 
-  newproperty(:id) do
-    desc "The unique ID of the silenced"
-    validate do |value|
-      fail "class is read-only"
-    end
-  end
-
   newparam(:check, :namevar => true) do
     desc "The name of the check the entry should match"
   end

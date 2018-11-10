@@ -38,8 +38,8 @@ describe Puppet::Type.type(:sensu_check) do
   [
     :command,
     :cron,
-    :proxy_entity_id,
     :namespace,
+    :proxy_entity_name,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -55,7 +55,7 @@ describe Puppet::Type.type(:sensu_check) do
   # String regex validated properties
   [
     :name,
-    :proxy_entity_id
+    :proxy_entity_name,
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'

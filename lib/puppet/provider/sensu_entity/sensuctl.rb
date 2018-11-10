@@ -20,21 +20,17 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
     data.each do |d|
       entity = {}
       entity[:ensure] = :present
-      entity[:name] = d['id']
-      entity[:id] = d['id']
+      entity[:name] = d['metadata']['name']
       entity[:namespace] = d['metadata']['namespace']
       entity[:labels] = d['metadata']['labels']
       entity[:annotations] = d['metadata']['annotations']
       d.each_pair do |key,value|
-        next if key == 'id'
         next if key == 'metadata'
         if !!value == value
           value = value.to_s.to_sym
         end
         if key == 'deregistration'
           entity[:deregistration_handler] = value['handler']
-        elsif key == 'class'
-          entity[:entity_class] = value
         elsif type_properties.include?(key.to_sym)
           entity[key.to_sym] = value
         else
@@ -72,8 +68,9 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
 
   def create
     spec = {}
-    spec[:id] = resource[:id]
     spec[:metadata] = {}
+    spec[:metadata] = {}
+    spec[:metadata][:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -82,9 +79,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
-      if property == :entity_class
-        spec[:class] = value
-      elsif property == :deregistration_handler
+      if property == :deregistration_handler
         spec[:deregistration] = {handler: value}
       elsif property == :namespace
         spec[:metadata][:namespace] = value
@@ -107,8 +102,9 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:id] = resource[:id]
       spec[:metadata] = {}
+      spec[:metadata] = {}
+      spec[:metadata][:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -127,9 +123,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
         elsif value == :absent
           value = nil
         end
-        if property == :entity_class
-          spec[:class] = value
-        elsif property == :deregistration_handler
+        if property == :deregistration_handler
           spec[:deregistration] = {handler: value}
         elsif property == :namespace
           spec[:metadata][:namespace] = value

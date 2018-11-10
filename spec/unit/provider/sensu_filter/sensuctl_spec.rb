@@ -28,10 +28,12 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
   describe 'create' do
     it 'should create a filter' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :action => :allow,
         :statements => ["event.Entity.Environment == 'production'"],
-        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.create
@@ -43,10 +45,12 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a filter action' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :action => 'deny',
         :statements => ["event.Entity.Environment == 'production'"],
-        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.action = 'deny'
@@ -54,11 +58,13 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
     end
     it 'should update when_days' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :action => :allow,
         :statements => ["event.Entity.Environment == 'production'"],
         :when => {'days': {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}},
-        :namespace => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.when_days = {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}

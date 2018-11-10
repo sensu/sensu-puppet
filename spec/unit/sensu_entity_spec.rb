@@ -4,7 +4,7 @@ require 'puppet/type/sensu_entity'
 describe Puppet::Type.type(:sensu_entity) do
   let(:default_config) do
     {
-      id: 'test',
+      name: 'test',
       entity_class: 'proxy'
     }
   end
@@ -22,7 +22,7 @@ describe Puppet::Type.type(:sensu_entity) do
     }.to_not raise_error
   end
 
-  it 'should require a id' do
+  it 'should require a name' do
     expect {
       described_class.new({})
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
@@ -62,7 +62,7 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # String regex validated properties
   [
-    :id,
+    :name,
     :entity_class,
   ].each do |property|
     it "should not accept invalid #{property}" do

@@ -18,7 +18,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
     it 'should return the resource for a silenced' do
       allow(@provider).to receive(:sensuctl_list).with('silenced').and_return(my_fixture_read('silenced_list.json'))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:id]).to eq('entity:sensu-backend.example.com:*')
+      expect(property_hash[:name]).to eq('entity:sensu-backend.example.com:*')
       expect(property_hash[:subscription]).to eq('entity:sensu-backend.example.com')
       expect(property_hash[:check]).to be_nil
     end
@@ -31,7 +31,10 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :check => '*',
         :expire => -1,
         :expire_on_resolve => false,
-        :namespace => 'default',
+        :metadata => {
+          :name => 'entity:test:*',
+          :namespace => 'default',
+        },
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_spec)
       @resource.provider.create
@@ -49,12 +52,14 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
 
     it 'should update a silenced reason' do
       expected_spec = {
-        :id => 'entity:test:*',
+        :metadata => {
+          :name => 'entity:test:*',
+          :namespace => 'default',
+        },
         :subscription => 'entity:test',
         :check => '*',
         :expire => -1,
         :expire_on_resolve => false,
-        :namespace => 'default',
         :reason => 'test',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_spec)
@@ -64,11 +69,13 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
     it 'should update boolean' do
       @resource[:expire_on_resolve] = :true
       expected_spec = {
-        :id => 'entity:test:*',
+        :metadata => {
+          :name => 'entity:test:*',
+          :namespace => 'default',
+        },
         :subscription => 'entity:test',
         :check => '*',
         :expire => -1,
-        :namespace => 'default',
         :expire_on_resolve => false,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_spec)
@@ -78,12 +85,6 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
   end
 
   describe 'destroy' do
-    before(:each) do
-      hash = @resource.provider.instance_variable_get(:@property_hash)
-      hash[:id] = 'entity:test:*'
-      @resource.provider.instance_variable_set(:@property_hash, hash)
-    end
-
     it 'should delete a silenced' do
       expect(@resource.provider).to receive(:sensuctl_delete).with('silenced', 'entity:test:*')
       @resource.provider.destroy

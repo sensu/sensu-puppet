@@ -24,11 +24,11 @@ DESC
 
   ensurable
 
-  newparam(:id, :namevar => true) do
-    desc "The unique ID of the entity"
+  newparam(:name, :namevar => true) do
+    desc "The unique name of the entity"
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
-        raise ArgumentError, "sensu_entity id invalid"
+        raise ArgumentError, "sensu_entity name invalid"
       end
     end
   end

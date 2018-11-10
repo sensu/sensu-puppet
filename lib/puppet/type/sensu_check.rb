@@ -169,12 +169,12 @@ DESC
     end
   end
 
-  newproperty(:proxy_entity_id) do
-    desc "The check ID, used to create a proxy entity for an external resource (i.e., a network switch)."
+  newproperty(:proxy_entity_name) do
+    desc "The check name, used to create a proxy entity for an external resource (i.e., a network switch)."
     newvalues(/^[\w\.\-]+$/, :absent)
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
-        raise ArgumentError, "check_check proxy_entity_id invalid"
+        raise ArgumentError, "check_check proxy_entity_name invalid"
       end
     end
   end

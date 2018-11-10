@@ -1,28 +1,8 @@
 [
   {
-    "timestamp": 1529875603,
+    "timestamp": 1541886210,
     "entity": {
-      "class": "agent",
-      "deregister": false,
-      "deregistration": {},
-      "id": "sensu-backend.example.com",
-      "keepalive_timeout": 120,
-      "last_seen": 1529875603,
-      "namespace": "default",
-      "redact": [
-        "password",
-        "passwd",
-        "pass",
-        "api_key",
-        "api_token",
-        "access_key",
-        "secret_key",
-        "private_key",
-        "secret"
-      ],
-      "subscriptions": [
-        "entity:sensu-backend.example.com"
-      ],
+      "entity_class": "agent",
       "system": {
         "hostname": "sensu-backend.example.com",
         "os": "linux",
@@ -58,38 +38,152 @@
         },
         "arch": "amd64"
       },
-      "user": "agent"
+      "subscriptions": [
+        "entity:sensu-backend.example.com"
+      ],
+      "last_seen": 1541886210,
+      "deregister": false,
+      "deregistration": {},
+      "user": "agent",
+      "redact": [
+        "password",
+        "passwd",
+        "pass",
+        "api_key",
+        "api_token",
+        "access_key",
+        "secret_key",
+        "private_key",
+        "secret"
+      ],
+      "metadata": {
+        "name": "sensu-backend.example.com",
+        "namespace": "default",
+        "labels": null,
+        "annotations": null
+      }
     },
     "check": {
       "handlers": [
         "keepalive"
       ],
       "high_flap_threshold": 0,
-      "interval": 120,
+      "interval": 20,
       "low_flap_threshold": 0,
-      "name": "keepalive",
-      "namespace": "default",
       "publish": false,
       "runtime_assets": null,
       "subscriptions": [],
-      "proxy_entity_id": "",
+      "proxy_entity_name": "",
       "check_hooks": null,
       "stdin": false,
       "subdue": null,
       "ttl": 0,
-      "timeout": 0,
+      "timeout": 120,
       "round_robin": false,
-      "executed": 0,
-      "history": null,
-      "issued": 0,
+      "executed": 1541886210,
+      "history": [
+        {
+          "status": 0,
+          "executed": 1541885810
+        },
+        {
+          "status": 0,
+          "executed": 1541885830
+        },
+        {
+          "status": 0,
+          "executed": 1541885850
+        },
+        {
+          "status": 0,
+          "executed": 1541885870
+        },
+        {
+          "status": 0,
+          "executed": 1541885890
+        },
+        {
+          "status": 0,
+          "executed": 1541885910
+        },
+        {
+          "status": 0,
+          "executed": 1541885930
+        },
+        {
+          "status": 0,
+          "executed": 1541885950
+        },
+        {
+          "status": 0,
+          "executed": 1541885970
+        },
+        {
+          "status": 0,
+          "executed": 1541885990
+        },
+        {
+          "status": 0,
+          "executed": 1541886010
+        },
+        {
+          "status": 0,
+          "executed": 1541886030
+        },
+        {
+          "status": 0,
+          "executed": 1541886050
+        },
+        {
+          "status": 0,
+          "executed": 1541886070
+        },
+        {
+          "status": 0,
+          "executed": 1541886090
+        },
+        {
+          "status": 0,
+          "executed": 1541886110
+        },
+        {
+          "status": 0,
+          "executed": 1541886130
+        },
+        {
+          "status": 0,
+          "executed": 1541886150
+        },
+        {
+          "status": 0,
+          "executed": 1541886170
+        },
+        {
+          "status": 0,
+          "executed": 1541886190
+        },
+        {
+          "status": 0,
+          "executed": 1541886210
+        }
+      ],
+      "issued": 1541886210,
+      "output": "",
       "state": "passing",
       "status": 0,
-      "total_state-change": 0,
-      "last_ok": 1529875603,
+      "total_state_change": 0,
+      "last_ok": 1541886210,
       "occurrences": 1,
       "occurrences_watermark": 1,
       "output_metric_format": "",
-      "output_metric_handlers": null
+      "output_metric_handlers": null,
+      "env_vars": null,
+      "metadata": {
+        "name": "keepalive",
+        "namespace": "default",
+        "labels": null,
+        "annotations": null
+      }
     }
   }
 ]

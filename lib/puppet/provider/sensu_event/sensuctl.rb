@@ -20,8 +20,8 @@ Puppet::Type.type(:sensu_event).provide(:sensuctl, :parent => Puppet::Provider::
     data.each do |d|
       event = {}
       event[:ensure] = :present
-      event[:entity] = d['entity']['id']
-      event[:check] = d['check']['name']
+      event[:entity] = d['entity']['metadata']['name']
+      event[:check] = d['check']['metadata']['name']
       event[:name] = "#{event[:check]} for #{event[:entity]}"
       if d['check']['status'] == 0
         event[:ensure] = :resolve

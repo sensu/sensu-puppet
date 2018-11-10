@@ -56,7 +56,7 @@
       "secret"
     ],
     "metadata": {
-      "name": "",
+      "name": "sensu-backend.example.com",
       "namespace": "default",
       "labels": null,
       "annotations": null

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
   before(:each) do
     @provider = described_class
-    @resource = Puppet::Type.type(:sensu_entity).new({id: 'test'})
+    @resource = Puppet::Type.type(:sensu_entity).new({name: 'test'})
   end
 
   describe 'self.instances' do
@@ -15,7 +15,7 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
     it 'should return the @resource for a entity' do
       allow(@provider).to receive(:sensuctl_list).with('entity').and_return(my_fixture_read('entity_list.json'))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:id]).to eq('sensu-backend.example.com')
+      expect(property_hash[:name]).to eq('sensu-backend.example.com')
     end
   end
 
@@ -23,12 +23,12 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
     it 'should create a entity' do
       @resource[:entity_class] = 'proxy'
       expected_spec = {
-        :id => 'test',
-        :class => 'proxy',
-        :keepalive_timeout => 120,
         :metadata => {
+          :name => 'test',
           :namespace => 'default',
         },
+        :entity_class => 'proxy',
+        :keepalive_timeout => 120,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.create
@@ -40,11 +40,11 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a keepalive_timeout' do
       expected_spec = {
-        :id => 'test',
-        :keepalive_timeout => 120,
         :metadata => {
+          :name => 'test',
           :namespace => 'default',
         },
+        :keepalive_timeout => 120,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.keepalive_timeout = 120
@@ -52,12 +52,12 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
     end
     it 'should update a entity labels' do
       expected_spec = {
-        :id => 'test',
-        :keepalive_timeout => 120,
         :metadata => {
+          :name => 'test',
           :namespace => 'default',
           :labels => {'foo' => 'bar'},
         },
+        :keepalive_timeout => 120,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.labels = {'foo' => 'bar'}
