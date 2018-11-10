@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_hook) do
   desc <<-DESC
-Manages Sensu hooks
+@summary Manages Sensu hooks
 @example Create a hook
   sensu_hook { 'test':
     ensure  => 'present',
     command => 'ps aux',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

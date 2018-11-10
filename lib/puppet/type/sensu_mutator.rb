@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_mutator) do
   desc <<-DESC
-Manages Sensu mutators
+@summary Manages Sensu mutators
 @example Create a mutator
   sensu_mutator { 'example':
     ensure  => 'present',
     command => 'example-mutator.rb',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

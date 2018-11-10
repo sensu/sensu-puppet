@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_cluster_member) do
   desc <<-DESC
-Manages Sensu cluster members
+@summary Manages Sensu cluster members
 @example Add a cluster member
   sensu_cluster_member { 'backend2':
     ensure    => 'present',
     peer_urls => ['http://192.168.52.12:2380'],
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

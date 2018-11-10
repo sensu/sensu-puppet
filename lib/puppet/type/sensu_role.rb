@@ -6,12 +6,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_role) do
   desc <<-DESC
-Manages Sensu roles
+@summary Manages Sensu roles
 @example Add a role
   sensu_role { 'test':
     ensure => 'present',
     rules  => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}],
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

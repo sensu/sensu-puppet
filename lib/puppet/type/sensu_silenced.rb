@@ -5,7 +5,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_silenced) do
   desc <<-DESC
-Manages Sensu silencing
+@summary Manages Sensu silencing
 
 The name of `sensu_silenced` can be used to define `check` and `subscription`.
 
@@ -24,6 +24,12 @@ The name of `sensu_silenced` can be used to define `check` and `subscription`.
   sensu_silenced { 'linux:check-http':
     ensure => 'present',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type

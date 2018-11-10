@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_extension) do
   desc <<-DESC
-Manages Sensu extensions
+@summary Manages Sensu extensions
 @example Create an extension
   sensu_extension { 'test':
     ensure => 'present',
     url    => 'http://example.com/extension',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
