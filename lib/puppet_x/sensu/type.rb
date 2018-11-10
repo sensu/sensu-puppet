@@ -19,7 +19,7 @@ module PuppetX
           requires = []
           catalog.resources.each do |resource|
             if resource.class.to_s == 'Puppet::Type::Sensu_api_validator'
-              requires << resource.name
+              requires << resource.name if resource.name == 'sensu'
             end
           end
           requires
