@@ -7,7 +7,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
     @resource = @type.new({
       :name => 'test',
       :action => 'allow',
-      :statements => ["event.Entity.Environment == 'production'"],
+      :expressions => ["event.Entity.Environment == 'production'"],
     })
   end
 
@@ -33,7 +33,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
           :namespace => 'default',
         },
         :action => :allow,
-        :statements => ["event.Entity.Environment == 'production'"],
+        :expressions => ["event.Entity.Environment == 'production'"],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.create
@@ -50,7 +50,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
           :namespace => 'default',
         },
         :action => 'deny',
-        :statements => ["event.Entity.Environment == 'production'"],
+        :expressions => ["event.Entity.Environment == 'production'"],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.action = 'deny'
@@ -63,7 +63,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
           :namespace => 'default',
         },
         :action => :allow,
-        :statements => ["event.Entity.Environment == 'production'"],
+        :expressions => ["event.Entity.Environment == 'production'"],
         :when => {'days': {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}},
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)

@@ -7,9 +7,10 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_filter { 'test':
-        action     => 'allow',
-        statements => ["event.Entity.Environment == 'production'"],
-        when_days  => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
+        action         => 'allow',
+        expressions    => ["event.Entity.Environment == 'production'"],
+        when_days      => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
+        runtime_assets => ['test'],
       }
       EOS
 
@@ -22,7 +23,9 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl filter info test --format json' do
         data = JSON.parse(stdout)
         expect(data['action']).to eq('allow')
+        expect(data['expressions']).to eq(["event.Entity.Environment == 'production'"])
         expect(data['when']['days']).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
+        expect(data['runtime_assets']).to eq(['test'])
       end
     end
   end
@@ -33,11 +36,12 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_filter { 'test':
         action     => 'allow',
-        statements => ["event.Entity.Environment == 'production'"],
+        expressions => ["event.Entity.Environment == 'test'"],
         when_days  => {
           'monday'  => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],
           'tuesday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],
         },
+        runtime_assets => ['test2'],
       }
       EOS
 
@@ -49,7 +53,9 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
     it 'should have a valid filter with updated propery' do
       on node, 'sensuctl filter info test --format json' do
         data = JSON.parse(stdout)
+        expect(data['expressions']).to eq(["event.Entity.Environment == 'test'"])
         expect(data['when']['days']).to eq({'monday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],'tuesday' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
+        expect(data['runtime_assets']).to eq(['test2'])
       end
     end
   end

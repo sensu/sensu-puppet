@@ -6,7 +6,7 @@ describe Puppet::Type.type(:sensu_filter) do
     {
       name: 'test',
       action: 'allow',
-      statements: ['event.Check.Occurrences == 1']
+      expressions: ['event.Check.Occurrences == 1']
     }
   end
   let(:config) do
@@ -76,7 +76,8 @@ describe Puppet::Type.type(:sensu_filter) do
 
   # Array properties
   [
-    :statements,
+    :expressions,
+    :runtime_assets,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
@@ -208,7 +209,7 @@ describe Puppet::Type.type(:sensu_filter) do
 
   [
     :action,
-    :statements,
+    :expressions,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)

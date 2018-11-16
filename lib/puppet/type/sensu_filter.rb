@@ -8,10 +8,10 @@ Puppet::Type.newtype(:sensu_filter) do
 @summary Manages Sensu filters
 @example Create a filter
   sensu_filter { 'test':
-    ensure     => 'present',
-    action     => 'allow',
-    statements => ["event.Entity.Environment == 'production'"],
-    when_days  => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
+    ensure      => 'present',
+    action      => 'allow',
+    expressions => ["event.Entity.Environment == 'production'"],
+    when_days   => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
   }
 
 **Autorequires**:
@@ -36,12 +36,12 @@ DESC
   end
 
   newproperty(:action) do
-    desc "Action to take with the event if the filter statements match."
+    desc "Action to take with the event if the filter expressions match."
     newvalues('allow', 'deny')
   end
 
-  newproperty(:statements, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "Filter statements to be compared with event data."
+  newproperty(:expressions, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Filter expressions to be compared with event data."
   end
 
   newproperty(:when_days, :parent => PuppetX::Sensu::HashProperty) do
@@ -64,6 +64,10 @@ DESC
     end
   end
 
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:namespace) do
     desc "The Sensu RBAC namespace that this filter belongs to."
     defaultto 'default'
@@ -72,7 +76,7 @@ DESC
   validate do
     required_properties = [
       :action,
-      :statements
+      :expressions
     ]
     required_properties.each do |property|
       if self[:ensure] == :present && self[property].nil?
