@@ -28,7 +28,6 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
           :namespace => 'default',
         },
         :entity_class => 'proxy',
-        :keepalive_timeout => 120,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.create
@@ -38,18 +37,6 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
   end
 
   describe 'flush' do
-    it 'should update a keepalive_timeout' do
-      expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
-        :keepalive_timeout => 120,
-      }
-      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
-      @resource.provider.keepalive_timeout = 120
-      @resource.provider.flush
-    end
     it 'should update a entity labels' do
       expected_spec = {
         :metadata => {
@@ -57,7 +44,6 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
           :namespace => 'default',
           :labels => {'foo' => 'bar'},
         },
-        :keepalive_timeout => 120,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
       @resource.provider.labels = {'foo' => 'bar'}

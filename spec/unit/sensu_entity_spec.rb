@@ -84,7 +84,6 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # Integer properties
   [
-    :keepalive_timeout,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30

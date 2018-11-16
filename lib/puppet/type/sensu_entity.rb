@@ -69,11 +69,6 @@ DESC
     desc "The name of the handler to be called when an entity is deregistered."
   end
 
-  newproperty(:keepalive_timeout, :parent => PuppetX::Sensu::IntegerProperty) do
-    desc "The time in seconds until an entity keepalive is considered stale."
-    defaultto 120
-  end
-
   newproperty(:namespace) do
     desc "The Sensu RBAC namespace that this entity belongs to."
     defaultto 'default'
