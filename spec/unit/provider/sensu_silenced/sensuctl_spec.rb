@@ -85,6 +85,12 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
   end
 
   describe 'destroy' do
+    before(:each) do
+      hash = @resource.provider.instance_variable_get(:@property_hash)
+      hash[:name] = 'entity:test:*'
+      @resource.provider.instance_variable_set(:@property_hash, hash)
+    end
+
     it 'should delete a silenced' do
       expect(@resource.provider).to receive(:sensuctl_delete).with('silenced', 'entity:test:*')
       @resource.provider.destroy
