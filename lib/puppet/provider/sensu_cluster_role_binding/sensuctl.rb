@@ -1,45 +1,37 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 
-Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_role using sensuctl"
+Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensu_cluster_role_binding using sensuctl"
 
   mk_resource_methods
 
   def self.instances
-    roles = []
+    bindings = []
 
-    output = sensuctl_list('role')
-    Puppet.debug("sensu roles: #{output}")
+    output = sensuctl_list('cluster-role-binding')
+    Puppet.debug("sensu cluster_role_bindings: #{output}")
     begin
       data = JSON.parse(output)
     rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl role list')
+      Puppet.debug('Unable to parse output from sensuctl cluster_role list')
       data = []
     end
 
     data.each do |d|
-      role = {}
-      role[:ensure] = :present
-      role[:name] = d['metadata']['name']
-      role[:namespace] = d['metadata']['namespace']
-      d.each_pair do |key, value|
-        next if key == 'metadata'
-        if !!value == value
-          value = value.to_s.to_sym
-        end
-        if type_properties.include?(key.to_sym)
-          role[key.to_sym] = value
-        end
-      end
-      roles << new(role)
+      binding = {}
+      binding[:ensure] = :present
+      binding[:name] = d['metadata']['name']
+      binding[:role_ref] = d['role_ref']['name']
+      binding[:subjects] = d['subjects']
+      bindings << new(binding)
     end
-    roles
+    bindings
   end
 
   def self.prefetch(resources)
-    roles = instances
+    bindings = instances
     resources.keys.each do |name|
-      if provider = roles.find { |c| c.name == name }
+      if provider = bindings.find { |c| c.name == name }
         resources[name].provider = provider
       end
     end
@@ -64,23 +56,22 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
     spec = {}
     spec[:metadata] = {}
     spec[:metadata][:name] = resource[:name]
+    spec[:role_ref] = { type: 'ClusterRole' }
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
-      else
-        value = value
       end
-      if property == :namespace
-        spec[:metadata][:namespace] = value
+      if property == :role_ref
+        spec[:role_ref][:name] = value
       else
         spec[property] = value
       end
     end
     begin
-      sensuctl_create('role', spec)
+      sensuctl_create('ClusterRoleBinding', spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -92,6 +83,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
       spec = {}
       spec[:metadata] = {}
       spec[:metadata][:name] = resource[:name]
+      spec[:role_ref] = { type: 'ClusterRole' }
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -104,14 +96,14 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
         elsif value == :absent
           value = nil
         end
-        if property == :namespace
-          spec[:metadata][:namespace] = value
+        if property == :role_ref
+          spec[:role_ref][:name] = value
         else
           spec[property] = value
         end
       end
       begin
-        sensuctl_create('role', spec)
+        sensuctl_create('ClusterRoleBinding', spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
@@ -121,9 +113,9 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
 
   def destroy
     begin
-      sensuctl_delete('role', resource[:name])
+      sensuctl_delete('cluster-role-binding', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete role #{resource[:name]} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete cluster_role_binding #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

@@ -4,11 +4,11 @@ require_relative '../../puppet_x/sensu/array_of_hashes_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
-Puppet::Type.newtype(:sensu_role) do
+Puppet::Type.newtype(:sensu_cluster_role) do
   desc <<-DESC
-@summary Manages Sensu roles
-@example Add a role
-  sensu_role { 'test':
+@summary Manages Sensu cluster roles
+@example Add a cluster role
+  sensu_cluster_role { 'test':
     ensure => 'present',
     rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
   }
@@ -27,11 +27,6 @@ DESC
 
   newparam(:name, :namevar => true) do
     desc "The name of the role."
-  end
-
-  newproperty(:namespace) do
-    desc "Namespace the role is restricted to."
-    defaultto 'default'
   end
 
   newproperty(:rules, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
@@ -65,7 +60,6 @@ DESC
       value
     end
   end
-
 
   validate do
     required_properties = [

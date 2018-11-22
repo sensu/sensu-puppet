@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'puppet/type/sensu_role'
+require 'puppet/type/sensu_cluster_role'
 
-describe Puppet::Type.type(:sensu_role) do
+describe Puppet::Type.type(:sensu_cluster_role) do
   let(:default_config) do
     {
       name: 'test',
@@ -11,14 +11,14 @@ describe Puppet::Type.type(:sensu_role) do
   let(:config) do
     default_config
   end
-  let(:role) do
+  let(:cluster_role) do
     described_class.new(config)
   end
 
   it 'should add to catalog without raising an error' do
     catalog = Puppet::Resource::Catalog.new
     expect {
-      catalog.add_resource role
+      catalog.add_resource cluster_role
     }.to_not raise_error
   end
 
@@ -29,20 +29,18 @@ describe Puppet::Type.type(:sensu_role) do
   end
 
   defaults = {
-    :namespace => 'default',
   }
 
   # String properties
   [
-    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
-      expect(role[property]).to eq('foo')
+      expect(cluster_role[property]).to eq('foo')
     end
     if default = defaults[property]
       it "should have default for #{property}" do
-        expect(role[property]).to eq(default)
+        expect(cluster_role[property]).to eq(default)
       end
     end
   end
@@ -52,7 +50,7 @@ describe Puppet::Type.type(:sensu_role) do
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { role }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
+      expect { cluster_role }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -61,7 +59,7 @@ describe Puppet::Type.type(:sensu_role) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
-      expect(role[property]).to eq(['foo', 'bar'])
+      expect(cluster_role[property]).to eq(['foo', 'bar'])
     end
   end
 
@@ -70,15 +68,15 @@ describe Puppet::Type.type(:sensu_role) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
-      expect(role[property]).to eq(30)
+      expect(cluster_role[property]).to eq(30)
     end
     it "should accept valid #{property} as string" do
       config[property] = '30'
-      expect(role[property]).to eq(30)
+      expect(cluster_role[property]).to eq(30)
     end
     it "should not accept invalid value for #{property}" do
       config[property] = 'foo'
-      expect { role }.to raise_error(Puppet::Error, /should be an Integer/)
+      expect { cluster_role }.to raise_error(Puppet::Error, /should be an Integer/)
     end
   end
 
@@ -87,23 +85,23 @@ describe Puppet::Type.type(:sensu_role) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true
-      expect(role[property]).to eq(:true)
+      expect(cluster_role[property]).to eq(:true)
     end
     it "should accept valid #{property}" do
       config[property] = false
-      expect(role[property]).to eq(:false)
+      expect(cluster_role[property]).to eq(:false)
     end
     it "should accept valid #{property}" do
       config[property] = 'true'
-      expect(role[property]).to eq(:true)
+      expect(cluster_role[property]).to eq(:true)
     end
     it "should accept valid #{property}" do
       config[property] = 'false'
-      expect(role[property]).to eq(:false)
+      expect(cluster_role[property]).to eq(:false)
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { role }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
+      expect { cluster_role }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 
@@ -112,83 +110,83 @@ describe Puppet::Type.type(:sensu_role) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
-      expect(role[property]).to eq({'foo': 'bar'})
+      expect(cluster_role[property]).to eq({'foo': 'bar'})
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { role }.to raise_error(Puppet::Error, /should be a Hash/)
+      expect { cluster_role }.to raise_error(Puppet::Error, /should be a Hash/)
     end
   end
 
   describe 'rules' do
-    it 'has valid value' do
-      expect(role[:rules]).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
+    it 'accepts valid value' do
+      expect(cluster_role[:rules]).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
     end
 
     it 'accepts valid value' do
       config[:rules] = [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['test']}]
-      expect(role[:rules]).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['test']}])
+      expect(cluster_role[:rules]).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['test']}])
     end
 
     it 'should verify rule is a hash' do
       config[:rules] = ['foo']
-      expect { role }.to raise_error(Puppet::Error, /Each rule must be a Hash/)
+      expect { cluster_role }.to raise_error(Puppet::Error, /Each rule must be a Hash/)
     end
 
     it 'should verify all keys present' do
       config[:rules] = [{'verbs' => ['get','list']}]
-      expect { role }. to raise_error(Puppet::Error, /A rule must contain resources/)
+      expect { cluster_role }. to raise_error(Puppet::Error, /A rule must contain resources/)
     end
 
     it 'should not allow unknown keys' do
       config[:rules] = [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => [''], 'foo' => 'bar'}]
-      expect { role }. to raise_error(Puppet::Error, /Rule key foo is not valid/)
+      expect { cluster_role }. to raise_error(Puppet::Error, /Rule key foo is not valid/)
     end
 
     it 'should verify permissions is an array' do
       config[:rules] = [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ''}]
-      expect { role }. to raise_error(Puppet::Error, /Rule's resource_names must be an Array/)
+      expect { cluster_role }. to raise_error(Puppet::Error, /Rule's resource_names must be an Array/)
     end
   end
 
   it 'should autorequire Package[sensu-cli]' do
     package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource role
+    catalog.add_resource cluster_role
     catalog.add_resource package
-    rel = role.autorequire[0]
+    rel = cluster_role.autorequire[0]
     expect(rel.source.ref).to eq(package.ref)
-    expect(rel.target.ref).to eq(role.ref)
+    expect(rel.target.ref).to eq(cluster_role.ref)
   end
 
   it 'should autorequire Service[sensu-backend]' do
     service = Puppet::Type.type(:service).new(:name => 'sensu-backend')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource role
+    catalog.add_resource cluster_role
     catalog.add_resource service
-    rel = role.autorequire[0]
+    rel = cluster_role.autorequire[0]
     expect(rel.source.ref).to eq(service.ref)
-    expect(rel.target.ref).to eq(role.ref)
+    expect(rel.target.ref).to eq(cluster_role.ref)
   end
 
   it 'should autorequire Exec[sensuctl_configure]' do
     exec = Puppet::Type.type(:exec).new(:name => 'sensuctl_configure', :command => '/usr/bin/sensuctl')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource role
+    catalog.add_resource cluster_role
     catalog.add_resource exec
-    rel = role.autorequire[0]
+    rel = cluster_role.autorequire[0]
     expect(rel.source.ref).to eq(exec.ref)
-    expect(rel.target.ref).to eq(role.ref)
+    expect(rel.target.ref).to eq(cluster_role.ref)
   end
 
   it 'should autorequire sensu_api_validator' do
     validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource role
+    catalog.add_resource cluster_role
     catalog.add_resource validator
-    rel = role.autorequire[0]
+    rel = cluster_role.autorequire[0]
     expect(rel.source.ref).to eq(validator.ref)
-    expect(rel.target.ref).to eq(role.ref)
+    expect(rel.target.ref).to eq(cluster_role.ref)
   end
 
   [
@@ -197,7 +195,7 @@ describe Puppet::Type.type(:sensu_role) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { role }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { cluster_role }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

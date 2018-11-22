@@ -1,29 +1,23 @@
 [
   {
-    "name": "admin",
     "rules": [
       {
-        "type": "*",
-        "namespace": "*",
-        "permissions": [
+        "verbs": [
+          "get",
+          "list",
           "create",
-          "read",
           "update",
           "delete"
-        ]
+        ],
+        "resources": [
+          "*"
+        ],
+        "resource_names": []
       }
-    ]
-  },
-  {
-    "name": "read-only",
-    "rules": [
-      {
-        "type": "*",
-        "namespace": "*",
-        "permissions": [
-          "read"
-        ]
-      }
-    ]
+    ],
+    "metadata": {
+      "namespace": "default",
+      "name": "prod-admin"
+    }
   }
 ]
