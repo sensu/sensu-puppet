@@ -54,11 +54,11 @@ DESC
   end
 
   newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
-    #desc
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
   end
 
   newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
-    #desc
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do
