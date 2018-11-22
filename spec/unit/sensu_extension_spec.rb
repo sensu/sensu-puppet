@@ -111,6 +111,8 @@ describe Puppet::Type.type(:sensu_extension) do
 
   # Hash properties
   [
+    :labels,
+    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

@@ -22,6 +22,8 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
       filter[:ensure] = :present
       filter[:name] = d['metadata']['name']
       filter[:namespace] = d['metadata']['namespace']
+      filter[:labels] = d['metadata']['labels']
+      filter[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
         next if key == 'metadata'
         if !!value == value
@@ -77,6 +79,10 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
         spec[:when] = { days: value }
       elsif property == :namespace
         spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -111,6 +117,10 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
           spec[:when] = { days: value }
         elsif property == :namespace
           spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end

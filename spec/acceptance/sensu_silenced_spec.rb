@@ -9,6 +9,7 @@ describe 'sensu_silenced', if: RSpec.configuration.sensu_full do
       sensu_silenced { 'test':
         ensure => 'present',
         subscription => 'entity:sensu_agent',
+        labels => { 'foo' => 'baz' },
       }
       EOS
 
@@ -21,6 +22,7 @@ describe 'sensu_silenced', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl silenced info entity:sensu_agent:* --format json' do
         data = JSON.parse(stdout)
         expect(data['subscription']).to eq('entity:sensu_agent')
+        expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
   end
@@ -33,6 +35,7 @@ describe 'sensu_silenced', if: RSpec.configuration.sensu_full do
         ensure => 'present',
         subscription => 'entity:sensu_agent',
         expire_on_resolve => true,
+        labels => { 'foo' => 'bar' },
       }
       EOS
 
@@ -45,6 +48,7 @@ describe 'sensu_silenced', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl silenced info entity:sensu_agent:* --format json' do
         data = JSON.parse(stdout)
         expect(data['expire_on_resolve']).to eq(true)
+        expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

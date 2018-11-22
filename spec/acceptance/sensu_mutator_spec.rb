@@ -9,6 +9,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
       sensu_mutator { 'test':
         command        => 'test',
         runtime_assets => ['test'],
+        labels         => { 'foo' => 'baz' },
       }
       EOS
 
@@ -22,6 +23,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('test')
         expect(data['runtime_assets']).to eq(['test'])
+        expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
   end
@@ -34,6 +36,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         command        => 'test',
         timeout        => 60,
         runtime_assets => ['test2'],
+        labels         => { 'foo' => 'bar' },
       }
       EOS
 
@@ -47,6 +50,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['timeout']).to eq(60)
         expect(data['runtime_assets']).to eq(['test2'])
+        expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

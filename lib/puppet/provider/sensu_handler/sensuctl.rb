@@ -22,6 +22,8 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       handler[:ensure] = :present
       handler[:name] = d['metadata']['name']
       handler[:namespace] = d['metadata']['namespace']
+      handler[:labels] = d['metadata']['labels']
+      handler[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
         next if key == 'metadata'
         next if key == 'socket'
@@ -83,6 +85,10 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       end
       if property == :namespace
         spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -120,6 +126,10 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
         end
         if property == :namespace
           spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end

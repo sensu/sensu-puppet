@@ -79,6 +79,14 @@ DESC
     defaultto 'default'
   end
 
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
+  end
+
   def self.title_patterns
     [
       [

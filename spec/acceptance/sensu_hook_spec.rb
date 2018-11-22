@@ -7,7 +7,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_hook { 'test':
-        command => 'ps aux'
+        command => 'ps aux',
+        labels  => { 'foo' => 'baz' },
       }
       EOS
 
@@ -20,6 +21,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl hook info test --format json' do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('ps aux')
+        expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
   end
@@ -31,6 +33,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       sensu_hook { 'test':
         command => 'ps aux',
         timeout => 120,
+        labels  => { 'foo' => 'bar' },
       }
       EOS
 
@@ -43,6 +46,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl hook info test --format json' do
         data = JSON.parse(stdout)
         expect(data['timeout']).to eq(120)
+        expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

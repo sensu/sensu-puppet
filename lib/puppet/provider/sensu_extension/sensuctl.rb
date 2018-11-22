@@ -22,6 +22,8 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
       extension[:ensure] = :present
       extension[:name] = d['metadata']['name']
       extension[:namespace] = d['metadata']['namespace']
+      extension[:labels] = d['metadata']['labels']
+      extension[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
         next if key == 'metadata'
         if !!value == value
@@ -73,6 +75,10 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
       end
       if property == :namespace
         spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -104,6 +110,10 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
         end
         if property == :namespace
           spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end

@@ -7,7 +7,8 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_extension { 'test':
-        url => 'http://example.com/extension',
+        url    => 'http://example.com/extension',
+        labels => { 'foo' => 'baz' },
       }
       EOS
 
@@ -21,6 +22,7 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         d = data.select { |e| e['metadata']['name'] == 'test' }
         expect(d[0]['url']).to eq('http://example.com/extension')
+        expect(d[0]['metadata']['labels']['foo']).to eq('baz')
       end
     end
   end
@@ -30,7 +32,8 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_extension { 'test':
-        url => 'http://127.0.0.1/extension',
+        url    => 'http://127.0.0.1/extension',
+        labels => { 'foo' => 'bar' },
       }
       EOS
 
@@ -44,6 +47,7 @@ describe 'sensu_extension', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         d = data.select { |e| e['metadata']['name'] == 'test' }
         expect(d[0]['url']).to eq('http://127.0.0.1/extension')
+        expect(d[0]['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

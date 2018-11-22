@@ -22,6 +22,8 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
       mutator[:ensure] = :present
       mutator[:name] = d['metadata']['name']
       mutator[:namespace] = d['metadata']['namespace']
+      mutator[:labels] = d['metadata']['labels']
+      mutator[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
         next if key == 'metadata'
         if !!value == value
@@ -73,6 +75,10 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
       end
       if property == :namespace
         spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -104,6 +110,10 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
         end
         if property == :namespace
           spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end
