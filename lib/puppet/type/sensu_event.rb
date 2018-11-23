@@ -5,7 +5,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_event) do
   desc <<-DESC
-Manages Sensu events
+@summary Manages Sensu events
 @example Resolve an event
   sensu_event { 'test for sensu-agent':
     ensure => 'resolve'
@@ -15,6 +15,12 @@ Manages Sensu events
   sensu_event { 'test for sensu-agent':
     ensure => 'absent'
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -49,13 +55,8 @@ DESC
     desc "The name of the check the event should match"
   end
 
-  newparam(:organization) do
-    desc "The Sensu RBAC organization that this event belongs to."
-    defaultto 'default'
-  end
-
-  newparam(:environment) do
-    desc "The Sensu RBAC environment that this event belongs to."
+  newparam(:namespace) do
+    desc "The Sensu RBAC namespace that this event belongs to."
     defaultto 'default'
   end
 

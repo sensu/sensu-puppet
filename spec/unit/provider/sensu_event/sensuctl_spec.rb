@@ -26,7 +26,7 @@ describe Puppet::Type.type(:sensu_event).provider(:sensuctl) do
 
   describe 'resolve' do
     it 'should create a event' do
-      expect(@resource.provider).to receive(:sensuctl).with(['event', 'resolve', 'test', 'keepalive', '--organization', 'default', '--environment', 'default'])
+      expect(@resource.provider).to receive(:sensuctl).with(['event', 'resolve', 'test', 'keepalive', '--namespace', 'default'])
       @resource.provider.resolve
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:resolve)

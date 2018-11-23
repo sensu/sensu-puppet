@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'puppet/type/sensu_environment'
+require 'puppet/type/sensu_namespace'
 
-describe Puppet::Type.type(:sensu_environment) do
+describe Puppet::Type.type(:sensu_namespace) do
   let(:default_config) do
     {
       name: 'test',
@@ -10,14 +10,14 @@ describe Puppet::Type.type(:sensu_environment) do
   let(:config) do
     default_config
   end
-  let(:environment) do
+  let(:namespace) do
     described_class.new(config)
   end
 
   it 'should add to catalog without raising an error' do
     catalog = Puppet::Resource::Catalog.new
     expect {
-      catalog.add_resource environment
+      catalog.add_resource namespace
     }.to_not raise_error
   end
 
@@ -28,22 +28,18 @@ describe Puppet::Type.type(:sensu_environment) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
   }
 
   # String properties
   [
-    :description,
-    :organization,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
-      expect(environment[property]).to eq('foo')
+      expect(namespace[property]).to eq('foo')
     end
     if default = defaults[property]
       it "should have default for #{property}" do
-        expect(environment[property]).to eq(default)
+        expect(namespace[property]).to eq(default)
       end
     end
   end
@@ -52,9 +48,13 @@ describe Puppet::Type.type(:sensu_environment) do
   [
     :name,
   ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = 'foo'
+      expect(namespace[property]).to eq('foo')
+    end
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { environment }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
+      expect { namespace }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -63,7 +63,7 @@ describe Puppet::Type.type(:sensu_environment) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
-      expect(environment[property]).to eq(['foo', 'bar'])
+      expect(namespace[property]).to eq(['foo', 'bar'])
     end
   end
 
@@ -72,15 +72,15 @@ describe Puppet::Type.type(:sensu_environment) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
-      expect(environment[property]).to eq(30)
+      expect(namespace[property]).to eq(30)
     end
     it "should accept valid #{property} as string" do
       config[property] = '30'
-      expect(environment[property]).to eq(30)
+      expect(namespace[property]).to eq(30)
     end
     it "should not accept invalid value for #{property}" do
       config[property] = 'foo'
-      expect { environment }.to raise_error(Puppet::Error, /should be an Integer/)
+      expect { namespace }.to raise_error(Puppet::Error, /should be an Integer/)
     end
   end
 
@@ -89,23 +89,23 @@ describe Puppet::Type.type(:sensu_environment) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true
-      expect(environment[property]).to eq(:true)
+      expect(namespace[property]).to eq(:true)
     end
     it "should accept valid #{property}" do
       config[property] = false
-      expect(environment[property]).to eq(:false)
+      expect(namespace[property]).to eq(:false)
     end
     it "should accept valid #{property}" do
       config[property] = 'true'
-      expect(environment[property]).to eq(:true)
+      expect(namespace[property]).to eq(:true)
     end
     it "should accept valid #{property}" do
       config[property] = 'false'
-      expect(environment[property]).to eq(:false)
+      expect(namespace[property]).to eq(:false)
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { environment }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
+      expect { namespace }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 
@@ -114,52 +114,52 @@ describe Puppet::Type.type(:sensu_environment) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
-      expect(environment[property]).to eq({'foo': 'bar'})
+      expect(namespace[property]).to eq({'foo': 'bar'})
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { environment }.to raise_error(Puppet::Error, /should be a Hash/)
+      expect { namespace }.to raise_error(Puppet::Error, /should be a Hash/)
     end
   end
 
   it 'should autorequire Package[sensu-cli]' do
     package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource environment
+    catalog.add_resource namespace
     catalog.add_resource package
-    rel = environment.autorequire[0]
+    rel = namespace.autorequire[0]
     expect(rel.source.ref).to eq(package.ref)
-    expect(rel.target.ref).to eq(environment.ref)
+    expect(rel.target.ref).to eq(namespace.ref)
   end
 
   it 'should autorequire Service[sensu-backend]' do
     service = Puppet::Type.type(:service).new(:name => 'sensu-backend')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource environment
+    catalog.add_resource namespace
     catalog.add_resource service
-    rel = environment.autorequire[0]
+    rel = namespace.autorequire[0]
     expect(rel.source.ref).to eq(service.ref)
-    expect(rel.target.ref).to eq(environment.ref)
+    expect(rel.target.ref).to eq(namespace.ref)
   end
 
   it 'should autorequire Exec[sensuctl_configure]' do
     exec = Puppet::Type.type(:exec).new(:name => 'sensuctl_configure', :command => '/usr/bin/sensuctl')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource environment
+    catalog.add_resource namespace
     catalog.add_resource exec
-    rel = environment.autorequire[0]
+    rel = namespace.autorequire[0]
     expect(rel.source.ref).to eq(exec.ref)
-    expect(rel.target.ref).to eq(environment.ref)
+    expect(rel.target.ref).to eq(namespace.ref)
   end
 
   it 'should autorequire sensu_api_validator' do
     validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource environment
+    catalog.add_resource namespace
     catalog.add_resource validator
-    rel = environment.autorequire[0]
+    rel = namespace.autorequire[0]
     expect(rel.source.ref).to eq(validator.ref)
-    expect(rel.target.ref).to eq(environment.ref)
+    expect(rel.target.ref).to eq(namespace.ref)
   end
 
   [
@@ -167,7 +167,7 @@ describe Puppet::Type.type(:sensu_environment) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { environment }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { namespace }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

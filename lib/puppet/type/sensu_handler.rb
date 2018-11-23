@@ -5,13 +5,19 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_handler) do
   desc <<-DESC
-Manages Sensu handlers
+@summary Manages Sensu handlers
 @example Create a handler
   sensu_handler { 'test':
     ensure  => 'present',
     type    => 'pipe',
     command => 'notify.rb'
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -63,14 +69,17 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this handler belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this handler belongs to."
     defaultto 'default'
   end
 
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this handler belongs to."
-    defaultto 'default'
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do

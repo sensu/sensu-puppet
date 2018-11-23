@@ -6,12 +6,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_role) do
   desc <<-DESC
-Manages Sensu roles
+@summary Manages Sensu roles
 @example Add a role
   sensu_role { 'test':
     ensure => 'present',
-    rules  => [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read']}],
+    rules  => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}],
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -34,7 +40,7 @@ DESC
       if ! rule.is_a?(Hash)
         raise ArgumentError, "Each rule must be a Hash not #{rule.class}"
       end
-      valid_keys = ['type','environment','organization','permissions']
+      valid_keys = ['type','namespace','permissions']
       valid_keys.each do |t|
         if ! rule.key?(t)
           raise ArgumentError, "A rule must contain #{t}"

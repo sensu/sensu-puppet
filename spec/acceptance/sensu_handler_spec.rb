@@ -12,6 +12,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         socket_host    => '127.0.0.1',
         socket_port    => 1234,
         runtime_assets => ['test'],
+        labels         => { 'foo' => 'baz' },
       }
       EOS
 
@@ -26,6 +27,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         expect(data['command']).to eq('notify.rb')
         expect(data['socket']).to eq({'host' => '127.0.0.1', 'port' => 1234})
         expect(data['runtime_assets']).to eq(['test'])
+        expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
   end
@@ -41,6 +43,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         socket_host    => 'localhost',
         socket_port    => 5678,
         runtime_assets => ['test2'],
+        labels         => { 'foo' => 'bar' },
       }
       EOS
 
@@ -55,6 +58,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         expect(data['filters']).to eq(['production'])
         expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
         expect(data['runtime_assets']).to eq(['test2'])
+        expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
   end

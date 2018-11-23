@@ -30,14 +30,14 @@ describe Puppet::Type.type(:sensu_asset) do
   end
 
   defaults = {
-    'organization': 'default',
+    'namespace': 'default',
   }
 
   # String properties
   [
     :url,
     :sha512,
-    :organization,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -114,7 +114,8 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # Hash properties
   [
-    :metadata,
+    :labels,
+    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

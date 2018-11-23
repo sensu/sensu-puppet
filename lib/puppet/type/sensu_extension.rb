@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_extension) do
   desc <<-DESC
-Manages Sensu extensions
+@summary Manages Sensu extensions
 @example Create an extension
   sensu_extension { 'test':
     ensure => 'present',
     url    => 'http://example.com/extension',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -31,9 +37,17 @@ DESC
     desc "The URL location of the extension."
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this extension belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this extension belongs to."
     defaultto 'default'
+  end
+
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do

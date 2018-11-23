@@ -6,7 +6,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_check) do
   desc <<-DESC
-Manages Sensu checks
+@summary Manages Sensu checks
 @example Create a check
   sensu_check { 'test':
     ensure        => 'present',
@@ -44,6 +44,12 @@ Manages Sensu checks
       ],
     }
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -163,12 +169,12 @@ DESC
     end
   end
 
-  newproperty(:proxy_entity_id) do
-    desc "The check ID, used to create a proxy entity for an external resource (i.e., a network switch)."
+  newproperty(:proxy_entity_name) do
+    desc "The check name, used to create a proxy entity for an external resource (i.e., a network switch)."
     newvalues(/^[\w\.\-]+$/, :absent)
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
-        raise ArgumentError, "check_check proxy_entity_id invalid"
+        raise ArgumentError, "check_check proxy_entity_name invalid"
       end
     end
   end
@@ -178,13 +184,8 @@ DESC
     newvalues(:true, :false)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this check belongs to."
-    defaultto 'default'
-  end
-
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this check belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this check belongs to."
     defaultto 'default'
   end
 
@@ -216,9 +217,12 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:extended_attributes, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Custom attributes to include as with the check, that appear as outer-level attributes."
-    defaultto {}
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do

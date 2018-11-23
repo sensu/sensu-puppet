@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_mutator) do
   desc <<-DESC
-Manages Sensu mutators
+@summary Manages Sensu mutators
 @example Create a mutator
   sensu_mutator { 'example':
     ensure  => 'present',
     command => 'example-mutator.rb',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -46,14 +52,17 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this mutator belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this mutator belongs to."
     defaultto 'default'
   end
 
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this mutator belongs to."
-    defaultto 'default'
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do

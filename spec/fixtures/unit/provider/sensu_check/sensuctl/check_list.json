@@ -1,30 +1,30 @@
 [
   {
-    "check_hooks": null,
-    "command": "check-http.rb -u https://dean-learner.book",
-    "environment": "default",
-    "handlers": [
-      "slack"
-    ],
+    "command": "check-cpu.sh -w 75 -c 90",
+    "handlers": [],
     "high_flap_threshold": 0,
-    "interval": 16,
+    "interval": 60,
     "low_flap_threshold": 0,
-    "name": "marketing-site",
-    "organization": "default",
-    "output_metric_format": "",
-    "output_metric_handlers": null,
+    "publish": true,
+    "runtime_assets": [],
+    "subscriptions": [
+      "linux"
+    ],
     "proxy_entity_id": "",
-    "publish": false,
-    "round_robin": false,
-    "runtime_assets": null,
+    "check_hooks": null,
     "stdin": false,
     "subdue": null,
-    "subscriptions": [
-      "demo"
-    ],
-    "timeout": 0,
     "ttl": 0,
-    "history": null,
-    "issued": 0
+    "timeout": 0,
+    "round_robin": false,
+    "output_metric_format": "",
+    "output_metric_handlers": [],
+    "env_vars": null,
+    "metadata": {
+      "name": "check-cpu",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    }
   }
 ]

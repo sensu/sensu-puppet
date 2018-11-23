@@ -20,9 +20,12 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
     data.each do |d|
       extension = {}
       extension[:ensure] = :present
-      extension[:name] = d['name']
+      extension[:name] = d['metadata']['name']
+      extension[:namespace] = d['metadata']['namespace']
+      extension[:labels] = d['metadata']['labels']
+      extension[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
-        next if key == 'name'
+        next if key == 'metadata'
         if !!value == value
           value = value.to_s.to_sym
         end
@@ -61,13 +64,21 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
 
   def create
     spec = {}
-    spec[:name] = resource[:name]
+    spec[:metadata] = {}
+    spec[:metadata][:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
       if [:true, :false].include?(value)
-        spec[property] = convert_boolean_property_value(value)
+        value = convert_boolean_property_value(value)
+      end
+      if property == :namespace
+        spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -83,7 +94,8 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:name] = resource[:name]
+      spec[:metadata] = {}
+      spec[:metadata][:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -92,9 +104,16 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
         end
         next if value.nil?
         if [:true, :false].include?(value)
-          spec[property] = convert_boolean_property_value(value)
+          value = convert_boolean_property_value(value)
         elsif value == :absent
-          spec[property] = nil
+          value = nil
+        end
+        if property == :namespace
+          spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end

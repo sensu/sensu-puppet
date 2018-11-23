@@ -20,10 +20,12 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
     data.each do |d|
       silenced = {}
       silenced[:ensure] = :present
-      silenced[:name] = d['id']
-      silenced[:id] = d['id']
+      silenced[:name] = d['metadata']['name']
+      silenced[:namespace] = d['metadata']['namespace']
+      silenced[:labels] = d['metadata']['labels']
+      silenced[:annotations] = d['metadata']['annotations']
       d.each_pair do |key,value|
-        next if key == 'id'
+        next if key == 'metadata'
         if !!value == value
           value = value.to_s.to_sym
         end
@@ -63,15 +65,23 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
 
   def create
     spec = {}
+    spec[:metadata] = {}
+    spec[:metadata][:name] = resource[:name]
     spec[:subscription] = resource[:subscription]
     spec[:check] = resource[:check]
     type_properties.each do |property|
-      next if property == :id
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
       if [:true, :false].include?(value)
-        spec[property] = convert_boolean_property_value(value)
+        value = convert_boolean_property_value(value)
+      end
+      if property == :namespace
+        spec[:metadata][:namespace] = value
+      elsif property == :labels
+        spec[:metadata][:labels] = value
+      elsif property == :annotations
+        spec[:metadata][:annotations] = value
       else
         spec[property] = value
       end
@@ -87,11 +97,11 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:id] = @property_hash[:id]
+      spec[:metadata] = {}
+      spec[:metadata][:name] = resource[:name]
       spec[:subscription] = resource[:subscription]
       spec[:check] = resource[:check]
       type_properties.each do |property|
-        next if property == :id
         if @property_flush[property]
           value = @property_flush[property]
         else
@@ -99,9 +109,16 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
         end
         next if value.nil?
         if [:true, :false].include?(value)
-          spec[property] = convert_boolean_property_value(value)
+          value = convert_boolean_property_value(value)
         elsif value == :absent
-          spec[property] = nil
+          value = nil
+        end
+        if property == :namespace
+          spec[:metadata][:namespace] = value
+        elsif property == :labels
+          spec[:metadata][:labels] = value
+        elsif property == :annotations
+          spec[:metadata][:annotations] = value
         else
           spec[property] = value
         end
@@ -117,7 +134,7 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
 
   def destroy
     begin
-      sensuctl_delete('silenced', @property_hash[:id])
+      sensuctl_delete('silenced', @property_hash[:name])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete silenced #{@property_hash[:id]} failed\nError message: #{e.message}"
     end

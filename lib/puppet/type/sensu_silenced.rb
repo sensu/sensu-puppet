@@ -5,7 +5,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_silenced) do
   desc <<-DESC
-Manages Sensu silencing
+@summary Manages Sensu silencing
 
 The name of `sensu_silenced` can be used to define `check` and `subscription`.
 
@@ -24,6 +24,12 @@ The name of `sensu_silenced` can be used to define `check` and `subscription`.
   sensu_silenced { 'linux:check-http':
     ensure => 'present',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -33,13 +39,6 @@ DESC
 
   newparam(:name, :namevar => true) do
     desc "Silenced name"
-  end
-
-  newproperty(:id) do
-    desc "The unique ID of the silenced"
-    validate do |value|
-      fail "class is read-only"
-    end
   end
 
   newparam(:check, :namevar => true) do
@@ -75,14 +74,17 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this silenced belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this silenced belongs to."
     defaultto 'default'
   end
 
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this silenced belongs to."
-    defaultto 'default'
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   def self.title_patterns

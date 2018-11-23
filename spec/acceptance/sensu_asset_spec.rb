@@ -10,9 +10,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         url      => 'http://example.com/asset/example.tar',
         sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
         filters  => ['System.OS==linux'],
-        metadata => {
-          'Content-Type' => 'application/tar',
-        },
       }
       EOS
 
@@ -26,7 +23,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['url']).to eq('http://example.com/asset/example.tar')
         expect(data['filters']).to eq(['System.OS==linux'])
-        expect(data['metadata']).to eq({'Content-Type' => 'application/tar'})
       end
     end
   end
@@ -39,9 +35,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         url      => 'http://example.com/asset/example.zip',
         sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
         filters  => ['System.OS==windows'],
-        metadata => {
-          'Content-Type' => 'application/zip',
-        },
       }
       EOS
 
@@ -55,7 +48,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['url']).to eq('http://example.com/asset/example.zip')
         expect(data['filters']).to eq(['System.OS==windows'])
-        expect(data['metadata']).to eq({'Content-Type' => 'application/zip'})
       end
     end
   end

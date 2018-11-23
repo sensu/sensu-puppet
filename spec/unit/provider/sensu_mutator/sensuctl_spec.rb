@@ -26,10 +26,11 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
   describe 'create' do
     it 'should create a mutator' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
       @resource.provider.create
@@ -41,10 +42,11 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a mutator timeout' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
         :timeout => 60
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
@@ -53,10 +55,11 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
     end
     it 'should remove timeout' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
         :timeout => nil,
       }
       @resource[:timeout] = 60

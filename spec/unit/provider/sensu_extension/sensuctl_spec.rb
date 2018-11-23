@@ -26,9 +26,11 @@ describe Puppet::Type.type(:sensu_extension).provider(:sensuctl) do
   describe 'create' do
     it 'should create a extension' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :url => 'http://127.0.0.1',
-        :organization => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('extension', expected_spec)
       @resource.provider.create
@@ -41,9 +43,11 @@ describe Puppet::Type.type(:sensu_extension).provider(:sensuctl) do
     it 'should update a extension filters' do
       @resource[:url] = 'http://127.0.0.1/test'
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :url => 'http://127.0.0.1/test',
-        :organization => 'default',
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('extension', expected_spec)
       @resource.provider.url = 'http://127.0.0.1/test'

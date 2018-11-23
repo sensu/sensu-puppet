@@ -5,12 +5,18 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_hook) do
   desc <<-DESC
-Manages Sensu hooks
+@summary Manages Sensu hooks
 @example Create a hook
   sensu_hook { 'test':
     ensure  => 'present',
     command => 'ps aux',
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -41,14 +47,17 @@ DESC
     newvalues(:true, :false)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this hook belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this hook belongs to."
     defaultto 'default'
   end
 
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this hook belongs to."
-    defaultto 'default'
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do

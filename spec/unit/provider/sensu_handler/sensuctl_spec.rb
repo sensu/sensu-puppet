@@ -30,12 +30,13 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
       @resource[:socket_host] = "localhost"
       @resource[:socket_port] = 9000
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :type => :pipe,
         :command => 'test',
         :filters => ["recurrence", "production"],
-        :organization => 'default',
-        :environment => 'default',
         :socket => {:host => "localhost", :port => 9000}
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
@@ -51,11 +52,12 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
       @resource[:socket_host] = "localhost"
       @resource[:socket_port] = 9000
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :type => :tcp,
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
         :socket => { :host => 'localhost', :port => 9001 }
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
@@ -64,11 +66,12 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
     end
     it 'should remove timeout' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :type => :pipe,
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
         :timeout => nil,
       }
       @resource[:timeout] = 60
@@ -78,11 +81,12 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
     end
     it 'should remove handlers' do
       expected_spec = {
-        :name => 'test',
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
         :type => :pipe,
         :command => 'test',
-        :organization => 'default',
-        :environment => 'default',
         :handlers => nil
       }
       @resource[:handlers] = ['foo','bar']

@@ -31,15 +31,15 @@ describe Puppet::Type.type(:sensu_check) do
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # String properties
   [
     :command,
     :cron,
-    :proxy_entity_id,
+    :namespace,
+    :proxy_entity_name,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -55,7 +55,7 @@ describe Puppet::Type.type(:sensu_check) do
   # String regex validated properties
   [
     :name,
-    :proxy_entity_id
+    :proxy_entity_name,
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
@@ -132,7 +132,8 @@ describe Puppet::Type.type(:sensu_check) do
 
   # Hash properties
   [
-    :extended_attributes
+    :labels,
+    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

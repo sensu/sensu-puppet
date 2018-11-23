@@ -4,7 +4,7 @@ require 'puppet/type/sensu_entity'
 describe Puppet::Type.type(:sensu_entity) do
   let(:default_config) do
     {
-      id: 'test',
+      name: 'test',
       entity_class: 'proxy'
     }
   end
@@ -22,15 +22,14 @@ describe Puppet::Type.type(:sensu_entity) do
     }.to_not raise_error
   end
 
-  it 'should require a id' do
+  it 'should require a name' do
     expect {
       described_class.new({})
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
   defaults = {
-    'organization': 'default',
-    'environment': 'default',
+    'namespace': 'default',
   }
 
   # read-only properties
@@ -48,8 +47,7 @@ describe Puppet::Type.type(:sensu_entity) do
   # String properties
   [
     :deregistration_handler,
-    :organization,
-    :environment,
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -64,7 +62,7 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # String regex validated properties
   [
-    :id,
+    :name,
     :entity_class,
   ].each do |property|
     it "should not accept invalid #{property}" do
@@ -86,7 +84,6 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # Integer properties
   [
-    :keepalive_timeout,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
@@ -130,7 +127,8 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # Hash properties
   [
-    :extended_attributes
+    :labels,
+    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }

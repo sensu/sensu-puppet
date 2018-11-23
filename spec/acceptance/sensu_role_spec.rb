@@ -7,7 +7,7 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_role { 'test':
-        rules => [{'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read']}]
+        rules => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}]
       }
       EOS
 
@@ -31,8 +31,8 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_role { 'test':
         rules => [
-          {'type' => '*', 'environment' => '*', 'organization' => '*', 'permissions' => ['read', 'create']},
-          {'type' => '*', 'environment' => 'test', 'organization' => '*', 'permissions' => ['create']},
+          {'type' => '*', 'namespace' => '*', 'permissions' => ['read', 'create']},
+          {'type' => '*', 'namespace' => '*', 'permissions' => ['create']},
         ],
       }
       EOS

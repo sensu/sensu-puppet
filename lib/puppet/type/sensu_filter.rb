@@ -5,14 +5,20 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_filter) do
   desc <<-DESC
-Manages Sensu filters
+@summary Manages Sensu filters
 @example Create a filter
   sensu_filter { 'test':
-    ensure     => 'present',
-    action     => 'allow',
-    statements => ["event.Entity.Environment == 'production'"],
-    when_days  => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
+    ensure      => 'present',
+    action      => 'allow',
+    expressions => ["event.Entity.Environment == 'production'"],
+    when_days   => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -30,12 +36,12 @@ DESC
   end
 
   newproperty(:action) do
-    desc "Action to take with the event if the filter statements match."
+    desc "Action to take with the event if the filter expressions match."
     newvalues('allow', 'deny')
   end
 
-  newproperty(:statements, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "Filter statements to be compared with event data."
+  newproperty(:expressions, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Filter expressions to be compared with event data."
   end
 
   newproperty(:when_days, :parent => PuppetX::Sensu::HashProperty) do
@@ -58,20 +64,28 @@ DESC
     end
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this filter belongs to."
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Assets to be applied to the filter’s execution context."
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this filter belongs to."
     defaultto 'default'
   end
 
-  newproperty(:environment) do
-    desc "The Sensu RBAC environment that this filter belongs to."
-    defaultto 'default'
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do
     required_properties = [
       :action,
-      :statements
+      :expressions
     ]
     required_properties.each do |property|
       if self[:ensure] == :present && self[property].nil?

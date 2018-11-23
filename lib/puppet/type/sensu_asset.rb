@@ -5,7 +5,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_asset) do
   desc <<-DESC
-Manages Sensu assets
+@summary Manages Sensu assets
 @example Create an asset
   sensu_asset { 'test':
     ensure  => 'present',
@@ -13,6 +13,12 @@ Manages Sensu assets
     sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
     filters => ['System.OS==linux'],
   }
+
+**Autorequires**:
+* `Package[sensu-cli]`
+* `Service[sensu-backend]`
+* `Exec[sensuctl_configure]`
+* `Sensu_api_validator[sensu]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -37,18 +43,22 @@ DESC
     desc "The checksum of the asset"
   end
 
-  newproperty(:metadata, :parent => PuppetX::Sensu::HashProperty) do
-    desc "Information about the asset, in the form of key value pairs."
-  end
-
   newproperty(:filters, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "A set of filters used by the agent to determine of the asset should be installed."
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:organization) do
-    desc "The Sensu RBAC organization that this asset belongs to."
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this asset belongs to."
     defaultto 'default'
+  end
+
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
   validate do
