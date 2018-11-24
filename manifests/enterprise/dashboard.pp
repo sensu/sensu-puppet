@@ -68,6 +68,7 @@ class sensu::enterprise::dashboard (
       gitlab    => $::sensu::enterprise_dashboard_gitlab,
       ldap      => $::sensu::enterprise_dashboard_ldap,
       oidc      => $::sensu::enterprise_dashboard_oidc,
+      custom    => $::sensu::enterprise_dashboard_custom,
       notify    => $file_notify,
     }
 

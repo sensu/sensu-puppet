@@ -208,6 +208,19 @@ describe 'sensu', :type => :class do
               'oidc' => { 'key' => 'value' }
             }) }
           end
+
+          context 'with enterprise_dashboard_custom defined' do
+            let(:params) { {
+              :enterprise                   => true,
+              :enterprise_user              => 'sensu',
+              :enterprise_pass              => 'sensu',
+              :enterprise_dashboard         => true,
+              :enterprise_dashboard_custom  => { 'key' => 'value' }
+            } }
+            it { should contain_sensu_enterprise_dashboard_config('testhost.domain.com').with({
+              'custom' => { 'key' => 'value' }
+            }) }
+          end
         end
 
         context 'with rabbitmq_ssl => true and rabbitmq_ssl_cert_chain => undef' do

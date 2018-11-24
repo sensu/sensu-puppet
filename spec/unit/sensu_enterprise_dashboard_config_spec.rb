@@ -86,4 +86,11 @@ describe Puppet::Type.type(:sensu_enterprise_dashboard_config) do
       expect(type_instance[:oidc]).to be_a(Hash)
     end
   end
+
+  describe 'accepts Hash values for :custom' do
+    it do
+      type_instance[:custom] = { :key => :value }
+      expect(type_instance[:custom]).to be_a(Hash)
+    end
+  end
 end

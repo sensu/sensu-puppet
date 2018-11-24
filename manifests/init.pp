@@ -261,6 +261,10 @@
 #
 # @param enterprise_dashboard_oidc Optional OIDC configuration for Enterprise Dashboard
 #
+# @param enterprise_dashboard_custom List of custom attributes to include in the check.
+#   You can use it to pass any attribute that is not listed here explicitly.
+#   Example: { 'usersOptions' => { 'requireSilencingReason' => true } }
+#
 # @param path Used to set PATH in /etc/default/sensu
 #
 # @param redact Use to redact passwords from checks on the client side
@@ -460,6 +464,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_gitlab = undef,
   Optional[Any]      $enterprise_dashboard_ldap = undef,
   Optional[Any]      $enterprise_dashboard_oidc = undef,
+  Optional[Hash]     $enterprise_dashboard_custom = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = '$PATH',
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
