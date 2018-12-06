@@ -42,8 +42,21 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
+        it {
+          should contain_file('sensu_backend_state_dir').with({
+            'ensure'  => 'directory',
+            'path'    => '/var/lib/sensu/sensu-backend',
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0750',
+            'require' => 'Package[sensu-go-backend]',
+            'before'  => 'Service[sensu-backend]',
+          })
+        }
+
         backend_content = <<-END.gsub(/^\s+\|/, '')
-          |--- {}
+          |---
+          |state-dir: "/var/lib/sensu/sensu-backend"
         END
 
         it {

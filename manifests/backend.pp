@@ -20,6 +20,8 @@
 #   Sensu backend service ensure value.
 # @param service_enable
 #   Sensu backend service enable value.
+# @param state_dir
+#   Sensu backend state directory path.
 # @param config_hash
 #   Sensu backend configuration hash used to define backend.yml.
 # @param url_host
@@ -38,6 +40,7 @@ class sensu::backend (
   String $service_name = 'sensu-backend',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
+  Stdlib::Absolutepath $state_dir = '/var/lib/sensu/sensu-backend',
   Hash $config_hash = {},
   String $url_host = '127.0.0.1',
   Stdlib::Port $url_port = 8080,
@@ -48,6 +51,11 @@ class sensu::backend (
   include ::sensu
 
   $etc_dir = $::sensu::etc_dir
+
+  $default_config = {
+    'state-dir' => $state_dir,
+  }
+  $config = $default_config + $config_hash
 
   $url = "http://${url_host}:${url_port}"
 
@@ -87,10 +95,20 @@ class sensu::backend (
     require => Class['::sensu::repo'],
   }
 
+  file { 'sensu_backend_state_dir':
+    ensure  => 'directory',
+    path    => $state_dir,
+    owner   => $::sensu::user,
+    group   => $::sensu::group,
+    mode    => '0750',
+    require => Package['sensu-go-backend'],
+    before  => Service['sensu-backend'],
+  }
+
   file { 'sensu_backend_config':
     ensure  => 'file',
     path    => "${etc_dir}/backend.yml",
-    content => to_yaml($config_hash),
+    content => to_yaml($config),
     require => Package['sensu-go-backend'],
     notify  => Service['sensu-backend'],
   }
