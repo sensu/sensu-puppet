@@ -10,9 +10,9 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu::backend')}
 
         it {
-          should contain_package('sensu-cli').with({
+          should contain_package('sensu-go-cli').with({
             'ensure'  => 'installed',
-            'name'    => 'sensu-cli',
+            'name'    => 'sensu-go-cli',
             'require' => 'Class[Sensu::Repo]',
           })
         }
@@ -35,9 +35,9 @@ describe 'sensu::backend', :type => :class do
         }
 
         it {
-          should contain_package('sensu-backend').with({
+          should contain_package('sensu-go-backend').with({
             'ensure'  => 'installed',
-            'name'    => 'sensu-backend',
+            'name'    => 'sensu-go-backend',
             'require' => 'Class[Sensu::Repo]',
           })
         }
@@ -51,7 +51,7 @@ describe 'sensu::backend', :type => :class do
             'ensure'  => 'file',
             'path'    => '/etc/sensu/backend.yml',
             'content' => backend_content,
-            'require' => 'Package[sensu-backend]',
+            'require' => 'Package[sensu-go-backend]',
             'notify'  => 'Service[sensu-backend]',
           })
         }

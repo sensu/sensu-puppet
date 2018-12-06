@@ -151,8 +151,8 @@ describe Puppet::Type.type(:sensu_role) do
     end
   end
 
-  it 'should autorequire Package[sensu-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
+  it 'should autorequire Package[sensu-go-cli]' do
+    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource role
     catalog.add_resource package

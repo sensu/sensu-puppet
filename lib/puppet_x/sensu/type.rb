@@ -4,7 +4,7 @@ module PuppetX
 
       def add_autorequires
         autorequire(:package) do
-          ['sensu-cli']
+          ['sensu-go-cli']
         end
 
         autorequire(:service) do

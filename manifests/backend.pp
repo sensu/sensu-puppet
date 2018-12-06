@@ -33,8 +33,8 @@
 #
 class sensu::backend (
   Optional[String] $version = undef,
-  String $package_name = 'sensu-backend',
-  String $cli_package_name = 'sensu-cli',
+  String $package_name = 'sensu-go-backend',
+  String $cli_package_name = 'sensu-go-cli',
   String $service_name = 'sensu-backend',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
@@ -57,7 +57,7 @@ class sensu::backend (
     $_version = $version
   }
 
-  package { 'sensu-cli':
+  package { 'sensu-go-cli':
     ensure  => $_version,
     name    => $cli_package_name,
     require => Class['::sensu::repo'],
@@ -80,7 +80,7 @@ class sensu::backend (
     require => Sensu_api_validator['sensu'],
   }
 
-  package { 'sensu-backend':
+  package { 'sensu-go-backend':
     ensure  => $_version,
     name    => $package_name,
     before  => File['sensu_etc_dir'],
@@ -91,7 +91,7 @@ class sensu::backend (
     ensure  => 'file',
     path    => "${etc_dir}/backend.yml",
     content => to_yaml($config_hash),
-    require => Package['sensu-backend'],
+    require => Package['sensu-go-backend'],
     notify  => Service['sensu-backend'],
   }
 

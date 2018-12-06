@@ -146,8 +146,8 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
     end
   end
 
-  it 'should autorequire Package[sensu-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
+  it 'should autorequire Package[sensu-go-cli]' do
+    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource binding
     catalog.add_resource package
