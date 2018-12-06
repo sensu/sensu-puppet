@@ -6,9 +6,9 @@ describe 'sensu::repo', :type => :class do
       let(:facts) { facts }
       case os
       when /(redhat-6|centos-6|amazon-2017|amazon-2018)-x86_64/
-        baseurl = "https://packagecloud.io/sensu/beta/el/6/$basearch"
+        baseurl = "https://packagecloud.io/sensu/stable/el/6/$basearch"
       when /(redhat-7|centos-7|amazonlinux-2)-x86_64/
-        baseurl = "https://packagecloud.io/sensu/beta/el/7/$basearch"
+        baseurl = "https://packagecloud.io/sensu/stable/el/7/$basearch"
       else
         baseurl = nil
       end
@@ -20,7 +20,7 @@ describe 'sensu::repo', :type => :class do
             'repo_gpgcheck'   => 1,
             'gpgcheck'        => 0,
             'enabled'         => 1,
-            'gpgkey'          => 'https://packagecloud.io/sensu/beta/gpgkey',
+            'gpgkey'          => 'https://packagecloud.io/sensu/stable/gpgkey',
             'sslverify'       => 1,
             'sslcacert'       => '/etc/pki/tls/certs/ca-bundle.crt',
             'metadata_expire' => 300,
@@ -30,13 +30,13 @@ describe 'sensu::repo', :type => :class do
         it {
           should contain_apt__source('sensu').with({
             'ensure' => 'present',
-            'location' => "https://packagecloud.io/sensu/beta/#{facts[:os]['name'].downcase}/",
+            'location' => "https://packagecloud.io/sensu/stable/#{facts[:os]['name'].downcase}/",
             'repos'    => 'main',
             'release'  => facts[:os]['distro']['codename'],
             'include'  => { 'src' => 'true' },
             'key'      => {
-              'id'     => '0B3B86AFEF2D99B085BEDC6A4263180AAE8AAE03',
-              'source' => 'https://packagecloud.io/sensu/beta/gpgkey',
+              'id'     => 'CB1605C4E988C91F438249E3A5BC3FB70A3F7426',
+              'source' => 'https://packagecloud.io/sensu/stable/gpgkey',
             },
           })
         }
