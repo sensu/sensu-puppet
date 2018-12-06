@@ -12,10 +12,9 @@ class sensu::repo {
       } else {
         $repo_release = $facts['os']['release']['major']
       }
-      # TODO: change from beta to stable once there are stable releases
       yumrepo { 'sensu':
         descr           => 'sensu',
-        baseurl         => "https://packagecloud.io/sensu/beta/el/${repo_release}/\$basearch",
+        baseurl         => "https://packagecloud.io/sensu/stable/el/${repo_release}/\$basearch",
         repo_gpgcheck   => 1,
         gpgcheck        => 0,
         enabled         => 1,
@@ -26,10 +25,9 @@ class sensu::repo {
       }
     }
     'Debian': {
-      #TODO: change from beta to stable once there are stable releases
       apt::source { 'sensu':
         ensure   => 'present',
-        location => "https://packagecloud.io/sensu/beta/${downcase($facts['os']['name'])}/",
+        location => "https://packagecloud.io/sensu/stable/${downcase($facts['os']['name'])}/",
         repos    => 'main',
         release  => $facts['os']['distro']['codename'],
         include  => {
