@@ -30,9 +30,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         if !!value == value
           value = value.to_s.to_sym
         end
-        if key == 'subdue'
-          check[:subdue_days] = value['days'] unless value.nil?
-        elsif type_properties.include?(key.to_sym)
+        if type_properties.include?(key.to_sym)
           check[key.to_sym] = value
         else
           next
@@ -88,9 +86,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
-      if property == :subdue_days
-        spec[:subdue] = { days: value }
-      elsif property == :namespace
+      if property == :namespace
         spec[:metadata][:namespace] = value
       elsif property == :labels
         spec[:metadata][:labels] = value
@@ -132,9 +128,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         elsif value == :absent
           value = nil
         end
-        if property == :subdue_days
-          spec[:subdue] = { days: value }
-        elsif property == :namespace
+        if property == :namespace
           spec[:metadata][:namespace] = value
         elsif property == :labels
           spec[:metadata][:labels] = value

@@ -49,29 +49,6 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
     end
-    it 'should create a check with subdue' do
-      @resource[:command] = 'check_ntp'
-      @resource[:handlers] = ['email', 'slack']
-      @resource[:stdin] = true
-      @resource[:publish] = false
-      @resource[:subdue_days] = {'all': [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
-        :command => 'check_ntp',
-        :subscriptions => ['demo'],
-        :handlers => ['email', 'slack'],
-        :stdin => true,
-        :publish => false,
-        :subdue => { days: {'all': [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]} },
-      }
-      expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
-      @resource.provider.create
-      property_hash = @resource.provider.instance_variable_get("@property_hash")
-      expect(property_hash[:ensure]).to eq(:present)
-    end
   end
 
   describe 'flush' do
@@ -120,21 +97,6 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       @resource[:ttl] = 60
       expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
       @resource.provider.ttl = :absent
-      @resource.provider.flush
-    end
-    it 'should update a check subdue' do
-      expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
-        :command => 'foobar',
-        :subscriptions => ['demo'],
-        :handlers => ['slack'],
-        :subdue => { days: {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]} },
-      }
-      expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
-      @resource.provider.subdue_days = {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}
       @resource.provider.flush
     end
   end
