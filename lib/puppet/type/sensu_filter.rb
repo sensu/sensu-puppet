@@ -11,7 +11,6 @@ Puppet::Type.newtype(:sensu_filter) do
     ensure      => 'present',
     action      => 'allow',
     expressions => ["event.Entity.Environment == 'production'"],
-    when_days   => {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]},
   }
 
 **Autorequires**:
@@ -42,26 +41,6 @@ DESC
 
   newproperty(:expressions, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "Filter expressions to be compared with event data."
-  end
-
-  newproperty(:when_days, :parent => PuppetX::Sensu::HashProperty) do
-    desc "A hash of days of the week (i.e., monday) and/or all. Each day specified can define one or more time windows, in which the filter is applied."
-    validate do |value|
-      super(value)
-      value.each_pair do |k,v|
-        if ! ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','all'].include?(k.to_s)
-          raise ArgumentError, "when_days keys must be day of the week or 'all', not #{k}"
-        end
-        if ! v.is_a?(Array)
-          raise ArgumentError, "when_days hash values must be an Array"
-        end
-        v.each do |d|
-          if ! d.is_a?(Hash) || ! d.key?('begin') || ! d.key?('end')
-            raise ArgumentError, "when_days day time window must be a hash containing keys 'begin' and 'end'"
-          end
-        end
-      end
-    end
   end
 
   newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
