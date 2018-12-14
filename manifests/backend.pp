@@ -28,10 +28,6 @@
 #   Sensu backend host used to configure sensuctl and verify API access.
 # @param url_port
 #   Sensu backend port used to configure sensuctl and verify API access.
-# @param username
-#   Sensu backend admin username used to confiure sensuctl.
-# @param password
-#   Sensu backend admin password used to confiure sensuctl.
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -44,8 +40,6 @@ class sensu::backend (
   Hash $config_hash = {},
   String $url_host = '127.0.0.1',
   Stdlib::Port $url_port = 8080,
-  String $username = 'admin',
-  String $password = 'P@ssw0rd!',
 ) {
 
   include ::sensu
@@ -79,7 +73,7 @@ class sensu::backend (
   # Ensure sensu-backend is up before starting sensu-agent
   Sensu_api_validator['sensu'] -> Service['sensu-agent']
 
-  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username '${username}' --password '${password}'"
+  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username 'admin' --password 'P@ssw0rd!'"
   $sensuctl_configure_creates = '/root/.config/sensu/sensuctl/cluster'
   exec { 'sensuctl_configure':
     command => "${sensuctl_configure} || rm -f ${sensuctl_configure_creates}",
