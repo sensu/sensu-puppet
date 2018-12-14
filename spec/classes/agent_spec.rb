@@ -11,9 +11,9 @@ describe 'sensu::agent', :type => :class do
         it { should contain_class('sensu::agent')}
 
         it {
-          should contain_package('sensu-agent').with({
+          should contain_package('sensu-go-agent').with({
             'ensure'  => 'installed',
-            'name'    => 'sensu-agent',
+            'name'    => 'sensu-go-agent',
             'before'  => 'File[sensu_etc_dir]',
             'require' => 'Class[Sensu::Repo]',
           })
@@ -28,7 +28,7 @@ describe 'sensu::agent', :type => :class do
             'ensure'  => 'file',
             'path'    => '/etc/sensu/agent.yml',
             'content' => agent_content,
-            'require' => 'Package[sensu-agent]',
+            'require' => 'Package[sensu-go-agent]',
             'notify'  => 'Service[sensu-agent]',
           })
         }

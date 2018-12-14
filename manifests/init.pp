@@ -10,6 +10,12 @@
 #   Absolute path to the Sensu etc directory.
 #   Default: '/etc/sensu' and 'C:/opt/sensu' on windows.
 #
+# @param user
+#   User used by sensu services
+#
+# @param group
+#   User group used by sensu services
+#
 # @param etc_dir_purge
 #   Boolean to determine if the etc_dir should be purged
 #   such that only Puppet managed files are present.
@@ -21,6 +27,8 @@
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
+  String $user = 'sensu',
+  String $group = 'sensu',
   Boolean $etc_dir_purge = true,
   Boolean $manage_repo = true,
 ) {

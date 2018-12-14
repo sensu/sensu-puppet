@@ -10,7 +10,7 @@ Puppet::Type.newtype(:sensu_role) do
 @example Add a role
   sensu_role { 'test':
     ensure => 'present',
-    rules  => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}],
+    rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
   }
 
 **Autorequires**:
@@ -27,11 +27,11 @@ DESC
 
   newparam(:name, :namevar => true) do
     desc "The name of the role."
-    validate do |value|
-      unless value =~ /^[\w\.\-]+$/
-        raise ArgumentError, "sensu_role name invalid"
-      end
-    end
+  end
+
+  newproperty(:namespace) do
+    desc "Namespace the role is restricted to."
+    defaultto 'default'
   end
 
   newproperty(:rules, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
@@ -40,8 +40,9 @@ DESC
       if ! rule.is_a?(Hash)
         raise ArgumentError, "Each rule must be a Hash not #{rule.class}"
       end
-      valid_keys = ['type','namespace','permissions']
-      valid_keys.each do |t|
+      required_keys = ['verbs','resources']
+      valid_keys = ['verbs','resources','resource_names']
+      required_keys.each do |t|
         if ! rule.key?(t)
           raise ArgumentError, "A rule must contain #{t}"
         end
@@ -51,11 +52,20 @@ DESC
           raise ArgumentError, "Rule key #{t} is not valid"
         end
       end
-      if ! rule['permissions'].is_a?(Array)
-        raise ArgumentError, "A rule's permissions must be an array"
-      end 
+      rule.each_pair do |k,v|
+        if ! v.is_a?(Array)
+          raise ArgumentError, "Rule's #{k} must be an Array"
+        end
+      end
+    end
+    munge do |value|
+      if ! value.key?('resource_names')
+        value['resource_names'] = nil
+      end
+      value
     end
   end
+
 
   validate do
     required_properties = [

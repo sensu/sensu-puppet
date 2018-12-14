@@ -21,7 +21,6 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
       allow(@provider).to receive(:sensuctl_list).with('filter').and_return(my_fixture_read('filter_list.json'))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('production_filter')
-      expect(property_hash[:when_days]).to include({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
     end
   end
 
@@ -54,20 +53,6 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
       @resource.provider.action = 'deny'
-      @resource.provider.flush
-    end
-    it 'should update when_days' do
-      expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
-        :action => :allow,
-        :expressions => ["event.Entity.Environment == 'production'"],
-        :when => {'days': {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}},
-      }
-      expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
-      @resource.provider.when_days = {'all': [{'begin': '5:00 PM', 'end': '8:00 AM'}]}
       @resource.provider.flush
     end
   end

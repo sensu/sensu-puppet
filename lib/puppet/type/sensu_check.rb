@@ -28,23 +28,6 @@ Puppet::Type.newtype(:sensu_check) do
     interval      => 60,
   }
 
-@example Create a check that is subdued
-  sensu_check { 'test':
-    ensure        => 'present',
-    command       => 'test.sh',
-    subscriptions => ['linux'],
-    handlers      => ['email'],
-    interval      => 60,
-    subdue_days   => {
-      'all' => [
-        { 'begin' => '8:00 AM', 'end' => '5:00 PM' },
-      ],
-      'friday' => [
-        { 'begin' => '7:00 AM', 'end' => '6:00 PM' },
-      ],
-    }
-  }
-
 **Autorequires**:
 * `Package[sensu-cli]`
 * `Service[sensu-backend]`
@@ -145,26 +128,6 @@ DESC
       end
       if ! hooks.is_a?(Array)
         raise ArgumentError, "check_hooks hooks must be an Array"
-      end
-    end
-  end
-
-  newproperty(:subdue_days, :parent => PuppetX::Sensu::HashProperty) do
-    desc "A Sensu subdue, a hash of days of the week, which define one or more time windows in which the check is not scheduled to be executed."
-    validate do |value|
-      super(value)
-      value.each_pair do |k,v|
-        if ! ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','all'].include?(k.to_s)
-          raise ArgumentError, "subdue_days keys must be day of the week or 'all', not #{k}"
-        end
-        if ! v.is_a?(Array)
-          raise ArgumentError, "subdue_days hash values must be an Array"
-        end
-        v.each do |d|
-          if ! d.is_a?(Hash) || ! d.key?('begin') || ! d.key?('end')
-            raise ArgumentError, "subdue_days day time window must be a hash containing keys 'begin' and 'end'"
-          end
-        end
       end
     end
   end

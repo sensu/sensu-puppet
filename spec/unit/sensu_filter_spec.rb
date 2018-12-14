@@ -142,35 +142,8 @@ describe Puppet::Type.type(:sensu_filter) do
     end
   end
 
-  describe 'when_days' do
-    it 'accepts valid value for when' do
-      config[:when_days] = {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expect(filter[:when_days]).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
-    end
-
-    it 'should handle invalid day' do
-      config[:when_days] = {'foo' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expect { filter }.to raise_error(Puppet::Error, /when_days keys must be day of the week or 'all'/)
-    end
-
-    it 'should require day key to be array' do
-      config[:when_days] = {'all' => 'foo'}
-      expect { filter }.to raise_error(Puppet::Error, /when_days hash values must be an Array/)
-    end
-
-    it 'should verify time range is hash' do
-      config[:when_days] = {'all' => ['foo']}
-      expect { filter }.to raise_error(Puppet::Error, /when_days day time window must be a hash containing keys 'begin' and 'end'/)
-    end
-
-    it 'should verify time range keys' do
-      config[:when_days] = {'all' => [{'start' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expect { filter }.to raise_error(Puppet::Error, /when_days day time window must be a hash containing keys 'begin' and 'end'/)
-    end
-  end
-
-  it 'should autorequire Package[sensu-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
+  it 'should autorequire Package[sensu-go-cli]' do
+    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource filter
     catalog.add_resource package

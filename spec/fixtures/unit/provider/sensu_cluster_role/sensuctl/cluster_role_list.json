@@ -1,0 +1,160 @@
+[
+  {
+    "rules": [
+      {
+        "verbs": [
+          "*"
+        ],
+        "resources": [
+          "assets",
+          "checks",
+          "entities",
+          "extensions",
+          "events",
+          "filters",
+          "handlers",
+          "hooks",
+          "mutators",
+          "silenced",
+          "roles",
+          "rolebindings"
+        ],
+        "resource_names": null
+      },
+      {
+        "verbs": [
+          "get",
+          "list"
+        ],
+        "resources": [
+          "namespaces"
+        ],
+        "resource_names": null
+      }
+    ],
+    "metadata": {
+      "name": "admin"
+    }
+  },
+  {
+    "rules": [
+      {
+        "verbs": [
+          "*"
+        ],
+        "resources": [
+          "*"
+        ],
+        "resource_names": null
+      }
+    ],
+    "metadata": {
+      "name": "cluster-admin"
+    }
+  },
+  {
+    "rules": [
+      {
+        "verbs": [
+          "*"
+        ],
+        "resources": [
+          "assets",
+          "checks",
+          "entities",
+          "extensions",
+          "events",
+          "filters",
+          "handlers",
+          "hooks",
+          "mutators",
+          "silenced"
+        ],
+        "resource_names": null
+      },
+      {
+        "verbs": [
+          "get",
+          "list"
+        ],
+        "resources": [
+          "namespaces"
+        ],
+        "resource_names": null
+      }
+    ],
+    "metadata": {
+      "name": "edit"
+    }
+  },
+  {
+    "rules": [
+      {
+        "verbs": [
+          "*"
+        ],
+        "resources": [
+          "events"
+        ],
+        "resource_names": null
+      }
+    ],
+    "metadata": {
+      "name": "system:agent"
+    }
+  },
+  {
+    "rules": [
+      {
+        "verbs": [
+          "get",
+          "update"
+        ],
+        "resources": [
+          "localselfuser"
+        ],
+        "resource_names": null
+      },
+      {
+        "verbs": [
+          "get",
+          "list"
+        ],
+        "resources": [
+          "namespaces"
+        ],
+        "resource_names": null
+      }
+    ],
+    "metadata": {
+      "name": "system:user"
+    }
+  },
+  {
+    "rules": [
+      {
+        "verbs": [
+          "get",
+          "list"
+        ],
+        "resources": [
+          "assets",
+          "checks",
+          "entities",
+          "extensions",
+          "events",
+          "filters",
+          "handlers",
+          "hooks",
+          "mutators",
+          "silenced",
+          "namespaces"
+        ],
+        "resource_names": null
+      }
+    ],
+    "metadata": {
+      "name": "view"
+    }
+  }
+]

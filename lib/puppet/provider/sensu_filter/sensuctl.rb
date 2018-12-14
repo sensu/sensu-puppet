@@ -29,9 +29,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
         if !!value == value
           value = value.to_s.to_sym
         end
-        if key == 'when'
-          filter[:when_days] = value['days']
-        elsif type_properties.include?(key.to_sym)
+        if type_properties.include?(key.to_sym)
           filter[key.to_sym] = value
         end
       end
@@ -75,9 +73,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
-      if property == :when_days
-        spec[:when] = { days: value }
-      elsif property == :namespace
+      if property == :namespace
         spec[:metadata][:namespace] = value
       elsif property == :labels
         spec[:metadata][:labels] = value
@@ -113,9 +109,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
         elsif value == :absent
           value = nil
         end
-        if property == :when_days
-          spec[:when] = { days: value }
-        elsif property == :namespace
+        if property == :namespace
           spec[:metadata][:namespace] = value
         elsif property == :labels
           spec[:metadata][:labels] = value

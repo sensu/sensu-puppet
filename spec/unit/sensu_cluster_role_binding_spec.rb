@@ -1,24 +1,25 @@
 require 'spec_helper'
-require 'puppet/type/sensu_extension'
+require 'puppet/type/sensu_cluster_role_binding'
 
-describe Puppet::Type.type(:sensu_extension) do
+describe Puppet::Type.type(:sensu_cluster_role_binding) do
   let(:default_config) do
     {
       name: 'test',
-      url: 'http://localhost',
+      role_ref: 'test',
+      subjects: [{'type' => 'User', 'name' => 'test'}],
     }
   end
   let(:config) do
     default_config
   end
-  let(:extension) do
+  let(:binding) do
     described_class.new(config)
   end
 
   it 'should add to catalog without raising an error' do
     catalog = Puppet::Resource::Catalog.new
     expect {
-      catalog.add_resource extension
+      catalog.add_resource binding
     }.to_not raise_error
   end
 
@@ -29,32 +30,29 @@ describe Puppet::Type.type(:sensu_extension) do
   end
 
   defaults = {
-    'namespace': 'default',
   }
 
   # String properties
   [
-    :url,
-    :namespace,
+    :role_ref,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
-      expect(extension[property]).to eq('foo')
+      expect(binding[property]).to eq('foo')
     end
     if default = defaults[property]
       it "should have default for #{property}" do
-        expect(extension[property]).to eq(default)
+        expect(binding[property]).to eq(default)
       end
     end
   end
 
   # String regex validated properties
   [
-    :name,
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
-      expect { extension }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
+      expect { binding }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
   end
 
@@ -63,7 +61,7 @@ describe Puppet::Type.type(:sensu_extension) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
-      expect(extension[property]).to eq(['foo', 'bar'])
+      expect(binding[property]).to eq(['foo', 'bar'])
     end
   end
 
@@ -72,15 +70,15 @@ describe Puppet::Type.type(:sensu_extension) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
-      expect(extension[property]).to eq(30)
+      expect(binding[property]).to eq(30)
     end
     it "should accept valid #{property} as string" do
       config[property] = '30'
-      expect(extension[property]).to eq(30)
+      expect(binding[property]).to eq(30)
     end
     it "should not accept invalid value for #{property}" do
       config[property] = 'foo'
-      expect { extension }.to raise_error(Puppet::Error, /should be an Integer/)
+      expect { binding }.to raise_error(Puppet::Error, /should be an Integer/)
     end
   end
 
@@ -89,88 +87,124 @@ describe Puppet::Type.type(:sensu_extension) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true
-      expect(extension[property]).to eq(:true)
+      expect(binding[property]).to eq(:true)
     end
     it "should accept valid #{property}" do
       config[property] = false
-      expect(extension[property]).to eq(:false)
+      expect(binding[property]).to eq(:false)
     end
     it "should accept valid #{property}" do
       config[property] = 'true'
-      expect(extension[property]).to eq(:true)
+      expect(binding[property]).to eq(:true)
     end
     it "should accept valid #{property}" do
       config[property] = 'false'
-      expect(extension[property]).to eq(:false)
+      expect(binding[property]).to eq(:false)
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { extension }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
+      expect { binding }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
   end
 
   # Hash properties
   [
-    :labels,
-    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
-      expect(extension[property]).to eq({'foo': 'bar'})
+      expect(binding[property]).to eq({'foo': 'bar'})
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
-      expect { extension }.to raise_error(Puppet::Error, /should be a Hash/)
+      expect { binding }.to raise_error(Puppet::Error, /should be a Hash/)
     end
   end
 
-  it 'should autorequire Package[sensu-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
+  describe 'subjects' do
+    it 'accepts valid value' do
+      expect(binding[:subjects]).to eq([{'type' => 'User', 'name' => 'test'}])
+    end
+
+    it 'should verify subject is a hash' do
+      config[:subjects] = ['foo']
+      expect { binding }.to raise_error(Puppet::Error, /Each subject must be a Hash/)
+    end
+
+    it 'should verify all keys present' do
+      config[:subjects] = [{'name' => 'test'}]
+      expect { binding }. to raise_error(Puppet::Error, /subject requires key type/)
+    end
+
+    it 'should not allow unknown keys' do
+      config[:subjects] = [{'name' => 'test', 'type' => 'User', 'foo' => 'bar'}]
+      expect { binding }. to raise_error(Puppet::Error, /foo is not a valid subject key/)
+    end
+
+    it 'should verify type' do
+      config[:subjects] = [{'name' => 'test', 'type' => 'Foo'}]
+      expect { binding }. to raise_error(Puppet::Error, /Foo is not a valid type/)
+    end
+  end
+
+  it 'should autorequire Package[sensu-go-cli]' do
+    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource extension
+    catalog.add_resource binding
     catalog.add_resource package
-    rel = extension.autorequire[0]
+    rel = binding.autorequire[0]
     expect(rel.source.ref).to eq(package.ref)
-    expect(rel.target.ref).to eq(extension.ref)
+    expect(rel.target.ref).to eq(binding.ref)
   end
 
   it 'should autorequire Service[sensu-backend]' do
     service = Puppet::Type.type(:service).new(:name => 'sensu-backend')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource extension
+    catalog.add_resource binding
     catalog.add_resource service
-    rel = extension.autorequire[0]
+    rel = binding.autorequire[0]
     expect(rel.source.ref).to eq(service.ref)
-    expect(rel.target.ref).to eq(extension.ref)
+    expect(rel.target.ref).to eq(binding.ref)
   end
 
   it 'should autorequire Exec[sensuctl_configure]' do
     exec = Puppet::Type.type(:exec).new(:name => 'sensuctl_configure', :command => '/usr/bin/sensuctl')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource extension
+    catalog.add_resource binding
     catalog.add_resource exec
-    rel = extension.autorequire[0]
+    rel = binding.autorequire[0]
     expect(rel.source.ref).to eq(exec.ref)
-    expect(rel.target.ref).to eq(extension.ref)
+    expect(rel.target.ref).to eq(binding.ref)
   end
 
   it 'should autorequire sensu_api_validator' do
     validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
     catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource extension
+    catalog.add_resource binding
     catalog.add_resource validator
-    rel = extension.autorequire[0]
+    rel = binding.autorequire[0]
     expect(rel.source.ref).to eq(validator.ref)
-    expect(rel.target.ref).to eq(extension.ref)
+    expect(rel.target.ref).to eq(binding.ref)
+  end
+
+  it 'should autorequire sensu_cluster_role' do
+    config[:role_ref] = 'test'
+    role = Puppet::Type.type(:sensu_cluster_role).new(:name => 'test', :rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}])
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource binding
+    catalog.add_resource role
+    rel = binding.autorequire[0]
+    expect(rel.source.ref).to eq(role.ref)
+    expect(rel.target.ref).to eq(binding.ref)
   end
 
   [
-    :url,
+    :role_ref,
+    :subjects,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { extension }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { binding }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

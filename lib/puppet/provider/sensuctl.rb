@@ -27,7 +27,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def self.sensuctl_list(command)
     args = [command]
     args << 'list'
-    if ! ['namespace','role','user'].include?(command)
+    if ! ['cluster-role','cluster-role-binding','namespace','user'].include?(command)
       args << '--all-namespaces'
     end
     args << '--format'

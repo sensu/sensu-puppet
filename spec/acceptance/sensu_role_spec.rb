@@ -7,7 +7,7 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_role { 'test':
-        rules => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}]
+        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
       EOS
 
@@ -17,10 +17,9 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have a valid role' do
-      on node, 'sensuctl role list --format json' do
+      on node, 'sensuctl role info test --format json' do
         data = JSON.parse(stdout)
-        d = data.select { |o| o['name'] == 'test' }
-        expect(d[0]['name']).to eq('test')
+        expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
   end
@@ -31,8 +30,8 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_role { 'test':
         rules => [
-          {'type' => '*', 'namespace' => '*', 'permissions' => ['read', 'create']},
-          {'type' => '*', 'namespace' => '*', 'permissions' => ['create']},
+          {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
+          {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
         ],
       }
       EOS
@@ -43,12 +42,11 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have a valid role with updated propery' do
-      on node, 'sensuctl role list --format json' do
+      on node, 'sensuctl role info test --format json' do
         data = JSON.parse(stdout)
-        d = data.select { |o| o['name'] == 'test' }
-        expect(d[0]['rules'].size).to eq(2)
-        expect(d[0]['rules'][0]['permissions']).to eq(['read','create'])
-        expect(d[0]['rules'][1]['permissions']).to eq(['create'])
+        expect(data['rules'].size).to eq(2)
+        expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
+        expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
       end
     end
   end
@@ -65,12 +63,8 @@ describe 'sensu_role', if: RSpec.configuration.sensu_full do
       apply_manifest_on(node, pp, :catch_changes  => true)
     end
 
-    it 'should not have test role' do
-      on node, 'sensuctl role list --format json' do
-        data = JSON.parse(stdout)
-        d = data.select { |o| o['name'] == 'test' }
-        expect(d.size).to eq(0)
-      end
+    describe command('sensuctl role info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
     end
   end
 end

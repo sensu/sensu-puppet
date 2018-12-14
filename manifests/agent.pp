@@ -25,7 +25,7 @@
 #
 class sensu::agent (
   Optional[String] $version = undef,
-  String $package_name = 'sensu-agent',
+  String $package_name = 'sensu-go-agent',
   String $service_name = 'sensu-agent',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
@@ -42,7 +42,7 @@ class sensu::agent (
     $_version= $version
   }
 
-  package { 'sensu-agent':
+  package { 'sensu-go-agent':
     ensure  => $_version,
     name    => $package_name,
     before  => File['sensu_etc_dir'],
@@ -53,7 +53,7 @@ class sensu::agent (
     ensure  => 'file',
     path    => "${etc_dir}/agent.yml",
     content => to_yaml($config_hash),
-    require => Package['sensu-agent'],
+    require => Package['sensu-go-agent'],
     notify  => Service['sensu-agent'],
   }
 

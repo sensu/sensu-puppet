@@ -6,29 +6,32 @@ describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
     @type = Puppet::Type.type(:sensu_role)
     @resource = @type.new({
       :name => 'test',
-      :rules => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}],
+      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}]
     })
   end
 
   describe 'self.instances' do
     it 'should create instances' do
       allow(@provider).to receive(:sensuctl_list).with('role').and_return(my_fixture_read('role_list.json'))
-      expect(@provider.instances.length).to eq(2)
+      expect(@provider.instances.length).to eq(1)
     end
 
     it 'should return the resource for a role' do
       allow(@provider).to receive(:sensuctl_list).with('role').and_return(my_fixture_read('role_list.json'))
-      property_hash = @provider.instances.select {|i| i.name == 'read-only'}[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('read-only')
-      expect(property_hash[:rules]).to include({'type' => '*', 'namespace' => '*', 'permissions' => ['read']})
+      property_hash = @provider.instances[0].instance_variable_get("@property_hash")
+      expect(property_hash[:name]).to eq('prod-admin')
+      expect(property_hash[:rules]).to include({'verbs' => ['get','list','create','update','delete'], 'resources' => ['*'], 'resource_names' => []})
     end
   end
 
   describe 'create' do
     it 'should create a role' do
       expected_spec = {
-        :name => 'test',
-        :rules => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}]
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
+        :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('role', expected_spec)
       @resource.provider.create
@@ -40,11 +43,14 @@ describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a role rule' do
       expected_spec = {
-        :name => 'test',
-        :rules => [{'type' => '*', 'namespace' => '*', 'permissions' => ['read','create']}]
+        :metadata => {
+          :name => 'test',
+          :namespace => 'default',
+        },
+        :rules => [{'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['']}],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('role', expected_spec)
-      @resource.provider.rules = [{'type' => '*', 'namespace' => '*', 'permissions' => ['read','create']}]
+      @resource.provider.rules = [{'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['']}]
       @resource.provider.flush
     end
   end

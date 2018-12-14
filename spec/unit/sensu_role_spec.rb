@@ -5,7 +5,7 @@ describe Puppet::Type.type(:sensu_role) do
   let(:default_config) do
     {
       name: 'test',
-      rules: [{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}]
+      rules: [{'verbs' => ['get','list'], 'resources' => ['checks']}]
     }
   end
   let(:config) do
@@ -29,10 +29,12 @@ describe Puppet::Type.type(:sensu_role) do
   end
 
   defaults = {
+    :namespace => 'default',
   }
 
   # String properties
   [
+    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -47,7 +49,6 @@ describe Puppet::Type.type(:sensu_role) do
 
   # String regex validated properties
   [
-    :name,
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
@@ -120,8 +121,13 @@ describe Puppet::Type.type(:sensu_role) do
   end
 
   describe 'rules' do
+    it 'has valid value' do
+      expect(role[:rules]).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
+    end
+
     it 'accepts valid value' do
-      expect(role[:rules]).to eq([{'type' => '*', 'namespace' => '*', 'permissions' => ['read']}])
+      config[:rules] = [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['test']}]
+      expect(role[:rules]).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['test']}])
     end
 
     it 'should verify rule is a hash' do
@@ -130,23 +136,23 @@ describe Puppet::Type.type(:sensu_role) do
     end
 
     it 'should verify all keys present' do
-      config[:rules] = [{'type' => '*', 'namespace' => '*'}]
-      expect { role }. to raise_error(Puppet::Error, /A rule must contain permissions/)
+      config[:rules] = [{'verbs' => ['get','list']}]
+      expect { role }. to raise_error(Puppet::Error, /A rule must contain resources/)
     end
 
     it 'should not allow unknown keys' do
-      config[:rules] = [{'type' => '*', 'namespace' => '*', 'permissions' => ['read'], 'foo' => 'bar'}]
+      config[:rules] = [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => [''], 'foo' => 'bar'}]
       expect { role }. to raise_error(Puppet::Error, /Rule key foo is not valid/)
     end
 
     it 'should verify permissions is an array' do
-      config[:rules] = [{'type' => '*', 'namespace' => '*', 'permissions' => 'read'}]
-      expect { role }. to raise_error(Puppet::Error, /A rule's permissions must be an array/)
+      config[:rules] = [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ''}]
+      expect { role }. to raise_error(Puppet::Error, /Rule's resource_names must be an Array/)
     end
   end
 
-  it 'should autorequire Package[sensu-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
+  it 'should autorequire Package[sensu-go-cli]' do
+    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource role
     catalog.add_resource package

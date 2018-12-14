@@ -1,47 +1,44 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 
-Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_extension using sensuctl"
+Puppet::Type.type(:sensu_cluster_role).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensu_cluster_role using sensuctl"
 
   mk_resource_methods
 
   def self.instances
-    extensions = []
+    cluster_roles = []
 
-    output = sensuctl_list('extension')
-    Puppet.debug("sensu extensions: #{output}")
+    output = sensuctl_list('cluster-role')
+    Puppet.debug("sensu cluster_roles: #{output}")
     begin
       data = JSON.parse(output)
     rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl extension list')
+      Puppet.debug('Unable to parse output from sensuctl cluster_role list')
       data = []
     end
 
     data.each do |d|
-      extension = {}
-      extension[:ensure] = :present
-      extension[:name] = d['metadata']['name']
-      extension[:namespace] = d['metadata']['namespace']
-      extension[:labels] = d['metadata']['labels']
-      extension[:annotations] = d['metadata']['annotations']
+      cluster_role = {}
+      cluster_role[:ensure] = :present
+      cluster_role[:name] = d['metadata']['name']
       d.each_pair do |key, value|
-        next if key == 'metadata'
+        next if key == 'name'
         if !!value == value
           value = value.to_s.to_sym
         end
         if type_properties.include?(key.to_sym)
-          extension[key.to_sym] = value
+          cluster_role[key.to_sym] = value
         end
       end
-      extensions << new(extension)
+      cluster_roles << new(cluster_role)
     end
-    extensions
+    cluster_roles
   end
 
   def self.prefetch(resources)
-    extensions = instances
+    cluster_roles = instances
     resources.keys.each do |name|
-      if provider = extensions.find { |e| e.name == name }
+      if provider = cluster_roles.find { |c| c.name == name }
         resources[name].provider = provider
       end
     end
@@ -71,20 +68,13 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
       next if value.nil?
       next if value == :absent || value == [:absent]
       if [:true, :false].include?(value)
-        value = convert_boolean_property_value(value)
-      end
-      if property == :namespace
-        spec[:metadata][:namespace] = value
-      elsif property == :labels
-        spec[:metadata][:labels] = value
-      elsif property == :annotations
-        spec[:metadata][:annotations] = value
+        spec[property] = convert_boolean_property_value(value)
       else
         spec[property] = value
       end
     end
     begin
-      sensuctl_create('extension', spec)
+      sensuctl_create('ClusterRole', spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -104,22 +94,15 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
         end
         next if value.nil?
         if [:true, :false].include?(value)
-          value = convert_boolean_property_value(value)
+          spec[property] = convert_boolean_property_value(value)
         elsif value == :absent
-          value = nil
-        end
-        if property == :namespace
-          spec[:metadata][:namespace] = value
-        elsif property == :labels
-          spec[:metadata][:labels] = value
-        elsif property == :annotations
-          spec[:metadata][:annotations] = value
+          spec[property] = nil
         else
           spec[property] = value
         end
       end
       begin
-        sensuctl_create('extension', spec)
+        sensuctl_create('ClusterRole', spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
@@ -129,9 +112,9 @@ Puppet::Type.type(:sensu_extension).provide(:sensuctl, :parent => Puppet::Provid
 
   def destroy
     begin
-      sensuctl('extension', 'deregister', resource[:name])
+      sensuctl_delete('cluster-role', resource[:name])
     rescue Exception => e
-      raise Puppet::Error, "sensuctl extension deregister #{resource[:name]} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete cluster_role #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

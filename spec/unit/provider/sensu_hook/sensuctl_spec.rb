@@ -33,7 +33,7 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
         :command => 'test',
         :timeout => 60,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('hook', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -50,7 +50,7 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
         :command => 'test',
         :timeout => 120
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('hook', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_spec)
       @resource.provider.timeout = 120
       @resource.provider.flush
     end

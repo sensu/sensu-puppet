@@ -145,38 +145,6 @@ describe Puppet::Type.type(:sensu_check) do
     end
   end
 
-  describe 'subdue_days' do
-    it 'accepts valid value for when' do
-      config[:subdue_days] = {'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expect(check[:subdue_days]).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
-    end
-
-    it "should not accept invalid value" do
-      config[:subdue_days] = 'foo'
-      expect { check }.to raise_error(Puppet::Error, /should be a Hash/)
-    end
-
-    it 'should handle invalid day' do
-      config[:subdue_days] = {'foo' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expect { check }.to raise_error(Puppet::Error, /subdue_days keys must be day of the week or 'all'/)
-    end
-
-    it 'should require day key to be array' do
-      config[:subdue_days] = {'all' => 'foo'}
-      expect { check }.to raise_error(Puppet::Error, /subdue_days hash values must be an Array/)
-    end
-
-    it 'should verify time range is hash' do
-      config[:subdue_days] = {'all' => ['foo']}
-      expect { check }.to raise_error(Puppet::Error, /subdue_days day time window must be a hash containing keys 'begin' and 'end'/)
-    end
-
-    it 'should verify time range keys' do
-      config[:subdue_days] = {'all' => [{'start' => '5:00 PM', 'end' => '8:00 AM'}]}
-      expect { check }.to raise_error(Puppet::Error, /subdue_days day time window must be a hash containing keys 'begin' and 'end'/)
-    end
-  end
-
   describe 'check_hooks' do
     [
       1,
@@ -238,8 +206,8 @@ describe Puppet::Type.type(:sensu_check) do
     end
   end
 
-  it 'should autorequire Package[sensu-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-cli')
+  it 'should autorequire Package[sensu-go-cli]' do
+    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource check
     catalog.add_resource package

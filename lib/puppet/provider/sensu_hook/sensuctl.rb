@@ -84,7 +84,7 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
       end
     end
     begin
-      sensuctl_create('hook', spec)
+      sensuctl_create('HookConfig', spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -119,7 +119,7 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
         end
       end
       begin
-        sensuctl_create('hook', spec)
+        sensuctl_create('HookConfig', spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

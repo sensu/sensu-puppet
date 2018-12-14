@@ -14,9 +14,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         check_hooks                      => [
           { 'critical' => ['httpd-restart'] },
         ],
-        subdue_days                      => {
-          'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],
-        },
         proxy_requests_entity_attributes => ["entity.Class == 'proxy'"],
         output_metric_format             => 'nagios_perfdata',
         labels                           => { 'foo' => 'baz' }
@@ -39,7 +36,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('check-http.rb')
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']}])
-        expect(data['subdue']['days']).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}]})
         expect(data['proxy_requests']['entity_attributes']).to eq(["entity.Class == 'proxy'"])
         expect(data['output_metric_format']).to eq('nagios_perfdata')
         expect(data['metadata']['labels']['foo']).to eq('baz')
@@ -66,10 +62,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           { 'critical' => ['httpd-restart'] },
           { 'warning'  => ['httpd-restart'] },
         ],
-        subdue_days                      => {
-          'all'    => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],
-          'friday' => [{'begin' => '5:00 PM', 'end' => '7:00 AM'}],
-        },
         proxy_requests_entity_attributes => ['System.OS==linux'],
         output_metric_format             => 'graphite_plaintext',
         labels                           => { 'foo' => 'bar' }
@@ -85,7 +77,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl check info test --format json' do
         data = JSON.parse(stdout)
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']},{'warning' => ['httpd-restart']}])
-        expect(data['subdue']['days']).to eq({'all' => [{'begin' => '5:00 PM', 'end' => '8:00 AM'}],'friday' => [{'begin' => '5:00 PM', 'end' => '7:00 AM'}]})
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
         expect(data['metadata']['labels']['foo']).to eq('bar')
