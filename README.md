@@ -249,17 +249,20 @@ Vagrant boxes and the intent of those platforms is to run in AWS, we
 will not maintain Vagrant systems for local development for Amazon
 Linux.
 
-### Support Platforms
+### Supported Platforms
 
 * EL 6
 * EL 7
-* Debian 8
-* Debian 9
-* Ubuntu 14.04 LTS
 * Ubuntu 16.04 LTS
 * Ubuntu 18.04 LTS
 * Amazon 2018.03
 * Amazon 2
+
+The following platforms will be supported again once packages are released.
+
+* Debian 8
+* Debian 9
+* Ubuntu 14.04
 
 ## Development
 
