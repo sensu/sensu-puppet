@@ -1,12 +1,20 @@
 # Change Log
 
-## [v2.58.0](https://github.com/sensu/sensu-puppet/tree/v2.58.0)
+## [v2.59.0](https://github.com/sensu/sensu-puppet/tree/v2.59.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.58.0...v2.59.0)
+
+**Implemented enhancements:**
+
+- Feature Request: Ability to manage userOptions in dashboard.json [\#842](https://github.com/sensu/sensu-puppet/issues/842)
+
+**Merged pull requests:**
+
+- Support custom configurations in enterprise dashboard [\#1018](https://github.com/sensu/sensu-puppet/pull/1018) ([treydock](https://github.com/treydock))
+- Remove sensu::backend username and password parameters [\#1002](https://github.com/sensu/sensu-puppet/pull/1002) ([treydock](https://github.com/treydock))
+
+## [v2.58.0](https://github.com/sensu/sensu-puppet/tree/v2.58.0) (2018-10-29)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.57.0...v2.58.0)
-
-**Closed issues:**
-
-- Support stdlib v5.0.0 [\#989](https://github.com/sensu/sensu-puppet/issues/989)
 
 **Merged pull requests:**
 
@@ -51,7 +59,6 @@
 
 **Implemented enhancements:**
 
-- Feature Request: Ability to manage userOptions in dashboard.json [\#842](https://github.com/sensu/sensu-puppet/issues/842)
 - Sensu Redis - Support boolean redis\_tls parameter \(cont \#967\) [\#969](https://github.com/sensu/sensu-puppet/pull/969) ([treydock](https://github.com/treydock))
 
 **Fixed bugs:**

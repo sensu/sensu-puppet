@@ -862,6 +862,16 @@ Optional OIDC configuration for Enterprise Dashboard
 
 Default value: `undef`
 
+##### `enterprise_dashboard_custom`
+
+Data type: `Optional[Hash]`
+
+List of custom attributes to include in the check.
+You can use it to pass any attribute that is not listed here explicitly.
+Example: { 'usersOptions' => { 'requireSilencingReason' => true } }
+
+Default value: `undef`
+
 ##### `path`
 
 Data type: `Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]]`
@@ -3284,6 +3294,10 @@ A hash of Lightweight Directory Access Protocol (LDAP) authentication attributes
 ##### `oidc`
 
 The oidc definition scope, used to configure Role Based Access Controls with the RBAC for OpenID Connect (OIDC) driver. Overrides simple authentication.
+
+##### `custom`
+
+Custom config variables
 
 #### Parameters
 
