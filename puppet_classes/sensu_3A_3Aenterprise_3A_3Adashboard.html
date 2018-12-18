@@ -211,7 +211,8 @@
 102
 103
 104
-105</pre>
+105
+106</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/enterprise/dashboard.pp', line 4</span>
@@ -283,6 +284,7 @@ class sensu::enterprise::dashboard (
       gitlab    =&gt; $::sensu::enterprise_dashboard_gitlab,
       ldap      =&gt; $::sensu::enterprise_dashboard_ldap,
       oidc      =&gt; $::sensu::enterprise_dashboard_oidc,
+      custom    =&gt; $::sensu::enterprise_dashboard_custom,
       notify    =&gt; $file_notify,
     }
 

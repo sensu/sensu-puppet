@@ -1697,6 +1697,25 @@ set it to false. See also <a href="http://upstart.ubuntu.com/faq.html#reload">ht
   
     <li>
       
+        <span class='name'>enterprise_dashboard_custom</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>List of custom attributes to include in the check.
+You can use it to pass any attribute that is not listed here explicitly.
+Example: { &#39;usersOptions&#39; =&gt; { &#39;requireSilencingReason&#39; =&gt; true } }</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>path</span>
       
       
@@ -2467,10 +2486,6 @@ Note: This has effect only on Sensu Enterprise.</p>
         <pre class="lines">
 
 
-339
-340
-341
-342
 343
 344
 345
@@ -2827,10 +2842,15 @@ Note: This has effect only on Sensu Enterprise.</p>
 696
 697
 698
-699</pre>
+699
+700
+701
+702
+703
+704</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 339</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 343</span>
 
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = &#39;installed&#39;,
@@ -2956,6 +2976,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_gitlab = undef,
   Optional[Any]      $enterprise_dashboard_ldap = undef,
   Optional[Any]      $enterprise_dashboard_oidc = undef,
+  Optional[Hash]     $enterprise_dashboard_custom = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = &#39;$PATH&#39;,
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
