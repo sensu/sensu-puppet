@@ -155,8 +155,6 @@ matrix:
   - env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
   - env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
   - env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
-  - env: BEAKER_set="ubuntu-1404" BEAKER_PUPPET_COLLECTION=puppet5
-  - env: BEAKER_set="ubuntu-1404" BEAKER_PUPPET_COLLECTION=puppet6
 
 notifications:
   email: false
