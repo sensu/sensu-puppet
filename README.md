@@ -253,6 +253,7 @@ Linux.
 
 * EL 6
 * EL 7
+* Ubuntu 14.04 LTS
 * Ubuntu 16.04 LTS
 * Ubuntu 18.04 LTS
 * Amazon 2018.03
@@ -262,7 +263,6 @@ The following platforms will be supported again once packages are released.
 
 * Debian 8
 * Debian 9
-* Ubuntu 14.04
 
 ## Development
 
