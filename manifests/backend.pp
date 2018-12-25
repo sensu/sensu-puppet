@@ -28,6 +28,8 @@
 #   Sensu backend host used to configure sensuctl and verify API access.
 # @param url_port
 #   Sensu backend port used to configure sensuctl and verify API access.
+# @param use_ssl
+#   Sensu backend service uses SSL
 #
 class sensu::backend (
   Optional[String] $version = undef,
