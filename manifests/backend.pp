@@ -40,6 +40,7 @@ class sensu::backend (
   Hash $config_hash = {},
   String $url_host = '127.0.0.1',
   Stdlib::Port $url_port = 8080,
+  Boolean $use_ssl = false,
 ) {
 
   include ::sensu
@@ -69,6 +70,7 @@ class sensu::backend (
     sensu_api_server => $url_host,
     sensu_api_port   => $url_port,
     require          => Service['sensu-backend'],
+    use_ssl          => $use_ssl,
   }
   # Ensure sensu-backend is up before starting sensu-agent
   Sensu_api_validator['sensu'] -> Service['sensu-agent']
