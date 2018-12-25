@@ -4,7 +4,7 @@ describe 'sensu::backend', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
-      describe 'with default values for all parameters' do
+      context 'with default values for all parameters' do
         it { should compile.with_all_deps }
 
         it { should contain_class('sensu::backend')}
@@ -21,16 +21,18 @@ describe 'sensu::backend', :type => :class do
           should contain_sensu_api_validator('sensu').with({
             'sensu_api_server' => '127.0.0.1',
             'sensu_api_port'   => 8080,
+            'use_ssl'          => 'false',
             'require'          => 'Service[sensu-backend]',
           })
         }
 
         it {
           should contain_exec('sensuctl_configure').with({
-            'command' => "sensuctl configure -n --url 'http://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!' || rm -f /root/.config/sensu/sensuctl/cluster",
-            'creates' => '/root/.config/sensu/sensuctl/cluster',
-            'path'    => '/bin:/sbin:/usr/bin:/usr/sbin',
-            'require' => 'Sensu_api_validator[sensu]',
+            'command'   => "sensuctl configure -n --url 'http://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!' || rm -f /root/.config/sensu/sensuctl/cluster",
+            'creates'   => '/root/.config/sensu/sensuctl/cluster',
+            'path'      => '/bin:/sbin:/usr/bin:/usr/sbin',
+            'logoutput' => 'true',
+            'require'   => 'Sensu_api_validator[sensu]',
           })
         }
 
@@ -74,6 +76,29 @@ describe 'sensu::backend', :type => :class do
             'ensure' => 'running',
             'enable' => true,
             'name'   => 'sensu-backend',
+          })
+        }
+      end
+
+      context 'with use_ssl => true' do
+        let(:params) { { :use_ssl => true } }
+
+        it {
+          should contain_sensu_api_validator('sensu').with({
+            'sensu_api_server' => '127.0.0.1',
+            'sensu_api_port'   => 8080,
+            'use_ssl'          => 'true',
+            'require'          => 'Service[sensu-backend]',
+          })
+        }
+
+        it {
+          should contain_exec('sensuctl_configure').with({
+            'command'   => "sensuctl configure -n --url 'https://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!' || rm -f /root/.config/sensu/sensuctl/cluster",
+            'creates'   => '/root/.config/sensu/sensuctl/cluster',
+            'path'      => '/bin:/sbin:/usr/bin:/usr/sbin',
+            'logoutput' => 'true',
+            'require'   => 'Sensu_api_validator[sensu]',
           })
         }
       end

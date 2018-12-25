@@ -43,6 +43,7 @@ class sensu (
     path    => $etc_dir,
     purge   => $etc_dir_purge,
     recurse => $etc_dir_purge,
+    force   => $etc_dir_purge,
   }
 
   case $facts['os']['family'] {
