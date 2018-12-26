@@ -60,7 +60,7 @@ class sensu::backend (
   else {
     $url_protocol = 'http'
   }
-  
+
   $url = "${url_protocol}://${url_host}:${url_port}"
 
   if $version == undef {
