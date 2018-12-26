@@ -54,7 +54,14 @@ class sensu::backend (
   }
   $config = $default_config + $config_hash
 
-  $url = "http://${url_host}:${url_port}"
+  if $use_ssl {
+    $url_protocol = 'https'
+  }
+  else {
+    $url_protocol = 'http'
+  }
+  
+  $url = "${url_protocol}://${url_host}:${url_port}"
 
   if $version == undef {
     $_version = $::sensu::version
