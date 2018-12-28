@@ -2,7 +2,7 @@ module PuppetX
   module Sensu
     module Type
 
-      def add_autorequires
+      def add_autorequires(require_configure=true)
         autorequire(:package) do
           ['sensu-go-cli']
         end
@@ -11,8 +11,10 @@ module PuppetX
           ['sensu-backend']
         end
 
-        autorequire(:exec) do
-          ['sensuctl_configure']
+        if require_configure
+          autorequire(:sensu_configure) do
+            ['puppet']
+          end
         end
 
         autorequire(:sensu_api_validator) do

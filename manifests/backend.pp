@@ -30,6 +30,9 @@
 #   Sensu backend port used to configure sensuctl and verify API access.
 # @param use_ssl
 #   Sensu backend service uses SSL
+# @param password
+#   Sensu admin password. Does not change admin password but is used when
+#   running `sensuctl configure` after initial bootstrap.
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -43,6 +46,7 @@ class sensu::backend (
   String $url_host = '127.0.0.1',
   Stdlib::Port $url_port = 8080,
   Boolean $use_ssl = false,
+  String $password = 'P@ssw0rd!',
 ) {
 
   include ::sensu
@@ -84,14 +88,11 @@ class sensu::backend (
   # Ensure sensu-backend is up before starting sensu-agent
   Sensu_api_validator['sensu'] -> Service['sensu-agent']
 
-  $sensuctl_configure = "sensuctl configure -n --url '${url}' --username 'admin' --password 'P@ssw0rd!'"
-  $sensuctl_configure_creates = '/root/.config/sensu/sensuctl/cluster'
-  exec { 'sensuctl_configure':
-    command   => "${sensuctl_configure} || rm -f ${sensuctl_configure_creates}",
-    creates   => $sensuctl_configure_creates,
-    path      => '/bin:/sbin:/usr/bin:/usr/sbin',
-    logoutput => true,
-    require   => Sensu_api_validator['sensu'],
+  sensu_configure { 'puppet':
+    url                => $url,
+    username           => 'admin',
+    password           => $password,
+    bootstrap_password => 'P@ssw0rd!',
   }
 
   package { 'sensu-go-backend':

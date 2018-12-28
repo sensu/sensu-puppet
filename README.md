@@ -229,6 +229,7 @@ To change the `admin` password used by sensuctl the following steps can be taken
 sensuctl user change-password admin --current-password 'P@ssw0rd!' --new-password 'changeme'
 sensuctl configure -n --username admin --password 'changeme'
 ```
+Update the `sensu::backend::password` parameter to the new value in case `sensuctl configure` has to be run via `sensu_configure` type.
 
 
 ### Notes regarding support

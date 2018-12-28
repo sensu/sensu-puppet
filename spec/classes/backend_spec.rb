@@ -27,12 +27,11 @@ describe 'sensu::backend', :type => :class do
         }
 
         it {
-          should contain_exec('sensuctl_configure').with({
-            'command'   => "sensuctl configure -n --url 'http://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!' || rm -f /root/.config/sensu/sensuctl/cluster",
-            'creates'   => '/root/.config/sensu/sensuctl/cluster',
-            'path'      => '/bin:/sbin:/usr/bin:/usr/sbin',
-            'logoutput' => 'true',
-            'require'   => 'Sensu_api_validator[sensu]',
+          should contain_sensu_configure('puppet').with({
+            'url'                 => 'http://127.0.0.1:8080',
+            'username'            => 'admin',
+            'password'            => 'P@ssw0rd!',
+            'bootstrap_password'  => 'P@ssw0rd!',
           })
         }
 
@@ -93,12 +92,11 @@ describe 'sensu::backend', :type => :class do
         }
 
         it {
-          should contain_exec('sensuctl_configure').with({
-            'command'   => "sensuctl configure -n --url 'https://127.0.0.1:8080' --username 'admin' --password 'P@ssw0rd!' || rm -f /root/.config/sensu/sensuctl/cluster",
-            'creates'   => '/root/.config/sensu/sensuctl/cluster',
-            'path'      => '/bin:/sbin:/usr/bin:/usr/sbin',
-            'logoutput' => 'true',
-            'require'   => 'Sensu_api_validator[sensu]',
+          should contain_sensu_configure('puppet').with({
+            'url'                 => 'https://127.0.0.1:8080',
+            'username'            => 'admin',
+            'password'            => 'P@ssw0rd!',
+            'bootstrap_password'  => 'P@ssw0rd!',
           })
         }
       end

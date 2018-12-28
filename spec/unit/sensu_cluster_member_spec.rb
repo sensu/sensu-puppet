@@ -118,44 +118,8 @@ describe Puppet::Type.type(:sensu_cluster_member) do
     end
   end
 
-  it 'should autorequire Package[sensu-go-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource cluster_member
-    catalog.add_resource package
-    rel = cluster_member.autorequire[0]
-    expect(rel.source.ref).to eq(package.ref)
-    expect(rel.target.ref).to eq(cluster_member.ref)
-  end
-
-  it 'should autorequire Service[sensu-backend]' do
-    service = Puppet::Type.type(:service).new(:name => 'sensu-backend')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource cluster_member
-    catalog.add_resource service
-    rel = cluster_member.autorequire[0]
-    expect(rel.source.ref).to eq(service.ref)
-    expect(rel.target.ref).to eq(cluster_member.ref)
-  end
-
-  it 'should autorequire Exec[sensuctl_configure]' do
-    exec = Puppet::Type.type(:exec).new(:name => 'sensuctl_configure', :command => '/usr/bin/sensuctl')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource cluster_member
-    catalog.add_resource exec
-    rel = cluster_member.autorequire[0]
-    expect(rel.source.ref).to eq(exec.ref)
-    expect(rel.target.ref).to eq(cluster_member.ref)
-  end
-
-  it 'should autorequire sensu_api_validator' do
-    validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource cluster_member
-    catalog.add_resource validator
-    rel = cluster_member.autorequire[0]
-    expect(rel.source.ref).to eq(validator.ref)
-    expect(rel.target.ref).to eq(cluster_member.ref)
+  include_examples 'autorequires' do
+    let(:res) { cluster_member }
   end
 
   [

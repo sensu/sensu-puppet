@@ -7,7 +7,7 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
       pp = <<-EOS
       class { '::sensu::agent':
         config_hash => {
-          'id'          => 'sensu_agent',
+          'name'        => 'sensu_agent',
           'backend-url' => 'ws://sensu_backend:8081',
         }
       }
