@@ -84,10 +84,11 @@ vagrant provision sensu-backend-peer1 sensu-backend-peer2
 
 ### Basic Sensu backend
 
-The following example will configure sensu-backend and add a check.
+The following example will configure sensu-backend, sensu-agent on backend and add a check.
 
 ```puppet
   include sensu::backend
+  include sensu::agent
   sensu_check { 'check-cpu':
     ensure        => 'present',
     command       => 'check-cpu.sh -w 75 -c 90',

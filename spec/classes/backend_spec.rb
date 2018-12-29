@@ -7,7 +7,9 @@ describe 'sensu::backend', :type => :class do
       describe 'with default values for all parameters' do
         it { should compile.with_all_deps }
 
-        it { should contain_class('sensu::backend')}
+        it { should contain_class('sensu::backend') }
+        it { should contain_class('sensu') }
+        it { should_not contain_class('sensu::agent') }
 
         it {
           should contain_package('sensu-go-cli').with({
