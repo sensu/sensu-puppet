@@ -152,23 +152,27 @@ The following examples are using Hiera and assume the `sensu::backend` class is 
 # data/fqdn/sensu-backend1.example.com.yaml
 ---
 sensu::backend::config_hash:
-  listen-client-urls: 'http://0.0.0.0:2379'
-  listen-peer-urls: 'http://0.0.0.0:2380'
-  initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
-  initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
-  initial-cluster-state: 'new'
-  name: 'backend1'
+  etcd-advertise-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-peer-urls: 'http://0.0.0.0:2380'
+  etcd-initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
+  etcd-initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  etcd-initial-cluster-state: 'new'
+  etcd-initial-cluster-token: ''
+  etcd-name: 'backend1'
 ```
 ```yaml
 # data/fqdn/sensu-backend2.example.com.yaml
 ---
 sensu::backend::config_hash:
-  listen-client-urls: 'http://0.0.0.0:2379'
-  listen-peer-urls: 'http://0.0.0.0:2380'
-  initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
-  initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
-  initial-cluster-state: 'new'
-  name: 'backend2'
+  etcd-advertise-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-peer-urls: 'http://0.0.0.0:2380'
+  etcd-initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
+  etcd-initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  etcd-initial-cluster-state: 'new'
+  etcd-initial-cluster-token: ''
+  etcd-name: 'backend2'
 ```
 
 #### Adding backend members to an existing cluster
@@ -190,12 +194,14 @@ The output from Puppet when a new `sensu_cluster_member` is applied will print s
 # data/fqdn/sensu-backend3.example.com.yaml
 ---
 sensu::backend::config_hash:
-  listen-client-urls: 'http://0.0.0.0:2379'
-  listen-peer-urls: 'http://0.0.0.0:2380'
-  initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380,backend3=http://192.168.0.3:2380'
-  initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
-  initial-cluster-state: 'existing'
-  name: 'backend3'
+  etcd-advertise-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-peer-urls: 'http://0.0.0.0:2380'
+  etcd-initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380,backend3=http://192.168.0.3:2380'
+  etcd-initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  etcd-initial-cluster-state: 'existing'
+  etcd-initial-cluster-token: ''
+  etcd-name: 'backend3'
 ```
 
 The first step will not fully add the node to the cluster until the second step is performed.

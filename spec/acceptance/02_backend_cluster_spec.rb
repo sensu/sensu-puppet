@@ -9,24 +9,28 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       node1_pp = <<-EOS
       class { '::sensu::backend':
         config_hash => {
-          'listen-client-urls'          => 'http://0.0.0.0:2379',
-          'listen-peer-urls'            => 'http://0.0.0.0:2380',
-          'initial-cluster'             => 'backend1=http://#{fact_on(node1, 'ipaddress')}:2380,backend2=http://#{fact_on(node2, 'ipaddress')}:2380',
-          'initial-advertise-peer-urls' => 'http://#{fact_on(node1, 'ipaddress')}:2380',
-          'initial-cluster-state'       => 'new',
-          'name'                        => 'backend1',
+          'etcd-advertise-client-urls'       => 'http://#{fact_on(node1, 'ipaddress')}:2379',
+          'etcd-listen-client-urls'          => 'http://#{fact_on(node1, 'ipaddress')}:2379',
+          'etcd-listen-peer-urls'            => 'http://0.0.0.0:2380',
+          'etcd-initial-cluster'             => 'backend1=http://#{fact_on(node1, 'ipaddress')}:2380,backend2=http://#{fact_on(node2, 'ipaddress')}:2380',
+          'etcd-initial-advertise-peer-urls' => 'http://#{fact_on(node1, 'ipaddress')}:2380',
+          'etcd-initial-cluster-state'       => 'new',
+          'etcd-initial-cluster-token'       => '',
+          'etcd-name'                        => 'backend1',
         },
       }
       EOS
       node2_pp = <<-EOS
       class { '::sensu::backend':
         config_hash => {
-          'listen-client-urls'          => 'http://0.0.0.0:2379',
-          'listen-peer-urls'            => 'http://0.0.0.0:2380',
-          'initial-cluster'             => 'backend1=http://#{fact_on(node1, 'ipaddress')}:2380,backend2=http://#{fact_on(node2, 'ipaddress')}:2380',
-          'initial-advertise-peer-urls' => 'http://#{fact_on(node2, 'ipaddress')}:2380',
-          'initial-cluster-state'       => 'new',
-          'name'                        => 'backend2',
+          'etcd-advertise-client-urls'       => 'http://#{fact_on(node2, 'ipaddress')}:2379',
+          'etcd-listen-client-urls'          => 'http://#{fact_on(node2, 'ipaddress')}:2379',
+          'etcd-listen-peer-urls'            => 'http://0.0.0.0:2380',
+          'etcd-initial-cluster'             => 'backend1=http://#{fact_on(node1, 'ipaddress')}:2380,backend2=http://#{fact_on(node2, 'ipaddress')}:2380',
+          'etcd-initial-advertise-peer-urls' => 'http://#{fact_on(node2, 'ipaddress')}:2380',
+          'etcd-initial-cluster-state'       => 'new',
+          'etcd-initial-cluster-token'       => '',
+          'etcd-name'                        => 'backend2',
         },
       }
       EOS
@@ -56,6 +60,14 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
         expect(data['members'].size).to eq(2)
       end
     end
+
+    it 'should be healthy' do
+      on node1, 'sensuctl cluster health --format json' do
+        data = JSON.parse(stdout)
+        healthy = data.select { |m| m['Healthy'] == true }
+        expect(healthy.size).to eq(2)
+      end
+    end
   end
 
   context 'Add sensu backend cluster member' do
@@ -68,12 +80,14 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       node3_pp = <<-EOS
       class { '::sensu::backend':
         config_hash => {
-          'listen-client-urls'          => 'http://0.0.0.0:2379',
-          'listen-peer-urls'            => 'http://0.0.0.0:2380',
-          'initial-cluster'             => 'backend1=http://#{fact_on(node1, 'ipaddress')}:2380,backend2=http://#{fact_on(node2, 'ipaddress')}:2380,backend3=http://#{fact_on(node3, 'ipaddress')}:2380',
-          'initial-advertise-peer-urls' => 'http://#{fact_on(node3, 'ipaddress')}:2380',
-          'initial-cluster-state'       => 'existing',
-          'name'                        => 'backend3',
+          'etcd-advertise-client-urls'       => 'http://#{fact_on(node3, 'ipaddress')}:2379',
+          'etcd-listen-client-urls'          => 'http://#{fact_on(node3, 'ipaddress')}:2379',
+          'etcd-listen-peer-urls'            => 'http://0.0.0.0:2380',
+          'etcd-initial-cluster'             => 'backend1=http://#{fact_on(node1, 'ipaddress')}:2380,backend2=http://#{fact_on(node2, 'ipaddress')}:2380,backend3=http://#{fact_on(node3, 'ipaddress')}:2380',
+          'etcd-initial-advertise-peer-urls' => 'http://#{fact_on(node3, 'ipaddress')}:2380',
+          'etcd-initial-cluster-state'       => 'existing',
+          'etcd-initial-cluster-token'       => '',
+          'etcd-name'                        => 'backend3',
         },
       }
       EOS
@@ -94,6 +108,14 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
         data = JSON.parse(stdout)
         member = data['members'].select { |m| m['name'] == 'backend3' }[0]
         expect(member['peerURLs']).to eq(["http://#{fact_on(node3, 'ipaddress')}:2380"])
+      end
+    end
+
+    it 'should be healthy' do
+      on node1, 'sensuctl cluster health --format json' do
+        data = JSON.parse(stdout)
+        healthy = data.select { |m| m['Healthy'] == true }
+        expect(healthy.size).to eq(3)
       end
     end
   end
