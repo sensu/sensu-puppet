@@ -29,6 +29,11 @@ describe Puppet::Type.type(:sensu_asset) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  it 'should not accept ensure => absent' do
+    config[:ensure] = 'absent'
+    expect { asset[:ensure] = 'absent' }.to raise_error(Puppet::Error, /ensure does not support absent/)
+  end
+
   defaults = {
     'namespace': 'default',
   }

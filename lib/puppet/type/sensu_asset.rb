@@ -24,7 +24,15 @@ DESC
   extend PuppetX::Sensu::Type
   add_autorequires()
 
-  ensurable
+  ensurable do
+    desc "The basic property that the resource should be in."
+    defaultvalues
+    validate do |value|
+      if value.to_sym == :absent
+        raise ArgumentError, "sensu_asset ensure does not support absent"
+      end
+    end
+  end
 
   newparam(:name, :namevar => true) do
     desc "The name of the asset."
