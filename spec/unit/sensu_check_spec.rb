@@ -52,6 +52,10 @@ describe Puppet::Type.type(:sensu_check) do
       it "should have default for #{property}" do
         expect(check[property]).to eq(default)
       end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -79,6 +83,15 @@ describe Puppet::Type.type(:sensu_check) do
       config[property] = ['foo', 'bar']
       expect(check[property]).to eq(['foo', 'bar'])
     end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
   end
 
   # Integer properties
@@ -100,6 +113,15 @@ describe Puppet::Type.type(:sensu_check) do
     it "should not accept invalid value for #{property}" do
       config[property] = 'foo'
       expect { check }.to raise_error(Puppet::Error, /should be an Integer/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -135,6 +157,10 @@ describe Puppet::Type.type(:sensu_check) do
       it "should have default for #{property}" do
         expect(check[property]).to eq(default)
       end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -150,6 +176,15 @@ describe Puppet::Type.type(:sensu_check) do
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
       expect { check }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -216,6 +251,10 @@ describe Puppet::Type.type(:sensu_check) do
       end
     end
 
+    it 'should not have default' do
+      expect(check[:check_hooks]).to be_nil
+    end
+
     it 'should require Hash elements' do
       config[:check_hooks] = ['foo']
       expect { check }.to raise_error(Puppet::Error, /check_hooks elements must be a Hash/)
@@ -253,6 +292,10 @@ describe Puppet::Type.type(:sensu_check) do
         config[:output_metric_format] = v
         expect(check[:output_metric_format]).to eq(v.to_sym)
       end
+    end
+
+    it 'should not have a default' do
+      expect(check[:output_metric_format]).to be_nil
     end
 
     it 'should not accept invalid values' do

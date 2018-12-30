@@ -4,7 +4,8 @@ require 'puppet/type/sensu_silenced'
 describe Puppet::Type.type(:sensu_silenced) do
   let(:default_config) do
     {
-      name: 'entity:test:*',
+      name: 'test',
+      subscription: 'test',
     }
   end
   let(:config) do
@@ -28,14 +29,19 @@ describe Puppet::Type.type(:sensu_silenced) do
   end
 
   it 'should handle composite title subscription' do
+    config.delete(:subscription)
+    config[:name] = 'entity:test:*'
     expect(silenced[:subscription]).to eq('entity:test')
   end
 
   it 'should handle composite title check' do
+    config.delete(:subscription)
+    config[:name] = 'entity:test:*'
     expect(silenced[:check]).to eq('*')
   end
 
   it 'should handle non-entity subscription composite name' do
+    config.delete(:subscription)
     config[:name] = 'appserver:mysql_status'
     expect(silenced[:subscription]).to eq('appserver')
     expect(silenced[:check]).to eq('mysql_status')
@@ -44,6 +50,7 @@ describe Puppet::Type.type(:sensu_silenced) do
   defaults = {
     'namespace': 'default',
     'expire': -1,
+    'expire_on_resolve': :false,
   }
 
   # String properties
@@ -61,6 +68,10 @@ describe Puppet::Type.type(:sensu_silenced) do
     if default = defaults[property]
       it "should have default for #{property}" do
         expect(silenced[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(silenced[property]).to eq(default_config[property])
       end
     end
   end
@@ -80,6 +91,15 @@ describe Puppet::Type.type(:sensu_silenced) do
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
       expect(silenced[property]).to eq(['foo', 'bar'])
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(silenced[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(silenced[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -103,6 +123,10 @@ describe Puppet::Type.type(:sensu_silenced) do
     if default = defaults[property]
       it "should have default for #{property}" do
         expect(silenced[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(silenced[property]).to eq(default_config[property])
       end
     end
   end
@@ -131,6 +155,15 @@ describe Puppet::Type.type(:sensu_silenced) do
       config[property] = 'foo'
       expect { silenced }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(silenced[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(silenced[property]).to eq(default_config[property])
+      end
+    end
   end
 
   # Hash properties
@@ -145,6 +178,15 @@ describe Puppet::Type.type(:sensu_silenced) do
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
       expect { silenced }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(silenced[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(silenced[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -198,6 +240,7 @@ describe Puppet::Type.type(:sensu_silenced) do
   end
 
   it "should require check or subscription" do
+    config.delete(:subscription)
     config[:name] = "test"
     expect { silenced }.to raise_error(Puppet::Error, /Must provide either check or subscription/)
   end

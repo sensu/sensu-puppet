@@ -57,6 +57,10 @@ describe Puppet::Type.type(:sensu_entity) do
       it "should have default for #{property}" do
         expect(entity[property]).to eq(default)
       end
+    else
+      it "should not have a default for #{property}" do
+        expect(entity[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -80,6 +84,15 @@ describe Puppet::Type.type(:sensu_entity) do
       config[property] = ['foo', 'bar']
       expect(entity[property]).to eq(['foo', 'bar'])
     end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(entity[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(entity[property]).to eq(default_config[property])
+      end
+    end
   end
 
   # Integer properties
@@ -96,6 +109,15 @@ describe Puppet::Type.type(:sensu_entity) do
     it "should not accept invalid value for #{property}" do
       config[property] = 'foo'
       expect { entity }.to raise_error(Puppet::Error, /should be an Integer/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(entity[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(entity[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -127,6 +149,10 @@ describe Puppet::Type.type(:sensu_entity) do
       it "should have default for #{property}" do
         expect(entity[property]).to eq(default)
       end
+    else
+      it "should not have a default for #{property}" do
+        expect(entity[property]).to eq(default_config[property])
+      end
     end
   end
 
@@ -142,6 +168,15 @@ describe Puppet::Type.type(:sensu_entity) do
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
       expect { entity }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(entity[property]).to eq(default)
+      end
+    else
+      it "should not have a default for #{property}" do
+        expect(entity[property]).to eq(default_config[property])
+      end
     end
   end
 
