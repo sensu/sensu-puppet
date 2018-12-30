@@ -61,8 +61,8 @@ Puppet::Type.type(:sensu_cluster_role).provide(:sensuctl, :parent => Puppet::Pro
 
   def create
     spec = {}
-    spec[:metadata] = {}
-    spec[:metadata][:name] = resource[:name]
+    metadata = {}
+    metadata[:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -74,7 +74,7 @@ Puppet::Type.type(:sensu_cluster_role).provide(:sensuctl, :parent => Puppet::Pro
       end
     end
     begin
-      sensuctl_create('ClusterRole', spec)
+      sensuctl_create('ClusterRole', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -84,8 +84,8 @@ Puppet::Type.type(:sensu_cluster_role).provide(:sensuctl, :parent => Puppet::Pro
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:metadata] = {}
-      spec[:metadata][:name] = resource[:name]
+      metadata = {}
+      metadata[:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -102,7 +102,7 @@ Puppet::Type.type(:sensu_cluster_role).provide(:sensuctl, :parent => Puppet::Pro
         end
       end
       begin
-        sensuctl_create('ClusterRole', spec)
+        sensuctl_create('ClusterRole', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

@@ -22,14 +22,14 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
   describe 'create' do
     it 'should create a entity' do
       @resource[:entity_class] = 'proxy'
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :entity_class => 'proxy',
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -38,14 +38,13 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a entity labels' do
-      expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-          :labels => {'foo' => 'bar'},
-        },
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+        :labels => {'foo' => 'bar'},
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_spec)
+      expected_spec = {}
+      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_metadata, expected_spec)
       @resource.provider.labels = {'foo' => 'bar'}
       @resource.provider.flush
     end

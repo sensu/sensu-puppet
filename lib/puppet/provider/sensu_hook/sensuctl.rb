@@ -64,8 +64,8 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
 
   def create
     spec = {}
-    spec[:metadata] = {}
-    spec[:metadata][:name] = resource[:name]
+    metadata = {}
+    metadata[:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -74,17 +74,17 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
         value = convert_boolean_property_value(value)
       end
       if property == :namespace
-        spec[:metadata][:namespace] = value
+        metadata[:namespace] = value
       elsif property == :labels
-        spec[:metadata][:labels] = value
+        metadata[:labels] = value
       elsif property == :annotations
-        spec[:metadata][:annotations] = value
+        metadata[:annotations] = value
       else
         spec[property] = value
       end
     end
     begin
-      sensuctl_create('HookConfig', spec)
+      sensuctl_create('HookConfig', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -94,8 +94,8 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:metadata] = {}
-      spec[:metadata][:name] = resource[:name]
+      metadata = {}
+      metadata[:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -109,17 +109,17 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
           value = nil
         end
         if property == :namespace
-          spec[:metadata][:namespace] = value
+          metadata[:namespace] = value
         elsif property == :labels
-          spec[:metadata][:labels] = value
+          metadata[:labels] = value
         elsif property == :annotations
-          spec[:metadata][:annotations] = value
+          metadata[:annotations] = value
         else
           spec[property] = value
         end
       end
       begin
-        sensuctl_create('HookConfig', spec)
+        sensuctl_create('HookConfig', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

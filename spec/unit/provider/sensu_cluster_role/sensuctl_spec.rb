@@ -26,13 +26,13 @@ describe Puppet::Type.type(:sensu_cluster_role).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a cluster_role' do
+      expected_metadata = {
+        :name => 'test',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-        },
         :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('ClusterRole', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('ClusterRole', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -41,13 +41,13 @@ describe Puppet::Type.type(:sensu_cluster_role).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a cluster_role rule' do
+      expected_metadata = {
+        :name => 'test',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-        },
         :rules => [{'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['']}],
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('ClusterRole', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('ClusterRole', expected_metadata, expected_spec)
       @resource.provider.rules = [{'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['']}]
       @resource.provider.flush
     end

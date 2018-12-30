@@ -64,7 +64,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
       end
     end
     begin
-      sensuctl_create('namespace', spec)
+      sensuctl_create('namespace', {}, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -91,7 +91,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
         end
       end
       begin
-        sensuctl_create('namespace', spec)
+        sensuctl_create('namespace', {}, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

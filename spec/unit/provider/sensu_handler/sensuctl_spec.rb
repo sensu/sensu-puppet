@@ -29,17 +29,17 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
       @resource[:filters] = ["recurrence", "production"]
       @resource[:socket_host] = "localhost"
       @resource[:socket_port] = 9000
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :type => :pipe,
         :command => 'test',
         :filters => ["recurrence", "production"],
         :socket => {:host => "localhost", :port => 9000}
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -51,46 +51,46 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
       @resource[:type] = 'tcp'
       @resource[:socket_host] = "localhost"
       @resource[:socket_port] = 9000
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :type => :tcp,
         :command => 'test',
         :socket => { :host => 'localhost', :port => 9001 }
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
       @resource.provider.socket_port = 9001
       @resource.provider.flush
     end
     it 'should remove timeout' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :type => :pipe,
         :command => 'test',
         :timeout => nil,
       }
       @resource[:timeout] = 60
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
       @resource.provider.timeout = :absent
       @resource.provider.flush
     end
     it 'should remove handlers' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :type => :pipe,
         :command => 'test',
         :handlers => nil
       }
       @resource[:handlers] = ['foo','bar']
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
       @resource.provider.handlers = :absent
       @resource.provider.flush
     end

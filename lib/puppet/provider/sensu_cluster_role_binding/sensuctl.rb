@@ -54,8 +54,8 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
 
   def create
     spec = {}
-    spec[:metadata] = {}
-    spec[:metadata][:name] = resource[:name]
+    metadata = {}
+    metadata[:name] = resource[:name]
     spec[:role_ref] = { type: 'ClusterRole' }
     type_properties.each do |property|
       value = resource[property]
@@ -71,7 +71,7 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
       end
     end
     begin
-      sensuctl_create('ClusterRoleBinding', spec)
+      sensuctl_create('ClusterRoleBinding', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -81,8 +81,8 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:metadata] = {}
-      spec[:metadata][:name] = resource[:name]
+      metadata = {}
+      metadata[:name] = resource[:name]
       spec[:role_ref] = { type: 'ClusterRole' }
       type_properties.each do |property|
         if @property_flush[property]
@@ -103,7 +103,7 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
         end
       end
       begin
-        sensuctl_create('ClusterRoleBinding', spec)
+        sensuctl_create('ClusterRoleBinding', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
