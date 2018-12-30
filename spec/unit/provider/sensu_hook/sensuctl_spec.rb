@@ -32,6 +32,7 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
       expected_spec = {
         :command => 'test',
         :timeout => 60,
+        :stdin => false,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_metadata, expected_spec)
       @resource.provider.create
@@ -48,7 +49,8 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
       }
       expected_spec = {
         :command => 'test',
-        :timeout => 120
+        :timeout => 120,
+        :stdin => false,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_metadata, expected_spec)
       @resource.provider.timeout = 120

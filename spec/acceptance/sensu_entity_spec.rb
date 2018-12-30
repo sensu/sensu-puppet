@@ -21,6 +21,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       on node, "sensuctl entity info test --format json" do
         data = JSON.parse(stdout)
         expect(data['entity_class']).to eq('proxy')
+        expect(data['deregister']).to eq(false)
         expect(data['deregistration']['handler']).to eq('slack-handler')
       end
     end

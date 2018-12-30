@@ -28,6 +28,7 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
       }
       expected_spec = {
         :entity_class => 'proxy',
+        :deregister => false,
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_metadata, expected_spec)
       @resource.provider.create
@@ -43,7 +44,9 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
         :namespace => 'default',
         :labels => {'foo' => 'bar'},
       }
-      expected_spec = {}
+      expected_spec = {
+        :deregister => false,
+      }
       expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_metadata, expected_spec)
       @resource.provider.labels = {'foo' => 'bar'}
       @resource.provider.flush

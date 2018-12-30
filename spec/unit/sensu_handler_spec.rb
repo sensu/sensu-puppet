@@ -146,6 +146,18 @@ describe Puppet::Type.type(:sensu_handler) do
     end
   end
 
+  describe 'timeout' do
+    it 'should have default for tcp type' do
+      config[:type] = 'tcp'
+      config.delete(:timeout)
+      expect(handler[:timeout]).to eq(60)
+    end
+    it 'should not have default without tcp type' do
+      config[:type] = 'pipe'
+      expect(handler[:timeout]).to be_nil
+    end
+  end
+
   it 'should autorequire Package[sensu-go-cli]' do
     package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
     catalog = Puppet::Resource::Catalog.new
@@ -220,5 +232,10 @@ describe Puppet::Type.type(:sensu_handler) do
     config.delete(:socket_port)
     config[:type] = :udp
     expect { handler }.to raise_error(Puppet::Error, /socket_host and socket_port are required for type tcp or type udp/)
+  end
+  it 'should require handlers for type set' do
+    config[:type] = 'set'
+    config.delete(:handlers)
+    expect { handler }.to raise_error(Puppet::Error, /handlers must be defined for type set/)
   end
 end

@@ -52,6 +52,13 @@ DESC
   newproperty(:timeout, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The handler execution duration timeout in seconds (hard stop)"
     newvalues(/^[0-9]+$/, :absent)
+    defaultto do
+      if ! @resource[:type].nil? && @resource[:type].to_sym == :tcp
+        60
+      else
+        nil
+      end
+    end
   end
 
   newproperty(:command) do
@@ -64,8 +71,21 @@ DESC
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:socket_host) do
+    desc "The socket host address (IP or hostname) to connect to."
+  end
+
+  newproperty(:socket_port, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "The socket port to connect to."
+  end
+
   newproperty(:handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of Sensu event handlers (names) to use for events using the handler set."
+    newvalues(/.*/, :absent)
+  end
+
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu assets (names), required at runtime for the execution of the command"
     newvalues(/.*/, :absent)
   end
 
@@ -80,19 +100,6 @@ DESC
 
   newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
     desc "Arbitrary, non-identifying metadata to include with event data."
-  end
-
-  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "An array of Sensu assets (names), required at runtime for the execution of the command"
-    newvalues(/.*/, :absent)
-  end
-
-  newproperty(:socket_host) do
-    desc "The socket host address (IP or hostname) to connect to."
-  end
-
-  newproperty(:socket_port, :parent => PuppetX::Sensu::IntegerProperty) do
-    desc "The socket port to connect to."
   end
 
   validate do
@@ -116,6 +123,9 @@ DESC
     end
     if !self[:socket_host] && self[:socket_port]
       fail "socket_host is required if socket_port is set"
+    end
+    if self[:type] == :set && !self[:handlers]
+      fail "handlers must be defined for type set"
     end
   end
 end

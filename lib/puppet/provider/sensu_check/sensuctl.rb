@@ -103,7 +103,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
       spec[:proxy_requests][:splay_coverage] = resource[:proxy_requests_splay_coverage] if resource[:proxy_requests_splay_coverage]
     end
     begin
-      sensuctl_create('check', metadata, spec)
+      sensuctl_create('CheckConfig', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -152,7 +152,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
         spec[:proxy_requests][:splay_coverage] = @property_flush[:proxy_requests_splay_coverage] if @property_flush[:proxy_requests_splay_coverage]
       end
       begin
-        sensuctl_create('check', metadata, spec)
+        sensuctl_create('CheckConfig', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

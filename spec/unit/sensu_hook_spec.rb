@@ -31,6 +31,7 @@ describe Puppet::Type.type(:sensu_hook) do
   defaults = {
     'namespace': 'default',
     'timeout': 60,
+    'stdin': :false,
   }
 
   # String properties
@@ -114,6 +115,11 @@ describe Puppet::Type.type(:sensu_hook) do
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
       expect { hook }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(hook[property]).to eq(default)
+      end
     end
   end
 
