@@ -43,7 +43,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8081, host: 8081, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend.pp"
-    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_backend"
+    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensuctl"
   end
 
   config.vm.define "sensu-backend-peer1", autostart: false  do |backend|
@@ -56,7 +57,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8081, host: 8083, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-cluster.pp"
-    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_backend"
   end
 
   config.vm.define "sensu-backend-peer2", autostart: false do |backend|
@@ -69,7 +70,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8081, host: 8085, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-cluster.pp"
-    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_backend"
   end
 
   config.vm.define "el7-agent", autostart: true do |agent|
@@ -78,7 +79,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.11"
     agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   config.vm.define "el6-agent", autostart: false do |agent|
@@ -87,7 +88,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.12"
     agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   config.vm.define "ubuntu1804-agent", autostart: false do |agent|
@@ -96,7 +97,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.13"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   config.vm.define "ubuntu1604-agent", autostart: false do |agent|
@@ -105,7 +106,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.23"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   config.vm.define "ubuntu1404-agent", autostart: false do |agent|
@@ -114,7 +115,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.14"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   config.vm.define "win2012r2-agent", autostart: false do |agent|
@@ -136,7 +137,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
     ## Install Sensu using the default Windows package provider (MSI)
     agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent-windows.pp"'
-    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_version"'
+    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_agent"'
   end
 
   config.vm.define "win2012r2-agent-chocolatey", autostart: false do |agent|
@@ -162,7 +163,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => 'iex "puppet module install chocolatey-chocolatey --version 1.2.6"'
     ## Install sensu using Chocolatey
     agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent-windows-chocolatey.pp"'
-    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_version"'
+    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_agent"'
   end
 
   config.vm.define "debian9-agent", autostart: false do |agent|
@@ -171,7 +172,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.20"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   config.vm.define "debian8-agent", autostart: false do |agent|
@@ -180,7 +181,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network  :private_network, ip: "192.168.52.17"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
   # The rsync used to populate /vagrant will fail if the repo has the spec
@@ -195,7 +196,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.synced_folder ".", "/vagrant", type: "rsync", group: "wheel"
     agent.vm.provision :shell, :path => "tests/provision_macos.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
     agent.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--usb", "on"]
       vb.customize ["modifyvm", :id, "--usbehci", "off"]
