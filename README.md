@@ -211,13 +211,43 @@ The first step will not fully add the node to the cluster until the second step 
 
 ### Facts
 
-#### `sensu_version`
+#### `sensu_agent`
 
-The `sensu_version` fact returns the Sensu Agent version returned by the `sensu-agent` binary.
+The `sensu_agent` fact returns the Sensu agent version information by the `sensu-agent` binary.
 
 ```shell
-facter -p sensu_version
-2.0.0
+facter -p sensu_agent
+{
+  version => "5.1.0",
+  build => "b2ea9fcdb21e236e6e9a7de12225a6d90c786c57",
+  built => "2018-12-18T21:31:11+0000"
+}
+```
+
+#### `sensu_backend`
+
+The `sensu_backend` fact returns the Sensu backend version information by the `sensu-backend` binary.
+
+```shell
+facter -p sensu_backend
+{
+  version => "5.1.0",
+  build => "b2ea9fcdb21e236e6e9a7de12225a6d90c786c57",
+  built => "2018-12-18T21:31:11+0000"
+}
+```
+
+#### `sensuctl`
+
+The `sensuctl` fact returns the sensuctl version information by the `sensuctl` binary.
+
+```shell
+facter -p sensuctl
+{
+  version => "5.1.0",
+  build => "b2ea9fcdb21e236e6e9a7de12225a6d90c786c57",
+  built => "2018-12-18T21:31:11+0000"
+}
 ```
 
 ## Limitations
