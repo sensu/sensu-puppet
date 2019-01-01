@@ -28,8 +28,10 @@
 #   Sensu backend host used to configure sensuctl and verify API access.
 # @param url_port
 #   Sensu backend port used to configure sensuctl and verify API access.
-# @param use_ssl
-#   Sensu backend service uses SSL
+# @param ssl_cert_source
+#   The SSL certificate source
+# @param ssl_key_source
+#   The SSL private key source
 # @param password
 #   Sensu admin password. Does not change admin password but is used when
 #   running `sensuctl configure` after initial bootstrap.
@@ -43,35 +45,41 @@ class sensu::backend (
   Boolean $service_enable = true,
   Stdlib::Absolutepath $state_dir = '/var/lib/sensu/sensu-backend',
   Hash $config_hash = {},
-  String $url_host = '127.0.0.1',
+  String $url_host = $trusted['certname'],
   Stdlib::Port $url_port = 8080,
-  Boolean $use_ssl = false,
+  String $ssl_cert_source = $facts['puppet_hostcert'],
+  String $ssl_key_source = $facts['puppet_hostprivkey'],
   String $password = 'P@ssw0rd!',
 ) {
 
   include ::sensu
 
   $etc_dir = $::sensu::etc_dir
+  $ssl_dir = $::sensu::ssl_dir
+  $use_ssl = $::sensu::use_ssl
+  $_version = pick($version, $::sensu::version)
+
+  if $use_ssl {
+    $url_protocol = 'https'
+    $ssl_config = {
+      'cert-file'       => "${ssl_dir}/cert.pem",
+      'key-file'        => "${ssl_dir}/key.pem",
+      'trusted-ca-file' => "${ssl_dir}/ca.crt",
+    }
+    $service_subscribe = Class['::sensu::ssl']
+    Class['::sensu::ssl'] -> Sensu_configure['puppet']
+  } else {
+    $url_protocol = 'http'
+    $ssl_config = {}
+    $service_subscribe = undef
+  }
 
   $default_config = {
     'state-dir' => $state_dir,
   }
-  $config = $default_config + $config_hash
-
-  if $use_ssl {
-    $url_protocol = 'https'
-  }
-  else {
-    $url_protocol = 'http'
-  }
+  $config = $default_config + $ssl_config + $config_hash
 
   $url = "${url_protocol}://${url_host}:${url_port}"
-
-  if $version == undef {
-    $_version = $::sensu::version
-  } else {
-    $_version = $version
-  }
 
   package { 'sensu-go-cli':
     ensure  => $_version,
@@ -91,6 +99,29 @@ class sensu::backend (
     username           => 'admin',
     password           => $password,
     bootstrap_password => 'P@ssw0rd!',
+  }
+
+  if $use_ssl {
+    file { 'sensu_ssl_cert':
+      ensure    => 'file',
+      path      => "${ssl_dir}/cert.pem",
+      source    => $ssl_cert_source,
+      owner     => $::sensu::user,
+      group     => $::sensu::group,
+      mode      => '0644',
+      show_diff => false,
+      notify    => Service['sensu-backend'],
+    }
+    file { 'sensu_ssl_key':
+      ensure    => 'file',
+      path      => "${ssl_dir}/key.pem",
+      source    => $ssl_key_source,
+      owner     => $::sensu::user,
+      group     => $::sensu::group,
+      mode      => '0600',
+      show_diff => false,
+      notify    => Service['sensu-backend'],
+    }
   }
 
   package { 'sensu-go-backend':
@@ -119,8 +150,9 @@ class sensu::backend (
   }
 
   service { 'sensu-backend':
-    ensure => $service_ensure,
-    enable => $service_enable,
-    name   => $service_name,
+    ensure    => $service_ensure,
+    enable    => $service_enable,
+    name      => $service_name,
+    subscribe => $service_subscribe,
   }
 }

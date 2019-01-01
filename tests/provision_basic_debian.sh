@@ -54,4 +54,9 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 # setup module dependencies
 puppet module install puppetlabs/stdlib --version 4.25.1
 puppet module install puppetlabs/apt --version 4.1.0
+puppet module install puppet/trusted_ca --version 2.0.0
 
+puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10
+
+[ ! -d /etc/puppetlabs/puppet/ssl ] && mkdir /etc/puppetlabs/puppet/ssl
+cp -r /vagrant/tests/ssl/* /etc/puppetlabs/puppet/ssl/

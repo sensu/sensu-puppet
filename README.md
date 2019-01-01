@@ -10,6 +10,7 @@
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
+    * [Advanced SSL](#advanced-ssl)
     * [Exported resources](#exported-resources)
     * [Resource purging](#resource-purging)
     * [Sensu backend cluster](#sensu-backend-cluster)
@@ -73,7 +74,7 @@ vagrant ssh sensu-backend
 
 #### Beginning with a Sensu cluster
 
-Multiple Vagrant boxes are available for testing a sensu-backend cluster
+Multiple Vagrant boxes are available for testing a sensu-backend cluster.
 
 ```bash
 vagrant up sensu-backend-peer1 sensu-backend-peer2
@@ -85,6 +86,7 @@ vagrant provision sensu-backend-peer1 sensu-backend-peer2
 ### Basic Sensu backend
 
 The following example will configure sensu-backend, sensu-agent on backend and add a check.
+By default this module will configure the backend to use Puppet's SSL certificate and CA.
 
 ```puppet
   include sensu::backend
@@ -104,11 +106,72 @@ associated to `linux` and `apache-servers` subscriptions.
 
 ```puppet
   class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
     config_hash => {
-      'backend-url'  => 'ws://sensu-backend.example.com:8081',
       'subscriptions => ['linux', 'apache-servers'],
     },
   }
+```
+
+### Advanced SSL
+
+By default this module uses Puppet's SSL certificates and CA.
+If you would prefer to use different certificates override the `ssl_ca_source`, `ssl_cert_source` and `ssl_key_source` parameters.
+The value for `url_host` must be valid for the provided certificate and the value used for agent's `backends` must also match the certificate used by the specified backend.
+If the certificates and keys are already installed then define the source parameters as filesystem paths.
+
+```puppet
+class { 'sensu':
+  ssl_ca_source => 'puppet:///modules/site_sensu/ca.pem',
+}
+class { 'sensu::backend':
+  url_host        => 'sensu-backend.example.com',
+  ssl_cert_source => 'puppet:///modules/site_sensu/cert.pem',
+  ssl_key_source  => 'puppet:///modules/site_sensu/key.pem',
+}
+```
+```puppet
+class { 'sensu':
+  ssl_ca_source => 'puppet:///modules/site_sensu/ca.pem',
+}
+class { 'sensu::agent':
+  backends    => ['sensu-backend.example.com:8081'],
+  config_hash => {
+    'subscriptions => ['linux', 'apache-servers'],
+  },
+}
+```
+
+If the certificate is already trusted by your operating system's trust store then you can disable adding the CA to system's trust.
+
+```puppet
+class { 'sensu':
+  ssl_add_ca_trust => false,
+}
+class { 'sensu::backend':
+  url_host        => 'sensu-backend.example.com',
+  ssl_cert_source => 'puppet:///modules/site_sensu/cert.pem',
+  ssl_key_source  => 'puppet:///modules/site_sensu/key.pem',
+}
+```
+```puppet
+class { 'sensu':
+  ssl_add_ca_trust => false,
+}
+class { 'sensu::agent':
+  backends    => ['sensu-backend.example.com:8081'],
+  config_hash => {
+    'subscriptions => ['linux', 'apache-servers'],
+  },
+}
+```
+
+To disable SSL support:
+
+```puppet
+class { 'sensu':
+  use_ssl => false,
+}
 ```
 
 ### Exported resources

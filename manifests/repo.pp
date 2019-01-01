@@ -1,4 +1,6 @@
-# private class
+# @summary Private class to manage sensu repository resources
+# @api private
+#
 class sensu::repo {
 
   case $facts['os']['family'] {

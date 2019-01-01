@@ -8,7 +8,9 @@
 #
 # @param etc_dir
 #   Absolute path to the Sensu etc directory.
-#   Default: '/etc/sensu' and 'C:/opt/sensu' on windows.
+#
+# @param ssl_dir
+#   Absolute path to the Sensu ssl directory.
 #
 # @param user
 #   User used by sensu services
@@ -20,17 +22,36 @@
 #   Boolean to determine if the etc_dir should be purged
 #   such that only Puppet managed files are present.
 #
+# @param ssl_dir_purge
+#   Boolean to determine if the ssl_dir should be purged
+#   such that only Puppet managed files are present.
+#
 # @param manage_repo
 #   Boolean to determine if software repository for Sensu
 #   should be managed.
 #
+# @param use_ssl
+#   Sensu backend service uses SSL
+#
+# @param ssl_ca_source
+#   Source of SSL CA used by sensu services
+#
+# @param ssl_add_ca_trust
+#   Boolean that determines if SSL CA should be added
+#   to the system's trust store
+#
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
+  Stdlib::Absolutepath $ssl_dir = '/etc/sensu/ssl',
   String $user = 'sensu',
   String $group = 'sensu',
   Boolean $etc_dir_purge = true,
+  Boolean $ssl_dir_purge = true,
   Boolean $manage_repo = true,
+  Boolean $use_ssl = true,
+  String $ssl_ca_source = $facts['puppet_localcacert'],
+  Boolean $ssl_add_ca_trust = true,
 ) {
 
   if $manage_repo {
@@ -43,6 +64,10 @@ class sensu (
     purge   => $etc_dir_purge,
     recurse => $etc_dir_purge,
     force   => $etc_dir_purge,
+  }
+
+  if $use_ssl {
+    contain ::sensu::ssl
   }
 
   case $facts['os']['family'] {
