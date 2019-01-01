@@ -3,8 +3,8 @@
 #
 # Environment variables may be used to control the behavior of the Vagrant VM's
 # defined in this file.  This is intended as a special-purpose affordance and
-# should not be necessary in normal situations.  In particular, sensu-server,
-# sensu-server-enterprise, and sensu-server-puppet5 use the same IP address by
+# should not be necessary in normal situations.  In particular, sensu-server and
+# sensu-server-enterprise  use the same IP address by
 # default, creating a potential IP conflict.  If there is a need to run multiple
 # server instances simultaneously, avoid the IP conflict by setting the
 # ALTERNATE_IP environment variable:
@@ -65,15 +65,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     server.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
   end
 
-  # This system is meant to be started without 'sensu-server' running.
-  config.vm.define "sensu-server-puppet5", autostart: false do |server|
+  config.vm.define "sensu-server-puppet6", primary: true, autostart: true do |server|
     server.vm.box = "centos/7"
     server.vm.hostname = 'sensu-server.example.com'
     server.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.56.10'
     server.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
     server.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
     server.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true
-    server.vm.provision :shell, :path => "tests/provision_basic_el_puppet5.sh"
+    server.vm.provision :shell, :path => "tests/provision_basic_el_puppet6.sh"
     server.vm.provision :shell, :path => "tests/provision_server.sh"
     server.vm.provision :shell, :path => "tests/rabbitmq.sh"
     server.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_version"
