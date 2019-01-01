@@ -11,7 +11,7 @@ group :development, :unit_tests do
   gem 'rspec-puppet', '~> 2.6.0',                         :require => false
   gem 'rspec-puppet-facts',                               :require => false
   gem 'rspec-mocks',                                      :require => false
-  gem 'puppetlabs_spec_helper', '>= 2.11.0',               :require => false
+  gem 'puppetlabs_spec_helper', '>= 2.11.0',              :require => false
   gem 'puppet-lint', "~> 2.0",                            :require => false
   gem 'json', "~> 1.8.3",                                 :require => false
   gem 'json_pure', "~> 1.8.3",                            :require => false
@@ -20,9 +20,12 @@ group :development, :unit_tests do
   gem 'rest-client', ">= 1.7.4",                          :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
   gem 'puppet-lint-alias-check',                          :require => false
+  gem 'puppet-lint-anchor-check',                         :require => false
   gem 'puppet-lint-empty_string-check',                   :require => false
   gem 'puppet-lint-file_ensure-check',                    :require => false
   gem 'puppet-lint-leading_zero-check',                   :require => false
+  gem 'puppet-lint-param-docs',                           :require => false
+  gem 'puppet-lint-resource_reference_syntax',            :require => false
   gem 'puppet-lint-spaceship_operator_without_tag-check', :require => false
   gem 'puppet-lint-trailing_comma-check',                 :require => false
   gem 'puppet-lint-undef_in_function-check',              :require => false
