@@ -17,6 +17,9 @@ when 'rspec-puppet'
   at_exit { RSpec::Puppet::Coverage.report! }
 end
 
+dir = File.expand_path(File.dirname(__FILE__))
+Dir["#{dir}/shared_examples/**/*.rb"].sort.each {|f| require f}
+
 module_spec_dir = File.dirname(__FILE__)
 custom_facts = File.join(module_spec_dir, 'fixtures', 'facts')
 ENV['FACTERDB_SEARCH_PATHS'] = custom_facts

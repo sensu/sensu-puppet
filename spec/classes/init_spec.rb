@@ -16,6 +16,7 @@ describe 'sensu', :type => :class do
             'path'    => '/etc/sensu',
             'purge'   => true,
             'recurse' => true,
+            'force'   => true,
           })
         }
       end

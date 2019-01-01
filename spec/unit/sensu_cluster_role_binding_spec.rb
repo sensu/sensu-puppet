@@ -146,46 +146,6 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
     end
   end
 
-  it 'should autorequire Package[sensu-go-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource binding
-    catalog.add_resource package
-    rel = binding.autorequire[0]
-    expect(rel.source.ref).to eq(package.ref)
-    expect(rel.target.ref).to eq(binding.ref)
-  end
-
-  it 'should autorequire Service[sensu-backend]' do
-    service = Puppet::Type.type(:service).new(:name => 'sensu-backend')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource binding
-    catalog.add_resource service
-    rel = binding.autorequire[0]
-    expect(rel.source.ref).to eq(service.ref)
-    expect(rel.target.ref).to eq(binding.ref)
-  end
-
-  it 'should autorequire Exec[sensuctl_configure]' do
-    exec = Puppet::Type.type(:exec).new(:name => 'sensuctl_configure', :command => '/usr/bin/sensuctl')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource binding
-    catalog.add_resource exec
-    rel = binding.autorequire[0]
-    expect(rel.source.ref).to eq(exec.ref)
-    expect(rel.target.ref).to eq(binding.ref)
-  end
-
-  it 'should autorequire sensu_api_validator' do
-    validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource binding
-    catalog.add_resource validator
-    rel = binding.autorequire[0]
-    expect(rel.source.ref).to eq(validator.ref)
-    expect(rel.target.ref).to eq(binding.ref)
-  end
-
   it 'should autorequire sensu_cluster_role' do
     config[:role_ref] = 'test'
     role = Puppet::Type.type(:sensu_cluster_role).new(:name => 'test', :rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}])
@@ -195,6 +155,10 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
     rel = binding.autorequire[0]
     expect(rel.source.ref).to eq(role.ref)
     expect(rel.target.ref).to eq(binding.ref)
+  end
+
+  include_examples 'autorequires' do
+    let(:res) { binding }
   end
 
   [
