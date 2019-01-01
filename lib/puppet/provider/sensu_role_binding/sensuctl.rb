@@ -55,8 +55,8 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
 
   def create
     spec = {}
-    spec[:metadata] = {}
-    spec[:metadata][:name] = resource[:name]
+    metadata = {}
+    metadata[:name] = resource[:name]
     spec[:role_ref] = { type: 'Role' }
     type_properties.each do |property|
       value = resource[property]
@@ -68,13 +68,13 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
       if property == :role_ref
         spec[:role_ref][:name] = value
       elsif property == :namespace
-        spec[:metadata][:namespace] = value
+        metadata[:namespace] = value
       else
         spec[property] = value
       end
     end
     begin
-      sensuctl_create('RoleBinding', spec)
+      sensuctl_create('RoleBinding', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -84,8 +84,8 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:metadata] = {}
-      spec[:metadata][:name] = resource[:name]
+      metadata = {}
+      metadata[:name] = resource[:name]
       spec[:role_ref] = { type: 'Role' }
       type_properties.each do |property|
         if @property_flush[property]
@@ -102,13 +102,13 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
         if property == :role_ref
           spec[:role_ref][:name] = value
         elsif property == :namespace
-          spec[:metadata][:namespace] = value
+          metadata[:namespace] = value
         else
           spec[property] = value
         end
       end
       begin
-        sensuctl_create('RoleBinding', spec)
+        sensuctl_create('RoleBinding', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

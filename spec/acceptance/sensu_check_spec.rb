@@ -35,6 +35,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl check info test --format json' do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('check-http.rb')
+        expect(data['publish']).to eq(true)
+        expect(data['stdin']).to eq(false)
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']}])
         expect(data['proxy_requests']['entity_attributes']).to eq(["entity.Class == 'proxy'"])
         expect(data['output_metric_format']).to eq('nagios_perfdata')

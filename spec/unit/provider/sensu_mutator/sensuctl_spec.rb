@@ -25,14 +25,14 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a mutator' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'test',
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -41,29 +41,29 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a mutator timeout' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'test',
         :timeout => 60
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_metadata, expected_spec)
       @resource.provider.timeout = 60
       @resource.provider.flush
     end
     it 'should remove timeout' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'test',
         :timeout => nil,
       }
       @resource[:timeout] = 60
-      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_metadata, expected_spec)
       @resource.provider.timeout = :absent
       @resource.provider.flush
     end

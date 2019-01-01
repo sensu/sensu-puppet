@@ -68,9 +68,9 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
 
   def create
     spec = {}
-    spec[:metadata] = {}
-    spec[:metadata] = {}
-    spec[:metadata][:name] = resource[:name]
+    metadata = {}
+    metadata = {}
+    metadata[:name] = resource[:name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -82,17 +82,17 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
       if property == :deregistration_handler
         spec[:deregistration] = {handler: value}
       elsif property == :namespace
-        spec[:metadata][:namespace] = value
+        metadata[:namespace] = value
       elsif property == :labels
-        spec[:metadata][:labels] = value
+        metadata[:labels] = value
       elsif property == :annotations
-        spec[:metadata][:annotations] = value
+        metadata[:annotations] = value
       else
         spec[property] = value
       end
     end
     begin
-      sensuctl_create('entity', spec)
+      sensuctl_create('entity', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:id]} failed\nError message: #{e.message}"
     end
@@ -102,9 +102,9 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
   def flush
     if !@property_flush.empty?
       spec = {}
-      spec[:metadata] = {}
-      spec[:metadata] = {}
-      spec[:metadata][:name] = resource[:name]
+      metadata = {}
+      metadata = {}
+      metadata[:name] = resource[:name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -126,17 +126,17 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
         if property == :deregistration_handler
           spec[:deregistration] = {handler: value}
         elsif property == :namespace
-          spec[:metadata][:namespace] = value
+          metadata[:namespace] = value
         elsif property == :labels
-          spec[:metadata][:labels] = value
+          metadata[:labels] = value
         elsif property == :annotations
-          spec[:metadata][:annotations] = value
+          metadata[:annotations] = value
         else
           spec[property] = value
         end
       end
       begin
-        sensuctl_create('entity', spec)
+        sensuctl_create('entity', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

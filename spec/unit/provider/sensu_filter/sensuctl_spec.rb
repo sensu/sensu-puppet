@@ -26,15 +26,15 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a filter' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :action => :allow,
         :expressions => ["event.Entity.Environment == 'production'"],
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -43,15 +43,15 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a filter action' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :action => 'deny',
         :expressions => ["event.Entity.Environment == 'production'"],
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_metadata, expected_spec)
       @resource.provider.action = 'deny'
       @resource.provider.flush
     end

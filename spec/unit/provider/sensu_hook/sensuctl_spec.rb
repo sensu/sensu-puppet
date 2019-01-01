@@ -25,15 +25,16 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a hook' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'test',
         :timeout => 60,
+        :stdin => false,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -42,15 +43,16 @@ describe Puppet::Type.type(:sensu_hook).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a hook timeout' do
-      expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
-        :command => 'test',
-        :timeout => 120
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_spec)
+      expected_spec = {
+        :command => 'test',
+        :timeout => 120,
+        :stdin => false,
+      }
+      expect(@resource.provider).to receive(:sensuctl_create).with('HookConfig', expected_metadata, expected_spec)
       @resource.provider.timeout = 120
       @resource.provider.flush
     end

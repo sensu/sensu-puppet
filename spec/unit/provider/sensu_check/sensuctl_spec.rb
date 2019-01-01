@@ -8,7 +8,8 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       :name => 'test',
       :command => 'foobar',
       :subscriptions => ['demo'],
-      :handlers => ['slack']
+      :handlers => ['slack'],
+      :interval => 60,
     })
   end
 
@@ -32,19 +33,20 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       @resource[:stdin] = true
       @resource[:publish] = false
       @resource[:proxy_requests_entity_attributes] = ["entity.Class == 'proxy'"]
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'check_ntp',
         :subscriptions => ['demo'],
         :handlers => ['email', 'slack'],
+        :interval => 60,
         :stdin => true,
         :publish => false,
         :proxy_requests => { :entity_attributes => ["entity.Class == 'proxy'"] }
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('CheckConfig', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -54,48 +56,56 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a check proxy_requests' do
       @resource[:proxy_requests_splay] = true
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'foobar',
         :subscriptions => ['demo'],
+        :interval => 60,
+        :publish => true,
+        :stdin => false,
         :handlers => ['slack'],
         :proxy_requests => { :splay => true, :entity_attributes => ["entity.Class == 'proxy'"] }
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('CheckConfig', expected_metadata, expected_spec)
       @resource.provider.proxy_requests_entity_attributes = ["entity.Class == 'proxy'"]
       @resource.provider.flush
     end
     it 'should update a check' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'foobar',
         :subscriptions => ['demo'],
+        :publish => true,
+        :stdin => false,
         :handlers => ['slack'],
         :interval => 20
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('CheckConfig', expected_metadata, expected_spec)
       @resource.provider.interval = 20
       @resource.provider.flush
     end
     it 'should remove ttl' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :command => 'foobar',
         :subscriptions => ['demo'],
+        :interval => 60,
+        :publish => true,
+        :stdin => false,
         :handlers => ['slack'],
         :ttl => nil,
       }
-      @resource[:ttl] = 60
-      expect(@resource.provider).to receive(:sensuctl_create).with('check', expected_spec)
+      @resource[:ttl] = 120
+      expect(@resource.provider).to receive(:sensuctl_create).with('CheckConfig', expected_metadata, expected_spec)
       @resource.provider.ttl = :absent
       @resource.provider.flush
     end

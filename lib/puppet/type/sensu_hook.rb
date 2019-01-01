@@ -45,6 +45,7 @@ DESC
   newproperty(:stdin, :boolean => true) do
     desc "If the Sensu agent writes JSON serialized Sensu entity and check data to the command process’ STDIN."
     newvalues(:true, :false)
+    defaultto(:false)
   end
 
   newproperty(:namespace) do

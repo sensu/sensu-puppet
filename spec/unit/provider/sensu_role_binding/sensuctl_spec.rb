@@ -27,15 +27,15 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a role_binding' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :role_ref => {'type': 'Role', 'name': 'test-role'},
         :subjects => [{'type' => 'User', 'name' => 'test-user'}],
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('RoleBinding', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('RoleBinding', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -44,15 +44,15 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a role_binding subjects' do
+      expected_metadata = {
+        :name => 'test',
+        :namespace => 'default',
+      }
       expected_spec = {
-        :metadata => {
-          :name => 'test',
-          :namespace => 'default',
-        },
         :role_ref => {'type': 'Role', 'name': 'test-role'},
         :subjects => [{'type' => 'User', 'name' => 'test'}],
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('RoleBinding', expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('RoleBinding', expected_metadata, expected_spec)
       @resource.provider.subjects = [{'type' => 'User', 'name' => 'test'}]
       @resource.provider.flush
     end

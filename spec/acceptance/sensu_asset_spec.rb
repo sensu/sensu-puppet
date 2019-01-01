@@ -53,7 +53,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
   end
 
   context 'ensure => absent' do
-    skip("Not yet implemented https://github.com/sensu/sensu-go/issues/988") do
     it 'should remove without errors' do
       pp = <<-EOS
       include ::sensu::backend
@@ -61,14 +60,12 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       EOS
 
       # Run it twice and test for idempotency
-      apply_manifest_on(node, pp, :catch_failures => true)
-      apply_manifest_on(node, pp, :catch_changes  => true)
+      apply_manifest_on(node, pp, :expect_failures => true)
     end
 
     describe command('sensuctl asset info test'), :node => node do
-      its(:exit_status) { should_not eq 0 }
+      its(:exit_status) { should eq 0 }
     end
-  end
   end
 end
 

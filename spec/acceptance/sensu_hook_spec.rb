@@ -21,6 +21,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl hook info test --format json' do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('ps aux')
+        expect(data['stdin']).to eq(false)
         expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end

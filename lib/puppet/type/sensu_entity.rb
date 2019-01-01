@@ -63,26 +63,20 @@ DESC
   newproperty(:deregister, :boolean => true) do
     desc "If the entity should be removed when it stops sending keepalive messages."
     newvalues(:true, :false)
+    defaultto(:false)
   end
 
   newproperty(:deregistration_handler) do
     desc "The name of the handler to be called when an entity is deregistered."
   end
 
-  newproperty(:namespace) do
-    desc "The Sensu RBAC namespace that this entity belongs to."
-    defaultto 'default'
-  end
-
   newproperty(:redact, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "List of items to redact from log messages."
   end
 
-  newproperty(:user) do
-    desc "Entity user"
-    validate do |value|
-      fail "user is read-only"
-    end
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this entity belongs to."
+    defaultto 'default'
   end
 
   newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do

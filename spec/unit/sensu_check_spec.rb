@@ -8,6 +8,7 @@ describe Puppet::Type.type(:sensu_check) do
       command: 'test',
       subscriptions: ['test'],
       handlers: ['test'],
+      interval: 60,
     }
   end
   let(:config) do
@@ -32,6 +33,8 @@ describe Puppet::Type.type(:sensu_check) do
 
   defaults = {
     'namespace': 'default',
+    'publish': :true,
+    'stdin': :false,
   }
 
   # String properties
@@ -48,6 +51,10 @@ describe Puppet::Type.type(:sensu_check) do
     if default = defaults[property]
       it "should have default for #{property}" do
         expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
       end
     end
   end
@@ -76,13 +83,21 @@ describe Puppet::Type.type(:sensu_check) do
       config[property] = ['foo', 'bar']
       expect(check[property]).to eq(['foo', 'bar'])
     end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
   end
 
   # Integer properties
   [
     :interval,
     :timeout,
-    :ttl,
     :low_flap_threshold,
     :high_flap_threshold,
     :proxy_requests_splay_coverage,
@@ -99,6 +114,15 @@ describe Puppet::Type.type(:sensu_check) do
       config[property] = 'foo'
       expect { check }.to raise_error(Puppet::Error, /should be an Integer/)
     end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
   end
 
   # Boolean properties
@@ -107,6 +131,7 @@ describe Puppet::Type.type(:sensu_check) do
     :stdin,
     :round_robin,
     :proxy_requests_splay,
+    :silenced,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true
@@ -128,6 +153,15 @@ describe Puppet::Type.type(:sensu_check) do
       config[property] = 'foo'
       expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
     end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
   end
 
   # Hash properties
@@ -142,6 +176,62 @@ describe Puppet::Type.type(:sensu_check) do
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
       expect { check }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
+  end
+
+  describe 'interval and cron' do
+    it 'should be required' do
+      config[:publish] = true
+      config.delete(:interval)
+      config.delete(:cron)
+      expect { check }.to raise_error(Puppet::Error, /interval or cron is required/)
+    end
+    it 'should not be required if publish is false' do
+      config[:publish] = false
+      config.delete(:interval)
+      config.delete(:cron)
+      expect { check }.not_to raise_error
+    end
+    it 'interval should not be required if cron is defined' do
+      config[:cron] = '0 0 * * *'
+      config.delete(:interval)
+      expect { check }.not_to raise_error
+    end
+    it 'cron should not be required if interval is defined' do
+      config[:interval] = 60
+      config.delete(:cron)
+      expect { check }.not_to raise_error
+    end
+  end
+
+  describe 'ttl' do
+    it 'should accept value' do
+      config[:interval] = 60
+      config[:ttl] = 120
+      expect(check[:ttl]).to eq(120)
+    end
+    it 'should accept string value' do
+      config[:interval] = 60
+      config[:ttl] = '120'
+      expect(check[:ttl]).to eq(120)
+    end
+    it 'should not accept invalid value' do
+      config[:ttl] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /should be an Integer/)
+    end
+    it 'should be greater than interval' do
+      config[:interval] = 60
+      config[:ttl] = 30
+      expect { check }.to raise_error(Puppet::Error, /check ttl 30 must be greater than interval 60/)
     end
   end
 
@@ -159,6 +249,10 @@ describe Puppet::Type.type(:sensu_check) do
         config[:check_hooks] = [{type => ['test']}]
         expect(check[:check_hooks]).to eq([{type => ['test']}])
       end
+    end
+
+    it 'should not have default' do
+      expect(check[:check_hooks]).to be_nil
     end
 
     it 'should require Hash elements' do
@@ -198,6 +292,10 @@ describe Puppet::Type.type(:sensu_check) do
         config[:output_metric_format] = v
         expect(check[:output_metric_format]).to eq(v.to_sym)
       end
+    end
+
+    it 'should not have a default' do
+      expect(check[:output_metric_format]).to be_nil
     end
 
     it 'should not accept invalid values' do
