@@ -109,46 +109,13 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
   end
 
   context 'ensure => absent' do
-    it 'should remove without errors' do
+    it 'should result in error as unsupported' do
       pp = <<-EOS
       include ::sensu::backend
       sensu_user { 'test': ensure => 'absent' }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest_on(node, pp, :catch_failures => true)
-      apply_manifest_on(node, pp, :catch_changes  => true)
-    end
-
-    it 'should not have user removed' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
-        d = data.select { |o| o['username'] == 'test' }
-        expect(d.size).to eq(0)
-      end
-    end
-  end
-
-  context 'resources purge' do
-    it 'should remove without errors' do
-      pp = <<-EOS
-      include ::sensu::backend
-      resources { 'sensu_user':
-        purge => true,
-      }
-      EOS
-
-      # Run it twice and test for idempotency
-      apply_manifest_on(node, pp, :catch_failures => true)
-      apply_manifest_on(node, pp, :catch_changes  => true)
-    end
-
-    it 'should have 1 user' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
-        expect(data.size).to eq(1)
-      end
+      apply_manifest_on(node, pp, :expect_failures => true)
     end
   end
 end
-

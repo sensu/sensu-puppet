@@ -324,6 +324,8 @@ This module does not support adding `sensuctl` resources on a host other than th
 
 The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
 
+The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
+
 ### Notes regarding support
 
 This module is built for use with Puppet versions 5 and 6 and the ruby
