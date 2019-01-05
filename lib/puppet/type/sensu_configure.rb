@@ -14,7 +14,7 @@ Puppet::Type.newtype(:sensu_configure) do
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires(false)
+  add_autorequires(false, false)
 
   ensurable
 

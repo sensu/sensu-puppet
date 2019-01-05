@@ -2,7 +2,7 @@ module PuppetX
   module Sensu
     module Type
 
-      def add_autorequires(require_configure=true)
+      def add_autorequires(namespace=true, require_configure=true)
         autorequire(:package) do
           ['sensu-go-cli']
         end
@@ -18,13 +18,13 @@ module PuppetX
         end
 
         autorequire(:sensu_api_validator) do
-          requires = []
-          catalog.resources.each do |resource|
-            if resource.class.to_s == 'Puppet::Type::Sensu_api_validator'
-              requires << resource.name if resource.name == 'sensu'
-            end
+          [ 'sensu' ]
+        end
+
+        if namespace
+          autorequire(:sensu_namespace) do
+            [ self[:namespace] ]
           end
-          requires
         end
       end
     end

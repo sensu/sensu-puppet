@@ -149,7 +149,7 @@ describe Puppet::Type.type(:sensu_cluster_role) do
     end
   end
 
-  include_examples 'autorequires' do
+  include_examples 'autorequires', false do
     let(:res) { cluster_role }
   end
 

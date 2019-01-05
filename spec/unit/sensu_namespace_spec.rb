@@ -122,7 +122,7 @@ describe Puppet::Type.type(:sensu_namespace) do
     end
   end
 
-  include_examples 'autorequires' do
+  include_examples 'autorequires', false do
     let(:res) { namespace }
   end
 

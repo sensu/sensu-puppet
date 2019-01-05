@@ -157,7 +157,7 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
     expect(rel.target.ref).to eq(binding.ref)
   end
 
-  include_examples 'autorequires' do
+  include_examples 'autorequires', false do
     let(:res) { binding }
   end
 

@@ -308,6 +308,39 @@ describe Puppet::Type.type(:sensu_check) do
     let(:res) { check }
   end
 
+  it 'should autorequire sensu_handler' do
+    handler = Puppet::Type.type(:sensu_handler).new(:name => 'test', :type => 'pipe', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:handlers] = ['test']
+    catalog.add_resource check
+    catalog.add_resource handler
+    rel = check.autorequire[0]
+    expect(rel.source.ref).to eq(handler.ref)
+    expect(rel.target.ref).to eq(check.ref)
+  end
+
+  it 'should autorequire sensu_asset' do
+    asset = Puppet::Type.type(:sensu_asset).new(:name => 'test', :url => 'http://example.com/asset/example.tar', :sha512 => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b')
+    catalog = Puppet::Resource::Catalog.new
+    config[:runtime_assets] = ['test']
+    catalog.add_resource check
+    catalog.add_resource asset
+    rel = check.autorequire[0]
+    expect(rel.source.ref).to eq(asset.ref)
+    expect(rel.target.ref).to eq(check.ref)
+  end
+
+  it 'should autorequire sensu_hook' do
+    hook = Puppet::Type.type(:sensu_hook).new(:name => 'test', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:check_hooks] = [{1 => ['test']},{'critical' => ['test2']}]
+    catalog.add_resource check
+    catalog.add_resource hook
+    rel = check.autorequire[0]
+    expect(rel.source.ref).to eq(hook.ref)
+    expect(rel.target.ref).to eq(check.ref)
+  end
+
   [
     :command,
     :subscriptions,

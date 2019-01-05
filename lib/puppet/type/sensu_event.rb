@@ -21,6 +21,7 @@ Puppet::Type.newtype(:sensu_event) do
 * `Service[sensu-backend]`
 * `Exec[sensuctl_configure]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 DESC
 
   extend PuppetX::Sensu::Type

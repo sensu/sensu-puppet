@@ -118,7 +118,7 @@ describe Puppet::Type.type(:sensu_cluster_member) do
     end
   end
 
-  include_examples 'autorequires' do
+  include_examples 'autorequires', false do
     let(:res) { cluster_member }
   end
 
