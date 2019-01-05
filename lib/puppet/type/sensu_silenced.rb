@@ -28,7 +28,7 @@ The name of `sensu_silenced` can be used to define `check` and `subscription`.
 **Autorequires**:
 * `Package[sensu-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 DESC
 
