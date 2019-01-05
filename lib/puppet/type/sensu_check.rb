@@ -122,7 +122,7 @@ DESC
       type_valid = false
       if ['ok','warning','critical','unknown','non-zero'].include?(type)
         type_valid = true
-      elsif type.to_s =~ /^\d+$/ && type.to_i.between?(1,255)
+      elsif type.to_s =~ /^\d+$/ && type.to_i.between?(0,255)
         type_valid = true
       end
       if ! type_valid
@@ -131,6 +131,11 @@ DESC
       if ! hooks.is_a?(Array)
         raise ArgumentError, "check_hooks hooks must be an Array"
       end
+    end
+    munge do |value|
+      type = value.keys[0]
+      hooks = value[type]
+      { type.to_s => hooks }
     end
   end
 

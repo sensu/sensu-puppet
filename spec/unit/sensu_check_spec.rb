@@ -237,6 +237,8 @@ describe Puppet::Type.type(:sensu_check) do
 
   describe 'check_hooks' do
     [
+      0,
+      '0',
       1,
       '1',
       'ok',
@@ -247,7 +249,7 @@ describe Puppet::Type.type(:sensu_check) do
     ].each do |type|
       it "accepts valid values for type #{type} #{type.class}" do
         config[:check_hooks] = [{type => ['test']}]
-        expect(check[:check_hooks]).to eq([{type => ['test']}])
+        expect(check[:check_hooks]).to eq([{type.to_s => ['test']}])
       end
     end
 
