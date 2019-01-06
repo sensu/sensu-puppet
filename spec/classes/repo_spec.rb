@@ -7,7 +7,7 @@ describe 'sensu::repo', :type => :class do
       case os
       when /(redhat-6|centos-6|amazon-2017|amazon-2018)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/6/$basearch"
-      when /(redhat-7|centos-7|amazonlinux-2)-x86_64/
+      when /(redhat-7|centos-7|amazon-2)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/7/$basearch"
       else
         baseurl = nil
