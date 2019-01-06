@@ -45,6 +45,9 @@ RSpec.configure do |config|
     :operatingsystem           => 'RedHat',
     :operatingsystemmajrelease => '7',
     :fqdn                      => 'testfqdn.example.com',
+    :puppet_localcacert        => '/dne/ca.pem',
+    :puppet_hostcert           => '/dne/cert.pem',
+    :puppet_hostprivkey        => '/dne/key.pem',
   }
   config.backtrace_exclusion_patterns = [
     %r{/\.bundle/},

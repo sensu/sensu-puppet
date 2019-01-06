@@ -2,7 +2,6 @@ HOSTS:
   sensu_backend1:
     roles:
       - agent
-      - sensu_agent
       - sensu_backend
       - default
     platform: el-7-x86_64
@@ -18,6 +17,7 @@ HOSTS:
   sensu_backend2:
     roles:
       - agent
+      - sensu_backend
     platform: el-7-x86_64
     hypervisor: docker
     image: centos:7
@@ -31,6 +31,7 @@ HOSTS:
   sensu_backend3:
     roles:
       - agent
+      - sensu_backend
     platform: el-7-x86_64
     hypervisor: docker
     image: centos:7

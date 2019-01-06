@@ -20,7 +20,9 @@ describe 'sensu::agent', :type => :class do
         }
 
         agent_content = <<-END.gsub(/^\s+\|/, '')
-          |--- {}
+          |---
+          |backend-url:
+          |- wss://localhost:8081
         END
 
         it {
@@ -35,11 +37,77 @@ describe 'sensu::agent', :type => :class do
 
         it {
           should contain_service('sensu-agent').with({
-            'ensure' => 'running',
-            'enable' => true,
-            'name'   => 'sensu-agent',
+            'ensure'    => 'running',
+            'enable'    => true,
+            'name'      => 'sensu-agent',
+            'subscribe' => 'Class[Sensu::Ssl]',
           })
         }
+      end
+
+      context 'with use_ssl => false' do
+        let(:pre_condition) do
+          "class { 'sensu': use_ssl => false }"
+        end
+
+        agent_content = <<-END.gsub(/^\s+\|/, '')
+          |---
+          |backend-url:
+          |- ws://localhost:8081
+        END
+
+        it {
+          should contain_file('sensu_agent_config').with({
+            'ensure'  => 'file',
+            'path'    => '/etc/sensu/agent.yml',
+            'content' => agent_content,
+            'require' => 'Package[sensu-go-agent]',
+            'notify'  => 'Service[sensu-agent]',
+          })
+        }
+
+        it { should contain_service('sensu-agent').without_notify }
+      end
+
+      # Test various backend values
+      [
+        ['ws://localhost:8081'],
+        ['wss://localhost:8081'],
+        ['localhost:8081'],
+        ['127.0.0.1:8081'],
+        ['ws://127.0.0.1:8081'],
+        ['wss://127.0.0.1:8081'],
+        ['test.example.com:8081'],
+        ['ws://test.example.com:8081'],
+        ['wss://test.example.com:8081'],
+      ].each do |backends|
+        context "with backends => #{backends}" do
+          let(:params) { { :backends => backends } }
+
+          it { should compile.with_all_deps }
+
+          if backends[0] =~ /(ws|wss):\/\//
+            backend = backends[0]
+          else
+            backend = "wss://#{backends[0]}"
+          end
+
+          agent_content = <<-END.gsub(/^\s+\|/, '')
+            |---
+            |backend-url:
+            |- #{backend}
+          END
+
+          it {
+            should contain_file('sensu_agent_config').with({
+              'ensure'  => 'file',
+              'path'    => '/etc/sensu/agent.yml',
+              'content' => agent_content,
+              'require' => 'Package[sensu-go-agent]',
+              'notify'  => 'Service[sensu-agent]',
+            })
+          }
+        end
       end
     end
   end

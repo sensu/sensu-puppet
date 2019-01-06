@@ -1,11 +1,12 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
-  node = only_host_with_role(hosts, 'sensu_backend')
+  node = hosts_as('sensu_backend')[0]
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { '::sensu': }
+      class { '::sensu::backend': }
       EOS
 
       # Run it twice and test for idempotency
@@ -25,11 +26,10 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
   context 'backend and agent' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { '::sensu': }
+      class { '::sensu::backend': }
       class { '::sensu::agent':
-        config_hash => {
-          'backend-url' => 'ws://localhost:8081',
-        },
+        backends => ['sensu_backend:8081'],
       }
       EOS
 

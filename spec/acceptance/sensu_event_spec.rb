@@ -1,7 +1,7 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu_event', if: RSpec.configuration.sensu_full do
-  node = only_host_with_role(hosts, 'sensu_backend')
+  node = hosts_as('sensu_backend')[0]
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
@@ -19,7 +19,7 @@ describe 'sensu_event', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       # Stop sensu-agent on agent node to avoid re-creating event
-      apply_manifest_on(only_host_with_role(hosts, 'sensu_agent'),
+      apply_manifest_on(hosts_as('sensu_agent'),
         "service { 'sensu-agent': ensure => 'stopped' }")
       pp = <<-EOS
       include ::sensu::backend

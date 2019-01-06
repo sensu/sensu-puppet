@@ -24,5 +24,10 @@ RSpec.configure do |c|
     if collection == 'puppet6'
       on hosts, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
+    ssldir = File.join(File.dirname(__FILE__), '..', 'tests/ssl')
+    scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/ssl')
+    hosts.each do |host|
+      on host, "puppet config set --section main certname #{host.name}"
+    end
   end
 end

@@ -9,6 +9,7 @@ describe 'sensu', :type => :class do
 
         it { should contain_class('sensu')}
         it { should contain_class('sensu::repo')}
+        it { should contain_class('sensu::ssl') }
 
         it {
           should contain_file('sensu_etc_dir').with({
@@ -19,6 +20,11 @@ describe 'sensu', :type => :class do
             'force'   => true,
           })
         }
+      end
+
+      context 'with use_ssl => false' do
+        let(:params) { { :use_ssl => false } }
+        it { should_not contain_class('sensu::ssl') }
       end
     end
   end

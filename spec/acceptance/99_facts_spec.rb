@@ -1,8 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::backend class', if: !(RSpec.configuration.sensu_cluster || RSpec.configuration.sensu_full) do
-  backend = only_host_with_role(hosts, 'sensu_backend')
-  agent = only_host_with_role(hosts, 'sensu_agent')
+  backend = hosts_as('sensu_backend')[0]
+  agent = hosts_as('sensu_agent')[0]
   context 'backend facts' do
     it 'should work without errors' do
       pp = <<-EOS
