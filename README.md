@@ -37,7 +37,7 @@ Please log an issue if you identify any incompatibilities.
 
 | Sensu Version   | Recommended Puppet Module Version   |
 | --------------- | ----------------------------------- |
-| 2.x             | latest v3 |
+| 5.x             | latest v3 |
 | 0.26.0 - 1.x    | latest v2 |
 | 0.22.x - 0.25.x | 2.1.0                               |
 | 0.20.x - 0.21.x | 2.0.0                               |
@@ -46,7 +46,7 @@ Please log an issue if you identify any incompatibilities.
 
 ### Upgrade note
 
-Sensu v2 is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu v2.
+Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu Go 5.x.
 
 ## Setup
 
