@@ -19,7 +19,7 @@ Puppet::Type.newtype(:sensu_namespace) do
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires()
+  add_autorequires(false)
 
   ensurable
 

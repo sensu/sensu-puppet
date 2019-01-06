@@ -19,7 +19,7 @@ Puppet::Type.newtype(:sensu_config) do
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires()
+  add_autorequires(false)
 
   ensurable do
     desc "The basic property that the resource should be in."

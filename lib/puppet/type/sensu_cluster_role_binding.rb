@@ -25,7 +25,7 @@ Puppet::Type.newtype(:sensu_cluster_role_binding) do
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires()
+  add_autorequires(false)
 
   ensurable
 

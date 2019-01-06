@@ -30,6 +30,7 @@ The name of `sensu_silenced` can be used to define `check` and `subscription`.
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 DESC
 
   extend PuppetX::Sensu::Type

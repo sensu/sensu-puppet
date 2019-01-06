@@ -129,34 +129,8 @@ describe Puppet::Type.type(:sensu_configure) do
     end
   end
 
-  it 'should autorequire Package[sensu-go-cli]' do
-    package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource configure
-    catalog.add_resource package
-    rel = configure.autorequire[0]
-    expect(rel.source.ref).to eq(package.ref)
-    expect(rel.target.ref).to eq(configure.ref)
-  end
-
-  it 'should autorequire Service[sensu-backend]' do
-    service = Puppet::Type.type(:service).new(:name => 'sensu-backend')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource configure
-    catalog.add_resource service
-    rel = configure.autorequire[0]
-    expect(rel.source.ref).to eq(service.ref)
-    expect(rel.target.ref).to eq(configure.ref)
-  end
-
-  it 'should autorequire sensu_api_validator' do
-    validator = Puppet::Type.type(:sensu_api_validator).new(:name => 'sensu')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource configure
-    catalog.add_resource validator
-    rel = configure.autorequire[0]
-    expect(rel.source.ref).to eq(validator.ref)
-    expect(rel.target.ref).to eq(configure.ref)
+  include_examples 'autorequires', false, false do
+    let(:res) { configure }
   end
 
   [

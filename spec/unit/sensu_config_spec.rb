@@ -124,7 +124,7 @@ describe Puppet::Type.type(:sensu_config) do
     end
   end
 
-  include_examples 'autorequires' do
+  include_examples 'autorequires', false do
     let(:res) { sensu_config }
   end
 

@@ -22,6 +22,7 @@ Puppet::Type.newtype(:sensu_role_binding) do
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_role` - Puppet will autorequire `sensu_role` resource defined in `role_ref` property.
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 DESC
 
   extend PuppetX::Sensu::Type

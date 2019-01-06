@@ -184,6 +184,17 @@ describe Puppet::Type.type(:sensu_entity) do
     let(:res) { entity }
   end
 
+  it 'should autorequire sensu_handler' do
+    handler = Puppet::Type.type(:sensu_handler).new(:name => 'test', :type => 'pipe', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:deregistration_handler] = ['test']
+    catalog.add_resource entity
+    catalog.add_resource handler
+    rel = entity.autorequire[0]
+    expect(rel.source.ref).to eq(handler.ref)
+    expect(rel.target.ref).to eq(entity.ref)
+  end
+
   [
     :entity_class,
   ].each do |property|

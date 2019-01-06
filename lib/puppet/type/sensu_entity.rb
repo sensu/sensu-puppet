@@ -17,6 +17,8 @@ Puppet::Type.newtype(:sensu_entity) do
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration_handler` property.
 DESC
 
   extend PuppetX::Sensu::Type
@@ -85,6 +87,10 @@ DESC
 
   newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
     desc "Arbitrary, non-identifying metadata to include with event data."
+  end
+
+  autorequire(:sensu_handler) do
+    [ self[:deregistration_handler] ]
   end
 
   validate do

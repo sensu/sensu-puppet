@@ -202,6 +202,50 @@ describe Puppet::Type.type(:sensu_handler) do
     let(:res) { handler }
   end
 
+  it 'should autorequire sensu_filter' do
+    filter = Puppet::Type.type(:sensu_filter).new(:name => 'test', :action => 'allow', :expressions => ['event.Check.Occurrences == 1'])
+    catalog = Puppet::Resource::Catalog.new
+    config[:filters] = ['test']
+    catalog.add_resource handler
+    catalog.add_resource filter
+    rel = handler.autorequire[0]
+    expect(rel.source.ref).to eq(filter.ref)
+    expect(rel.target.ref).to eq(handler.ref)
+  end
+
+  it 'should autorequire sensu_mutator' do
+    mutator = Puppet::Type.type(:sensu_mutator).new(:name => 'test', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:mutator] = 'test'
+    catalog.add_resource handler
+    catalog.add_resource mutator
+    rel = handler.autorequire[0]
+    expect(rel.source.ref).to eq(mutator.ref)
+    expect(rel.target.ref).to eq(handler.ref)
+  end
+
+  it 'should autorequire sensu_handler' do
+    h = Puppet::Type.type(:sensu_handler).new(:name => 'test2', :type => 'pipe', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:handlers] = ['test2']
+    catalog.add_resource handler
+    catalog.add_resource h
+    rel = handler.autorequire[0]
+    expect(rel.source.ref).to eq(h.ref)
+    expect(rel.target.ref).to eq(handler.ref)
+  end
+
+  it 'should autorequire sensu_asset' do
+    asset = Puppet::Type.type(:sensu_asset).new(:name => 'test', :url => 'http://example.com/asset/example.tar', :sha512 => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b')
+    catalog = Puppet::Resource::Catalog.new
+    config[:runtime_assets] = ['test']
+    catalog.add_resource handler
+    catalog.add_resource asset
+    rel = handler.autorequire[0]
+    expect(rel.source.ref).to eq(asset.ref)
+    expect(rel.target.ref).to eq(handler.ref)
+  end
+
   [
     :type,
   ].each do |property|

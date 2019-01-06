@@ -33,6 +33,10 @@ Puppet::Type.newtype(:sensu_check) do
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resources defined in `handlers` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+* `sensu_hook` - Puppet will autorequire `sensu_hook` resources defined in `check_hooks` property.
 DESC
 
   extend PuppetX::Sensu::Type
@@ -193,6 +197,26 @@ DESC
 
   newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
     desc "Arbitrary, non-identifying metadata to include with event data."
+  end
+
+  autorequire(:sensu_handler) do
+    self[:handlers]
+  end
+
+  autorequire(:sensu_asset) do
+    self[:runtime_assets]
+  end
+
+  autorequire(:sensu_hook) do
+    check_hooks = []
+    (self[:check_hooks] || []).each do |check_hook|
+      check_hook.each_pair do |severity, hooks|
+        hooks.each do |hook|
+          check_hooks << hook
+        end
+      end
+    end
+    check_hooks
   end
 
   validate do
