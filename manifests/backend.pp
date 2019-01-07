@@ -36,6 +36,8 @@
 #   Sensu backend admin password used to confiure sensuctl.
 # @param old_password
 #   Sensu backend admin old password needed when changing password.
+# @param include_default_resources
+#   Sets if default sensu resources should be included
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -52,6 +54,7 @@ class sensu::backend (
   String $ssl_key_source = $facts['puppet_hostprivkey'],
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
+  Boolean $include_default_resources = true,
 ) {
 
   include ::sensu
@@ -82,6 +85,10 @@ class sensu::backend (
   $config = $default_config + $ssl_config + $config_hash
 
   $url = "${url_protocol}://${url_host}:${url_port}"
+
+  if $include_default_resources {
+    include ::sensu::backend::resources
+  }
 
   package { 'sensu-go-cli':
     ensure  => $_version,
