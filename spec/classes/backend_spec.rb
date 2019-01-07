@@ -40,6 +40,18 @@ describe 'sensu::backend', :type => :class do
         }
 
         it {
+          should contain_sensu_user('admin').with({
+            'ensure'        => 'present',
+            'password'      => 'P@ssw0rd!',
+            'old_password'  => nil,
+            'groups'        => ['cluster-admins'],
+            'disabled'      => 'false',
+            'configure'     => 'true',
+            'configure_url' => 'https://test.example.com:8080',
+          })
+        }
+
+        it {
           should contain_file('sensu_ssl_cert').with({
             'ensure'    => 'file',
             'path'      => '/etc/sensu/ssl/cert.pem',

@@ -36,7 +36,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       EOS
 
       # First run will fail to run sensuctl configure
-      apply_manifest_on(node1, node1_pp, :catch_failures => false)
+      apply_manifest_on(node1, node1_pp, :acceptable_exit_codes => [0,1])
       #on node1, 'curl http://127.0.0.1:8080/info', :accept_all_exit_codes => true
       apply_manifest_on(node2, node2_pp, :catch_failures => true)
       # first node has to have agent started back up

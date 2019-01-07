@@ -22,6 +22,7 @@ Puppet::Type.newtype(:sensu_cluster_role_binding) do
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_cluster_role` - Puppet will autorequire `sensu_cluster_role` resource defined in `role_ref` property.
+* `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
 DESC
 
   extend PuppetX::Sensu::Type
@@ -64,15 +65,30 @@ DESC
   end
 
   autorequire(:sensu_cluster_role) do
-    requires = []
+    [ self[:role_ref] ]
+  end
+
+  autorequire(:sensu_user) do
+    users = []
+    groups = []
+    (self[:subjects] || []).each do |subject|
+      if subject['type'] == 'User'
+        users << subject['name']
+      end
+      if subject['type'] == 'Group'
+        groups << subject['name']
+      end
+    end
     catalog.resources.each do |resource|
-      if resource.class.to_s == 'Puppet::Type::Sensu_cluster_role'
-        if self[:role_ref] == resource.name
-          requires << resource.name
+      if resource.class.to_s == 'Puppet::Type::Sensu_user'
+        (resource[:groups] || []).each do |group|
+          if groups.include?(group)
+            users << resource.name
+          end
         end
       end
     end
-    requires
+    users
   end
 
   validate do

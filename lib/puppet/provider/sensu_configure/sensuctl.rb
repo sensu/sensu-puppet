@@ -3,21 +3,8 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
   desc "Provider sensu_configure using sensuctl"
 
-  def config_path
-    home = File.expand_path('~')
-    File.join(home, '.config/sensu/sensuctl/cluster')
-  end
-
   def exists?
     File.file?(config_path)
-  end
-
-  def load_config(path)
-    return {} unless File.file?(path)
-    file = File.read(path)
-    @config = JSON.parse(file)
-    Puppet.debug("CONFIG: #{@config}")
-    @config
   end
 
   def initialize(value = {})
@@ -26,8 +13,8 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
   end
 
   def url
-    @config = load_config(config_path)
-    @config['api-url']
+    config = load_config(config_path)
+    config['api-url']
   end
 
   def url=(value)
