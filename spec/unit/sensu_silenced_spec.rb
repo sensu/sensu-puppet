@@ -47,6 +47,30 @@ describe Puppet::Type.type(:sensu_silenced) do
     expect(silenced[:check]).to eq('mysql_status')
   end
 
+  it 'should ignore name if subscription and check defined' do
+    config[:name] = 'linux:ping'
+    config[:subscription] = 'test'
+    config[:check] = 'foo'
+    expect(silenced[:subscription]).to eq('test')
+    expect(silenced[:check]).to eq('foo')
+  end
+
+  it 'should ignore name subscription if subscription is defined' do
+    config[:name] = 'linux:ping'
+    config[:subscription] = 'test'
+    config.delete(:check)
+    expect(silenced[:subscription]).to eq('test')
+    expect(silenced[:check]).to eq('ping')
+  end
+
+  it 'should ignore name check if check is defined' do
+    config[:name] = 'linux:ping'
+    config[:check] = 'test'
+    config.delete(:subscription)
+    expect(silenced[:subscription]).to eq('linux')
+    expect(silenced[:check]).to eq('test')
+  end
+
   defaults = {
     'namespace': 'default',
     'expire': -1,

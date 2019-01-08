@@ -7,7 +7,12 @@ Puppet::Type.newtype(:sensu_silenced) do
   desc <<-DESC
 @summary Manages Sensu silencing
 
-The name of `sensu_silenced` can be used to define `check` and `subscription`.
+The name of a `sensu_silenced` resource may not match the name returned by sensuctl.
+The name from sensuctl will take the form of `subscription:check`.
+If you wish to have a `sensu_silenced` resource name match sensuctl then define the name
+using the `subscription:check` format and do not define `subscription` or `check` properties.
+
+The `subscription` and `check` properties take precedence over value in the name if name takes the form `subscription:check`.
 
 @example Create a silencing for all checks with subscription entity:sensu_agent
   sensu_silenced { 'test':
@@ -23,6 +28,18 @@ The name of `sensu_silenced` can be used to define `check` and `subscription`.
 @example Define silencing using composite name where `subscription=linux` and `check=check-http`.
   sensu_silenced { 'linux:check-http':
     ensure => 'present',
+  }
+
+@example Define silencing where subscription is linux and check is check-http. The `subscription` property overrides the value from name.
+  sensu_silenced { 'test:check-http':
+    ensure       => 'present',
+    subscription => 'linux',
+  }
+
+@example Define silencing where subscription is linux and check is test. The `check` property overrides the value from name.
+  sensu_silenced { 'linux:check-http':
+    ensure => 'present',
+    check  => 'test',
   }
 
 **Autorequires**:
