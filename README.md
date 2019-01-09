@@ -10,6 +10,7 @@
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
+    * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
     * [Exported resources](#exported-resources)
     * [Resource purging](#resource-purging)
@@ -115,6 +116,22 @@ associated to `linux` and `apache-servers` subscriptions.
       'subscriptions => ['linux', 'apache-servers'],
     },
   }
+```
+
+### Advanced agent
+
+If you wish to change the `agent` password you must provide the new and old password.
+
+```puppet
+class { 'sensu::backend':
+  agent_password     => 'supersecret',
+  agent_old_password => 'P@ssw0rd!',
+}
+class { 'sensu::agent':
+  config_hash => {
+    'password' => 'supersecret',
+  },
+}
 ```
 
 ### Advanced SSL

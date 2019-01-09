@@ -2,15 +2,18 @@
 # @api private
 #
 class sensu::backend::resources {
+  include ::sensu::backend
+
   sensu_namespace { 'default':
     ensure => 'present',
   }
 
   sensu_user { 'agent':
-    ensure   => 'present',
-    disabled => false,
-    password => 'P@ssw0rd!',
-    groups   => ['system:agents'],
+    ensure       => 'present',
+    disabled     => false,
+    password     => $::sensu::backend::agent_password,
+    old_password => $::sensu::backend::agent_old_password,
+    groups       => ['system:agents'],
   }
 
   sensu_cluster_role { 'admin':

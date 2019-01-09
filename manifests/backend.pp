@@ -36,6 +36,10 @@
 #   Sensu backend admin password used to confiure sensuctl.
 # @param old_password
 #   Sensu backend admin old password needed when changing password.
+# @param agent_password
+#   The sensu agent password
+# @param agent_old_password
+#   The sensu agent old password needed when changing agent_password
 # @param include_default_resources
 #   Sets if default sensu resources should be included
 #
@@ -54,6 +58,8 @@ class sensu::backend (
   String $ssl_key_source = $facts['puppet_hostprivkey'],
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
+  String $agent_password = 'P@ssw0rd!',
+  Optional[String] $agent_old_password = undef,
   Boolean $include_default_resources = true,
 ) {
 

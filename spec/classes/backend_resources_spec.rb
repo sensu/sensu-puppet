@@ -8,13 +8,14 @@ describe 'sensu::backend::resources', :type => :class do
         it { should compile }
         it { should have_sensu_namespace_resource_count(1) }
         it { should contain_sensu_namespace('default').with_ensure('present') }
-        it { should have_sensu_user_resource_count(1) }
+        it { should have_sensu_user_resource_count(2) }
         it {
           should contain_sensu_user('agent').with({
-            'ensure'   => 'present',
-            'disabled' => 'false',
-            'password' => 'P@ssw0rd!',
-            'groups'   => ['system:agents'],
+            'ensure'       => 'present',
+            'disabled'     => 'false',
+            'password'     => 'P@ssw0rd!',
+            'old_password' => nil,
+            'groups'       => ['system:agents'],
           })
         }
         it { should have_sensu_cluster_role_resource_count(6) }
