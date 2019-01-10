@@ -42,6 +42,8 @@
 #   The sensu agent old password needed when changing agent_password
 # @param include_default_resources
 #   Sets if default sensu resources should be included
+# @param show_diff
+#   Sets show_diff parameter for backend.yml configuration file
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -61,6 +63,7 @@ class sensu::backend (
   String $agent_password = 'P@ssw0rd!',
   Optional[String] $agent_old_password = undef,
   Boolean $include_default_resources = true,
+  Boolean $show_diff = true,
 ) {
 
   include ::sensu
@@ -166,11 +169,12 @@ class sensu::backend (
   }
 
   file { 'sensu_backend_config':
-    ensure  => 'file',
-    path    => "${etc_dir}/backend.yml",
-    content => to_yaml($config),
-    require => Package['sensu-go-backend'],
-    notify  => Service['sensu-backend'],
+    ensure    => 'file',
+    path      => "${etc_dir}/backend.yml",
+    content   => to_yaml($config),
+    show_diff => $show_diff,
+    require   => Package['sensu-go-backend'],
+    notify    => Service['sensu-backend'],
   }
 
   service { 'sensu-backend':

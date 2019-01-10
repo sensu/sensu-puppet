@@ -58,15 +58,21 @@ describe 'sensu::agent', :type => :class do
 
         it {
           should contain_file('sensu_agent_config').with({
-            'ensure'  => 'file',
-            'path'    => '/etc/sensu/agent.yml',
-            'content' => agent_content,
-            'require' => 'Package[sensu-go-agent]',
-            'notify'  => 'Service[sensu-agent]',
+            'ensure'    => 'file',
+            'path'      => '/etc/sensu/agent.yml',
+            'content'   => agent_content,
+            'show_diff' => 'true',
+            'require'   => 'Package[sensu-go-agent]',
+            'notify'    => 'Service[sensu-agent]',
           })
         }
 
         it { should contain_service('sensu-agent').without_notify }
+      end
+
+      context 'with show_diff => false' do
+        let(:params) {{ :show_diff => false }}
+        it { should contain_file('sensu_agent_config').with_show_diff('false') }
       end
 
       # Test various backend values
