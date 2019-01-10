@@ -80,6 +80,15 @@ Puppet::Type.newtype(:sensu_redis_config) do
 
   newproperty(:password) do
     desc "The password used to connect to Redis"
+    def change_to_s(currentvalue, newvalue)
+      return "changed password"
+    end
+    def is_to_s(currentvalue)
+      return '[old password redacted]'
+    end
+    def should_to_s(newvalue)
+      return '[new password redacted]'
+    end
   end
 
   newproperty(:reconnect_on_error, :parent => PuppetX::Sensu::BooleanProperty) do

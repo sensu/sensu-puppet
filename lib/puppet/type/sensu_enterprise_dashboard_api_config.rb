@@ -84,6 +84,16 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_api_config) do
     desc "The password of the Sensu API. Leave empty for no authentication."
 
     newvalues(/.+/)
+
+    def change_to_s(currentvalue, newvalue)
+      return "changed pass"
+    end
+    def is_to_s(currentvalue)
+      return '[old pass redacted]'
+    end
+    def should_to_s(newvalue)
+      return '[new pass redacted]'
+    end
   end
 
   autorequire(:package) do

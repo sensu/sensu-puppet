@@ -117,7 +117,12 @@ describe 'sensu', :type => :class do
 
       it { should contain_file('/etc/sensu/ssl').with_ensure('directory') }
       it { should contain_file('/etc/sensu/ssl/cert.pem').with_source('puppet:///modules/sensu/cert.pem') }
-      it { should contain_file('/etc/sensu/ssl/key.pem').with_source('puppet:///modules/sensu/key.pem') }
+      it {
+        should contain_file('/etc/sensu/ssl/key.pem').with({
+          :source    => 'puppet:///modules/sensu/key.pem',
+          :show_diff => false,
+        })
+      }
 
       it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
         :port            => '1234',
@@ -143,7 +148,12 @@ describe 'sensu', :type => :class do
 
       it { should contain_file('/etc/sensu/ssl').with_ensure('directory') }
       it { should contain_file('/etc/sensu/ssl/cert.pem').with_content(rabbitmq_ssl_cert_chain_test) }
-      it { should contain_file('/etc/sensu/ssl/key.pem').with_content(rabbitmq_ssl_private_key_test) }
+      it {
+        should contain_file('/etc/sensu/ssl/key.pem').with({
+          :content   => rabbitmq_ssl_private_key_test,
+          :show_diff => 'false',
+        })
+      }
 
       it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
         :port            => '1234',
@@ -188,7 +198,12 @@ describe 'sensu', :type => :class do
 
       it { should contain_file('/etc/sensu/ssl').with_ensure('directory') }
       it { should contain_file('/etc/sensu/ssl/cert.pem').with_content(rabbitmq_ssl_cert_chain_test) }
-      it { should contain_file('/etc/sensu/ssl/key.pem').with_content(rabbitmq_ssl_private_key_test) }
+      it {
+        should contain_file('/etc/sensu/ssl/key.pem').with({
+          :content    => rabbitmq_ssl_private_key_test,
+          :show_diff  => 'false',
+        })
+      }
       it { should contain_sensu_rabbitmq_config('hostname.domain.com').with_cluster(cluster_config) }
 
       context 'with rabbitmq_* class parameters also specified (#598)' do
