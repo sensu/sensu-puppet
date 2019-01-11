@@ -1,7 +1,21 @@
 # Change Log
 
-## [v2.59.0](https://github.com/sensu/sensu-puppet/tree/v2.59.0)
+## [v2.60.0](https://github.com/sensu/sensu-puppet/tree/v2.60.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.59.0...v2.60.0)
+
+**Closed issues:**
+
+- Source option with sensu\_gem provider doesn't work [\#1007](https://github.com/sensu/sensu-puppet/issues/1007)
+- RVM conflicts with sensu-install [\#876](https://github.com/sensu/sensu-puppet/issues/876)
+- Unable to define handler specific config properly [\#647](https://github.com/sensu/sensu-puppet/issues/647)
+
+**Merged pull requests:**
+
+- Do not expose changed password and pass properties [\#1043](https://github.com/sensu/sensu-puppet/pull/1043) ([treydock](https://github.com/treydock))
+- Update all Vagrant boxes to use Puppet5 [\#992](https://github.com/sensu/sensu-puppet/pull/992) ([treydock](https://github.com/treydock))
+
+## [v2.59.0](https://github.com/sensu/sensu-puppet/tree/v2.59.0) (2018-12-18)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.58.0...v2.59.0)
 
 **Implemented enhancements:**
