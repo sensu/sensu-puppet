@@ -224,7 +224,9 @@
 133
 134
 135
-136</pre>
+136
+137
+138</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/rabbitmq/config.pp', line 5</span>
@@ -286,13 +288,14 @@ class sensu::rabbitmq::config {
     # URI provided
     if $::sensu::rabbitmq_ssl_private_key and $::sensu::rabbitmq_ssl_private_key =~ /^puppet:\/\// {
       file { &quot;${ssl_dir}/key.pem&quot;:
-        ensure  =&gt; file,
-        source  =&gt; $::sensu::rabbitmq_ssl_private_key,
-        owner   =&gt; $::sensu::user,
-        group   =&gt; $::sensu::group,
-        mode    =&gt; $::sensu::file_mode,
-        require =&gt; File[$ssl_dir],
-        before  =&gt; Sensu_rabbitmq_config[$::fqdn],
+        ensure    =&gt; file,
+        source    =&gt; $::sensu::rabbitmq_ssl_private_key,
+        owner     =&gt; $::sensu::user,
+        group     =&gt; $::sensu::group,
+        mode      =&gt; $::sensu::file_mode,
+        show_diff =&gt; false,
+        require   =&gt; File[$ssl_dir],
+        before    =&gt; Sensu_rabbitmq_config[$::fqdn],
       }
 
       $ssl_private_key = &quot;${ssl_dir}/key.pem&quot;
@@ -300,13 +303,14 @@ class sensu::rabbitmq::config {
     # create file with contents of the variable
     } elsif $::sensu::rabbitmq_ssl_private_key and $::sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/ {
       file { &quot;${ssl_dir}/key.pem&quot;:
-        ensure  =&gt; file,
-        content =&gt; $::sensu::rabbitmq_ssl_private_key,
-        owner   =&gt; $::sensu::user,
-        group   =&gt; $::sensu::group,
-        mode    =&gt; $::sensu::file_mode,
-        require =&gt; File[$ssl_dir],
-        before  =&gt; Sensu_rabbitmq_config[$::fqdn],
+        ensure    =&gt; file,
+        content   =&gt; $::sensu::rabbitmq_ssl_private_key,
+        owner     =&gt; $::sensu::user,
+        group     =&gt; $::sensu::group,
+        mode      =&gt; $::sensu::file_mode,
+        show_diff =&gt; false,
+        require   =&gt; File[$ssl_dir],
+        before    =&gt; Sensu_rabbitmq_config[$::fqdn],
       }
 
       $ssl_private_key = &quot;${ssl_dir}/key.pem&quot;
