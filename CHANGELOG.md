@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.60.0](https://github.com/sensu/sensu-puppet/tree/v2.60.0)
+## [v2.61.0](https://github.com/sensu/sensu-puppet/tree/v2.61.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.60.0...v2.61.0)
+
+**Closed issues:**
+
+- Running Sensu on Windows as a specific account [\#819](https://github.com/sensu/sensu-puppet/issues/819)
+
+**Merged pull requests:**
+
+- Dsc \(continued\) [\#917](https://github.com/sensu/sensu-puppet/pull/917) ([treydock](https://github.com/treydock))
+
+## [v2.60.0](https://github.com/sensu/sensu-puppet/tree/v2.60.0) (2019-01-11)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.59.0...v2.60.0)
 
 **Closed issues:**
