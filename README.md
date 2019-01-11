@@ -55,12 +55,17 @@ See `metadata.json` for details.
 - puppetlabs/stdlib
 - lwf/puppet-remote_file
 
-Soft dependencies if you use the corresponding technologies.
+Soft dependencies if you use the corresponding technologies:
 
 - [puppetlabs/apt](https://github.com/puppetlabs/puppetlabs-apt)
 - [puppetlabs/yumrepo_core](https://github.com/puppetlabs/puppetlabs-yumrepo_core)
-- [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
 - [voxpupuli/rabbitmq](https://github.com/voxpupuli/puppet-rabbitmq)
+
+Soft dependencies on Windows clients:
+
+- [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
+- [puppetlabs/dsc](https://github.com/puppetlabs/puppetlabs-dsc)
+- [puppetlabs/acl](https://github.com/puppetlabs/puppetlabs-acl)
 
 Note: While this module works with other versions of puppetlabs/apt, we
 test against and support what is listed in the `.fixtures.yml` file.

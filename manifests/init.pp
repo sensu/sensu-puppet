@@ -326,6 +326,10 @@
 #   listed in Add/Remove programs.  Note this is distinct from the package
 #   filename identifier specified with windows_package_name.
 #
+# @param windows_service_user The credentials to use for running the Windows service
+#   Takes the form of { 'user' => 'username', 'password' => 'secret' } replacing
+#   'username' and 'secret' with appropriate values.
+#
 # @param confd_dir Additional directories to load configuration
 #   snippets from.
 #
@@ -479,6 +483,7 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
+  Optional[Struct[{NotUndef[user] => String, NotUndef[password] => String}]] $windows_service_user = undef,
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
   Variant[Stdlib::Absolutepath,Undef] $config_file = undef,

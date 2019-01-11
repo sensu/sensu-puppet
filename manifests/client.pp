@@ -44,12 +44,37 @@ class sensu::client (
           content => template("${module_name}/sensu-client.erb"),
         }
 
-        exec { 'install-sensu-client':
-          provider => 'powershell',
-          command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
-          unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
-          before   => Service['sensu-client'],
-          require  => File['C:/opt/sensu/bin/sensu-client.xml'],
+        if $::sensu::windows_service_user {
+          dsc_userrightsassignment { $::sensu::windows_service_user['user']:
+            dsc_ensure   => present,
+            dsc_policy   => 'Log_on_as_a_service',
+            dsc_identity => $::sensu::windows_service_user['user'],
+            before       => Dsc_service['sensu-client'],
+          }
+
+          acl { 'C:/opt/sensu':
+            purge       => false,
+            permissions => [
+              {
+                'identity' => $::sensu::windows_service_user['user'],
+                'rights'   => ['full'],
+              },
+            ],
+            before      => Dsc_service['sensu-client'],
+          }
+        }
+
+        # This resource installs the service but service state and refreshes
+        # are handled by Service[sensu-client]
+        # See https://tickets.puppetlabs.com/browse/MODULES-4570
+        dsc_service { 'sensu-client':
+          dsc_ensure      => present,
+          dsc_name        => 'sensu-client',
+          dsc_credential  => $::sensu::windows_service_user,
+          dsc_displayname => 'Sensu Client',
+          dsc_path        => 'c:\\opt\\sensu\\bin\\sensu-client.exe',
+          require         => File['C:/opt/sensu/bin/sensu-client.xml'],
+          notify          => Service['sensu-client'],
         }
       }
       'Darwin': {
