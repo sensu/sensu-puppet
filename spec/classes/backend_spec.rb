@@ -108,11 +108,12 @@ describe 'sensu::backend', :type => :class do
 
         it {
           should contain_file('sensu_backend_config').with({
-            'ensure'  => 'file',
-            'path'    => '/etc/sensu/backend.yml',
-            'content' => backend_content,
-            'require' => 'Package[sensu-go-backend]',
-            'notify'  => 'Service[sensu-backend]',
+            'ensure'    => 'file',
+            'path'      => '/etc/sensu/backend.yml',
+            'content'   => backend_content,
+            'show_diff' => 'true',
+            'require'   => 'Package[sensu-go-backend]',
+            'notify'    => 'Service[sensu-backend]',
           })
         }
 
@@ -168,6 +169,11 @@ describe 'sensu::backend', :type => :class do
         }
 
         it { should contain_service('sensu-backend').without_notify }
+      end
+
+      context 'with show_diff => false' do
+        let(:params) {{ :show_diff => false }}
+        it { should contain_file('sensu_backend_config').with_show_diff('false') }
       end
     end
   end

@@ -28,6 +28,8 @@
 #   The protocol prefix of `ws://` or `wss://` are optional and will be determined
 #   based on `sensu::use_ssl` parameter by default.
 #   Passing `backend-url` as part of `config_hash` takes precedence.
+# @param show_diff
+#   Sets show_diff parameter for agent.yml configuration file
 #
 class sensu::agent (
   Optional[String] $version = undef,
@@ -37,6 +39,7 @@ class sensu::agent (
   Boolean $service_enable = true,
   Hash $config_hash = {},
   Array[Sensu::Backend_URL] $backends = ['localhost:8081'],
+  Boolean $show_diff = true,
 ) {
 
   include ::sensu
@@ -73,11 +76,12 @@ class sensu::agent (
   }
 
   file { 'sensu_agent_config':
-    ensure  => 'file',
-    path    => "${etc_dir}/agent.yml",
-    content => to_yaml($config),
-    require => Package['sensu-go-agent'],
-    notify  => Service['sensu-agent'],
+    ensure    => 'file',
+    path      => "${etc_dir}/agent.yml",
+    content   => to_yaml($config),
+    show_diff => $show_diff,
+    require   => Package['sensu-go-agent'],
+    notify    => Service['sensu-agent'],
   }
 
   service { 'sensu-agent':

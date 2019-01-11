@@ -121,6 +121,7 @@ associated to `linux` and `apache-servers` subscriptions.
 ### Advanced agent
 
 If you wish to change the `agent` password you must provide the new and old password.
+It's advisable to set `show_diff` to `false` to avoid exposing the agent password.
 
 ```puppet
 class { 'sensu::backend':
@@ -131,6 +132,7 @@ class { 'sensu::agent':
   config_hash => {
     'password' => 'supersecret',
   },
+  show_diff   => false,
 }
 ```
 
