@@ -327,7 +327,32 @@ Valid values: debug, info, warn, error, fatal</p>
 130
 131
 132
-133</pre>
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/client.pp', line 14</span>
@@ -365,12 +390,37 @@ class sensu::client (
           content =&gt; template(&quot;${module_name}/sensu-client.erb&quot;),
         }
 
-        exec { &#39;install-sensu-client&#39;:
-          provider =&gt; &#39;powershell&#39;,
-          command  =&gt; &quot;New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName &#39;Sensu Client&#39; -StartupType Automatic&quot;,
-          unless   =&gt; &#39;if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }&#39;,
-          before   =&gt; Service[&#39;sensu-client&#39;],
-          require  =&gt; File[&#39;C:/opt/sensu/bin/sensu-client.xml&#39;],
+        if $::sensu::windows_service_user {
+          dsc_userrightsassignment { $::sensu::windows_service_user[&#39;user&#39;]:
+            dsc_ensure   =&gt; present,
+            dsc_policy   =&gt; &#39;Log_on_as_a_service&#39;,
+            dsc_identity =&gt; $::sensu::windows_service_user[&#39;user&#39;],
+            before       =&gt; Dsc_service[&#39;sensu-client&#39;],
+          }
+
+          acl { &#39;C:/opt/sensu&#39;:
+            purge       =&gt; false,
+            permissions =&gt; [
+              {
+                &#39;identity&#39; =&gt; $::sensu::windows_service_user[&#39;user&#39;],
+                &#39;rights&#39;   =&gt; [&#39;full&#39;],
+              },
+            ],
+            before      =&gt; Dsc_service[&#39;sensu-client&#39;],
+          }
+        }
+
+        # This resource installs the service but service state and refreshes
+        # are handled by Service[sensu-client]
+        # See https://tickets.puppetlabs.com/browse/MODULES-4570
+        dsc_service { &#39;sensu-client&#39;:
+          dsc_ensure      =&gt; present,
+          dsc_name        =&gt; &#39;sensu-client&#39;,
+          dsc_credential  =&gt; $::sensu::windows_service_user,
+          dsc_displayname =&gt; &#39;Sensu Client&#39;,
+          dsc_path        =&gt; &#39;c:\\opt\\sensu\\bin\\sensu-client.exe&#39;,
+          require         =&gt; File[&#39;C:/opt/sensu/bin/sensu-client.xml&#39;],
+          notify          =&gt; Service[&#39;sensu-client&#39;],
         }
       }
       &#39;Darwin&#39;: {

@@ -2062,6 +2062,25 @@ filename identifier specified with windows_package_name.</p>
   
     <li>
       
+        <span class='name'>windows_service_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[Struct[{NotUndef[user] =&gt; String, NotUndef[password] =&gt; String}]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The credentials to use for running the Windows service
+Takes the form of { &#39;user&#39; =&gt; &#39;username&#39;, &#39;password&#39; =&gt; &#39;secret&#39; } replacing
+&#39;username&#39; and &#39;secret&#39; with appropriate values.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>confd_dir</span>
       
       
@@ -2486,10 +2505,6 @@ Note: This has effect only on Sensu Enterprise.</p>
         <pre class="lines">
 
 
-343
-344
-345
-346
 347
 348
 349
@@ -2847,10 +2862,15 @@ Note: This has effect only on Sensu Enterprise.</p>
 701
 702
 703
-704</pre>
+704
+705
+706
+707
+708
+709</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 343</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 347</span>
 
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = &#39;installed&#39;,
@@ -2991,6 +3011,7 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = &#39;Sensu&#39;,
   String             $windows_package_title = &#39;sensu&#39;,
+  Optional[Struct[{NotUndef[user] =&gt; String, NotUndef[password] =&gt; String}]] $windows_service_user = undef,
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
   Variant[Stdlib::Absolutepath,Undef] $config_file = undef,
