@@ -12,6 +12,7 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu') }
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
+        it { should contain_class('sensu::backend::resources') }
 
         it {
           should contain_package('sensu-go-cli').with({
