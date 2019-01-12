@@ -28,10 +28,12 @@ class sensu::client (
       true: {
         $service_ensure = $client_service_ensure
         $service_enable = $client_service_enable
+        $dsc_ensure     = 'present'
       }
       default: {
         $service_ensure = 'stopped'
         $service_enable = false
+        $dsc_ensure     = 'absent'
       }
     }
     case $::osfamily {
@@ -68,7 +70,7 @@ class sensu::client (
         # are handled by Service[sensu-client]
         # See https://tickets.puppetlabs.com/browse/MODULES-4570
         dsc_service { 'sensu-client':
-          dsc_ensure      => present,
+          dsc_ensure      => $dsc_ensure,
           dsc_name        => 'sensu-client',
           dsc_credential  => $::sensu::windows_service_user,
           dsc_displayname => 'Sensu Client',

@@ -156,6 +156,11 @@ describe 'sensu', :type => :class do
           let(:params) { {:windows_logrotate => true, :windows_log_number => '242' } }
           it { should contain_file('C:/opt/sensu/bin/sensu-client.xml').with_content(%r{^\s*<keepFiles>242</keepFiles>$}) }
         end
+
+        context 'client => false' do
+          let(:params) { {:client => false} }
+          it { should contain_dsc_service('sensu-client').with_dsc_ensure('absent') }
+        end
       end
     end
 
