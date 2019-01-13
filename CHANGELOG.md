@@ -1,7 +1,23 @@
 # Change Log
 
-## [v2.61.0](https://github.com/sensu/sensu-puppet/tree/v2.61.0)
+## [v2.62.0](https://github.com/sensu/sensu-puppet/tree/v2.62.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.61.0...v2.62.0)
+
+**Implemented enhancements:**
+
+- Use beaker 4.x [\#1045](https://github.com/sensu/sensu-puppet/pull/1045) ([treydock](https://github.com/treydock))
+
+**Fixed bugs:**
+
+- Fix Windows dsc\_service when client=\>false [\#1047](https://github.com/sensu/sensu-puppet/pull/1047) ([treydock](https://github.com/treydock))
+- Fix Amazon 2 to use EL7 repos [\#1044](https://github.com/sensu/sensu-puppet/pull/1044) ([treydock](https://github.com/treydock))
+
+**Closed issues:**
+
+- dsc\_service throws error when client is false [\#1046](https://github.com/sensu/sensu-puppet/issues/1046)
+
+## [v2.61.0](https://github.com/sensu/sensu-puppet/tree/v2.61.0) (2019-01-11)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.60.0...v2.61.0)
 
 **Closed issues:**

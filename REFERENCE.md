@@ -1047,6 +1047,16 @@ filename identifier specified with windows_package_name.
 
 Default value: 'sensu'
 
+##### `windows_service_user`
+
+Data type: `Optional[Struct[{NotUndef[user] => String, NotUndef[password] => String}]]`
+
+The credentials to use for running the Windows service
+Takes the form of { 'user' => 'username', 'password' => 'secret' } replacing
+'username' and 'secret' with appropriate values.
+
+Default value: `undef`
+
 ##### `confd_dir`
 
 Data type: `Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]]`
