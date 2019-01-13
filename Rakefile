@@ -55,3 +55,11 @@ desc 'Generate REFERENCE.md'
 task :reference do
   sh 'puppet strings generate --format markdown'
 end
+
+namespace :acceptance do
+  desc 'Run acceptance tests against current code'
+  RSpec::Core::RakeTask.new(:local) do |t|
+    t.rspec_opts = '--format documentation'
+    t.pattern = 'spec/acceptance/**.rb'
+  end
+end
