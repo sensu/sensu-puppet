@@ -130,7 +130,11 @@ class sensu::package (
         $os_release = $facts['os']['release']['major']
         # e.g. '2012 R2' => '2012r2'
         $pkg_url_dir = regsubst($os_release, '^(\d+)\s*[rR](\d+)', '\\1r\\2')
-        $pkg_arch = $facts['os']['architecture']
+        if $facts['os']['architecture'] {
+          $pkg_arch = $facts['os']['architecture']
+        } else {
+          $pkg_arch = $facts['architecture']
+        }
         $pkg_url = "${sensu::windows_repo_prefix}/${pkg_url_dir}/sensu-${pkg_url_version}-${pkg_arch}.msi"
       }
 

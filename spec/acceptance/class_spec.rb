@@ -1,17 +1,26 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
+describe 'sensu class' do
 
   context 'sensu' do
     context 'default' do
-      it 'should work with no errors' do
-        pp = <<-EOS
-        class { 'sensu':}
-        EOS
+      pp = <<-EOS
+      class { 'sensu':}
+      EOS
 
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes  => true)
+      if ! Gem.win_platform?
+        it 'should work with no errors' do
+          # Run it twice and test for idempotency
+          apply_manifest(pp, :catch_failures => true)
+          apply_manifest(pp, :catch_changes  => true)
+        end
+      else
+        File.open('C:\manifest-client.pp', 'w') { |f| f.write(pp) }
+        puts "C:\manifest-client.pp"
+        puts File.read('C:\manifest-client.pp')
+        describe command('puppet apply --debug C:\manifest-client.pp') do
+          its(:exit_status) { is_expected.to eq 0 }
+        end
       end
 
       describe service('sensu-client') do
@@ -116,21 +125,25 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
     end
 
     context 'client => false' do
-      it 'should work with no errors' do
-        pp = <<-EOS
-        class { 'sensu':
-          client => false
-        }
-        EOS
+      pp = <<-EOS
+      class { 'sensu':
+        client => false
+      }
+      EOS
 
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        if fact('osfamily') == 'windows'
-          shell('waitfor SomethingThatIsNeverHappening /t 5 2>NUL', :acceptable_exit_codes => [0,1])
-        else
-          shell('sleep 5') # Give services time to stop
+      if ! Gem.win_platform?
+        it 'should work with no errors' do
+          # Run it twice and test for idempotency
+          apply_manifest(pp, :catch_failures => true)
+          apply_manifest(pp, :catch_changes  => true)
         end
-        apply_manifest(pp, :catch_changes  => true)
+      else
+        File.open('C:\manifest-client-false.pp', 'w') { |f| f.write(pp) }
+        puts "C:\manifest-client-false.pp"
+        puts File.read('C:\manifest-client-false.pp')
+        describe command('puppet apply C:\manifest-client-false.pp') do
+          its(:exit_status) { is_expected.to eq 0 }
+        end
       end
 
       describe service('sensu-client') do

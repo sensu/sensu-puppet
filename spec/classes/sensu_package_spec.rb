@@ -496,6 +496,33 @@ describe 'sensu' do
         end
       end
     end
+
+    context 'on Windows 2016' do
+      let(:facts) do
+        {
+          :fqdn            => 'testhost.domain.com',
+          :operatingsystem => 'Windows',
+          :kernel          => 'windows',
+          :osfamily        => 'windows',
+          :os              => {
+            :architecture => 'x64',
+            :release => {
+              :major => '2016',
+            },
+          },
+        }
+      end
+      it { should_not contain_package('Sensu') }
+      it { should contain_package('sensu').with(
+        ensure: 'installed',
+        source: 'C:\\Windows\\Temp\\sensu-latest.msi',
+      ) }
+
+      it { should contain_remote_file('sensu').with(
+        source: 'https://repositories.sensuapp.org/msi/2016/sensu-latest-x64.msi',
+        path: 'C:\\Windows\\Temp\\sensu-latest.msi',
+      ) }
+    end
   end
 
   context 'with use_embedded_ruby => false' do

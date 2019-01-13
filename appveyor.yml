@@ -1,0 +1,53 @@
+version: '{build}-{branch}'
+platform:
+  - x64
+build: off
+max_jobs: 2
+cache:
+- C:\downloads
+- C:\vendor\bundle
+init:
+- ps: $env:GEM_SOURCE = "http://rubygems.org"
+install:
+- set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+- ps: |
+    if (!(Test-Path C:\downloads)) { mkdir C:\downloads | Out-Null }
+    $log = "C:/puppet-agent.log"
+    $agent_url = "https://downloads.puppetlabs.com/windows/${ENV:PUPPET_REPO}/puppet-agent-${ENV:PUPPET_VERSION}-x64.msi"
+    Write-Output "Installing Puppet from $agent_url"
+    Write-Output "Log will be written to $log"
+    if ( Test-Path $log ) { Remove-Item $log }
+    cd C:\downloads
+    if (!(Test-Path "puppet-agent-${ENV:PUPPET_VERSION}-x64.msi")) { Start-FileDownload $agent_url }
+    Start-Process msiexec.exe -Wait -NoNewWindow -ArgumentList @("/i", "C:\downloads\puppet-agent-${ENV:PUPPET_VERSION}-x64.msi", "/qn", "/l*", "$log")
+    cd $ENV:APPVEYOR_BUILD_FOLDER
+- ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
+- set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
+- puppet --version
+- puppet module install puppetlabs-stdlib
+- puppet module install lwf-remote_file
+- puppet module install puppetlabs-dsc
+- puppet module install puppetlabs-acl
+- puppet module install puppetlabs-powershell
+- facter
+- ruby -v
+- gem -v
+- bundle -v
+- bundle install --jobs 4 --retry 2 --path C:\vendor\bundle
+test_script:
+- bundle exec rake acceptance:local
+image:
+  - Visual Studio 2015
+  - Visual Studio 2017
+environment:
+  matrix:
+    - PUPPET_GEM_VERSION: '~>5.x'
+      PUPPET_REPO: puppet5
+      PUPPET_VERSION: 5.5.8
+      RUBY_VERSION: 24-x64
+    - PUPPET_GEM_VERSION: '~>6.x'
+      PUPPET_REPO: puppet6
+      PUPPET_VERSION: 6.1.0
+      RUBY_VERSION: 25-x64
+matrix:
+  fast_finish: false
