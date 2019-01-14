@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.62.0](https://github.com/sensu/sensu-puppet/tree/v2.62.0)
+## [v2.62.1](https://github.com/sensu/sensu-puppet/tree/v2.62.1)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.0...v2.62.1)
+
+**Implemented enhancements:**
+
+- Support MacOS High Sierra \(10.13\) [\#993](https://github.com/sensu/sensu-puppet/issues/993)
+
+**Merged pull requests:**
+
+- Fix osx [\#1048](https://github.com/sensu/sensu-puppet/pull/1048) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v2.62.0](https://github.com/sensu/sensu-puppet/tree/v2.62.0) (2019-01-13)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.61.0...v2.62.0)
 
 **Implemented enhancements:**
