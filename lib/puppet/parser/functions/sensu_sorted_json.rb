@@ -42,7 +42,7 @@ module JSON
 
     def sorted_generate(obj)
       case obj
-        when Fixnum, Float, TrueClass, FalseClass, NilClass
+        when Integer, Float, TrueClass, FalseClass, NilClass
           return obj.to_json
         when String
           # Convert quoted integers (string) to int
@@ -71,7 +71,7 @@ module JSON
 
       case obj
 
-        when Fixnum, Float, TrueClass, FalseClass, NilClass
+        when Integer, Float, TrueClass, FalseClass, NilClass
           return obj.to_json
 
         when String
