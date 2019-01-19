@@ -234,7 +234,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sorted_generate'>sorted_generate</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_obj'>obj</span>
-    <span class='kw'>when</span> <span class='const'>Fixnum</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>NilClass</span>
+    <span class='kw'>when</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>NilClass</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span>
     <span class='kw'>when</span> <span class='const'>String</span>
       <span class='comment'># Convert quoted integers (string) to int
@@ -337,7 +337,7 @@
 
   <span class='kw'>case</span> <span class='id identifier rubyid_obj'>obj</span>
 
-    <span class='kw'>when</span> <span class='const'>Fixnum</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>NilClass</span>
+    <span class='kw'>when</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>NilClass</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_to_json'>to_json</span>
 
     <span class='kw'>when</span> <span class='const'>String</span>
