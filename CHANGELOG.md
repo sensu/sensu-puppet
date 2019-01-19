@@ -1,7 +1,18 @@
 # Change Log
 
-## [v2.62.1](https://github.com/sensu/sensu-puppet/tree/v2.62.1)
+## [v2.62.2](https://github.com/sensu/sensu-puppet/tree/v2.62.2)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.1...v2.62.2)
+
+**Fixed bugs:**
+
+- Replace deprecated Fixnum with Integer [\#1051](https://github.com/sensu/sensu-puppet/pull/1051) ([treydock](https://github.com/treydock))
+
+**Closed issues:**
+
+- Rework sensu\_silenced name handling [\#1015](https://github.com/sensu/sensu-puppet/issues/1015)
+
+## [v2.62.1](https://github.com/sensu/sensu-puppet/tree/v2.62.1) (2019-01-14)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.0...v2.62.1)
 
 **Implemented enhancements:**
