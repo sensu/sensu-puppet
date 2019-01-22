@@ -90,11 +90,14 @@ class sensu::rabbitmq::config {
     } else {
       $ssl_private_key = $::sensu::rabbitmq_ssl_private_key
     }
-
-    $enable_ssl = true
   } else {
     $ssl_cert_chain = undef
     $ssl_private_key = undef
+  }
+
+  if ($ssl_cert_chain and $ssl_cert_chain != '') or ($ssl_private_key and $ssl_private_key != '') {
+    $enable_ssl = true
+  } else {
     $enable_ssl = $::sensu::rabbitmq_ssl
   }
 
