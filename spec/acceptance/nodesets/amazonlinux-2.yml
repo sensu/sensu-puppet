@@ -1,16 +1,16 @@
 HOSTS:
-  centos-7:
+  amazonlinux-2:
     roles:
       - agent
     platform: el-7-x86_64
     hypervisor: docker
-    image: centos:7
+    image: amazonlinux:2
     docker_preserve_image: true
     docker_cmd:
-      - '/usr/sbin/init'
+      - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git iproute'
-    docker_container_name: 'sensu-el7'
+      - 'yum install -y wget initscripts'
+    docker_container_name: 'sensu-amazonlinux-2'
 CONFIG:
   log_level: debug
   type: foss

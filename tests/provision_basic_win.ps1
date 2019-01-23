@@ -1,6 +1,6 @@
 # Variables
 $log = "C:/vagrant/puppet-agent.log"
-$agent_url = "https://s3.amazonaws.com/puppet-agents/2017.2/puppet-agent/1.10.4/repos/windows/puppet-agent-1.10.4-x64.msi"
+$agent_url = "https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-5.5.6-x64.msi"
 if ( Get-Command "puppet" -ErrorAction SilentlyContinue ) {
   Write-Output "Puppet is already installed.  Skipping install of $agent_url"
 } else {
@@ -10,3 +10,14 @@ if ( Get-Command "puppet" -ErrorAction SilentlyContinue ) {
   # Install puppet
   Start-Process msiexec.exe -Wait -NoNewWindow -ArgumentList @("/i", "$agent_url", "/qn", "/l*", "$log")
 }
+
+if ( $PSVersionTable.PSVersion.Major -ge 5 ) {
+  Write-Output "Powershell version already 5+"
+} else {
+  $download = "https://download.microsoft.com/download/6/F/5/6F5FF66C-6775-42B0-86C4-47D41F2DA187/Win8.1AndW2K12R2-KB3191564-x64.msu"
+  $output = "C:/Win8.1AndW2K12R2-KB3191564-x64.msu"
+  #Invoke-WebRequest -Uri $download -OutFile $output
+  (New-Object System.Net.WebClient).DownloadFile($download, $output)
+  cmd /c wusa.exe $output /quiet /norestart
+}
+

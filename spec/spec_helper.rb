@@ -1,3 +1,8 @@
+# RSpec.configure specified twice due to bug in puppetlabs_spec_helper.
+# https://tickets.puppetlabs.com/browse/PDK-916
+RSpec.configure do |c|
+  c.mock_with :rspec
+end
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 case ENV['COVERAGE']

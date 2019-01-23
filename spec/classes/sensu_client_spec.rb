@@ -149,6 +149,18 @@ describe 'sensu', :type => :class do
           end
         end
 
+        describe 'socket' do
+          context " => {'client_bind' => '0.0.0.0', 'client_port' => 3031}" do
+            let(:params_override) { {client_bind: '0.0.0.0', client_port: 3031} }
+            it { is_expected.to contain_sensu_client_config(title).with(socket: {'bind' => '0.0.0.0', 'port' => 3031}) }
+          end
+
+          context " => {'client_socket_enabled' => false}" do
+            let(:params_override) { {client_socket_enabled: false} }
+            it { is_expected.to contain_sensu_client_config(title).with(socket: {'enabled' => false}) }
+          end
+        end
+
         describe 'servicenow' do
           servicenow = {
             'configuration_item' => {
@@ -232,14 +244,68 @@ describe 'sensu', :type => :class do
         it { should_not contain_service('sensu-client') }
       end # not managing service
 
-      context 'with hasrestart=false' do
-        let(:params) { { :client => true, :hasrestart => false } }
+      context 'with enable=true ensure=running hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => true, :client_service_ensure => 'running', :hasrestart => false } }
         it { should contain_service('sensu-client').with(
           :ensure     => 'running',
           :enable     => true,
           :hasrestart => false
         ) }
-      end # with hasrestart=false
+      end # with enable=true ensure=running hasrestart=false
+
+      context 'with enable=false ensure=running hasrestart=true' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'running', :hasrestart => true } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'running',
+          :enable     => false,
+          :hasrestart => true 
+        ) }
+      end # with enable=false ensure=running hasrestart=true
+
+      context 'with enable=false ensure=running hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'running', :hasrestart => false } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'running',
+          :enable     => false,
+          :hasrestart => false
+        ) }
+      end # with enable=false ensure=running hasrestart=false
+
+      context 'with enable=true ensure=stopped hasrestart=true' do
+        let(:params) { { :client => true, :client_service_enable => true, :client_service_ensure => 'stopped', :hasrestart => true } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => true,
+          :hasrestart => true 
+        ) }
+      end # with enable=true ensure=stopped hasrestart=true
+
+      context 'with enable=true ensure=stopped hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => true, :client_service_ensure => 'stopped', :hasrestart => false } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => true,
+          :hasrestart => false
+        ) }
+      end # with enable=true ensure=stopped hasrestart=false
+
+      context 'with enable=false ensure=stopped hasrestart=true' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'stopped', :hasrestart => true} }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => false,
+          :hasrestart => true 
+        ) }
+      end # with enable=false ensure=stopped hasrestart=true
+
+      context 'with enable=false ensure=stopped hasrestart=false' do
+        let(:params) { { :client => true, :client_service_enable => false, :client_service_ensure => 'stopped', :hasrestart => false } }
+        it { should contain_service('sensu-client').with(
+          :ensure     => 'stopped',
+          :enable     => false,
+          :hasrestart => false
+        ) }
+      end # with enable=false ensure=stopped hasrestart=false
     end #service
   end #with client
 

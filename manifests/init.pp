@@ -54,6 +54,18 @@
 #
 # @param manage_services Manage the sensu services with puppet
 #
+# @param client_service_enable Set enable value for sensu client service
+#   (applies when manage_services is set to true)
+#
+# @param client_service_ensure Set ensure value for sensu client service
+#   (applies when manage_services is set to true)
+#
+# @param server_service_enable Set enable value for sensu server service
+#   (applies when manage_services is set to true)
+#
+# @param server_service_ensure Set ensure value for sensu server service
+#   (applies when manage_services is set to true)
+#
 # @param manage_user Manage the sensu user with puppet
 #
 # @param manage_plugins_dir Manage the sensu plugins directory. Must be false if you use
@@ -124,6 +136,8 @@
 #
 # @param redis_auto_reconnect Reconnect to Redis in the event of a connection failure
 #
+# @param redis_tls Enable TLS encryption when connecting to Redis
+#
 # @param transport_type Transport type to be used by Sensu
 #
 # @param transport_reconnect_on_error If the transport connection is closed, attempt to reconnect automatically when possible.
@@ -147,6 +161,8 @@
 # @param api_ssl_keystore_password The SSL certificate keystore password. Enterprise only feature.
 #
 # @param subscriptions Default subscriptions used by the client
+#
+# @param client_socket_enabled Boolean that determines if client socket will be enabled
 #
 # @param client_address Address of the client to report with checks
 #
@@ -245,6 +261,10 @@
 #
 # @param enterprise_dashboard_oidc Optional OIDC configuration for Enterprise Dashboard
 #
+# @param enterprise_dashboard_custom List of custom attributes to include in the check.
+#   You can use it to pass any attribute that is not listed here explicitly.
+#   Example: { 'usersOptions' => { 'requireSilencingReason' => true } }
+#
 # @param path Used to set PATH in /etc/default/sensu
 #
 # @param redact Use to redact passwords from checks on the client side
@@ -306,6 +326,10 @@
 #   listed in Add/Remove programs.  Note this is distinct from the package
 #   filename identifier specified with windows_package_name.
 #
+# @param windows_service_user The credentials to use for running the Windows service
+#   Takes the form of { 'user' => 'username', 'password' => 'secret' } replacing
+#   'username' and 'secret' with appropriate values.
+#
 # @param confd_dir Additional directories to load configuration
 #   snippets from.
 #
@@ -351,6 +375,10 @@ class sensu (
   Boolean            $server = false,
   Boolean            $api = false,
   Boolean            $manage_services = true,
+  Boolean            $client_service_enable = true,
+  String             $client_service_ensure = running,
+  Boolean            $server_service_enable = true,
+  String             $server_service_ensure = running,
   Boolean            $manage_user = true,
   Boolean            $manage_plugins_dir = true,
   Boolean            $manage_handlers_dir = true,
@@ -382,6 +410,7 @@ class sensu (
   Boolean            $redis_reconnect_on_error = true,
   Integer            $redis_db = 0,
   Boolean            $redis_auto_reconnect = true,
+  Boolean            $redis_tls = false,
   Optional[Array]    $redis_sentinels = undef,
   Optional[String]   $redis_master = undef,
   Enum['rabbitmq','redis'] $transport_type = 'rabbitmq',
@@ -395,6 +424,7 @@ class sensu (
   Optional[String]   $api_ssl_keystore_file = undef,
   Optional[String]   $api_ssl_keystore_password = undef,
   Variant[String,Array] $subscriptions = [],
+  Boolean            $client_socket_enabled = true,
   String             $client_bind = '127.0.0.1',
   Integer            $client_port = 3030,
   String             $client_address =  $::ipaddress,
@@ -438,6 +468,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_gitlab = undef,
   Optional[Any]      $enterprise_dashboard_ldap = undef,
   Optional[Any]      $enterprise_dashboard_oidc = undef,
+  Optional[Hash]     $enterprise_dashboard_custom = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = '$PATH',
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
@@ -452,6 +483,7 @@ class sensu (
   Optional[String]   $windows_choco_repo = undef,
   String             $windows_package_name = 'Sensu',
   String             $windows_package_title = 'sensu',
+  Optional[Struct[{NotUndef[user] => String, NotUndef[password] => String}]] $windows_service_user = undef,
   Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]] $confd_dir = undef,
   Variant[Integer,Pattern[/^(\d+)/],Undef] $heap_size = undef,
   Variant[Stdlib::Absolutepath,Undef] $config_file = undef,
@@ -569,7 +601,8 @@ class sensu (
     $api_service = undef
   }
 
-  $check_notify = delete_undef_values([ $client_service, $server_service_class, $api_service, $enterprise_service ])
+  $_check_notify = [ $client_service, $server_service_class, $api_service, $enterprise_service ]
+  $check_notify = $_check_notify.filter |$val| { $val =~ NotUndef }
 
   # Because you can't reassign a variable in puppet and we need to set to
   # false if you specify a directory, we have to use another variable.

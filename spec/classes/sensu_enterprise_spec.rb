@@ -156,6 +156,8 @@ describe 'sensu', :type => :class do
             it { should contain_package('sensu-enterprise-dashboard') }
             it { should contain_file('/etc/sensu/dashboard.json') }
             it { should contain_sensu_enterprise_dashboard_config('testhost.domain.com') }
+            it { should contain_sensu_enterprise_dashboard_api_config('api1.example.com').with_ensure('absent') }
+            it { should contain_sensu_enterprise_dashboard_api_config('api2.example.com').with_ensure('absent') }
           end
 
           context 'with enterprise_dashboard_version => 1.3.1-1' do
@@ -177,6 +179,8 @@ describe 'sensu', :type => :class do
             }) }
             it { should contain_file('/etc/sensu/dashboard.json') }
             it { should contain_sensu_enterprise_dashboard_config('testhost.domain.com') }
+            it { should contain_sensu_enterprise_dashboard_api_config('api1.example.com').with_ensure('absent') }
+            it { should contain_sensu_enterprise_dashboard_api_config('api2.example.com').with_ensure('absent') }
           end
 
           context 'with enterprise_dashboard_auth defined' do
@@ -202,6 +206,19 @@ describe 'sensu', :type => :class do
             } }
             it { should contain_sensu_enterprise_dashboard_config('testhost.domain.com').with({
               'oidc' => { 'key' => 'value' }
+            }) }
+          end
+
+          context 'with enterprise_dashboard_custom defined' do
+            let(:params) { {
+              :enterprise                   => true,
+              :enterprise_user              => 'sensu',
+              :enterprise_pass              => 'sensu',
+              :enterprise_dashboard         => true,
+              :enterprise_dashboard_custom  => { 'key' => 'value' }
+            } }
+            it { should contain_sensu_enterprise_dashboard_config('testhost.domain.com').with({
+              'custom' => { 'key' => 'value' }
             }) }
           end
         end

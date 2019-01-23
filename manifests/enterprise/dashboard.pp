@@ -68,7 +68,18 @@ class sensu::enterprise::dashboard (
       gitlab    => $::sensu::enterprise_dashboard_gitlab,
       ldap      => $::sensu::enterprise_dashboard_ldap,
       oidc      => $::sensu::enterprise_dashboard_oidc,
+      custom    => $::sensu::enterprise_dashboard_custom,
       notify    => $file_notify,
+    }
+
+    sensu_enterprise_dashboard_api_config { 'api1.example.com':
+      ensure => absent,
+      notify => $file_notify,
+    }
+
+    sensu_enterprise_dashboard_api_config { 'api2.example.com':
+      ensure => absent,
+      notify => $file_notify,
     }
   }
 

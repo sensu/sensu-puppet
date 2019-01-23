@@ -8,9 +8,14 @@ class sensu::repo::yum {
     if $::sensu::repo_source {
       $url = $::sensu::repo_source
     } else {
-      $releasever = $::operatingsystem ? {
-        'Amazon' => '6',
-        default  => '$releasever',
+      if $::operatingsystem == 'Amazon' {
+        if $facts['os']['release']['major'] =~ /^201\d$/ {
+          $releasever = '6'
+        } else {
+          $releasever = '7'
+        }
+      } else {
+        $releasever = '$releasever'
       }
       $url = $::sensu::repo ? {
         'unstable'  => "https://sensu.global.ssl.fastly.net/yum-unstable/${releasever}/\$basearch/",

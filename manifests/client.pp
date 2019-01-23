@@ -12,11 +12,13 @@
 # @param windows_log_number The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
 #
 class sensu::client (
-  Boolean $hasrestart = $::sensu::hasrestart,
-  $log_level          = $::sensu::log_level,
-  $windows_logrotate  = $::sensu::windows_logrotate,
-  $windows_log_size   = $::sensu::windows_log_size,
-  $windows_log_number = $::sensu::windows_log_number,
+  Boolean $hasrestart    = $::sensu::hasrestart,
+  $client_service_enable = $::sensu::client_service_enable,
+  $client_service_ensure = $::sensu::client_service_ensure,
+  $log_level             = $::sensu::log_level,
+  $windows_logrotate     = $::sensu::windows_logrotate,
+  $windows_log_size      = $::sensu::windows_log_size,
+  $windows_log_number    = $::sensu::windows_log_number,
 ) {
 
   # Service
@@ -24,12 +26,14 @@ class sensu::client (
 
     case $::sensu::client {
       true: {
-        $service_ensure = 'running'
-        $service_enable = true
+        $service_ensure = $client_service_ensure
+        $service_enable = $client_service_enable
+        $dsc_ensure     = 'present'
       }
       default: {
         $service_ensure = 'stopped'
         $service_enable = false
+        $dsc_ensure     = 'absent'
       }
     }
     case $::osfamily {
@@ -42,12 +46,37 @@ class sensu::client (
           content => template("${module_name}/sensu-client.erb"),
         }
 
-        exec { 'install-sensu-client':
-          provider => 'powershell',
-          command  => "New-Service -Name sensu-client -BinaryPathName c:\\opt\\sensu\\bin\\sensu-client.exe -DisplayName 'Sensu Client' -StartupType Automatic",
-          unless   => 'if (Get-Service sensu-client -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }',
-          before   => Service['sensu-client'],
-          require  => File['C:/opt/sensu/bin/sensu-client.xml'],
+        if $::sensu::windows_service_user {
+          dsc_userrightsassignment { $::sensu::windows_service_user['user']:
+            dsc_ensure   => present,
+            dsc_policy   => 'Log_on_as_a_service',
+            dsc_identity => $::sensu::windows_service_user['user'],
+            before       => Dsc_service['sensu-client'],
+          }
+
+          acl { 'C:/opt/sensu':
+            purge       => false,
+            permissions => [
+              {
+                'identity' => $::sensu::windows_service_user['user'],
+                'rights'   => ['full'],
+              },
+            ],
+            before      => Dsc_service['sensu-client'],
+          }
+        }
+
+        # This resource installs the service but service state and refreshes
+        # are handled by Service[sensu-client]
+        # See https://tickets.puppetlabs.com/browse/MODULES-4570
+        dsc_service { 'sensu-client':
+          dsc_ensure      => $dsc_ensure,
+          dsc_name        => 'sensu-client',
+          dsc_credential  => $::sensu::windows_service_user,
+          dsc_displayname => 'Sensu Client',
+          dsc_path        => 'c:\\opt\\sensu\\bin\\sensu-client.exe',
+          require         => File['C:/opt/sensu/bin/sensu-client.xml'],
+          notify          => Service['sensu-client'],
         }
       }
       'Darwin': {
@@ -97,9 +126,15 @@ class sensu::client (
     mode   => $::sensu::file_mode,
   }
 
-  $socket_config = {
-    bind => $::sensu::client_bind,
-    port => $::sensu::client_port,
+  if $::sensu::client_socket_enabled {
+    $socket_config = {
+      bind => $::sensu::client_bind,
+      port => $::sensu::client_port,
+    }
+  } else {
+    $socket_config = {
+      enabled => false,
+    }
   }
 
   sensu_client_config { $::fqdn:

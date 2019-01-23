@@ -50,6 +50,42 @@ describe Puppet::Type.type(:sensu_redis_config) do
 
   end
 
+  describe "tls" do
+    context "with defaults (no tls)" do
+      it { expect(type_instance.parameter(:tls).value).to eq(:false) }
+    end
+
+    [true, 'true'].each do |v|
+      context "should set tls to #{v}" do
+        let :inst do
+          create_type_instance(resource_hash.merge({:tls => v}))
+        end
+
+        it { expect(inst.parameter(:tls).value).to eq(:true) }
+      end
+    end
+
+    [false, 'false'].each do |v|
+      context "should set tls to #{v}" do
+        let :inst do
+          create_type_instance(resource_hash.merge({:tls => v}))
+        end
+
+        it { expect(inst.parameter(:tls).value).to eq(:false) }
+      end
+    end
+
+    context 'invalid value' do
+      let :inst do
+        create_type_instance(resource_hash.merge({:tls => 'foo'}))
+      end
+
+      it 'should raise an error' do
+        expect { inst }.to raise_error(Puppet::ResourceError, /Invalid value "foo". Valid values are true, false/)
+      end
+    end
+  end
+
   describe "sentinels" do
     context "with defaults (no sentinels)" do
       it "no sentinels" do

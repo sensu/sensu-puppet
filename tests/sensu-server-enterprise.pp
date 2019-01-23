@@ -37,6 +37,10 @@ node 'sensu-server' {
   class { '::sensu':
     install_repo              => true,
     enterprise                => true,
+    enterprise_dashboard      => true,
+    enterprise_dashboard_custom => {
+      'usersOptions' => { 'requireSilencingReason' => true },
+    },
     enterprise_user           => $facts['se_user'],
     enterprise_pass           => $facts['se_pass'],
     manage_services           => true,

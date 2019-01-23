@@ -9,9 +9,10 @@ Please note, that this is a **Partner Supported** module, which means that techn
 
 [![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
 
-This module supports the latest releases of Puppet versions 4 and 5
+This module supports the latest releases of Puppet versions 5 and 6
 using the ruby that is packaged with the AIO (all-in-one installer). See
-`.travis.yml` for an exact matrix.
+`.travis.yml` for an exact matrix. The module aims to support the latest
+major release of Puppet and the prior major release.
 
 ## Documented with Puppet Strings
 
@@ -54,14 +55,22 @@ See `metadata.json` for details.
 - puppetlabs/stdlib
 - lwf/puppet-remote_file
 
-Soft dependencies if you use the corresponding technologies.
+Soft dependencies if you use the corresponding technologies:
 
 - [puppetlabs/apt](https://github.com/puppetlabs/puppetlabs-apt)
-- [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
+- [puppetlabs/yumrepo_core](https://github.com/puppetlabs/puppetlabs-yumrepo_core)
 - [voxpupuli/rabbitmq](https://github.com/voxpupuli/puppet-rabbitmq)
+
+Soft dependencies on Windows clients:
+
+- [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
+- [puppetlabs/dsc](https://github.com/puppetlabs/puppetlabs-dsc)
+- [puppetlabs/acl](https://github.com/puppetlabs/puppetlabs-acl)
 
 Note: While this module works with other versions of puppetlabs/apt, we
 test against and support what is listed in the `.fixtures.yml` file.
+
+Note: `puppetlabs/yumrepo_core` is only needed for Puppet `>= 6.0.0` for systems that use `yum`.
 
 Pluginsync should be enabled. Also, you will need the Ruby JSON library
 or gem on all your nodes.
@@ -230,6 +239,18 @@ node 'sensu-client.foo.com' {
    }
 }
 ```
+### Facts
+
+#### `sensu_version`
+
+The `sensu_version` fact returns the Sensu Client version returned by `C:\opt\sensu\embedded\bin\sensu-client.bat`
+for Windows systems and the value returned by `/opt/sensu/embedded/bin/sensu-client` for non-Windows.
+
+```shell
+facter -p sensu_version
+0.23.3
+```
+
 
 ## Advanced example using Hiera
 

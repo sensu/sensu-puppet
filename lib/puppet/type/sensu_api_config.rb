@@ -58,6 +58,15 @@ Puppet::Type.newtype(:sensu_api_config) do
 
   newproperty(:password) do
     desc "The password use for client authentication against the Sensu API"
+    def change_to_s(currentvalue, newvalue)
+      return "changed password"
+    end
+    def is_to_s(currentvalue)
+      return '[old password redacted]'
+    end
+    def should_to_s(newvalue)
+      return '[new password redacted]'
+    end
   end
 
   newproperty(:ssl_port) do
@@ -73,6 +82,15 @@ Puppet::Type.newtype(:sensu_api_config) do
 
   newproperty(:ssl_keystore_password) do
     desc "The SSL certificate keystore password. Enterprise only feature."
+    def change_to_s(currentvalue, newvalue)
+      return "changed ssl_keystore_password"
+    end
+    def is_to_s(currentvalue)
+      return '[old ssl_keystore_password redacted]'
+    end
+    def should_to_s(newvalue)
+      return '[new ssl_keystore_password redacted]'
+    end
   end
 
   autorequire(:package) do

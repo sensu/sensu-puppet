@@ -59,13 +59,14 @@ class sensu::rabbitmq::config {
     # URI provided
     if $::sensu::rabbitmq_ssl_private_key and $::sensu::rabbitmq_ssl_private_key =~ /^puppet:\/\// {
       file { "${ssl_dir}/key.pem":
-        ensure  => file,
-        source  => $::sensu::rabbitmq_ssl_private_key,
-        owner   => $::sensu::user,
-        group   => $::sensu::group,
-        mode    => $::sensu::file_mode,
-        require => File[$ssl_dir],
-        before  => Sensu_rabbitmq_config[$::fqdn],
+        ensure    => file,
+        source    => $::sensu::rabbitmq_ssl_private_key,
+        owner     => $::sensu::user,
+        group     => $::sensu::group,
+        mode      => $::sensu::file_mode,
+        show_diff => false,
+        require   => File[$ssl_dir],
+        before    => Sensu_rabbitmq_config[$::fqdn],
       }
 
       $ssl_private_key = "${ssl_dir}/key.pem"
@@ -73,13 +74,14 @@ class sensu::rabbitmq::config {
     # create file with contents of the variable
     } elsif $::sensu::rabbitmq_ssl_private_key and $::sensu::rabbitmq_ssl_private_key =~ /BEGIN RSA PRIVATE KEY/ {
       file { "${ssl_dir}/key.pem":
-        ensure  => file,
-        content => $::sensu::rabbitmq_ssl_private_key,
-        owner   => $::sensu::user,
-        group   => $::sensu::group,
-        mode    => $::sensu::file_mode,
-        require => File[$ssl_dir],
-        before  => Sensu_rabbitmq_config[$::fqdn],
+        ensure    => file,
+        content   => $::sensu::rabbitmq_ssl_private_key,
+        owner     => $::sensu::user,
+        group     => $::sensu::group,
+        mode      => $::sensu::file_mode,
+        show_diff => false,
+        require   => File[$ssl_dir],
+        before    => Sensu_rabbitmq_config[$::fqdn],
       }
 
       $ssl_private_key = "${ssl_dir}/key.pem"

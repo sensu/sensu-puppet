@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "2.50.0",
+  "version": "2.62.2",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
@@ -15,7 +15,7 @@
     {
       "operatingsystem": "Darwin",
       "operatingsystemrelease": [
-        "17"
+        "16"
       ]
     },
     {
@@ -42,7 +42,6 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "7",
         "8",
         "9"
       ]
@@ -51,20 +50,22 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "14.04",
-        "16.04"
+        "16.04",
+        "18.04"
       ]
     },
     {
       "operatingsystem": "Amazon",
       "operatingsystemrelease": [
-        "2017.03"
+        "2018.03",
+        "2"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">=4.0.0 < 6.0.0"
+      "version_requirement": ">=5.0.0 < 7.0.0"
     }
   ],
   "dependencies": [
@@ -74,7 +75,7 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.24.0 <5.0.0"
+      "version_requirement": ">=4.24.0 <6.0.0"
     }
   ]
 }

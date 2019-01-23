@@ -54,6 +54,15 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_config) do
 
   newproperty(:pass) do
     desc "A password to enable simple authentication and restrict access to the dashboard. Leave blank along with user to disable simple authentication."
+    def change_to_s(currentvalue, newvalue)
+      return "changed pass"
+    end
+    def is_to_s(currentvalue)
+      return '[old pass redacted]'
+    end
+    def should_to_s(newvalue)
+      return '[new pass redacted]'
+    end
   end
 
   newproperty(:auth) do
@@ -124,6 +133,33 @@ Puppet::Type.newtype(:sensu_enterprise_dashboard_config) do
         raise ArgumentError, "Sensu Enterprise Dashboard OIDC config must be a Hash"
       end
     end
+  end
+
+  newproperty(:custom) do
+    desc "Custom config variables"
+    include PuppetX::Sensu::ToType
+
+    def is_to_s(hash = @is)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def should_to_s(hash = @should)
+      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
+    end
+
+    def insync?(is)
+      if defined? @should[0]
+        if is == @should[0].each { |k, v| value[k] = to_type(v) }
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+    end
+
+    defaultto {}
   end
 
   autorequire(:package) do

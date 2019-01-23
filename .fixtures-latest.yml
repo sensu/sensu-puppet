@@ -2,14 +2,14 @@ fixtures:
   repositories:
     apt:
       repo: git://github.com/puppetlabs/puppetlabs-apt.git
-      ref: 4.1.0
+      ref: 6.1.1
     yumrepo_core:
       repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
       ref: 1.0.1
       puppet_version: ">= 6.0.0"
     stdlib:
       repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
-      ref: 4.24.0
+      ref: 5.1.0
     remote_file:
       repo: git://github.com/lwf/puppet-remote_file.git
       ref: v1.1.3

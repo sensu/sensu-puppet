@@ -15,8 +15,7 @@ OSX_VERSION=$(sw_vers | grep -i productversion| awk '{print $2}' | cut -f1,2 -d'
 #--------------------------------------------------------------------
 # Modifiable variables, please set them via environmental variables.
 #--------------------------------------------------------------------
-FACTER_PACKAGE_URL=${FACTER_PACKAGE_URL:-"http://downloads.puppetlabs.com/mac/facter-latest.dmg"}
-PUPPET_PACKAGE_URL=${PUPPET_PACKAGE_URL:-"http://downloads.puppetlabs.com/mac/$OSX_VERSION/PC1/x86_64/puppet-agent-1.10.4-1.osx$OSX_VERSION.dmg"}
+PUPPET_PACKAGE_URL=${PUPPET_PACKAGE_URL:-"http://downloads.puppetlabs.com/mac/puppet5/${OSX_VERSION}/x86_64/puppet-agent-5.5.8-1.osx${OSX_VERSION}.dmg"}
 
 #--------------------------------------------------------------------
 # NO TUNABLES BELOW THIS POINT.
@@ -57,7 +56,6 @@ function install_dmg() {
 
 # Install Puppet and Facter
 install_dmg "Puppet" "${PUPPET_PACKAGE_URL}"
-install_dmg "Facter" "${FACTER_PACKAGE_URL}"
 
 # Hide all users from the loginwindow with uid below 500, which will include the puppet user
 defaults write /Library/Preferences/com.apple.loginwindow Hide500Users -bool YES
@@ -65,5 +63,5 @@ defaults write /Library/Preferences/com.apple.loginwindow Hide500Users -bool YES
 echo "finished installing puppet..."
 echo "installing dependency modules..."
 /opt/puppetlabs/bin/puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu ensure=link target=/vagrant
-/opt/puppetlabs/bin/puppet module install puppetlabs/stdlib --version 4.16.0
+/opt/puppetlabs/bin/puppet module install puppetlabs/stdlib --version 4.24.0
 /opt/puppetlabs/bin/puppet module install lwf-remote_file --version 1.1.3

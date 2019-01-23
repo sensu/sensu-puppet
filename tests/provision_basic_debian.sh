@@ -31,7 +31,7 @@ apt-key adv --fetch-keys http://apt.puppetlabs.com/DEB-GPG-KEY-puppet
 apt-get -y install wget
 
 # install and configure puppet
-deb_install http://apt.puppetlabs.com/puppetlabs-release-pc1-${CODENAME}.deb
+deb_install http://apt.puppetlabs.com/puppet5-release-${CODENAME}.deb
 apt-get update
 apt-get -y install puppet-agent
 ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
@@ -55,7 +55,6 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 puppet module install puppetlabs/stdlib --version 4.24.0
 puppet module install puppetlabs/apt --version 4.1.0
 puppet module install lwf-remote_file --version 1.1.3
-puppet module install puppetlabs/powershell --version 2.1.0
 
 # install dependencies for sensu
 apt-get -y install ruby-json

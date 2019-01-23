@@ -122,4 +122,16 @@ Puppet::Type.type(:sensu_redis_config).provide(:json) do
   def auto_reconnect=(value)
     conf['redis']['auto_reconnect'] = value
   end
+
+  def tls
+    conf['redis'].key?('tls') ? :true : :false
+  end
+
+  def tls=(value)
+    if value == :true
+      conf['redis']['tls'] = {}
+    else
+      conf['redis'].delete 'tls'
+    end
+  end
 end
