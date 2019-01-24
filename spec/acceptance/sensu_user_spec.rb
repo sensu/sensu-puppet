@@ -31,13 +31,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have valid password' do
-      # Use this approach once merged: https://github.com/sensu/sensu-go/pull/2278
-      #exit_code = on(node, 'sensuctl user test-creds test --password password').exit_code
-      #expect(exit_code).to eq(0)
-      on node, 'curl -k -u test:password https://sensu_backend:8080/auth' do
-        data = JSON.parse(stdout)
-        expect(data.keys).to include('access_token')
-      end
+      exit_code = on(node, 'sensuctl user test-creds test --password password').exit_code
+      expect(exit_code).to eq(0)
     end
   end
 
@@ -71,13 +66,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
       end
     end
     it 'should have valid password' do
-      # Use this approach once merged: https://github.com/sensu/sensu-go/pull/2278
-      #exit_code = on(node, 'sensuctl user test-creds test --password password2').exit_code
-      #expect(exit_code).to eq(0)
-      on node, 'curl -k -u test:password2 https://sensu_backend:8080/auth' do
-        data = JSON.parse(stdout)
-        expect(data.keys).to include('access_token')
-      end
+      exit_code = on(node, 'sensuctl user test-creds test --password password2').exit_code
+      expect(exit_code).to eq(0)
     end
   end
 
@@ -98,13 +88,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have valid password' do
-      # Use this approach once merged: https://github.com/sensu/sensu-go/pull/2278
-      #exit_code = on(node, 'sensuctl user test-creds test --password password2').exit_code
-      #expect(exit_code).to eq(0)
-      on node, 'curl -k -u test:password3 https://sensu_backend:8080/auth' do
-        data = JSON.parse(stdout)
-        expect(data.keys).to include('access_token')
-      end
+      exit_code = on(node, 'sensuctl user test-creds test --password password3').exit_code
+      expect(exit_code).to eq(0)
     end
   end
 
