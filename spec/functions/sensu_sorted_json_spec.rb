@@ -3,8 +3,8 @@ describe 'sensu_sorted_json' do
   it { is_expected.not_to eq(nil) }
 
   describe 'should error when expected' do
-    it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, /0 for 1 or 2/) }
-    it { is_expected.to run.with_params(1,2,3).and_raise_error(Puppet::ParseError, /3 for 1 or 2/) }
+    it { is_expected.to run.with_params.and_raise_error(/expects between 1 and 2 arguments, got none/) }
+    it { is_expected.to run.with_params(1,2,3).and_raise_error(/expects between 1 and 2 arguments, got 3/) }
   end
 
   input_hash = {
