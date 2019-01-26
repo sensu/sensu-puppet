@@ -11,7 +11,7 @@ describe 'sensu_event', if: RSpec.configuration.sensu_full do
       }
       EOS
 
-      # There should be no changes
+      apply_manifest_on(node, pp, :catch_failures  => true)
       apply_manifest_on(node, pp, :catch_changes  => true)
     end
   end
