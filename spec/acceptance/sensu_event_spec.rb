@@ -36,9 +36,6 @@ describe 'sensu_event', if: RSpec.configuration.sensu_full do
       sensu_event { 'test for sensu_agent':
         ensure => 'resolve',
       }
-      sensu_event { 'keepalive for sensu_agent':
-        ensure => 'resolve',
-      }
       EOS
 
       apply_manifest_on(node, check_pp, :catch_failures => true)
@@ -62,9 +59,6 @@ describe 'sensu_event', if: RSpec.configuration.sensu_full do
       sensu_event { 'test for sensu_agent':
         ensure => 'absent',
       }
-      sensu_event { 'keepalive for sensu_agent':
-        ensure => 'absent',
-      }
       EOS
 
       # Stop sensu-agent on agent node to avoid re-creating event
@@ -76,10 +70,6 @@ describe 'sensu_event', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl event info sensu_agent test'), :node => node do
-      its(:exit_status) { should_not eq 0 }
-    end
-
-    describe command('sensuctl event info sensu_agent keepalive'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end
