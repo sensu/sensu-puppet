@@ -51,6 +51,7 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
 
     it 'should update a user password' do
       @resource[:old_password] = 'foo'
+      expect(@resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(true)
       expect(@resource.provider).to receive(:sensuctl).with('user', 'change-password', 'test', '--current-password', 'foo', '--new-password', 'foobar')
       @resource.provider.password = 'foobar'
       @resource.provider.flush
@@ -58,6 +59,7 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
     it 'should update a user password and reconfigure' do
       @resource[:configure] = true
       @resource[:old_password] = 'foo'
+      expect(@resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(true)
       expect(@resource.provider).to receive(:sensuctl).with('user', 'change-password', 'test', '--current-password', 'foo', '--new-password', 'foobar')
       expect(@resource.provider).to receive(:sensuctl).with('configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','foobar')
       @resource.provider.password = 'foobar'
@@ -66,6 +68,12 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
     it 'should require old_password to update a user password' do
       @resource.provider.password = 'foobar'
       expect { @resource.provider.flush }.to raise_error(Puppet::Error, /old_password is manditory when changing a password/)
+    end
+    it 'should fail if old_password is invalid' do
+      @resource[:old_password] = 'foo'
+      @resource.provider.password = 'foobar'
+      expect(@resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(false)
+      expect { @resource.provider.flush }.to raise_error(Puppet::Error, /old_password given for test is incorrect/)
     end
     it 'should add missing groups' do
       expect(@resource.provider).to receive(:sensuctl).with('user','add-group','test','test')

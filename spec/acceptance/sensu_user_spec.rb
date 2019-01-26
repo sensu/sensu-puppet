@@ -93,6 +93,21 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
     end
   end
 
+  context 'invalid old_password' do
+    it 'should result in an error' do
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_user { 'test':
+        password     => 'password2',
+        old_password => 'password4',
+        groups       => ['read-only'],
+      }
+      EOS
+
+      apply_manifest_on(node, pp, :expect_failures => true)
+    end
+  end
+
   context 'ensure => absent' do
     it 'should result in error as unsupported' do
       pp = <<-EOS

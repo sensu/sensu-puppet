@@ -97,6 +97,9 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         if ! resource[:old_password]
           fail("old_password is manditory when changing a password")
         end
+        if ! password_insync?(resource[:name], resource[:old_password])
+          fail("old_password given for #{resource[:name]} is incorrect")
+        end
         sensuctl('user', 'change-password', resource[:name], '--current-password', resource[:old_password], '--new-password', @property_flush[:password])
         if resource[:configure] == :true
           sensuctl('configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password])
