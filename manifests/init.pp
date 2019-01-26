@@ -36,10 +36,6 @@
 # @param ssl_ca_source
 #   Source of SSL CA used by sensu services
 #
-# @param ssl_add_ca_trust
-#   Boolean that determines if SSL CA should be added
-#   to the system's trust store
-#
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
@@ -51,7 +47,6 @@ class sensu (
   Boolean $manage_repo = true,
   Boolean $use_ssl = true,
   String $ssl_ca_source = $facts['puppet_localcacert'],
-  Boolean $ssl_add_ca_trust = true,
 ) {
 
   if $manage_repo {
