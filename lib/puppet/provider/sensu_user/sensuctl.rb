@@ -52,32 +52,9 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
     if password.is_a?(Array)
       password = password[0]
     end
-    # Use this approach once merged: https://github.com/sensu/sensu-go/pull/2278
-    #ret = execute(['sensuctl', 'user', 'test-creds', user, '--password', password], failonfail: false)
-    #exitstatus = ret.exitstatus
-    #exitstatus == 0
-    config = load_config(config_path)
-    api_url = config['api-url']
-    if api_url =~ /^https/
-      use_ssl = true
-    else
-      use_ssl = false
-    end
-    uri = URI(api_url)
-    http = Net::HTTP.new(uri.hostname, uri.port)
-    if Puppet[:debug]
-      http.set_debug_output($stdout)
-    end
-    http.use_ssl = use_ssl
-    if use_ssl
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-    request = Net::HTTP::Get.new('/auth')
-    request.add_field("Accept", "application/json")
-    request.basic_auth(user, password)
-    response = http.request(request)
-    Puppet.debug("GET /auth returned #{response.code}")
-    response.kind_of?(Net::HTTPSuccess)
+    ret = execute(['sensuctl', 'user', 'test-creds', user, '--password', password], failonfail: false)
+    exitstatus = ret.exitstatus
+    exitstatus == 0
   end
 
   def initialize(value = {})
@@ -119,6 +96,9 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
       if @property_flush[:password]
         if ! resource[:old_password]
           fail("old_password is manditory when changing a password")
+        end
+        if ! password_insync?(resource[:name], resource[:old_password])
+          fail("old_password given for #{resource[:name]} is incorrect")
         end
         sensuctl('user', 'change-password', resource[:name], '--current-password', resource[:old_password], '--new-password', @property_flush[:password])
         if resource[:configure] == :true
