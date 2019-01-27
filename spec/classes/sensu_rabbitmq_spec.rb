@@ -63,6 +63,7 @@ describe 'sensu', :type => :class do
   context 'rabbitmq config' do
     context 'no ssl (default)' do
       it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :ssl_transport   => nil,
         :ssl_cert_chain  => nil,
         :ssl_private_key => nil
       ) }
@@ -89,6 +90,7 @@ describe 'sensu', :type => :class do
         :user            => 'sensuuser',
         :password        => 'sensupass',
         :vhost           => 'myvhost',
+        :ssl_transport   => 'true',
         :ssl_cert_chain  => '/etc/private/ssl/cert.pem',
         :ssl_private_key => '/etc/private/ssl/key.pem'
       ) }
@@ -165,6 +167,23 @@ describe 'sensu', :type => :class do
         :ssl_private_key => '/etc/sensu/ssl/key.pem'
       ) }
     end # when using key in variable
+
+    context 'when key and chain are empty' do
+      let(:params) { {
+        :rabbitmq_ssl_cert_chain  => '',
+        :rabbitmq_ssl_private_key => '',
+      } }
+
+      it { should contain_file('/etc/sensu/ssl').with_ensure('directory') }
+      it { should_not contain_file('/etc/sensu/ssl/cert.pem') }
+      it { should_not contain_file('/etc/sensu/ssl/key.pem') }
+
+      it { should contain_sensu_rabbitmq_config('hostname.domain.com').with(
+        :ssl_transport   => nil,
+        :ssl_cert_chain  => '',
+        :ssl_private_key => '',
+      ) }
+    end # when key and chain are empty
 
     context 'when using rabbitmq cluster' do
       let(:cluster_config) {
