@@ -34,6 +34,14 @@ describe 'sensu class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily
           rabbitmq_password        => 'secret',
           rabbitmq_host            => '127.0.0.1',
         }
+        sensu::handler { 'default':
+          command => "mail -s 'sensu alert' ops@example.com",
+        }
+        sensu::check { 'check_ntp':
+          command     => 'PATH=$PATH:/usr/lib64/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
+          handlers    => 'default',
+          subscribers => 'sensu-test',
+        }
         EOS
 
         # Run it twice and test for idempotency

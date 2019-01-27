@@ -119,80 +119,60 @@ module JSON
   end # end class
 end # end module
 
-module Puppet::Parser::Functions
-  newfunction(:sensu_sorted_json, :type => :rvalue, :doc => <<-EOS
-This function takes unsorted hash and outputs JSON object making sure the keys are sorted.
-Optionally you can pass a boolean as the second parameter, which controls if
-the output is pretty formatted.
+# This function takes unsorted hash and outputs JSON object making sure the keys are sorted.
+# Optionally you can pass a boolean as the second parameter, which controls if
+# the output is pretty formatted.
+Puppet::Functions.create_function(:sensu_sorted_json) do
+  # @param hash Hash to be sorted
+  # @param pretty Boolean that determines if output should be pretty format
+  # @return [String] Returns a JSON string
+  # @example Calling function without pretty
+  #   unsorted_hash = {
+  #     'client_addr' => '127.0.0.1',
+  #     'bind_addr'   => '192.168.34.56',
+  #     'start_join'  => [
+  #       '192.168.34.60',
+  #       '192.168.34.61',
+  #       '192.168.34.62',
+  #     ],
+  #     'ports'       => {
+  #       'rpc'   => 8567,
+  #       'https' => 8500,
+  #       'http'  => -1,
+  #     },
+  #   }
+  #   sorted_json(unsorted_hash)
+  #
+  #   {"bind_addr":"192.168.34.56","client_addr":"127.0.0.1",
+  #   "ports":{"http":-1,"https":8500,"rpc":8567},
+  #   "start_join":["192.168.34.60","192.168.34.61","192.168.34.62"]}
+  # @example Calling function with pretty output
+  #   sorted_json(unsorted_hash, true)
+  #
+  #   {
+  #       "bind_addr": "192.168.34.56",
+  #       "client_addr": "127.0.0.1",
+  #       "ports": {
+  #           "http": -1,
+  #           "https": 8500,
+  #           "rpc": 8567
+  #       },
+  #       "start_join": [
+  #           "192.168.34.60",
+  #           "192.168.34.61",
+  #           "192.168.34.62"
+  #       ]
+  #   }
+  dispatch :sort_json do
+    param 'Hash', :hash
+    optional_param 'Boolean', :pretty
+  end
 
-*Examples:*
-
-    -------------------
-    -- UNSORTED HASH --
-    -------------------
-    unsorted_hash = {
-      'client_addr' => '127.0.0.1',
-      'bind_addr'   => '192.168.34.56',
-      'start_join'  => [
-        '192.168.34.60',
-        '192.168.34.61',
-        '192.168.34.62',
-      ],
-      'ports'       => {
-        'rpc'   => 8567,
-        'https' => 8500,
-        'http'  => -1,
-      },
-    }
-
-    -----------------
-    -- SORTED JSON --
-    -----------------
-
-    sorted_json(unsorted_hash)
-
-    {"bind_addr":"192.168.34.56","client_addr":"127.0.0.1",
-    "ports":{"http":-1,"https":8500,"rpc":8567},
-    "start_join":["192.168.34.60","192.168.34.61","192.168.34.62"]}
-
-    ------------------------
-    -- PRETTY SORTED JSON --
-    ------------------------
-    Params: data <hash>, pretty <true|false>.
-
-    sorted_json(unsorted_hash, true)
-
-    {
-        "bind_addr": "192.168.34.56",
-        "client_addr": "127.0.0.1",
-        "ports": {
-            "http": -1,
-            "https": 8500,
-            "rpc": 8567
-        },
-        "start_join": [
-            "192.168.34.60",
-            "192.168.34.61",
-            "192.168.34.62"
-        ]
-    }
-
-    EOS
-  ) do |args|
-
-    raise(Puppet::ParseError, "sensu_sorted_json(): Wrong number of arguments " +
-      "given (#{args.size} for 1 or 2)") unless args.size.between?(1,2)
-
-    unsorted_hash = args[0]      || {}
-    pretty        = args[1]      || false
-    indent_len    = 4
-
-    unsorted_hash.reject! {|key, value| value == :undef }
-
+  def sort_json(hash, pretty = false)
     if pretty
-      return JSON.sorted_pretty_generate(unsorted_hash, indent_len) << "\n"
+      return JSON.sorted_pretty_generate(hash, 4) << "\n"
     else
-      return JSON.sorted_generate(unsorted_hash)
+      return JSON.sorted_generate(hash)
     end
   end
 end
