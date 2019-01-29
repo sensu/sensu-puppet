@@ -169,7 +169,7 @@ define sensu::check (
       $file_mode = undef
     }
     default: {
-      $etc_dir   = '/etc/sensu'
+      $etc_dir   = $::sensu::sensu_etc_dir
       $conf_dir  = "${etc_dir}/conf.d"
       $user      = $::sensu::user
       $group     = $::sensu::group
