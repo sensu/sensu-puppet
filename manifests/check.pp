@@ -132,6 +132,8 @@ define sensu::check (
   Variant[Undef,Enum['absent'],Hash]    $hooks = undef,
 ) {
 
+  include ::sensu
+
   if $ensure == 'present' and !$command {
     fail("sensu::check{${name}}: a command must be given when ensure is present")
   }
@@ -158,23 +160,6 @@ define sensu::check (
     $interval_real = 'absent'
   } else {
     $interval_real = $interval
-  }
-
-  case $::osfamily {
-    'windows': {
-      $etc_dir   = 'C:/opt/sensu'
-      $conf_dir  = "${etc_dir}/conf.d"
-      $user      = $::sensu::user
-      $group     = $::sensu::group
-      $file_mode = undef
-    }
-    default: {
-      $etc_dir   = '/etc/sensu'
-      $conf_dir  = "${etc_dir}/conf.d"
-      $user      = $::sensu::user
-      $group     = $::sensu::group
-      $file_mode = '0440'
-    }
   }
 
   case $handlers {
@@ -277,12 +262,12 @@ define sensu::check (
   # on top of any arbitrary plugin and extension configuration in $content.
   $content_real = $content + $checks_scope
 
-  sensu::write_json { "${conf_dir}/checks/${check_name}.json":
+  sensu::write_json { "${::sensu::conf_dir}/checks/${check_name}.json":
     ensure      => $ensure,
     content     => $content_real,
     owner       => $::sensu::user,
     group       => $::sensu::group,
-    mode        => $file_mode,
+    mode        => $::sensu::config_file_mode,
     notify_list => $::sensu::check_notify,
   }
 }

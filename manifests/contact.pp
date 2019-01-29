@@ -22,17 +22,19 @@ define sensu::contact(
   Hash $config = {},
 ) {
 
+  include ::sensu
+
   $file_ensure = $ensure ? {
     'absent' => 'absent',
     default  => 'file'
   }
 
   # handler configuration may contain "secrets"
-  file { "/etc/sensu/conf.d/contacts/${name}.json":
+  file { "${::sensu::conf_dir}/contacts/${name}.json":
     ensure => $file_ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
+    owner  => $::sensu::user,
+    group  => $::sensu::group,
+    mode   => $::sensu::config_file_mode,
     before => Sensu_contact[$name],
   }
 
@@ -40,6 +42,6 @@ define sensu::contact(
     ensure    => $ensure,
     config    => $config,
     base_path => $base_path,
-    require   => File['/etc/sensu/conf.d/contacts'],
+    require   => File["${::sensu::conf_dir}/contacts/${name}.json"],
   }
 }

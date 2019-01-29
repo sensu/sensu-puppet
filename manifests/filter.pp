@@ -19,7 +19,9 @@ define sensu::filter (
   Optional[Hash] $when             = undef,
 ) {
 
-  file { "/etc/sensu/conf.d/filters/${name}.json":
+  include ::sensu
+
+  file { "${::sensu::conf_dir}/filters/${name}.json":
     ensure => $ensure,
     owner  => $::sensu::user,
     group  => $::sensu::group,
@@ -31,7 +33,7 @@ define sensu::filter (
     negate     => $negate,
     attributes => $attributes,
     when       => $when,
-    require    => File['/etc/sensu/conf.d/filters'],
+    require    => File["${::sensu::conf_dir}/filters"],
   }
 
 }
