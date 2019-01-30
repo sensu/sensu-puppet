@@ -24,16 +24,4 @@ class sensu::ssl {
     show_diff => false,
     source    => $::sensu::ssl_ca_source,
   }
-
-  if $::sensu::ssl_add_ca_trust {
-    ensure_packages(['openssl'])
-    include ::trusted_ca
-    trusted_ca::ca { 'sensu-ca':
-      source  => "${::sensu::ssl_dir}/ca.crt",
-      require => [
-        Package['openssl'],
-        File['sensu_ssl_ca'],
-      ],
-    }
-  }
 }

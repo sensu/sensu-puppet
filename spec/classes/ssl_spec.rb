@@ -9,7 +9,6 @@ describe 'sensu::ssl', :type => :class do
 
         it { should create_class('sensu::ssl') }
         it { should contain_class('sensu') }
-        it { should contain_class('trusted_ca') }
 
         it {
           should contain_file('sensu_ssl_dir').with({
@@ -35,28 +34,6 @@ describe 'sensu::ssl', :type => :class do
             'source'    => '/dne/ca.pem',
           })
         }
-
-        it { should contain_package('openssl') }
-
-        it {
-          should contain_trusted_ca__ca('sensu-ca').with({
-            'source'  => '/etc/sensu/ssl/ca.crt',
-            'require' => [
-              'Package[openssl]',
-              'File[sensu_ssl_ca]',
-            ],
-          })
-        }
-      end
-
-      context 'ssl_add_ca_trust => false' do
-        let(:pre_condition) do
-          "class { 'sensu': ssl_add_ca_trust => false }"
-        end
-
-        it { should_not contain_class('trusted_ca') }
-        it { should_not contain_package('openssl') }
-        it { should_not contain_trusted_ca__ca('sensu-ca') }
       end
     end
   end

@@ -23,6 +23,7 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- wss://localhost:8081
+          |trusted-ca-file: "/etc/sensu/ssl/ca.crt"
         END
 
         it {
@@ -102,6 +103,7 @@ describe 'sensu::agent', :type => :class do
             |---
             |backend-url:
             |- #{backend}
+            |trusted-ca-file: "/etc/sensu/ssl/ca.crt"
           END
 
           it {

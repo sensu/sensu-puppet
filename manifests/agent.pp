@@ -45,15 +45,19 @@ class sensu::agent (
   include ::sensu
 
   $etc_dir = $::sensu::etc_dir
+  $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl
   $_version = pick($version, $::sensu::version)
 
   if $use_ssl {
     $backend_protocol = 'wss'
+    $ssl_config = {
+      'trusted-ca-file' => "${ssl_dir}/ca.crt",
+    }
     $service_subscribe = Class['::sensu::ssl']
-  }
-  else {
+  } else {
     $backend_protocol = 'ws'
+    $ssl_config = {}
     $service_subscribe = undef
   }
   $backend_urls = $backends.map |$backend| {
@@ -66,7 +70,7 @@ class sensu::agent (
   $default_config = {
     'backend-url' => $backend_urls,
   }
-  $config = $default_config + $config_hash
+  $config = $default_config + $ssl_config + $config_hash
 
   package { 'sensu-go-agent':
     ensure  => $_version,

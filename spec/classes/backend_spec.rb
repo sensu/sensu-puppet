@@ -13,6 +13,7 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
         it { should contain_class('sensu::backend::resources') }
+        it { should contain_class('trusted_ca') }
 
         it {
           should contain_package('sensu-go-cli').with({
@@ -78,6 +79,19 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
+        it { should contain_package('openssl') }
+
+        it {
+          should contain_trusted_ca__ca('sensu-ca').with({
+            'source'  => '/etc/sensu/ssl/ca.crt',
+            'require' => [
+              'Package[openssl]',
+              'File[sensu_ssl_ca]',
+            ],
+            'before'  => 'Sensu_configure[puppet]',
+          })
+        }
+
         it {
           should contain_package('sensu-go-backend').with({
             'ensure'  => 'installed',
@@ -127,6 +141,13 @@ describe 'sensu::backend', :type => :class do
         }
       end
 
+      context 'ssl_add_ca_trust => false' do
+        let(:params) { { :ssl_add_ca_trust => false } }
+        it { should_not contain_class('trusted_ca') }
+        it { should_not contain_package('openssl') }
+        it { should_not contain_trusted_ca__ca('sensu-ca') }
+      end
+
       context 'with use_ssl => false' do
         let(:pre_condition) do
           "class { 'sensu': use_ssl => false }"
@@ -152,6 +173,9 @@ describe 'sensu::backend', :type => :class do
 
         it { should_not contain_file('sensu_ssl_cert') }
         it { should_not contain_file('sensu_ssl_key') }
+        it { should_not contain_class('trusted_ca') }
+        it { should_not contain_package('openssl') }
+        it { should_not contain_trusted_ca__ca('sensu-ca') }
 
         backend_content = <<-END.gsub(/^\s+\|/, '')
           |---
