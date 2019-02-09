@@ -19,7 +19,8 @@ module SensuFacts
       build = $1
     end
     built = nil
-    if output =~ /built '(.*)'$/
+    # Match value that is optionally wrapped in single quotes
+    if output =~ /built (?:')?([^']+)(?:')?$/
       built = $1
     end
     return version, build, built

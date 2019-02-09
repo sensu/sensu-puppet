@@ -10,6 +10,13 @@ describe "SensuFacts" do
       expect(Facter.fact(:sensu_agent).value).to eq({'version' => '5.1.0', 'build' => 'b2ea9fcdb21e236e6e9a7de12225a6d90c786c57', 'built' => '2018-12-18T21:31:11+0000'})
     end
 
+    it 'returns version information for 5.2.0' do
+      allow(SensuFacts).to receive(:which).with('sensu-agent').and_return('/bin/sensu-agent')
+      allow(Facter::Core::Execution).to receive(:exec).with('/bin/sensu-agent version 2>&1').and_return("sensu-agent version 5.2.0#21a24d9, build 21a24d9cf073863d6c2b02c0b7acaae673e4f597, built 2019-02-06T22:08:44Z")
+      SensuFacts.add_agent_facts
+      expect(Facter.fact(:sensu_agent).value).to eq({'version' => '5.2.0', 'build' => '21a24d9cf073863d6c2b02c0b7acaae673e4f597', 'built' => '2019-02-06T22:08:44Z'})
+    end
+
     it 'returns nil' do
       allow(SensuFacts).to receive(:which).with('sensu-agent').and_return(nil)
       SensuFacts.add_agent_facts
