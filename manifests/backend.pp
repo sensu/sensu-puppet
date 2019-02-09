@@ -44,6 +44,13 @@
 #   Sets if default sensu resources should be included
 # @param show_diff
 #   Sets show_diff parameter for backend.yml configuration file
+# @param license_source
+#   The source of sensu-go enterprise license.
+#   Supports any valid Puppet File sources such as absolute paths or puppet:///
+#   Do not define with license_content
+# @param license_content
+#   The content of sensu-go enterprise license
+#   Do not define with license_source
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -64,7 +71,13 @@ class sensu::backend (
   Optional[String] $agent_old_password = undef,
   Boolean $include_default_resources = true,
   Boolean $show_diff = true,
+  Optional[String] $license_source = undef,
+  Optional[String] $license_content = undef,
 ) {
+
+  if $license_source and $license_content {
+    fail('sensu::backend: Do not define both license_source and license_content')
+  }
 
   include ::sensu
 
@@ -130,6 +143,27 @@ class sensu::backend (
     disabled      => false,
     configure     => true,
     configure_url => $url,
+  }
+
+  if $license_source or $license_content {
+    file { 'sensu_license':
+      ensure    => 'file',
+      path      => "${etc_dir}/license.json",
+      source    => $license_source,
+      content   => $license_content,
+      owner     => $::sensu::user,
+      group     => $::sensu::group,
+      mode      => '0600',
+      show_diff => false,
+      notify    => Exec['sensu-add-license'],
+    }
+
+    exec { 'sensu-add-license':
+      path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+      command     => "sensuctl create --file ${etc_dir}/license.json",
+      refreshonly => true,
+      require     => Sensu_configure['puppet'],
+    }
   }
 
   if $use_ssl {

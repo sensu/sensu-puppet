@@ -11,8 +11,17 @@ collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet5'
 RSpec.configure do |c|
   c.add_setting :sensu_full, default: false
   c.add_setting :sensu_cluster, default: false
+  c.add_setting :sensu_enterprise_file, default: nil
+  c.add_setting :sensu_test_enterprise, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
   c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
+  if ENV['SENSU_ENTERPRISE_FILE']
+    enterprise_file = File.absolute_path(ENV['SENSU_ENTERPRISE_FILE'])
+    scp_to(hosts_as('sensu_backend'), enterprise_file, '/root/sensu_license.json')
+    c.sensu_test_enterprise = true
+  else
+    c.sensu_test_enterprise = false
+  end
 
   # Readable test descriptions
   c.formatter = :documentation

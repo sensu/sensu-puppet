@@ -53,6 +53,9 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
+        it { should_not contain_file('sensu_license') }
+        it { should_not contain_exec('sensu-add-license') }
+
         it {
           should contain_file('sensu_ssl_cert').with({
             'ensure'    => 'file',
@@ -186,6 +189,63 @@ describe 'sensu::backend', :type => :class do
         end
         it { should contain_package('sensu-go-cli').without_require }
         it { should contain_package('sensu-go-backend').without_require }
+      end
+
+      context 'with license_source defined' do
+        let(:params) {{ :license_source => 'puppet:///modules/site_sensu/license.json' }}
+        it {
+          should contain_file('sensu_license').with({
+            'ensure'    => 'file',
+            'path'      => '/etc/sensu/license.json',
+            'source'    => 'puppet:///modules/site_sensu/license.json',
+            'content'   => nil,
+            'owner'     => 'sensu',
+            'group'     => 'sensu',
+            'mode'      => '0600',
+            'show_diff' => 'false',
+            'notify'    => 'Exec[sensu-add-license]',
+          })
+        }
+        it {
+          should contain_exec('sensu-add-license').with({
+            'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
+            'command'     => 'sensuctl create --file /etc/sensu/license.json',
+            'refreshonly' => 'true',
+            'require'     => 'Sensu_configure[puppet]',
+          })
+        }
+      end
+
+      context 'with license_content defined' do
+        let(:params) {{ :license_content => '{ }' }}
+        it {
+          should contain_file('sensu_license').with({
+            'ensure'    => 'file',
+            'path'      => '/etc/sensu/license.json',
+            'source'    => nil,
+            'content'   => '{ }',
+            'owner'     => 'sensu',
+            'group'     => 'sensu',
+            'mode'      => '0600',
+            'show_diff' => 'false',
+            'notify'    => 'Exec[sensu-add-license]',
+          })
+        }
+        it {
+          should contain_exec('sensu-add-license').with({
+            'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
+            'command'     => 'sensuctl create --file /etc/sensu/license.json',
+            'refreshonly' => 'true',
+            'require'     => 'Sensu_configure[puppet]',
+          })
+        }
+      end
+
+      context 'both license_content and license_source' do
+        let(:params) {{ :license_source => '/dne', :license_content => '{ }' }}
+        it 'should fail' do
+           is_expected.to compile.and_raise_error(/Do not define both license_source and license_content/)
+        end
       end
     end
   end
