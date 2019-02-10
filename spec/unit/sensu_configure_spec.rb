@@ -32,6 +32,7 @@ describe Puppet::Type.type(:sensu_configure) do
 
   defaults = {
     bootstrap_password: 'P@ssw0rd!',
+    trusted_ca_file: '/etc/sensu/ssl/ca.crt',
   }
 
   # String properties
@@ -40,6 +41,7 @@ describe Puppet::Type.type(:sensu_configure) do
     :username,
     :password,
     :url,
+    :trusted_ca_file,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -127,6 +129,17 @@ describe Puppet::Type.type(:sensu_configure) do
       configure[property] = 'foo'
       expect { configure }.to raise_error(Puppet::Error, /should be a Hash/)
     end
+  end
+
+  it 'should autorequire trusted_ca_file' do
+    file = Puppet::Type.type(:file).new(:name => '/etc/sensu/ssl/ca.crt')
+    config[:trusted_ca_file] = '/etc/sensu/ssl/ca.crt'
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource configure
+    catalog.add_resource file
+    rel = configure.autorequire[0]
+    expect(rel.source.ref).to eq(file.ref)
+    expect(rel.target.ref).to eq(configure.ref)
   end
 
   include_examples 'autorequires', false, false do

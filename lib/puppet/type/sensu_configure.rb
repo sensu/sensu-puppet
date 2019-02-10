@@ -11,6 +11,7 @@ Puppet::Type.newtype(:sensu_configure) do
 * `Package[sensu-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
+* `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
 DESC
 
   extend PuppetX::Sensu::Type
@@ -37,6 +38,17 @@ DESC
   newparam(:bootstrap_password) do
     desc "Password to use when bootstrapping sensuctl"
     defaultto('P@ssw0rd!')
+  end
+
+  newproperty(:trusted_ca_file) do
+    desc "Path to trusted CA"
+    defaultto('/etc/sensu/ssl/ca.crt')
+  end
+
+  autorequire(:file) do
+    if self[:trusted_ca_file] && self[:trusted_ca_file] != 'absent'
+      [ self[:trusted_ca_file] ]
+    end
   end
 
   validate do

@@ -32,9 +32,6 @@
 #   The SSL certificate source
 # @param ssl_key_source
 #   The SSL private key source
-# @param ssl_add_ca_trust
-#   Boolean that determines if SSL CA should be added
-#   to the system's trust store
 # @param password
 #   Sensu backend admin password used to confiure sensuctl.
 # @param old_password
@@ -61,7 +58,6 @@ class sensu::backend (
   Stdlib::Port $url_port = 8080,
   String $ssl_cert_source = $facts['puppet_hostcert'],
   String $ssl_key_source = $facts['puppet_hostprivkey'],
-  Boolean $ssl_add_ca_trust = true,
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
@@ -79,25 +75,28 @@ class sensu::backend (
 
   if $use_ssl {
     $url_protocol = 'https'
+    $trusted_ca_file = "${ssl_dir}/ca.crt"
     $ssl_config = {
       'cert-file'       => "${ssl_dir}/cert.pem",
       'key-file'        => "${ssl_dir}/key.pem",
-      'trusted-ca-file' => "${ssl_dir}/ca.crt",
+      'trusted-ca-file' => $trusted_ca_file,
     }
     $service_subscribe = Class['::sensu::ssl']
     Class['::sensu::ssl'] -> Sensu_configure['puppet']
   } else {
     $url_protocol = 'http'
+    $trusted_ca_file = 'absent'
     $ssl_config = {}
     $service_subscribe = undef
   }
 
+  $url = "${url_protocol}://${url_host}:${url_port}"
   $default_config = {
     'state-dir' => $state_dir,
+    'api-url'   => $url,
   }
   $config = $default_config + $ssl_config + $config_hash
 
-  $url = "${url_protocol}://${url_host}:${url_port}"
 
   if $include_default_resources {
     include ::sensu::backend::resources
@@ -121,6 +120,7 @@ class sensu::backend (
     username           => 'admin',
     password           => $password,
     bootstrap_password => 'P@ssw0rd!',
+    trusted_ca_file    => $trusted_ca_file,
   }
   sensu_user { 'admin':
     ensure        => 'present',
@@ -152,19 +152,6 @@ class sensu::backend (
       mode      => '0600',
       show_diff => false,
       notify    => Service['sensu-backend'],
-    }
-    # Needed for sensuctl
-    if $ssl_add_ca_trust {
-      ensure_packages(['openssl'])
-      include ::trusted_ca
-      trusted_ca::ca { 'sensu-ca':
-        source  => "${::sensu::ssl_dir}/ca.crt",
-        require => [
-          Package['openssl'],
-          File['sensu_ssl_ca'],
-        ],
-        before  => Sensu_configure['puppet'],
-      }
     }
   }
 

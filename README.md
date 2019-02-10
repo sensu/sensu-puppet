@@ -165,30 +165,6 @@ class { 'sensu::agent':
 }
 ```
 
-If the certificate is already trusted by your operating system's trust store then you can disable adding the CA to system's trust.
-
-```puppet
-class { 'sensu':
-  ssl_add_ca_trust => false,
-}
-class { 'sensu::backend':
-  url_host        => 'sensu-backend.example.com',
-  ssl_cert_source => 'puppet:///modules/site_sensu/cert.pem',
-  ssl_key_source  => 'puppet:///modules/site_sensu/key.pem',
-}
-```
-```puppet
-class { 'sensu':
-  ssl_add_ca_trust => false,
-}
-class { 'sensu::agent':
-  backends    => ['sensu-backend.example.com:8081'],
-  config_hash => {
-    'subscriptions => ['linux', 'apache-servers'],
-  },
-}
-```
-
 To disable SSL support:
 
 ```puppet
