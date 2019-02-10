@@ -148,13 +148,6 @@ matrix:
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
-  # Allow failure for OSes not yet supported by sensu-go stable
-  # See https://github.com/sensu/sensu-go/issues/2498
-  allow_failures:
-  - env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet5
-  - env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
-  - env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
-  - env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
 
 notifications:
   email: false
