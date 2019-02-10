@@ -21,8 +21,26 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
     @property_flush[:url] = value
   end
 
+  def trusted_ca_file
+    config = load_config(config_path)
+    value = config['trusted-ca-file']
+    if value == ''
+      value = 'absent'
+    end
+    value
+  end
+
+  def trusted_ca_file=(value)
+    @property_flush[:trusted_ca_file] = value
+  end
+
   def configure_cmd(bootstrap)
+    trusted_ca_file = @property_flush[:trusted_ca_file] || resource[:trusted_ca_file]
     cmd = ['configure']
+    if trusted_ca_file && trusted_ca_file != 'absent'
+      cmd << '--trusted-ca-file'
+      cmd << trusted_ca_file
+    end
     cmd << '--non-interactive'
     cmd << '--url'
     cmd << resource[:url]
@@ -51,6 +69,10 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
   def flush
     if !@property_flush.empty?
       begin
+        if @property_flush[:trusted_ca_file] == 'absent'
+          Puppet.info("Deleting #{config_path} to clear trusted-ca-file")
+          File.delete(config_path)
+        end
         configure_cmd(false)
       rescue Exception => e
         raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"
@@ -59,6 +81,7 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
   end
 
   def destroy
+    Puppet.info("Deleting #{config_path}")
     File.delete(config_path)
   end
 end

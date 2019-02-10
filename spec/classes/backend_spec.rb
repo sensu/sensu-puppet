@@ -38,6 +38,7 @@ describe 'sensu::backend', :type => :class do
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
             'bootstrap_password'  => 'P@ssw0rd!',
+            'trusted_ca_file'     => '/etc/sensu/ssl/ca.crt',
           })
         }
 
@@ -168,6 +169,7 @@ describe 'sensu::backend', :type => :class do
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
             'bootstrap_password'  => 'P@ssw0rd!',
+            'trusted_ca_file'     => 'absent',
           })
         }
 

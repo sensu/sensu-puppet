@@ -79,15 +79,17 @@ class sensu::backend (
 
   if $use_ssl {
     $url_protocol = 'https'
+    $trusted_ca_file = "${ssl_dir}/ca.crt"
     $ssl_config = {
       'cert-file'       => "${ssl_dir}/cert.pem",
       'key-file'        => "${ssl_dir}/key.pem",
-      'trusted-ca-file' => "${ssl_dir}/ca.crt",
+      'trusted-ca-file' => $trusted_ca_file,
     }
     $service_subscribe = Class['::sensu::ssl']
     Class['::sensu::ssl'] -> Sensu_configure['puppet']
   } else {
     $url_protocol = 'http'
+    $trusted_ca_file = 'absent'
     $ssl_config = {}
     $service_subscribe = undef
   }
@@ -121,6 +123,7 @@ class sensu::backend (
     username           => 'admin',
     password           => $password,
     bootstrap_password => 'P@ssw0rd!',
+    trusted_ca_file    => $trusted_ca_file,
   }
   sensu_user { 'admin':
     ensure        => 'present',
