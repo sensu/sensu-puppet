@@ -191,6 +191,15 @@ DESC
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:max_output_size, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc 'Maximum size, in bytes, of stored check outputs.'
+  end
+
+  newproperty(:discard_output, :boolean => true) do
+    desc 'Discard check output after extracting metrics.'
+    newvalues(:true, :false)
+  end
+
   newproperty(:namespace) do
     desc "The Sensu RBAC namespace that this check belongs to."
     defaultto 'default'

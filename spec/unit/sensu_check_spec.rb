@@ -101,6 +101,7 @@ describe Puppet::Type.type(:sensu_check) do
     :low_flap_threshold,
     :high_flap_threshold,
     :proxy_requests_splay_coverage,
+    :max_output_size,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
@@ -132,6 +133,7 @@ describe Puppet::Type.type(:sensu_check) do
     :round_robin,
     :proxy_requests_splay,
     :silenced,
+    :discard_output,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true
