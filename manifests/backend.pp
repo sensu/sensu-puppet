@@ -90,12 +90,13 @@ class sensu::backend (
     $service_subscribe = undef
   }
 
+  $url = "${url_protocol}://${url_host}:${url_port}"
   $default_config = {
     'state-dir' => $state_dir,
+    'api-url'   => $url,
   }
   $config = $default_config + $ssl_config + $config_hash
 
-  $url = "${url_protocol}://${url_host}:${url_port}"
 
   if $include_default_resources {
     include ::sensu::backend::resources

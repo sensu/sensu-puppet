@@ -102,6 +102,7 @@ describe 'sensu::backend', :type => :class do
         backend_content = <<-END.gsub(/^\s+\|/, '')
           |---
           |state-dir: "/var/lib/sensu/sensu-backend"
+          |api-url: https://test.example.com:8080
           |cert-file: "/etc/sensu/ssl/cert.pem"
           |key-file: "/etc/sensu/ssl/key.pem"
           |trusted-ca-file: "/etc/sensu/ssl/ca.crt"
@@ -158,6 +159,7 @@ describe 'sensu::backend', :type => :class do
         backend_content = <<-END.gsub(/^\s+\|/, '')
           |---
           |state-dir: "/var/lib/sensu/sensu-backend"
+          |api-url: http://test.example.com:8080
         END
 
         it {
