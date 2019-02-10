@@ -32,9 +32,6 @@
 #   The SSL certificate source
 # @param ssl_key_source
 #   The SSL private key source
-# @param ssl_add_ca_trust
-#   Boolean that determines if SSL CA should be added
-#   to the system's trust store
 # @param password
 #   Sensu backend admin password used to confiure sensuctl.
 # @param old_password
@@ -61,7 +58,6 @@ class sensu::backend (
   Stdlib::Port $url_port = 8080,
   String $ssl_cert_source = $facts['puppet_hostcert'],
   String $ssl_key_source = $facts['puppet_hostprivkey'],
-  Boolean $ssl_add_ca_trust = true,
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
@@ -155,19 +151,6 @@ class sensu::backend (
       mode      => '0600',
       show_diff => false,
       notify    => Service['sensu-backend'],
-    }
-    # Needed for sensuctl
-    if $ssl_add_ca_trust {
-      ensure_packages(['openssl'])
-      include ::trusted_ca
-      trusted_ca::ca { 'sensu-ca':
-        source  => "${::sensu::ssl_dir}/ca.crt",
-        require => [
-          Package['openssl'],
-          File['sensu_ssl_ca'],
-        ],
-        before  => Sensu_configure['puppet'],
-      }
     }
   }
 
