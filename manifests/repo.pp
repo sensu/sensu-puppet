@@ -1,11 +1,11 @@
 # @summary Private class to manage sensu repository resources
 # @api private
 #
-class sensu::repo (
-  $manage_repo = $sensu::manage_repo
-) inherits sensu {
+class sensu::repo {
 
-  if any2bool($manage_repo) {
+  include ::sensu
+
+  if $sensu::manage_repo {
     case $facts['os']['family'] {
       'RedHat': {
         if $facts['os']['name'] == 'Amazon' {
