@@ -27,8 +27,25 @@ define sensu::contact(
     default  => 'file'
   }
 
+  case $::osfamily {
+    'windows': {
+      $etc_dir   = 'C:/opt/sensu'
+      $conf_dir  = "${etc_dir}/conf.d"
+      $user      = $::sensu::user
+      $group     = $::sensu::group
+      $file_mode = undef
+    }
+    default: {
+      $etc_dir   = $::sensu::sensu_etc_dir
+      $conf_dir  = "${etc_dir}/conf.d"
+      $user      = $::sensu::user
+      $group     = $::sensu::group
+      $file_mode = '0440'
+    }
+  }
+
   # handler configuration may contain "secrets"
-  file { "/etc/sensu/conf.d/contacts/${name}.json":
+  file { "${conf_dir}/contacts/${name}.json":
     ensure => $file_ensure,
     owner  => 'sensu',
     group  => 'sensu',
@@ -40,6 +57,6 @@ define sensu::contact(
     ensure    => $ensure,
     config    => $config,
     base_path => $base_path,
-    require   => File['/etc/sensu/conf.d/contacts'],
+    require   => File["${conf_dir}/contacts/${name}.json"],
   }
 }
