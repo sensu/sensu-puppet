@@ -76,6 +76,13 @@ describe 'sensu::agent', :type => :class do
         it { should contain_file('sensu_agent_config').with_show_diff('false') }
       end
 
+      context 'with manage_repo => false' do
+        let(:pre_condition) do
+          "class { 'sensu': manage_repo => false }"
+        end
+        it { should contain_package('sensu-go-agent').without_require }
+      end
+
       # Test various backend values
       [
         ['ws://localhost:8081'],

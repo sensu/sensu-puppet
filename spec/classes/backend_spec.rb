@@ -179,6 +179,14 @@ describe 'sensu::backend', :type => :class do
         let(:params) {{ :show_diff => false }}
         it { should contain_file('sensu_backend_config').with_show_diff('false') }
       end
+
+      context 'with manage_repo => false' do
+        let(:pre_condition) do
+          "class { 'sensu': manage_repo => false }"
+        end
+        it { should contain_package('sensu-go-cli').without_require }
+        it { should contain_package('sensu-go-backend').without_require }
+      end
     end
   end
 end

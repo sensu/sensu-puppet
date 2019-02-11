@@ -105,7 +105,7 @@ class sensu::backend (
   package { 'sensu-go-cli':
     ensure  => $_version,
     name    => $cli_package_name,
-    require => Class['::sensu::repo'],
+    require => $::sensu::package_require,
   }
 
   sensu_api_validator { 'sensu':
@@ -159,7 +159,7 @@ class sensu::backend (
     ensure  => $_version,
     name    => $package_name,
     before  => File['sensu_etc_dir'],
-    require => Class['::sensu::repo'],
+    require => $::sensu::package_require,
   }
 
   file { 'sensu_backend_state_dir':
