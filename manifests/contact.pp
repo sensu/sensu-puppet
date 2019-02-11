@@ -47,9 +47,9 @@ define sensu::contact(
   # handler configuration may contain "secrets"
   file { "${conf_dir}/contacts/${name}.json":
     ensure => $file_ensure,
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0440',
+    owner  => $user,
+    group  => $group,
+    mode   => $file_mode,
     before => Sensu_contact[$name],
   }
 
