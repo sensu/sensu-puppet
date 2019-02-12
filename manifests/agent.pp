@@ -76,7 +76,7 @@ class sensu::agent (
     ensure  => $_version,
     name    => $package_name,
     before  => File['sensu_etc_dir'],
-    require => Class['::sensu::repo'],
+    require => $::sensu::package_require,
   }
 
   file { 'sensu_agent_config':

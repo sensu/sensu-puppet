@@ -51,6 +51,9 @@ class sensu (
 
   if $manage_repo {
     include ::sensu::repo
+    $package_require = Class['::sensu::repo']
+  } else {
+    $package_require = undef
   }
 
   file { 'sensu_etc_dir':
