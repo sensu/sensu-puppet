@@ -174,32 +174,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     client.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_version"'
   end
 
-  config.vm.define "win2012r2-client-chocolatey", autostart: false do |client|
-    client.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
-    client.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
-    end
-    client.vm.hostname = 'win2012r2-client'
-    client.vm.network  :private_network, ip: "192.168.56.16"
-    client.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
-    # There are two basic power shell scripts.  The first installs Puppet, but
-    # puppet is not in the PATH.  The second invokes a new shell which will have
-    # Puppet in the PATH.
-    #
-    ## Install Puppet
-    client.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
-    ## Symlink module into place, run puppet module install for puppet apply
-    client.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
-    ## Install Chocolatey
-    client.vm.provision :shell, :inline => 'iex ((New-Object System.Net.WebClient).DownloadString("https://chocolatey.org/install.ps1"))'
-    ## Install the chocolatey Puppet module to get the provider
-    client.vm.provision :shell, :inline => 'iex "puppet module install chocolatey-chocolatey --version 1.2.6"'
-    ## Install sensu using Chocolatey
-    client.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-client-windows-chocolatey.pp"'
-    client.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_version"'
-  end
-
   config.vm.define "debian9-client", autostart: false do |client|
     client.vm.box = "debian/stretch64"
     client.vm.hostname = 'debian9-client.example.com'
