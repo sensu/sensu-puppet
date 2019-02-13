@@ -167,7 +167,9 @@ Valid values: present, absent</p>
 29
 30
 31
-32</pre>
+32
+33
+34</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/config.pp', line 12</span>
@@ -178,7 +180,9 @@ define sensu::config (
   Optional[Hash] $event  = undef,
 ) {
 
-  file { &quot;/etc/sensu/conf.d/checks/config_${name}.json&quot;:
+  include ::sensu
+
+  file { &quot;${::sensu::conf_dir}/checks/config_${name}.json&quot;:
     ensure =&gt; $ensure,
     owner  =&gt; &#39;sensu&#39;,
     group  =&gt; &#39;sensu&#39;,

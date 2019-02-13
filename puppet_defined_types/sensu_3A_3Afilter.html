@@ -187,7 +187,9 @@
 34
 35
 36
-37</pre>
+37
+38
+39</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/filter.pp', line 15</span>
@@ -199,7 +201,9 @@ define sensu::filter (
   Optional[Hash] $when             = undef,
 ) {
 
-  file { &quot;/etc/sensu/conf.d/filters/${name}.json&quot;:
+  include ::sensu
+
+  file { &quot;${::sensu::conf_dir}/filters/${name}.json&quot;:
     ensure =&gt; $ensure,
     owner  =&gt; $::sensu::user,
     group  =&gt; $::sensu::group,
@@ -211,7 +215,7 @@ define sensu::filter (
     negate     =&gt; $negate,
     attributes =&gt; $attributes,
     when       =&gt; $when,
-    require    =&gt; File[&#39;/etc/sensu/conf.d/filters&#39;],
+    require    =&gt; File[&quot;${::sensu::conf_dir}/filters&quot;],
   }
 
 }</pre>

@@ -207,7 +207,9 @@
 54
 55
 56
-57</pre>
+57
+58
+59</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/extension.pp', line 13</span>
@@ -220,6 +222,8 @@ define sensu::extension (
   # Handler specific config
   Hash $config                              = {},
 ) {
+
+  include ::sensu
 
   if $::sensu::client and $::sensu::manage_services {
     $notify_services = Service[&#39;sensu-client&#39;]
@@ -242,7 +246,7 @@ define sensu::extension (
     source =&gt; $source,
   }
 
-  file { &quot;/etc/sensu/conf.d/extensions/${name}.json&quot;:
+  file { &quot;${::sensu::conf_dir}/extensions/${name}.json&quot;:
     ensure =&gt; $ensure,
     owner  =&gt; &#39;sensu&#39;,
     group  =&gt; &#39;sensu&#39;,
@@ -254,7 +258,7 @@ define sensu::extension (
     ensure  =&gt; $ensure,
     config  =&gt; $config,
     notify  =&gt; $notify_services,
-    require =&gt; File[&#39;/etc/sensu/conf.d/extensions&#39;],
+    require =&gt; File[&quot;${::sensu::conf_dir}/extensions&quot;],
   }
 }</pre>
       </td>

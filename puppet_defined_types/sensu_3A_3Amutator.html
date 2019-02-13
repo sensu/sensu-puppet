@@ -228,7 +228,9 @@
 62
 63
 64
-65</pre>
+65
+66
+67</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/mutator.pp', line 15</span>
@@ -243,6 +245,8 @@ define sensu::mutator(
 ) {
 
   assert_type(Pattern[/^[\w\.-]+$/], $name)
+
+  include ::sensu
 
   if $::sensu::server {
     $notify_services = Class[&#39;sensu::server::service&#39;]
@@ -269,7 +273,7 @@ define sensu::mutator(
     $file_ensure = undef
   }
 
-  file { &quot;/etc/sensu/conf.d/mutators/${name}.json&quot;:
+  file { &quot;${::sensu::conf_dir}/mutators/${name}.json&quot;:
     ensure =&gt; $file_ensure,
     owner  =&gt; &#39;sensu&#39;,
     group  =&gt; &#39;sensu&#39;,
@@ -281,7 +285,7 @@ define sensu::mutator(
     ensure  =&gt; $ensure,
     command =&gt; $command,
     timeout =&gt; $timeout,
-    require =&gt; File[&#39;/etc/sensu/conf.d/mutators&#39;],
+    require =&gt; File[&quot;${::sensu::conf_dir}/mutators&quot;],
   }
 }</pre>
       </td>

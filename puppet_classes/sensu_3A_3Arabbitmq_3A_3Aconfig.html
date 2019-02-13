@@ -226,7 +226,10 @@
 135
 136
 137
-138</pre>
+138
+139
+140
+141</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/rabbitmq/config.pp', line 5</span>
@@ -319,11 +322,14 @@ class sensu::rabbitmq::config {
     } else {
       $ssl_private_key = $::sensu::rabbitmq_ssl_private_key
     }
-
-    $enable_ssl = true
   } else {
     $ssl_cert_chain = undef
     $ssl_private_key = undef
+  }
+
+  if ($ssl_cert_chain and $ssl_cert_chain != &#39;&#39;) or ($ssl_private_key and $ssl_private_key != &#39;&#39;) {
+    $enable_ssl = true
+  } else {
     $enable_ssl = $::sensu::rabbitmq_ssl
   }
 
