@@ -1,7 +1,31 @@
 # Change Log
 
-## [v2.62.2](https://github.com/sensu/sensu-puppet/tree/v2.62.2)
+## [v2.62.3](https://github.com/sensu/sensu-puppet/tree/v2.62.3)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.2...v2.62.3)
+
+**Implemented enhancements:**
+
+- Add support for Windows 10 [\#822](https://github.com/sensu/sensu-puppet/issues/822)
+
+**Fixed bugs:**
+
+- TripleO and Sensu without ssl, ssl still enabled in rabbitmq.json [\#1050](https://github.com/sensu/sensu-puppet/issues/1050)
+- Vagrant fails for win2012r2-client-chocolatey [\#893](https://github.com/sensu/sensu-puppet/issues/893)
+- Remove hardcoded /etc/sensu [\#1071](https://github.com/sensu/sensu-puppet/pull/1071) ([treydock](https://github.com/treydock))
+
+**Closed issues:**
+
+- Illegal method definition of method 'validate\_keys' on line 8' in legacy function. [\#1055](https://github.com/sensu/sensu-puppet/issues/1055)
+
+**Merged pull requests:**
+
+- \(GH-893\) Remove Vagrant box for windows with chocolatey provider [\#1073](https://github.com/sensu/sensu-puppet/pull/1073) ([ghoneycutt](https://github.com/ghoneycutt))
+- Puppet v6 now uses Ruby v2.5.3 [\#1060](https://github.com/sensu/sensu-puppet/pull/1060) ([ghoneycutt](https://github.com/ghoneycutt))
+- Convert sensu\_sorted\_json legacy function to new Ruby function [\#1056](https://github.com/sensu/sensu-puppet/pull/1056) ([treydock](https://github.com/treydock))
+- Do not enable rabbitmq ssl for empty cert or key [\#1053](https://github.com/sensu/sensu-puppet/pull/1053) ([treydock](https://github.com/treydock))
+
+## [v2.62.2](https://github.com/sensu/sensu-puppet/tree/v2.62.2) (2019-01-19)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.1...v2.62.2)
 
 **Fixed bugs:**

@@ -3699,121 +3699,29 @@ Default value: /etc/sensu/conf.d/
 
 ### sensu_sorted_json
 
-Type: Ruby 3.x API
+Type: Ruby 4.x API
 
 This function takes unsorted hash and outputs JSON object making sure the keys are sorted.
 Optionally you can pass a boolean as the second parameter, which controls if
 the output is pretty formatted.
 
-*Examples:*
-
-    -------------------
-    -- UNSORTED HASH --
-    -------------------
-    unsorted_hash = {
-      'client_addr' => '127.0.0.1',
-      'bind_addr'   => '192.168.34.56',
-      'start_join'  => [
-        '192.168.34.60',
-        '192.168.34.61',
-        '192.168.34.62',
-      ],
-      'ports'       => {
-        'rpc'   => 8567,
-        'https' => 8500,
-        'http'  => -1,
-      },
-    }
-
-    -----------------
-    -- SORTED JSON --
-    -----------------
-
-    sorted_json(unsorted_hash)
-
-    {"bind_addr":"192.168.34.56","client_addr":"127.0.0.1",
-    "ports":{"http":-1,"https":8500,"rpc":8567},
-    "start_join":["192.168.34.60","192.168.34.61","192.168.34.62"]}
-
-    ------------------------
-    -- PRETTY SORTED JSON --
-    ------------------------
-    Params: data <hash>, pretty <true|false>.
-
-    sorted_json(unsorted_hash, true)
-
-    {
-        "bind_addr": "192.168.34.56",
-        "client_addr": "127.0.0.1",
-        "ports": {
-            "http": -1,
-            "https": 8500,
-            "rpc": 8567
-        },
-        "start_join": [
-            "192.168.34.60",
-            "192.168.34.61",
-            "192.168.34.62"
-        ]
-    }
-
-#### `sensu_sorted_json()`
+#### `sensu_sorted_json(Hash $hash, Optional[Boolean] $pretty)`
 
 This function takes unsorted hash and outputs JSON object making sure the keys are sorted.
 Optionally you can pass a boolean as the second parameter, which controls if
 the output is pretty formatted.
 
-*Examples:*
+Returns: `String` Returns a JSON string
 
-    -------------------
-    -- UNSORTED HASH --
-    -------------------
-    unsorted_hash = {
-      'client_addr' => '127.0.0.1',
-      'bind_addr'   => '192.168.34.56',
-      'start_join'  => [
-        '192.168.34.60',
-        '192.168.34.61',
-        '192.168.34.62',
-      ],
-      'ports'       => {
-        'rpc'   => 8567,
-        'https' => 8500,
-        'http'  => -1,
-      },
-    }
+##### `hash`
 
-    -----------------
-    -- SORTED JSON --
-    -----------------
+Data type: `Hash`
 
-    sorted_json(unsorted_hash)
+Hash to be sorted
 
-    {"bind_addr":"192.168.34.56","client_addr":"127.0.0.1",
-    "ports":{"http":-1,"https":8500,"rpc":8567},
-    "start_join":["192.168.34.60","192.168.34.61","192.168.34.62"]}
+##### `pretty`
 
-    ------------------------
-    -- PRETTY SORTED JSON --
-    ------------------------
-    Params: data <hash>, pretty <true|false>.
+Data type: `Optional[Boolean]`
 
-    sorted_json(unsorted_hash, true)
-
-    {
-        "bind_addr": "192.168.34.56",
-        "client_addr": "127.0.0.1",
-        "ports": {
-            "http": -1,
-            "https": 8500,
-            "rpc": 8567
-        },
-        "start_join": [
-            "192.168.34.60",
-            "192.168.34.61",
-            "192.168.34.62"
-        ]
-    }
-
-Returns: `Any`
+Boolean that determines if output should be pretty format
 
