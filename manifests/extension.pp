@@ -19,6 +19,8 @@ define sensu::extension (
   Hash $config                              = {},
 ) {
 
+  include ::sensu
+
   if $::sensu::client and $::sensu::manage_services {
     $notify_services = Service['sensu-client']
   } else {
@@ -40,7 +42,7 @@ define sensu::extension (
     source => $source,
   }
 
-  file { "/etc/sensu/conf.d/extensions/${name}.json":
+  file { "${::sensu::conf_dir}/extensions/${name}.json":
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',
@@ -52,6 +54,6 @@ define sensu::extension (
     ensure  => $ensure,
     config  => $config,
     notify  => $notify_services,
-    require => File['/etc/sensu/conf.d/extensions'],
+    require => File["${::sensu::conf_dir}/extensions"],
   }
 }

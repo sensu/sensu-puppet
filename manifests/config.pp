@@ -15,7 +15,9 @@ define sensu::config (
   Optional[Hash] $event  = undef,
 ) {
 
-  file { "/etc/sensu/conf.d/checks/config_${name}.json":
+  include ::sensu
+
+  file { "${::sensu::conf_dir}/checks/config_${name}.json":
     ensure => $ensure,
     owner  => 'sensu',
     group  => 'sensu',

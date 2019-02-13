@@ -23,6 +23,8 @@ define sensu::mutator(
 
   assert_type(Pattern[/^[\w\.-]+$/], $name)
 
+  include ::sensu
+
   if $::sensu::server {
     $notify_services = Class['sensu::server::service']
   } else {
@@ -48,7 +50,7 @@ define sensu::mutator(
     $file_ensure = undef
   }
 
-  file { "/etc/sensu/conf.d/mutators/${name}.json":
+  file { "${::sensu::conf_dir}/mutators/${name}.json":
     ensure => $file_ensure,
     owner  => 'sensu',
     group  => 'sensu',
@@ -60,6 +62,6 @@ define sensu::mutator(
     ensure  => $ensure,
     command => $command,
     timeout => $timeout,
-    require => File['/etc/sensu/conf.d/mutators'],
+    require => File["${::sensu::conf_dir}/mutators"],
   }
 }
