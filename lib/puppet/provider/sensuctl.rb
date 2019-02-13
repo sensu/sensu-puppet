@@ -1,3 +1,4 @@
+require 'etc'
 require 'json'
 require 'tempfile'
 
@@ -7,7 +8,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   commands :sensuctl => 'sensuctl'
 
   def config_path
-    home = File.expand_path('~')
+    user_name = Etc.getpwuid(Process.uid).name
+    home = Etc.getpwnam(user_name).dir
     File.join(home, '.config/sensu/sensuctl/cluster')
   end
 
