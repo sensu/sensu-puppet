@@ -118,54 +118,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "win2012r2-agent", autostart: false do |agent|
-    agent.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
-    agent.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
-    end
-    agent.vm.hostname = 'win2012r2-agent'
-    agent.vm.network  :private_network, ip: "192.168.52.25"
-    agent.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
-    # There are two basic power shell scripts. The first installs Puppet, but
-    # puppet is not in the PATH. The second invokes a new shell which will have
-    # Puppet in the PATH.
-    #
-    ## Install Puppet
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
-    ## Symlink module into place, run puppet module install for puppet apply
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
-    ## Install Sensu using the default Windows package provider (MSI)
-    agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent-windows.pp"'
-    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_agent"'
-  end
-
-  config.vm.define "win2012r2-agent-chocolatey", autostart: false do |agent|
-    agent.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
-    agent.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
-    end
-    agent.vm.hostname = 'win2012r2-agent'
-    agent.vm.network  :private_network, ip: "192.168.52.16"
-    agent.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
-    # There are two basic power shell scripts. The first installs Puppet, but
-    # puppet is not in the PATH. The second invokes a new shell which will have
-    # Puppet in the PATH.
-    #
-    ## Install Puppet
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
-    ## Symlink module into place, run puppet module install for puppet apply
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.2.ps1"
-    ## Install Chocolatey
-    agent.vm.provision :shell, :inline => 'iex ((New-Object System.Net.WebClient).DownloadString("https://chocolatey.org/install.ps1"))'
-    ## Install the chocolatey Puppet module to get the provider
-    agent.vm.provision :shell, :inline => 'iex "puppet module install chocolatey-chocolatey --version 1.2.6"'
-    ## Install sensu using Chocolatey
-    agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent-windows-chocolatey.pp"'
-    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:/vagrant/lib/facter sensu_agent"'
-  end
-
   config.vm.define "debian9-agent", autostart: false do |agent|
     agent.vm.box = "debian/stretch64"
     agent.vm.hostname = 'debian9-agent.example.com'
@@ -182,24 +134,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
-  end
-
-  # The rsync used to populate /vagrant will fail if the repo has the spec
-  # fixtures created. To avoid, run `rake spec_clean` before `vagrant up`.
-  config.vm.define "macos-agent", autostart: false do |agent|
-    agent.vm.box = "jhcook/macos-sierra"
-    agent.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
-    end
-    agent.vm.hostname = 'macos-agent.example.com'
-    agent.vm.network  :private_network, ip: "192.168.52.19"
-    agent.vm.synced_folder ".", "/vagrant", type: "rsync", group: "wheel"
-    agent.vm.provision :shell, :path => "tests/provision_macos.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
-    agent.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--usb", "on"]
-      vb.customize ["modifyvm", :id, "--usbehci", "off"]
-    end
   end
 end
