@@ -31,7 +31,7 @@ describe Puppet::Type.type(:sensu_configure).provider(:sensuctl) do
       @resource.provider.flush
     end
     it 'should remove SSL trusted ca' do
-      allow(File).to receive(:expand_path).with('~').and_return('/root')
+      allow(@resource.provider).to receive(:config_path).and_return('/root/.config/sensu/sensuctl/cluster')
       expect(@resource.provider).to receive(:sensuctl).with(['configure','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
       expect(File).to receive(:delete).with('/root/.config/sensu/sensuctl/cluster')
       @resource.provider.trusted_ca_file = 'absent'
@@ -41,7 +41,7 @@ describe Puppet::Type.type(:sensu_configure).provider(:sensuctl) do
 
   describe 'destroy' do
     it 'should not support deleting a configure' do
-      allow(File).to receive(:expand_path).with('~').and_return('/root')
+      allow(@resource.provider).to receive(:config_path).and_return('/root/.config/sensu/sensuctl/cluster')
       expect(File).to receive(:delete).with('/root/.config/sensu/sensuctl/cluster')
       @resource.provider.destroy
     end
