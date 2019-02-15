@@ -8,6 +8,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   commands :sensuctl => 'sensuctl'
 
   def config_path
+    # https://github.com/sensu/sensu-puppet/issues/1072
+    # since $HOME is not set in systemd service File.expand_path('~') won't work
     user_name = Etc.getpwuid(Process.uid).name
     home = Etc.getpwnam(user_name).dir
     File.join(home, '.config/sensu/sensuctl/cluster')
