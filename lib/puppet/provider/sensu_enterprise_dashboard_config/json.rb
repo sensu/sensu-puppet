@@ -226,7 +226,7 @@ Puppet::Type.type(:sensu_enterprise_dashboard_config).provide(:json) do
   end
 
   def custom
-    conf['dashboard'].reject { |k,v| is_property?(k) }
+    conf['dashboard']['custom']
   end
 
   def custom=(value)
