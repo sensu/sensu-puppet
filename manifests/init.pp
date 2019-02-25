@@ -49,13 +49,6 @@ class sensu (
   String $ssl_ca_source = $facts['puppet_localcacert'],
 ) {
 
-  if $manage_repo {
-    include ::sensu::repo
-    $package_require = Class['::sensu::repo']
-  } else {
-    $package_require = undef
-  }
-
   file { 'sensu_etc_dir':
     ensure  => 'directory',
     path    => $etc_dir,
@@ -70,11 +63,23 @@ class sensu (
 
   case $facts['os']['family'] {
     'RedHat': {
+      $os_package_require = []
     }
     'Debian': {
+      $os_package_require = [Class['::apt::update']]
     }
     default: {
-      fail("Detected osfamily <${::osfamily}>. Only RedHat and Debian are supported.")
+      fail("Detected osfamily <${facts['os']['family']}>. Only RedHat and Debian are supported.")
     }
   }
+
+  # $package_require is used by sensu::agent and sensu::backend
+  # package resources
+  if $manage_repo {
+    include ::sensu::repo
+    $package_require = [Class['::sensu::repo']] + $os_package_require
+  } else {
+    $package_require = undef
+  }
+
 }

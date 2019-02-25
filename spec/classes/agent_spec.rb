@@ -15,7 +15,7 @@ describe 'sensu::agent', :type => :class do
             'ensure'  => 'installed',
             'name'    => 'sensu-go-agent',
             'before'  => 'File[sensu_etc_dir]',
-            'require' => 'Class[Sensu::Repo]',
+            'require' => platforms[facts[:osfamily]][:package_require],
           })
         }
 
