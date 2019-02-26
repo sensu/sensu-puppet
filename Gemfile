@@ -7,17 +7,17 @@ else
 end
 
 group :development, :unit_tests do
-  gem 'rake',                                             '< 11.0.0'
-  gem 'rspec-puppet', '~> 2.6.0',                         :require => false
+  gem 'rake'
+  gem 'rspec-puppet',                                     :require => false
   gem 'rspec-puppet-facts',                               :require => false
   gem 'rspec-mocks',                                      :require => false
-  gem 'puppetlabs_spec_helper', '>= 2.11.0',              :require => false
-  gem 'puppet-lint', "~> 2.0",                            :require => false
-  gem 'json', "~> 1.8.3",                                 :require => false
-  gem 'json_pure', "~> 1.8.3",                            :require => false
+  gem 'puppetlabs_spec_helper',                           :require => false
   gem 'metadata-json-lint',                               :require => false
   gem 'puppet-blacksmith',                                :require => false
-  gem 'rest-client', ">= 1.7.4",                          :require => false
+  gem 'json',                                             :require => false
+  gem 'json_pure',                                        :require => false
+  gem 'rest-client',                                      :require => false
+  gem 'puppet-lint',                                      :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
   gem 'puppet-lint-alias-check',                          :require => false
   gem 'puppet-lint-anchor-check',                         :require => false
@@ -41,18 +41,18 @@ group :documentation do
 end
 
 group :system_tests do
-  gem 'beaker', '~> 4.x',             :require => false
-  gem 'beaker-rspec',                 :require => false
-  gem 'beaker-puppet', '< 1.15.0',    :require => false
+  gem 'beaker',                       :require => false
   gem 'beaker-docker',                :require => false
-  gem 'serverspec',                   :require => false
-  gem 'beaker-puppet_install_helper', :require => false
   gem 'beaker-module_install_helper', :require => false
+  gem 'beaker-puppet',                :require => false
+  gem 'beaker-puppet_install_helper', :require => false
+  gem 'beaker-rspec',                 :require => false
+  gem 'serverspec',                   :require => false
 end
 
 group :development do
-  gem 'simplecov',          :require => false
-  gem 'guard-rake',         :require => false
-  gem 'listen', '~> 3.0.0', :require => false
+  gem 'simplecov',  :require => false
+  gem 'guard-rake', :require => false
+  gem 'listen',     :require => false
 end
 # vim:ft=ruby
