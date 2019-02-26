@@ -14,9 +14,6 @@ group :development, :unit_tests do
   gem 'puppetlabs_spec_helper',                           :require => false
   gem 'metadata-json-lint',                               :require => false
   gem 'puppet-blacksmith',                                :require => false
-  gem 'json',                                             :require => false
-  gem 'json_pure',                                        :require => false
-  gem 'rest-client',                                      :require => false
   gem 'puppet-lint',                                      :require => false
   gem 'puppet-lint-absolute_classname-check',             :require => false
   gem 'puppet-lint-alias-check',                          :require => false
