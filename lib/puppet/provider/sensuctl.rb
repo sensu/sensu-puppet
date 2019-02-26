@@ -1,3 +1,4 @@
+require 'etc'
 require 'json'
 require 'tempfile'
 
@@ -6,9 +7,14 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
 
   commands :sensuctl => 'sensuctl'
 
-  def config_path
-    home = File.expand_path('~')
+  def self.config_path
+    # https://github.com/sensu/sensu-puppet/issues/1072
+    # since $HOME is not set in systemd service File.expand_path('~') won't work
+    home = Etc.getpwuid(Process.uid).dir
     File.join(home, '.config/sensu/sensuctl/cluster')
+  end
+  def config_path
+    self.class.config_path
   end
 
   def load_config(path)

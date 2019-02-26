@@ -1,8 +1,19 @@
 require 'spec_helper'
 require 'puppet/provider/sensuctl'
+require 'ostruct'
 
 describe Puppet::Provider::Sensuctl do
   subject { Puppet::Provider::Sensuctl }
+
+  context 'config_path' do
+    it 'should return path' do
+      allow(Process).to receive(:uid).and_return(0)
+      user = OpenStruct.new
+      user.dir = '/root'
+      allow(Etc).to receive(:getpwuid).with(0).and_return(user)
+      expect(subject.config_path).to eq('/root/.config/sensu/sensuctl/cluster')
+    end
+  end
 
   context 'sensuctl_list' do
     it 'should list a resource' do
