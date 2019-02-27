@@ -11,8 +11,6 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
       class { '::sensu::backend':
-        password       => 'P@ssw0rd!',
-        old_password   => 'supersecret',
         license_source => '/root/sensu_license.json',
       }
       EOS
