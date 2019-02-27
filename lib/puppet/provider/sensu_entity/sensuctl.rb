@@ -92,7 +92,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
       end
     end
     begin
-      sensuctl_create('entity', metadata, spec)
+      sensuctl_create('Entity', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:id]} failed\nError message: #{e.message}"
     end
@@ -136,7 +136,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
         end
       end
       begin
-        sensuctl_create('entity', metadata, spec)
+        sensuctl_create('Entity', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

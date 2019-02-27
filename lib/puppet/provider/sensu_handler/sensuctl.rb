@@ -99,7 +99,7 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       spec[:socket][:port] = resource[:socket_port] if resource[:socket_port]
     end
     begin
-      sensuctl_create('handler', metadata, spec)
+      sensuctl_create('Handler', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -146,7 +146,7 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
         spec[:socket][:port] = @property_flush[:socket_port] if @property_flush[:socket_port]
       end
       begin
-        sensuctl_create('handler', metadata, spec)
+        sensuctl_create('Handler', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

@@ -50,11 +50,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
 
   def self.sensuctl_create(type, metadata, spec, api_version = 'core/v2')
     data = {}
-    if type =~ /^[A-Z]/
-      data['type'] = type
-    else
-      data['type'] = type.capitalize
-    end
+    data['type'] = type
     data['api_version'] = api_version
     data['metadata'] = metadata
     data['spec'] = spec

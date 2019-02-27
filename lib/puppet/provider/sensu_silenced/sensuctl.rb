@@ -87,7 +87,7 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
       end
     end
     begin
-      sensuctl_create('silenced', metadata, spec)
+      sensuctl_create('Silenced', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -124,7 +124,7 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
         end
       end
       begin
-        sensuctl_create('silenced', metadata, spec)
+        sensuctl_create('Silenced', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

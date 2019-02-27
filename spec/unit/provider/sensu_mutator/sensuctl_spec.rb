@@ -32,7 +32,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
       expected_spec = {
         :command => 'test',
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Mutator', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -49,7 +49,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
         :command => 'test',
         :timeout => 60
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Mutator', expected_metadata, expected_spec)
       @resource.provider.timeout = 60
       @resource.provider.flush
     end
@@ -63,7 +63,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
         :timeout => nil,
       }
       @resource[:timeout] = 60
-      expect(@resource.provider).to receive(:sensuctl_create).with('mutator', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Mutator', expected_metadata, expected_spec)
       @resource.provider.timeout = :absent
       @resource.provider.flush
     end

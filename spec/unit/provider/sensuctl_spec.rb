@@ -26,38 +26,38 @@ describe Puppet::Provider::Sensuctl do
     end
 
     it 'should have JSON with type' do
-      subject.sensuctl_create('test', {name: 'test'}, {foo: 'bar'})
+      subject.sensuctl_create('Test', {name: 'test'}, {foo: 'bar'})
       j = JSON.parse(File.read(@tmp.path))
       expect(j['type']).to eq('Test')
     end
 
     it 'should have JSON with api_version' do
-      subject.sensuctl_create('test', {name: 'test'}, {foo: 'bar'})
+      subject.sensuctl_create('Test', {name: 'test'}, {foo: 'bar'})
       j = JSON.parse(File.read(@tmp.path))
       expect(j['api_version']).to eq('core/v2')
     end
 
     it 'should have JSON with metadata' do
-      subject.sensuctl_create('test', {name: 'test'}, {foo: 'bar'})
+      subject.sensuctl_create('Test', {name: 'test'}, {foo: 'bar'})
       j = JSON.parse(File.read(@tmp.path))
       expect(j['metadata']).to eq('name' => 'test')
     end
 
     it 'should have JSON with spec' do
-      subject.sensuctl_create('test', {name: 'test'}, {foo: 'bar'})
+      subject.sensuctl_create('Test', {name: 'test'}, {foo: 'bar'})
       j = JSON.parse(File.read(@tmp.path))
       expect(j['spec']).to eq({'foo' => 'bar'})
     end
 
     it 'should have JSON with only valid keys' do
-      subject.sensuctl_create('test', {name: 'test'}, {foo: 'bar'})
+      subject.sensuctl_create('Test', {name: 'test'}, {foo: 'bar'})
       j = JSON.parse(File.read(@tmp.path))
       expect(j.keys).to eq(['type','api_version','metadata','spec'])
     end
 
     it 'should create a resource' do
       expect(subject).to receive(:sensuctl).with(['create','--file',@tmp.path])
-      subject.sensuctl_create('test', {name: 'test'}, {foo: 'bar'})
+      subject.sensuctl_create('Test', {name: 'test'}, {foo: 'bar'})
     end
   end
 

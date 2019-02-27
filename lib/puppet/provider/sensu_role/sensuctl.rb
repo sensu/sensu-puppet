@@ -80,7 +80,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
       end
     end
     begin
-      sensuctl_create('role', metadata, spec)
+      sensuctl_create('Role', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -111,7 +111,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
         end
       end
       begin
-        sensuctl_create('role', metadata, spec)
+        sensuctl_create('Role', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
