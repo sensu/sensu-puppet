@@ -13,12 +13,12 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(@provider).to receive(:sensuctl_list).with('user').and_return(my_fixture_read('user_list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('user', false).and_return(my_fixture_read('user_list.json'))
       expect(@provider.instances.length).to eq(2)
     end
 
     it 'should return the resource for a user' do
-      allow(@provider).to receive(:sensuctl_list).with('user').and_return(my_fixture_read('user_list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('user', false).and_return(my_fixture_read('user_list.json'))
       property_hash = @provider.instances.select {|i| i.name == 'admin'}[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('admin')
       expect(property_hash[:groups]).to eq(['cluster-admins'])

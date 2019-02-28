@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
   def self.instances
     namespaces = []
 
-    output = sensuctl_list('namespace')
+    output = sensuctl_list('namespace', false)
     Puppet.debug("sensu namespaces: #{output}")
     begin
       data = JSON.parse(output)

@@ -14,7 +14,7 @@ describe Puppet::Provider::Sensuctl do
     it 'should list a resource without all namespaces' do
       expected_args = ['namespace','list','--format','json']
       expect(subject).to receive(:sensuctl).with(expected_args)
-      subject.sensuctl_list('namespace')
+      subject.sensuctl_list('namespace', false)
     end
   end
 
