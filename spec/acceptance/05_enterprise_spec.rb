@@ -1,7 +1,12 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::backend class', if: RSpec.configuration.sensu_test_enterprise do
+describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
   node = hosts_as('sensu_backend')[0]
+  before do
+    if ! RSpec.configuration.sensu_test_enterprise
+      skip("Skipping enterprise tests")
+    end
+  end
   context 'adds license file' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
