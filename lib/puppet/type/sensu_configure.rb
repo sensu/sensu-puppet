@@ -8,7 +8,7 @@ Puppet::Type.newtype(:sensu_configure) do
 @summary Manages `sensuctl configure`. This is a private type not intended to be used directly.
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
 * `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
