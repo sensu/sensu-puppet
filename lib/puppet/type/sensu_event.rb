@@ -17,7 +17,7 @@ Puppet::Type.newtype(:sensu_event) do
   }
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`

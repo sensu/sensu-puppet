@@ -43,7 +43,7 @@ The `subscription` and `check` properties take precedence over value in the name
   }
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
