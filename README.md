@@ -184,6 +184,8 @@ class { 'sensu::backend':
 }
 ```
 
+The type `sensu_ldap_auth` requires a valid enterprise license.
+
 ### Exported resources
 
 One possible approach to defining checks is having agents export their checks to the sensu-backend using [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html).
