@@ -12,6 +12,7 @@
     * [Basic Sensu agent](#basic-sensu-agent)
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
+    * [Enterprise support](#enterprise-support)
     * [Exported resources](#exported-resources)
     * [Resource purging](#resource-purging)
     * [Sensu backend cluster](#sensu-backend-cluster)
@@ -145,17 +146,17 @@ If the certificates and keys are already installed then define the source parame
 
 ```puppet
 class { 'sensu':
-  ssl_ca_source => 'puppet:///modules/site_sensu/ca.pem',
+  ssl_ca_source => 'puppet:///modules/profile/sensu/ca.pem',
 }
 class { 'sensu::backend':
   url_host        => 'sensu-backend.example.com',
-  ssl_cert_source => 'puppet:///modules/site_sensu/cert.pem',
-  ssl_key_source  => 'puppet:///modules/site_sensu/key.pem',
+  ssl_cert_source => 'puppet:///modules/profile/sensu/cert.pem',
+  ssl_key_source  => 'puppet:///modules/profile/sensu/key.pem',
 }
 ```
 ```puppet
 class { 'sensu':
-  ssl_ca_source => 'puppet:///modules/site_sensu/ca.pem',
+  ssl_ca_source => 'puppet:///modules/profile/sensu/ca.pem',
 }
 class { 'sensu::agent':
   backends    => ['sensu-backend.example.com:8081'],
@@ -172,6 +173,18 @@ class { 'sensu':
   use_ssl => false,
 }
 ```
+
+### Enterprise Support
+
+In order to activate enterprise support the license file needs to be added:
+
+```puppet
+class { 'sensu::backend':
+  license_source => 'puppet:///modules/profile/sensu/license.json',
+}
+```
+
+The type `sensu_ldap_auth` requires a valid enterprise license.
 
 ### Exported resources
 

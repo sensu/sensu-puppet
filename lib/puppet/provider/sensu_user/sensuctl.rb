@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
   def self.instances
     users = []
 
-    output = sensuctl_list('user')
+    output = sensuctl_list('user', false)
     Puppet.debug("sensu users: #{output}")
     begin
       data = JSON.parse(output)

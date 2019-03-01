@@ -30,7 +30,7 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
         :entity_class => 'proxy',
         :deregister => false,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Entity', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -47,7 +47,7 @@ describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
       expected_spec = {
         :deregister => false,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('entity', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Entity', expected_metadata, expected_spec)
       @resource.provider.labels = {'foo' => 'bar'}
       @resource.provider.flush
     end

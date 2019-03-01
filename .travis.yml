@@ -12,6 +12,7 @@ before_install:
   - gem update bundler
   - gem --version
   - bundle -v
+  - 'if [ -n "$encrypted_5de82e653bde_key" -a -n "$encrypted_5de82e653bde_iv" ]; then openssl aes-256-cbc -K $encrypted_5de82e653bde_key -iv $encrypted_5de82e653bde_iv -in tests/sensu_license.json.enc -out tests/sensu_license.json -d; fi'
 
 sudo: false
 

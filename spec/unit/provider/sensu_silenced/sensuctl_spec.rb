@@ -36,7 +36,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :expire => -1,
         :expire_on_resolve => false,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Silenced', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -62,7 +62,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :expire_on_resolve => false,
         :reason => 'test',
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Silenced', expected_metadata, expected_spec)
       @resource.provider.reason = 'test'
       @resource.provider.flush
     end
@@ -78,7 +78,7 @@ describe Puppet::Type.type(:sensu_silenced).provider(:sensuctl) do
         :expire => -1,
         :expire_on_resolve => false,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('silenced', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Silenced', expected_metadata, expected_spec)
       @resource.provider.expire_on_resolve = :false
       @resource.provider.flush
     end

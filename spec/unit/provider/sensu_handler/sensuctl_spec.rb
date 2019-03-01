@@ -39,7 +39,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :filters => ["recurrence", "production"],
         :socket => {:host => "localhost", :port => 9000}
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Handler', expected_metadata, expected_spec)
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -60,7 +60,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :command => 'test',
         :socket => { :host => 'localhost', :port => 9001 }
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Handler', expected_metadata, expected_spec)
       @resource.provider.socket_port = 9001
       @resource.provider.flush
     end
@@ -75,7 +75,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :timeout => nil,
       }
       @resource[:timeout] = 60
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Handler', expected_metadata, expected_spec)
       @resource.provider.timeout = :absent
       @resource.provider.flush
     end
@@ -90,7 +90,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :handlers => nil
       }
       @resource[:handlers] = ['foo','bar']
-      expect(@resource.provider).to receive(:sensuctl_create).with('handler', expected_metadata, expected_spec)
+      expect(@resource.provider).to receive(:sensuctl_create).with('Handler', expected_metadata, expected_spec)
       @resource.provider.handlers = :absent
       @resource.provider.flush
     end

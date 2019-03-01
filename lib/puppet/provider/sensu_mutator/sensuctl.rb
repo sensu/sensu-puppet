@@ -84,7 +84,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
       end
     end
     begin
-      sensuctl_create('mutator', metadata, spec)
+      sensuctl_create('Mutator', metadata, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -119,7 +119,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
         end
       end
       begin
-        sensuctl_create('mutator', metadata, spec)
+        sensuctl_create('Mutator', metadata, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

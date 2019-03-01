@@ -43,10 +43,10 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
   end
 
-  def self.sensuctl_list(command)
+  def self.sensuctl_list(command, namespaces = true)
     args = [command]
     args << 'list'
-    if ! ['cluster-role','cluster-role-binding','namespace','user'].include?(command)
+    if namespaces
       args << '--all-namespaces'
     end
     args << '--format'
@@ -54,14 +54,10 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     sensuctl(args)
   end
 
-  def self.sensuctl_create(type, metadata, spec)
+  def self.sensuctl_create(type, metadata, spec, api_version = 'core/v2')
     data = {}
-    if type =~ /^[A-Z]/
-      data['type'] = type
-    else
-      data['type'] = type.capitalize
-    end
-    data['api_version'] = 'core/v2'
+    data['type'] = type
+    data['api_version'] = api_version
     data['metadata'] = metadata
     data['spec'] = spec
     f = Tempfile.new('sensuctl')

@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
   def self.instances
     namespaces = []
 
-    output = sensuctl_list('namespace')
+    output = sensuctl_list('namespace', false)
     Puppet.debug("sensu namespaces: #{output}")
     begin
       data = JSON.parse(output)
@@ -64,7 +64,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
       end
     end
     begin
-      sensuctl_create('namespace', {}, spec)
+      sensuctl_create('Namespace', {}, spec)
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -91,7 +91,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
         end
       end
       begin
-        sensuctl_create('namespace', {}, spec)
+        sensuctl_create('Namespace', {}, spec)
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
