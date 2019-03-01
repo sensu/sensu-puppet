@@ -3,6 +3,11 @@ require 'spec_helper_acceptance'
 describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
   agent = hosts_as('sensu_agent')[0]
   backend = hosts_as('sensu_backend')[0]
+  before do
+    if fact_on(agent, 'operatingsystem') == 'Debian'
+      skip("TODO: package is missing on Debian - See https://github.com/sensu/sensu-plugins-omnibus/issues/3")
+    end
+  end
   context 'on agent' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
