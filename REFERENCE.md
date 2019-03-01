@@ -5,10 +5,17 @@
 
 **Classes**
 
+_Public Classes_
+
 * [`sensu`](#sensu): Base Sensu class
 * [`sensu::agent`](#sensuagent): Manage Sensu agent
 * [`sensu::backend`](#sensubackend): Manage Sensu backend
-* [`sensu::repo`](#sensurepo): private class
+
+_Private Classes_
+
+* `sensu::backend::resources`: Default sensu resources
+* `sensu::repo`: Private class to manage sensu repository resources
+* `sensu::ssl`: Private class to manage sensu SSL resources
 
 **Resource types**
 
@@ -19,16 +26,19 @@
 * [`sensu_cluster_role`](#sensu_cluster_role): Manages Sensu cluster roles
 * [`sensu_cluster_role_binding`](#sensu_cluster_role_binding): Manages Sensu cluster role bindings
 * [`sensu_config`](#sensu_config): Manages Sensu configs
+* [`sensu_configure`](#sensu_configure): Manages `sensuctl configure`. This is a private type not intended to be used directly.
 * [`sensu_entity`](#sensu_entity): Manages Sensu entities
 * [`sensu_event`](#sensu_event): Manages Sensu events
 * [`sensu_filter`](#sensu_filter): Manages Sensu filters
 * [`sensu_handler`](#sensu_handler): Manages Sensu handlers
 * [`sensu_hook`](#sensu_hook): Manages Sensu hooks
+* [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth. Requires valid enterprise license.
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
 * [`sensu_role`](#sensu_role): Manages Sensu roles
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
 * [`sensu_silenced`](#sensu_silenced): Manages Sensu silencing
+* [`sensu_user`](#sensu_user): Manages Sensu users
 
 ## Classes
 
@@ -54,9 +64,16 @@ Default value: 'installed'
 Data type: `Stdlib::Absolutepath`
 
 Absolute path to the Sensu etc directory.
-Default: '/etc/sensu' and 'C:/opt/sensu' on windows.
 
 Default value: '/etc/sensu'
+
+##### `ssl_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+Absolute path to the Sensu ssl directory.
+
+Default value: '/etc/sensu/ssl'
 
 ##### `user`
 
@@ -83,6 +100,15 @@ such that only Puppet managed files are present.
 
 Default value: `true`
 
+##### `ssl_dir_purge`
+
+Data type: `Boolean`
+
+Boolean to determine if the ssl_dir should be purged
+such that only Puppet managed files are present.
+
+Default value: `true`
+
 ##### `manage_repo`
 
 Data type: `Boolean`
@@ -91,6 +117,22 @@ Boolean to determine if software repository for Sensu
 should be managed.
 
 Default value: `true`
+
+##### `use_ssl`
+
+Data type: `Boolean`
+
+Sensu backend service uses SSL
+
+Default value: `true`
+
+##### `ssl_ca_source`
+
+Data type: `String`
+
+Source of SSL CA used by sensu services
+
+Default value: $facts['puppet_localcacert']
 
 ### sensu::agent
 
@@ -102,9 +144,10 @@ Class to manage the Sensu agent.
 
 ```puppet
 class { 'sensu::agent':
+  backends    => ['sensu-backend.example.com:8081'],
   config_hash => {
-    'backend-url' => 'ws://sensu-backend.example.com:8081',
-  }
+    'subscriptions => ['linux', 'apache-servers'],
+  },
 }
 ```
 
@@ -160,6 +203,25 @@ Data type: `Hash`
 Sensu agent configuration hash used to define agent.yml.
 
 Default value: {}
+
+##### `backends`
+
+Data type: `Array[Sensu::Backend_URL]`
+
+Array of sensu backends to pass to `backend-url` config option.
+The protocol prefix of `ws://` or `wss://` are optional and will be determined
+based on `sensu::use_ssl` parameter by default.
+Passing `backend-url` as part of `config_hash` takes precedence.
+
+Default value: ['localhost:8081']
+
+##### `show_diff`
+
+Data type: `Boolean`
+
+Sets show_diff parameter for agent.yml configuration file
+
+Default value: `true`
 
 ### sensu::backend
 
@@ -250,7 +312,7 @@ Data type: `String`
 
 Sensu backend host used to configure sensuctl and verify API access.
 
-Default value: '127.0.0.1'
+Default value: $trusted['certname']
 
 ##### `url_port`
 
@@ -260,9 +322,88 @@ Sensu backend port used to configure sensuctl and verify API access.
 
 Default value: 8080
 
-### sensu::repo
+##### `ssl_cert_source`
 
-private class
+Data type: `String`
+
+The SSL certificate source
+
+Default value: $facts['puppet_hostcert']
+
+##### `ssl_key_source`
+
+Data type: `String`
+
+The SSL private key source
+
+Default value: $facts['puppet_hostprivkey']
+
+##### `password`
+
+Data type: `String`
+
+Sensu backend admin password used to confiure sensuctl.
+
+Default value: 'P@ssw0rd!'
+
+##### `old_password`
+
+Data type: `Optional[String]`
+
+Sensu backend admin old password needed when changing password.
+
+Default value: `undef`
+
+##### `agent_password`
+
+Data type: `String`
+
+The sensu agent password
+
+Default value: 'P@ssw0rd!'
+
+##### `agent_old_password`
+
+Data type: `Optional[String]`
+
+The sensu agent old password needed when changing agent_password
+
+Default value: `undef`
+
+##### `include_default_resources`
+
+Data type: `Boolean`
+
+Sets if default sensu resources should be included
+
+Default value: `true`
+
+##### `show_diff`
+
+Data type: `Boolean`
+
+Sets show_diff parameter for backend.yml configuration file
+
+Default value: `true`
+
+##### `license_source`
+
+Data type: `Optional[String]`
+
+The source of sensu-go enterprise license.
+Supports any valid Puppet File sources such as absolute paths or puppet:///
+Do not define with license_content
+
+Default value: `undef`
+
+##### `license_content`
+
+Data type: `Optional[String]`
+
+The content of sensu-go enterprise license
+Do not define with license_source
+
+Default value: `undef`
 
 ## Resource types
 
@@ -340,10 +481,11 @@ Default value: 30
 ### sensu_asset
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
 
@@ -411,10 +553,14 @@ The name of the asset.
 ### sensu_check
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resources defined in `handlers` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+* `sensu_hook` - Puppet will autorequire `sensu_hook` resources defined in `check_hooks` property.
 
 #### Examples
 
@@ -459,7 +605,7 @@ Default value: present
 
 ##### `command`
 
-Command to be run by the check
+The check command to be executed.
 
 ##### `subscriptions`
 
@@ -467,13 +613,13 @@ An array of Sensu entity subscriptions that check requests will be sent to.
 
 ##### `handlers`
 
-List of handlers that responds to this check
+An array of Sensu event handlers (names) to use for events created by the check.
 
 ##### `interval`
 
 Valid values: /^[0-9]+$/, absent
 
-How frequently the check runs in seconds
+The frequency in seconds the check is executed.
 
 ##### `cron`
 
@@ -487,6 +633,8 @@ Valid values: `true`, `false`
 
 If check requests are published for the check.
 
+Default value: true
+
 ##### `timeout`
 
 Valid values: /^[0-9]+$/, absent
@@ -497,13 +645,15 @@ The check execution duration timeout in seconds (hard stop).
 
 Valid values: /^[0-9]+$/, absent
 
-Check ttl in seconds
+The time to live (TTL) in seconds until check results are considered stale.
 
 ##### `stdin`
 
 Valid values: `true`, `false`
 
 If the Sensu agent writes JSON serialized Sensu entity and check data to the command process' STDIN
+
+Default value: false
 
 ##### `low_flap_threshold`
 
@@ -525,25 +675,19 @@ An array of Sensu assets (names), required at runtime for the execution of the c
 
 ##### `check_hooks`
 
-An array of Sensu hooks, which are commands run by the Sensu agent in response to the result of the check command execution.
+An array of check response types with respective arrays of Sensu hook names.
 
 ##### `proxy_entity_name`
 
 Valid values: /^[\w\.\-]+$/, absent
 
-The check name, used to create a proxy entity for an external resource (i.e., a network switch).
+The entity name, used to create a proxy entity for an external resource (i.e., a network switch).
 
 ##### `round_robin`
 
 Valid values: `true`, `false`
 
 If the check should be executed on a single entity within a subscription in a round-robin fashion.
-
-##### `namespace`
-
-The Sensu RBAC namespace that this check belongs to.
-
-Default value: default
 
 ##### `proxy_requests_entity_attributes`
 
@@ -559,6 +703,18 @@ If proxy check requests should be splayed
 
 The splay coverage percentage use for proxy check request splay calculation.
 
+##### `silenced`
+
+Valid values: `true`, `false`
+
+If the event is to be silenced.
+
+##### `env_vars`
+
+Valid values: /.*/, absent
+
+An array of environment variables to use with command execution.
+
 ##### `output_metric_format`
 
 Valid values: nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, absent
@@ -571,11 +727,21 @@ Valid values: /.*/, absent
 
 An array of Sensu handlers to use for events created by the check.
 
-##### `env_vars`
+##### `max_output_size`
 
-Valid values: /.*/, absent
+Maximum size, in bytes, of stored check outputs.
 
-An array of environment variables to use with command execution.
+##### `discard_output`
+
+Valid values: `true`, `false`
+
+Discard check output after extracting metrics.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this check belongs to.
+
+Default value: default
 
 ##### `labels`
 
@@ -598,9 +764,9 @@ The name of the check.
 ### sensu_cluster_member
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 
 #### Examples
@@ -647,9 +813,9 @@ Cluster member ID - read-only
 ### sensu_cluster_role
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 
 #### Examples
@@ -692,11 +858,12 @@ The name of the role.
 ### sensu_cluster_role_binding
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_cluster_role` - Puppet will autorequire `sensu_cluster_role` resource defined in `role_ref` property.
+* `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
 
 #### Examples
 
@@ -745,9 +912,9 @@ The name of the role binding.
 ### sensu_config
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 
 #### Examples
@@ -786,13 +953,69 @@ namevar
 
 The name of the config.
 
+### sensu_configure
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_api_validator[sensu]`
+* `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
+
+#### Properties
+
+The following properties are available in the `sensu_configure` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `url`
+
+sensu-backend URL
+
+##### `trusted_ca_file`
+
+Path to trusted CA
+
+Default value: /etc/sensu/ssl/ca.crt
+
+#### Parameters
+
+The following parameters are available in the `sensu_configure` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `username`
+
+Username to use with sensuctl configure
+
+##### `password`
+
+Password to use with sensuctl configure
+
+##### `bootstrap_password`
+
+Password to use when bootstrapping sensuctl
+
+Default value: P@ssw0rd!
+
 ### sensu_entity
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration_handler` property.
 
 #### Examples
 
@@ -839,23 +1062,21 @@ Valid values: `true`, `false`
 
 If the entity should be removed when it stops sending keepalive messages.
 
+Default value: false
+
 ##### `deregistration_handler`
 
 The name of the handler to be called when an entity is deregistered.
+
+##### `redact`
+
+List of items to redact from log messages.
 
 ##### `namespace`
 
 The Sensu RBAC namespace that this entity belongs to.
 
 Default value: default
-
-##### `redact`
-
-List of items to redact from log messages.
-
-##### `user`
-
-Entity user
 
 ##### `labels`
 
@@ -878,10 +1099,11 @@ The unique name of the entity
 ### sensu_event
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
 
@@ -940,10 +1162,12 @@ Default value: default
 ### sensu_filter
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
 #### Examples
 
@@ -1012,10 +1236,15 @@ The name of the filter.
 ### sensu_handler
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_filter` - Puppet will autorequire `sensu_filter` resources defined in `filters` property.
+* `sensu_mutator` - Puppet will autorequire `sensu_mutator` resource defined for `mutator` property.
+* `sensu_handler` - Puppet will autorequire `sensu_handler` resources defined for `handlers` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
 #### Examples
 
@@ -1077,11 +1306,25 @@ Valid values: /.*/, absent
 
 An array of environment variables to use with command execution.
 
+##### `socket_host`
+
+The socket host address (IP or hostname) to connect to.
+
+##### `socket_port`
+
+The socket port to connect to.
+
 ##### `handlers`
 
 Valid values: /.*/, absent
 
 An array of Sensu event handlers (names) to use for events using the handler set.
+
+##### `runtime_assets`
+
+Valid values: /.*/, absent
+
+An array of Sensu assets (names), required at runtime for the execution of the command
 
 ##### `namespace`
 
@@ -1097,20 +1340,6 @@ Custom attributes to include with event data, which can be queried like regular 
 
 Arbitrary, non-identifying metadata to include with event data.
 
-##### `runtime_assets`
-
-Valid values: /.*/, absent
-
-An array of Sensu assets (names), required at runtime for the execution of the command
-
-##### `socket_host`
-
-The socket host address (IP or hostname) to connect to.
-
-##### `socket_port`
-
-The socket port to connect to.
-
 #### Parameters
 
 The following parameters are available in the `sensu_handler` type.
@@ -1124,10 +1353,11 @@ The name of the handler.
 ### sensu_hook
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
 
@@ -1168,6 +1398,8 @@ Valid values: `true`, `false`
 
 If the Sensu agent writes JSON serialized Sensu entity and check data to the command process’ STDIN.
 
+Default value: false
+
 ##### `namespace`
 
 The Sensu RBAC namespace that this hook belongs to.
@@ -1192,13 +1424,113 @@ namevar
 
 The name of the hook.
 
+### sensu_ldap_auth
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `Exec[sensu-add-license]`
+
+#### Examples
+
+##### Add a LDAP auth
+
+```puppet
+sensu_ldap_auth { 'openldap':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => '127.0.0.1',
+      'port' => 389,
+    },
+  ],
+  server_binding      => {
+    '127.0.0.1' => {
+      'user_dn' => 'cn=binder,dc=acme,dc=org',
+      'password' => 'P@ssw0rd!'
+    }
+  },
+  server_group_search => {
+    '127.0.0.1' => {
+      'base_dn' => 'dc=acme,dc=org',
+    }
+  },
+  server_user_search  => {
+    '127.0.0.1' => {
+      'base_dn' => 'dc=acme,dc=org',
+    }
+  },
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_ldap_auth` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `servers`
+
+LDAP servers
+Defaults:
+* insecure: false
+* security: tls
+
+##### `server_binding`
+
+LDAP server bindings
+
+##### `server_group_search`
+
+Search configuration for groups.
+Defaults:
+* attribute: member
+* name_attribute: cn
+* object_class: groupOfNames
+
+##### `server_user_search`
+
+Search configuration for users.
+Defaults:
+* attribute: uid
+* name_attribute: cn
+* object_class: person
+
+##### `groups_prefix`
+
+The prefix added to all LDAP groups.
+
+##### `username_prefix`
+
+The prefix added to all LDAP usernames.
+
+#### Parameters
+
+The following parameters are available in the `sensu_ldap_auth` type.
+
+##### `name`
+
+namevar
+
+The name of the LDAP auth.
+
 ### sensu_mutator
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
 #### Examples
 
@@ -1272,9 +1604,9 @@ The name of the mutator.
 ### sensu_namespace
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 
 #### Examples
@@ -1312,10 +1644,11 @@ The name of the namespace.
 ### sensu_role
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
 
@@ -1363,11 +1696,13 @@ The name of the role.
 ### sensu_role_binding
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_role` - Puppet will autorequire `sensu_role` resource defined in `role_ref` property.
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
 
 #### Examples
 
@@ -1421,13 +1756,19 @@ The name of the role binding.
 
 ### sensu_silenced
 
-The name of `sensu_silenced` can be used to define `check` and `subscription`.
+The name of a `sensu_silenced` resource may not match the name returned by sensuctl.
+The name from sensuctl will take the form of `subscription:check`.
+If you wish to have a `sensu_silenced` resource name match sensuctl then define the name
+using the `subscription:check` format and do not define `subscription` or `check` properties.
+
+The `subscription` and `check` properties take precedence over value in the name if name takes the form `subscription:check`.
 
 **Autorequires**:
-* `Package[sensu-cli]`
+* `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Exec[sensuctl_configure]`
+* `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
 
@@ -1453,6 +1794,24 @@ sensu_silenced { 'entity:sensu_agent:*':
 ```puppet
 sensu_silenced { 'linux:check-http':
   ensure => 'present',
+}
+```
+
+##### Define silencing where subscription is linux and check is check-http. The `subscription` property overrides the value from name.
+
+```puppet
+sensu_silenced { 'test:check-http':
+  ensure       => 'present',
+  subscription => 'linux',
+}
+```
+
+##### Define silencing where subscription is linux and check is test. The `check` property overrides the value from name.
+
+```puppet
+sensu_silenced { 'linux:check-http':
+  ensure => 'present',
+  check  => 'test',
 }
 ```
 
@@ -1529,4 +1888,91 @@ The name of the check the entry should match
 ##### `subscription`
 
 The name of the subscription the entry should match
+
+### sensu_user
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Examples
+
+##### Create a user
+
+```puppet
+sensu_user { 'test':
+  ensure   => 'present',
+  password => 'supersecret',
+  groups   => ['users'],
+}
+```
+
+##### Change a user's password
+
+```puppet
+sensu_user { 'test'
+  ensure       => 'present',
+  password     => 'newpassword',
+  old_password => 'supersecret',
+  groups       => ['users'],
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_user` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `password`
+
+The user's password.
+
+##### `groups`
+
+Groups to which the user belongs.
+
+##### `disabled`
+
+Valid values: `true`, `false`
+
+The state of the user’s account.
+
+Default value: false
+
+#### Parameters
+
+The following parameters are available in the `sensu_user` type.
+
+##### `name`
+
+namevar
+
+The name of the user.
+
+##### `old_password`
+
+The user's old password, needed in order to change a user's password
+
+##### `configure`
+
+Valid values: `true`, `false`
+
+Run sensuctl configure for this user
+
+Default value: `false`
+
+##### `configure_url`
+
+URL to use with 'sensuctl configure'
+
+Default value: http://127.0.0.1:8080
 
