@@ -22,3 +22,10 @@ HEAP_SIZE="<%= @heap_size %>"
 <% if @config_file -%>
 CONFIG_FILE="<%= @config_file %>"
 <% end -%>
+<% @env_vars.each_pair do |key,value| -%>
+<% if value.is_a?(String) -%>
+<%= key %>="<%= value %>"
+<% else -%>
+<%= key %>=<%= value %>
+<% end -%>
+<% end -%>

@@ -267,6 +267,8 @@
 #
 # @param path Used to set PATH in /etc/default/sensu
 #
+# @param env_vars Additional environment variables for /etc/default/sensu
+#
 # @param redact Use to redact passwords from checks on the client side
 #
 # @param deregister_on_stop Whether the sensu client should deregister from the API on service stop
@@ -470,6 +472,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_oidc = undef,
   Optional[Hash]     $enterprise_dashboard_custom = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = '$PATH',
+  Optional[Hash[String[1], Variant[String, Boolean, Integer]]] $env_vars = {},
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
   Optional[String]   $deregister_handler = undef,

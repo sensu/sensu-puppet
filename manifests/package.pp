@@ -28,6 +28,8 @@
 #
 # @param path Used to set PATH in /etc/default/sensu
 #
+# @param env_vars Additional environment variables for /etc/default/sensu
+#
 # @param rubyopt Ruby opts to be passed to the sensu services
 #
 # @param use_embedded_ruby If the embedded ruby should be used, e.g. to install the
@@ -48,6 +50,7 @@ class sensu::package (
   Optional[String] $log_dir             = $::sensu::log_dir,
   Optional[String] $log_level           = $::sensu::log_level,
   Optional[String] $path                = $::sensu::path,
+  Optional[Hash[String[1], Variant[String, Boolean, Integer]]] $env_vars = $::sensu::env_vars,
   Optional[String] $rubyopt             = $::sensu::rubyopt,
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
 ) {
