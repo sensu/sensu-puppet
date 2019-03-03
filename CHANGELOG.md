@@ -1,7 +1,20 @@
 # Change Log
 
-## [v2.62.3](https://github.com/sensu/sensu-puppet/tree/v2.62.3)
+## [v2.63.0](https://github.com/sensu/sensu-puppet/tree/v2.63.0)
 
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.3...v2.63.0)
+
+**Closed issues:**
+
+- Puppet 6.2 fails to apply sensu config, failing with: "Error 500 on SERVER: Server Error: no parameter named 'custom' \(file: /etc/puppetlabs/code/environments/ta \_dit\_production/modules/sensu/manifests/enterprise/dashboard.pp, line: 56\) on Sensu\_enterprise\_dashboard\_config" [\#1080](https://github.com/sensu/sensu-puppet/issues/1080)
+- Allow adding arbitrary config variables in /etc/default/sensu [\#1074](https://github.com/sensu/sensu-puppet/issues/1074)
+
+**Merged pull requests:**
+
+- Add env\_vars parameter [\#1089](https://github.com/sensu/sensu-puppet/pull/1089) ([ghoneycutt](https://github.com/ghoneycutt))
+- Add env\_vars parameter [\#1088](https://github.com/sensu/sensu-puppet/pull/1088) ([treydock](https://github.com/treydock))
+
+## [v2.62.3](https://github.com/sensu/sensu-puppet/tree/v2.62.3) (2019-02-13)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v2.62.2...v2.62.3)
 
 **Implemented enhancements:**

@@ -880,6 +880,14 @@ Used to set PATH in /etc/default/sensu
 
 Default value: '$PATH'
 
+##### `env_vars`
+
+Data type: `Optional[Hash[String[1], Variant[String, Boolean, Integer]]]`
+
+Additional environment variables for /etc/default/sensu
+
+Default value: {}
+
 ##### `redact`
 
 Data type: `Optional[Array]`
@@ -1629,6 +1637,14 @@ Data type: `Optional[String]`
 Used to set PATH in /etc/default/sensu
 
 Default value: $::sensu::path
+
+##### `env_vars`
+
+Data type: `Optional[Hash[String[1], Variant[String, Boolean, Integer]]]`
+
+Additional environment variables for /etc/default/sensu
+
+Default value: $::sensu::env_vars
 
 ##### `rubyopt`
 
