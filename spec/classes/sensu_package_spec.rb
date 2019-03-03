@@ -583,4 +583,20 @@ describe 'sensu' do
       it { should contain_file('/etc/sensu/conf.d/spawn.json').with_content(/limit.*20/) }
     end
   end
+
+  describe 'env_vars' do
+    context 'string value' do
+      let(:params) { { :env_vars => { 'FOO' => 'bar' } } }
+      it { should compile }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^FOO="bar"$}) }
+    end
+    context 'boolean value' do
+      let(:params) { { :env_vars => { 'FOO' => true } } }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^FOO=true$}) }
+    end
+    context 'integer value' do
+      let(:params) { { :env_vars => { 'FOO' => 1 } } }
+      it { should contain_file('/etc/default/sensu').with_content(%r{^FOO=1$}) }
+    end
+  end
 end
