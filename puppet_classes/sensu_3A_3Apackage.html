@@ -280,6 +280,23 @@ Valid values: debug, info, warn, error, fatal</p>
   
     <li>
       
+        <span class='name'>env_vars</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash[String[1], Variant[String, Boolean, Integer]]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::sensu::env_vars</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Additional environment variables for /etc/default/sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>rubyopt</span>
       
       
@@ -326,8 +343,6 @@ ruby, is not recommended.</p>
         <pre class="lines">
 
 
-39
-40
 41
 42
 43
@@ -621,10 +636,13 @@ ruby, is not recommended.</p>
 331
 332
 333
-334</pre>
+334
+335
+336
+337</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/package.pp', line 39</span>
+        <pre class="code"><span class="info file"># File 'manifests/package.pp', line 41</span>
 
 class sensu::package (
   Optional[String] $conf_dir            = $::sensu::conf_dir,
@@ -638,6 +656,7 @@ class sensu::package (
   Optional[String] $log_dir             = $::sensu::log_dir,
   Optional[String] $log_level           = $::sensu::log_level,
   Optional[String] $path                = $::sensu::path,
+  Optional[Hash[String[1], Variant[String, Boolean, Integer]]] $env_vars = $::sensu::env_vars,
   Optional[String] $rubyopt             = $::sensu::rubyopt,
   Optional[Boolean] $use_embedded_ruby  = $::sensu::use_embedded_ruby,
 ) {

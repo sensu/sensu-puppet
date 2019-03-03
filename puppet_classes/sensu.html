@@ -1733,6 +1733,23 @@ Example: { &#39;usersOptions&#39; =&gt; { &#39;requireSilencingReason&#39; =&gt;
   
     <li>
       
+        <span class='name'>env_vars</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash[String[1], Variant[String, Boolean, Integer]]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Additional environment variables for /etc/default/sensu</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>redact</span>
       
       
@@ -2505,8 +2522,6 @@ Note: This has effect only on Sensu Enterprise.</p>
         <pre class="lines">
 
 
-347
-348
 349
 350
 351
@@ -2867,10 +2882,13 @@ Note: This has effect only on Sensu Enterprise.</p>
 706
 707
 708
-709</pre>
+709
+710
+711
+712</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 347</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 349</span>
 
 class sensu (
   Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/] $version = &#39;installed&#39;,
@@ -2998,6 +3016,7 @@ class sensu (
   Optional[Any]      $enterprise_dashboard_oidc = undef,
   Optional[Hash]     $enterprise_dashboard_custom = undef,
   Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]] $path = &#39;$PATH&#39;,
+  Optional[Hash[String[1], Variant[String, Boolean, Integer]]] $env_vars = {},
   Optional[Array]    $redact = undef,
   Boolean            $deregister_on_stop = false,
   Optional[String]   $deregister_handler = undef,
