@@ -55,3 +55,18 @@ RSpec.configure do |config|
     %r{/.rvm/},
   ]
 end
+
+def platforms
+  {
+    'Debian' => {
+      :package_require => ['Class[Sensu::Repo]', 'Class[Apt::Update]'],
+      :plugins_package_require => ['Class[Sensu::Repo::Community]', 'Class[Apt::Update]'],
+      :plugins_dependencies => ['make','gcc','g++','libssl-dev'],
+    },
+    'RedHat' => {
+      :package_require => ['Class[Sensu::Repo]'],
+      :plugins_package_require => ['Class[Sensu::Repo::Community]'],
+      :plugins_dependencies => ['make','gcc','gcc-c++','openssl-devel'],
+    },
+  }
+end

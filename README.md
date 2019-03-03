@@ -13,6 +13,8 @@
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
     * [Enterprise support](#enterprise-support)
+    * [Installing Plugins](#installing-plugins)
+    * [Installing Extensions](#installing-extensions)
     * [Exported resources](#exported-resources)
     * [Resource purging](#resource-purging)
     * [Sensu backend cluster](#sensu-backend-cluster)
@@ -114,7 +116,7 @@ associated to `linux` and `apache-servers` subscriptions.
   class { 'sensu::agent':
     backends    => ['sensu-backend.example.com:8081'],
     config_hash => {
-      'subscriptions => ['linux', 'apache-servers'],
+      'subscriptions' => ['linux', 'apache-servers'],
     },
   }
 ```
@@ -161,7 +163,7 @@ class { 'sensu':
 class { 'sensu::agent':
   backends    => ['sensu-backend.example.com:8081'],
   config_hash => {
-    'subscriptions => ['linux', 'apache-servers'],
+    'subscriptions' => ['linux', 'apache-servers'],
   },
 }
 ```
@@ -185,6 +187,108 @@ class { 'sensu::backend':
 ```
 
 The type `sensu_ldap_auth` requires a valid enterprise license.
+
+### Installing Plugins
+
+Plugin management is handled by the `sensu::plugins` class.
+
+Example installing plugins on agent:
+
+```puppet
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
+    },
+  }
+  class { 'sensu::plugins':
+    plugins => ['disk-checks'],
+  }
+```
+
+The `plugins` parameter can also be a Hash that sets the version:
+
+```puppet
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
+    },
+  }
+  class { 'sensu::plugins':
+    plugins => {
+      'disk-checks' => { 'version' => 'latest' },
+    },
+  }
+```
+
+Set `dependencies` to an empty Array to disable the `sensu::plugins` dependency management.
+
+```puppet
+  class { 'sensu::plugins':
+    dependencies => [],
+  }
+```
+
+You can uninstall plugins by passing `ensure` as `absent`.
+
+```puppet
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
+    },
+  }
+  class { 'sensu::plugins':
+    plugins => {
+      'disk-checks' => { 'ensure' => 'absent' },
+    },
+  }
+```
+
+### Installing Extensions
+
+Extension management is handled by the `sensu::plugins` class.
+
+Example installing extension on backend:
+
+```puppet
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
+  class { 'sensu::plugins':
+    extensions => ['graphite'],
+  }
+```
+
+The `extensions` parameter can also be a Hash that sets the version:
+
+```puppet
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
+  class { 'sensu::plugins':
+    extensions => {
+      'graphite' => { 'version' => 'latest' },
+    },
+  }
+```
+
+You can uninstall extensions by passing `ensure` as `absent`.
+
+```puppet
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
+  class { 'sensu::plugins':
+    extensions => {
+      'graphite' => { 'ensure' => 'absent' },
+    },
+  }
+```
 
 ### Exported resources
 

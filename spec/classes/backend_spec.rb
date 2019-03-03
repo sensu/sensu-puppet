@@ -18,7 +18,7 @@ describe 'sensu::backend', :type => :class do
           should contain_package('sensu-go-cli').with({
             'ensure'  => 'installed',
             'name'    => 'sensu-go-cli',
-            'require' => 'Class[Sensu::Repo]',
+            'require' => platforms[facts[:osfamily]][:package_require],
           })
         }
 
@@ -86,7 +86,7 @@ describe 'sensu::backend', :type => :class do
           should contain_package('sensu-go-backend').with({
             'ensure'  => 'installed',
             'name'    => 'sensu-go-backend',
-            'require' => 'Class[Sensu::Repo]',
+            'require' => platforms[facts[:osfamily]][:package_require],
           })
         }
 
