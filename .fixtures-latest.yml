@@ -2,7 +2,7 @@ fixtures:
   repositories:
     apt:
       repo: git://github.com/puppetlabs/puppetlabs-apt.git
-      ref: 6.1.1
+      ref: 6.3.0
     yumrepo_core:
       repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
       ref: 1.0.1
