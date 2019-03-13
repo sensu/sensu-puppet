@@ -1,145 +1,358 @@
 require 'spec_helper'
+require 'puppet/type/sensu_check'
 
 describe Puppet::Type.type(:sensu_check) do
-  let(:resource_hash_base) do
+  let(:default_config) do
     {
-      :title => 'foo.example.com',
-      :catalog => Puppet::Resource::Catalog.new
+      name: 'test',
+      command: 'test',
+      subscriptions: ['test'],
+      handlers: ['test'],
+      interval: 60,
     }
   end
-  # Overridden on a context by context basis
-  let(:resource_hash_override) { {} }
-  let(:resource_hash) { resource_hash_base.merge(resource_hash_override) }
+  let(:config) do
+    default_config
+  end
+  let(:check) do
+    described_class.new(config)
+  end
 
-  describe 'contacts parameter' do
-    subject { described_class.new(resource_hash)[:contacts] }
+  it 'should add to catalog with raising an error' do
+    catalog = Puppet::Resource::Catalog.new
+    expect {
+      catalog.add_resource check
+    }.to_not raise_error
+  end
 
-    valid = [%w(support), %w(support ops), 'support']
-    invalid = [%w(supp%ort), %w(support op$), 'sup%port']
+  it 'should require a name' do
+    expect {
+      described_class.new({})
+    }.to raise_error(Puppet::Error, 'Title or name must be provided')
+  end
 
-    valid.each do |val|
-      describe "valid: contacts => #{val.inspect} " do
-        let(:resource_hash_override) { {contacts: val} }
-        it { is_expected.to eq [*val] }
-      end
+  defaults = {
+    'namespace': 'default',
+    'publish': :true,
+    'stdin': :false,
+  }
+
+  # String properties
+  [
+    :command,
+    :cron,
+    :namespace,
+    :proxy_entity_name,
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = 'foo'
+      expect(check[property]).to eq('foo')
     end
-
-    invalid.each do |val|
-      describe "invalid: contacts => #{val.inspect}" do
-        let(:resource_hash_override) { {contacts: val} }
-        it do
-          expect { subject }.to raise_error Puppet::ResourceError, /Parameter contacts failed/
-        end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
       end
     end
   end
 
-  describe 'handlers' do
-    it 'should support a string as a value' do
-      expect(
-        described_class.new(resource_hash.merge(:handlers => 'default'))[:handlers]
-      ).to eq ['default']
+  # String regex validated properties
+  [
+    :name,
+    :proxy_entity_name,
+  ].each do |property|
+    it "should not accept invalid #{property}" do
+      config[property] = 'foo bar'
+      expect { check }.to raise_error(Puppet::Error, /#{property.to_s} invalid/)
     end
-
-    it 'should support an array as a value' do
-      expect(
-        described_class.new(
-          resource_hash.merge(:handlers => %w(handler1 handler2))
-        )[:handlers]
-      ).to eq %w(handler1 handler2)
-    end
-
-    # it 'should support nil as a value' do
-    #   expect(
-    #     described_class.new(
-    #       resource_hash.merge(:handlers => nil)
-    #     )[:handlers]
-    #   ).to eq nil
-    # end
   end
 
-  describe 'subscribers' do
-    it 'should support a string as a value' do
-      expect(
-        described_class.new(resource_hash.merge(:subscribers => 'default'))[:subscribers]
-      ).to eq ['default']
+  # Array properties
+  [
+    :subscriptions,
+    :handlers,
+    :runtime_assets,
+    :proxy_requests_entity_attributes,
+    :output_metric_handlers,
+    :env_vars
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = ['foo', 'bar']
+      expect(check[property]).to eq(['foo', 'bar'])
     end
-
-    it 'should support an array as a value' do
-      expect(
-        described_class.new(
-          resource_hash.merge(:subscribers => %w(subscriber1 subscriber2))
-        )[:subscribers]
-      ).to eq %w(subscriber1 subscriber2)
-    end
-
-    # it 'should support nil as a value' do
-    #   expect(
-    #     described_class.new(
-    #       resource_hash.merge(:subscribers => nil)
-    #     )[:subscribers]
-    #   ).to eq nil
-    # end
-  end
-
-  describe 'notifications' do
-    let(:resource_hash) do
-      c = Puppet::Resource::Catalog.new
-      c.add_resource(service_resource)
-      {
-        :title => 'foo.example.com',
-        :catalog => c
-      }
-    end
-
-    context 'when managing sensu-enterprise (#495)' do
-      let(:service_resource) do
-        Puppet::Type.type(:service).new(name: 'sensu-enterprise')
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
       end
-      it 'notifies Service[sensu-enterprise]' do
-        notify_list = described_class.new(resource_hash)[:notify]
-        # compare the resource reference strings, the object identities differ.
-        expect(notify_list.map(&:ref)).to eq [service_resource.ref]
-      end
-    end
-
-    context 'when managing sensu-api (#600)' do
-      let(:service_resource) do
-        Puppet::Type.type(:service).new(name: 'sensu-api')
-      end
-      it 'notifies Service[sensu-api]' do
-        notify_list = described_class.new(resource_hash)[:notify]
-        # compare the resource reference strings, the object identities differ.
-        expect(notify_list.map(&:ref)).to eq [service_resource.ref]
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
       end
     end
   end
 
-  describe 'ttl_status parameter' do
-    subject { described_class.new(resource_hash)[:ttl_status] }
+  # Integer properties
+  [
+    :interval,
+    :timeout,
+    :low_flap_threshold,
+    :high_flap_threshold,
+    :proxy_requests_splay_coverage,
+    :max_output_size,
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = 30
+      expect(check[property]).to eq(30)
+    end
+    it "should accept valid #{property} as string" do
+      config[property] = '30'
+      expect(check[property]).to eq(30)
+    end
+    it "should not accept invalid value for #{property}" do
+      config[property] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /should be an Integer/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
+  end
 
-    valid = [255, 1, 0, '255', '1', '0']
-    invalid = ['foo']
+  # Boolean properties
+  [
+    :publish,
+    :stdin,
+    :round_robin,
+    :proxy_requests_splay,
+    :silenced,
+    :discard_output,
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = true
+      expect(check[property]).to eq(:true)
+    end
+    it "should accept valid #{property}" do
+      config[property] = false
+      expect(check[property]).to eq(:false)
+    end
+    it "should accept valid #{property}" do
+      config[property] = 'true'
+      expect(check[property]).to eq(:true)
+    end
+    it "should accept valid #{property}" do
+      config[property] = 'false'
+      expect(check[property]).to eq(:false)
+    end
+    it "should not accept invalid #{property}" do
+      config[property] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are true, false/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
+  end
 
-    valid.each do |val|
-      describe "valid: ttl_status => #{val.inspect} " do
-        let(:resource_hash_override) { {ttl_status: val} }
-        it { is_expected.to eq val.to_i }
+  # Hash properties
+  [
+    :labels,
+    :annotations,
+  ].each do |property|
+    it "should accept valid #{property}" do
+      config[property] = { 'foo': 'bar' }
+      expect(check[property]).to eq({'foo': 'bar'})
+    end
+    it "should not accept invalid #{property}" do
+      config[property] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    if default = defaults[property]
+      it "should have default for #{property}" do
+        expect(check[property]).to eq(default)
+      end
+    else
+      it "should not have default for #{property}" do
+        expect(check[property]).to eq(default_config[property])
+      end
+    end
+  end
+
+  describe 'interval and cron' do
+    it 'should be required' do
+      config[:publish] = true
+      config.delete(:interval)
+      config.delete(:cron)
+      expect { check }.to raise_error(Puppet::Error, /interval or cron is required/)
+    end
+    it 'should not be required if publish is false' do
+      config[:publish] = false
+      config.delete(:interval)
+      config.delete(:cron)
+      expect { check }.not_to raise_error
+    end
+    it 'interval should not be required if cron is defined' do
+      config[:cron] = '0 0 * * *'
+      config.delete(:interval)
+      expect { check }.not_to raise_error
+    end
+    it 'cron should not be required if interval is defined' do
+      config[:interval] = 60
+      config.delete(:cron)
+      expect { check }.not_to raise_error
+    end
+  end
+
+  describe 'ttl' do
+    it 'should accept value' do
+      config[:interval] = 60
+      config[:ttl] = 120
+      expect(check[:ttl]).to eq(120)
+    end
+    it 'should accept string value' do
+      config[:interval] = 60
+      config[:ttl] = '120'
+      expect(check[:ttl]).to eq(120)
+    end
+    it 'should not accept invalid value' do
+      config[:ttl] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /should be an Integer/)
+    end
+    it 'should be greater than interval' do
+      config[:interval] = 60
+      config[:ttl] = 30
+      expect { check }.to raise_error(Puppet::Error, /check ttl 30 must be greater than interval 60/)
+    end
+  end
+
+  describe 'check_hooks' do
+    [
+      0,
+      '0',
+      1,
+      '1',
+      'ok',
+      'warning',
+      'critical',
+      'unknown',
+      'non-zero',
+    ].each do |type|
+      it "accepts valid values for type #{type} #{type.class}" do
+        config[:check_hooks] = [{type => ['test']}]
+        expect(check[:check_hooks]).to eq([{type.to_s => ['test']}])
       end
     end
 
-    invalid.each do |val|
-      describe "invalid: ttl_status => #{val.inspect}" do
-        let(:resource_hash_override) { {ttl_status: val} }
-        it do
-          expect { subject }.to raise_error Puppet::ResourceError, /is not a valid ttl_status/
-        end
+    it 'should not have default' do
+      expect(check[:check_hooks]).to be_nil
+    end
+
+    it 'should require Hash elements' do
+      config[:check_hooks] = ['foo']
+      expect { check }.to raise_error(Puppet::Error, /check_hooks elements must be a Hash/)
+    end
+
+    it 'should only allow one key' do
+      config[:check_hooks] = [{'critical' => ['test'],'warning' => ['test']}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks Hash must only contain one key/)
+    end
+
+    it 'should require valid type string' do
+      config[:check_hooks] = [{'crit' => ['test']}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks type crit is invalid/)
+    end
+
+    it 'should require valid type integer' do
+      config[:check_hooks] = [{'256' => ['test']}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks type 256 is invalid/)
+    end
+
+    it 'should require hooks list to be an array' do
+      config[:check_hooks] = [{'critical' => 'test'}]
+      expect { check }.to raise_error(Puppet::Error, /check_hooks hooks must be an Array/)
+    end
+  end
+
+  describe 'output_metric_format' do
+    [
+      'nagios_perfdata',
+      'graphite_plaintext',
+      'influxdb_line',
+      'opentsdb_line',
+    ].each do |v|
+      it "should accept #{v}" do
+        config[:output_metric_format] = v
+        expect(check[:output_metric_format]).to eq(v.to_sym)
       end
     end
 
-    describe 'ttl_status => absent' do
-      let(:resource_hash_override) { {ttl_status: 'absent'} }
-      it { is_expected.to eq :absent }
+    it 'should not have a default' do
+      expect(check[:output_metric_format]).to be_nil
+    end
+
+    it 'should not accept invalid values' do
+      config[:output_metric_format] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, absent/)
+    end
+  end
+
+  include_examples 'autorequires' do
+    let(:res) { check }
+  end
+
+  it 'should autorequire sensu_handler' do
+    handler = Puppet::Type.type(:sensu_handler).new(:name => 'test', :type => 'pipe', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:handlers] = ['test']
+    catalog.add_resource check
+    catalog.add_resource handler
+    rel = check.autorequire[0]
+    expect(rel.source.ref).to eq(handler.ref)
+    expect(rel.target.ref).to eq(check.ref)
+  end
+
+  it 'should autorequire sensu_asset' do
+    asset = Puppet::Type.type(:sensu_asset).new(:name => 'test', :url => 'http://example.com/asset/example.tar', :sha512 => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b')
+    catalog = Puppet::Resource::Catalog.new
+    config[:runtime_assets] = ['test']
+    catalog.add_resource check
+    catalog.add_resource asset
+    rel = check.autorequire[0]
+    expect(rel.source.ref).to eq(asset.ref)
+    expect(rel.target.ref).to eq(check.ref)
+  end
+
+  it 'should autorequire sensu_hook' do
+    hook = Puppet::Type.type(:sensu_hook).new(:name => 'test', :command => 'test')
+    catalog = Puppet::Resource::Catalog.new
+    config[:check_hooks] = [{1 => ['test']},{'critical' => ['test2']}]
+    catalog.add_resource check
+    catalog.add_resource hook
+    rel = check.autorequire[0]
+    expect(rel.source.ref).to eq(hook.ref)
+    expect(rel.target.ref).to eq(check.ref)
+  end
+
+  [
+    :command,
+    :subscriptions,
+  ].each do |property|
+    it "should require property when ensure => present" do
+      config.delete(property)
+      config[:ensure] = :present
+      expect { check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

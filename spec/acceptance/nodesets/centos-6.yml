@@ -1,7 +1,8 @@
 HOSTS:
-  centos-6:
+  sensu_agent:
     roles:
       - agent
+      - sensu_agent
     platform: el-6-x86_64
     hypervisor: docker
     image: centos:6
@@ -9,8 +10,24 @@ HOSTS:
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git'
-    docker_container_name: 'sensu-el6'
+      - "sed -i -r '/^tsflags/d' /etc/yum.conf"
+      - 'yum install -y wget'
+    docker_container_name: 'sensu-agent-el6'
+  sensu_backend:
+    roles:
+      - agent
+      - sensu_backend
+      - default
+    platform: el-6-x86_64
+    hypervisor: docker
+    image: centos:6
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - "sed -i -r '/^tsflags/d' /etc/yum.conf"
+      - 'yum install -y wget'
+    docker_container_name: 'sensu-backend-el6'
 CONFIG:
   log_level: debug
   type: foss

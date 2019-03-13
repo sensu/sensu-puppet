@@ -1,0 +1,13 @@
+[
+  {
+    "url": "https://github.com/cyphus/test-asset-host/releases/download/0.0.1/check-cpu-sh.tgz",
+    "sha512": "58a4d415f82ac9750ecf92d25a6b782393e00461d66c287e6eca56bb1d1789d78de5d04477ff1994d989916f39d290ef67f3bdeab9299a6fb94c9d6df95fe36b",
+    "filters": null,
+    "metadata": {
+      "name": "check-cpu.sh",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    }
+  }
+]

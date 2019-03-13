@@ -1,0 +1,6 @@
+---
+sensu::plugins::dependencies:
+  - make
+  - gcc
+  - gcc-c++
+  - openssl-devel

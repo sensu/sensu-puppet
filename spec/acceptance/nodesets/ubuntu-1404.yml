@@ -1,17 +1,37 @@
 HOSTS:
-  ubuntu-1404:
+  sensu_agent:
     roles:
       - agent
+      - sensu_agent
     platform: ubuntu-14.04-amd64
     hypervisor : docker
     image: ubuntu:14.04
     docker_preserve_image: true
     docker_cmd: '["/sbin/init"]'
     docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
       - 'rm /usr/sbin/policy-rc.d'
       - 'rm /sbin/initctl; dpkg-divert --rename --remove /sbin/initctl'
       - 'apt-get install -y -q net-tools wget'
       - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-agent-ubuntu1404'
+  sensu_backend:
+    roles:
+      - agent
+      - sensu_backend
+      - default
+    platform: ubuntu-14.04-amd64
+    hypervisor : docker
+    image: ubuntu:14.04
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
+      - 'rm /usr/sbin/policy-rc.d'
+      - 'rm /sbin/initctl; dpkg-divert --rename --remove /sbin/initctl'
+      - 'apt-get install -y -q net-tools wget'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-backend-ubuntu1404'
 CONFIG:
   type: foss
   log_level: debug

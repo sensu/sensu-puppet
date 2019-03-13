@@ -1,0 +1,424 @@
+{
+  "aio_agent_version": "5.5.3",
+  "architecture": "x86_64",
+  "augeas": {
+    "version": "1.10.1"
+  },
+  "augeasversion": "1.10.1",
+  "bios_release_date": "12/01/2006",
+  "bios_vendor": "innotek GmbH",
+  "bios_version": "VirtualBox",
+  "blockdevice_sda_model": "VBOX HARDDISK",
+  "blockdevice_sda_size": 26843545600,
+  "blockdevice_sda_vendor": "ATA",
+  "blockdevice_sr0_model": "CD-ROM",
+  "blockdevice_sr0_size": 1073741312,
+  "blockdevice_sr0_vendor": "VBOX",
+  "blockdevices": "sr0,sda",
+  "boardmanufacturer": "Oracle Corporation",
+  "boardproductname": "VirtualBox",
+  "boardserialnumber": "0",
+  "chassistype": "Other",
+  "dhcp_servers": {
+    "eth0": "10.0.2.2",
+    "system": "10.0.2.2"
+  },
+  "disks": {
+    "sda": {
+      "model": "VBOX HARDDISK",
+      "size": "25.00 GiB",
+      "size_bytes": 26843545600,
+      "vendor": "ATA"
+    },
+    "sr0": {
+      "model": "CD-ROM",
+      "size": "1.00 GiB",
+      "size_bytes": 1073741312,
+      "vendor": "VBOX"
+    }
+  },
+  "dmi": {
+    "bios": {
+      "release_date": "12/01/2006",
+      "vendor": "innotek GmbH",
+      "version": "VirtualBox"
+    },
+    "board": {
+      "manufacturer": "Oracle Corporation",
+      "product": "VirtualBox",
+      "serial_number": "0"
+    },
+    "chassis": {
+      "type": "Other"
+    },
+    "manufacturer": "innotek GmbH",
+    "product": {
+      "name": "VirtualBox",
+      "serial_number": "0",
+      "uuid": "E1391ACB-AEBF-4A3B-977E-AE48D9CDBF97"
+    }
+  },
+  "domain": "example.com",
+  "facterversion": "3.8.0",
+  "filesystems": "iso9660,xfs",
+  "fips_enabled": false,
+  "fqdn": "amazon2-agent.example.com",
+  "gid": "root",
+  "hardwareisa": "x86_64",
+  "hardwaremodel": "x86_64",
+  "hostname": "amazon2-agent",
+  "hypervisors": {
+    "virtualbox": {
+      "revision": "122591",
+      "version": "5.2.12"
+    }
+  },
+  "id": "root",
+  "identity": {
+    "gid": 0,
+    "group": "root",
+    "privileged": true,
+    "uid": 0,
+    "user": "root"
+  },
+  "interfaces": "eth0,eth1,lo",
+  "ipaddress": "10.0.2.15",
+  "ipaddress6": "fe80::a00:27ff:feb9:8245",
+  "ipaddress6_eth0": "fe80::a00:27ff:feb9:8245",
+  "ipaddress6_eth1": "fe80::a00:27ff:fe77:d17",
+  "ipaddress6_lo": "::1",
+  "ipaddress_eth0": "10.0.2.15",
+  "ipaddress_eth1": "192.168.52.15",
+  "ipaddress_lo": "127.0.0.1",
+  "is_virtual": true,
+  "kernel": "Linux",
+  "kernelmajversion": "4.9",
+  "kernelrelease": "4.9.62-10.57.amzn2.x86_64",
+  "kernelversion": "4.9.62",
+  "load_averages": {
+    "15m": 0.11,
+    "1m": 0.14,
+    "5m": 0.21
+  },
+  "macaddress": "08:00:27:b9:82:45",
+  "macaddress_eth0": "08:00:27:b9:82:45",
+  "macaddress_eth1": "08:00:27:77:0d:17",
+  "manufacturer": "innotek GmbH",
+  "memory": {
+    "system": {
+      "available": "334.67 MiB",
+      "available_bytes": 350928896,
+      "capacity": "31.81%",
+      "total": "490.80 MiB",
+      "total_bytes": 514646016,
+      "used": "156.13 MiB",
+      "used_bytes": 163717120
+    }
+  },
+  "memoryfree": "334.67 MiB",
+  "memoryfree_mb": 334.671875,
+  "memorysize": "490.80 MiB",
+  "memorysize_mb": 490.8046875,
+  "mountpoints": {
+    "/": {
+      "available": "23.65 GiB",
+      "available_bytes": 25389195264,
+      "capacity": "5.36%",
+      "device": "/dev/sda1",
+      "filesystem": "xfs",
+      "options": [
+        "rw",
+        "noatime",
+        "attr2",
+        "inode64",
+        "noquota"
+      ],
+      "size": "24.99 GiB",
+      "size_bytes": 26828324864,
+      "used": "1.34 GiB",
+      "used_bytes": 1439129600
+    },
+    "/dev/shm": {
+      "available": "245.40 MiB",
+      "available_bytes": 257323008,
+      "capacity": "0%",
+      "device": "tmpfs",
+      "filesystem": "tmpfs",
+      "options": [
+        "rw"
+      ],
+      "size": "245.40 MiB",
+      "size_bytes": 257323008,
+      "used": "0 bytes",
+      "used_bytes": 0
+    },
+    "/run": {
+      "available": "237.05 MiB",
+      "available_bytes": 248569856,
+      "capacity": "3.40%",
+      "device": "tmpfs",
+      "filesystem": "tmpfs",
+      "options": [
+        "rw",
+        "nosuid",
+        "nodev",
+        "mode=755"
+      ],
+      "size": "245.40 MiB",
+      "size_bytes": 257323008,
+      "used": "8.35 MiB",
+      "used_bytes": 8753152
+    },
+    "/run/user/1000": {
+      "available": "49.08 MiB",
+      "available_bytes": 51466240,
+      "capacity": "0%",
+      "device": "tmpfs",
+      "filesystem": "tmpfs",
+      "options": [
+        "rw",
+        "nosuid",
+        "nodev",
+        "relatime",
+        "size=50260k",
+        "mode=700",
+        "uid=1000",
+        "gid=1000"
+      ],
+      "size": "49.08 MiB",
+      "size_bytes": 51466240,
+      "used": "0 bytes",
+      "used_bytes": 0
+    },
+    "/sys/fs/cgroup": {
+      "available": "245.40 MiB",
+      "available_bytes": 257323008,
+      "capacity": "0%",
+      "device": "tmpfs",
+      "filesystem": "tmpfs",
+      "options": [
+        "ro",
+        "nosuid",
+        "nodev",
+        "noexec",
+        "mode=755"
+      ],
+      "size": "245.40 MiB",
+      "size_bytes": 257323008,
+      "used": "0 bytes",
+      "used_bytes": 0
+    }
+  },
+  "mtu_eth0": 1500,
+  "mtu_eth1": 1500,
+  "mtu_lo": 65536,
+  "netmask": "255.255.255.0",
+  "netmask6": "ffff:ffff:ffff:ffff::",
+  "netmask6_eth0": "ffff:ffff:ffff:ffff::",
+  "netmask6_eth1": "ffff:ffff:ffff:ffff::",
+  "netmask6_lo": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+  "netmask_eth0": "255.255.255.0",
+  "netmask_eth1": "255.255.255.0",
+  "netmask_lo": "255.0.0.0",
+  "network": "10.0.2.0",
+  "network6": "fe80::",
+  "network6_eth0": "fe80::",
+  "network6_eth1": "fe80::",
+  "network6_lo": "::1",
+  "network_eth0": "10.0.2.0",
+  "network_eth1": "192.168.52.0",
+  "network_lo": "127.0.0.0",
+  "networking": {
+    "dhcp": "10.0.2.2",
+    "domain": "example.com",
+    "fqdn": "amazon2-agent.example.com",
+    "hostname": "amazon2-agent",
+    "interfaces": {
+      "eth0": {
+        "bindings": [
+          {
+            "address": "10.0.2.15",
+            "netmask": "255.255.255.0",
+            "network": "10.0.2.0"
+          }
+        ],
+        "bindings6": [
+          {
+            "address": "fe80::a00:27ff:feb9:8245",
+            "netmask": "ffff:ffff:ffff:ffff::",
+            "network": "fe80::"
+          }
+        ],
+        "dhcp": "10.0.2.2",
+        "ip": "10.0.2.15",
+        "ip6": "fe80::a00:27ff:feb9:8245",
+        "mac": "08:00:27:b9:82:45",
+        "mtu": 1500,
+        "netmask": "255.255.255.0",
+        "netmask6": "ffff:ffff:ffff:ffff::",
+        "network": "10.0.2.0",
+        "network6": "fe80::"
+      },
+      "eth1": {
+        "bindings": [
+          {
+            "address": "192.168.52.15",
+            "netmask": "255.255.255.0",
+            "network": "192.168.52.0"
+          }
+        ],
+        "bindings6": [
+          {
+            "address": "fe80::a00:27ff:fe77:d17",
+            "netmask": "ffff:ffff:ffff:ffff::",
+            "network": "fe80::"
+          }
+        ],
+        "ip": "192.168.52.15",
+        "ip6": "fe80::a00:27ff:fe77:d17",
+        "mac": "08:00:27:77:0d:17",
+        "mtu": 1500,
+        "netmask": "255.255.255.0",
+        "netmask6": "ffff:ffff:ffff:ffff::",
+        "network": "192.168.52.0",
+        "network6": "fe80::"
+      },
+      "lo": {
+        "bindings": [
+          {
+            "address": "127.0.0.1",
+            "netmask": "255.0.0.0",
+            "network": "127.0.0.0"
+          }
+        ],
+        "bindings6": [
+          {
+            "address": "::1",
+            "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+            "network": "::1"
+          }
+        ],
+        "ip": "127.0.0.1",
+        "ip6": "::1",
+        "mtu": 65536,
+        "netmask": "255.0.0.0",
+        "netmask6": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "network": "127.0.0.0",
+        "network6": "::1"
+      }
+    },
+    "ip": "10.0.2.15",
+    "ip6": "fe80::a00:27ff:feb9:8245",
+    "mac": "08:00:27:b9:82:45",
+    "mtu": 1500,
+    "netmask": "255.255.255.0",
+    "netmask6": "ffff:ffff:ffff:ffff::",
+    "network": "10.0.2.0",
+    "network6": "fe80::",
+    "primary": "eth0"
+  },
+  "operatingsystem": "Amazon",
+  "operatingsystemmajrelease": "2",
+  "operatingsystemrelease": "2",
+  "os": {
+    "architecture": "x86_64",
+    "family": "RedHat",
+    "hardware": "x86_64",
+    "name": "Amazon",
+    "release": {
+      "full": "2",
+      "major": "2"
+    },
+    "selinux": {
+      "enabled": false
+    }
+  },
+  "osfamily": "RedHat",
+  "partitions": {
+    "/dev/sda1": {
+      "filesystem": "xfs",
+      "label": "/",
+      "mount": "/",
+      "partlabel": "Linux",
+      "partuuid": "33a81fdd-203a-4ca7-a78a-c66f3b62993d",
+      "size": "25.00 GiB",
+      "size_bytes": 26841431552,
+      "uuid": "ad98e745-c358-4516-8c29-e36a65ddcf32"
+    },
+    "/dev/sda128": {
+      "partlabel": "BIOS Boot Partition",
+      "partuuid": "85b52d7e-e755-4059-87fa-2507d6ea30c2",
+      "size": "1.00 MiB",
+      "size_bytes": 1048576
+    }
+  },
+  "path": "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin",
+  "physicalprocessorcount": 1,
+  "processor0": "AMD Phenom(tm) II X4 965 Processor",
+  "processorcount": 1,
+  "processors": {
+    "count": 1,
+    "isa": "x86_64",
+    "models": [
+      "AMD Phenom(tm) II X4 965 Processor"
+    ],
+    "physicalcount": 1
+  },
+  "productname": "VirtualBox",
+  "puppetversion": "5.5.2",
+  "ruby": {
+    "platform": "x86_64-linux",
+    "sitedir": "/opt/puppetlabs/puppet/lib/ruby/site_ruby/2.4.0",
+    "version": "2.4.4"
+  },
+  "rubyplatform": "x86_64-linux",
+  "rubysitedir": "/opt/puppetlabs/puppet/lib/ruby/site_ruby/2.4.0",
+  "rubyversion": "2.4.4",
+  "selinux": false,
+  "serialnumber": "0",
+  "ssh": {
+    "ecdsa": {
+      "fingerprints": {
+        "sha1": "SSHFP 3 1 b9d6ff56d88e6331e9df54a32d4c29e8b9547298",
+        "sha256": "SSHFP 3 2 caa539343df072a97bd251f35b59e29ff465210a2e9c02e24c9e583ce64266ab"
+      },
+      "key": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDf7+fcVPQ79VEOvu0hXTbzOSfCMBoHeL4TQaevOAz9nG5R4aAnm8M8o6wEtm8rqYUaK7CyaG/v5pJESZysXeM8=",
+      "type": "ecdsa-sha2-nistp256"
+    },
+    "ed25519": {
+      "fingerprints": {
+        "sha1": "SSHFP 4 1 50770b3030ab33a0054d09b8915d73da2118bdab",
+        "sha256": "SSHFP 4 2 1ee2d697399eea05db112d7cfc64b5f5892016e72e3bc3ceea8e99e26f315993"
+      },
+      "key": "AAAAC3NzaC1lZDI1NTE5AAAAINjqaCjpFq95+cwNTojxSJt+GYmuDLx6uwRsRQcpFjY3",
+      "type": "ssh-ed25519"
+    },
+    "rsa": {
+      "fingerprints": {
+        "sha1": "SSHFP 1 1 6442e318046fdacba77d435d006bf769f194bcdc",
+        "sha256": "SSHFP 1 2 2ce104a8e44d9d0ce57d0aabebf3eaafc19d55c4c94e768a01b82d8cf289433d"
+      },
+      "key": "AAAAB3NzaC1yc2EAAAADAQABAAABAQDTGX0yQA0EXR1+WvHFvZiihcmHuTEvF1fnPma3Do1fhPYQxKJgHMLStXAybLsH6I4gBmzzG9r+9vh/9shq9PMV4UqhuRN8RDtvqvhAkzikTifIlFBE95OIjx9j8mrT8IjLAGxRddV/1qTJnlIIiZhRLb6/iC2Z0QM8K5yT+rgjXNL1trRCnCQrZiPA2U8WYMH9FlcD+2GMbpuKPkh7ynvq9HKTne3o0L0B3lIMdvSK3rlg255slwGFu5sCMceaU85NHbo0pVlWb9l6/sED6CE5MzDxwj9LpF/ShL0JjExD5OtvkPACfj0NEk5ZBrqck4N3fvMEinue7RuW7A1f7CQ3",
+      "type": "ssh-rsa"
+    }
+  },
+  "sshecdsakey": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDf7+fcVPQ79VEOvu0hXTbzOSfCMBoHeL4TQaevOAz9nG5R4aAnm8M8o6wEtm8rqYUaK7CyaG/v5pJESZysXeM8=",
+  "sshed25519key": "AAAAC3NzaC1lZDI1NTE5AAAAINjqaCjpFq95+cwNTojxSJt+GYmuDLx6uwRsRQcpFjY3",
+  "sshfp_ecdsa": "SSHFP 3 1 b9d6ff56d88e6331e9df54a32d4c29e8b9547298\nSSHFP 3 2 caa539343df072a97bd251f35b59e29ff465210a2e9c02e24c9e583ce64266ab",
+  "sshfp_ed25519": "SSHFP 4 1 50770b3030ab33a0054d09b8915d73da2118bdab\nSSHFP 4 2 1ee2d697399eea05db112d7cfc64b5f5892016e72e3bc3ceea8e99e26f315993",
+  "sshfp_rsa": "SSHFP 1 1 6442e318046fdacba77d435d006bf769f194bcdc\nSSHFP 1 2 2ce104a8e44d9d0ce57d0aabebf3eaafc19d55c4c94e768a01b82d8cf289433d",
+  "sshrsakey": "AAAAB3NzaC1yc2EAAAADAQABAAABAQDTGX0yQA0EXR1+WvHFvZiihcmHuTEvF1fnPma3Do1fhPYQxKJgHMLStXAybLsH6I4gBmzzG9r+9vh/9shq9PMV4UqhuRN8RDtvqvhAkzikTifIlFBE95OIjx9j8mrT8IjLAGxRddV/1qTJnlIIiZhRLb6/iC2Z0QM8K5yT+rgjXNL1trRCnCQrZiPA2U8WYMH9FlcD+2GMbpuKPkh7ynvq9HKTne3o0L0B3lIMdvSK3rlg255slwGFu5sCMceaU85NHbo0pVlWb9l6/sED6CE5MzDxwj9LpF/ShL0JjExD5OtvkPACfj0NEk5ZBrqck4N3fvMEinue7RuW7A1f7CQ3",
+  "system_uptime": {
+    "days": 0,
+    "hours": 0,
+    "seconds": 378,
+    "uptime": "0:06 hours"
+  },
+  "timezone": "UTC",
+  "uptime": "0:06 hours",
+  "uptime_days": 0,
+  "uptime_hours": 0,
+  "uptime_seconds": 378,
+  "uuid": "E1391ACB-AEBF-4A3B-977E-AE48D9CDBF97",
+  "virtual": "virtualbox"
+}
