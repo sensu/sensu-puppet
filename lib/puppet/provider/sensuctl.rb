@@ -102,5 +102,19 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def sensuctl_remove(*args)
     self.class.sensuctl_remove(*args)
   end
+
+  def self.sensuctl_auth_types()
+    output = sensuctl(['auth','list','--format','yaml'])
+    Puppet.debug("YAML auth list: #{output}")
+    auth_types = {}
+    auths = output.split('---')
+    Puppet.debug("auths: #{auths}")
+    auths.each do |auth|
+      a = YAML.load(auth)
+      auth_types[a['metadata']['name']] = a['type']
+    end
+    Puppet.debug("auth_types: #{auth_types}")
+    auth_types
+  end
 end
 

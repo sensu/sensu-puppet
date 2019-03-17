@@ -79,4 +79,11 @@ describe Puppet::Provider::Sensuctl do
       subject.sensuctl_delete('check','test')
     end
   end
+
+  context 'sensuctl_auth_types' do
+    it 'should return auth and their types' do
+      allow(subject).to receive(:sensuctl).with(['auth','list','--format','yaml']).and_return(my_fixture_read('auths.txt'))
+      expect(subject.sensuctl_auth_types).to eq({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
+    end
+  end
 end
