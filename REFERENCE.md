@@ -5,54 +5,40 @@
 
 **Classes**
 
+_Public Classes_
+
 * [`sensu`](#sensu): Base Sensu class
-* [`sensu::api`](#sensuapi): = Class: sensu::api  Manages the Sensu api  == Parameters  [*hasrestart*]   Boolean. Value of hasrestart attribute for this service.   Defaul
-* [`sensu::client`](#sensuclient): Manages the Sensu client service
-* [`sensu::enterprise`](#sensuenterprise): Installs the Sensu packages
-* [`sensu::enterprise::dashboard`](#sensuenterprisedashboard): Installs the Sensu Enterprise Dashboard
-* [`sensu::package`](#sensupackage): Installs Sensu packages
-* [`sensu::rabbitmq::config`](#sensurabbitmqconfig): Sets the Sensu rabbitmq config
-* [`sensu::redis::config`](#sensuredisconfig): Sets the Sensu redis config
-* [`sensu::repo::apt`](#sensurepoapt): Adds the Sensu repo to Apt
-* [`sensu::repo::yum`](#sensurepoyum): Adds the Sensu YUM repo support
-* [`sensu::server::service`](#sensuserverservice): Manages the Sensu server service
-* [`sensu::transport`](#sensutransport): Configures Sensu transport
+* [`sensu::agent`](#sensuagent): Manage Sensu agent
+* [`sensu::backend`](#sensubackend): Manage Sensu backend
 
-**Defined types**
+_Private Classes_
 
-* [`sensu::check`](#sensucheck): Creates Sensu checks
-* [`sensu::config`](#sensuconfig): Defines Sensu check configurations
-* [`sensu::contact`](#sensucontact): Manages contact routing
-* [`sensu::enterprise::dashboard::api`](#sensuenterprisedashboardapi): Manages the Sensu Enterprise API configuration
-* [`sensu::extension`](#sensuextension): Defines Sensu extensions
-* [`sensu::filter`](#sensufilter): Manages Sensu filters
-* [`sensu::handler`](#sensuhandler): sensu::handler
-* [`sensu::mutator`](#sensumutator): Manages sensu mutators
-* [`sensu::plugin`](#sensuplugin): Installs Sensu plugins
-* [`sensu::plugins_dir`](#sensuplugins_dir): Verifies if install_dir exists without duplicate declarations
-* [`sensu::subscription`](#sensusubscription): Manages Sensu subscriptions
-* [`sensu::write_json`](#sensuwrite_json): Writes arbitrary hash data to a config file.
+* `sensu::backend::resources`: Default sensu resources
+* `sensu::repo`: Private class to manage sensu repository resources
+* `sensu::ssl`: Private class to manage sensu SSL resources
 
 **Resource types**
 
-* [`sensu_api_config`](#sensu_api_config): Manages Sensu API config
+* [`sensu_api_validator`](#sensu_api_validator): Verify that a connection can be successfully established between a node and the sensu-backend server.  Its primary use is as a precondition t
+* [`sensu_asset`](#sensu_asset): Manages Sensu assets
 * [`sensu_check`](#sensu_check): Manages Sensu checks
-* [`sensu_check_config`](#sensu_check_config): ""
-* [`sensu_client_config`](#sensu_client_config): Manages Sensu client config
-* [`sensu_client_subscription`](#sensu_client_subscription): Manages Sensu client subscriptions
-* [`sensu_contact`](#sensu_contact): Manages Sensu contacts
-* [`sensu_enterprise_dashboard_api_config`](#sensu_enterprise_dashboard_api_config): Manages Sensu Enterprise Dashboard API config
-* [`sensu_enterprise_dashboard_config`](#sensu_enterprise_dashboard_config): Manages Sensu Enterprise Dashboard config
-* [`sensu_extension`](#sensu_extension): Manages Sensu extensions
+* [`sensu_cluster_member`](#sensu_cluster_member): Manages Sensu cluster members
+* [`sensu_cluster_role`](#sensu_cluster_role): Manages Sensu cluster roles
+* [`sensu_cluster_role_binding`](#sensu_cluster_role_binding): Manages Sensu cluster role bindings
+* [`sensu_config`](#sensu_config): Manages Sensu configs
+* [`sensu_configure`](#sensu_configure): Manages `sensuctl configure`. This is a private type not intended to be used directly.
+* [`sensu_entity`](#sensu_entity): Manages Sensu entities
+* [`sensu_event`](#sensu_event): Manages Sensu events
 * [`sensu_filter`](#sensu_filter): Manages Sensu filters
 * [`sensu_handler`](#sensu_handler): Manages Sensu handlers
+* [`sensu_hook`](#sensu_hook): Manages Sensu hooks
+* [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth. Requires valid enterprise license.
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
-* [`sensu_rabbitmq_config`](#sensu_rabbitmq_config): Manages Sensu RabbitMQ config
-* [`sensu_redis_config`](#sensu_redis_config): Manages Sensu Redis config
-
-**Functions**
-
-* [`sensu_sorted_json`](#sensu_sorted_json): This function takes unsorted hash and outputs JSON object making sure the keys are sorted. Optionally you can pass a boolean as the second pa
+* [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
+* [`sensu_role`](#sensu_role): Manages Sensu roles
+* [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
+* [`sensu_silenced`](#sensu_silenced): Manages Sensu silencing
+* [`sensu_user`](#sensu_user): Manages Sensu users
 
 ## Classes
 
@@ -66,2561 +52,34 @@ The following parameters are available in the `sensu` class.
 
 ##### `version`
 
-Data type: `Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^[\d\.\-el]+$/]`
+Data type: `String`
 
-Version of sensu to install.  Defaults to `installed` to support
+Version of Sensu to install.  Defaults to `installed` to support
 Windows MSI packaging and to avoid surprising upgrades.
 
 Default value: 'installed'
 
-##### `sensu_etc_dir`
+##### `etc_dir`
 
 Data type: `Stdlib::Absolutepath`
 
-Absolute path to the sensu etc directory.
-Default: '/etc/sensu' on Linux, 'C:/opt/sensu' on windows
+Absolute path to the Sensu etc directory.
 
-Default value: $::osfamily
+Default value: '/etc/sensu'
 
-##### `sensu_plugin_name`
-
-Data type: `String`
-
-Name of the sensu-plugin package. Refers to the
-sensu-plugin rubygem, not the community sensu-plugins community scripts.
-
-Default value: 'sensu-plugin'
-
-##### `sensu_plugin_provider`
-
-Data type: `Optional[String]`
-
-String.  Provider used to install the sensu-plugin package. Refers to the
-sensu-plugin rubygem, not the sensu-plugins community scripts.  On windows,
-defaults to `gem`, all other platforms defaults to `undef`
-
-Default value: $::osfamily
-
-##### `sensu_plugin_version`
-
-Data type: `Pattern[/^absent$/, /^installed$/, /^latest$/, /^present$/, /^\d[\d\.\-\w]+$/]`
-
-Version of the sensu-plugin gem to install.
-Refers to the sensu-plugin rubygem, not the sensu-plugins community scripts
-
-Default value: 'installed'
-
-##### `install_repo`
-
-Data type: `Boolean`
-
-Whether or not to install the sensu repo
-
-Default value: `true`
-
-##### `enterprise`
-
-Data type: `Boolean`
-
-Whether or not to install and configure Sensu Enterprise
-
-Default value: `false`
-
-##### `enterprise_dashboard`
-
-Data type: `Boolean`
-
-Whether or not to install sensu-enterprise-dashboard
-
-Default value: `false`
-
-##### `manage_repo`
-
-Data type: `Boolean`
-
-Whether or not to manage apt/yum repositories
-
-Default value: `true`
-
-##### `repo`
-
-Data type: `Enum['main','unstable']`
-
-Which sensu repo to install
-
-Default value: 'main'
-
-##### `repo_source`
-
-Data type: `Optional[String]`
-
-Location of the yum/apt repo.  Overrides the default location
-
-Default value: `undef`
-
-##### `repo_key_id`
-
-Data type: `String`
-
-The apt GPG key id
-
-Default value: 'EE15CFF6AB6E4E290FDAB681A20F259AEB9C94BB'
-
-##### `repo_key_source`
-
-Data type: `String`
-
-URL of the apt GPG key
-
-Default value: 'https://sensu.global.ssl.fastly.net/apt/pubkey.gpg'
-
-##### `repo_release`
-
-Data type: `Optional[String]`
-
-Release for the apt source. Only set this if you want to run
-packages from another release, which is not supported by Sensu. Only works
-with systems that use apt.
-
-Default value: `undef`
-
-##### `spawn_limit`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Tune concurrency of the sensu-server pipe handler and the
-sensu-client check execution.  This setting should not need to be tuned
-except in specific situations, e.g. when there are a large number of JIT
-clients.  See [#727](https://github.com/sensu/sensu-puppet/issues/727) for
-more information.  The default is undefined, which does not manage
-`/etc/sensu/conf.d/spawn.json`
-
-Default value: `undef`
-
-##### `client`
-
-Data type: `Boolean`
-
-Include the sensu client
-
-Default value: `true`
-
-##### `server`
-
-Data type: `Boolean`
-
-Include the sensu server
-
-Default value: `false`
-
-##### `api`
-
-Data type: `Boolean`
-
-Include the sensu api service
-
-Default value: `false`
-
-##### `manage_services`
-
-Data type: `Boolean`
-
-Manage the sensu services with puppet
-
-Default value: `true`
-
-##### `client_service_enable`
-
-Data type: `Boolean`
-
-Set enable value for sensu client service
-(applies when manage_services is set to true)
-
-Default value: `true`
-
-##### `client_service_ensure`
-
-Data type: `String`
-
-Set ensure value for sensu client service
-(applies when manage_services is set to true)
-
-Default value: running
-
-##### `server_service_enable`
-
-Data type: `Boolean`
-
-Set enable value for sensu server service
-(applies when manage_services is set to true)
-
-Default value: `true`
-
-##### `server_service_ensure`
-
-Data type: `String`
-
-Set ensure value for sensu server service
-(applies when manage_services is set to true)
-
-Default value: running
-
-##### `manage_user`
-
-Data type: `Boolean`
-
-Manage the sensu user with puppet
-
-Default value: `true`
-
-##### `manage_plugins_dir`
-
-Data type: `Boolean`
-
-Manage the sensu plugins directory. Must be false if you use
-sensu::plugin with type 'directory'.
-
-Default value: `true`
-
-##### `manage_handlers_dir`
-
-Data type: `Boolean`
-
-Manage the sensu handlers directory
-
-Default value: `true`
-
-##### `manage_mutators_dir`
-
-Data type: `Boolean`
-
-Manage the sensu mutators directory
-
-Default value: `true`
-
-##### `sensu_user`
-
-Data type: `Optional[String]`
-
-Name of the user Sensu is running as. Default is calculated
-according to the underlying OS
-
-Default value: `undef`
-
-##### `sensu_group`
-
-Data type: `Optional[String]`
-
-Name of the group Sensu is running as. Default is calculated
-according to the underlying OS
-
-Default value: `undef`
-
-##### `config_dir_mode`
-
-Data type: `Optional[Stdlib::Filemode]`
-
-Directory mode for Sensu conf directory. Default is calculated
-according to the underlying OS
-
-Default value: $::osfamily
-
-##### `config_file_mode`
-
-Data type: `Optional[Stdlib::Filemode]`
-
-File mode for config files under Sensu conf directory . Default is calculated
-according to the underlying OS
-
-Default value: $::osfamily
-
-##### `rabbitmq_port`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Rabbitmq port to be used by sensu
-
-Default value: `undef`
-
-##### `rabbitmq_host`
-
-Data type: `Optional[String]`
-
-Host running rabbitmq for sensu
-
-Default value: `undef`
-
-##### `rabbitmq_user`
-
-Data type: `Optional[String]`
-
-Username to connect to rabbitmq with for sensu
-
-Default value: `undef`
-
-##### `rabbitmq_password`
-
-Data type: `Optional[String]`
-
-Password to connect to rabbitmq with for sensu
-
-Default value: `undef`
-
-##### `rabbitmq_vhost`
-
-Data type: `Optional[String]`
-
-Rabbitmq vhost to be used by sensu
-
-Default value: `undef`
-
-##### `rabbitmq_ssl`
-
-Data type: `Optional[Boolean]`
-
-Use SSL transport to connect to RabbitMQ.  If rabbitmq_ssl_private_key and/or
-rabbitmq_ssl_cert_chain are set, then this is enabled automatically.  Set rabbitmq_ssl => true
-without specifying a private key or cert chain to use SSL transport, but not cert auth.
-
-Default value: `undef`
-
-##### `rabbitmq_ssl_private_key`
-
-Data type: `Optional[String]`
-
-Private key to be used by sensu to connect to rabbitmq. If the value starts with
-'puppet://' the file will be copied and used.  Also the key itself can be given as the
-parameter value, or a variable, or using hiera.  Absolute paths will just be used as
-a file reference, as you'd normally configure sensu.
-
-Default value: `undef`
-
-##### `rabbitmq_ssl_cert_chain`
-
-Data type: `Optional[String]`
-
-Private SSL cert chain to be used by sensu to connect to rabbitmq
-If the value starts with 'puppet://' the file will be copied and used.   Also the key itself can
-be given as the parameter value, or a variable, or using hiera. Absolute paths will just be used
-as a file reference, as you'd normally configure sensu.
-
-Default value: `undef`
-
-##### `rabbitmq_prefetch`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-The integer value for the RabbitMQ prefetch attribute
-
-Default value: `undef`
-
-##### `rabbitmq_cluster`
-
-Data type: `Variant[Undef,Hash,Array]`
-
-Array of hashes. Rabbitmq Cluster configuration
-and connection information for one or more Cluster
-
-Default value: `undef`
-
-##### `rabbitmq_heartbeat`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-The integer value for the RabbitMQ heartbeat attribute
-
-Default value: `undef`
-
-##### `redis_host`
-
-Data type: `Optional[String]`
-
-Hostname of redis to be used by sensu
-
-Default value: '127.0.0.1'
-
-##### `redis_port`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Redis port to be used by sensu
-
-Default value: 6379
-
-##### `redis_password`
-
-Data type: `Optional[String]`
-
-Password to be used to connect to Redis
-
-Default value: `undef`
-
-##### `redis_reconnect_on_error`
-
-Data type: `Boolean`
-
-Reconnect to Redis in the event of a Redis error, e.g. READONLY
-(not to be confused with a connection failure).
-
-Default value: `true`
-
-##### `redis_db`
-
-Data type: `Integer`
-
-The Redis instance DB to use/select
-
-Default value: 0
-
-##### `redis_sentinels`
-
-Data type: `Optional[Array]`
-
-Redis Sentinel configuration and connection information for one or more Sentinels
-
-Default value: `undef`
-
-##### `redis_master`
-
-Data type: `Optional[String]`
-
-Redis master name in the sentinel configuration
-In the end whatever sensu defaults to, which is "mymaster" currently.
-
-Default value: `undef`
-
-##### `redis_auto_reconnect`
-
-Data type: `Boolean`
-
-Reconnect to Redis in the event of a connection failure
-
-Default value: `true`
-
-##### `redis_tls`
-
-Data type: `Boolean`
-
-Enable TLS encryption when connecting to Redis
-
-Default value: `false`
-
-##### `transport_type`
-
-Data type: `Enum['rabbitmq','redis']`
-
-Transport type to be used by Sensu
-
-Default value: 'rabbitmq'
-
-##### `transport_reconnect_on_error`
-
-Data type: `Boolean`
-
-If the transport connection is closed, attempt to reconnect automatically when possible.
-
-Default value: `true`
-
-##### `api_bind`
-
-Data type: `String`
-
-IP to bind api service
-
-Default value: '0.0.0.0'
-
-##### `api_host`
-
-Data type: `String`
-
-Hostname of the sensu api service
-
-Default value: '127.0.0.1'
-
-##### `api_port`
-
-Data type: `Integer`
-
-Port of the sensu api service
-
-Default value: 4567
-
-##### `api_user`
-
-Data type: `Optional[String]`
-
-Password of the sensu api service
-
-Default value: `undef`
-
-##### `api_password`
-
-Data type: `Optional[String]`
-
-Password of the sensu api service
-
-Default value: `undef`
-
-##### `api_ssl_port`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Port of the HTTPS (SSL) sensu api service. Enterprise only
-feature.
-
-Default value: `undef`
-
-##### `api_ssl_keystore_file`
-
-Data type: `Optional[String]`
-
-The file path for the SSL certificate keystore. Enterprise only
-feature.
-
-Default value: `undef`
-
-##### `api_ssl_keystore_password`
-
-Data type: `Optional[String]`
-
-The SSL certificate keystore password. Enterprise only feature.
-
-Default value: `undef`
-
-##### `subscriptions`
-
-Data type: `Variant[String,Array]`
-
-Default subscriptions used by the client
-
-Default value: []
-
-##### `client_socket_enabled`
-
-Data type: `Boolean`
-
-Boolean that determines if client socket will be enabled
-
-Default value: `true`
-
-##### `client_address`
-
-Data type: `String`
-
-Address of the client to report with checks
-
-Default value: $::ipaddress
-
-##### `client_name`
-
-Data type: `String`
-
-Name of the client to report with checks
-
-Default value: $::fqdn
-
-##### `client_custom`
-
-Data type: `Hash`
-
-Custom client variables.
-
-Default value: {}
-
-##### `client_deregister`
-
-Data type: `Variant[Undef,Boolean]`
-
-Enable the [deregistration
-event](https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes)
-if true.
-
-Default value: `undef`
-
-##### `client_deregistration`
-
-Data type: `Variant[Undef,Hash]`
-
-(https://sensuapp.org/docs/latest/reference/clients#deregistration-attributes)
-used to generate check result data for the de-registration event. Client
-deregistration attributes are merged with some default check definition
-attributes by the Sensu server during client deregistration, so any valid
-check definition attributes – including custom check definition attributes
-– may be used as deregistration attributes, with the following exceptions
-(which are used to ensure the check result is valid): check name, output,
-status, and issued timestamp. The following attributes are provided as
-recommendations for controlling client deregistration behavior.
-
-Default value: `undef`
-
-##### `client_registration`
-
-Data type: `Variant[Undef,Hash]`
-
-(https://sensuapp.org/docs/latest/reference/clients#registration-attributes)
-used to generate check result data for the registration event. Client
-registration attributes are merged with some default check definition
-attributes by the Sensu server during client registration.
-
-Default value: `undef`
-
-##### `client_keepalive`
-
-Data type: `Hash`
-
-Client keepalive configuration
-
-Default value: {}
-
-##### `client_http_socket`
-
-Data type: `Hash`
-
-Client http_socket configuration. Must be an Hash of
-parameters as described in:
-https://sensuapp.org/docs/latest/reference/clients.html#http-socket-attributes
-
-Default value: {}
-
-##### `client_servicenow`
-
-Data type: `Hash`
-
-Client servicenow configuration. Supported only
-on Sensu Enterprise. It expects an Hash with a single key named
-'configuration_item' containing an Hash of parameters, as described in:
-https://sensuapp.org/docs/latest/reference/clients.html#servicenow-attributes
-
-Default value: {}
-
-##### `client_ec2`
-
-Data type: `Hash`
-
-Client ec2 configuration. Supported only on Sensu
-Enterprise. It expects an Hash with valid paramters as described in:
-https://sensuapp.org/docs/latest/reference/clients.html#ec2-attributes
-
-Default value: {}
-
-##### `client_chef`
-
-Data type: `Hash`
-
-Client chef configuration. Supported only on Sensu
-Enterprise. It expects an Hash with valid paramters as described in:
-https://sensuapp.org/docs/latest/reference/clients.html#chef-attributes
-
-Default value: {}
-
-##### `client_puppet`
-
-Data type: `Hash`
-
-Client puppet configuration. Supported only on Sensu
-Enterprise. It expects an Hash with valid paramters as described in:
-https://sensuapp.org/docs/latest/reference/clients.html#puppet-attributes
-
-Default value: {}
-
-##### `safe_mode`
-
-Data type: `Boolean`
-
-Force safe mode for checks
-
-Default value: `false`
-
-##### `plugins`
-
-Data type: `Variant[String,Array,Hash]`
-
-Plugins to install on the node
-Strings and Arrays of strings will set 'install_path' => '/etc/sensu/plugins' as default.
-Example string: 'puppet:///data/sensu/plugins/plugin1.rb'
-Example array: [ 'puppet:///data/sensu/plugins/plugin1.rb', 'puppet:///data/sensu/plugins/plugin2.rb' ]
-Example hash: { 'puppet:///data/sensu/plugins/plugin1.rb' => { 'pkg_version' => '2.4.2' }, 'puppet:///data/sensu/plugins/plugin1.rb' => { 'pkg_provider' => 'sensu-gem' }
-
-Default value: []
-
-##### `plugins_defaults`
-
-Data type: `Hash`
-
-Defaults for Plugins to install on the node. Will be added when plugins is set to a hash.
-Example value: { 'install_path' => '/other/path' }
-
-Default value: {}
-
-##### `plugins_dir`
-
-Data type: `Optional[String]`
-
-Puppet url to plugins directory
-
-Default value: `undef`
-
-##### `purge`
-
-Data type: `Variant[Boolean,Hash]`
-
-If unused plugins, configs, handlers, extensions and mutators should be removed from the system.
-If set to true, all unused plugins, configs, handlers, extensions and mutators will be removed from the system.
-If set to a Hash, only unused files of the specified type(s) will be removed from the system.
-Valid values: true, false, Hash containing any of the keys 'plugins', 'config', 'handlers', 'extensions', 'mutators'
-Example value: { config => true, plugins => true }
-
-Default value: `false`
-
-##### `use_embedded_ruby`
-
-Data type: `Boolean`
-
-If the embedded ruby should be used, e.g. to install the
-sensu-plugin gem.  This value is overridden by a defined
-sensu_plugin_provider.  Note, the embedded ruby should always be used to
-provide full compatibility.  Using other ruby runtimes, e.g. the system
-ruby, is not recommended.
-
-Default value: `true`
-
-##### `rubyopt`
-
-Data type: `Optional[String]`
-
-Ruby opts to be passed to the sensu services
-
-Default value: `undef`
-
-##### `gem_path`
-
-Data type: `Optional[String]`
-
-Paths to add to GEM_PATH if we need to look for different dirs.
-
-Default value: `undef`
-
-##### `log_level`
-
-Data type: `Enum['debug','info','warn','error','fatal']`
-
-Sensu log level to be used
-
-Default value: 'info'
-
-##### `log_dir`
+##### `ssl_dir`
 
 Data type: `Stdlib::Absolutepath`
 
-Sensu log directory to be used
+Absolute path to the Sensu ssl directory.
 
-Default value: '/var/log/sensu'
-
-##### `init_stop_max_wait`
-
-Data type: `Variant[Integer,Pattern[/^(\d+)$/]]`
-
-Number of seconds to wait for the init stop script to run
-
-Default value: 10
-
-##### `gem_install_options`
-
-Data type: `Optional[Any]`
-
-Optional configuration to use for the installation of the
-sensu plugin gem with sensu_gem provider.
-See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
-Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
-
-Default value: `undef`
-
-##### `hasrestart`
-
-Data type: `Boolean`
-
-Value of hasrestart attribute for sensu services.
-If you use your own startup scripts for upstart and want puppet
-to properly stop and start sensu services when those scripts change,
-set it to false. See also http://upstart.ubuntu.com/faq.html#reload
-
-Default value: `true`
-
-##### `enterprise_dashboard_auth`
-
-Data type: `Optional[Any]`
-
-Optional auth configuration for Enterprise Dashboard
-
-Default value: `undef`
-
-##### `enterprise_dashboard_oidc`
-
-Data type: `Optional[Any]`
-
-Optional OIDC configuration for Enterprise Dashboard
-
-Default value: `undef`
-
-##### `enterprise_dashboard_custom`
-
-Data type: `Optional[Hash]`
-
-List of custom attributes to include in the check.
-You can use it to pass any attribute that is not listed here explicitly.
-Example: { 'usersOptions' => { 'requireSilencingReason' => true } }
-
-Default value: `undef`
-
-##### `path`
-
-Data type: `Variant[Stdlib::Absolutepath,Pattern[/^\$PATH$/]]`
-
-Used to set PATH in /etc/default/sensu
-
-Default value: '$PATH'
-
-##### `redact`
-
-Data type: `Optional[Array]`
-
-Use to redact passwords from checks on the client side
-
-Default value: `undef`
-
-##### `deregister_on_stop`
-
-Data type: `Boolean`
-
-Whether the sensu client should deregister from the API on service stop
-
-Default value: `false`
-
-##### `deregister_handler`
-
-Data type: `Optional[String]`
-
-The handler to use when deregistering a client on stop.
-
-Default value: `undef`
-
-##### `handlers`
-
-Data type: `Hash`
-
-Hash of handlers for use with create_resources(sensu::handler).
-Example value: { 'email' => { 'type' => 'pipe', 'command' => 'mail' } }
-
-Default value: {}
-
-##### `handler_defaults`
-
-Data type: `Hash`
-
-Handler defaults when not provided explicitly in $handlers.
-Example value: { 'filters' => ['production'] }
-
-Default value: {}
-
-##### `checks`
-
-Data type: `Hash`
-
-Hash of checks for use with create_resources(sensu::check).
-Example value: { 'check-cpu' => { 'command' => 'check-cpu.rb' } }
-
-Default value: {}
-
-##### `check_defaults`
-
-Data type: `Hash`
-
-Check defaults when not provided explicitly in $checks.
-Example value: { 'occurrences' => 3 }
-
-Default value: {}
-
-##### `filters`
-
-Data type: `Hash`
-
-Hash of filters for use with create_resources(sensu::filter).
-Example value: { 'occurrence' => { 'attributes' => { 'occurrences' => '1' } } }
-
-Default value: {}
-
-##### `filter_defaults`
-
-Data type: `Hash`
-
-Filter defaults when not provided explicitly in $filters.
-Example value: { 'negate' => true }
-
-Default value: {}
-
-##### `package_checksum`
-
-Data type: `Optional[String]`
-
-Used to set package_checksum for windows installs
-
-Default value: `undef`
-
-##### `windows_logrotate`
-
-Data type: `Boolean`
-
-Whether or not to use logrotate on Windows OS family.
-
-Default value: `false`
-
-##### `windows_log_size`
-
-Data type: `Variant[Integer,Pattern[/^(\d+)$/]]`
-
-The integer value for the size of log files on
-Windows OS family. sizeThreshold in sensu-client.xml.
-
-Default value: 10240
-
-##### `windows_log_number`
-
-Data type: `Variant[Integer,Pattern[/^(\d+)$/]]`
-
-The integer value for the number of log files to
-keep on Windows OS family. keepFiles in sensu-client.xml.
-
-Default value: 10
-
-##### `windows_pkg_url`
-
-Data type: `Optional[String]`
-
-If specified, override the behavior of computing the
-package source URL from windows_repo_prefix and os major release fact.
-This parameter is intended to allow the end user to override the source URL
-used to install the Windows package.  For example:
-`"https://repositories.sensuapp.org/msi/2012r2/sensu-0.29.0-11-x64.msi"`
-
-Default value: `undef`
-
-##### `windows_package_provider`
-
-Data type: `Optional[String]`
-
-When something other than `undef`, use the
-specified package provider to install Windows packages. The default
-behavior of `undef` defers to the default package provider in Puppet which
-is expected to be the msi provider.
-Valid values are `undef` or `'chocolatey'`.
-
-Default value: `undef`
-
-##### `windows_choco_repo`
-
-Data type: `Optional[String]`
-
-The URL of the Chocolatey repository, used with
-the chocolatey windows package provider.
-
-Default value: `undef`
-
-##### `windows_package_name`
-
-Data type: `String`
-
-The package name used to identify the package
-filename. Defaults to `'sensu'` which matches the MSI filename published at
-`https://repositories.sensuapp.org/msi`.  Note, this is distinct from the
-windows_package_title, which is used to identify the package name as
-displayed in Add/Remove programs in Windows.
-
-Default value: 'Sensu'
-
-##### `windows_package_title`
-
-Data type: `String`
-
-The package name used to identify the package as
-listed in Add/Remove programs.  Note this is distinct from the package
-filename identifier specified with windows_package_name.
-
-Default value: 'sensu'
-
-##### `windows_service_user`
-
-Data type: `Optional[Struct[{NotUndef[user] => String, NotUndef[password] => String}]]`
-
-The credentials to use for running the Windows service
-Takes the form of { 'user' => 'username', 'password' => 'secret' } replacing
-'username' and 'secret' with appropriate values.
-
-Default value: `undef`
-
-##### `confd_dir`
-
-Data type: `Optional[Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath]]]`
-
-Additional directories to load configuration
-snippets from.
-
-Default value: `undef`
-
-##### `heap_size`
-
-Data type: `Variant[Integer,Pattern[/^(\d+)/],Undef]`
-
-Value of the HEAP_SIZE environment variable.
-Note: This has effect only on Sensu Enterprise.
-
-Default value: `undef`
-
-##### `max_open_files`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Value of the MAX_OPEN_FILES environment variable.
-
-Default value: `undef`
-
-##### `config_file`
-
-Data type: `Variant[Stdlib::Absolutepath,Undef]`
-
-Value of the CONFIG_FILE environment variable.
-
-Default value: `undef`
-
-##### `heap_dump_path`
-
-Data type: `Variant[Undef,String]`
-
-Value of the HEAP_DUMP_PATH environment variable.
-
-Default value: `undef`
-
-##### `java_opts`
-
-Data type: `Variant[Undef,String]`
-
-Value of the JAVA_OPTS environment variable.
-
-Default value: `undef`
-
-##### `enterprise_version`
-
-Data type: `Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/]`
-
-
-
-Default value: 'latest'
-
-##### `enterprise_user`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_pass`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_version`
-
-Data type: `String`
-
-
-
-Default value: 'latest'
-
-##### `enterprise_repo_key_id`
-
-Data type: `String`
-
-
-
-Default value: '910442FF8781AFD0995D14B311AB27E8C3FE3269'
-
-##### `client_bind`
-
-Data type: `String`
-
-
-
-Default value: '127.0.0.1'
-
-##### `client_port`
-
-Data type: `Integer`
-
-
-
-Default value: 3030
-
-##### `purge_config`
-
-Data type: `Boolean`
-
-
-
-Default value: `false`
-
-##### `purge_plugins_dir`
-
-Data type: `Boolean`
-
-
-
-Default value: `false`
-
-##### `dashboard`
-
-Data type: `Boolean`
-
-
-
-Default value: `false`
-
-##### `enterprise_dashboard_base_path`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_host`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_port`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_refresh`
-
-Data type: `Optional[Any]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_user`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_pass`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_ssl`
-
-Data type: `Optional[Any]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_audit`
-
-Data type: `Optional[Any]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_github`
-
-Data type: `Optional[Any]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_gitlab`
-
-Data type: `Optional[Any]`
-
-
-
-Default value: `undef`
-
-##### `enterprise_dashboard_ldap`
-
-Data type: `Optional[Any]`
-
-
-
-Default value: `undef`
-
-##### `windows_repo_prefix`
-
-Data type: `Optional[String]`
-
-
-
-Default value: 'https://repositories.sensuapp.org/msi'
-
-##### `extensions`
-
-Data type: `Hash`
-
-
-
-Default value: {}
-
-##### `mutators`
-
-Data type: `Hash`
-
-
-
-Default value: {}
-
-### sensu::api
-
-= Class: sensu::api
-
-Manages the Sensu api
-
-== Parameters
-
-[*hasrestart*]
-  Boolean. Value of hasrestart attribute for this service.
-  Default: true
-
-#### Parameters
-
-The following parameters are available in the `sensu::api` class.
-
-##### `hasrestart`
-
-Data type: `Boolean`
-
-
-
-Default value: $::sensu::hasrestart
-
-### sensu::client
-
-Manages the Sensu client service
-
-#### Parameters
-
-The following parameters are available in the `sensu::client` class.
-
-##### `hasrestart`
-
-Data type: `Boolean`
-
-Value of hasrestart attribute for this service.
-
-Default value: $::sensu::hasrestart
-
-##### `log_level`
-
-Data type: `Any`
-
-Sensu log level to be used
-Valid values: debug, info, warn, error, fatal
-
-Default value: $::sensu::log_level
-
-##### `windows_logrotate`
-
-Data type: `Any`
-
-Whether or not to use logrotate on Windows OS family.
-
-Default value: $::sensu::windows_logrotate
-
-##### `windows_log_size`
-
-Data type: `Any`
-
-The integer value for the size of log files on Windows OS family. sizeThreshold in sensu-client.xml.
-
-Default value: $::sensu::windows_log_size
-
-##### `windows_log_number`
-
-Data type: `Any`
-
-The integer value for the number of log files to keep on Windows OS family. keepFiles in sensu-client.xml.
-
-Default value: $::sensu::windows_log_number
-
-##### `client_service_enable`
-
-Data type: `Any`
-
-
-
-Default value: $::sensu::client_service_enable
-
-##### `client_service_ensure`
-
-Data type: `Any`
-
-
-
-Default value: $::sensu::client_service_ensure
-
-### sensu::enterprise
-
-Installs Sensu enterprise
-
-#### Parameters
-
-The following parameters are available in the `sensu::enterprise` class.
-
-##### `deregister_handler`
-
-Data type: `Optional[String]`
-
-The handler to use when deregistering a client on stop.
-
-Default value: $::sensu::deregister_handler
-
-##### `deregister_on_stop`
-
-Data type: `Optional[Boolean]`
-
-Whether the sensu client should deregister from the API on service stop
-
-Default value: $::sensu::deregister_on_stop
-
-##### `gem_path`
-
-Data type: `Optional[String]`
-
-Paths to add to GEM_PATH if we need to look for different dirs.
-
-Default value: $::sensu::gem_path
-
-##### `init_stop_max_wait`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Number of seconds to wait for the init stop script to run
-
-Default value: $::sensu::init_stop_max_wait
-
-##### `log_dir`
-
-Data type: `Optional[String]`
-
-Sensu log directory to be used
-Valid values: Any valid log directory path, accessible by the sensu user
-
-Default value: $::sensu::log_dir
-
-##### `log_level`
-
-Data type: `Optional[String]`
-
-Sensu log level to be used
-Valid values: debug, info, warn, error, fatal
-
-Default value: $::sensu::log_level
-
-##### `path`
-
-Data type: `Optional[String]`
-
-Used to set PATH in /etc/default/sensu
-
-Default value: $::sensu::path
-
-##### `rubyopt`
-
-Data type: `Optional[String]`
-
-Ruby opts to be passed to the sensu services
-
-Default value: $::sensu::rubyopt
-
-##### `use_embedded_ruby`
-
-Data type: `Optional[Boolean]`
-
-If the embedded ruby should be used, e.g. to install the
-sensu-plugin gem.  This value is overridden by a defined
-sensu_plugin_provider.  Note, the embedded ruby should always be used to
-provide full compatibility.  Using other ruby runtimes, e.g. the system
-ruby, is not recommended.
-
-Default value: $::sensu::use_embedded_ruby
-
-##### `heap_size`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)/]]`
-
-Value of the HEAP_SIZE environment variable.
-
-Default value: $::sensu::heap_size
-
-##### `max_open_files`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Value of the MAX_OPEN_FILES environment variable.
-
-Default value: $::sensu::max_open_files
-
-##### `heap_dump_path`
-
-Data type: `Variant[Undef,String]`
-
-Value of the HEAP_DUMP_PATH environment variable.
-
-Default value: $::sensu::heap_dump_path
-
-##### `java_opts`
-
-Data type: `Variant[Undef,String]`
-
-Value of the JAVA_OPTS environment variable.
-
-Default value: $::sensu::java_opts
-
-##### `hasrestart`
-
-Data type: `Boolean`
-
-
-
-Default value: $::sensu::hasrestart
-
-### sensu::enterprise::dashboard
-
-Installs the Sensu Enterprise Dashboard
-
-#### Parameters
-
-The following parameters are available in the `sensu::enterprise::dashboard` class.
-
-##### `hasrestart`
-
-Data type: `Boolean`
-
-
-
-Default value: $::sensu::hasrestart
-
-### sensu::package
-
-Installs the Sensu packages
-
-#### Parameters
-
-The following parameters are available in the `sensu::package` class.
-
-##### `conf_dir`
-
-Data type: `Optional[String]`
-
-The default configuration directory.
-
-Default value: $::sensu::conf_dir
-
-##### `confd_dir`
-
-Data type: `Variant[String,Array,Undef]`
-
-Additional directories to load configuration
-snippets from.
-
-Default value: $::sensu::confd_dir
-
-##### `heap_size`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)/]]`
-
-Value of the HEAP_SIZE environment variable.
-Note: This has no effect on sensu-core.
-
-Default value: $::sensu::heap_size
-
-##### `config_file`
-
-Data type: `Variant[Stdlib::Absolutepath,Undef]`
-
-Value of the CONFIG_FILE environment variable.
-
-Default value: $::sensu::config_file
-
-##### `deregister_handler`
-
-Data type: `Optional[String]`
-
-The handler to use when deregistering a client on stop.
-
-Default value: $::sensu::deregister_handler
-
-##### `deregister_on_stop`
-
-Data type: `Optional[Boolean]`
-
-Whether the sensu client should deregister from the API on service stop
-
-Default value: $::sensu::deregister_on_stop
-
-##### `gem_path`
-
-Data type: `Optional[String]`
-
-Paths to add to GEM_PATH if we need to look for different dirs.
-
-Default value: $::sensu::gem_path
-
-##### `init_stop_max_wait`
-
-Data type: `Variant[Undef,Integer,Pattern[/^(\d+)$/]]`
-
-Number of seconds to wait for the init stop script to run
-
-Default value: $::sensu::init_stop_max_wait
-
-##### `log_dir`
-
-Data type: `Optional[String]`
-
-Sensu log directory to be used
-Valid values: Any valid log directory path, accessible by the sensu user
-
-Default value: $::sensu::log_dir
-
-##### `log_level`
-
-Data type: `Optional[String]`
-
-Sensu log level to be used
-Valid values: debug, info, warn, error, fatal
-
-Default value: $::sensu::log_level
-
-##### `path`
-
-Data type: `Optional[String]`
-
-Used to set PATH in /etc/default/sensu
-
-Default value: $::sensu::path
-
-##### `rubyopt`
-
-Data type: `Optional[String]`
-
-Ruby opts to be passed to the sensu services
-
-Default value: $::sensu::rubyopt
-
-##### `use_embedded_ruby`
-
-Data type: `Optional[Boolean]`
-
-If the embedded ruby should be used, e.g. to install the
-sensu-plugin gem.  This value is overridden by a defined
-sensu_plugin_provider.  Note, the embedded ruby should always be used to
-provide full compatibility.  Using other ruby runtimes, e.g. the system
-ruby, is not recommended.
-
-Default value: $::sensu::use_embedded_ruby
-
-### sensu::rabbitmq::config
-
-Sets the Sensu rabbitmq config
-
-### sensu::redis::config
-
-Sets the Sensu redis config
-
-### sensu::repo::apt
-
-Adds the Sensu repo to Apt
-
-### sensu::repo::yum
-
-Adds the Sensu YUM repo support
-
-### sensu::server::service
-
-Manages the Sensu server service
-
-#### Parameters
-
-The following parameters are available in the `sensu::server::service` class.
-
-##### `hasrestart`
-
-Data type: `Boolean`
-
-Value of hasrestart attribute for this service.
-
-Default value: $::sensu::hasrestart
-
-##### `server_service_enable`
-
-Data type: `Any`
-
-
-
-Default value: $::sensu::server_service_enable
-
-##### `server_service_ensure`
-
-Data type: `Any`
-
-
-
-Default value: $::sensu::server_service_ensure
-
-### sensu::transport
-
-Configure Sensu Transport
-
-## Defined types
-
-### sensu::check
-
-This define manages Sensu checks
-
-[Hooks](https://sensuapp.org/docs/latest/reference/checks.html#hooks-attributes)
-  Since Sensu 1.1.0.  Manages hooks for a check. See the documentation for the format
-  of the Hash value.
-
-#### Parameters
-
-The following parameters are available in the `sensu::check` defined type.
-
-##### `command`
-
-Data type: `Optional[String]`
-
-The check command to run
-
-Default value: `undef`
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not.
-Valid values: present, absent
-
-Default value: 'present'
-
-##### `type`
-
-Data type: `Optional[String]`
-
-Type of check. Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `handlers`
-
-Data type: `Variant[Undef,String,Array]`
-
-Array of Strings. Handlers to use for this check.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `contacts`
-
-Data type: `Variant[Undef,String,Array]`
-
-Array of Strings. Contacts to use for the contact-routing
-Sensu Enterprise feature.  This value corresponds with a sensu::contact
-resource having the same name.
-
-Default value: `undef`
-
-##### `standalone`
-
-Data type: `Variant[Boolean,Enum['absent']]`
-
-When true, scheduled by the client. When false, listen for
-published check request. Set this to 'absent' to remove it completely.
-
-Default value: `true`
-
-##### `cron`
-
-Data type: `String`
-
-When the check should be executed, using the [Cron
-syntax](https://en.wikipedia.org/wiki/Cron#CRON_expression). Supersedes the
-`interval` parameter.  Example: `"0 0 * * *"`.
-
-Default value: 'absent'
-
-##### `interval`
-
-Data type: `Variant[Integer,Enum['absent']]`
-
-How frequently (in seconds) the check will be executed.
-Set this to 'absent' to remove it completely.
-
-Default value: 60
-
-##### `occurrences`
-
-Data type: `Variant[Undef,Pattern[/^(\d+)$/],Integer,Enum['absent']]`
-
-The number of event occurrences before the handler should
-take action. Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `refresh`
-
-Data type: `Variant[Undef,Enum['absent'],Integer]`
-
-The number of seconds sensu-plugin-aware handlers should wait
-before taking second action. Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `source`
-
-Data type: `Variant[Undef,String,Integer]`
-
-The check source, used to create a JIT Sensu client for an
-external resource (e.g. a network switch). Set this to 'absent' to remove
-it completely.
-
-Default value: `undef`
-
-##### `subscribers`
-
-Data type: `Variant[Undef,String,Array]`
-
-Array of Strings. Which subscriptions must execute this check.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `low_flap_threshold`
-
-Data type: `Variant[Undef,Enum['absent'],Integer]`
-
-Flap detection - see [Nagios Flap Detection](http://nagios.sourceforge.net/docs/3_0/flapping.html).
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `high_flap_threshold`
-
-Data type: `Variant[Undef,Enum['absent'],Integer]`
-
-Flap detection - see [Nagios Flap Detection](http://nagios.sourceforge.net/docs/3_0/flapping.html).
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `timeout`
-
-Data type: `Variant[Undef,Enum['absent'],Numeric]`
-
-Check timeout in seconds, after it fails.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `aggregate`
-
-Data type: `Optional[String]`
-
-Aggregates, preventing event floods. Set 'aggregate:<name>' and
-'handle:false', this prevents the server from sending to a handler, and makes
-the aggregated results available under /aggregates in the REST API.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `aggregates`
-
-Data type: `Variant[Undef,String,Array]`
-
-Array of Strings. An array of aggregates to add to the check.
-This supercedes the above aggregate parameter.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `handle`
-
-Data type: `Variant[Undef,Enum['absent'],Boolean]`
-
-When false, check will not be sent to handlers.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `publish`
-
-Data type: `Variant[Undef,Enum['absent'],Boolean]`
-
-Unpublished checks. Prevents the check from being triggered on
-clients. This allows for the definition of commands that are not actually
-'checks' per say, but actually arbitrary commands for remediation.
-Set this to 'absent' to remove it completely.
-Default: undef
-
-Default value: `undef`
-
-##### `dependencies`
-
-Data type: `Variant[Undef,String,Array]`
-
-List of checks this check depends on.
-Note: The validity of the other checks is not enforced by puppet
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `content`
-
-Data type: `Hash`
-
-Mapping of arbitrary attributes from the top-level of the target
-configuration JSON map.  This parameter is intended to configure plugins and
-extensions which look up values outside of the check configuration scope.
-Example: { "mailer" => { "mail_from" => "sensu@example.com", "mail_to" => "monitor@example.com" } }
-
-Default value: {}
-
-##### `custom`
-
-Data type: `Optional[Hash]`
-
-List of custom attributes to include in the check.
-You can use it to pass any attribute that is not listed here explicitly.
-Example: { 'remediation' => { 'low_remediation' => { 'occurrences' => [1,2], 'severities' => [1], 'command' => "/bin/command", 'publish' => false, } } }
-
-Default value: `undef`
-
-##### `ttl`
-
-Data type: `Variant[Undef,Enum['absent'],Integer]`
-
-The time to live (TTL) in seconds until check results are
-considered stale. Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `ttl_status`
-
-Data type: `Variant[Undef,Enum['absent'],Integer,Pattern[/^(\d+)+$/]]`
-
-The exit code that a check with the ttl attribute should return.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `auto_resolve`
-
-Data type: `Variant[Undef,Enum['absent'],Boolean]`
-
-When a check in a WARNING or CRITICAL state returns to an OK state, the event generated by the
-WARNING or CRITICAL state will be automatically resolved. Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `subdue`
-
-Data type: `Variant[Undef,Enum['absent'],Hash]`
-
-Check subdue configuration.
-Set this to 'absent' to remove it completely.
-
-Default value: `undef`
-
-##### `proxy_requests`
-
-Data type: `Variant[Undef,Enum['absent'],Hash]`
-
-Manages [Proxy Check Requests](https://sensuapp.org/docs/latest/reference/checks.html#proxy-requests-attributes)
-Since Sensu 0.28.0.  Publishes a check request to every Sensu client which
-matches the defined client attributes.  See the documentation for the format
-of the Hash value.
-
-Default value: `undef`
-
-##### `hooks`
-
-Data type: `Variant[Undef,Enum['absent'],Hash]`
-
-Manages
-
-Default value: `undef`
-
-### sensu::config
-
- This define manages Sensu check configurations.
-
-#### Parameters
-
-The following parameters are available in the `sensu::config` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-Valid values: present, absent
-
-Default value: 'present'
-
-##### `config`
-
-Data type: `Optional[Hash]`
-
-Check configuration for the client to use
-
-Default value: `undef`
-
-##### `event`
-
-Data type: `Optional[Hash]`
-
-Configuration to send with the event to handlers
-
-Default value: `undef`
-
-### sensu::contact
-
-Manage [Contact
-Routing](https://sensuapp.org/docs/latest/enterprise/contact-routing.html)
-configuration with Sensu Enterprise.
-
-Note:  If the `sensu::purge_config` class parameter is `true`, unmanaged
-sensu::contact resources located in /etc/sensu/conf.d/contacts will be purged.
-
-#### Parameters
-
-The following parameters are available in the `sensu::contact` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-
-Default value: 'present'
-
-##### `base_path`
-
-Data type: `Optional[String]`
-
-Where to place the contact JSON configuration file.  Defaults to
-`undef` which defers to the behavior of the underlying sensu_contact type.
-
-Default value: `undef`
-
-##### `config`
-
-Data type: `Hash`
-
-The configuration data for the contact.  This is an arbitrary hash to
-accommodate the various communication channels. For example, `{ "email": {
-"to": "support@example.com" } }`.
-
-Default value: {}
-
-### sensu::enterprise::dashboard::api
-
-Manages the Sensu Enterprise API configuration
-
-#### Parameters
-
-The following parameters are available in the `sensu::enterprise::dashboard::api` defined type.
-
-##### `host`
-
-The hostname or IP address of the Sensu API.
-This is used as the namevar for the underlying resource, so must be unique
-within the catalog.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the dashboard API should be configured or not
-
-Default value: present
-
-##### `base_path`
-
-Data type: `Optional[String]`
-
-The base path to the client config file.
-
-Default value: `undef`
-
-##### `datacenter`
-
-Data type: `Optional[String]`
-
-The datacenter name.
-
-Default value: `undef`
-
-##### `port`
-
-Data type: `Optional[Integer]`
-
-The port of the Sensu API.
-
-Default value: `undef`
-
-##### `ssl`
-
-Data type: `Optional[Boolean]`
-
-Whether or not to use the HTTPS protocol.
-
-Default value: `undef`
-
-##### `insecure`
-
-Data type: `Optional[Boolean]`
-
-Whether or not to accept an insecure SSL certificate.
-
-Default value: `undef`
-
-##### `path`
-
-Data type: `Optional[String]`
-
-The path of the Sensu API. Leave empty unless your Sensu API is not mounted to /.
-
-Default value: `undef`
-
-##### `timeout`
-
-Data type: `Optional[Integer]`
-
-The timeout for the Sensu API, in seconds.
-
-Default value: `undef`
+Default value: '/etc/sensu/ssl'
 
 ##### `user`
 
-Data type: `Optional[String]`
-
-The username of the Sensu API. Leave empty for no authentication.
-
-Default value: `undef`
-
-##### `pass`
-
-Data type: `Optional[String]`
-
-The password of the Sensu API. Leave empty for no authentication.
-
-Default value: `undef`
-
-### sensu::extension
-
-This define manages Sensu extensions
-
-#### Parameters
-
-The following parameters are available in the `sensu::extension` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-
-Default value: 'present'
-
-##### `source`
-
-Data type: `Optional[Pattern[/^puppet:\/\//]]`
-
-Source of the puppet extension
-
-Default value: `undef`
-
-##### `install_path`
-
 Data type: `String`
 
-Path where to install the extension
-
-Default value: '/etc/sensu/extensions'
-
-##### `config`
-
-Data type: `Hash`
-
-Extension specific config
-
-Default value: {}
-
-### sensu::filter
-
-Defines Sensu filters
-
-== Parameters
-
-#### Parameters
-
-The following parameters are available in the `sensu::filter` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-
-Default value: 'present'
-
-##### `negate`
-
-Data type: `Optional[Boolean]`
-
-Negate the filter
-
-Default value: `undef`
-
-##### `attributes`
-
-Data type: `Optional[Hash]`
-
-Hash of attributes for the filter
-
-Default value: `undef`
-
-##### `when`
-
-Data type: `Optional[Hash]`
-
-Hash of when entries for the filter
-
-Default value: `undef`
-
-### sensu::handler
-
-Defines Sensu handlers
-
-#### Parameters
-
-The following parameters are available in the `sensu::handler` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-
-Default value: 'present'
-
-##### `type`
-
-Data type: `Enum['pipe','tcp','udp','amqp','set','transport']`
-
-Type of handler
-
-Default value: 'pipe'
-
-##### `command`
-
-Data type: `Optional[String]`
-
-Command to run as the handler when type=pipe
-
-Default value: `undef`
-
-##### `handlers`
-
-Data type: `Optional[Array]`
-
-Handlers to use when type=set
-
-Default value: `undef`
-
-##### `severities`
-
-Data type: `Array`
-
-Severities handler is valid for
-
-Default value: ['ok', 'warning', 'critical', 'unknown']
-
-##### `exchange`
-
-Data type: `Optional[Hash]`
-
-Exchange information used when type=amqp
-Keys: host, port
-
-Default value: `undef`
-
-##### `pipe`
-
-Data type: `Optional[Hash]`
-
-Pipe information used when type=transport
-Keys: name, type, options
-
-Default value: `undef`
-
-##### `socket`
-
-Data type: `Optional[Hash]`
-
-Socket information when type=tcp or type=udp
-Keys: host, port
-
-Default value: `undef`
-
-##### `filters`
-
-Data type: `Array`
-
-Filter commands to apply
-
-Default value: []
-
-##### `source`
-
-Data type: `Optional[Pattern[/^puppet:\/\//]]`
-
-Source of the puppet handler
-
-Default value: `undef`
-
-##### `install_path`
-
-Data type: `String`
-
-Path to install the handler
-
-Default value: $::osfamily
-
-##### `config`
-
-Data type: `Optional[Hash]`
-
-Handler specific config
-
-Default value: `undef`
-
-##### `timeout`
-
-Data type: `Optional[Integer]`
-
-Handler timeout configuration
-
-Default value: `undef`
-
-##### `handle_flapping`
-
-Data type: `Boolean`
-
-If events in the flapping state should be handled.
-
-Default value: `false`
-
-##### `handle_silenced`
-
-Data type: `Boolean`
-
-If events in the silenced state should be handled.
-
-Default value: `false`
-
-##### `mutator`
-
-Data type: `Any`
-
-The handle mutator.
-Valid values: Any kind of data which can be added to the handler mutator.
-
-Default value: `undef`
-
-##### `subdue`
-
-Data type: `Any`
-
-The handle subdue.
-Valid values: Any kind of data which can be added to the handler subdue.
-
-Default value: `undef`
-
-### sensu::mutator
-
-This define manages Sense mutators
-
-#### Parameters
-
-The following parameters are available in the `sensu::mutator` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-
-Default value: 'present'
-
-##### `command`
-
-Data type: `String`
-
-Command to run.
-
-##### `timeout`
-
-Data type: `Optional[Numeric]`
-
-The mutator execution duration timeout in seconds (hard stop).
-
-Default value: `undef`
-
-##### `source`
-
-Data type: `Optional[String]`
-
-Source of the puppet mutator
-
-Default value: `undef`
-
-##### `install_path`
-
-Data type: `Stdlib::Absolutepath`
-
-Path to install the mutator
-
-Default value: '/etc/sensu/mutators'
-
-### sensu::plugin
-
-Installs the Sensu community script and plugins
-which can be used as monitoring checks
-
-#### Parameters
-
-The following parameters are available in the `sensu::plugin` defined type.
-
-##### `type`
-
-Data type: `Enum['file','url','package','directory']`
-
-Plugin source
-Valid values: file, directory, package, url
-
-Default value: 'file'
-
-##### `install_path`
-
-Data type: `Stdlib::Absolutepath`
-
-The path to install the plugin
-
-Default value: $::osfamily
-
-##### `purge`
-
-Data type: `Boolean`
-
-When using a directory source, purge setting
-
-Default value: `true`
-
-##### `recurse`
-
-Data type: `Boolean`
-
-When using a directory source, recurse setting
-
-Default value: `true`
-
-##### `force`
-
-Data type: `Boolean`
-
-When using a directory source, force setting
-
-Default value: `true`
-
-##### `pkg_version`
-
-Data type: `Pattern[/^absent$/,/^installed$/,/^latest$/,/^present$/,/^[\d\.\-]+$/]`
-
-When using package source, version to install
-
-Default value: 'latest'
-
-##### `pkg_provider`
-
-Data type: `Optional[String]`
-
-When using package to install plugins, provider to use.
-Valid values: sensu_gem, apt, aptitude, yum
-
-Default value: $::sensu::sensu_plugin_provider
-
-##### `pkg_checksum`
-
-Data type: `Optional[String]`
-
-The packake's MD5 checksum.
-Valid values: Any valid MD5 string of the wanted package
-
-Default value: `undef`
-
-##### `nocheckcertificate`
-
-Data type: `Boolean`
-
-When using url source, disable certificate checking for HTTPS
-
-Default value: `false`
-
-##### `gem_install_options`
-
-Data type: `Any`
-
-Optional configuration to use for the installation of the
-sensu plugin gem with sensu_gem provider.
-See: https://docs.puppetlabs.com/references/latest/type.html#package-attribute-install_options
-Example value: [{ '-p' => 'http://user:pass@myproxy.company.org:8080' }]
-
-Default value: $::sensu::gem_install_options
-
-### sensu::plugins_dir
-
-This define verifies if install_dir exists without duplicate declarations
-
-#### Parameters
-
-The following parameters are available in the `sensu::plugins_dir` defined type.
-
-##### `force`
-
-Data type: `Boolean`
-
-Value of the parameter force of file resource for the
-managed directory.
-
-##### `purge`
-
-Data type: `Boolean`
-
-Value of the parameter purge of file resource for the
-managed directory.
-
-##### `recurse`
-
-Data type: `Boolean`
-
-Value of the parameter recurse of file resource for the
-managed directory.
-
-##### `path`
-
-Data type: `String`
-
-Path of the directory to create. If not defined the $title is used
-
-Default value: $name
-
-### sensu::subscription
-
-This define manages Sensu subscriptions
-
-#### Parameters
-
-The following parameters are available in the `sensu::subscription` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present','absent']`
-
-Whether the check should be present or not
-
-Default value: 'present'
-
-##### `custom`
-
-Data type: `Hash`
-
-Custom client variables
-
-Default value: {}
-
-### sensu::write_json
-
-Writes arbitrary hash data to a config file. Note: you must manually notify
-any Sensu services to restart them when using this defined resource type.
-
-[*notify_list*]
-  Array. A listing of resources to notify upon changes to the target JSON
-         file.
-  Default: []
-
-#### Examples
-
-##### 
-
-```puppet
-sensu::write_json { '/etc/sensu/conf.d/check.json':
-  content => {"config" => {"key" => "value"}},
-  notify  => [
-    Service['sensu-client'],
-    Service['sensu-server'],
-  ],
-}
-```
-
-#### Parameters
-
-The following parameters are available in the `sensu::write_json` defined type.
-
-##### `ensure`
-
-Data type: `Enum['present', 'absent']`
-
-Whether the file should be present or not.
-
-Default value: 'present'
-
-##### `owner`
-
-Data type: `String`
-
-The file owner.
+User used by sensu services
 
 Default value: 'sensu'
 
@@ -2628,52 +87,348 @@ Default value: 'sensu'
 
 Data type: `String`
 
-The file group.
+User group used by sensu services
 
 Default value: 'sensu'
 
-##### `mode`
-
-Data type: `Stdlib::Filemode`
-
-The file mode.
-
-Default value: '0775'
-
-##### `pretty`
+##### `etc_dir_purge`
 
 Data type: `Boolean`
 
-Write the json with "pretty" indenting & formating.
+Boolean to determine if the etc_dir should be purged
+such that only Puppet managed files are present.
 
 Default value: `true`
 
-##### `content`
+##### `ssl_dir_purge`
+
+Data type: `Boolean`
+
+Boolean to determine if the ssl_dir should be purged
+such that only Puppet managed files are present.
+
+Default value: `true`
+
+##### `manage_repo`
+
+Data type: `Boolean`
+
+Boolean to determine if software repository for Sensu
+should be managed.
+
+Default value: `true`
+
+##### `use_ssl`
+
+Data type: `Boolean`
+
+Sensu backend service uses SSL
+
+Default value: `true`
+
+##### `ssl_ca_source`
+
+Data type: `String`
+
+Source of SSL CA used by sensu services
+
+Default value: $facts['puppet_localcacert']
+
+### sensu::agent
+
+Class to manage the Sensu agent.
+
+#### Examples
+
+##### 
+
+```puppet
+class { 'sensu::agent':
+  backends    => ['sensu-backend.example.com:8081'],
+  config_hash => {
+    'subscriptions => ['linux', 'apache-servers'],
+  },
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::agent` class.
+
+##### `version`
+
+Data type: `Optional[String]`
+
+Version of sensu agent to install.  Defaults to `installed` to support
+Windows MSI packaging and to avoid surprising upgrades.
+
+Default value: `undef`
+
+##### `package_name`
+
+Data type: `String`
+
+Name of Sensu agent package.
+
+Default value: 'sensu-go-agent'
+
+##### `service_name`
+
+Data type: `String`
+
+Name of the Sensu agent service.
+
+Default value: 'sensu-agent'
+
+##### `service_ensure`
+
+Data type: `String`
+
+Sensu agent service ensure value.
+
+Default value: 'running'
+
+##### `service_enable`
+
+Data type: `Boolean`
+
+Sensu agent service enable value.
+
+Default value: `true`
+
+##### `config_hash`
 
 Data type: `Hash`
 
-The hash content that will be converted to json
-and written into the target config file.
+Sensu agent configuration hash used to define agent.yml.
 
 Default value: {}
 
-##### `notify_list`
+##### `backends`
 
-Data type: `Array[Variant[Data,Type]]`
+Data type: `Array[Sensu::Backend_URL]`
 
+Array of sensu backends to pass to `backend-url` config option.
+The protocol prefix of `ws://` or `wss://` are optional and will be determined
+based on `sensu::use_ssl` parameter by default.
+Passing `backend-url` as part of `config_hash` takes precedence.
 
+Default value: ['localhost:8081']
 
-Default value: []
+##### `show_diff`
+
+Data type: `Boolean`
+
+Sets show_diff parameter for agent.yml configuration file
+
+Default value: `true`
+
+### sensu::backend
+
+Class to manage the Sensu backend.
+
+#### Examples
+
+##### 
+
+```puppet
+class { 'sensu::backend':
+  password => 'secret',
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::backend` class.
+
+##### `version`
+
+Data type: `Optional[String]`
+
+Version of sensu backend to install.  Defaults to `installed` to support
+Windows MSI packaging and to avoid surprising upgrades.
+
+Default value: `undef`
+
+##### `package_name`
+
+Data type: `String`
+
+Name of Sensu backend package.
+
+Default value: 'sensu-go-backend'
+
+##### `cli_package_name`
+
+Data type: `String`
+
+Name of Sensu CLI package.
+
+Default value: 'sensu-go-cli'
+
+##### `service_name`
+
+Data type: `String`
+
+Name of the Sensu backend service.
+
+Default value: 'sensu-backend'
+
+##### `service_ensure`
+
+Data type: `String`
+
+Sensu backend service ensure value.
+
+Default value: 'running'
+
+##### `service_enable`
+
+Data type: `Boolean`
+
+Sensu backend service enable value.
+
+Default value: `true`
+
+##### `state_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+Sensu backend state directory path.
+
+Default value: '/var/lib/sensu/sensu-backend'
+
+##### `config_hash`
+
+Data type: `Hash`
+
+Sensu backend configuration hash used to define backend.yml.
+
+Default value: {}
+
+##### `url_host`
+
+Data type: `String`
+
+Sensu backend host used to configure sensuctl and verify API access.
+
+Default value: $trusted['certname']
+
+##### `url_port`
+
+Data type: `Stdlib::Port`
+
+Sensu backend port used to configure sensuctl and verify API access.
+
+Default value: 8080
+
+##### `ssl_cert_source`
+
+Data type: `String`
+
+The SSL certificate source
+
+Default value: $facts['puppet_hostcert']
+
+##### `ssl_key_source`
+
+Data type: `String`
+
+The SSL private key source
+
+Default value: $facts['puppet_hostprivkey']
+
+##### `password`
+
+Data type: `String`
+
+Sensu backend admin password used to confiure sensuctl.
+
+Default value: 'P@ssw0rd!'
+
+##### `old_password`
+
+Data type: `Optional[String]`
+
+Sensu backend admin old password needed when changing password.
+
+Default value: `undef`
+
+##### `agent_password`
+
+Data type: `String`
+
+The sensu agent password
+
+Default value: 'P@ssw0rd!'
+
+##### `agent_old_password`
+
+Data type: `Optional[String]`
+
+The sensu agent old password needed when changing agent_password
+
+Default value: `undef`
+
+##### `include_default_resources`
+
+Data type: `Boolean`
+
+Sets if default sensu resources should be included
+
+Default value: `true`
+
+##### `show_diff`
+
+Data type: `Boolean`
+
+Sets show_diff parameter for backend.yml configuration file
+
+Default value: `true`
+
+##### `license_source`
+
+Data type: `Optional[String]`
+
+The source of sensu-go enterprise license.
+Supports any valid Puppet File sources such as absolute paths or puppet:///
+Do not define with license_content
+
+Default value: `undef`
+
+##### `license_content`
+
+Data type: `Optional[String]`
+
+The content of sensu-go enterprise license
+Do not define with license_source
+
+Default value: `undef`
 
 ## Resource types
 
-### sensu_api_config
+### sensu_api_validator
 
-Manages Sensu API config
+Verify that a connection can be successfully established between a node
+and the sensu-backend server.  Its primary use is as a precondition to
+prevent configuration changes from being applied if the sensu_backend
+server cannot be reached, but it could potentially be used for other
+purposes such as monitoring.
+
+#### Examples
+
+##### Verify API connectivity to localhost:8080
+
+```puppet
+sensu_api_validator { 'sensu':
+  sensu_api_server => 'localhost',
+  sensu_api_ort    => 8080,
+}
+```
 
 #### Properties
 
-The following properties are available in the `sensu_api_config` type.
+The following properties are available in the `sensu_api_validator` type.
 
 ##### `ensure`
 
@@ -2683,63 +438,158 @@ The basic property that the resource should be in.
 
 Default value: present
 
-##### `port`
-
-The port that the Sensu API is listening on
-
-Default value: 4567
-
-##### `host`
-
-The hostname that the Sensu API is listening on
-
-Default value: 127.0.0.1
-
-##### `bind`
-
-The bind IP that sensu will bind to
-
-Default value: 0.0.0.0
-
-##### `user`
-
-The username used for clients to authenticate against the Sensu API
-
-##### `password`
-
-The password use for client authentication against the Sensu API
-
-##### `ssl_port`
-
-Port of the HTTPS (SSL) sensu api service. Enterprise only feature.
-
-##### `ssl_keystore_file`
-
-The file path for the SSL certificate keystore. Enterprise only feature.
-
-##### `ssl_keystore_password`
-
-The SSL certificate keystore password. Enterprise only feature.
-
 #### Parameters
 
-The following parameters are available in the `sensu_api_config` type.
+The following parameters are available in the `sensu_api_validator` type.
 
 ##### `name`
 
 namevar
 
-This value has no effect, set it to what ever you want.
+An arbitrary name used as the identity of the resource.
 
-##### `base_path`
+##### `sensu_api_server`
 
-The base path to the client config file
+The DNS name or IP address of the server where sensu_api should be running.
 
-Default value: /etc/sensu/conf.d/
+Default value: localhost
+
+##### `sensu_api_port`
+
+The port that the sensu_api server should be listening on.
+
+Default value: 8080
+
+##### `use_ssl`
+
+Whether the connection will be attemped using https
+
+Default value: `false`
+
+##### `test_url`
+
+URL to use for testing if the Sensu backend is up
+
+Default value: /health
+
+##### `timeout`
+
+The max number of seconds that the validator should wait before giving up and deciding that sensu_api is not running; defaults to 15 seconds.
+
+Default value: 30
+
+### sensu_asset
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+
+#### Examples
+
+##### Create an asset
+
+```puppet
+sensu_asset { 'test':
+  ensure  => 'present',
+  url     => 'http://example.com/asset/example.tar',
+  sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
+  filters => ['System.OS==linux'],
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_asset` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `url`
+
+The URL location of the asset.
+
+##### `sha512`
+
+The checksum of the asset
+
+##### `filters`
+
+Valid values: /.*/, absent
+
+A set of filters used by the agent to determine of the asset should be installed.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this asset belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
+
+#### Parameters
+
+The following parameters are available in the `sensu_asset` type.
+
+##### `name`
+
+namevar
+
+The name of the asset.
 
 ### sensu_check
 
-Manages Sensu checks
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resources defined in `handlers` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+* `sensu_hook` - Puppet will autorequire `sensu_hook` resources defined in `check_hooks` property.
+
+#### Examples
+
+##### Create a check
+
+```puppet
+sensu_check { 'test':
+  ensure        => 'present',
+  command       => 'check-http.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+```
+
+##### Create a check that has a hook
+
+```puppet
+sensu_check { 'test':
+  ensure        => 'present',
+  command       => 'check-cpu.sh -w 75 -c 90',
+  subscriptions => ['linux'],
+  check_hooks   => [
+    { 'critical' => ['ps'] },
+    { 'warning'  => ['ps'] },
+  ],
+  interval      => 60,
+}
+```
 
 #### Properties
 
@@ -2755,33 +605,21 @@ Default value: present
 
 ##### `command`
 
-Valid values: /.*/, absent
+The check command to be executed.
 
-Command to be run by the check
+##### `subscriptions`
 
-##### `dependencies`
-
-Valid values: /.*/, absent
-
-Dependencies of this check
+An array of Sensu entity subscriptions that check requests will be sent to.
 
 ##### `handlers`
 
-Valid values: /.*/, absent
+An array of Sensu event handlers (names) to use for events created by the check.
 
-List of handlers that responds to this check
+##### `interval`
 
-##### `contacts`
+Valid values: /^[0-9]+$/, absent
 
-Valid values: /^[\w\.-]+$/, absent
-
-Contact names to override handler configuration via Contact Routing
-
-##### `high_flap_threshold`
-
-Valid values: /.*/, absent
-
-A host is determined to be flapping when the percent change exceedes this threshold.
+The frequency in seconds the check is executed.
 
 ##### `cron`
 
@@ -2789,111 +627,129 @@ Valid values: /.*/, absent
 
 When the check should be executed, using the Cron syntax.
 
-##### `interval`
+##### `publish`
 
-Valid values: /.*/, absent
+Valid values: `true`, `false`
 
-How frequently the check runs in seconds
+If check requests are published for the check.
 
-##### `occurrences`
-
-Valid values: /.*/, absent
-
-The number of event occurrences before the handler should take action.
-
-##### `refresh`
-
-Valid values: /.*/, absent
-
-The number of seconds sensu-plugin-aware handlers should wait before taking second action.
-
-##### `low_flap_threshold`
-
-Valid values: /.*/, absent
-
-A host is determined to be flapping when the percent change is below this threshold.
-
-##### `source`
-
-Valid values: /.*/, absent
-
-The check source, used to create a JIT Sensu client for an external resource (e.g. a network switch).
-
-##### `subscribers`
-
-Valid values: /.*/, absent
-
-Who is subscribed to this check
-
-##### `custom`
-
-Custom check variables
-
-##### `type`
-
-Valid values: /.*/, absent
-
-What type of check is this
-
-##### `standalone`
-
-Valid values: /.*/, absent
-
-Whether this is a standalone check
+Default value: true
 
 ##### `timeout`
 
-Valid values: /.*/, absent
+Valid values: /^[0-9]+$/, absent
 
-Check timeout in seconds, after it fails
-
-##### `aggregate`
-
-Valid values: /.*/, absent
-
-Whether check is aggregate
-
-##### `aggregates`
-
-Valid values: /.*/, absent
-
-An array of aggregates to add to the check
-
-##### `handle`
-
-Valid values: /.*/, absent
-
-Whether check event send to a handler
-
-##### `publish`
-
-Valid values: /.*/, absent
-
-Whether check is unpublished
-
-##### `subdue`
-
-Valid values: /.*/, absent
-
-Check subdue
-
-##### `proxy_requests`
-
-Valid values: /.*/, absent
-
-Proxy Requests
+The check execution duration timeout in seconds (hard stop).
 
 ##### `ttl`
 
+Valid values: /^[0-9]+$/, absent
+
+The time to live (TTL) in seconds until check results are considered stale.
+
+##### `stdin`
+
+Valid values: `true`, `false`
+
+If the Sensu agent writes JSON serialized Sensu entity and check data to the command process' STDIN
+
+Default value: false
+
+##### `low_flap_threshold`
+
+Valid values: /^[0-9]+$/, absent
+
+The flap detection low threshold (% state change) for the check
+
+##### `high_flap_threshold`
+
+Valid values: /^[0-9]+$/, absent
+
+The flap detection high threshold (% state change) for the check
+
+##### `runtime_assets`
+
 Valid values: /.*/, absent
 
-Check ttl in seconds
+An array of Sensu assets (names), required at runtime for the execution of the command
 
-##### `ttl_status`
+##### `check_hooks`
+
+An array of check response types with respective arrays of Sensu hook names.
+
+##### `proxy_entity_name`
+
+Valid values: /^[\w\.\-]+$/, absent
+
+The entity name, used to create a proxy entity for an external resource (i.e., a network switch).
+
+##### `round_robin`
+
+Valid values: `true`, `false`
+
+If the check should be executed on a single entity within a subscription in a round-robin fashion.
+
+##### `proxy_requests_entity_attributes`
+
+Sensu entity attributes to match entities in the registry, using Sensu Query Expressions
+
+##### `proxy_requests_splay`
+
+Valid values: `true`, `false`
+
+If proxy check requests should be splayed
+
+##### `proxy_requests_splay_coverage`
+
+The splay coverage percentage use for proxy check request splay calculation.
+
+##### `silenced`
+
+Valid values: `true`, `false`
+
+If the event is to be silenced.
+
+##### `env_vars`
 
 Valid values: /.*/, absent
 
-Exit code for ttl
+An array of environment variables to use with command execution.
+
+##### `output_metric_format`
+
+Valid values: nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, absent
+
+The metric format generated by the check command.
+
+##### `output_metric_handlers`
+
+Valid values: /.*/, absent
+
+An array of Sensu handlers to use for events created by the check.
+
+##### `max_output_size`
+
+Maximum size, in bytes, of stored check outputs.
+
+##### `discard_output`
+
+Valid values: `true`, `false`
+
+Discard check output after extracting metrics.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this check belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
 
 #### Parameters
 
@@ -2905,19 +761,28 @@ namevar
 
 The name of the check.
 
-##### `base_path`
+### sensu_cluster_member
 
-The base path to the client config file
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
 
-Default value: /etc/sensu/conf.d/checks
+#### Examples
 
-### sensu_check_config
+##### Add a cluster member
 
-""
+```puppet
+sensu_cluster_member { 'backend2':
+  ensure    => 'present',
+  peer_urls => ['http://192.168.52.12:2380'],
+}
+```
 
 #### Properties
 
-The following properties are available in the `sensu_check_config` type.
+The following properties are available in the `sensu_cluster_member` type.
 
 ##### `ensure`
 
@@ -2927,53 +792,46 @@ The basic property that the resource should be in.
 
 Default value: present
 
+##### `peer_urls`
+
+Array of cluster peer URLs
+
 #### Parameters
 
-The following parameters are available in the `sensu_check_config` type.
+The following parameters are available in the `sensu_cluster_member` type.
 
 ##### `name`
 
 namevar
 
+The name of the cluster member.
 
+##### `id`
 
-##### `base_path`
+Cluster member ID - read-only
 
+### sensu_cluster_role
 
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
 
-##### `config`
+#### Examples
 
+##### Add a cluster role
 
-
-##### `event`
-
-
-
-##### `name`
-
-The check name to configure
-
-##### `base_path`
-
-The base path to the client config file
-
-Default value: /etc/sensu/conf.d/checks
-
-##### `config`
-
-Check configuration for the client to use
-
-##### `event`
-
-Configuration to send with the event to handlers
-
-### sensu_client_config
-
-Manages Sensu client config
+```puppet
+sensu_cluster_role { 'test':
+  ensure => 'present',
+  rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
 
 #### Properties
 
-The following properties are available in the `sensu_client_config` type.
+The following properties are available in the `sensu_cluster_role` type.
 
 ##### `ensure`
 
@@ -2983,387 +841,345 @@ The basic property that the resource should be in.
 
 Default value: present
 
-##### `client_name`
+##### `rules`
 
-""
+The rulesets that a role applies.
 
-##### `address`
+#### Parameters
 
-""
+The following parameters are available in the `sensu_cluster_role` type.
+
+##### `name`
+
+namevar
+
+The name of the role.
+
+### sensu_cluster_role_binding
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_cluster_role` - Puppet will autorequire `sensu_cluster_role` resource defined in `role_ref` property.
+* `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
+
+#### Examples
+
+##### Add a cluster role binding
+
+```puppet
+sensu_cluster_role_binding { 'test':
+  ensure   => 'present',
+  role_ref => 'test-role',
+  subjects => [
+    { 'type' => 'User', 'name' => 'test-user' }
+  ],
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_cluster_role_binding` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `role_ref`
+
+References a cluster role.
+
+##### `subjects`
+
+The users or groups being assigned.
+
+#### Parameters
+
+The following parameters are available in the `sensu_cluster_role_binding` type.
+
+##### `name`
+
+namevar
+
+The name of the role binding.
+
+### sensu_config
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Examples
+
+##### Manage a config
+
+```puppet
+sensu_config { 'format':
+  value => 'json',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_config` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `value`
+
+The value of the config.
+
+#### Parameters
+
+The following parameters are available in the `sensu_config` type.
+
+##### `name`
+
+namevar
+
+The name of the config.
+
+### sensu_configure
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_api_validator[sensu]`
+* `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
+
+#### Properties
+
+The following properties are available in the `sensu_configure` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `url`
+
+sensu-backend URL
+
+##### `trusted_ca_file`
+
+Path to trusted CA
+
+Default value: /etc/sensu/ssl/ca.crt
+
+#### Parameters
+
+The following parameters are available in the `sensu_configure` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `username`
+
+Username to use with sensuctl configure
+
+##### `password`
+
+Password to use with sensuctl configure
+
+##### `bootstrap_password`
+
+Password to use when bootstrapping sensuctl
+
+Default value: P@ssw0rd!
+
+### sensu_entity
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration_handler` property.
+
+#### Examples
+
+##### Create an entity
+
+```puppet
+sensu_entity { 'test':
+  ensure       => 'present',
+  entity_class => 'proxy',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_entity` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `entity_class`
+
+The entity type
 
 ##### `subscriptions`
 
-Valid values: /.*/, absent
+A list of subscription names for the entity
 
-""
+##### `system`
 
-##### `redact`
+System information about the entity, such as operating system and platform.
 
-Valid values: /.*/, absent
+##### `last_seen`
 
-An array of strings that should be redacted in the sensu client config
-
-##### `socket`
-
-A set of attributes that configure the Sensu client socket.
-
-##### `safe_mode`
-
-Require checks to be defined on server and client
-
-Default value: false
-
-##### `custom`
-
-Custom client attributes
+Timestamp the entity was last seen, in epoch time.
 
 ##### `deregister`
 
-Enable client de-registration
+Valid values: `true`, `false`
 
-##### `deregistration`
-
-Valid values: /.*/, absent
-
-Client deregistration attributes
-
-##### `registration`
-
-Valid values: /.*/, absent
-
-Client registration attributes
-
-##### `keepalive`
-
-Keepalive config
-
-##### `http_socket`
-
-A set of attributes that configure the Sensu client http socket.
-
-##### `servicenow`
-
-Configure Service Now integration on Sensu client.
-
-##### `ec2`
-
-Configure ec2 integration on Sensu client.
-
-##### `chef`
-
-Configure Chef integration on Sensu client.
-
-##### `puppet`
-
-Configure Puppet integration on Sensu client.
-
-#### Parameters
-
-The following parameters are available in the `sensu_client_config` type.
-
-##### `name`
-
-namevar
-
-The name of the host
-
-##### `base_path`
-
-The base path to the client config file
-
-Default value: /etc/sensu/conf.d/
-
-### sensu_client_subscription
-
-Manages Sensu client subscriptions
-
-#### Properties
-
-The following properties are available in the `sensu_client_subscription` type.
-
-##### `ensure`
-
-Valid values: present, absent
-
-The basic property that the resource should be in.
-
-Default value: present
-
-##### `subscriptions`
-
-Subscriptions included, defaults to resource name
-
-##### `custom`
-
-Custom client variables
-
-#### Parameters
-
-The following parameters are available in the `sensu_client_subscription` type.
-
-##### `name`
-
-namevar
-
-The subscription name
-
-##### `base_path`
-
-The base path to the client config file
-
-Default value: /etc/sensu/conf.d/
-
-##### `file_name`
-
-The name of the client config file
-
-### sensu_contact
-
-Manages Sensu contacts
-
-#### Properties
-
-The following properties are available in the `sensu_contact` type.
-
-##### `ensure`
-
-Valid values: present, absent
-
-The basic property that the resource should be in.
-
-Default value: present
-
-##### `config`
-
-Configuration hash for the contact.
-
-#### Parameters
-
-The following parameters are available in the `sensu_contact` type.
-
-##### `name`
-
-Valid values: /^[\w\.-]+$/
-
-namevar
-
-The name of the contact, e.g. "support"
-
-##### `base_path`
-
-The base path to the contact config file
-
-Default value: /etc/sensu/conf.d/contacts/
-
-### sensu_enterprise_dashboard_api_config
-
-Manages Sensu Enterprise Dashboard API config
-
-#### Properties
-
-The following properties are available in the `sensu_enterprise_dashboard_api_config` type.
-
-##### `ensure`
-
-Valid values: present, absent
-
-The basic property that the resource should be in.
-
-Default value: present
-
-##### `datacenter`
-
-The name of the Sensu API (used elsewhere as the datacenter name).
-
-##### `port`
-
-Valid values: /[0-9]+/
-
-The port of the Sensu API.
-
-Default value: 4567
-
-##### `ssl`
-
-Determines whether or not to use the HTTPS protocol.
+If the entity should be removed when it stops sending keepalive messages.
 
 Default value: false
 
-##### `insecure`
+##### `deregistration_handler`
 
-Determines whether or not to accept an insecure SSL certificate.
+The name of the handler to be called when an entity is deregistered.
 
-Default value: false
+##### `redact`
 
-##### `path`
+List of items to redact from log messages.
 
-The path of the Sensu API. Leave empty unless your Sensu API is not mounted to /.
+##### `namespace`
 
-##### `timeout`
+The Sensu RBAC namespace that this entity belongs to.
 
-Valid values: /[0-9]+/
+Default value: default
 
-The timeout for the Sensu API, in seconds.
+##### `labels`
 
-Default value: 5
+Custom attributes to include with event data, which can be queried like regular attributes.
 
-##### `user`
+##### `annotations`
 
-Valid values: /.+/
-
-The username of the Sensu API. Leave empty for no authentication.
-
-##### `pass`
-
-Valid values: /.+/
-
-The password of the Sensu API. Leave empty for no authentication.
+Arbitrary, non-identifying metadata to include with event data.
 
 #### Parameters
 
-The following parameters are available in the `sensu_enterprise_dashboard_api_config` type.
-
-##### `host`
-
-namevar
-
-The hostname or IP address of the Sensu API.
-
-##### `base_path`
-
-The base path to the client config file
-
-Default value: /etc/sensu/
-
-### sensu_enterprise_dashboard_config
-
-Manages Sensu Enterprise Dashboard config
-
-#### Properties
-
-The following properties are available in the `sensu_enterprise_dashboard_config` type.
-
-##### `ensure`
-
-Valid values: present, absent
-
-The basic property that the resource should be in.
-
-Default value: present
-
-##### `host`
-
-The hostname or IP address on which Sensu Enterprise Dashboard will listen on.
-
-Default value: 0.0.0.0
-
-##### `port`
-
-The port on which Sensu Enterprise Dashboard will listen on.
-
-Default value: 3000
-
-##### `refresh`
-
-Determines the interval to poll the Sensu APIs, in seconds.
-
-Default value: 5
-
-##### `user`
-
-A username to enable simple authentication and restrict access to the dashboard. Leave blank along with pass to disable simple authentication.
-
-##### `pass`
-
-A password to enable simple authentication and restrict access to the dashboard. Leave blank along with user to disable simple authentication.
-
-##### `auth`
-
-The auth definition scope, used to configure JSON Web Token (JWT) authentication signatures.
-
-##### `ssl`
-
-A hash of SSL attributes to enable native SSL
-
-##### `audit`
-
-A hash of audit attributes to enable audit logging
-
-##### `github`
-
-A hash of GitHub authentication attributes to enable GitHub authentication via OAuth. Overrides simple authentication.
-
-##### `gitlab`
-
-A hash of GitLab authentication attributes to enable GitLab authentication via OAuth. Overrides simple authentication.
-
-##### `ldap`
-
-A hash of Lightweight Directory Access Protocol (LDAP) authentication attributes to enable LDAP authentication. Overrides simple authentication.
-
-##### `oidc`
-
-The oidc definition scope, used to configure Role Based Access Controls with the RBAC for OpenID Connect (OIDC) driver. Overrides simple authentication.
-
-##### `custom`
-
-Custom config variables
-
-#### Parameters
-
-The following parameters are available in the `sensu_enterprise_dashboard_config` type.
+The following parameters are available in the `sensu_entity` type.
 
 ##### `name`
 
 namevar
 
-This value has no effect, set it to what ever you want.
+The unique name of the entity
 
-##### `base_path`
+### sensu_event
 
-The base path to the client config file
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
-Default value: /etc/sensu/
+#### Examples
 
-### sensu_extension
+##### Resolve an event
 
-Manages Sensu extensions
+```puppet
+sensu_event { 'test for sensu-agent':
+  ensure => 'resolve'
+}
+```
+
+##### Delete an event
+
+```puppet
+sensu_event { 'test for sensu-agent':
+  ensure => 'absent'
+}
+```
 
 #### Properties
 
-The following properties are available in the `sensu_extension` type.
+The following properties are available in the `sensu_event` type.
 
 ##### `ensure`
 
-Valid values: present, absent
+Valid values: present, resolve, absent, delete
+
+Aliases: "delete"=>"absent"
 
 The basic property that the resource should be in.
 
-Default value: present
-
-##### `config`
-
-The configuration for this extension
-
 #### Parameters
 
-The following parameters are available in the `sensu_extension` type.
+The following parameters are available in the `sensu_event` type.
 
 ##### `name`
 
 namevar
 
-This value has no effect, set it to what ever you want.
+Event name. Can take form of '<check> for <entity>'.
 
-##### `base_path`
+##### `entity`
 
-The base path to the client config file
+The name of the entity the event should match
 
-Default value: /etc/sensu/conf.d/extensions/
+##### `check`
+
+The name of the check the event should match
+
+##### `namespace`
+
+The Sensu RBAC namespace that this event belongs to.
+
+Default value: default
 
 ### sensu_filter
 
-Manages Sensu filters
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+
+#### Examples
+
+##### Create a filter
+
+```puppet
+sensu_filter { 'test':
+  ensure      => 'present',
+  action      => 'allow',
+  expressions => ["event.Entity.Environment == 'production'"],
+}
+```
 
 #### Properties
 
@@ -3377,19 +1193,35 @@ The basic property that the resource should be in.
 
 Default value: present
 
-##### `attributes`
+##### `action`
 
-Filter attributes
+Valid values: allow, deny
 
-##### `when`
+Action to take with the event if the filter expressions match.
 
-Used to determine when a filter is applied.
+##### `expressions`
 
-##### `negate`
+Filter expressions to be compared with event data.
 
-""
+##### `runtime_assets`
 
-Default value: false
+Valid values: /.*/, absent
+
+Assets to be applied to the filter’s execution context.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this filter belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
 
 #### Parameters
 
@@ -3401,15 +1233,30 @@ namevar
 
 The name of the filter.
 
-##### `base_path`
-
-The base path to the client config file
-
-Default value: /etc/sensu/conf.d/filters/
-
 ### sensu_handler
 
-Manages Sensu handlers
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_filter` - Puppet will autorequire `sensu_filter` resources defined in `filters` property.
+* `sensu_mutator` - Puppet will autorequire `sensu_mutator` resource defined for `mutator` property.
+* `sensu_handler` - Puppet will autorequire `sensu_handler` resources defined for `handlers` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+
+#### Examples
+
+##### Create a handler
+
+```puppet
+sensu_handler { 'test':
+  ensure  => 'present',
+  type    => 'pipe',
+  command => 'notify.rb'
+}
+```
 
 #### Properties
 
@@ -3425,55 +1272,73 @@ Default value: present
 
 ##### `type`
 
-Type of handler
+Valid values: pipe, tcp, udp, set
 
-##### `command`
-
-Command the handler should run
-
-##### `exchange`
-
-Exchange information used by the amqp type
-
-##### `pipe`
-
-Pipe information used by the transport type
-
-##### `socket`
-
-Socket information used by the udp type
-
-##### `mutator`
-
-Handler specific data massager
+The handler type.
 
 ##### `filters`
 
-Handler filters
+Valid values: /.*/, absent
 
-##### `severities`
+An array of Sensu event filters (names) to use when filtering events for the handler.
 
-Severities applicable to this handler
+##### `mutator`
 
-##### `handlers`
+Valid values: /.*/, absent
 
-Handlers this handler mutexes into
-
-##### `config`
-
-Handler specific config
+The Sensu event mutator (name) to use to mutate event data for the handler.
 
 ##### `timeout`
 
-Handler timeout
+Valid values: /^[0-9]+$/, absent
 
-##### `handle_flapping`
+The handler execution duration timeout in seconds (hard stop)
 
-If events in the flapping state should be handled
+##### `command`
 
-##### `handle_silenced`
+Valid values: /.*/, absent
 
-If events in the silenced state should be handled
+The handler command to be executed.
+
+##### `env_vars`
+
+Valid values: /.*/, absent
+
+An array of environment variables to use with command execution.
+
+##### `socket_host`
+
+The socket host address (IP or hostname) to connect to.
+
+##### `socket_port`
+
+The socket port to connect to.
+
+##### `handlers`
+
+Valid values: /.*/, absent
+
+An array of Sensu event handlers (names) to use for events using the handler set.
+
+##### `runtime_assets`
+
+Valid values: /.*/, absent
+
+An array of Sensu assets (names), required at runtime for the execution of the command
+
+##### `namespace`
+
+The Sensu RBAC namespace that this handler belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
 
 #### Parameters
 
@@ -3483,17 +1348,200 @@ The following parameters are available in the `sensu_handler` type.
 
 namevar
 
-The name of the handler
+The name of the handler.
 
-##### `base_path`
+### sensu_hook
 
-The base path to the client config file
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
-Default value: /etc/sensu/conf.d/handlers/
+#### Examples
+
+##### Create a hook
+
+```puppet
+sensu_hook { 'test':
+  ensure  => 'present',
+  command => 'ps aux',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_hook` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `command`
+
+The hook command to be executed.
+
+##### `timeout`
+
+The hook execution duration timeout in seconds (hard stop)
+
+Default value: 60
+
+##### `stdin`
+
+Valid values: `true`, `false`
+
+If the Sensu agent writes JSON serialized Sensu entity and check data to the command process’ STDIN.
+
+Default value: false
+
+##### `namespace`
+
+The Sensu RBAC namespace that this hook belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
+
+#### Parameters
+
+The following parameters are available in the `sensu_hook` type.
+
+##### `name`
+
+namevar
+
+The name of the hook.
+
+### sensu_ldap_auth
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `Exec[sensu-add-license]`
+
+#### Examples
+
+##### Add a LDAP auth
+
+```puppet
+sensu_ldap_auth { 'openldap':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => '127.0.0.1',
+      'port' => 389,
+    },
+  ],
+  server_binding      => {
+    '127.0.0.1' => {
+      'user_dn' => 'cn=binder,dc=acme,dc=org',
+      'password' => 'P@ssw0rd!'
+    }
+  },
+  server_group_search => {
+    '127.0.0.1' => {
+      'base_dn' => 'dc=acme,dc=org',
+    }
+  },
+  server_user_search  => {
+    '127.0.0.1' => {
+      'base_dn' => 'dc=acme,dc=org',
+    }
+  },
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_ldap_auth` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `servers`
+
+LDAP servers
+Defaults:
+* insecure: false
+* security: tls
+
+##### `server_binding`
+
+LDAP server bindings
+
+##### `server_group_search`
+
+Search configuration for groups.
+Defaults:
+* attribute: member
+* name_attribute: cn
+* object_class: groupOfNames
+
+##### `server_user_search`
+
+Search configuration for users.
+Defaults:
+* attribute: uid
+* name_attribute: cn
+* object_class: person
+
+##### `groups_prefix`
+
+The prefix added to all LDAP groups.
+
+##### `username_prefix`
+
+The prefix added to all LDAP usernames.
+
+#### Parameters
+
+The following parameters are available in the `sensu_ldap_auth` type.
+
+##### `name`
+
+namevar
+
+The name of the LDAP auth.
 
 ### sensu_mutator
 
-Manages Sensu mutators
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+
+#### Examples
+
+##### Create a mutator
+
+```puppet
+sensu_mutator { 'example':
+  ensure  => 'present',
+  command => 'example-mutator.rb',
+}
+```
 
 #### Properties
 
@@ -3509,11 +1557,39 @@ Default value: present
 
 ##### `command`
 
-Command the mutator should run
+The mutator command to be executed.
 
 ##### `timeout`
 
-The mutator execution duration timeout in seconds (hard stop).
+Valid values: /^[0-9]+$/, absent
+
+The mutator execution duration timeout in seconds (hard stop)
+
+##### `runtime_assets`
+
+Valid values: /.*/, absent
+
+An array of Sensu assets (names), required at runtime for the execution of the command
+
+##### `env_vars`
+
+Valid values: /.*/, absent
+
+An array of environment variables to use with command execution.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this mutator belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
 
 #### Parameters
 
@@ -3523,21 +1599,29 @@ The following parameters are available in the `sensu_mutator` type.
 
 namevar
 
-The name of the mutator
+The name of the mutator.
 
-##### `base_path`
+### sensu_namespace
 
-The base path to the client config file
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
 
-Default value: /etc/sensu/conf.d/mutators/
+#### Examples
 
-### sensu_rabbitmq_config
+##### Add an namespace
 
-Manages Sensu RabbitMQ config
+```puppet
+sensu_namespace { 'test':
+  ensure => 'present',
+}
+```
 
 #### Properties
 
-The following properties are available in the `sensu_rabbitmq_config` type.
+The following properties are available in the `sensu_namespace` type.
 
 ##### `ensure`
 
@@ -3547,79 +1631,39 @@ The basic property that the resource should be in.
 
 Default value: present
 
-##### `ssl_transport`
-
-Enable SSL transport to connect to RabbitMQ
-
-Default value: false
-
-##### `ssl_private_key`
-
-The path on disk to the SSL private key needed to connect to RabbitMQ
-
-Default value: ''
-
-##### `ssl_cert_chain`
-
-The path on disk to the SSL cert chain needed to connect to RabbitMQ
-
-Default value: ''
-
-##### `port`
-
-The port that RabbitMQ is listening on
-
-##### `host`
-
-The hostname that RabbitMQ is listening on
-
-##### `user`
-
-The username to use when connecting to RabbitMQ
-
-##### `password`
-
-The password to use when connecting to RabbitMQ
-
-##### `vhost`
-
-The vhost to use when connecting to RabbitMQ
-
-##### `heartbeat`
-
-The RabbitMQ heartbeat value
-
-##### `prefetch`
-
-The RabbitMQ AMQP consumer prefetch value
-
-##### `cluster`
-
-Rabbitmq Cluster
-
 #### Parameters
 
-The following parameters are available in the `sensu_rabbitmq_config` type.
+The following parameters are available in the `sensu_namespace` type.
 
 ##### `name`
 
 namevar
 
-This value has no effect, set it to what ever you want.
+The name of the namespace.
 
-##### `base_path`
+### sensu_role
 
-The base path to the client config file
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
-Default value: /etc/sensu/conf.d/
+#### Examples
 
-### sensu_redis_config
+##### Add a role
 
-Manages Sensu Redis config
+```puppet
+sensu_role { 'test':
+  ensure => 'present',
+  rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
 
 #### Properties
 
-The following properties are available in the `sensu_redis_config` type.
+The following properties are available in the `sensu_role` type.
 
 ##### `ensure`
 
@@ -3629,99 +1673,306 @@ The basic property that the resource should be in.
 
 Default value: present
 
-##### `port`
+##### `namespace`
 
-The port that Redis is listening on
+Namespace the role is restricted to.
 
-##### `host`
+Default value: default
 
-The hostname that Redis is listening on
+##### `rules`
 
-##### `password`
+The rulesets that a role applies.
 
-The password used to connect to Redis
+#### Parameters
 
-##### `reconnect_on_error`
+The following parameters are available in the `sensu_role` type.
 
-Attempt to reconnect to RabbitMQ on error
+##### `name`
 
-Default value: true
+namevar
 
-##### `db`
+The name of the role.
 
-The Redis instance DB to use/select
+### sensu_role_binding
 
-Default value: 0
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_role` - Puppet will autorequire `sensu_role` resource defined in `role_ref` property.
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
 
-##### `auto_reconnect`
+#### Examples
 
-Reconnect to Redis in the event of a connection failure
+##### Add a role binding
 
-Default value: true
+```puppet
+sensu_role_binding { 'test':
+  ensure   => 'present',
+  role_ref => 'test-role',
+  subjects => [
+    { 'type' => 'User', 'name' => 'test-user' }
+  ],
+}
+```
 
-##### `tls`
+#### Properties
+
+The following properties are available in the `sensu_role_binding` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `namespace`
+
+Namespace the role binding is restricted to.
+
+Default value: default
+
+##### `role_ref`
+
+References a role.
+
+##### `subjects`
+
+The users or groups being assigned.
+
+#### Parameters
+
+The following parameters are available in the `sensu_role_binding` type.
+
+##### `name`
+
+namevar
+
+The name of the role binding.
+
+### sensu_silenced
+
+The name of a `sensu_silenced` resource may not match the name returned by sensuctl.
+The name from sensuctl will take the form of `subscription:check`.
+If you wish to have a `sensu_silenced` resource name match sensuctl then define the name
+using the `subscription:check` format and do not define `subscription` or `check` properties.
+
+The `subscription` and `check` properties take precedence over value in the name if name takes the form `subscription:check`.
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+
+#### Examples
+
+##### Create a silencing for all checks with subscription entity:sensu_agent
+
+```puppet
+sensu_silenced { 'test':
+  ensure       => 'present',
+  subscription => 'entity:sensu_agent',
+}
+```
+
+##### Define silencing using composite name where `subscription=entity:sensu_agent` and `check=*`.
+
+```puppet
+sensu_silenced { 'entity:sensu_agent:*':
+  ensure => 'present',
+}
+```
+
+##### Define silencing using composite name where `subscription=linux` and `check=check-http`.
+
+```puppet
+sensu_silenced { 'linux:check-http':
+  ensure => 'present',
+}
+```
+
+##### Define silencing where subscription is linux and check is check-http. The `subscription` property overrides the value from name.
+
+```puppet
+sensu_silenced { 'test:check-http':
+  ensure       => 'present',
+  subscription => 'linux',
+}
+```
+
+##### Define silencing where subscription is linux and check is test. The `check` property overrides the value from name.
+
+```puppet
+sensu_silenced { 'linux:check-http':
+  ensure => 'present',
+  check  => 'test',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_silenced` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `begin`
+
+Time at which silence entry goes into effect, in epoch.
+
+##### `expire`
+
+Number of seconds until this entry should be deleted.
+
+Default value: -1
+
+##### `expire_on_resolve`
 
 Valid values: `true`, `false`
 
-Use TLS encryption to connect to Redis
+If the entry should be deleted when a check begins return OK status (resolves).
 
 Default value: false
 
-##### `sentinels`
+##### `creator`
 
-Redis Sentinel configuration for HA clustering
+Valid values: /.*/, absent
 
-Default value: []
+Person/application/entity responsible for creating the entry.
 
-##### `master`
+##### `reason`
 
-Redis master name in the sentinel configuration
+Valid values: /.*/, absent
 
-Default value: absent
+Explanation for the creation of this entry.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this silenced belongs to.
+
+Default value: default
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
 
 #### Parameters
 
-The following parameters are available in the `sensu_redis_config` type.
+The following parameters are available in the `sensu_silenced` type.
 
 ##### `name`
 
 namevar
 
-This value has no effect, set it to what ever you want.
+Silenced name
 
-##### `base_path`
+##### `check`
 
-The base path to the client config file
+The name of the check the entry should match
 
-Default value: /etc/sensu/conf.d/
+##### `subscription`
 
-## Functions
+The name of the subscription the entry should match
 
-### sensu_sorted_json
+### sensu_user
 
-Type: Ruby 4.x API
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
 
-This function takes unsorted hash and outputs JSON object making sure the keys are sorted.
-Optionally you can pass a boolean as the second parameter, which controls if
-the output is pretty formatted.
+#### Examples
 
-#### `sensu_sorted_json(Hash $hash, Optional[Boolean] $pretty)`
+##### Create a user
 
-This function takes unsorted hash and outputs JSON object making sure the keys are sorted.
-Optionally you can pass a boolean as the second parameter, which controls if
-the output is pretty formatted.
+```puppet
+sensu_user { 'test':
+  ensure   => 'present',
+  password => 'supersecret',
+  groups   => ['users'],
+}
+```
 
-Returns: `String` Returns a JSON string
+##### Change a user's password
 
-##### `hash`
+```puppet
+sensu_user { 'test'
+  ensure       => 'present',
+  password     => 'newpassword',
+  old_password => 'supersecret',
+  groups       => ['users'],
+}
+```
 
-Data type: `Hash`
+#### Properties
 
-Hash to be sorted
+The following properties are available in the `sensu_user` type.
 
-##### `pretty`
+##### `ensure`
 
-Data type: `Optional[Boolean]`
+Valid values: present, absent
 
-Boolean that determines if output should be pretty format
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `password`
+
+The user's password.
+
+##### `groups`
+
+Groups to which the user belongs.
+
+##### `disabled`
+
+Valid values: `true`, `false`
+
+The state of the user’s account.
+
+Default value: false
+
+#### Parameters
+
+The following parameters are available in the `sensu_user` type.
+
+##### `name`
+
+namevar
+
+The name of the user.
+
+##### `old_password`
+
+The user's old password, needed in order to change a user's password
+
+##### `configure`
+
+Valid values: `true`, `false`
+
+Run sensuctl configure for this user
+
+Default value: `false`
+
+##### `configure_url`
+
+URL to use with 'sensuctl configure'
+
+Default value: http://127.0.0.1:8080
 

@@ -1,812 +1,474 @@
 # Sensu-Puppet
 
-Installs and manages the open source monitoring framework [Sensu](http://sensuapp.org).
-[![Puppet Forge](http://img.shields.io/puppetforge/v/sensu/sensu.svg)](https://forge.puppetlabs.com/sensu/sensu)
+#### Table of Contents
 
-Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at https://sensuapp.org/support.
+1. [Module Description](#module-description)
+2. [Setup - The basics of getting started with sensu](#setup)
+    * [What sensu affects](#what-sensu-affects)
+    * [Setup requirements](#setup-requirements)
+    * [Beginning with sensu](#beginning-with-sensu)
+3. [Usage - Configuration options and additional functionality](#usage)
+    * [Basic Sensu backend](#basic-sensu-backend)
+    * [Basic Sensu agent](#basic-sensu-agent)
+    * [Advanced agent](#advanced-agent)
+    * [Advanced SSL](#advanced-ssl)
+    * [Enterprise support](#enterprise-support)
+    * [Installing Plugins](#installing-plugins)
+    * [Installing Extensions](#installing-extensions)
+    * [Exported resources](#exported-resources)
+    * [Resource purging](#resource-purging)
+    * [Sensu backend cluster](#sensu-backend-cluster)
+        * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
+4. [Reference](#reference)
+    * [Facts](#facts)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
+7. [License](#license)
 
-## Tested with Travis CI
+## Module description
 
-[![Build Status](https://travis-ci.org/sensu/sensu-puppet.png)](https://travis-ci.org/sensu/sensu-puppet)
+Installs and manages [Sensu](http://sensuapp.org), the open source monitoring framework.
 
-This module supports the latest releases of Puppet versions 5 and 6
-using the ruby that is packaged with the AIO (all-in-one installer). See
-`.travis.yml` for an exact matrix. The module aims to support the latest
-major release of Puppet and the prior major release.
+Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at [https://sensuapp.org/support](https://sensuapp.org/support).
 
-## Documented with Puppet Strings
+### Documented with Puppet Strings
 
 [Puppet Strings documentation](http://sensu.github.io/sensu-puppet/doc/)
 
-## Compatibility - supported sensu versions
+### Compatibility - supported sensu versions
 
 If not explicitly stated it should always support the latest Sensu release.
 Please log an issue if you identify any incompatibilities.
 
-| Sensu Version    | Recommended Puppet Module Version   |
-| ---------------- | ----------------------------------- |
-| >= 0.26.0        | latest                              |
-| 0.22.x - 0.25.x  | 2.1.0                               |
-| 0.20.x - 0.21.x  | 2.0.0                               |
-| 0.17.x - 0.19.x  | 1.5.5                               |
+| Sensu Go Version   | Recommended Puppet Module Version   |
+| --------------- | ----------------------------------- |
+| 5.x             | latest v3 |
 
+### Upgrade note
 
-## Upgrade note
+Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu Go 5.x.
 
-Versions prior to 1.0.0 are incompatible with previous versions of the
-Sensu-Puppet module.
+Users wishing to use the old v2 Puppet module to support previous Ruby based Sensu should use [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic).
 
-## Installation
+## Setup
 
-```bash
-puppet module install sensu/sensu
-```
+### What sensu effects
 
-## Prerequisites
+This module will install packages, create configuration and start services necessary to manage Sensu agents and backend.
 
-- Redis server and connectivity to a Redis database
-- RabbitMQ server, vhost, and credentials
-- Ruby JSON library or gem
+### Setup requirements
 
-### Dependencies
+Plugin sync is required if the custom sensu types and providers are used.
 
-See `metadata.json` for details.
+This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 7.0.0`) for systems using `apt`.
 
-- puppetlabs/stdlib
-- lwf/puppet-remote_file
+If using Puppet >= 6.0.0 there is a soft dependency on the [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`) for systems using `yum`.
 
-Soft dependencies if you use the corresponding technologies:
+### Beginning with sensu
 
-- [puppetlabs/apt](https://github.com/puppetlabs/puppetlabs-apt)
-- [puppetlabs/yumrepo_core](https://github.com/puppetlabs/puppetlabs-yumrepo_core)
-- [voxpupuli/rabbitmq](https://github.com/voxpupuli/puppet-rabbitmq)
-
-Soft dependencies on Windows clients:
-
-- [puppetlabs/powershell](https://github.com/puppetlabs/puppetlabs-powershell)
-- [puppetlabs/dsc](https://github.com/puppetlabs/puppetlabs-dsc)
-- [puppetlabs/acl](https://github.com/puppetlabs/puppetlabs-acl)
-
-Note: While this module works with other versions of puppetlabs/apt, we
-test against and support what is listed in the `.fixtures.yml` file.
-
-Note: `puppetlabs/yumrepo_core` is only needed for Puppet `>= 6.0.0` for systems that use `yum`.
-
-Pluginsync should be enabled. Also, you will need the Ruby JSON library
-or gem on all your nodes.
-
-[EPEL](http://mirrors.kernel.org/fedora-epel/6/x86_64/rubygem-json-1.4.6-1.el6.x86_64.rpm)
-
-Rubygem:
+This module provides Vagrant definitions that can be used to get started with Sensu.
 
 ```bash
-sudo gem install json
+vagrant up sensu-backend
+vagrant ssh sensu-backend
 ```
 
-Debian & Ubuntu:
+#### Beginning with a Sensu cluster
+
+Multiple Vagrant boxes are available for testing a sensu-backend cluster.
 
 ```bash
-sudo apt-get install ruby-json
+vagrant up sensu-backend-peer1 sensu-backend-peer2
+vagrant provision sensu-backend-peer1 sensu-backend-peer2
 ```
 
-## Quick start
+## Usage
 
-Before this Puppet module can be used, the following items must be configured on the server.
+### Basic Sensu backend
 
-- Install Redis
-- Install RabbitMQ
-- Add users to RabbitMQ
-- Install dashboard (optional)
-
-To quickly try out Sensu, spin up a test virtual machine with Vagrant that already has these prerequisites installed.
-
-```bash
-vagrant up
-vagrant status
-vagrant ssh sensu-server
-```
-
-You can then access the API.
-
-```bash
-curl http://admin:secret@192.168.56.10:4567/info
-```
-
-Navigate to `192.168.56.10:3000` to use the uchiwa dashboard
-
-```yaml
-username: uchiwa
-password: uchiwa
-```
-
-Navigate to `192.168.56.10:15672` to manage RabbitMQ
-
-```yaml
-username: sensu
-password: correct-horse-battery-staple
-```
-
-See the [tests
-directory](https://github.com/sensu/sensu-puppet/tree/master/tests) and
-[Vagrantfile](https://github.com/sensu/sensu-puppet/blob/master/Vagrantfile)
-for examples on setting up the prerequisites.
-
-## Basic example
-
-### Sensu server
+The following example will configure sensu-backend, sensu-agent on backend and add a check.
+By default this module will configure the backend to use Puppet's SSL certificate and CA.
+It's advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
 
 ```puppet
-node 'sensu-server.foo.com' {
-  class { 'sensu':
-    rabbitmq_password => 'correct-horse-battery-staple',
-    server            => true,
-    api               => true,
-    plugins           => [
-      'puppet:///data/sensu/plugins/ntp.rb',
-      'puppet:///data/sensu/plugins/postfix.rb'
-    ]
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
   }
-
-  sensu::handler { 'default':
-    command => 'mail -s \'sensu alert\' ops@foo.com',
+  include sensu::agent
+  sensu_check { 'check-cpu':
+    ensure        => 'present',
+    command       => 'check-cpu.sh -w 75 -c 90',
+    interval      => 60,
+    subscriptions => ['linux'],
   }
-
-  sensu::check { 'check_ntp':
-    command     => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
-    handlers    => 'default',
-    subscribers => 'sensu-test'
-  }
-
-  sensu::check { '...':
-    ...
-  }
-}
 ```
 
-### Sensu Enterprise Server
+### Basic Sensu agent
 
-With [Sensu Enterprise](https://sensuapp.org/enterprise) additional
-functionality is available, for example [Contact
-Routing](https://sensuapp.org/docs/0.29/enterprise/contact-routing.html)
-
-An example configuring notification routing to specific groups:
+The following example will manage resources necessary to configure a sensu-agent to communicate with a sensu-backend and
+associated to `linux` and `apache-servers` subscriptions.
 
 ```puppet
-node 'sensu-server.foo.com' {
-
-  file { 'api.keystore':
-    ensure => 'file',
-    path   => '/etc/sensu/api.keystore',
-    source => 'puppet:///modules/sensu/test.api.keystore',
-    owner  => 'sensu',
-    group  => 'sensu',
-    mode   => '0600',
-  }
-
-  # NOTE: When testing sensu enterprise, provide the SE_USER and SE_PASS to use
-  # with the online repository using the FACTER_SE_USER and FACTER_SE_PASS
-  # environment variables.
-  class { '::sensu':
-    install_repo              => true,
-    enterprise                => true,
-    enterprise_user           => $facts['se_user'],
-    enterprise_pass           => $facts['se_pass'],
-    manage_services           => true,
-    manage_user               => true,
-    purge_config              => true,
-    rabbitmq_password         => 'correct-horse-battery-staple',
-    rabbitmq_vhost            => '/sensu',
-    client_address            => $::ipaddress_eth1,
-    api_ssl_port              => '4568',
-    api_ssl_keystore_file     => '/etc/sensu/api.keystore',
-    api_ssl_keystore_password => 'sensutest',
-  }
-
-  sensu::contact { 'support':
-    ensure => 'present',
-    config => {
-      'email' => {
-        'to'   => 'support@example.com',
-        'from' => 'sensu.noreply@example.com',
-      },
-      'slack' => {
-        'channel' => '#support',
-      },
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
     },
   }
-  sensu::contact { 'ops':
-    ensure => 'present',
-    config => { 'email'  => { 'to' => 'ops@example.com' } },
-  }
-  # A second check to use the built-in email handler and contact.
-  sensu::check { 'check_ntp':
-    command     => 'PATH=$PATH:/usr/lib64/nagios/plugins check_ntp_time -H pool.ntp.org -w 30 -c 60',
-    handlers    => 'email',
-    contacts    => ['ops', 'support'],
-    subscribers => 'sensu-test',
-  }
-}
 ```
 
-### Sensu client
+### Advanced agent
+
+If you wish to change the `agent` password you must provide the new and old password.
+It's advisable to set `show_diff` to `false` to avoid exposing the agent password.
 
 ```puppet
-node 'sensu-client.foo.com' {
-   class { 'sensu':
-     rabbitmq_password  => 'correct-horse-battery-staple',
-     rabbitmq_host      => 'sensu-server.foo.com',
-     subscriptions      => 'sensu-test',
-   }
+class { 'sensu::backend':
+  agent_password     => 'supersecret',
+  agent_old_password => 'P@ssw0rd!',
 }
-```
-### Facts
-
-#### `sensu_version`
-
-The `sensu_version` fact returns the Sensu Client version returned by `C:\opt\sensu\embedded\bin\sensu-client.bat`
-for Windows systems and the value returned by `/opt/sensu/embedded/bin/sensu-client` for non-Windows.
-
-```shell
-facter -p sensu_version
-0.23.3
-```
-
-
-## Advanced example using Hiera
-
-This example includes the `sensu` class as part of a base class or role
-and configures Sensu on each individual node via
-[Hiera](http://docs.puppetlabs.com/#hierahiera1).
-
-### hiera.yaml
-
-```yaml
----
-:hierarchy:
-  - %{fqdn}
-  - %{datacenter}
-  - common
-:backends:
-  - yaml
-:yaml:
-  :datadir: '/etc/puppet/%{environment}/modules/hieradata'
-```
-
-### common.yaml
-
-```yaml
-sensu::install_repo: false
-sensu::purge:
-  config: true
-sensu::rabbitmq_host: 10.31.0.90
-sensu::rabbitmq_password: password
-sensu::rabbitmq_port: 5672
-```
-
-### sensu-server.foo.com.yaml
-
-```yaml
-sensu::server: true
-```
-
-nosensu.foo.com.yaml
-
-```yaml
-sensu::client: false
-```
-
-site.pp
-
-```puppet
-node default {
-  class { 'sensu': }
-  ...
-}
-```
-
-### sensu-client.foo.com.yaml
-
-```yaml
----
-sensu::subscriptions:
-    - all
-sensu::server: false
-sensu::extensions:
-  'system':
-    source: 'puppet:///modules/supervision/system_profile.rb'
-sensu::handlers:
-  'graphite':
-    type: 'tcp'
-    socket:
-      host: '127.0.0.1'
-      port: '2003'
-    mutator: "only_check_output"
-  'file':
-    command: '/etc/sensu/handlers/file.rb'
-  'mail':
-    command: 'mail -s 'sensu event' email@address.com'
-sensu::handler_defaults:
-  type: 'pipe'
-sensu::checks:
-  'file_test':
-    command: '/usr/local/bin/check_file_test.sh'
-  'chef_client':
-    command: 'check-chef-client.rb'
-sensu::filters:
-  'recurrences-30':
-    attributes:
-      occurrences: "eval: value == 1 || value % 30 == 0"
-sensu::filter_defaults:
-  negate: true
-  when:
-    days:
-      all:
-        - begin: 5:00 PM
-          end: 8:00 AM
-sensu::check_defaults:
-  handlers: 'mail'
-sensu::mutators:
-  'tag':
-    command: '/etc/sensu/mutators/tag.rb'
-  'graphite':
-    command: '/etc/sensu/plugins/graphite.rb'
-classes:
-    - sensu
-```
-
-
-## Safe Mode checks
-
-By default Sensu clients will execute whatever check messages are on the
-queue. This is potentially a large security hole.
-
-If you enable the `safe_mode` parameter, it will require that checks are
-defined on the client. If standalone checks are used then defining on
-the client is sufficient, otherwise checks will also need to be defined
-on the server as well.
-
-A usage example is shown below.
-
-### Sensu server
-
-Each component of Sensu can be controlled separately. The server components
-are managed with the server, and API parameters.
-
-```puppet
-node 'sensu-server.foo.com' {
-  class { 'sensu':
-    rabbitmq_password => 'correct-horse-battery-staple',
-    server            => true,
-    api               => true,
-    plugins           => [
-      'puppet:///data/sensu/plugins/ntp.rb',
-      'puppet:///data/sensu/plugins/postfix.rb'
-    ],
-    safe_mode         => true,
-  }
-
-  # ...
-
-  sensu::check { "diskspace":
-    command => '/etc/sensu/plugins/system/check-disk.rb',
-  }
-}
-```
-
-If you need only one plugin you can also use a simple string:
-
-```puppet
-node 'sensu-server.foo.com' {
-  class { 'sensu':
-    plugins => 'puppet:///data/sensu/plugins/ntp.rb',
-    # ...
-  }
-}
-```
-
-Specifying the plugins as hash, you can pass all parameters supported by
-the sensu::plugin define:
-
-```puppet
-node 'sensu-server.foo.com' {
-  class { 'sensu':
-    plugins           => {
-      'puppet:///data/sensu/plugins/ntp.rb' => {
-        'install_path' => '/alternative/path',
-      'puppet:///data/sensu/plugins/postfix.rb'
-        'type'         => 'package',
-        'pkg_version'  => '2.4.2',
-    },
-    ...
-  }
-}
-```
-
-
-### Sensu client
-
-```puppet
-node 'sensu-client.foo.com' {
-  class { 'sensu':
-    rabbitmq_password => 'correct-horse-battery-staple',
-    rabbitmq_host     => 'sensu-server.foo.com',
-    subscriptions     => 'sensu-test',
-    safe_mode         => true,
-  }
-
-  sensu::check { 'diskspace':
-    command => '/etc/sensu/plugins/system/check-disk.rb',
-  }
-}
-```
-
-## Using custom variables in check definitions
-
-```puppet
-sensu::check{ 'check_file_test':
-  command      => '/usr/local/bin/check_file_test.sh',
-  handlers     => 'notifu',
-  custom       => {
-    'foo'      => 'bar',
-    'numval'   => 6,
-    'boolval'  => true,
-    'in_array' => ['foo','baz']
+class { 'sensu::agent':
+  config_hash => {
+    'password' => 'supersecret',
   },
-  subscribers  => 'sensu-test'
+  show_diff   => false,
 }
 ```
 
-This will create the following check definition for Sensu:
+### Advanced SSL
 
-```json
-{
-  "checks": {
-    "check_file_test": {
-      "handlers": [
-        "notifu"
-      ],
-      "in_array": [
-        "foo",
-        "baz"
-      ],
-      "command": "/usr/local/bin/check_file_test.sh",
-      "subscribers": [
-        "sensu-test"
-      ],
-      "foo": "bar",
-      "interval": 60,
-      "numval": 6,
-      "boolval": true
-    }
-  }
-}
-```
-
-## Using hooks in check definitions
-
-[Hooks](https://sensuapp.org/docs/latest/reference/checks.html#check-hooks) are commands run by the Sensu client in response
-to the result of check command execution. They have been introduced in Sensu 1.1.
-
-Valid hooks names are integers from 1 to 255 and the strings 'ok', 'warning', 'critical', 'unknown' and 'non-zero'.
-
-```puppet
-sensu::check{ 'check_file_test':
-  command      => '/usr/local/bin/check_file_test.sh',
-  handlers     => 'notifu',
-  hooks => {
-    'non-zero' => {
-      'command' => 'ps aux',
-     }
-  },
-  subscribers  => 'sensu-test'
-}
-```
-
-## Writing custom configuration files
-
-You can also use the `sensu::write_json` defined resource type to write custom
-json config files:
-
-```puppet
-$contact_data = {
-  'support' => {
-    'pagerduty' => {
-      'service_key' => 'r3FPuDvNOTEDyQYCc7trBkymIFcy2NkE',
-    },
-    'slack' => {
-      'channel'  => '#support',
-      'username' => 'sensu',
-    }
-  }
-}
-
-sensu::write_json { '/etc/sensu/conf.d/contacts.json':
-  content => $contact_data,
-}
-```
-
-## Handler configuration
-
-```puppet
-sensu::handler {
-  'handler_foobar':
-    command => '/etc/sensu/handlers/foobar.py',
-    type    => 'pipe',
-    config  => {
-      'foobar_setting' => 'value',
-  }
-}
-```
-
-This will create the following handler definition for Sensu (server):
-
-```json
-{
-  "handler_foobar": {
-    "foobar_setting": "value"
-  },
-  "handlers": {
-     "handler_foobar": {
-       "command": "/etc/sensu/plugins/foobar.py",
-       "severities": [
-         "ok",
-         "warning",
-         "critical",
-         "unknown"
-       ],
-     "type": "pipe"
-    }
-  }
-}
-```
-
-## Extension configuration
-
-```puppet
-sensu::extension {
-  'an_extension':
-    source  => 'puppet://somewhere/an_extension.rb',
-    config  => {
-      'foobar_setting' => 'value',
-  }
-}
-```
-
-This will save the extension under /etc/sensu/extensions and create
-the following configuration definition for Sensu:
-
-```json
-{
-  "an_extension": {
-    "foobar_setting": "value"
-  },
-}
-```
-
-### Disable Service Management
-
-If you'd prefer to use an external service management tool such as
-DaemonTools or SupervisorD, you can disable the module's internal
-service management functions like so:
-
-```yaml
-sensu::manage_services: false
-```
-
-## Purging Configuration
-
-By default, any sensu plugins, extensions, handlers, mutators, and
-configuration not defined using this puppet module will be left on
-the filesystem. This can be changed using the `purge` parameter.
-
-If all sensu plugins, extensions, handlers, mutators, and configuration
-should be managed by puppet, set the `purge` parameter to `true` to
-delete files which are not defined using this puppet module:
-
-```yaml
-sensu::purge: true
-```
-
-To get more fine-grained control over what is purged, set the `purge`
-parameter to a hash. The possible keys are: `config`, `plugins`,
-`extensions`, `handlers`, `mutators`. Any key whose value is `true`
-cause files of that type which are not defined using this puppet module
-to be deleted. Keys which are not specified will not be purged:
-
-```yaml
-sensu::purge:
-  config: true
-  plugins: true
-```
-
-## Including Sensu monitoring in other modules
-
-There are a few different patterns that can be used to include Sensu
-monitoring into other modules. One pattern creates a new class that is
-included as part of the host or node definition and includes a
-standalone check, for example:
-
-apache/manifests/monitoring/sensu.pp
-
-```puppet
-class apache::monitoring::sensu {
-  sensu::check { 'apache-running':
-    handlers    => 'default',
-    command     => '/etc/sensu/plugins/check-procs.rb -p /usr/sbin/httpd -w 100 -c 200 -C 1',
-    custom      => {
-      refresh     => 1800,
-      occurrences => 2,
-    },
-  }
-}
-```
-
-You could also include subscription information and let the Sensu server
-schedule checks for this service as a subscriber:
-
-apache/manifests/monitoring/sensu.pp
-
-```puppet
-class apache::monitoring::sensu {
-  sensu::subscription { 'apache': }
-}
-```
-
-You can also define custom variables as part of the subscription:
-
-ntp/manifests/monitoring/ntp.pp
-
-```puppet
-class ntp::monitoring::sensu {
-  sensu::subscription { 'ntp':
-    custom => {
-      ntp {
-        server => $ntp::servers[0],
-      },
-    },
-  }
-}
-```
-
-And then use that variable on your Sensu server:
-
-```puppet
-sensu::check { 'check_ntp':
-  command => 'PATH=$PATH:/usr/lib/nagios/plugins check_ntp_time -H :::ntp.server::: -w 30 -c 60',
-  # ...
-}
-```
-
-If you would like to automatically include the Sensu monitoring class as
-part of your existing module with the ability to support different
-monitoring platforms, you could do something like:
-
-apache/manifests/service.pp
-
-```puppet
-$monitoring = hiera('monitoring', '')
-
-case $monitoring {
-  'sensu':  { include apache::monitoring::sensu }
-  'nagios': { include apache::monitoring::nagios }
-}
-```
-
-## Installing Gems into the embedded ruby
-
-If you are using the embedded ruby that ships with Sensu, you can install gems
-by using the `sensu_gem` package provider:
-
-```puppet
-package { 'redphone':
-  ensure   => 'installed',
-  provider => sensu_gem,
-}
-```
-
-## Sensitive String Redaction
-
-Redaction of passwords is supported by this module. To enable it, pass a value to `sensu::redact`
-and set some password values with `sensu::client_custom`
+By default this module uses Puppet's SSL certificates and CA.
+If you would prefer to use different certificates override the `ssl_ca_source`, `ssl_cert_source` and `ssl_key_source` parameters.
+The value for `url_host` must be valid for the provided certificate and the value used for agent's `backends` must also match the certificate used by the specified backend.
+If the certificates and keys are already installed then define the source parameters as filesystem paths.
 
 ```puppet
 class { 'sensu':
-  redact  => 'password',
-  client_custom => {
-    github => {
-      password => 'correct-horse-battery-staple',
-    },
+  ssl_ca_source => 'puppet:///modules/profile/sensu/ca.pem',
+}
+class { 'sensu::backend':
+  url_host        => 'sensu-backend.example.com',
+  ssl_cert_source => 'puppet:///modules/profile/sensu/cert.pem',
+  ssl_key_source  => 'puppet:///modules/profile/sensu/key.pem',
+}
+```
+```puppet
+class { 'sensu':
+  ssl_ca_source => 'puppet:///modules/profile/sensu/ca.pem',
+}
+class { 'sensu::agent':
+  backends    => ['sensu-backend.example.com:8081'],
+  config_hash => {
+    'subscriptions' => ['linux', 'apache-servers'],
   },
 }
 ```
 
-Or with hiera:
-
-```yaml
-sensu::redact:
-  - :password"
-sensu::client_custom:
-  - sensu::client_custom:
-  nexus:
-    password: "correct-horse-battery-staple'
-```
-
-This ends up like this in the uchiwa console:
-
-![Sensu Redaction](http://i.imgur.com/K4noGoN.png)
-
-You can make use of the password now when defining a check by using command substitution:
+To disable SSL support:
 
 ```puppet
-sensu::check { 'check_password_test':
-  command => '/usr/local/bin/check_password_test --password :::github.password::: ',
+class { 'sensu':
+  use_ssl => false,
 }
 ```
 
+### Enterprise Support
 
-## Dashboards
-
-### Sensu Enterprise Dashboard
-
-The [Sensu Enterprise
-Dashboard](https://sensuapp.org/docs/latest/platforms/sensu-on-rhel-centos.html#install-sensu-enterprise-repository)
-is fully managed by this module.  Credentials for the repository are required to
-automatically install packages and configure the enterprise dashboard.  For
-example:
+In order to activate enterprise support the license file needs to be added:
 
 ```puppet
-class { '::sensu':
-  enterprise_dashboard => true,
-  enterprise_user      => '1234567890',
-  enterprise_pass      => 'PASSWORD',
+class { 'sensu::backend':
+  license_source => 'puppet:///modules/profile/sensu/license.json',
 }
 ```
 
-The `enterprise_user` and `enterprise_pass` class parameters map to the
-`SE_USER` and `SE_PASS` as described at [Install the Sensu Enterprise repository
-](https://sensuapp.org/docs/latest/platforms/sensu-on-rhel-centos.html#install-sensu-enterprise-repository)
+The type `sensu_ldap_auth` requires a valid enterprise license.
 
-### Enterprise Dashboard API
+### Installing Plugins
 
-The API to the enterprise dashboard is managed using the
-`sensu::enterprise::dashboard::api` defined type.  This defined type is a
-wrapper around the `sensu_enterprise_dashboard_api_config` custom type and
-provider included in this module.
+Plugin management is handled by the `sensu::plugins` class.
 
-These Puppet resource types manage the Dashboard API entries in
-`/etc/sensu/dashboard.json`.
-
-Multiple API endpoints may be defined in the same datacenter.  This example will
-create two endpoints at sensu.example.net and sensu.example.org.
+Example installing plugins on agent:
 
 ```puppet
-sensu::enterprise::dashboard::api { 'sensu.example.net':
-  datacenter => 'example-dc',
-}
-
-sensu::enterprise::dashboard::api { 'sensu.example.org':
-  datacenter => 'example-dc',
-}
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
+    },
+  }
+  class { 'sensu::plugins':
+    plugins => ['disk-checks'],
+  }
 ```
 
-Unmanaged API endpoints may be purged using the resources resource.  For
-example:
+The `plugins` parameter can also be a Hash that sets the version:
 
 ```puppet
-resources { 'sensu_enterprise_dashboard_api_config':
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
+    },
+  }
+  class { 'sensu::plugins':
+    plugins => {
+      'disk-checks' => { 'version' => 'latest' },
+    },
+  }
+```
+
+Set `dependencies` to an empty Array to disable the `sensu::plugins` dependency management.
+
+```puppet
+  class { 'sensu::plugins':
+    dependencies => [],
+  }
+```
+
+You can uninstall plugins by passing `ensure` as `absent`.
+
+```puppet
+  class { 'sensu::agent':
+    backends    => ['sensu-backend.example.com:8081'],
+    config_hash => {
+      'subscriptions' => ['linux', 'apache-servers'],
+    },
+  }
+  class { 'sensu::plugins':
+    plugins => {
+      'disk-checks' => { 'ensure' => 'absent' },
+    },
+  }
+```
+
+### Installing Extensions
+
+Extension management is handled by the `sensu::plugins` class.
+
+Example installing extension on backend:
+
+```puppet
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
+  class { 'sensu::plugins':
+    extensions => ['graphite'],
+  }
+```
+
+The `extensions` parameter can also be a Hash that sets the version:
+
+```puppet
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
+  class { 'sensu::plugins':
+    extensions => {
+      'graphite' => { 'version' => 'latest' },
+    },
+  }
+```
+
+You can uninstall extensions by passing `ensure` as `absent`.
+
+```puppet
+  class { 'sensu::backend':
+    password     => 'supersecret',
+    old_password => 'P@ssw0rd!',
+  }
+  class { 'sensu::plugins':
+    extensions => {
+      'graphite' => { 'ensure' => 'absent' },
+    },
+  }
+```
+
+### Exported resources
+
+One possible approach to defining checks is having agents export their checks to the sensu-backend using [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html).
+
+The following example would be defined for agents:
+
+```puppet
+  @@sensu_check { 'check-cpu':
+    ensure        => 'present',
+    command       => 'check-cpu.sh -w 75 -c 90',
+    interval      => 60,
+    subscriptions => ['linux'],
+  }
+```
+
+The backend system would collect all `sensu_check` resources.
+
+```puppet
+  Sensu_check <<||>>
+```
+
+### Resource purging
+
+All the types provided by this module support purging except `sensu_config`.
+At this time `sensu_asset` can not be purged, see [Limitations](#limitations).
+This example will remove all unmanaged Sensu checks:
+
+```puppet
+resources { 'sensu_check':
   purge => true,
 }
 ```
 
-This will ensure `/etc/sensu/dashboard.json` contains only
-`sensu::enterprise::dashboard::api` resources managed by Puppet.
+### Sensu backend cluster
 
-### Community
+A `sensu-backend` cluster can be defined for fresh installs by defining the necessary `config_hash` values.
+The following examples are using Hiera and assume the `sensu::backend` class is included.
 
-The following puppet modules exist for managing dashboards
+```yaml
+# data/fqdn/sensu-backend1.example.com.yaml
+---
+sensu::backend::config_hash:
+  etcd-advertise-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-peer-urls: 'http://0.0.0.0:2380'
+  etcd-initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
+  etcd-initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  etcd-initial-cluster-state: 'new'
+  etcd-initial-cluster-token: ''
+  etcd-name: 'backend1'
+```
+```yaml
+# data/fqdn/sensu-backend2.example.com.yaml
+---
+sensu::backend::config_hash:
+  etcd-advertise-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-peer-urls: 'http://0.0.0.0:2380'
+  etcd-initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380'
+  etcd-initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  etcd-initial-cluster-state: 'new'
+  etcd-initial-cluster-token: ''
+  etcd-name: 'backend2'
+```
 
-* [uchiwa](https://github.com/pauloconnor/pauloconnor-uchiwa)
+#### Adding backend members to an existing cluster
+
+Adding new members to an existing cluster requires two steps.
+
+First, add the member to the catalog on one of the existing cluster backends with the `sensu_cluster_member` type.
+
+```puppet
+sensu_cluster_member { 'backend3':
+  peer_urls => ['http://192.168.0.3:2380'],
+}
+```
+
+Second, configure and start `sensu-backend` to interact with the existing cluster.
+The output from Puppet when a new `sensu_cluster_member` is applied will print some of the values needed.
+
+```yaml
+# data/fqdn/sensu-backend3.example.com.yaml
+---
+sensu::backend::config_hash:
+  etcd-advertise-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-client-urls: "http://%{facts.ipaddress}:2379"
+  etcd-listen-peer-urls: 'http://0.0.0.0:2380'
+  etcd-initial-cluster: 'backend1=http://192.168.0.1:2380,backend2=http://192.168.0.2:2380,backend3=http://192.168.0.3:2380'
+  etcd-initial-advertise-peer-urls: "http://%{facts.ipaddress}:2380"
+  etcd-initial-cluster-state: 'existing'
+  etcd-initial-cluster-token: ''
+  etcd-name: 'backend3'
+```
+
+The first step will not fully add the node to the cluster until the second step is performed.
+
+## Reference
+
+### Facts
+
+#### `sensu_agent`
+
+The `sensu_agent` fact returns the Sensu agent version information by the `sensu-agent` binary.
+
+```shell
+facter -p sensu_agent
+{
+  version => "5.1.0",
+  build => "b2ea9fcdb21e236e6e9a7de12225a6d90c786c57",
+  built => "2018-12-18T21:31:11+0000"
+}
+```
+
+#### `sensu_backend`
+
+The `sensu_backend` fact returns the Sensu backend version information by the `sensu-backend` binary.
+
+```shell
+facter -p sensu_backend
+{
+  version => "5.1.0",
+  build => "b2ea9fcdb21e236e6e9a7de12225a6d90c786c57",
+  built => "2018-12-18T21:31:11+0000"
+}
+```
+
+#### `sensuctl`
+
+The `sensuctl` fact returns the sensuctl version information by the `sensuctl` binary.
+
+```shell
+facter -p sensuctl
+{
+  version => "5.1.0",
+  build => "b2ea9fcdb21e236e6e9a7de12225a6d90c786c57",
+  built => "2018-12-18T21:31:11+0000"
+}
+```
+
+## Limitations
+
+The Sensu v2 support is designed so that all resources managed by `sensuctl` are defined on the `sensu-backend` host.
+This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
+
+The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
+
+The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
+
+### Notes regarding support
+
+This module is built for use with Puppet versions 5 and 6 and the ruby
+versions associated with those releases. See `.travis.yml` for an exact
+matrix of Puppet releases and ruby versions.
+
+This module targets the latest release of the current major Puppet
+version and the previous major version. Platform support will be removed
+when a platform is no longer supported by Puppet, Sensu or the platform
+maintainer has signaled that it is end of life (EOL).
+
+Though Amazon does not announce end of life (EOL) for its releases, it
+does encourage you to use the latest releases. This module will support
+the current release and the previous release. Since AWS does not release
+Vagrant boxes and the intent of those platforms is to run in AWS, we
+will not maintain Vagrant systems for local development for Amazon
+Linux.
+
+### Supported Platforms
+
+* EL 6
+* EL 7
+* Debian 8
+* Debian 9
+* Ubuntu 14.04 LTS
+* Ubuntu 16.04 LTS
+* Ubuntu 18.04 LTS
+* Amazon 2018.03
+* Amazon 2
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-See LICENSE file.
+See [LICENSE](LICENSE) file.

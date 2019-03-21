@@ -52,9 +52,11 @@ EOF
 puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu ensure=link target=/vagrant
 
 # setup module dependencies
-puppet module install puppetlabs/stdlib --version 4.24.0
+puppet module install puppetlabs/stdlib --version 4.25.1
 puppet module install puppetlabs/apt --version 4.1.0
-puppet module install lwf-remote_file --version 1.1.3
+puppet module install puppet/trusted_ca --version 2.0.0
 
-# install dependencies for sensu
-apt-get -y install ruby-json
+puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10
+
+[ ! -d /etc/puppetlabs/puppet/ssl ] && mkdir /etc/puppetlabs/puppet/ssl
+cp -r /vagrant/tests/ssl/* /etc/puppetlabs/puppet/ssl/

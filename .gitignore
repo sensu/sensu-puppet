@@ -50,3 +50,6 @@ doc/**
 # direnv & rbenv
 /.envrc
 /.ruby-version
+
+# secrets
+tests/sensu_license.json

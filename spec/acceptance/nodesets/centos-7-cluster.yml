@@ -1,0 +1,51 @@
+HOSTS:
+  sensu_backend1:
+    roles:
+      - agent
+      - sensu_backend
+      - default
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: centos:7
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - "sed -i -r '/^tsflags/d' /etc/yum.conf"
+      - 'yum install -y wget'
+    docker_container_name: 'sensu-backend1-el7'
+  sensu_backend2:
+    roles:
+      - agent
+      - sensu_backend
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: centos:7
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - "sed -i -r '/^tsflags/d' /etc/yum.conf"
+      - 'yum install -y wget'
+    docker_container_name: 'sensu-backend2-el7'
+  sensu_backend3:
+    roles:
+      - agent
+      - sensu_backend
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: centos:7
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - "sed -i -r '/^tsflags/d' /etc/yum.conf"
+      - 'yum install -y wget'
+    docker_container_name: 'sensu-backend3-el7'
+CONFIG:
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+

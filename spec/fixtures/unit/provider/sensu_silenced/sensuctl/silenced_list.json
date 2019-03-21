@@ -1,0 +1,16 @@
+[
+  {
+    "metadata": {
+      "name": "entity:sensu-backend.example.com:*",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
+    "expire": -1,
+    "expire_on_resolve": false,
+    "creator": "admin",
+    "reason": "test",
+    "subscription": "entity:sensu-backend.example.com",
+    "begin": 1527114555
+  }
+]

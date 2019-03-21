@@ -1,104 +1,81 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'boolean_property.rb'))
-require File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
-                                   'puppet_x', 'sensu', 'to_type.rb'))
+require_relative '../../puppet_x/sensu/type'
+require_relative '../../puppet_x/sensu/array_property'
+require_relative '../../puppet_x/sensu/hash_property'
+require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_filter) do
-  @doc = "Manages Sensu filters"
+  desc <<-DESC
+@summary Manages Sensu filters
+@example Create a filter
+  sensu_filter { 'test':
+    ensure      => 'present',
+    action      => 'allow',
+    expressions => ["event.Entity.Environment == 'production'"],
+  }
 
-  def initialize(*args)
-    super *args
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
+DESC
 
-    if c = catalog
-      self[:notify] = [
-        'Service[sensu-server]',
-        'Service[sensu-enterprise]',
-      ].select { |ref| c.resource(ref) }
-    end
-  end
+  extend PuppetX::Sensu::Type
+  add_autorequires()
 
-  ensurable do
-    newvalue(:present) do
-      provider.create
-    end
+  ensurable
 
-    newvalue(:absent) do
-      provider.destroy
-    end
-
-    defaultto :present
-  end
-
-  newparam(:name) do
+  newparam(:name, :namevar => true) do
     desc "The name of the filter."
-  end
-
-  newparam(:base_path) do
-    desc "The base path to the client config file"
-    defaultto '/etc/sensu/conf.d/filters/'
-  end
-
-  newproperty(:attributes) do
-    desc "Filter attributes"
-    include PuppetX::Sensu::ToType
-
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
-
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
-        end
-      else
-        true
+    validate do |value|
+      unless value =~ /^[\w\.\-]+$/
+        raise ArgumentError, "sensu_filter name invalid"
       end
     end
-
-    defaultto {}
   end
 
-  newproperty(:when) do
-    desc 'Used to determine when a filter is applied.'
-    include PuppetX::Sensu::ToType
+  newproperty(:action) do
+    desc "Action to take with the event if the filter expressions match."
+    newvalues('allow', 'deny')
+  end
 
-    def is_to_s(hash = @is)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
+  newproperty(:expressions, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Filter expressions to be compared with event data."
+  end
 
-    def should_to_s(hash = @should)
-      hash.keys.sort.map {|key| "#{key} => #{hash[key]}"}.join(", ")
-    end
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "Assets to be applied to the filter’s execution context."
+    newvalues(/.*/, :absent)
+  end
 
-    def insync?(is)
-      if defined? @should[0]
-        if is == @should[0].each { |k, v| value[k] = to_type(v) }
-          true
-        else
-          false
-        end
-      else
-        true
+  newproperty(:namespace) do
+    desc "The Sensu RBAC namespace that this filter belongs to."
+    defaultto 'default'
+  end
+
+  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Custom attributes to include with event data, which can be queried like regular attributes."
+  end
+
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+    desc "Arbitrary, non-identifying metadata to include with event data."
+  end
+
+  autorequire(:sensu_asset) do
+    self[:runtime_assets]
+  end
+
+  validate do
+    required_properties = [
+      :action,
+      :expressions
+    ]
+    required_properties.each do |property|
+      if self[:ensure] == :present && self[property].nil?
+        fail "You must provide a #{property}"
       end
     end
-
-    defaultto {}
-  end
-
-  newproperty(:negate, :parent => PuppetX::Sensu::BooleanProperty) do
-    desc ""
-
-    defaultto :false # provider assumes it's managed
-  end
-
-  autorequire(:package) do
-    ['sensu']
   end
 end

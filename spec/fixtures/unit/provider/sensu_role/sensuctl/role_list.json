@@ -1,0 +1,23 @@
+[
+  {
+    "rules": [
+      {
+        "verbs": [
+          "get",
+          "list",
+          "create",
+          "update",
+          "delete"
+        ],
+        "resources": [
+          "*"
+        ],
+        "resource_names": []
+      }
+    ],
+    "metadata": {
+      "namespace": "default",
+      "name": "prod-admin"
+    }
+  }
+]

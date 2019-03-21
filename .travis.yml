@@ -12,6 +12,7 @@ before_install:
   - gem update bundler
   - gem --version
   - bundle -v
+  - 'if [ -n "$encrypted_5de82e653bde_key" -a -n "$encrypted_5de82e653bde_iv" ]; then openssl aes-256-cbc -K $encrypted_5de82e653bde_key -iv $encrypted_5de82e653bde_iv -in tests/sensu_license.json.enc -out tests/sensu_license.json -d; fi'
 
 sudo: false
 
@@ -43,25 +44,25 @@ matrix:
   - rvm: 2.4.4
     sudo: required
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.5.3
     sudo: required
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
     sudo: required
     services: docker
-    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.5.3
     sudo: required
     services: docker
-    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
@@ -79,18 +80,6 @@ matrix:
   - rvm: 2.4.4
     sudo: required
     services: docker
-    env: BEAKER_set="ubuntu-1404" BEAKER_PUPPET_COLLECTION=puppet5
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.5.3
-    sudo: required
-    services: docker
-    env: BEAKER_set="ubuntu-1404" BEAKER_PUPPET_COLLECTION=puppet6
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.4.4
-    sudo: required
-    services: docker
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
@@ -98,6 +87,30 @@ matrix:
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.4.4
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.4.4
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1404" BEAKER_PUPPET_COLLECTION=puppet5
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1404" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
@@ -115,18 +128,6 @@ matrix:
   - rvm: 2.4.4
     sudo: required
     services: docker
-    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet5
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.5.3
-    sudo: required
-    services: docker
-    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
-    bundler_args:
-    script: bundle exec rake beaker
-  - rvm: 2.4.4
-    sudo: required
-    services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
@@ -134,6 +135,18 @@ matrix:
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.4.4
+    sudo: required
+    services: docker
+    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet5
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
 

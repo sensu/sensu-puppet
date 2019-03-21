@@ -3,24 +3,12 @@ fixtures:
     apt:
       repo: git://github.com/puppetlabs/puppetlabs-apt.git
       ref: 6.3.0
+    stdlib:
+      repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
+      ref: 5.1.0
     yumrepo_core:
       repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
       ref: 1.0.1
       puppet_version: ">= 6.0.0"
-    stdlib:
-      repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
-      ref: 5.1.0
-    remote_file:
-      repo: git://github.com/lwf/puppet-remote_file.git
-      ref: v1.1.3
-    dsc:
-      repo: git://github.com/puppetlabs/puppetlabs-dsc.git
-      ref: 1.7.0
-    acl:
-      repo: git://github.com/puppetlabs/puppetlabs-acl.git
-      ref: 2.1.0
-    powershell:
-      repo: git://github.com/puppetlabs/puppetlabs-powershell.git
-      ref: 2.2.0
   symlinks:
     sensu: "#{source_dir}"

@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "2.62.3",
+  "version": "3.0.0",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
@@ -12,19 +12,6 @@
     "monitoring"
   ],
   "operatingsystem_support": [
-    {
-      "operatingsystem": "Darwin",
-      "operatingsystemrelease": [
-        "16"
-      ]
-    },
-    {
-      "operatingsystem": "Windows",
-      "operatingsystemrelease": [
-        "Server 2008 R2",
-        "Server 2012 R2"
-      ]
-    },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
@@ -63,19 +50,9 @@
     }
   ],
   "requirements": [
-    {
-      "name": "puppet",
-      "version_requirement": ">=5.0.0 < 7.0.0"
-    }
+    { "name": "puppet", "version_requirement": ">= 5.0.0 < 7.0.0" }
   ],
   "dependencies": [
-    {
-      "name": "lwf/remote_file",
-      "version_requirement": ">= 1.0.0 <2.0.0"
-    },
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.24.0 <6.0.0"
-    }
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.25.1 < 6.0.0" }
   ]
 }

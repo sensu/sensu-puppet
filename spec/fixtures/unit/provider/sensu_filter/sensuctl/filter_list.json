@@ -1,0 +1,15 @@
+[
+  {
+    "metadata": {
+      "name": "production_filter",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
+    "action": "allow",
+    "expressions": [
+      "event.Entity.Environment == 'production'"
+    ],
+    "when": null
+  }
+]
