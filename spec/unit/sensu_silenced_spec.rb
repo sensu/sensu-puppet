@@ -15,7 +15,7 @@ describe Puppet::Type.type(:sensu_silenced) do
     described_class.new(config)
   end
 
-  it 'should add to catalog with raising an error' do
+  it 'should add to catalog without raising an error' do
     catalog = Puppet::Resource::Catalog.new
     expect {
       catalog.add_resource silenced
