@@ -27,7 +27,9 @@ Reference the issue number, in the format `(GH-###)`.
 
 ## Versions
 
-v3 of this module supports Sensu Go v5
+As of v3.0.0, this module supports Sensu V5 aka Sensu Go. Previous
+versions supported Sensu Classic which can be found at
+[https://github.com/sensu/puppet-module-sensuclassic](https://github.com/sensu/puppet-module-sensuclassic)
 
 ## Branches
 
@@ -37,14 +39,14 @@ The `master` branch is for development against Sensu Go v5.
 
 To generate the CHANGELOG.md run the following.
 
-```
-github_changelog_generator -u sensu -p sensu-puppet --exclude-labels 'sensu v1','sensu v2'
-```
 
 # Release process
 
-1. update version in `metadata.json`
-1. run `github_changelog_generator`
+1. Update version in `metadata.json`
+1. Update CHANGELOG.md with the following command.
+```
+github_changelog_generator -u sensu -p sensu-puppet --since-tag v3.0.0
+```
 1. update `CHANGELOG.md` and change `unreleased` at the top to the
    version, such as `v2.0.0`, and change `HEAD` to the same version,
    such as `v2.0.0`.
