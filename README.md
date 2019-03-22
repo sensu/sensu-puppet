@@ -33,7 +33,7 @@ Please note, that this is a **Partner Supported** module, which means that techn
 
 ### Documented with Puppet Strings
 
-[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/doc/)
+[Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
 
 ### Compatibility - supported sensu versions
 
