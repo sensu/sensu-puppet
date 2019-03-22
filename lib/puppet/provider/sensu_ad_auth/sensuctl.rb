@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 
-Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_ldap_auth using sensuctl"
+Puppet::Type.type(:sensu_ad_auth).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensu_ad_auth using sensuctl"
 
   mk_resource_methods
 
@@ -22,7 +22,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
       auth = {}
       auth[:ensure] = :present
       auth[:name] = d['metadata']['name']
-      if auth_types[auth[:name]] != 'LDAP'
+      if auth_types[auth[:name]] != 'AD'
         next
       end
       auth[:groups_prefix] = d['groups_prefix']
@@ -90,7 +90,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
     spec[:groups_prefix] = resource[:groups_prefix] if resource[:groups_prefix]
     spec[:username_prefix] = resource[:username_prefix] if resource[:username_prefix]
     begin
-      sensuctl_create('ldap', metadata, spec, 'authentication/v2')
+      sensuctl_create('ad', metadata, spec, 'authentication/v2')
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -133,7 +133,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
         spec[:username_prefix] = resource[:username_prefix]
       end
       begin
-        sensuctl_create('ldap', metadata, spec, 'authentication/v2')
+        sensuctl_create('ad', metadata, spec, 'authentication/v2')
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
+describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
   before(:each) do
     @provider = described_class
-    @type = Puppet::Type.type(:sensu_ldap_auth)
+    @type = Puppet::Type.type(:sensu_ad_auth)
     @resource = @type.new({
       :name => 'test',
       :servers => [{'host' => 'test', 'port' => 389}],
@@ -17,14 +17,14 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
     it 'should create instances' do
       allow(@provider).to receive(:sensuctl_auth_types).and_return({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
       allow(@provider).to receive(:sensuctl_list).with('auth', false).and_return(my_fixture_read('list.json'))
-      expect(@provider.instances.length).to eq(1)
+      expect(@provider.instances.length).to eq(2)
     end
 
     it 'should return the resource for a auth' do
       allow(@provider).to receive(:sensuctl_auth_types).and_return({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
       allow(@provider).to receive(:sensuctl_list).with('auth', false).and_return(my_fixture_read('list.json'))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('openldap')
+      expect(property_hash[:name]).to eq('activedirectory')
     end
   end
 
@@ -40,11 +40,11 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
           'insecure' => false,
           'security' => 'tls',
           'binding' => {'user_dn' => 'cn=foo', 'password' => 'foo'},
-          'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'},
-          'user_search' => {'base_dn' => 'ou=People','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'},
+          'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'},
+          'user_search' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'},
         }]
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('ldap', expected_metadata, expected_spec, 'authentication/v2')
+      expect(@resource.provider).to receive(:sensuctl_create).with('ad', expected_metadata, expected_spec, 'authentication/v2')
       @resource.provider.create
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -63,13 +63,13 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
           'insecure' => false,
           'security' => 'tls',
           'binding' => {'user_dn' => 'cn=foo', 'password' => 'bar'},
-          'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'},
-          'user_search' => {'base_dn' => 'ou=People','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'},
+          'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'},
+          'user_search' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'},
         }],
         :groups_prefix => nil,
         :username_prefix => nil,
       }
-      expect(@resource.provider).to receive(:sensuctl_create).with('ldap', expected_metadata, expected_spec, 'authentication/v2')
+      expect(@resource.provider).to receive(:sensuctl_create).with('ad', expected_metadata, expected_spec, 'authentication/v2')
       @resource.provider.server_binding = {'test' => {'user_dn' => 'cn=foo', 'password' => 'bar'}}
       @resource.provider.flush
     end

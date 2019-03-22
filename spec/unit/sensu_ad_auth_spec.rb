@@ -1,10 +1,10 @@
 require 'spec_helper'
-require 'puppet/type/sensu_ldap_auth'
+require 'puppet/type/sensu_ad_auth'
 
-describe Puppet::Type.type(:sensu_ldap_auth) do
+describe Puppet::Type.type(:sensu_ad_auth) do
   let(:default_config) do
     {
-      name: 'ldap',
+      name: 'ad',
       servers: [
         {'host' => 'test', 'port' => 389},
       ],
@@ -232,7 +232,7 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
 
   describe 'server_group_search' do
     it 'should accept valid value and apply defaults' do
-      expect(auth[:server_group_search]).to eq({'test' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'}})
+      expect(auth[:server_group_search]).to eq({'test' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'}})
     end
     it 'should require a hash' do
       config[:server_group_search] = 'foo'
@@ -263,7 +263,7 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
 
   describe 'server_user_search' do
     it 'should accept valid value and apply defaults' do
-      expect(auth[:server_user_search]).to eq({'test' => {'base_dn' => 'ou=People','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'}})
+      expect(auth[:server_user_search]).to eq({'test' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'}})
     end
     it 'should require a hash' do
       config[:server_user_search] = 'foo'
