@@ -112,7 +112,7 @@ class sensu::backend (
 
 
   if $include_default_resources {
-    include ::sensu::backend::resources
+    include ::sensu::backend::default_resources
   }
 
   package { 'sensu-go-cli':

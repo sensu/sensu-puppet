@@ -1,7 +1,7 @@
 # @summary Default sensu resources
 # @api private
 #
-class sensu::backend::resources {
+class sensu::backend::default_resources {
   include ::sensu::backend
 
   sensu_namespace { 'default':

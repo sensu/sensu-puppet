@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'sensu::backend::resources', :type => :class do
+describe 'sensu::backend::default_resources', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }

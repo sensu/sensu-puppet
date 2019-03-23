@@ -12,7 +12,7 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu') }
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
-        it { should contain_class('sensu::backend::resources') }
+        it { should contain_class('sensu::backend::default_resources') }
 
         it {
           should contain_package('sensu-go-cli').with({
@@ -189,6 +189,11 @@ describe 'sensu::backend', :type => :class do
         end
         it { should contain_package('sensu-go-cli').without_require }
         it { should contain_package('sensu-go-backend').without_require }
+      end
+
+      context 'with include_default_resources => false' do
+        let(:params) {{ :include_default_resources => false }}
+        it { should_not contain_class('sensu::backend::default_resources') }
       end
 
       context 'with license_source defined' do
