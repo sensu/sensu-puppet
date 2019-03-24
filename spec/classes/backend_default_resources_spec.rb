@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe 'sensu::backend::default_resources', :type => :class do
-  on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
+  on_supported_os({
+    facterversion: '3.8.0',
+    supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemrelease' => ['7'] }]
+  }).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
       context 'with default values for all parameters' do

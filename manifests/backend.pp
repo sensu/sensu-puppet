@@ -51,6 +51,44 @@
 # @param license_content
 #   The content of sensu-go enterprise license
 #   Do not define with license_source
+# @param ad_auths
+#   Hash of sensu_ad_auth resources
+# @param assets
+#   Hash of sensu_asset resources
+# @param checks
+#   Hash of sensu_check resources
+# @param cluster_members
+#   Hash of sensu_cluster_member resources
+# @param cluster_role_bindings
+#   Hash of sensu_cluster_role_binding resources
+# @param cluster_roles
+#   Hash of sensu_cluster_role resources
+# @param configs
+#   Hash of sensu_config resources
+# @param entities
+#   Hash of sensu_entitie resources
+# @param events
+#   Hash of sensu_event resources
+# @param filters
+#   Hash of sensu_filter resources
+# @param handlers
+#   Hash of sensu_handler resources
+# @param hooks
+#   Hash of sensu_hook resources
+# @param ldap_auths
+#   Hash of sensu_ldap_auth resources
+# @param mutators
+#   Hash of sensu_mutator resources
+# @param namespaces
+#   Hash of sensu_namespace resources
+# @param role_bindings
+#   Hash of sensu_role_binding resources
+# @param roles
+#   Hash of sensu_role resources
+# @param silencings
+#   Hash of sensu_silenced resources
+# @param users
+#   Hash of sensu_user resources
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -73,6 +111,25 @@ class sensu::backend (
   Boolean $show_diff = true,
   Optional[String] $license_source = undef,
   Optional[String] $license_content = undef,
+  Hash $ad_auths = {},
+  Hash $assets = {},
+  Hash $checks = {},
+  Hash $cluster_members = {},
+  Hash $cluster_role_bindings = {},
+  Hash $cluster_roles = {},
+  Hash $configs = {},
+  Hash $entities = {},
+  Hash $events = {},
+  Hash $filters = {},
+  Hash $handlers = {},
+  Hash $hooks = {},
+  Hash $ldap_auths = {},
+  Hash $mutators = {},
+  Hash $namespaces = {},
+  Hash $role_bindings = {},
+  Hash $roles = {},
+  Hash $silencings = {},
+  Hash $users = {},
 ) {
 
   if $license_source and $license_content {
@@ -80,6 +137,7 @@ class sensu::backend (
   }
 
   include ::sensu
+  include ::sensu::backend::resources
 
   $etc_dir = $::sensu::etc_dir
   $ssl_dir = $::sensu::ssl_dir
