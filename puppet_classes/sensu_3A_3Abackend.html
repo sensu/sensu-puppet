@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: sensu::backend
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::sensu::backend";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (s)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">sensu::backend</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: sensu::backend</h1>
+<div class="box_info">
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/backend.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Manage Sensu backend
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>Class to manage the Sensu backend.</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+      <pre class="example code"><code>class { &#39;sensu::backend&#39;:
+  password =&gt; &#39;secret&#39;,
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Version of sensu backend to install.  Defaults to <code>installed</code> to support
+Windows MSI packaging and to avoid surprising upgrades.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu-go-backend&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of Sensu backend package.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cli_package_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu-go-cli&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of Sensu CLI package.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu-backend&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of the Sensu backend service.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;running&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend service ensure value.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_enable</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend service enable value.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>state_dir</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/var/lib/sensu/sensu-backend&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend state directory path.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_hash</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend configuration hash used to define backend.yml.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>url_host</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$trusted[&#39;certname&#39;]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend host used to configure sensuctl and verify API access.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>url_port</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Port</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>8080</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend port used to configure sensuctl and verify API access.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ssl_cert_source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$facts[&#39;puppet_hostcert&#39;]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The SSL certificate source</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ssl_key_source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$facts[&#39;puppet_hostprivkey&#39;]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The SSL private key source</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;P@ssw0rd!&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend admin password used to confiure sensuctl.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>old_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sensu backend admin old password needed when changing password.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>agent_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;P@ssw0rd!&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The sensu agent password</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>agent_old_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The sensu agent old password needed when changing agent_password</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>include_default_resources</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sets if default sensu resources should be included</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>show_diff</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sets show_diff parameter for backend.yml configuration file</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>license_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The source of sensu-go enterprise license.
+Supports any valid Puppet File sources such as absolute paths or puppet:///
+Do not define with license_content</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>license_content</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The content of sensu-go enterprise license
+Do not define with license_source</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 55</span>
+
+class sensu::backend (
+  Optional[String] $version = undef,
+  String $package_name = &#39;sensu-go-backend&#39;,
+  String $cli_package_name = &#39;sensu-go-cli&#39;,
+  String $service_name = &#39;sensu-backend&#39;,
+  String $service_ensure = &#39;running&#39;,
+  Boolean $service_enable = true,
+  Stdlib::Absolutepath $state_dir = &#39;/var/lib/sensu/sensu-backend&#39;,
+  Hash $config_hash = {},
+  String $url_host = $trusted[&#39;certname&#39;],
+  Stdlib::Port $url_port = 8080,
+  String $ssl_cert_source = $facts[&#39;puppet_hostcert&#39;],
+  String $ssl_key_source = $facts[&#39;puppet_hostprivkey&#39;],
+  String $password = &#39;P@ssw0rd!&#39;,
+  Optional[String] $old_password = undef,
+  String $agent_password = &#39;P@ssw0rd!&#39;,
+  Optional[String] $agent_old_password = undef,
+  Boolean $include_default_resources = true,
+  Boolean $show_diff = true,
+  Optional[String] $license_source = undef,
+  Optional[String] $license_content = undef,
+) {
+
+  if $license_source and $license_content {
+    fail(&#39;sensu::backend: Do not define both license_source and license_content&#39;)
+  }
+
+  include ::sensu
+
+  $etc_dir = $::sensu::etc_dir
+  $ssl_dir = $::sensu::ssl_dir
+  $use_ssl = $::sensu::use_ssl
+  $_version = pick($version, $::sensu::version)
+
+  if $use_ssl {
+    $url_protocol = &#39;https&#39;
+    $trusted_ca_file = &quot;${ssl_dir}/ca.crt&quot;
+    $ssl_config = {
+      &#39;cert-file&#39;       =&gt; &quot;${ssl_dir}/cert.pem&quot;,
+      &#39;key-file&#39;        =&gt; &quot;${ssl_dir}/key.pem&quot;,
+      &#39;trusted-ca-file&#39; =&gt; $trusted_ca_file,
+    }
+    $service_subscribe = Class[&#39;::sensu::ssl&#39;]
+    Class[&#39;::sensu::ssl&#39;] -&gt; Sensu_configure[&#39;puppet&#39;]
+  } else {
+    $url_protocol = &#39;http&#39;
+    $trusted_ca_file = &#39;absent&#39;
+    $ssl_config = {}
+    $service_subscribe = undef
+  }
+
+  $url = &quot;${url_protocol}://${url_host}:${url_port}&quot;
+  $default_config = {
+    &#39;state-dir&#39; =&gt; $state_dir,
+    &#39;api-url&#39;   =&gt; $url,
+  }
+  $config = $default_config + $ssl_config + $config_hash
+
+
+  if $include_default_resources {
+    include ::sensu::backend::resources
+  }
+
+  package { &#39;sensu-go-cli&#39;:
+    ensure  =&gt; $_version,
+    name    =&gt; $cli_package_name,
+    require =&gt; $::sensu::package_require,
+  }
+
+  sensu_api_validator { &#39;sensu&#39;:
+    sensu_api_server =&gt; $url_host,
+    sensu_api_port   =&gt; $url_port,
+    use_ssl          =&gt; $use_ssl,
+    require          =&gt; Service[&#39;sensu-backend&#39;],
+  }
+
+  sensu_configure { &#39;puppet&#39;:
+    url                =&gt; $url,
+    username           =&gt; &#39;admin&#39;,
+    password           =&gt; $password,
+    bootstrap_password =&gt; &#39;P@ssw0rd!&#39;,
+    trusted_ca_file    =&gt; $trusted_ca_file,
+  }
+  sensu_user { &#39;admin&#39;:
+    ensure        =&gt; &#39;present&#39;,
+    password      =&gt; $password,
+    old_password  =&gt; $old_password,
+    groups        =&gt; [&#39;cluster-admins&#39;],
+    disabled      =&gt; false,
+    configure     =&gt; true,
+    configure_url =&gt; $url,
+  }
+
+  if $license_source or $license_content {
+    file { &#39;sensu_license&#39;:
+      ensure    =&gt; &#39;file&#39;,
+      path      =&gt; &quot;${etc_dir}/license.json&quot;,
+      source    =&gt; $license_source,
+      content   =&gt; $license_content,
+      owner     =&gt; $::sensu::user,
+      group     =&gt; $::sensu::group,
+      mode      =&gt; &#39;0600&#39;,
+      show_diff =&gt; false,
+      notify    =&gt; Exec[&#39;sensu-add-license&#39;],
+    }
+
+    exec { &#39;sensu-add-license&#39;:
+      path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
+      command     =&gt; &quot;sensuctl create --file ${etc_dir}/license.json&quot;,
+      refreshonly =&gt; true,
+      require     =&gt; Sensu_configure[&#39;puppet&#39;],
+    }
+  }
+
+  if $use_ssl {
+    file { &#39;sensu_ssl_cert&#39;:
+      ensure    =&gt; &#39;file&#39;,
+      path      =&gt; &quot;${ssl_dir}/cert.pem&quot;,
+      source    =&gt; $ssl_cert_source,
+      owner     =&gt; $::sensu::user,
+      group     =&gt; $::sensu::group,
+      mode      =&gt; &#39;0644&#39;,
+      show_diff =&gt; false,
+      notify    =&gt; Service[&#39;sensu-backend&#39;],
+    }
+    file { &#39;sensu_ssl_key&#39;:
+      ensure    =&gt; &#39;file&#39;,
+      path      =&gt; &quot;${ssl_dir}/key.pem&quot;,
+      source    =&gt; $ssl_key_source,
+      owner     =&gt; $::sensu::user,
+      group     =&gt; $::sensu::group,
+      mode      =&gt; &#39;0600&#39;,
+      show_diff =&gt; false,
+      notify    =&gt; Service[&#39;sensu-backend&#39;],
+    }
+  }
+
+  package { &#39;sensu-go-backend&#39;:
+    ensure  =&gt; $_version,
+    name    =&gt; $package_name,
+    before  =&gt; File[&#39;sensu_etc_dir&#39;],
+    require =&gt; $::sensu::package_require,
+  }
+
+  file { &#39;sensu_backend_state_dir&#39;:
+    ensure  =&gt; &#39;directory&#39;,
+    path    =&gt; $state_dir,
+    owner   =&gt; $::sensu::user,
+    group   =&gt; $::sensu::group,
+    mode    =&gt; &#39;0750&#39;,
+    require =&gt; Package[&#39;sensu-go-backend&#39;],
+    before  =&gt; Service[&#39;sensu-backend&#39;],
+  }
+
+  file { &#39;sensu_backend_config&#39;:
+    ensure    =&gt; &#39;file&#39;,
+    path      =&gt; &quot;${etc_dir}/backend.yml&quot;,
+    content   =&gt; to_yaml($config),
+    show_diff =&gt; $show_diff,
+    require   =&gt; Package[&#39;sensu-go-backend&#39;],
+    notify    =&gt; Service[&#39;sensu-backend&#39;],
+  }
+
+  service { &#39;sensu-backend&#39;:
+    ensure    =&gt; $service_ensure,
+    enable    =&gt; $service_enable,
+    name      =&gt; $service_name,
+    subscribe =&gt; $service_subscribe,
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

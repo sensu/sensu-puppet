@@ -72,17 +72,32 @@
     <dt>Providers:</dt>
     <dd>
       
-        <span class='object_link'><a href="../puppet_providers_sensu_handler/json.html" title="puppet_providers_sensu_handler::json (puppet_provider)">json</a></span><br/>
+        <span class='object_link'><a href="../puppet_providers_sensu_handler/sensuctl.html" title="puppet_providers_sensu_handler::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
     </dd>
   </dl>
   
 </div>
 
+  <h2>Summary</h2>
+  Manages Sensu handlers
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p>Manages Sensu handlers</p>
+    <p><strong>Autorequires</strong>:</p>
+
+<ul>
+<li><code>Package[sensu-go-cli]</code></li>
+<li><code>Service[sensu-backend]</code></li>
+<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
+<li><code>sensu_filter</code> - Puppet will autorequire <code>sensu_filter</code> resources defined in <code>filters</code> property.</li>
+<li><code>sensu_mutator</code> - Puppet will autorequire <code>sensu_mutator</code> resource defined for <code>mutator</code> property.</li>
+<li><code>sensu_handler</code> - Puppet will autorequire <code>sensu_handler</code> resources defined for <code>handlers</code> property.</li>
+<li><code>sensu_asset</code> - Puppet will autorequire <code>sensu_asset</code> resources defined in <code>runtime_assets</code> property.</li>
+</ul>
 
   </div>
 </div>
@@ -90,6 +105,21 @@
 
 <div class="tags">
   
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a handler</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_handler { &#39;test&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  type    =&gt; &#39;pipe&#39;,
+  command =&gt; &#39;notify.rb&#39;
+}</code></pre>
+    
+  </div>
+
 
 </div>
 <div class="tags">
@@ -97,12 +127,12 @@
   <ul>
     
     <li>
-      <span class="name">command</span>
+      <span class="name">annotations</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Command the handler should run</p>
+          <p>Arbitrary, non-identifying metadata to include with event data.</p>
 
         </div>
       </div>
@@ -111,16 +141,33 @@
     </li>
     
     <li>
-      <span class="name">config</span>
+      <span class="name">command</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Handler specific config</p>
+          <p>The handler command to be executed.</p>
 
         </div>
       </div>
       
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
       
     </li>
     
@@ -158,16 +205,33 @@
     </li>
     
     <li>
-      <span class="name">exchange</span>
+      <span class="name">env_vars</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Exchange information used by the amqp type</p>
+          <p>An array of environment variables to use with command execution.</p>
 
         </div>
       </div>
       
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
       
     </li>
     
@@ -177,39 +241,28 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Handler filters</p>
+          <p>An array of Sensu event filters (names) to use when filtering events for the handler.</p>
 
         </div>
       </div>
       
       
-    </li>
-    
-    <li>
-      <span class="name">handle_flapping</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>If events in the flapping state should be handled</p>
-
-        </div>
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
       </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">handle_silenced</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>If events in the silenced state should be handled</p>
-
-        </div>
-      </div>
-      
       
     </li>
     
@@ -219,7 +272,38 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Handlers this handler mutexes into</p>
+          <p>An array of Sensu event handlers (names) to use for events using the handler set.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">labels</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Custom attributes to include with event data, which can be queried like regular attributes.</p>
 
         </div>
       </div>
@@ -233,7 +317,40 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Handler specific data massager</p>
+          <p>The Sensu event mutator (name) to use to mutate event data for the handler.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">namespace</span>
+      
+      <span class="default"> (defaults to: <em>default</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The Sensu RBAC namespace that this handler belongs to.</p>
 
         </div>
       </div>
@@ -242,12 +359,43 @@
     </li>
     
     <li>
-      <span class="name">pipe</span>
+      <span class="name">runtime_assets</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Pipe information used by the transport type</p>
+          <p>An array of Sensu assets (names), required at runtime for the execution of the command</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">socket_host</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The socket host address (IP or hostname) to connect to.</p>
 
         </div>
       </div>
@@ -256,26 +404,12 @@
     </li>
     
     <li>
-      <span class="name">severities</span>
+      <span class="name">socket_port</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Severities applicable to this handler</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">socket</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Socket information used by the udp type</p>
+          <p>The socket port to connect to.</p>
 
         </div>
       </div>
@@ -289,11 +423,28 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Handler timeout</p>
+          <p>The handler execution duration timeout in seconds (hard stop)</p>
 
         </div>
       </div>
       
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /^[0-9]+$/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
       
     </li>
     
@@ -303,11 +454,38 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Type of handler</p>
+          <p>The handler type.</p>
 
         </div>
       </div>
       
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            pipe
+          </li>
+          
+          <li>
+            
+            tcp
+          </li>
+          
+          <li>
+            
+            udp
+          </li>
+          
+          <li>
+            
+            set
+          </li>
+          
+        </ul>
+      </div>
       
     </li>
     
@@ -320,28 +498,12 @@
   <ul>
     
     <li>
-      <span class="name">base_path</span>
-      
-      <span class="default"> (defaults to: <em>/etc/sensu/conf.d/handlers/</em>)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>The base path to the client config file</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
       <span class="name">name (namevar)</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The name of the handler</p>
+          <p>The name of the handler.</p>
 
         </div>
       </div>

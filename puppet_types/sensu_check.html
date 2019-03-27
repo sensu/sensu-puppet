@@ -72,17 +72,31 @@
     <dt>Providers:</dt>
     <dd>
       
-        <span class='object_link'><a href="../puppet_providers_sensu_check/json.html" title="puppet_providers_sensu_check::json (puppet_provider)">json</a></span><br/>
+        <span class='object_link'><a href="../puppet_providers_sensu_check/sensuctl.html" title="puppet_providers_sensu_check::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
     </dd>
   </dl>
   
 </div>
 
+  <h2>Summary</h2>
+  Manages Sensu checks
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p>Manages Sensu checks</p>
+    <p><strong>Autorequires</strong>:</p>
+
+<ul>
+<li><code>Package[sensu-go-cli]</code></li>
+<li><code>Service[sensu-backend]</code></li>
+<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
+<li><code>sensu_handler</code> - Puppet will autorequie <code>sensu_handler</code> resources defined in <code>handlers</code> property.</li>
+<li><code>sensu_asset</code> - Puppet will autorequire <code>sensu_asset</code> resources defined in <code>runtime_assets</code> property.</li>
+<li><code>sensu_hook</code> - Puppet will autorequire <code>sensu_hook</code> resources defined in <code>check_hooks</code> property.</li>
+</ul>
 
   </div>
 </div>
@@ -90,6 +104,38 @@
 
 <div class="tags">
   
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a check</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_check { &#39;test&#39;:
+  ensure        =&gt; &#39;present&#39;,
+  command       =&gt; &#39;check-http.rb&#39;,
+  subscriptions =&gt; [&#39;demo&#39;],
+  handlers      =&gt; [&#39;email&#39;],
+  interval      =&gt; 60,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a check that has a hook</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_check { &#39;test&#39;:
+  ensure        =&gt; &#39;present&#39;,
+  command       =&gt; &#39;check-cpu.sh -w 75 -c 90&#39;,
+  subscriptions =&gt; [&#39;linux&#39;],
+  check_hooks   =&gt; [
+    { &#39;critical&#39; =&gt; [&#39;ps&#39;] },
+    { &#39;warning&#39;  =&gt; [&#39;ps&#39;] },
+  ],
+  interval      =&gt; 60,
+}</code></pre>
+    
+  </div>
+
 
 </div>
 <div class="tags">
@@ -97,64 +143,30 @@
   <ul>
     
     <li>
-      <span class="name">aggregate</span>
+      <span class="name">annotations</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Whether check is aggregate</p>
+          <p>Arbitrary, non-identifying metadata to include with event data.</p>
 
         </div>
       </div>
       
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
       
     </li>
     
     <li>
-      <span class="name">aggregates</span>
+      <span class="name">check_hooks</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>An array of aggregates to add to the check</p>
+          <p>An array of check response types with respective arrays of Sensu hook names.</p>
 
         </div>
       </div>
       
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
       
     </li>
     
@@ -164,59 +176,11 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Command to be run by the check</p>
+          <p>The check command to be executed.</p>
 
         </div>
       </div>
       
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">contacts</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Contact names to override handler configuration via Contact Routing</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /^[\w\.-]+$/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
       
     </li>
     
@@ -252,26 +216,12 @@
     </li>
     
     <li>
-      <span class="name">custom</span>
+      <span class="name">discard_output</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Custom check variables</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">dependencies</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Dependencies of this check</p>
+          <p>Discard check output after extracting metrics.</p>
 
         </div>
       </div>
@@ -283,12 +233,12 @@
           
           <li>
             
-            /.*/
+            true
           </li>
           
           <li>
             
-            absent
+            false
           </li>
           
         </ul>
@@ -330,12 +280,12 @@
     </li>
     
     <li>
-      <span class="name">handle</span>
+      <span class="name">env_vars</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Whether check event send to a handler</p>
+          <p>An array of environment variables to use with command execution.</p>
 
         </div>
       </div>
@@ -366,28 +316,11 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>List of handlers that responds to this check</p>
+          <p>An array of Sensu event handlers (names) to use for events created by the check.</p>
 
         </div>
       </div>
       
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
       
     </li>
     
@@ -397,7 +330,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>A host is determined to be flapping when the percent change exceedes this threshold.</p>
+          <p>The flap detection high threshold (% state change) for the check</p>
 
         </div>
       </div>
@@ -409,7 +342,7 @@
           
           <li>
             
-            /.*/
+            /^[0-9]+$/
           </li>
           
           <li>
@@ -428,7 +361,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>How frequently the check runs in seconds</p>
+          <p>The frequency in seconds the check is executed.</p>
 
         </div>
       </div>
@@ -440,7 +373,7 @@
           
           <li>
             
-            /.*/
+            /^[0-9]+$/
           </li>
           
           <li>
@@ -450,6 +383,20 @@
           
         </ul>
       </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">labels</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Custom attributes to include with event data, which can be queried like regular attributes.</p>
+
+        </div>
+      </div>
+      
       
     </li>
     
@@ -459,7 +406,114 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>A host is determined to be flapping when the percent change is below this threshold.</p>
+          <p>The flap detection low threshold (% state change) for the check</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /^[0-9]+$/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">max_output_size</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Maximum size, in bytes, of stored check outputs.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">namespace</span>
+      
+      <span class="default"> (defaults to: <em>default</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The Sensu RBAC namespace that this check belongs to.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">output_metric_format</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The metric format generated by the check command.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            nagios_perfdata
+          </li>
+          
+          <li>
+            
+            graphite_plaintext
+          </li>
+          
+          <li>
+            
+            influxdb_line
+          </li>
+          
+          <li>
+            
+            opentsdb_line
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">output_metric_handlers</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>An array of Sensu handlers to use for events created by the check.</p>
 
         </div>
       </div>
@@ -485,12 +539,12 @@
     </li>
     
     <li>
-      <span class="name">occurrences</span>
+      <span class="name">proxy_entity_name</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The number of event occurrences before the handler should take action.</p>
+          <p>The entity name, used to create a proxy entity for an external resource (i.e., a network switch).</p>
 
         </div>
       </div>
@@ -502,7 +556,7 @@
           
           <li>
             
-            /.*/
+            /^[\w\.\-]+$/
           </li>
           
           <li>
@@ -516,12 +570,26 @@
     </li>
     
     <li>
-      <span class="name">proxy_requests</span>
+      <span class="name">proxy_requests_entity_attributes</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Proxy Requests</p>
+          <p>Sensu entity attributes to match entities in the registry, using Sensu Query Expressions</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">proxy_requests_splay</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>If proxy check requests should be splayed</p>
 
         </div>
       </div>
@@ -533,26 +601,104 @@
           
           <li>
             
-            /.*/
+            true
           </li>
           
           <li>
             
-            absent
+            false
           </li>
           
         </ul>
       </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">proxy_requests_splay_coverage</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The splay coverage percentage use for proxy check request splay calculation.</p>
+
+        </div>
+      </div>
+      
       
     </li>
     
     <li>
       <span class="name">publish</span>
       
+      <span class="default"> (defaults to: <em>true</em>)</span>
+      
       
       <div class="docstring">
         <div class="discussion">
-          <p>Whether check is unpublished</p>
+          <p>If check requests are published for the check.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            true
+          </li>
+          
+          <li>
+            
+            false
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">round_robin</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>If the check should be executed on a single entity within a subscription in a round-robin fashion.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            true
+          </li>
+          
+          <li>
+            
+            false
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">runtime_assets</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>An array of Sensu assets (names), required at runtime for the execution of the command</p>
 
         </div>
       </div>
@@ -578,12 +724,12 @@
     </li>
     
     <li>
-      <span class="name">refresh</span>
+      <span class="name">silenced</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The number of seconds sensu-plugin-aware handlers should wait before taking second action.</p>
+          <p>If the event is to be silenced.</p>
 
         </div>
       </div>
@@ -595,12 +741,12 @@
           
           <li>
             
-            /.*/
+            true
           </li>
           
           <li>
             
-            absent
+            false
           </li>
           
         </ul>
@@ -609,12 +755,14 @@
     </li>
     
     <li>
-      <span class="name">source</span>
+      <span class="name">stdin</span>
+      
+      <span class="default"> (defaults to: <em>false</em>)</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The check source, used to create a JIT Sensu client for an external resource (e.g. a network switch).</p>
+          <p>If the Sensu agent writes JSON serialized Sensu entity and check data to the command process&#39; STDIN</p>
 
         </div>
       </div>
@@ -626,12 +774,12 @@
           
           <li>
             
-            /.*/
+            true
           </li>
           
           <li>
             
-            absent
+            false
           </li>
           
         </ul>
@@ -640,95 +788,16 @@
     </li>
     
     <li>
-      <span class="name">standalone</span>
+      <span class="name">subscriptions</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Whether this is a standalone check</p>
+          <p>An array of Sensu entity subscriptions that check requests will be sent to.</p>
 
         </div>
       </div>
       
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">subdue</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Check subdue</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">subscribers</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Who is subscribed to this check</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
       
     </li>
     
@@ -738,7 +807,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Check timeout in seconds, after it fails</p>
+          <p>The check execution duration timeout in seconds (hard stop).</p>
 
         </div>
       </div>
@@ -750,7 +819,7 @@
           
           <li>
             
-            /.*/
+            /^[0-9]+$/
           </li>
           
           <li>
@@ -769,7 +838,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>Check ttl in seconds</p>
+          <p>The time to live (TTL) in seconds until check results are considered stale.</p>
 
         </div>
       </div>
@@ -781,69 +850,7 @@
           
           <li>
             
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">ttl_status</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Exit code for ttl</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">type</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>What type of check is this</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /.*/
+            /^[0-9]+$/
           </li>
           
           <li>
@@ -863,22 +870,6 @@
 <div class="tags">
   <p class="tag_title">Parameters</p>
   <ul>
-    
-    <li>
-      <span class="name">base_path</span>
-      
-      <span class="default"> (defaults to: <em>/etc/sensu/conf.d/checks</em>)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>The base path to the client config file</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
     
     <li>
       <span class="name">name (namevar)</span>
