@@ -46,8 +46,12 @@ class sensu (
   Boolean $ssl_dir_purge = true,
   Boolean $manage_repo = true,
   Boolean $use_ssl = true,
-  String $ssl_ca_source = $facts['puppet_localcacert'],
+  Optional[String] $ssl_ca_source = $facts['puppet_localcacert'],
 ) {
+
+  if $use_ssl and ! $ssl_ca_source {
+    fail('sensu: ssl_ca_source must be defined when use_ssl is true')
+  }
 
   file { 'sensu_etc_dir':
     ensure  => 'directory',

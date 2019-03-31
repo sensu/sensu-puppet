@@ -101,8 +101,8 @@ class sensu::backend (
   Hash $config_hash = {},
   String $url_host = $trusted['certname'],
   Stdlib::Port $url_port = 8080,
-  String $ssl_cert_source = $facts['puppet_hostcert'],
-  String $ssl_key_source = $facts['puppet_hostprivkey'],
+  Optional[String] $ssl_cert_source = $facts['puppet_hostcert'],
+  Optional[String] $ssl_key_source = $facts['puppet_hostprivkey'],
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
@@ -143,6 +143,13 @@ class sensu::backend (
   $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl
   $_version = pick($version, $::sensu::version)
+
+  if $use_ssl and ! $ssl_cert_source {
+    fail('sensu::backend: ssl_cert_source must be defined when sensu::use_ssl is true')
+  }
+  if $use_ssl and ! $ssl_key_source {
+    fail('sensu::backend: ssl_key_source must be defined when sensu::use_ssl is true')
+  }
 
   if $use_ssl {
     $url_protocol = 'https'

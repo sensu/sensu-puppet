@@ -25,6 +25,16 @@ describe 'sensu', :type => :class do
       context 'with use_ssl => false' do
         let(:params) { { :use_ssl => false } }
         it { should_not contain_class('sensu::ssl') }
+
+        context 'when puppet_localcacert undefined' do
+          let(:facts) { facts.merge!(puppet_localcacert: nil) }
+          it { should compile }
+        end
+      end
+
+      context 'when puppet_localcacert undefined' do
+        let(:facts) { facts.merge!(puppet_localcacert: nil) }
+        it { should compile.and_raise_error(/ssl_ca_source must be defined/) }
       end
     end
   end
