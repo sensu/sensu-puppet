@@ -132,6 +132,16 @@ describe 'sensu::backend', :type => :class do
         }
       end
 
+      context 'when puppet_hostcert undefined' do
+        let(:facts) { facts.merge(puppet_hostcert: nil) }
+        it { should compile.and_raise_error(/ssl_cert_source must be defined/) }
+      end
+
+      context 'when puppet_hostprivkey undefined' do
+        let(:facts) { facts.merge(puppet_hostprivkey: nil) }
+        it { should compile.and_raise_error(/ssl_key_source must be defined/) }
+      end
+
       context 'with use_ssl => false' do
         let(:pre_condition) do
           "class { 'sensu': use_ssl => false }"
@@ -176,6 +186,16 @@ describe 'sensu::backend', :type => :class do
         }
 
         it { should contain_service('sensu-backend').without_notify }
+
+        context 'when puppet_hostcert undefined' do
+          let(:facts) { facts.merge(puppet_hostcert: nil) }
+          it { should compile }
+        end
+
+        context 'when puppet_hostprivkey undefined' do
+          let(:facts) { facts.merge(puppet_hostprivkey: nil) }
+          it { should compile }
+        end
       end
 
       context 'with show_diff => false' do
