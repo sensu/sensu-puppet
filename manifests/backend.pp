@@ -51,6 +51,10 @@
 # @param license_content
 #   The content of sensu-go enterprise license
 #   Do not define with license_source
+# @param manage_tessen
+#   Boolean that determines if Tessen is managed
+# @param tessen_ensure
+#   Determine if Tessen is opt-in (present) or opt-out (absent)
 # @param ad_auths
 #   Hash of sensu_ad_auth resources
 # @param assets
@@ -111,6 +115,8 @@ class sensu::backend (
   Boolean $show_diff = true,
   Optional[String] $license_source = undef,
   Optional[String] $license_content = undef,
+  Boolean $manage_tessen = true,
+  Enum['present','absent'] $tessen_ensure = 'present',
   Hash $ad_auths = {},
   Hash $assets = {},
   Hash $checks = {},
@@ -138,6 +144,9 @@ class sensu::backend (
 
   include ::sensu
   include ::sensu::backend::resources
+  if $manage_tessen {
+    include ::sensu::backend::tessen
+  }
 
   $etc_dir = $::sensu::etc_dir
   $ssl_dir = $::sensu::ssl_dir
