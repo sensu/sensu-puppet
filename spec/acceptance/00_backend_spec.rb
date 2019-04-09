@@ -54,12 +54,13 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
     end
   end
 
-  context 'reset admin password' do
+  context 'reset admin password and opt-out tessen' do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu::backend':
-        password     => 'P@ssw0rd!',
-        old_password => 'supersecret',
+        password      => 'P@ssw0rd!',
+        old_password  => 'supersecret',
+        tessen_ensure => 'absent',
       }
       EOS
 
@@ -71,6 +72,13 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
     describe service('sensu-backend'), :node => node do
       it { should be_enabled }
       it { should be_running }
+    end
+
+    it 'should opt-out of tessen' do
+      on node, 'sensuctl tessen info --format json' do
+        data = JSON.parse(stdout)
+        expect(data['opt_out']).to eq(true)
+      end
     end
   end
 end

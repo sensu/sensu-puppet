@@ -13,6 +13,7 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
+        it { should contain_class('sensu::backend::tessen') }
 
         it {
           should contain_package('sensu-go-cli').with({
@@ -271,6 +272,11 @@ describe 'sensu::backend', :type => :class do
         it 'should fail' do
            is_expected.to compile.and_raise_error(/Do not define both license_source and license_content/)
         end
+      end
+
+      context 'manage_tessen => false' do
+        let(:params) {{ :manage_tessen => false }}
+        it { is_expected.not_to contain_class('sensu::backend::tessen') }
       end
     end
   end
