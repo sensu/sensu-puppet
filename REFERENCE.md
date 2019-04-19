@@ -10,15 +10,20 @@ _Public Classes_
 * [`sensu`](#sensu): Base Sensu class
 * [`sensu::agent`](#sensuagent): Manage Sensu agent
 * [`sensu::backend`](#sensubackend): Manage Sensu backend
+* [`sensu::plugins`](#sensuplugins): Manage Sensu plugins
 
 _Private Classes_
 
-* `sensu::backend::resources`: Default sensu resources
+* `sensu::backend::default_resources`: Default sensu resources
+* `sensu::backend::resources`: Define sensu resources
+* `sensu::backend::tessen`: Manage tessen phone home
 * `sensu::repo`: Private class to manage sensu repository resources
+* `sensu::repo::community`: Private class to manage sensu community repository resources
 * `sensu::ssl`: Private class to manage sensu SSL resources
 
 **Resource types**
 
+* [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu Active Directory auth. Requires valid enterprise license.
 * [`sensu_api_validator`](#sensu_api_validator): Verify that a connection can be successfully established between a node and the sensu-backend server.  Its primary use is as a precondition t
 * [`sensu_asset`](#sensu_asset): Manages Sensu assets
 * [`sensu_check`](#sensu_check): Manages Sensu checks
@@ -35,6 +40,7 @@ _Private Classes_
 * [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth. Requires valid enterprise license.
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
+* [`sensu_plugin`](#sensu_plugin): Manages Sensu plugins
 * [`sensu_role`](#sensu_role): Manages Sensu roles
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
 * [`sensu_silenced`](#sensu_silenced): Manages Sensu silencing
@@ -128,7 +134,7 @@ Default value: `true`
 
 ##### `ssl_ca_source`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 Source of SSL CA used by sensu services
 
@@ -324,7 +330,7 @@ Default value: 8080
 
 ##### `ssl_cert_source`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 The SSL certificate source
 
@@ -332,7 +338,7 @@ Default value: $facts['puppet_hostcert']
 
 ##### `ssl_key_source`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 The SSL private key source
 
@@ -405,7 +411,346 @@ Do not define with license_source
 
 Default value: `undef`
 
+##### `manage_tessen`
+
+Data type: `Boolean`
+
+Boolean that determines if Tessen is managed
+
+Default value: `true`
+
+##### `tessen_ensure`
+
+Data type: `Enum['present','absent']`
+
+Determine if Tessen is opt-in (present) or opt-out (absent)
+
+Default value: 'present'
+
+##### `ad_auths`
+
+Data type: `Hash`
+
+Hash of sensu_ad_auth resources
+
+Default value: {}
+
+##### `assets`
+
+Data type: `Hash`
+
+Hash of sensu_asset resources
+
+Default value: {}
+
+##### `checks`
+
+Data type: `Hash`
+
+Hash of sensu_check resources
+
+Default value: {}
+
+##### `cluster_members`
+
+Data type: `Hash`
+
+Hash of sensu_cluster_member resources
+
+Default value: {}
+
+##### `cluster_role_bindings`
+
+Data type: `Hash`
+
+Hash of sensu_cluster_role_binding resources
+
+Default value: {}
+
+##### `cluster_roles`
+
+Data type: `Hash`
+
+Hash of sensu_cluster_role resources
+
+Default value: {}
+
+##### `configs`
+
+Data type: `Hash`
+
+Hash of sensu_config resources
+
+Default value: {}
+
+##### `entities`
+
+Data type: `Hash`
+
+Hash of sensu_entitie resources
+
+Default value: {}
+
+##### `events`
+
+Data type: `Hash`
+
+Hash of sensu_event resources
+
+Default value: {}
+
+##### `filters`
+
+Data type: `Hash`
+
+Hash of sensu_filter resources
+
+Default value: {}
+
+##### `handlers`
+
+Data type: `Hash`
+
+Hash of sensu_handler resources
+
+Default value: {}
+
+##### `hooks`
+
+Data type: `Hash`
+
+Hash of sensu_hook resources
+
+Default value: {}
+
+##### `ldap_auths`
+
+Data type: `Hash`
+
+Hash of sensu_ldap_auth resources
+
+Default value: {}
+
+##### `mutators`
+
+Data type: `Hash`
+
+Hash of sensu_mutator resources
+
+Default value: {}
+
+##### `namespaces`
+
+Data type: `Hash`
+
+Hash of sensu_namespace resources
+
+Default value: {}
+
+##### `role_bindings`
+
+Data type: `Hash`
+
+Hash of sensu_role_binding resources
+
+Default value: {}
+
+##### `roles`
+
+Data type: `Hash`
+
+Hash of sensu_role resources
+
+Default value: {}
+
+##### `silencings`
+
+Data type: `Hash`
+
+Hash of sensu_silenced resources
+
+Default value: {}
+
+##### `users`
+
+Data type: `Hash`
+
+Hash of sensu_user resources
+
+Default value: {}
+
+### sensu::plugins
+
+Class to manage the Sensu plugins.
+
+#### Examples
+
+##### 
+
+```puppet
+class { 'sensu::plugins':
+  plugins    => ['disk-checks'],
+  extensions => ['graphite'],
+}
+```
+
+##### 
+
+```puppet
+class { 'sensu::plugins':
+  plugins    => {
+    'disk-checks' => { 'version' => 'latest' },
+  },
+  extensions => {
+    'graphite' => { 'version' => 'latest' },
+  },
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::plugins` class.
+
+##### `package_ensure`
+
+Data type: `String`
+
+Ensure property for sensu plugins package.
+
+Default value: 'installed'
+
+##### `package_name`
+
+Data type: `String`
+
+Name of the Sensu plugins ruby package.
+
+Default value: 'sensu-plugins-ruby'
+
+##### `dependencies`
+
+Data type: `Array`
+
+Package dependencies needed to install plugins and extensions.
+Default is OS dependent.
+
+Default value: []
+
+##### `plugins`
+
+Data type: `Variant[Array, Hash]`
+
+Plugins to install
+
+Default value: []
+
+##### `extensions`
+
+Data type: `Variant[Array, Hash]`
+
+Extensions to install
+
+Default value: []
+
 ## Resource types
+
+### sensu_ad_auth
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `Exec[sensu-add-license]`
+
+#### Examples
+
+##### Add an Active Directory auth
+
+```puppet
+sensu_ad_auth { 'ad':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => '127.0.0.1',
+      'port' => 636,
+    },
+  ],
+  server_binding      => {
+    '127.0.0.1' => {
+      'user_dn' => 'cn=binder,dc=acme,dc=org',
+      'password' => 'P@ssw0rd!'
+    }
+  },
+  server_group_search => {
+    '127.0.0.1' => {
+      'base_dn' => 'dc=acme,dc=org',
+    }
+  },
+  server_user_search  => {
+    '127.0.0.1' => {
+      'base_dn' => 'dc=acme,dc=org',
+    }
+  },
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_ad_auth` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `servers`
+
+AD servers
+Defaults:
+* insecure: false
+* security: tls
+
+##### `server_binding`
+
+AD server bindings
+
+##### `server_group_search`
+
+Search configuration for groups.
+Defaults:
+* attribute: member
+* name_attribute: cn
+* object_class: group
+
+##### `server_user_search`
+
+Search configuration for users.
+Defaults:
+* attribute: sAMAccountName
+* name_attribute: displayName
+* object_class: person
+
+##### `groups_prefix`
+
+The prefix added to all AD groups.
+
+##### `username_prefix`
+
+The prefix added to all AD usernames.
+
+#### Parameters
+
+The following parameters are available in the `sensu_ad_auth` type.
+
+##### `name`
+
+namevar
+
+The name of the AD auth.
 
 ### sensu_api_validator
 
@@ -1640,6 +1985,91 @@ The following parameters are available in the `sensu_namespace` type.
 namevar
 
 The name of the namespace.
+
+### sensu_plugin
+
+**Autorequires**:
+* `Package[sensu-plugins-ruby]`
+
+#### Examples
+
+##### Install a sensu plugin
+
+```puppet
+sensu_plugin { 'disk-checks':
+  ensure  => 'present',
+}
+```
+
+##### Install specific version of a sensu plugin
+
+```puppet
+sensu_plugin { 'disk-checks':
+  ensure  => 'present',
+  version => '4.0.0',
+}
+```
+
+##### Install latest version of a sensu plugin
+
+```puppet
+sensu_plugin { 'disk-checks':
+  ensure  => 'present',
+  version => 'latest',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_plugin` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `version`
+
+Valid values: latest, /[0-9\.]+/
+
+Specific version to install, or latest
+
+#### Parameters
+
+The following parameters are available in the `sensu_plugin` type.
+
+##### `name`
+
+namevar
+
+Plugin or extension name
+
+##### `extension`
+
+Valid values: `true`, `false`
+
+Sets to install an extension instead of a plugin
+
+Default value: `false`
+
+##### `source`
+
+Install Sensu plugins and extensions from a custom SOURCE
+
+##### `clean`
+
+Valid values: `true`, `false`
+
+Clean up (remove) other installed versions of the plugin(s) and/or extension(s)
+
+Default value: `true`
+
+##### `proxy`
+
+Install Sensu plugins and extensions via a PROXY URL
 
 ### sensu_role
 
