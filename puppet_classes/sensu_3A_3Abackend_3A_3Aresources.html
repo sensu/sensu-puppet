@@ -72,7 +72,7 @@
 </div>
 
   <h2>Summary</h2>
-  Default sensu resources
+  Define sensu resources
 
 <h2>Overview</h2>
 <div class="docstring">
@@ -189,209 +189,107 @@
 98
 99
 100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152</pre>
+101</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/backend/resources.pp', line 4</span>
 
 class sensu::backend::resources {
   include ::sensu::backend
-
-  sensu_namespace { &#39;default&#39;:
-    ensure =&gt; &#39;present&#39;,
+  $::sensu::backend::ad_auths.each |$name, $ad_auth| {
+    sensu_ad_auth { $name:
+      * =&gt; $ad_auth,
+    }
   }
-
-  sensu_user { &#39;agent&#39;:
-    ensure       =&gt; &#39;present&#39;,
-    disabled     =&gt; false,
-    password     =&gt; $::sensu::backend::agent_password,
-    old_password =&gt; $::sensu::backend::agent_old_password,
-    groups       =&gt; [&#39;system:agents&#39;],
+  $::sensu::backend::assets.each |$name, $asset| {
+    sensu_asset { $name:
+      * =&gt; $asset,
+    }
   }
-
-  sensu_cluster_role { &#39;admin&#39;:
-    ensure =&gt; &#39;present&#39;,
-    rules  =&gt; [
-      {
-        &#39;verbs&#39;     =&gt; [&#39;*&#39;],
-        &#39;resources&#39; =&gt; [
-          &#39;assets&#39;,
-          &#39;checks&#39;,
-          &#39;entities&#39;,
-          &#39;extensions&#39;,
-          &#39;events&#39;,
-          &#39;filters&#39;,
-          &#39;handlers&#39;,
-          &#39;hooks&#39;,
-          &#39;mutators&#39;,
-          &#39;silenced&#39;,
-          &#39;roles&#39;,
-          &#39;rolebindings&#39;,
-        ],
-      },
-      {
-        &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;list&#39;],
-        &#39;resources&#39; =&gt; [&#39;namespaces&#39;],
-      },
-    ],
+  $::sensu::backend::checks.each |$name, $check| {
+    sensu_check { $name:
+      * =&gt; $check,
+    }
   }
-  sensu_cluster_role { &#39;cluster-admin&#39;:
-    ensure =&gt; &#39;present&#39;,
-    rules  =&gt; [
-      {
-        &#39;verbs&#39;     =&gt; [&#39;*&#39;],
-        &#39;resources&#39; =&gt; [&#39;*&#39;],
-      },
-    ],
+    $::sensu::backend::cluster_members.each |$name, $cluster_member| {
+    sensu_cluster_member { $name:
+      * =&gt; $cluster_member,
+    }
   }
-  sensu_cluster_role { &#39;edit&#39;:
-    ensure =&gt; &#39;present&#39;,
-    rules  =&gt; [
-      {
-        &#39;verbs&#39;     =&gt; [&#39;*&#39;],
-        &#39;resources&#39; =&gt; [
-          &#39;assets&#39;,
-          &#39;checks&#39;,
-          &#39;entities&#39;,
-          &#39;extensions&#39;,
-          &#39;events&#39;,
-          &#39;filters&#39;,
-          &#39;handlers&#39;,
-          &#39;hooks&#39;,
-          &#39;mutators&#39;,
-          &#39;silenced&#39;,
-        ],
-      },
-      {
-        &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;list&#39;],
-        &#39;resources&#39; =&gt; [&#39;namespaces&#39;],
-      },
-    ],
+  $::sensu::backend::cluster_role_bindings.each |$name, $cluster_role_binding| {
+    sensu_cluster_role_binding { $name:
+      * =&gt; $cluster_role_binding,
+    }
   }
-  sensu_cluster_role { &#39;system:agent&#39;:
-    ensure =&gt; &#39;present&#39;,
-    rules  =&gt; [
-      {
-        &#39;verbs&#39;     =&gt; [&#39;*&#39;],
-        &#39;resources&#39; =&gt; [&#39;events&#39;],
-      },
-    ],
+  $::sensu::backend::cluster_roles.each |$name, $cluster_role| {
+    sensu_cluster_role { $name:
+      * =&gt; $cluster_role,
+    }
   }
-  sensu_cluster_role { &#39;system:user&#39;:
-    ensure =&gt; &#39;present&#39;,
-    rules  =&gt; [
-      {
-        &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;update&#39;],
-        &#39;resources&#39; =&gt; [&#39;localselfuser&#39;],
-      },
-      {
-        &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;list&#39;],
-        &#39;resources&#39; =&gt; [&#39;namespaces&#39;],
-      },
-    ],
+  $::sensu::backend::configs.each |$name, $config| {
+    sensu_config { $name:
+      * =&gt; $config,
+    }
   }
-  sensu_cluster_role { &#39;view&#39;:
-    ensure =&gt; &#39;present&#39;,
-    rules  =&gt; [
-      {
-        &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;list&#39;],
-        &#39;resources&#39; =&gt; [
-          &#39;assets&#39;,
-          &#39;checks&#39;,
-          &#39;entities&#39;,
-          &#39;extensions&#39;,
-          &#39;events&#39;,
-          &#39;filters&#39;,
-          &#39;handlers&#39;,
-          &#39;hooks&#39;,
-          &#39;mutators&#39;,
-          &#39;silenced&#39;,
-          &#39;namespaces&#39;,
-        ],
-      },
-    ],
+  $::sensu::backend::entities.each |$name, $entity| {
+    sensu_entity { $name:
+      * =&gt; $entity,
+    }
   }
-
-  sensu_cluster_role_binding { &#39;cluster-admin&#39;:
-    ensure   =&gt; &#39;present&#39;,
-    role_ref =&gt; &#39;cluster-admin&#39;,
-    subjects =&gt; [
-      {
-        &#39;type&#39; =&gt; &#39;Group&#39;,
-        &#39;name&#39; =&gt; &#39;cluster-admins&#39;
-      },
-    ],
+  $::sensu::backend::events.each |$name, $event| {
+    sensu_event { $name:
+      * =&gt; $event,
+    }
   }
-  sensu_cluster_role_binding { &#39;system:agent&#39;:
-    ensure   =&gt; &#39;present&#39;,
-    role_ref =&gt; &#39;system:agent&#39;,
-    subjects =&gt; [
-      {
-        &#39;type&#39; =&gt; &#39;Group&#39;,
-        &#39;name&#39; =&gt; &#39;system:agents&#39;
-      },
-    ],
+  $::sensu::backend::filters.each |$name, $filter| {
+    sensu_filter { $name:
+      * =&gt; $filter,
+    }
   }
-  sensu_cluster_role_binding { &#39;system:user&#39;:
-    ensure   =&gt; &#39;present&#39;,
-    role_ref =&gt; &#39;system:user&#39;,
-    subjects =&gt; [
-      {
-        &#39;type&#39; =&gt; &#39;Group&#39;,
-        &#39;name&#39; =&gt; &#39;system:users&#39;
-      },
-    ],
+  $::sensu::backend::handlers.each |$name, $handler| {
+    sensu_handler { $name:
+      * =&gt; $handler,
+    }
+  }
+  $::sensu::backend::hooks.each |$name, $hook| {
+    sensu_hook { $name:
+      * =&gt; $hook,
+    }
+  }
+  $::sensu::backend::ldap_auths.each |$name, $ldap_auth| {
+    sensu_ldap_auth { $name:
+      * =&gt; $ldap_auth,
+    }
+  }
+  $::sensu::backend::mutators.each |$name, $mutator| {
+    sensu_mutator { $name:
+      * =&gt; $mutator,
+    }
+  }
+  $::sensu::backend::namespaces.each |$name, $namespace| {
+    sensu_namespace { $name:
+      * =&gt; $namespace,
+    }
+  }
+  $::sensu::backend::role_bindings.each |$name, $role_binding| {
+    sensu_role_binding { $name:
+      * =&gt; $role_binding,
+    }
+  }
+  $::sensu::backend::roles.each |$name, $role| {
+    sensu_role { $name:
+      * =&gt; $role,
+    }
+  }
+  $::sensu::backend::silencings.each |$name, $silencing| {
+    sensu_silenced { $name:
+      * =&gt; $silencing,
+    }
+  }
+  $::sensu::backend::users.each |$name, $user| {
+    sensu_user { $name:
+      * =&gt; $user,
+    }
   }
 }</pre>
       </td>

@@ -249,7 +249,7 @@ should be managed.</p>
         <span class='name'>ssl_ca_source</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$facts[&#39;puppet_localcacert&#39;]</tt>)</em>
@@ -317,7 +317,11 @@ should be managed.</p>
 82
 83
 84
-85</pre>
+85
+86
+87
+88
+89</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 39</span>
@@ -332,8 +336,12 @@ class sensu (
   Boolean $ssl_dir_purge = true,
   Boolean $manage_repo = true,
   Boolean $use_ssl = true,
-  String $ssl_ca_source = $facts[&#39;puppet_localcacert&#39;],
+  Optional[String] $ssl_ca_source = $facts[&#39;puppet_localcacert&#39;],
 ) {
+
+  if $use_ssl and ! $ssl_ca_source {
+    fail(&#39;sensu: ssl_ca_source must be defined when use_ssl is true&#39;)
+  }
 
   file { &#39;sensu_etc_dir&#39;:
     ensure  =&gt; &#39;directory&#39;,

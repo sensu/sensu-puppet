@@ -273,7 +273,7 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
         <span class='name'>ssl_cert_source</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$facts[&#39;puppet_hostcert&#39;]</tt>)</em>
@@ -290,7 +290,7 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
         <span class='name'>ssl_key_source</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$facts[&#39;puppet_hostprivkey&#39;]</tt>)</em>
@@ -441,6 +441,363 @@ Do not define with license_source</p>
       
     </li>
   
+    <li>
+      
+        <span class='name'>manage_tessen</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Boolean that determines if Tessen is managed</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>tessen_ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum['present','absent']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determine if Tessen is opt-in (present) or opt-out (absent)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ad_auths</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_ad_auth resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>assets</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_asset resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>checks</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_check resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cluster_members</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_cluster_member resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cluster_role_bindings</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_cluster_role_binding resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cluster_roles</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_cluster_role resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>configs</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_config resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>entities</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_entitie resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>events</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_event resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>filters</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_filter resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>handlers</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_handler resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>hooks</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_hook resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ldap_auths</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_ldap_auth resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>mutators</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_mutator resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>namespaces</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_namespace resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>role_bindings</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_role_binding resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>roles</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_role resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>silencings</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_silenced resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>users</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_user resources</p>
+</div>
+      
+    </li>
+  
 </ul>
 
 
@@ -451,48 +808,6 @@ Do not define with license_source</p>
         <pre class="lines">
 
 
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
 97
 98
 99
@@ -620,10 +935,84 @@ Do not define with license_source</p>
 221
 222
 223
-224</pre>
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 55</span>
+        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 97</span>
 
 class sensu::backend (
   Optional[String] $version = undef,
@@ -636,8 +1025,8 @@ class sensu::backend (
   Hash $config_hash = {},
   String $url_host = $trusted[&#39;certname&#39;],
   Stdlib::Port $url_port = 8080,
-  String $ssl_cert_source = $facts[&#39;puppet_hostcert&#39;],
-  String $ssl_key_source = $facts[&#39;puppet_hostprivkey&#39;],
+  Optional[String] $ssl_cert_source = $facts[&#39;puppet_hostcert&#39;],
+  Optional[String] $ssl_key_source = $facts[&#39;puppet_hostprivkey&#39;],
   String $password = &#39;P@ssw0rd!&#39;,
   Optional[String] $old_password = undef,
   String $agent_password = &#39;P@ssw0rd!&#39;,
@@ -646,6 +1035,27 @@ class sensu::backend (
   Boolean $show_diff = true,
   Optional[String] $license_source = undef,
   Optional[String] $license_content = undef,
+  Boolean $manage_tessen = true,
+  Enum[&#39;present&#39;,&#39;absent&#39;] $tessen_ensure = &#39;present&#39;,
+  Hash $ad_auths = {},
+  Hash $assets = {},
+  Hash $checks = {},
+  Hash $cluster_members = {},
+  Hash $cluster_role_bindings = {},
+  Hash $cluster_roles = {},
+  Hash $configs = {},
+  Hash $entities = {},
+  Hash $events = {},
+  Hash $filters = {},
+  Hash $handlers = {},
+  Hash $hooks = {},
+  Hash $ldap_auths = {},
+  Hash $mutators = {},
+  Hash $namespaces = {},
+  Hash $role_bindings = {},
+  Hash $roles = {},
+  Hash $silencings = {},
+  Hash $users = {},
 ) {
 
   if $license_source and $license_content {
@@ -653,11 +1063,22 @@ class sensu::backend (
   }
 
   include ::sensu
+  include ::sensu::backend::resources
+  if $manage_tessen {
+    include ::sensu::backend::tessen
+  }
 
   $etc_dir = $::sensu::etc_dir
   $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl
   $_version = pick($version, $::sensu::version)
+
+  if $use_ssl and ! $ssl_cert_source {
+    fail(&#39;sensu::backend: ssl_cert_source must be defined when sensu::use_ssl is true&#39;)
+  }
+  if $use_ssl and ! $ssl_key_source {
+    fail(&#39;sensu::backend: ssl_key_source must be defined when sensu::use_ssl is true&#39;)
+  }
 
   if $use_ssl {
     $url_protocol = &#39;https&#39;
@@ -685,7 +1106,7 @@ class sensu::backend (
 
 
   if $include_default_resources {
-    include ::sensu::backend::resources
+    include ::sensu::backend::default_resources
   }
 
   package { &#39;sensu-go-cli&#39;:

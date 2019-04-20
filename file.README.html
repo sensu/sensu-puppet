@@ -81,6 +81,7 @@
 <li><a href="#label-Installing+plugins">Installing Plugins</a></li>
 <li><a href="#label-Installing+extensions">Installing Extensions</a></li>
 <li><a href="#label-Exported+resources">Exported resources</a></li>
+<li><a href="#label-Hiera+resources">Hiera resources</a></li>
 <li><a href="#label-Resource+purging">Resource purging</a></li>
 <li><a href="#label-Sensu+backend+cluster">Sensu backend cluster</a>
 
@@ -106,7 +107,7 @@
 
 <h3>Documented with Puppet Strings</h3>
 
-<p><a href="http://sensu.github.io/sensu-puppet/doc/">Puppet Strings documentation</a></p>
+<p><a href="http://sensu.github.io/sensu-puppet/">Puppet Strings documentation</a></p>
 
 <h3>Compatibility - supported sensu versions</h3>
 
@@ -370,6 +371,59 @@ class { &#39;sensu::agent&#39;:
 <p>The backend system would collect all <code>sensu_check</code> resources.</p>
 
 <pre class="code puppet"><code class="puppet">  Sensu_check &lt;&lt;||&gt;&gt;
+</code></pre>
+
+<h3>Hiera resources</h3>
+
+<p>All the types provided by this module can have their resources defined via Hiera. A type such as <code>sensu_check</code> would be defined via <code>sensu::backend::checks</code>.</p>
+
+<p>The following example adds an asset, filter, handler and checks via Hiera:</p>
+
+<pre class="code yaml"><code class="yaml">sensu::backend::assets:
+  sensu-email-handler:
+    ensure: present
+    url: &#39;https://github.com/sensu/sensu-email-handler/releases/download/0.1.0/sensu-email-handler_0.1.0_linux_amd64.tar.gz&#39;
+    sha512: &#39;755c7a673d94997ab9613ec5969666e808f8b4a8eec1ba998ee7071606c96946ca2947de5189b24ac34a962713d156619453ff7ea43c95dae62bf0fcbe766f2e&#39;
+    filters:
+      - &quot;entity.system.os == &#39;linux&#39;&quot;
+      - &quot;entity.system.arch == &#39;amd64&#39;&quot;
+sensu::backend::filters:
+  hourly:
+    ensure: present
+    action: allow
+    expressions:
+      - &#39;event.check.occurrences == 1 || event.check.occurrences % (3600 / event.check.interval) == 0&#39;
+sensu::backend::handlers:
+  email:
+    ensure: present
+    type: pipe
+    command: &quot;sensu-email-handler -f root@localhost -t user@example.com -s localhost -i&quot;
+    timeout: 10
+    runtime_assets:
+      - sensu-email-handler
+    filters:
+      - is_incident
+      - not_silenced
+      - hourly
+sensu::backend::checks:
+  check-cpu:
+    ensure: present
+    command: check-cpu.sh -w 75 -c 90
+    interval: 60
+    subscriptions:
+      - linux
+    handlers:
+      - email
+    publish: true
+  check-disks:
+    ensure: present
+    command: &quot;/opt/sensu-plugins-ruby/embedded/bin/check-disk-usage.rb -t &#39;(xfs|ext4)&#39;&quot;
+    subscriptions:
+      - linux
+    handlers:
+      - email
+    interval: 1800
+    publish: true
 </code></pre>
 
 <h3>Resource purging</h3>
