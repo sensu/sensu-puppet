@@ -52,6 +52,34 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
     end
+    it 'should create an auth without binding' do
+      expected_metadata = {
+        :name => 'test',
+      }
+      expected_spec = {
+        :servers => [{
+          'host' => 'test',
+          'port' => 389,
+          'insecure' => false,
+          'security' => 'tls',
+          'trusted_ca_file' => '',
+          'client_cert_file' => '',
+          'client_key_file' => '',
+          'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'},
+          'user_search' => {'base_dn' => 'ou=People','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'},
+        }]
+      }
+      @resource = @type.new({
+        :name => 'test',
+        :servers => [{'host' => 'test', 'port' => 389}],
+        :server_group_search => {'test' => {'base_dn' => 'ou=Groups'}},
+        :server_user_search => {'test' => {'base_dn' => 'ou=People'}},
+      })
+      expect(@resource.provider).to receive(:sensuctl_create).with('ldap', expected_metadata, expected_spec, 'authentication/v2')
+      @resource.provider.create
+      property_hash = @resource.provider.instance_variable_get("@property_hash")
+      expect(property_hash[:ensure]).to eq(:present)
+    end
   end
 
   describe 'flush' do

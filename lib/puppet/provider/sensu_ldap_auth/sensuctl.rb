@@ -78,7 +78,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
     spec[:servers] = []
     resource[:servers].each do |server|
       host = server['host']
-      server['binding'] = resource[:server_binding][host]
+      server['binding'] = resource[:server_binding][host] if resource[:server_binding]
       server['group_search'] = resource[:server_group_search][host]
       server['user_search'] = resource[:server_user_search][host]
       spec[:servers] << server
@@ -104,7 +104,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
         if @property_flush[:server_binding]
           server['binding'] = @property_flush[:server_binding][host]
         else
-          server['binding'] = resource[:server_binding][host]
+          server['binding'] = resource[:server_binding][host] if resource[:server_binding]
         end
         if @property_flush[:server_group_search]
           server['group_search'] = @property_flush[:server_group_search][host]

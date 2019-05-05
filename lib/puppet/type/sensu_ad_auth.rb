@@ -246,7 +246,6 @@ DESC
   validate do
     required_properties = [
       :servers,
-      :server_binding,
       :server_group_search,
       :server_user_search,
     ]
@@ -257,9 +256,11 @@ DESC
     end
     if self[:ensure] == :present
       servers = self[:servers].map { |s| s['host'] }.sort
-      self[:server_binding].keys.each do |server|
-        if ! servers.include?(server)
-          fail "Server binding for #{server} not found in servers property"
+      if self[:server_binding]
+        self[:server_binding].keys.each do |server|
+          if ! servers.include?(server)
+            fail "Server binding for #{server} not found in servers property"
+          end
         end
       end
       self[:server_group_search].keys.each do |server|
@@ -273,9 +274,6 @@ DESC
         end
       end
       servers.each do |server|
-        if ! self[:server_binding].keys.include?(server)
-          fail "server #{server} has no binding defined"
-        end
         if ! self[:server_group_search].keys.include?(server)
           fail "server #{server} has no group_search defined"
         end
