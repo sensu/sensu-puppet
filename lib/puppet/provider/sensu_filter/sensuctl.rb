@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
   def self.instances
     filters = []
 
-    output = sensuctl_list('filter')
-    Puppet.debug("sensu filters: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl filter list')
-      data = []
-    end
+    data = sensuctl_list('filter')
 
     data.each do |d|
       filter = {}

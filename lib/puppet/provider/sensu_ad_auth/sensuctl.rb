@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_ad_auth).provide(:sensuctl, :parent => Puppet::Provider
   def self.instances
     auths = []
 
-    output = sensuctl_list('auth', false)
-    Puppet.debug("sensu auth: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl auth list')
-      data = []
-    end
+    data = sensuctl_list('auth', false)
 
     auth_types = sensuctl_auth_types()
     data.each do |d|

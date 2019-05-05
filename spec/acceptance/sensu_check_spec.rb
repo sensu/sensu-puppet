@@ -120,7 +120,13 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
 
     it 'should have no checks' do
       on node, 'sensuctl check list --format json' do
-        data = JSON.parse(stdout)
+        begin
+          data = JSON.parse(stdout) || []
+        rescue JSON::ParserError => e
+          if stdout =~ /null/
+            data = []
+          end
+        end
         expect(data.size).to eq(0)
       end
     end

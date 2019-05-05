@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
   def self.instances
     namespaces = []
 
-    output = sensuctl_list('namespace', false)
-    Puppet.debug("sensu namespaces: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl namespace list')
-      data = []
-    end
+    data = sensuctl_list('namespace', false)
 
     data.each do |d|
       namespace = {}

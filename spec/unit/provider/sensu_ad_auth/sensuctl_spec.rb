@@ -16,13 +16,13 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
   describe 'self.instances' do
     it 'should create instances' do
       allow(@provider).to receive(:sensuctl_auth_types).and_return({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
-      allow(@provider).to receive(:sensuctl_list).with('auth', false).and_return(my_fixture_read('list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('auth', false).and_return(JSON.parse(my_fixture_read('list.json')))
       expect(@provider.instances.length).to eq(2)
     end
 
     it 'should return the resource for a auth' do
       allow(@provider).to receive(:sensuctl_auth_types).and_return({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
-      allow(@provider).to receive(:sensuctl_list).with('auth', false).and_return(my_fixture_read('list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('auth', false).and_return(JSON.parse(my_fixture_read('list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('activedirectory')
     end

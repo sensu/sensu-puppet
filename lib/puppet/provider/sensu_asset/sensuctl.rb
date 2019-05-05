@@ -8,15 +8,7 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
   def self.instances
     assets = []
 
-    output = sensuctl_list('asset')
-    Puppet.debug("sensu assets: #{output}")
-    begin
-      data = JSON.parse(output)
-      return [] if data.nil?
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl asset list')
-      data = []
-    end
+    data = sensuctl_list('asset')
 
     data.each do |d|
       asset = {}

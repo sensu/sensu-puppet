@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_cluster_role).provide(:sensuctl, :parent => Puppet::Pro
   def self.instances
     cluster_roles = []
 
-    output = sensuctl_list('cluster-role', false)
-    Puppet.debug("sensu cluster_roles: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl cluster_role list')
-      data = []
-    end
+    data = sensuctl_list('cluster-role', false)
 
     data.each do |d|
       cluster_role = {}

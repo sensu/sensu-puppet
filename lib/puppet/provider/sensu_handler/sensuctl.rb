@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
   def self.instances
     handlers = []
 
-    output = sensuctl_list('handler')
-    Puppet.debug("sensu handlers: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl handler list')
-      data = []
-    end
+    data = sensuctl_list('handler')
 
     data.each do |d|
       handler = {}

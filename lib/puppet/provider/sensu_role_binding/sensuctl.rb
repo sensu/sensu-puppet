@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
   def self.instances
     bindings = []
 
-    output = sensuctl_list('role-binding')
-    Puppet.debug("sensu role_bindings: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl role list')
-      data = []
-    end
+    data = sensuctl_list('role-binding')
 
     data.each do |d|
       binding = {}

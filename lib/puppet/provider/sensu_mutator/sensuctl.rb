@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
   def self.instances
     mutators = []
 
-    output = sensuctl_list('mutator')
-    Puppet.debug("sensu mutators: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl mutator list')
-      data = []
-    end
+    data = sensuctl_list('mutator')
 
     data.each do |d|
       mutator = {}
