@@ -168,7 +168,16 @@ describe Puppet::Type.type(:sensu_ad_auth) do
 
   describe 'servers' do
     it 'should accept servers and apply defaults' do
-      expect(auth[:servers]).to eq([{'host' => 'test','port' => 389, 'insecure' => false, 'security' => 'tls'}])
+      expected = [{
+        'host' => 'test',
+        'port' => 389,
+        'insecure' => false,
+        'security' => 'tls',
+        'trusted_ca_file' => '',
+        'client_cert_file' => '',
+        'client_key_file' => '',
+      }]
+      expect(auth[:servers]).to eq(expected)
     end
     it 'should be required array of hashes' do
       config[:servers] = ['foo']

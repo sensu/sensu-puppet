@@ -62,6 +62,9 @@ DESC
     Defaults:
     * insecure: false
     * security: tls
+    * trusted_ca_file: ""
+    * client_cert_file: ""
+    * client_key_file: ""
     EOS
     validate do |server|
       if ! server.is_a?(Hash)
@@ -83,7 +86,7 @@ DESC
       if server.key?('security') && ! ['tls','starttls','insecure'].include?(server['security'].to_s)
         raise ArgumentError, "server security must be tls, starttls or insecure, not #{server['security']}"
       end
-      valid_keys = ['host','port','insecure','security']
+      valid_keys = ['host','port','insecure','security','trusted_ca_file','client_cert_file','client_key_file']
       server.keys.each do |key|
         if ! valid_keys.include?(key)
           raise ArgumentError, "#{key} is not a valid key for server"
@@ -96,6 +99,11 @@ DESC
       end
       if ! server.key?('security')
         server['security'] = 'tls'
+      end
+      ['trusted_ca_file','client_cert_file','client_key_file'].each do |k|
+        if ! server.key?(k)
+          server[k] = ''
+        end
       end
       server
     end
