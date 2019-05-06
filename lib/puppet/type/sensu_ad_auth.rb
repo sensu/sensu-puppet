@@ -62,6 +62,9 @@ DESC
     Defaults:
     * insecure: false
     * security: tls
+    * trusted_ca_file: ""
+    * client_cert_file: ""
+    * client_key_file: ""
     EOS
     validate do |server|
       if ! server.is_a?(Hash)
@@ -83,7 +86,7 @@ DESC
       if server.key?('security') && ! ['tls','starttls','insecure'].include?(server['security'].to_s)
         raise ArgumentError, "server security must be tls, starttls or insecure, not #{server['security']}"
       end
-      valid_keys = ['host','port','insecure','security']
+      valid_keys = ['host','port','insecure','security','trusted_ca_file','client_cert_file','client_key_file']
       server.keys.each do |key|
         if ! valid_keys.include?(key)
           raise ArgumentError, "#{key} is not a valid key for server"
@@ -96,6 +99,11 @@ DESC
       end
       if ! server.key?('security')
         server['security'] = 'tls'
+      end
+      ['trusted_ca_file','client_cert_file','client_key_file'].each do |k|
+        if ! server.key?(k)
+          server[k] = ''
+        end
       end
       server
     end
@@ -238,7 +246,6 @@ DESC
   validate do
     required_properties = [
       :servers,
-      :server_binding,
       :server_group_search,
       :server_user_search,
     ]
@@ -249,9 +256,11 @@ DESC
     end
     if self[:ensure] == :present
       servers = self[:servers].map { |s| s['host'] }.sort
-      self[:server_binding].keys.each do |server|
-        if ! servers.include?(server)
-          fail "Server binding for #{server} not found in servers property"
+      if self[:server_binding]
+        self[:server_binding].keys.each do |server|
+          if ! servers.include?(server)
+            fail "Server binding for #{server} not found in servers property"
+          end
         end
       end
       self[:server_group_search].keys.each do |server|
@@ -265,9 +274,6 @@ DESC
         end
       end
       servers.each do |server|
-        if ! self[:server_binding].keys.include?(server)
-          fail "server #{server} has no binding defined"
-        end
         if ! self[:server_group_search].keys.include?(server)
           fail "server #{server} has no group_search defined"
         end

@@ -13,12 +13,12 @@ describe Puppet::Type.type(:sensu_cluster_role_binding).provider(:sensuctl) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(@provider).to receive(:sensuctl_list).with('cluster-role-binding', false).and_return(my_fixture_read('list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('cluster-role-binding', false).and_return(JSON.parse(my_fixture_read('list.json')))
       expect(@provider.instances.length).to eq(3)
     end
 
     it 'should return the resource for a cluster_role_binding' do
-      allow(@provider).to receive(:sensuctl_list).with('cluster-role-binding', false).and_return(my_fixture_read('list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('cluster-role-binding', false).and_return(JSON.parse(my_fixture_read('list.json')))
       property_hash = @provider.instances.select {|i| i.name == 'cluster-admin'}[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('cluster-admin')
       expect(property_hash[:role_ref]).to eq('cluster-admin')

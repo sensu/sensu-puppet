@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
   def self.instances
     checks = []
 
-    output = sensuctl_list('check')
-    Puppet.debug("sensu checks: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl check list')
-      data = []
-    end
+    data = sensuctl_list('check')
 
     data.each do |d|
       check = {}

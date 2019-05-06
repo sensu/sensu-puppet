@@ -11,7 +11,13 @@ Puppet::Type.type(:sensu_cluster_member).provide(:sensuctl, :parent => Puppet::P
     output = sensuctl('cluster', 'member-list', '--format', 'json')
     Puppet.debug("sensu cluster members: #{output}")
     begin
-      data = JSON.parse(output)
+      j = output.split(/\n\n/)
+      if j.size >= 2
+        _json = j[1]
+      else
+        _json = j[0]
+      end
+      data = JSON.parse(_json)
     rescue JSON::ParserError => e
       Puppet.debug('Unable to parse output from sensuctl cluster member-list')
       data = {'members' => []}

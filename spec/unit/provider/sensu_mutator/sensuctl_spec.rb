@@ -12,12 +12,12 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(@provider).to receive(:sensuctl_list).with('mutator').and_return(my_fixture_read('mutator_list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('mutator').and_return(JSON.parse(my_fixture_read('mutator_list.json')))
       expect(@provider.instances.length).to eq(1)
     end
 
     it 'should return the resource for a mutator' do
-      allow(@provider).to receive(:sensuctl_list).with('mutator').and_return(my_fixture_read('mutator_list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('mutator').and_return(JSON.parse(my_fixture_read('mutator_list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('example-mutator')
     end

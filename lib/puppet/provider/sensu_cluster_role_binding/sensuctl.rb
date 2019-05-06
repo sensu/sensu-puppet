@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
   def self.instances
     bindings = []
 
-    output = sensuctl_list('cluster-role-binding', false)
-    Puppet.debug("sensu cluster_role_bindings: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl cluster_role list')
-      data = []
-    end
+    data = sensuctl_list('cluster-role-binding', false)
 
     data.each do |d|
       binding = {}

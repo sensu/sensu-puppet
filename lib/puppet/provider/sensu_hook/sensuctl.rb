@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
   def self.instances
     hooks = []
 
-    output = sensuctl_list('hook')
-    Puppet.debug("sensu hooks: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl hook list')
-      data = []
-    end
+    data = sensuctl_list('hook')
 
     data.each do |d|
       hook = {}

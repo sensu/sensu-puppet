@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_silenced).provide(:sensuctl, :parent => Puppet::Provide
   def self.instances
     silencings = []
 
-    output = sensuctl_list('silenced')
-    Puppet.debug("sensu silencings: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl silenced list')
-      data = []
-    end
+    data = sensuctl_list('silenced')
 
     data.each do |d|
       silenced = {}

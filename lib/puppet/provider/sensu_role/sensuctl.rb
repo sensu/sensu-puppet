@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
   def self.instances
     roles = []
 
-    output = sensuctl_list('role')
-    Puppet.debug("sensu roles: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl role list')
-      data = []
-    end
+    data = sensuctl_list('role')
 
     data.each do |d|
       role = {}

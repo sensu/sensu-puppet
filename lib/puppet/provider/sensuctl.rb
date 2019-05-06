@@ -51,7 +51,17 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
     args << '--format'
     args << 'json'
-    sensuctl(args)
+    data = []
+    output = sensuctl(args)
+    Puppet.debug("sensuctl #{args.join(' ')}: #{output}")
+    begin
+      data = JSON.parse(output)
+    rescue JSON::ParserError => e
+      Puppet.debug("Unable to parse output from sensuctl #{args.join(' ')}")
+      return []
+    end
+    return [] if data.nil?
+    data
   end
 
   def self.sensuctl_create(type, metadata, spec, api_version = 'core/v2')

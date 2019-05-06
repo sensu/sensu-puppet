@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
   def self.instances
     auths = []
 
-    output = sensuctl_list('auth', false)
-    Puppet.debug("sensu auth: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl auth list')
-      data = []
-    end
+    data = sensuctl_list('auth', false)
 
     auth_types = sensuctl_auth_types()
     data.each do |d|
@@ -37,6 +30,9 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
         s['port'] = server['port']
         s['insecure'] = server['insecure']
         s['security'] = server['security']
+        s['trusted_ca_file'] = server['trusted_ca_file']
+        s['client_cert_file'] = server['client_cert_file']
+        s['client_key_file'] = server['client_key_file']
         binding[s['host']] = server['binding']
         group_search[s['host']] = server['group_search']
         user_search[s['host']] = server['user_search']
@@ -82,7 +78,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
     spec[:servers] = []
     resource[:servers].each do |server|
       host = server['host']
-      server['binding'] = resource[:server_binding][host]
+      server['binding'] = resource[:server_binding][host] if resource[:server_binding]
       server['group_search'] = resource[:server_group_search][host]
       server['user_search'] = resource[:server_user_search][host]
       spec[:servers] << server
@@ -108,7 +104,7 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
         if @property_flush[:server_binding]
           server['binding'] = @property_flush[:server_binding][host]
         else
-          server['binding'] = resource[:server_binding][host]
+          server['binding'] = resource[:server_binding][host] if resource[:server_binding]
         end
         if @property_flush[:server_group_search]
           server['group_search'] = @property_flush[:server_group_search][host]

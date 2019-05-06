@@ -18,14 +18,20 @@ describe Puppet::Provider::Sensuctl do
   context 'sensuctl_list' do
     it 'should list a resource' do
       expected_args = ['check','list','--all-namespaces','--format','json']
-      expect(subject).to receive(:sensuctl).with(expected_args)
+      expect(subject).to receive(:sensuctl).with(expected_args).and_return("{}\n")
       subject.sensuctl_list('check')
     end
 
     it 'should list a resource without all namespaces' do
       expected_args = ['namespace','list','--format','json']
-      expect(subject).to receive(:sensuctl).with(expected_args)
+      expect(subject).to receive(:sensuctl).with(expected_args).and_return("{}\n")
       subject.sensuctl_list('namespace', false)
+    end
+
+    it 'should return empty array for null' do
+      allow(subject).to receive(:sensuctl).with(['check','list','--all-namespaces','--format','json']).and_return("null\n")
+      data = subject.sensuctl_list('check')
+      expect(data).to eq([])
     end
   end
 

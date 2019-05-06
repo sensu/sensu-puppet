@@ -6,6 +6,9 @@
         "port": 636,
         "insecure": false,
         "security": "tls",
+        "trusted_ca_file": "",
+        "client_cert_file": "",
+        "client_key_file": "",
         "binding": {
           "user_dn": "cn=binder,cn=users,dc=acme,dc=org",
           "password": "P@ssw0rd!"
@@ -37,6 +40,9 @@
         "port": 636,
         "insecure": false,
         "security": "tls",
+        "trusted_ca_file": "",
+        "client_cert_file": "",
+        "client_key_file": "",
         "binding": {
           "user_dn": "cn=binder,cn=users,dc=acme,dc=org",
           "password": "P@ssw0rd!"
@@ -68,6 +74,9 @@
         "port": 389,
         "insecure": false,
         "security": "tls",
+        "trusted_ca_file": "",
+        "client_cert_file": "",
+        "client_key_file": "",
         "binding": {
           "user_dn": "cn=binder,dc=acme,dc=org",
           "password": "P@ssw0rd!"

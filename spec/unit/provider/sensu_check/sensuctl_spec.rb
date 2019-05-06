@@ -15,12 +15,12 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(@provider).to receive(:sensuctl_list).with('check').and_return(my_fixture_read('check_list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('check').and_return(JSON.parse(my_fixture_read('check_list.json')))
       expect(@provider.instances.length).to eq(1)
     end
 
     it 'should return the resource for a check' do
-      allow(@provider).to receive(:sensuctl_list).with('check').and_return(my_fixture_read('check_list.json'))
+      allow(@provider).to receive(:sensuctl_list).with('check').and_return(JSON.parse(my_fixture_read('check_list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('check-cpu')
     end

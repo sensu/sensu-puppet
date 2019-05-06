@@ -8,7 +8,6 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
       servers: [
         {'host' => 'test', 'port' => 389},
       ],
-      server_binding: {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}},
       server_group_search: {'test' => {'base_dn' => 'ou=Groups'}},
       server_user_search: {'test' => {'base_dn' => 'ou=People'}},
     }
@@ -168,7 +167,16 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
 
   describe 'servers' do
     it 'should accept servers and apply defaults' do
-      expect(auth[:servers]).to eq([{'host' => 'test','port' => 389, 'insecure' => false, 'security' => 'tls'}])
+      expected = [{
+        'host' => 'test',
+        'port' => 389,
+        'insecure' => false,
+        'security' => 'tls',
+        'trusted_ca_file' => '',
+        'client_cert_file' => '',
+        'client_key_file' => '',
+      }]
+      expect(auth[:servers]).to eq(expected)
     end
     it 'should be required array of hashes' do
       config[:servers] = ['foo']
@@ -198,6 +206,7 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
 
   describe 'server_binding' do
     it 'should accept valid value' do
+      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}}
       expect(auth[:server_binding]).to eq({'test' => {'user_dn' => 'cn=foo','password' => 'foo'}})
     end
     it 'should require a hash' do
@@ -217,16 +226,12 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
       expect { auth }.to raise_error(Puppet::Error, /binding requires password/)
     end
     it 'should not accept invalid key' do
-      config[:server_binding]['test']['foo'] = 'bar'
+      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo','password' => 'foo','foo' => 'bar'}}
       expect { auth }.to raise_error(Puppet::Error, /is not a valid key for binding/)
     end
     it 'should fail if server not defined' do
       config[:server_binding] = {'foo' => {'user_dn' => 'cn=foo','password' => 'foo'}}
       expect { auth }.to raise_error(Puppet::Error, /Server binding for foo not found in servers property/)
-    end
-    it 'should fail if binding missing' do
-      config[:servers] << {'host' => 'foo' , 'port' => 389}
-      expect { auth }.to raise_error(Puppet::Error, /server foo has no binding defined/)
     end
   end
 
@@ -309,7 +314,6 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
 
   [
     :servers,
-    :server_binding,
     :server_group_search,
     :server_user_search,
   ].each do |property|

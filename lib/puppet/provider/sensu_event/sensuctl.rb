@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_event).provide(:sensuctl, :parent => Puppet::Provider::
   def self.instances
     events = []
 
-    output = sensuctl_list('event')
-    Puppet.debug("sensu event: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl event list')
-      data = []
-    end
+    data = sensuctl_list('event')
 
     data.each do |d|
       event = {}

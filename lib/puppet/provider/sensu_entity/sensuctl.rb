@@ -8,14 +8,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
   def self.instances
     entities = []
 
-    output = sensuctl_list('entity')
-    Puppet.debug("sensu entities: #{output}")
-    begin
-      data = JSON.parse(output)
-    rescue JSON::ParserError => e
-      Puppet.debug('Unable to parse output from sensuctl entity list')
-      data = []
-    end
+    data = sensuctl_list('entity')
 
     data.each do |d|
       entity = {}
