@@ -713,6 +713,9 @@ AD servers
 Defaults:
 * insecure: false
 * security: tls
+* trusted_ca_file: ""
+* client_cert_file: ""
+* client_key_file: ""
 
 ##### `server_binding`
 
@@ -1828,6 +1831,9 @@ LDAP servers
 Defaults:
 * insecure: false
 * security: tls
+* trusted_ca_file: ""
+* client_cert_file: ""
+* client_key_file: ""
 
 ##### `server_binding`
 

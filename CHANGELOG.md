@@ -1,10 +1,18 @@
 # Change Log
 
-## [v3.1.0](https://github.com/sensu/sensu-puppet/tree/v3.1.0) (2019-04-18)
-[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v0.0.1...v3.1.0)
+## [v3.2.0](https://github.com/sensu/sensu-puppet/tree/v3.2.0) (2019-05-06)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.1.0...v3.2.0)
 
 **Merged pull requests:**
 
+- Support Sensu Go 5.6 [\#1105](https://github.com/sensu/sensu-puppet/pull/1105) ([treydock](https://github.com/treydock))
+
+## [v3.1.0](https://github.com/sensu/sensu-puppet/tree/v3.1.0) (2019-04-19)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.0.0...v3.1.0)
+
+**Merged pull requests:**
+
+- Prep 3.1.0 release [\#1103](https://github.com/sensu/sensu-puppet/pull/1103) ([treydock](https://github.com/treydock))
 - Support opting out of tessen phone home [\#1101](https://github.com/sensu/sensu-puppet/pull/1101) ([treydock](https://github.com/treydock))
 - Do not raise errors if custom puppet facts are undefined [\#1100](https://github.com/sensu/sensu-puppet/pull/1100) ([treydock](https://github.com/treydock))
 - Hiera resources [\#1097](https://github.com/sensu/sensu-puppet/pull/1097) ([treydock](https://github.com/treydock))
