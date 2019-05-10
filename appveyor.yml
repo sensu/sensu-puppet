@@ -1,0 +1,58 @@
+version: '{build}-{branch}'
+platform:
+  - x64
+build: off
+max_jobs: 2
+branches:
+  only:
+    - master
+    - /^v\d/
+cache:
+- C:\downloads
+- C:\vendor\bundle
+init:
+- ps: $env:GEM_SOURCE = "http://rubygems.org"
+install:
+- set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+- ps: |
+    if (!(Test-Path C:\downloads)) { mkdir C:\downloads | Out-Null }
+    $log = "C:/puppet-agent.log"
+    $agent_url = "https://downloads.puppetlabs.com/windows/${ENV:PUPPET_REPO}/puppet-agent-x64-latest.msi"
+    Write-Output "Installing Puppet from $agent_url"
+    Write-Output "Log will be written to $log"
+    if ( Test-Path $log ) { Remove-Item $log }
+    cd C:\downloads
+    if (!(Test-Path "puppet-agent-x64-latest.msi")) { Start-FileDownload $agent_url }
+    Start-Process msiexec.exe -Wait -NoNewWindow -ArgumentList @("/i", "C:\downloads\puppet-agent-x64-latest.msi", "/qn", "/l*", "$log")
+    cd $ENV:APPVEYOR_BUILD_FOLDER
+- ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
+- ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/tests/ssl" -Destination C:/ProgramData/PuppetLabs/puppet/etc/ssl -Recurse
+- ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/lib/facter" -Destination C:/ProgramData/PuppetLabs/puppet/cache/lib/facter -Recurse
+- set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
+- puppet --version
+- puppet module install puppetlabs-stdlib
+- puppet module install puppet-archive
+- puppet config set --section main certname sensu_agent
+- facter -p --debug
+- ruby -v
+- gem update --system 2.7.9
+- gem -v
+- bundle -v
+- bundle install --jobs 4 --retry 2 --path C:\vendor\bundle
+test_script:
+- bundle exec rake acceptance:windows
+image:
+  # Windows 2012 R2
+  - Visual Studio 2015
+  # Windows 2016
+  - Visual Studio 2017
+environment:
+  matrix:
+    - PUPPET_GEM_VERSION: '~>5.x'
+      PUPPET_REPO: puppet5
+      RUBY_VERSION: 24-x64
+    - PUPPET_GEM_VERSION: '~>6.x'
+      PUPPET_REPO: puppet6
+      RUBY_VERSION: 25-x64
+matrix:
+  fast_finish: false

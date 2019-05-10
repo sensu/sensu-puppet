@@ -10,5 +10,8 @@ fixtures:
       repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
       ref: 1.0.1
       puppet_version: ">= 6.0.0"
+    archive:
+      repo: git://github.com/voxpupuli/puppet-archive.git
+      ref: 'v3.0.0'
   symlinks:
     sensu: "#{source_dir}"

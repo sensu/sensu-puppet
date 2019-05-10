@@ -53,6 +53,21 @@ class sensu (
     fail('sensu: ssl_ca_source must be defined when use_ssl is true')
   }
 
+  if $facts['os']['family'] == 'windows' {
+    $sensu_user = undef
+    $sensu_group = undef
+    $file_mode = undef
+    $trusted_ca_file_path = "${ssl_dir}\\ca.crt"
+    $agent_config_path = "${etc_dir}\\agent.yml"
+  } else {
+    $sensu_user = $user
+    $sensu_group = $group
+    $file_mode = '0640'
+    $join_path = '/'
+    $trusted_ca_file_path = "${ssl_dir}/ca.crt"
+    $agent_config_path = "${etc_dir}/agent.yml"
+  }
+
   file { 'sensu_etc_dir':
     ensure  => 'directory',
     path    => $etc_dir,
@@ -72,8 +87,11 @@ class sensu (
     'Debian': {
       $os_package_require = [Class['::apt::update']]
     }
+    'windows': {
+      $os_package_require = []
+    }
     default: {
-      fail("Detected osfamily <${facts['os']['family']}>. Only RedHat and Debian are supported.")
+      fail("Detected osfamily <${facts['os']['family']}>. Only RedHat, Debian and Windows are supported.")
     }
   }
 

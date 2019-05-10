@@ -2,14 +2,23 @@ require 'facter'
 
 module SensuFacts
   def self.which(cmd)
-    path = Facter::Core::Execution.which(cmd)
+    path = nil
+    if File.exists?("C:\\Program Files\\sensu\\sensu-agent\\bin\\#{cmd}.exe")
+      path = "C:\\Program Files\\sensu\\sensu-agent\\bin\\#{cmd}.exe"
+    else
+      path = Facter::Core::Execution.which(cmd)
+    end
     path
   end
 
   def self.get_version_info(cmd)
     path = self.which(cmd)
     return nil unless path
-    output = Facter::Core::Execution.exec("#{path} version 2>&1")
+    if Facter.value(:kernel) == 'windows'
+      output = Facter::Core::Execution.exec("\"#{path}\" version")
+    else
+      output = Facter::Core::Execution.exec("#{path} version 2>&1")
+    end
     version = nil
     if output =~ /^#{cmd} version ([^,]+)/
       version = $1.split('#')[0]

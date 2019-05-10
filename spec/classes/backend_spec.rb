@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe 'sensu::backend', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
+    # Windows is not supported for backend
+    if facts[:os]['family'] == 'windows'
+      next
+    end
     context "on #{os}" do
       let(:facts) { facts }
       let(:node) { 'test.example.com' }
@@ -117,6 +121,9 @@ describe 'sensu::backend', :type => :class do
             'ensure'    => 'file',
             'path'      => '/etc/sensu/backend.yml',
             'content'   => backend_content,
+            'owner'     => 'sensu',
+            'group'     => 'sensu',
+            'mode'      => '0640',
             'show_diff' => 'true',
             'require'   => 'Package[sensu-go-backend]',
             'notify'    => 'Service[sensu-backend]',

@@ -4,6 +4,12 @@ describe 'sensu::plugins', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
+      if facts[:os]['family'] == 'windows'
+        it 'should fail' do
+          is_expected.to compile.and_raise_error(/is not supported/)
+        end
+        next
+      end
       context 'with default values for all parameters' do
         it { should compile }
 

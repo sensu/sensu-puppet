@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe 'sensu::repo::community', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
+    # This class not used by Windows
+    if facts[:os]['family'] == 'windows'
+      next
+    end
     context "on #{os}" do
       let(:facts) { facts }
       case os

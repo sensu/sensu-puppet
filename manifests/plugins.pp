@@ -38,6 +38,10 @@ class sensu::plugins (
   Variant[Array, Hash] $extensions = [],
 ) {
 
+  if $facts['os']['family'] == 'windows' {
+    fail('sensu::plugins is not supported on Windows')
+  }
+
   include ::sensu
 
   if $::sensu::manage_repo {

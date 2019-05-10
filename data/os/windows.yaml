@@ -1,2 +1,8 @@
 ---
-sensu::etc_dir: 'C:/opt/sensu'
+sensu::manage_repo: false
+sensu::etc_dir: 'C:\ProgramData\Sensu\config'
+sensu::ssl_dir: 'C:\ProgramData\Sensu\config\ssl'
+sensu::agent::package_name: 'Sensu Agent'
+sensu::agent::package_download_path: 'C:\'
+sensu::agent::log_file: 'C:\ProgramData\sensu\log\sensu-agent.log'
+sensu::agent::service_name: SensuAgent

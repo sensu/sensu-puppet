@@ -170,6 +170,25 @@ Windows MSI packaging and to avoid surprising upgrades.
 
 Default value: `undef`
 
+##### `package_source`
+
+Data type: `Optional[String[1]]`
+
+Source of package for installing Windows.
+Paths with http:// or https:// will be downloaded
+Paths with puppet:// or absolute filesystem paths will also be installed.
+
+Default value: `undef`
+
+##### `package_download_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Where to download the MSI for Windows. Defaults to `C:\`.
+This parameter only used when `package_source` is an URL or when it's a puppet source (`puppet://`).
+
+Default value: `undef`
+
 ##### `package_name`
 
 Data type: `String`
@@ -228,6 +247,15 @@ Data type: `Boolean`
 Sets show_diff parameter for agent.yml configuration file
 
 Default value: `true`
+
+##### `log_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to agent log file, only for Windows.
+Defaults to `C:\ProgramData\sensu\log\sensu-agent.log`
+
+Default value: `undef`
 
 ### sensu::backend
 
