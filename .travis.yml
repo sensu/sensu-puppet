@@ -149,6 +149,9 @@ matrix:
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
-
+branches:
+  only:
+    - master
+    - /^v\d/
 notifications:
   email: false
