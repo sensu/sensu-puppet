@@ -21,7 +21,7 @@ rpm -qa | grep -q puppet
 if [ $? -ne 0 ]
 then
 
-    rpm_install http://yum.puppetlabs.com/puppet5/puppet5-release-el-${release}.noarch.rpm
+    rpm_install http://yum.puppetlabs.com/puppet5-release-el-${release}.noarch.rpm
     yum -y install puppet-agent
     ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
 fi
