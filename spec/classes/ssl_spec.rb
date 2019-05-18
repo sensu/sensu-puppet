@@ -5,7 +5,12 @@ describe 'sensu::ssl', :type => :class do
     context "on #{os}" do
       let(:facts) { facts }
       context 'with default values for all parameters' do
-        it { should compile }
+        # Unknown bug in rspec-puppet fails to compile windows paths
+        # when they are used for file source of sensu_ssl_ca, issue with windows mocking
+        # https://github.com/rodjek/rspec-puppet/issues/750
+        if facts[:os]['family'] != 'windows'
+          it { should compile }
+        end
 
         it { should create_class('sensu::ssl') }
         it { should contain_class('sensu') }
@@ -13,25 +18,25 @@ describe 'sensu::ssl', :type => :class do
         it {
           should contain_file('sensu_ssl_dir').with({
             'ensure'  => 'directory',
-            'path'    => '/etc/sensu/ssl',
+            'path'    => platforms[facts[:osfamily]][:ssl_dir],
             'purge'   => true,
             'recurse' => true,
             'force'   => true,
-            'owner'   => 'sensu',
-            'group'   => 'sensu',
-            'mode'    => '0700',
+            'owner'   => platforms[facts[:osfamily]][:user],
+            'group'   => platforms[facts[:osfamily]][:group],
+            'mode'    => platforms[facts[:osfamily]][:ssl_dir_mode],
           })
         }
 
         it {
           should contain_file('sensu_ssl_ca').with({
             'ensure'    => 'file',
-            'path'      => '/etc/sensu/ssl/ca.crt',
-            'owner'     => 'sensu',
-            'group'     => 'sensu',
-            'mode'      => '0644',
+            'path'      => platforms[facts[:osfamily]][:ca_path],
+            'owner'     => platforms[facts[:osfamily]][:user],
+            'group'     => platforms[facts[:osfamily]][:group],
+            'mode'      => platforms[facts[:osfamily]][:ca_mode],
             'show_diff' => 'false',
-            'source'    => '/dne/ca.pem',
+            'source'    => facts['puppet_localcacert'],
           })
         }
       end

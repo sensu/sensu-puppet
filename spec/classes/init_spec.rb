@@ -5,16 +5,25 @@ describe 'sensu', :type => :class do
     context "on #{os}" do
       let(:facts) { facts }
       context 'with default values for all parameters' do
-        it { should compile }
+        # Unknown bug in rspec-puppet fails to compile windows paths
+        # when they are used for file source of sensu_ssl_ca, issue with windows mocking
+        # https://github.com/rodjek/rspec-puppet/issues/750
+        if facts[:os]['family'] != 'windows'
+          it { should compile }
+        end
 
         it { should contain_class('sensu')}
-        it { should contain_class('sensu::repo')}
+        if facts[:os]['family'] == 'windows'
+          it { should_not contain_class('sensu::repo')}
+        else
+          it { should contain_class('sensu::repo')}
+        end
         it { should contain_class('sensu::ssl') }
 
         it {
           should contain_file('sensu_etc_dir').with({
             'ensure'  => 'directory',
-            'path'    => '/etc/sensu',
+            'path'    => platforms[facts[:osfamily]][:etc_dir],
             'purge'   => true,
             'recurse' => true,
             'force'   => true,

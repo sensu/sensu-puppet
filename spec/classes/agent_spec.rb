@@ -5,15 +5,39 @@ describe 'sensu::agent', :type => :class do
     context "on #{os}" do
       let(:facts) { facts }
       describe 'with default values for all parameters' do
-        it { should compile.with_all_deps }
+        # Unknown bug in rspec-puppet fails to compile windows paths
+        # when they are used for file source of sensu_ssl_ca, issue with windows mocking
+        # https://github.com/rodjek/rspec-puppet/issues/750
+        if facts[:os]['family'] != 'windows'
+          it { should compile.with_all_deps }
+        end
 
         it { should contain_class('sensu')}
         it { should contain_class('sensu::agent')}
 
+        if facts[:os]['family'] == 'windows'
+          sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
+          it {
+            should contain_exec('install-agent-service').with({
+              'command' => "C:\\windows\\system32\\cmd.exe /c \"\"#{sensu_agent_exe}\" service install --config-file \"#{platforms[facts[:osfamily]][:agent_config_path]}\" --log-file \"#{platforms[facts[:osfamily]][:log_file]}\"\"",
+              'unless'  => 'C:\\windows\\system32\\sc.exe query SensuAgent',
+              'before'  => 'Service[sensu-agent]',
+              'require' => [
+                'Package[sensu-go-agent]',
+                'File[sensu_agent_config]',
+              ],
+            })
+          }
+        else
+          it { should_not contain_exec('install-agent-service') }
+        end
+        it { should_not contain_archive('sensu-go-agent.msi') }
+
         it {
           should contain_package('sensu-go-agent').with({
             'ensure'  => 'installed',
-            'name'    => 'sensu-go-agent',
+            'name'    => platforms[facts[:osfamily]][:agent_package_name],
+            'source'  => nil,
             'before'  => 'File[sensu_etc_dir]',
             'require' => platforms[facts[:osfamily]][:package_require],
           })
@@ -23,14 +47,17 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- wss://localhost:8081
-          |trusted-ca-file: "/etc/sensu/ssl/ca.crt"
+          |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
 
         it {
           should contain_file('sensu_agent_config').with({
             'ensure'  => 'file',
-            'path'    => '/etc/sensu/agent.yml',
+            'path'    => platforms[facts[:osfamily]][:agent_config_path],
             'content' => agent_content,
+            'owner'   => platforms[facts[:osfamily]][:user],
+            'group'   => platforms[facts[:osfamily]][:group],
+            'mode'    => platforms[facts[:osfamily]][:agent_config_mode],
             'require' => 'Package[sensu-go-agent]',
             'notify'  => 'Service[sensu-agent]',
           })
@@ -40,10 +67,57 @@ describe 'sensu::agent', :type => :class do
           should contain_service('sensu-agent').with({
             'ensure'    => 'running',
             'enable'    => true,
-            'name'      => 'sensu-agent',
+            'name'      => platforms[facts[:osfamily]][:agent_service_name],
             'subscribe' => 'Class[Sensu::Ssl]',
           })
         }
+      end
+
+      context 'when package_source defined as URL' do
+        let(:params) {{ package_source: 'https://foo/sensu-go-agent.msi' }}
+        if facts[:os]['family'] == 'windows'
+          it {
+            should contain_archive('sensu-go-agent.msi').with({
+              'source' => 'https://foo/sensu-go-agent.msi',
+              'path'   => 'C:\\\\sensu-go-agent.msi',
+              'extract'=> 'false',
+              'cleanup'=> 'false',
+              'before' => 'Package[sensu-go-agent]',
+            })
+          }
+          it { should contain_package('sensu-go-agent').with_source('C:\\\\sensu-go-agent.msi') }
+        else
+          it { should_not contain_archive('sensu-go-agent.msi') }
+          it { should contain_package('sensu-go-agent').without_source }
+        end
+      end
+
+      context 'when package_source defined as puppet' do
+        let(:params) {{ package_source: 'puppet:///modules/profile/sensu-go-agent.msi' }}
+        if facts[:os]['family'] == 'windows'
+          it {
+            should contain_file('sensu-go-agent.msi').with({
+              'ensure' => 'file',
+              'source' => 'puppet:///modules/profile/sensu-go-agent.msi',
+              'path'   => 'C:\\\\sensu-go-agent.msi',
+              'before' => 'Package[sensu-go-agent]',
+            })
+          }
+          it { should contain_package('sensu-go-agent').with_source('C:\\\\sensu-go-agent.msi') }
+        else
+          it { should_not contain_archive('sensu-go-agent.msi') }
+          it { should contain_package('sensu-go-agent').without_source }
+        end
+      end
+
+      context 'when package_source is local' do
+        let(:params) {{ package_source: 'C:\\sensu-go-agent.msi' }}
+        it { should_not contain_archive('sensu-go-agent.msi') }
+        if facts[:os]['family'] == 'windows'
+          it { should contain_package('sensu-go-agent').with_source('C:\\sensu-go-agent.msi') }
+        else
+          it { should contain_package('sensu-go-agent').without_source }
+        end
       end
 
       context 'with use_ssl => false' do
@@ -60,8 +134,11 @@ describe 'sensu::agent', :type => :class do
         it {
           should contain_file('sensu_agent_config').with({
             'ensure'    => 'file',
-            'path'      => '/etc/sensu/agent.yml',
+            'path'      => platforms[facts[:osfamily]][:agent_config_path],
             'content'   => agent_content,
+            'owner'     => platforms[facts[:osfamily]][:user],
+            'group'     => platforms[facts[:osfamily]][:group],
+            'mode'      => platforms[facts[:osfamily]][:agent_config_mode],
             'show_diff' => 'true',
             'require'   => 'Package[sensu-go-agent]',
             'notify'    => 'Service[sensu-agent]',
@@ -98,7 +175,12 @@ describe 'sensu::agent', :type => :class do
         context "with backends => #{backends}" do
           let(:params) { { :backends => backends } }
 
-          it { should compile.with_all_deps }
+          # Unknown bug in rspec-puppet fails to compile windows paths
+          # when they are used for file source of sensu_ssl_ca, issue with windows mocking
+          # https://github.com/rodjek/rspec-puppet/issues/750
+          if facts[:os]['family'] != 'windows'
+            it { should compile.with_all_deps }
+          end
 
           if backends[0] =~ /(ws|wss):\/\//
             backend = backends[0]
@@ -110,13 +192,13 @@ describe 'sensu::agent', :type => :class do
             |---
             |backend-url:
             |- #{backend}
-            |trusted-ca-file: "/etc/sensu/ssl/ca.crt"
+            |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
           END
 
           it {
             should contain_file('sensu_agent_config').with({
               'ensure'  => 'file',
-              'path'    => '/etc/sensu/agent.yml',
+              'path'    => platforms[facts[:osfamily]][:agent_config_path],
               'content' => agent_content,
               'require' => 'Package[sensu-go-agent]',
               'notify'  => 'Service[sensu-agent]',
