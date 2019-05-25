@@ -64,6 +64,18 @@ add_custom_fact :puppet_localcacert, ->(os, facts) {
   end
 }
 
+# Gets an array of types that have sensuctl provider
+# This logic is similar to that used by sensuctl_config type
+# Used in sensuctl_config tests
+def sensuctl_types
+  types = []
+  Dir[File.join(File.dirname(__FILE__), '..', 'lib/puppet/provider') + '/*/sensuctl.rb'].each do |f|
+    type = File.basename(File.dirname(f))
+    types << type.to_sym
+  end
+  types
+end
+
 def platforms
   {
     'Debian' => {

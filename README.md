@@ -21,6 +21,7 @@
     * [Resource purging](#resource-purging)
     * [Sensu backend cluster](#sensu-backend-cluster)
         * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
+    * [Large Environment Considerations](#large-environment-considerations)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -470,6 +471,16 @@ sensu::backend::config_hash:
 ```
 
 The first step will not fully add the node to the cluster until the second step is performed.
+
+### Large Environment Considerations
+
+If the backend system has a large number of resources it may be necessary to query resources using chunk size added in Sensu Go 5.8.
+
+```
+class { '::sensu::backend':
+  sensuctl_chunk_size => 100,
+}
+```
 
 ## Reference
 

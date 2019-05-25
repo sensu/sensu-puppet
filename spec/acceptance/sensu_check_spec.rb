@@ -54,6 +54,32 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
     end
   end
 
+  context 'with chunk size' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu::backend':
+        sensuctl_chunk_size => 1,
+      }
+      sensu_check { 'test3':
+        command       => 'check-http3.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
+      sensu_check { 'test4':
+        command       => 'check-cpu4.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest_on(node, pp, :catch_failures => true)
+      apply_manifest_on(node, pp, :catch_changes  => true)
+    end
+  end
+
   context 'updates check' do
     it 'should work without errors' do
       pp = <<-EOS

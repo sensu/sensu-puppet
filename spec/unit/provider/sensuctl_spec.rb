@@ -33,6 +33,13 @@ describe Puppet::Provider::Sensuctl do
       data = subject.sensuctl_list('check')
       expect(data).to eq([])
     end
+
+    it 'should execute with chunk-size' do
+      subject.chunk_size = 100
+      expected_args = ['check','list','--all-namespaces','--format','json','--chunk-size','100']
+      expect(subject).to receive(:sensuctl).with(expected_args).and_return("{}\n")
+      subject.sensuctl_list('check')
+    end
   end
 
   context 'sensuctl_create' do

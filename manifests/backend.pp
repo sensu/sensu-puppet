@@ -93,6 +93,8 @@
 #   Hash of sensu_silenced resources
 # @param users
 #   Hash of sensu_user resources
+# @param sensuctl_chunk_size
+#   Chunk size to use when listing sensuctl resources
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -136,6 +138,7 @@ class sensu::backend (
   Hash $roles = {},
   Hash $silencings = {},
   Hash $users = {},
+  Optional[Integer] $sensuctl_chunk_size = undef,
 ) {
 
   if $license_source and $license_content {
@@ -193,6 +196,10 @@ class sensu::backend (
     ensure  => $_version,
     name    => $cli_package_name,
     require => $::sensu::package_require,
+  }
+
+  sensuctl_config { 'sensu':
+    chunk_size => $sensuctl_chunk_size,
   }
 
   sensu_api_validator { 'sensu':
