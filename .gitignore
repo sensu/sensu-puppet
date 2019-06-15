@@ -53,3 +53,5 @@ doc/**
 
 # secrets
 tests/sensu_license.json
+tests/secrets
+tests/secrets.tar

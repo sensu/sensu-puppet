@@ -12,7 +12,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
-      - 'yum install -y wget'
+      - 'yum install -y wget which'
     docker_container_name: 'sensu-backend1-el7'
   sensu_backend2:
     roles:
@@ -26,7 +26,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
-      - 'yum install -y wget'
+      - 'yum install -y wget which'
     docker_container_name: 'sensu-backend2-el7'
   sensu_backend3:
     roles:
@@ -40,7 +40,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
-      - 'yum install -y wget'
+      - 'yum install -y wget which'
     docker_container_name: 'sensu-backend3-el7'
 CONFIG:
   log_level: debug

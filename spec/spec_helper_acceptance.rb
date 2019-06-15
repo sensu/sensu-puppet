@@ -14,6 +14,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_cluster, default: false
   c.add_setting :sensu_enterprise_file, default: nil
   c.add_setting :sensu_test_enterprise, default: false
+  c.add_setting :sensu_manage_repo, default: true
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
   c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
   if ENV['SENSU_ENTERPRISE_FILE']
@@ -26,6 +27,16 @@ RSpec.configure do |c|
     c.sensu_test_enterprise = true
   else
     c.sensu_test_enterprise = false
+  end
+
+  ci_build = File.join(project_dir, 'tests/ci_build.sh')
+  secrets = File.join(project_dir, 'tests/secrets')
+  if File.exists?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
+    c.sensu_manage_repo = false
+    add_ci_repo = true
+  else
+    c.sensu_manage_repo = true
+    add_ci_repo = false
   end
 
   # Readable test descriptions
@@ -45,5 +56,29 @@ RSpec.configure do |c|
     hosts.each do |host|
       on host, "puppet config set --section main certname #{host.name}"
     end
+
+    if add_ci_repo
+      scp_to(hosts, ci_build, '/tmp/ci_build.sh')
+      scp_to(hosts, secrets, '/tmp/secrets')
+      on hosts, '/tmp/ci_build.sh'
+    end
+    hiera_yaml = <<-EOS
+---
+version: 5
+defaults:
+  datadir: data
+  data_hash: yaml_data
+hierarchy:
+  - name: "Common"
+    path: "common.yaml"
+EOS
+    common_yaml = <<-EOS
+---
+sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
+sensu::plugins::manage_repo: true
+EOS
+    create_remote_file(hosts, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
+    on hosts, 'mkdir /etc/puppetlabs/puppet/data'
+    create_remote_file(hosts, '/etc/puppetlabs/puppet/data/common.yaml', common_yaml)
   end
 end

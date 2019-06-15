@@ -12,8 +12,7 @@ before_install:
   - gem update bundler
   - gem --version
   - bundle -v
-  - 'if [ -n "$encrypted_5de82e653bde_key" -a -n "$encrypted_5de82e653bde_iv" ]; then openssl aes-256-cbc -K $encrypted_5de82e653bde_key -iv $encrypted_5de82e653bde_iv -in tests/sensu_license.json.enc -out tests/sensu_license.json -d; fi'
-
+  - 'if [ -n "$encrypted_f942601034d6_key" -a -n "$encrypted_f942601034d6_iv" ]; then openssl aes-256-cbc -K $encrypted_f942601034d6_key -iv $encrypted_f942601034d6_iv -in tests/secrets.tar.enc -out tests/secrets.tar -d; cd tests && tar xvf secrets.tar ; fi'
 sudo: false
 
 script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec strings:generate reference'
@@ -41,6 +40,12 @@ matrix:
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    bundler_args:
+    script: bundle exec rake beaker
   - rvm: 2.4.4
     sudo: required
     services: docker
@@ -51,6 +56,12 @@ matrix:
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
@@ -65,6 +76,12 @@ matrix:
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_ci_build=yes
+    bundler_args:
+    script: bundle exec rake beaker
   - rvm: 2.4.4
     sudo: required
     services: docker
@@ -75,6 +92,12 @@ matrix:
     sudo: required
     services: docker
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
@@ -89,6 +112,12 @@ matrix:
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    bundler_args:
+    script: bundle exec rake beaker
   - rvm: 2.4.4
     sudo: required
     services: docker
@@ -99,6 +128,12 @@ matrix:
     sudo: required
     services: docker
     env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
@@ -113,6 +148,12 @@ matrix:
     env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    bundler_args:
+    script: bundle exec rake beaker
   - rvm: 2.4.4
     sudo: required
     services: docker
@@ -123,6 +164,12 @@ matrix:
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
   - rvm: 2.4.4
@@ -137,14 +184,43 @@ matrix:
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    bundler_args:
+    script: bundle exec rake beaker
   allow_failures:
   - rvm: 2.4.4
     env: PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.3
     env: PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
+  - rvm: 2.5.3
+    env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
 branches:
   only:
     - master
     - /^v\d/
 notifications:
   email: false
+  slack:
+    rooms:
+      - secure: R1ThBe5UcmcX5UqnMAWEl5e0JpO1MjsCJDvsDfgTZQ7Nb7gYzj6T9lls11HxxoALffkdMbi7g7qlrwQ9ajblIZlS27aMbucwaMbWt6uiepVITHTub6+ZhM1yAcgFgRk2HsfaZnaB0LERW4SIfTTe/hGFIMgHGDYSf+NYqM3ikhY=
+    on_success: change
+    on_failure: always
