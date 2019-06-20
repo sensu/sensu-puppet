@@ -26,7 +26,7 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a asset' do
-      @resource[:filters] = ["System.OS==linux"]
+      @resource[:filters] = ["entity.system.os == 'linux'"]
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',
@@ -34,7 +34,7 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
       expected_spec = {
         :url => 'http://127.0.0.1',
         :sha512 => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-        :filters => ["System.OS==linux"],
+        :filters => ["entity.system.os == 'linux'"],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('Asset', expected_metadata, expected_spec)
       @resource.provider.create
@@ -45,7 +45,7 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a asset filters' do
-      @resource[:filters] = ["System.OS==linux"]
+      @resource[:filters] = ["entity.system.os == 'linux'"]
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',
@@ -53,14 +53,14 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
       expected_spec = {
         :url => 'http://127.0.0.1',
         :sha512 => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-        :filters => ["System.OS==windows"],
+        :filters => ["entity.system.os == 'windows'"],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('Asset', expected_metadata, expected_spec)
-      @resource.provider.filters = ["System.OS==windows"]
+      @resource.provider.filters = ["entity.system.os == 'windows'"]
       @resource.provider.flush
     end
     it 'should remove filters' do
-      @resource[:filters] = ["System.OS==linux"]
+      @resource[:filters] = ["entity.system.os == 'linux'"]
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',

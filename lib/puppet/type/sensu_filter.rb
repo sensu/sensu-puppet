@@ -10,7 +10,7 @@ Puppet::Type.newtype(:sensu_filter) do
   sensu_filter { 'test':
     ensure      => 'present',
     action      => 'allow',
-    expressions => ["event.Entity.Environment == 'production'"],
+    expressions => ["event.entity.labels.environment == 'production'"],
   }
 
 **Autorequires**:

@@ -8,7 +8,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_filter { 'test':
         action         => 'allow',
-        expressions    => ["event.Entity.Environment == 'production'"],
+        expressions    => ["event.entity.labels.environment == 'production'"],
         runtime_assets => ['test'],
         labels         => { 'foo' => 'baz' },
       }
@@ -23,7 +23,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl filter info test --format json' do
         data = JSON.parse(stdout)
         expect(data['action']).to eq('allow')
-        expect(data['expressions']).to eq(["event.Entity.Environment == 'production'"])
+        expect(data['expressions']).to eq(["event.entity.labels.environment == 'production'"])
         expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
       end
@@ -36,7 +36,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_filter { 'test':
         action     => 'allow',
-        expressions => ["event.Entity.Environment == 'test'"],
+        expressions => ["event.entity.labels.environment == 'test'"],
         runtime_assets => ['test2'],
         labels         => { 'foo' => 'bar' },
       }
@@ -50,7 +50,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
     it 'should have a valid filter with updated propery' do
       on node, 'sensuctl filter info test --format json' do
         data = JSON.parse(stdout)
-        expect(data['expressions']).to eq(["event.Entity.Environment == 'test'"])
+        expect(data['expressions']).to eq(["event.entity.labels.environment == 'test'"])
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end

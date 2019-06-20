@@ -6,7 +6,7 @@ describe Puppet::Type.type(:sensu_filter) do
     {
       name: 'test',
       action: 'allow',
-      expressions: ['event.Check.Occurrences == 1']
+      expressions: ['event.check.occurrences == 1']
     }
   end
   let(:config) do

@@ -11,7 +11,7 @@ Puppet::Type.newtype(:sensu_asset) do
     ensure  => 'present',
     url     => 'http://example.com/asset/example.tar',
     sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-    filters => ['System.OS==linux'],
+    filters  => ["entity.system.os == 'linux'"],
   }
 
 **Autorequires**:

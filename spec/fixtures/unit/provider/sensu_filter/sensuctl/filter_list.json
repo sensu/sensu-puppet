@@ -8,7 +8,7 @@
     },
     "action": "allow",
     "expressions": [
-      "event.Entity.Environment == 'production'"
+      "event.entity.labels.environment == 'production'"
     ],
     "when": null
   }
