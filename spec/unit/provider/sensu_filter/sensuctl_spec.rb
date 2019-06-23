@@ -7,7 +7,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
     @resource = @type.new({
       :name => 'test',
       :action => 'allow',
-      :expressions => ["event.Entity.Environment == 'production'"],
+      :expressions => ["event.entity.labels.environment == 'production'"],
     })
   end
 
@@ -32,7 +32,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
       }
       expected_spec = {
         :action => :allow,
-        :expressions => ["event.Entity.Environment == 'production'"],
+        :expressions => ["event.entity.labels.environment == 'production'"],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_metadata, expected_spec)
       @resource.provider.create
@@ -49,7 +49,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
       }
       expected_spec = {
         :action => 'deny',
-        :expressions => ["event.Entity.Environment == 'production'"],
+        :expressions => ["event.entity.labels.environment == 'production'"],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('EventFilter', expected_metadata, expected_spec)
       @resource.provider.action = 'deny'
