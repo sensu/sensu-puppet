@@ -7,6 +7,10 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
 
   commands :sensuctl => 'sensuctl'
 
+  class << self
+    attr_accessor :chunk_size
+  end
+
   def self.config_path
     # https://github.com/sensu/sensu-puppet/issues/1072
     # since $HOME is not set in systemd service File.expand_path('~') won't work
@@ -51,6 +55,10 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
     args << '--format'
     args << 'json'
+    if ! chunk_size.nil?
+      args << '--chunk-size'
+      args << chunk_size.to_s
+    end
     data = []
     output = sensuctl(args)
     Puppet.debug("sensuctl #{args.join(' ')}: #{output}")
