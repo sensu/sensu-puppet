@@ -18,6 +18,9 @@
 #     },
 #   }
 #
+# @param manage_repo
+#   Determines if plugin repo should be managed.
+#   Defaults to value for `sensu::manage_repo`.
 # @param package_ensure
 #   Ensure property for sensu plugins package.
 # @param package_name
@@ -31,6 +34,7 @@
 #   Extensions to install
 #
 class sensu::plugins (
+  Optional[Boolean] $manage_repo = undef,
   String $package_ensure = 'installed',
   String $package_name = 'sensu-plugins-ruby',
   Array $dependencies = [],
@@ -44,7 +48,9 @@ class sensu::plugins (
 
   include ::sensu
 
-  if $::sensu::manage_repo {
+  $_manage_repo = pick($manage_repo, $::sensu::manage_repo)
+
+  if $_manage_repo {
     include ::sensu::repo::community
     $package_require = [Class['::sensu::repo::community']] + $::sensu::os_package_require
   } else {

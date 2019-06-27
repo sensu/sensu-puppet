@@ -10,7 +10,7 @@ HOSTS:
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y wget upstart'
+      - 'yum install -y wget upstart which'
     docker_container_name: 'sensu-agent-amazonlinux-201803'
   sensu_backend:
     roles:
@@ -24,7 +24,7 @@ HOSTS:
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y wget upstart'
+      - 'yum install -y wget upstart which'
     docker_container_name: 'sensu-backend-amazonlinux-201803'
 CONFIG:
   log_level: debug

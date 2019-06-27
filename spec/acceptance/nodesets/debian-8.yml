@@ -10,7 +10,8 @@ HOSTS:
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'apt-get install -y wget net-tools locales'
+      - 'apt-get update'
+      - 'apt-get install -y wget curl net-tools locales'
       - 'rm -f /usr/sbin/policy-rc.d'
       - 'echo "LC_ALL=en_US.UTF-8" >> /etc/environment'
       - 'echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen'
