@@ -10,6 +10,10 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         url      => 'http://example.com/asset/example.tar',
         sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
         filters  => ["entity.system.os == 'linux'"],
+        headers  => {
+          "Authorization" => 'Bearer $TOKEN',
+          "X-Forwarded-For" => "client1, proxy1, proxy2"
+        },
       }
       EOS
 
@@ -23,6 +27,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['url']).to eq('http://example.com/asset/example.tar')
         expect(data['filters']).to eq(["entity.system.os == 'linux'"])
+        expect(data['headers']['Authorization']).to eq('Bearer $TOKEN')
+        expect(data['headers']['X-Forwarded-For']).to eq('client1, proxy1, proxy2')
       end
     end
   end
@@ -35,6 +41,9 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         url      => 'http://example.com/asset/example.zip',
         sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
         filters  => ["entity.system.os == 'windows'"],
+        headers  => {
+          "X-Forwarded-For" => "client1, proxy1"
+        },
       }
       EOS
 
@@ -48,6 +57,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['url']).to eq('http://example.com/asset/example.zip')
         expect(data['filters']).to eq(["entity.system.os == 'windows'"])
+        expect(data['headers']['Authorization']).to be_nil
+        expect(data['headers']['X-Forwarded-For']).to eq('client1, proxy1')
       end
     end
   end

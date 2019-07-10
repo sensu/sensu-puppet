@@ -57,6 +57,10 @@ DESC
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:headers, :parent => PuppetX::Sensu::HashProperty) do
+    desc "HTTP headers to appy to asset retrieval requests."
+  end
+
   newproperty(:namespace) do
     desc "The Sensu RBAC namespace that this asset belongs to."
     defaultto 'default'
