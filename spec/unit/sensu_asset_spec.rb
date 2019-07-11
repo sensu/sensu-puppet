@@ -150,6 +150,7 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # Hash properties
   [
+    :headers,
     :labels,
     :annotations,
   ].each do |property|
