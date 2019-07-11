@@ -45,6 +45,7 @@ _Private Classes_
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
 * [`sensu_silenced`](#sensu_silenced): Manages Sensu silencing
 * [`sensu_user`](#sensu_user): Manages Sensu users
+* [`sensuctl_config`](#sensuctl_config): Abstract type to configure other types
 
 ## Classes
 
@@ -607,6 +608,14 @@ Hash of sensu_user resources
 
 Default value: {}
 
+##### `sensuctl_chunk_size`
+
+Data type: `Optional[Integer]`
+
+Chunk size to use when listing sensuctl resources
+
+Default value: `undef`
+
 ### sensu::plugins
 
 Class to manage the Sensu plugins.
@@ -638,6 +647,15 @@ class { 'sensu::plugins':
 #### Parameters
 
 The following parameters are available in the `sensu::plugins` class.
+
+##### `manage_repo`
+
+Data type: `Optional[Boolean]`
+
+Determines if plugin repo should be managed.
+Defaults to value for `sensu::manage_repo`.
+
+Default value: `undef`
 
 ##### `package_ensure`
 
@@ -872,7 +890,7 @@ sensu_asset { 'test':
   ensure  => 'present',
   url     => 'http://example.com/asset/example.tar',
   sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-  filters => ['System.OS==linux'],
+  filters  => ["entity.system.os == 'linux'"],
 }
 ```
 
@@ -901,6 +919,10 @@ The checksum of the asset
 Valid values: /.*/, absent
 
 A set of filters used by the agent to determine of the asset should be installed.
+
+##### `headers`
+
+HTTP headers to appy to asset retrieval requests.
 
 ##### `namespace`
 
@@ -1553,7 +1575,7 @@ Default value: default
 sensu_filter { 'test':
   ensure      => 'present',
   action      => 'allow',
-  expressions => ["event.Entity.Environment == 'production'"],
+  expressions => ["event.entity.labels.environment == 'production'"],
 }
 ```
 
@@ -2439,4 +2461,22 @@ Default value: `false`
 URL to use with 'sensuctl configure'
 
 Default value: http://127.0.0.1:8080
+
+### sensuctl_config
+
+Abstract type to configure other types
+
+#### Parameters
+
+The following parameters are available in the `sensuctl_config` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `chunk_size`
+
+sensuctl chunk-size
 

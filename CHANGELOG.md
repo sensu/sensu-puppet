@@ -1,5 +1,16 @@
 # Change Log
 
+## [v3.4.0](https://github.com/sensu/sensu-puppet/tree/v3.4.0) (2019-07-11)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.3.0...v3.4.0)
+
+**Merged pull requests:**
+
+- Add headers property to sensu\_assets [\#1119](https://github.com/sensu/sensu-puppet/pull/1119) ([treydock](https://github.com/treydock))
+- Update several usage examples to match Sensu Go docs [\#1117](https://github.com/sensu/sensu-puppet/pull/1117) ([treydock](https://github.com/treydock))
+- Add ability to run acceptance tests against Sensu-Go CI builds [\#1115](https://github.com/sensu/sensu-puppet/pull/1115) ([treydock](https://github.com/treydock))
+- Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
+- Regenerate backend test cert to include additional SANs [\#1113](https://github.com/sensu/sensu-puppet/pull/1113) ([treydock](https://github.com/treydock))
+
 ## [v3.3.0](https://github.com/sensu/sensu-puppet/tree/v3.3.0) (2019-05-18)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.2.0...v3.3.0)
 
