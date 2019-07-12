@@ -1,0 +1,44 @@
+HOSTS:
+  sensu_agent:
+    roles:
+      - agent
+      - sensu_agent
+    platform: debian-10-amd64
+    hypervisor: docker
+    image: debian:10
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get update'
+      - 'apt-get install -y wget curl net-tools systemd-sysv locales'
+      - 'echo "LC_ALL=en_US.UTF-8" >> /etc/environment'
+      - 'echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen'
+      - 'echo "LANG=en_US.UTF-8" > /etc/locale.conf'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-agent-debian10'
+  sensu_backend:
+    roles:
+      - agent
+      - sensu_backend
+      - default
+    platform: debian-10-amd64
+    hypervisor: docker
+    image: debian:10
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get install -y wget net-tools systemd-sysv locales'
+      - 'echo "LC_ALL=en_US.UTF-8" >> /etc/environment'
+      - 'echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen'
+      - 'echo "LANG=en_US.UTF-8" > /etc/locale.conf'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-backend-debian10'
+CONFIG:
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+
