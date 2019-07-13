@@ -14,9 +14,12 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     }
     EOS
 
-    File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
-    puts "C:\manifest-agent.pp"
-    puts File.read('C:\manifest-agent.pp')
+    it 'creates manifest' do
+      File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
+      puts "C:\manifest-agent.pp"
+      puts File.read('C:\manifest-agent.pp')
+    end
+
     describe command('puppet apply --debug C:\manifest-agent.pp') do
       its(:exit_status) { is_expected.to eq 0 }
     end

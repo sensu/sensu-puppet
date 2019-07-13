@@ -3,6 +3,7 @@ HOSTS:
     roles:
       - agent
       - sensu_backend
+      - puppetserver
       - default
     platform: el-7-x86_64
     hypervisor: docker
