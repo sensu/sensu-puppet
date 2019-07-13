@@ -12,6 +12,9 @@ Generate certs
 
 ```
 puppet cert generate sensu_backend --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu_backend1 --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu_backend2 --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu_backend3 --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
 puppet cert generate sensu_agent
 ```
 
