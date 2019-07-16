@@ -99,28 +99,6 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.sensuctl_delete(*args)
   end
 
-  def self.sensuctl_set(command, name, property, value: nil, flags:  nil)
-    args = [command]
-    args << "set-" + property.gsub('_', '-')
-    args << name
-    args << value unless value.nil?
-    args += flags unless flags.nil?
-    sensuctl(args)
-  end
-  def sensuctl_set(*args)
-    self.class.sensuctl_set(*args)
-  end
-
-  def self.sensuctl_remove(command, name, property)
-    args = [command]
-    args << "remove-" + property.gsub('_', '-')
-    args << name
-    sensuctl(args)
-  end
-  def sensuctl_remove(*args)
-    self.class.sensuctl_remove(*args)
-  end
-
   def self.sensuctl_auth_types()
     output = sensuctl(['auth','list','--format','yaml'])
     Puppet.debug("YAML auth list: #{output}")
