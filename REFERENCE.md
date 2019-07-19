@@ -47,6 +47,10 @@ _Private Classes_
 * [`sensu_user`](#sensu_user): Manages Sensu users
 * [`sensuctl_config`](#sensuctl_config): Abstract type to configure other types
 
+**Data types**
+
+* [`Sensu::Backend_URL`](#sensubackend_url): Sensu Backend URL's require protocol of ws:// or wss://. A port is also required. There is logic in sensu::agent class to add the protocol so
+
 ## Classes
 
 ### sensu
@@ -2479,4 +2483,14 @@ The name of the resource.
 ##### `chunk_size`
 
 sensuctl chunk-size
+
+## Data types
+
+### Sensu::Backend_URL
+
+Sensu Backend URL's require protocol of ws:// or wss://.
+A port is also required.
+There is logic in sensu::agent class to add the protocol so it's optional.
+
+Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]++:\d+$/]]`
 

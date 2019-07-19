@@ -1,5 +1,13 @@
 # Change Log
 
+## [v3.4.1](https://github.com/sensu/sensu-puppet/tree/v3.4.1) (2019-07-19)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.4.0...v3.4.1)
+
+**Merged pull requests:**
+
+- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
+- Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
+
 ## [v3.4.0](https://github.com/sensu/sensu-puppet/tree/v3.4.0) (2019-07-11)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.3.0...v3.4.0)
 
@@ -10,6 +18,7 @@
 - Add ability to run acceptance tests against Sensu-Go CI builds [\#1115](https://github.com/sensu/sensu-puppet/pull/1115) ([treydock](https://github.com/treydock))
 - Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
 - Regenerate backend test cert to include additional SANs [\#1113](https://github.com/sensu/sensu-puppet/pull/1113) ([treydock](https://github.com/treydock))
+- Support Sensu Go 5.6 [\#1105](https://github.com/sensu/sensu-puppet/pull/1105) ([treydock](https://github.com/treydock))
 
 ## [v3.3.0](https://github.com/sensu/sensu-puppet/tree/v3.3.0) (2019-05-18)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.2.0...v3.3.0)
@@ -23,10 +32,6 @@
 
 ## [v3.2.0](https://github.com/sensu/sensu-puppet/tree/v3.2.0) (2019-05-06)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.1.0...v3.2.0)
-
-**Merged pull requests:**
-
-- Support Sensu Go 5.6 [\#1105](https://github.com/sensu/sensu-puppet/pull/1105) ([treydock](https://github.com/treydock))
 
 ## [v3.1.0](https://github.com/sensu/sensu-puppet/tree/v3.1.0) (2019-04-19)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.0.0...v3.1.0)
