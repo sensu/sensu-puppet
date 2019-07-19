@@ -35,16 +35,29 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       }
       EOS
 
-      # First run will fail to run sensuctl configure
-      apply_manifest_on(node1, node1_pp, :acceptable_exit_codes => [0,1])
-      #on node1, 'curl http://127.0.0.1:8080/info', :accept_all_exit_codes => true
-      apply_manifest_on(node2, node2_pp, :catch_failures => true)
-      # first node has to have agent started back up
-      #on node1, 'systemctl status sensu-agent -l', :accept_all_exit_codes => true
-      #on node1, 'curl http://127.0.0.1:8080/info', :accept_all_exit_codes => true
-      apply_manifest_on(node1, node1_pp, :catch_failures => true)
-      apply_manifest_on(node1, node1_pp, :catch_changes  => true)
-      apply_manifest_on(node2, node2_pp, :catch_changes  => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = <<-EOS
+        node 'sensu_backend1' { #{node1_pp} }
+        node 'sensu_backend2' { #{node2_pp} }
+        EOS
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        # First run will fail to run sensuctl configure
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,1]
+        on node2, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        # first node has to have agent started back up
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+        on node2, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # First run will fail to run sensuctl configure
+        apply_manifest_on(node1, node1_pp, :acceptable_exit_codes => [0,1])
+        apply_manifest_on(node2, node2_pp, :catch_failures => true)
+        # first node has to have agent started back up
+        apply_manifest_on(node1, node1_pp, :catch_failures => true)
+        apply_manifest_on(node1, node1_pp, :catch_changes  => true)
+        apply_manifest_on(node2, node2_pp, :catch_changes  => true)
+      end
     end
 
     describe service('sensu-backend'), :node => node1 do
@@ -93,10 +106,23 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       }
       EOS
 
-      apply_manifest_on(node1, pp, :catch_failures => true)
-      apply_manifest_on(node3, node3_pp, :catch_failures => true)
-      apply_manifest_on(node1, pp, :catch_changes  => true)
-      apply_manifest_on(node3, node3_pp, :catch_changes  => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = <<-EOS
+        node 'sensu_backend1' { #{pp} }
+        node 'sensu_backend3' { #{node3_pp} }
+        EOS
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node3, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+        on node3, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        apply_manifest_on(node1, pp, :catch_failures => true)
+        apply_manifest_on(node3, node3_pp, :catch_failures => true)
+        apply_manifest_on(node1, pp, :catch_changes  => true)
+        apply_manifest_on(node3, node3_pp, :catch_changes  => true)
+      end
     end
 
     describe service('sensu-backend'), :node => node3 do

@@ -17,9 +17,17 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest_on(node, pp, :catch_failures => true)
-      apply_manifest_on(node, pp, :catch_changes  => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
     end
 
     it 'should have a valid asset' do
@@ -47,9 +55,17 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest_on(node, pp, :catch_failures => true)
-      apply_manifest_on(node, pp, :catch_changes  => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
     end
 
     it 'should have a valid asset with updated propery' do
@@ -70,8 +86,14 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       sensu_asset { 'test': ensure => 'absent' }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest_on(node, pp, :expect_failures => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [1,4,6]
+      else
+        apply_manifest_on(node, pp, :expect_failures => true)
+      end
     end
 
     describe command('sensuctl asset info test'), :node => node do

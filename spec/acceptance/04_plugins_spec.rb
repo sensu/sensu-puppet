@@ -24,9 +24,17 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
       }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest_on(agent, pp, :catch_failures => true)
-      apply_manifest_on(agent, pp, :catch_changes  => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_agent' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(agent, pp, :catch_failures => true)
+        apply_manifest_on(agent, pp, :catch_changes  => true)
+      end
     end
 
     describe package('sensu-plugins-ruby'), :node => agent do
@@ -59,9 +67,17 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
       }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest_on(backend, pp, :catch_failures => true)
-      apply_manifest_on(backend, pp, :catch_changes  => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(backend, pp, :catch_failures => true)
+        apply_manifest_on(backend, pp, :catch_changes  => true)
+      end
     end
 
     describe package('sensu-plugins-ruby'), :node => backend do

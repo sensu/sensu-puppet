@@ -15,8 +15,10 @@ RSpec.configure do |c|
   c.add_setting :sensu_enterprise_file, default: nil
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
+  c.add_setting :sensu_use_agent, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
   c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
+  c.sensu_use_agent = (ENV['BEAKER_sensu_use_agent'] == 'yes' || ENV['BEAKER_sensu_use_agent'] == 'true')
   if ENV['SENSU_ENTERPRISE_FILE']
     enterprise_file = File.absolute_path(ENV['SENSU_ENTERPRISE_FILE'])
   else
@@ -39,17 +41,24 @@ RSpec.configure do |c|
     add_ci_repo = false
   end
 
+  if RSpec.configuration.sensu_use_agent
+    puppetserver = hosts_as('puppetserver')[0]
+    setup_nodes = puppetserver
+  else
+    setup_nodes = hosts
+  end
+
   # Readable test descriptions
   c.formatter = :documentation
 
   # Configure all nodes in nodeset
   c.before :suite do
     # Install sensuclassic to ensure no conflicts
-    on hosts, puppet('module', 'install', 'sensu-sensuclassic'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'sensu-sensuclassic'), { :acceptable_exit_codes => [0,1] }
     # Install soft module dependencies
-    on hosts, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
     if collection == 'puppet6'
-      on hosts, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
+      on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
     ssldir = File.join(project_dir, 'tests/ssl')
     scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/ssl')
@@ -77,8 +86,24 @@ EOS
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
 EOS
-    create_remote_file(hosts, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
-    on hosts, 'mkdir /etc/puppetlabs/puppet/data'
-    create_remote_file(hosts, '/etc/puppetlabs/puppet/data/common.yaml', common_yaml)
+    create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
+    on setup_nodes, 'mkdir -m 0755 /etc/puppetlabs/puppet/data'
+    create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/data/common.yaml', common_yaml)
+
+    if RSpec.configuration.sensu_use_agent
+      puppetserver = hosts_as('puppetserver')[0]
+      if RSpec.configuration.sensu_cluster
+        server = 'sensu_backend1'
+      else
+        server = 'sensu_backend'
+      end
+      on hosts, puppet("config set --section main server #{server}")
+      on puppetserver, puppet("resource package puppetserver ensure=installed")
+      on puppetserver, puppet("resource service puppetserver ensure=running")
+      on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/hiera.yaml'
+      on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/data/common.yaml'
+      create_remote_file(puppetserver, '/etc/puppetlabs/code/environments/production/manifests/site.pp', '')
+      on puppetserver, "chmod 0644 /etc/puppetlabs/code/environments/production/manifests/site.pp"
+    end
   end
 end
