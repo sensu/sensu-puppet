@@ -58,13 +58,16 @@ DESC
 
   newproperty(:servers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
     desc <<-EOS
-    LDAP servers
-    Defaults:
-    * insecure: false
-    * security: tls
-    * trusted_ca_file: ""
-    * client_cert_file: ""
-    * client_key_file: ""
+    LDAP servers as Array of Hashes
+
+    Keys:
+    * host: required
+    * port: required
+    * insecure: default is `false`
+    * security: default is `tls`
+    * trusted_ca_file: default is `""`
+    * client_cert_file: default is `""`
+    * client_key_file: default is `""`
     EOS
     validate do |server|
       if ! server.is_a?(Hash)
@@ -146,10 +149,11 @@ DESC
   newproperty(:server_group_search, :parent => PuppetX::Sensu::HashProperty) do
     desc <<-EOS
     Search configuration for groups.
-    Defaults:
-    * attribute: member
-    * name_attribute: cn
-    * object_class: groupOfNames
+    Keys:
+    * base_dn: required
+    * attribute: default is `member`
+    * name_attribute: default is `cn`
+    * object_class: default is `groupOfNames`
     EOS
     validate do |server_group_search|
       super(server_group_search)
@@ -190,10 +194,11 @@ DESC
   newproperty(:server_user_search, :parent => PuppetX::Sensu::HashProperty) do
     desc <<-EOS
     Search configuration for users.
-    Defaults:
-    * attribute: uid
-    * name_attribute: cn
-    * object_class: person
+    Keys:
+    * base_dn: required
+    * attribute: default is `uid`
+    * name_attribute: default is `cn`
+    * object_class: default is `person`
     EOS
     validate do |server_user_search|
       super(server_user_search)

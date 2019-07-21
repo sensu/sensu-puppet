@@ -58,13 +58,18 @@ DESC
 
   newproperty(:servers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
     desc <<-EOS
-    AD servers
-    Defaults:
-    * insecure: false
-    * security: tls
-    * trusted_ca_file: ""
-    * client_cert_file: ""
-    * client_key_file: ""
+    AD servers as Array of Hashes
+
+    Keys:
+    * host: required
+    * port: required
+    * insecure: default is `false`
+    * security: default is `tls`
+    * trusted_ca_file: default is `""`
+    * client_cert_file: default is `""`
+    * client_key_file: default is `""`
+    * default_upn_domain: default is `""`
+    * include_nested_groups: Boolean
     EOS
     validate do |server|
       if ! server.is_a?(Hash)
@@ -86,7 +91,12 @@ DESC
       if server.key?('security') && ! ['tls','starttls','insecure'].include?(server['security'].to_s)
         raise ArgumentError, "server security must be tls, starttls or insecure, not #{server['security']}"
       end
-      valid_keys = ['host','port','insecure','security','trusted_ca_file','client_cert_file','client_key_file']
+      if server.key?('include_nested_groups') && ! [TrueClass,FalseClass].include?(server['include_nested_groups'].class)
+        raise ArgumentError, "server include_nested_groups must be a Boolean"
+      end
+      valid_keys = ['host','port','insecure','security',
+        'trusted_ca_file','client_cert_file','client_key_file',
+        'default_upn_domain', 'include_nested_groups']
       server.keys.each do |key|
         if ! valid_keys.include?(key)
           raise ArgumentError, "#{key} is not a valid key for server"
@@ -100,10 +110,13 @@ DESC
       if ! server.key?('security')
         server['security'] = 'tls'
       end
-      ['trusted_ca_file','client_cert_file','client_key_file'].each do |k|
+      ['trusted_ca_file','client_cert_file','client_key_file','default_upn_domain'].each do |k|
         if ! server.key?(k)
           server[k] = ''
         end
+      end
+      if ! server.key?('include_nested_groups')
+        server['include_nested_groups'] = nil
       end
       server
     end
@@ -146,10 +159,11 @@ DESC
   newproperty(:server_group_search, :parent => PuppetX::Sensu::HashProperty) do
     desc <<-EOS
     Search configuration for groups.
-    Defaults:
-    * attribute: member
-    * name_attribute: cn
-    * object_class: group
+    Keys:
+    * base_dn: required
+    * attribute: default is `member`
+    * name_attribute: default is `cn`
+    * object_class: default is `group`
     EOS
     validate do |server_group_search|
       super(server_group_search)
@@ -190,10 +204,11 @@ DESC
   newproperty(:server_user_search, :parent => PuppetX::Sensu::HashProperty) do
     desc <<-EOS
     Search configuration for users.
-    Defaults:
-    * attribute: sAMAccountName
-    * name_attribute: displayName
-    * object_class: person
+    Keys:
+    * base_dn: required
+    * attribute: default is `sAMAccountName`
+    * name_attribute: default is `displayName`
+    * object_class: default is `person`
     EOS
     validate do |server_user_search|
       super(server_user_search)
