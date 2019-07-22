@@ -759,13 +759,18 @@ Default value: present
 
 ##### `servers`
 
-AD servers
-Defaults:
-* insecure: false
-* security: tls
-* trusted_ca_file: ""
-* client_cert_file: ""
-* client_key_file: ""
+AD servers as Array of Hashes
+
+Keys:
+* host: required
+* port: required
+* insecure: default is `false`
+* security: default is `tls`
+* trusted_ca_file: default is `""`
+* client_cert_file: default is `""`
+* client_key_file: default is `""`
+* default_upn_domain: default is `""`
+* include_nested_groups: Boolean
 
 ##### `server_binding`
 
@@ -774,18 +779,20 @@ AD server bindings
 ##### `server_group_search`
 
 Search configuration for groups.
-Defaults:
-* attribute: member
-* name_attribute: cn
-* object_class: group
+Keys:
+* base_dn: required
+* attribute: default is `member`
+* name_attribute: default is `cn`
+* object_class: default is `group`
 
 ##### `server_user_search`
 
 Search configuration for users.
-Defaults:
-* attribute: sAMAccountName
-* name_attribute: displayName
-* object_class: person
+Keys:
+* base_dn: required
+* attribute: default is `sAMAccountName`
+* name_attribute: default is `displayName`
+* object_class: default is `person`
 
 ##### `groups_prefix`
 
@@ -1881,13 +1888,16 @@ Default value: present
 
 ##### `servers`
 
-LDAP servers
-Defaults:
-* insecure: false
-* security: tls
-* trusted_ca_file: ""
-* client_cert_file: ""
-* client_key_file: ""
+LDAP servers as Array of Hashes
+
+Keys:
+* host: required
+* port: required
+* insecure: default is `false`
+* security: default is `tls`
+* trusted_ca_file: default is `""`
+* client_cert_file: default is `""`
+* client_key_file: default is `""`
 
 ##### `server_binding`
 
@@ -1896,18 +1906,20 @@ LDAP server bindings
 ##### `server_group_search`
 
 Search configuration for groups.
-Defaults:
-* attribute: member
-* name_attribute: cn
-* object_class: groupOfNames
+Keys:
+* base_dn: required
+* attribute: default is `member`
+* name_attribute: default is `cn`
+* object_class: default is `groupOfNames`
 
 ##### `server_user_search`
 
 Search configuration for users.
-Defaults:
-* attribute: uid
-* name_attribute: cn
-* object_class: person
+Keys:
+* base_dn: required
+* attribute: default is `uid`
+* name_attribute: default is `cn`
+* object_class: default is `person`
 
 ##### `groups_prefix`
 
