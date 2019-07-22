@@ -61,6 +61,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['servers'][0]['port']).to eq(389)
         expect(data['servers'][0]['insecure']).to eq(false)
         expect(data['servers'][0]['security']).to eq('tls')
+        expect(data['servers'][0]['default_upn_domain']).to eq('')
+        expect(data['servers'][0]['include_nested_groups']).to be_nil
         expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=binder,dc=acme,dc=org', 'password' => 'P@ssw0rd!'})
         expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'})
@@ -80,6 +82,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           {
             'host' => 'localhost',
             'port' => 636,
+            'default_upn_domain' => 'example.com',
+            'include_nested_groups' => true,
           },
         ],
         server_binding      => {
@@ -122,6 +126,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['servers'][0]['port']).to eq(636)
         expect(data['servers'][0]['insecure']).to eq(false)
         expect(data['servers'][0]['security']).to eq('tls')
+        expect(data['servers'][0]['default_upn_domain']).to eq('example.com')
+        expect(data['servers'][0]['include_nested_groups']).to eq(true)
         expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=test,dc=acme,dc=org', 'password' => 'password'})
         expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'})

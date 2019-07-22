@@ -24,7 +24,8 @@
           "attribute": "sAMAccountName",
           "name_attribute": "displayName",
           "object_class": "person"
-        }
+        },
+        "default_upn_domain": ""
       }
     ],
     "groups_prefix": "",
@@ -58,7 +59,8 @@
           "attribute": "sAMAccountName",
           "name_attribute": "displayName",
           "object_class": "person"
-        }
+        },
+        "default_upn_domain": ""
       }
     ],
     "groups_prefix": "",

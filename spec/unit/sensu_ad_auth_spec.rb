@@ -175,6 +175,8 @@ describe Puppet::Type.type(:sensu_ad_auth) do
         'trusted_ca_file' => '',
         'client_cert_file' => '',
         'client_key_file' => '',
+        'default_upn_domain' => '',
+        'include_nested_groups' => nil,
       }]
       expect(auth[:servers]).to eq(expected)
     end
@@ -201,6 +203,10 @@ describe Puppet::Type.type(:sensu_ad_auth) do
     it 'should require valid security' do
       config[:servers] = [{'host' => 'test', 'port' => 389, 'security' => 'foo'}]
       expect { auth }.to raise_error(Puppet::Error, /server security must be tls, starttls or insecure/)
+    end
+    it 'should require boolean for include_nested_groups' do
+      config[:servers] = [{'host' => 'test', 'port' => 389, 'include_nested_groups' => 'true'}]
+      expect { auth }.to raise_error(Puppet::Error, /server include_nested_groups must be a Boolean/)
     end
   end
 
