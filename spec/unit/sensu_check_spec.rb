@@ -31,6 +31,33 @@ describe Puppet::Type.type(:sensu_check) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  it 'should handle composite title' do
+    config.delete(:namespace)
+    config[:name] = 'test in dev'
+    expect(check[:name]).to eq('test in dev')
+    expect(check[:resource_name]).to eq('test')
+    expect(check[:namespace]).to eq('dev')
+  end
+
+  it 'should handle non-composite title' do
+    config[:name] = 'test'
+    expect(check[:name]).to eq('test')
+    expect(check[:resource_name]).to eq('test')
+    expect(check[:namespace]).to eq('default')
+  end
+
+  it 'should handle composite title and namespace' do
+    config[:namespace] = 'test'
+    config[:name] = 'test in qa'
+    expect(check[:resource_name]).to eq('test')
+    expect(check[:namespace]).to eq('test')
+  end
+
+  it 'should handle invalid composites' do
+    config[:name] = 'test test in qa'
+    expect { check }.to raise_error(Puppet::Error, /name invalid/)
+  end
+
   defaults = {
     'namespace': 'default',
     'publish': :true,
@@ -195,7 +222,7 @@ describe Puppet::Type.type(:sensu_check) do
       config[:publish] = true
       config.delete(:interval)
       config.delete(:cron)
-      expect { check }.to raise_error(Puppet::Error, /interval or cron is required/)
+      expect { check.pre_run_check }.to raise_error(Puppet::Error, /interval or cron is required/)
     end
     it 'should not be required if publish is false' do
       config[:publish] = false
@@ -233,7 +260,7 @@ describe Puppet::Type.type(:sensu_check) do
     it 'should be greater than interval' do
       config[:interval] = 60
       config[:ttl] = 30
-      expect { check }.to raise_error(Puppet::Error, /check ttl 30 must be greater than interval 60/)
+      expect { check.pre_run_check }.to raise_error(Puppet::Error, /check ttl 30 must be greater than interval 60/)
     end
   end
 
@@ -352,7 +379,7 @@ describe Puppet::Type.type(:sensu_check) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { check.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

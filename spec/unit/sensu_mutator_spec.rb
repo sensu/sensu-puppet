@@ -28,6 +28,33 @@ describe Puppet::Type.type(:sensu_mutator) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  it 'should handle composite title' do
+    config.delete(:namespace)
+    config[:name] = 'test in dev'
+    expect(mutator[:name]).to eq('test in dev')
+    expect(mutator[:resource_name]).to eq('test')
+    expect(mutator[:namespace]).to eq('dev')
+  end
+
+  it 'should handle non-composite title' do
+    config[:name] = 'test'
+    expect(mutator[:name]).to eq('test')
+    expect(mutator[:resource_name]).to eq('test')
+    expect(mutator[:namespace]).to eq('default')
+  end
+
+  it 'should handle composite title and namespace' do
+    config[:namespace] = 'test'
+    config[:name] = 'test in qa'
+    expect(mutator[:resource_name]).to eq('test')
+    expect(mutator[:namespace]).to eq('test')
+  end
+
+  it 'should handle invalid composites' do
+    config[:name] = 'test test in qa'
+    expect { mutator }.to raise_error(Puppet::Error, /name invalid/)
+  end
+
   defaults = {
     'namespace': 'default',
   }
@@ -188,7 +215,7 @@ describe Puppet::Type.type(:sensu_mutator) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { mutator }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { mutator.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

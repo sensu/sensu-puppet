@@ -13,6 +13,13 @@ Puppet::Type.newtype(:sensu_handler) do
     command => 'notify.rb'
   }
 
+@example Create a handler with namespace `dev` in the name
+  sensu_handler { 'test in dev':
+    ensure  => 'present',
+    type    => 'pipe',
+    command => 'notify.rb'
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -31,11 +38,22 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
+    desc <<-EOS
+    The name of the handler.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
+  end
+
+  newparam(:resource_name, :namevar => true) do
     desc "The name of the handler."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
         raise ArgumentError, "sensu_handler name invalid"
       end
+    end
+    defaultto do
+      @resource[:name]
     end
   end
 
@@ -94,7 +112,7 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:namespace) do
+  newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this handler belongs to."
     defaultto 'default'
   end
@@ -123,7 +141,26 @@ DESC
     self[:runtime_assets]
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :type,
     ]

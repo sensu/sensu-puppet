@@ -19,7 +19,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
     it 'should return the resource for a mutator' do
       allow(@provider).to receive(:sensuctl_list).with('mutator').and_return(JSON.parse(my_fixture_read('mutator_list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('example-mutator')
+      expect(property_hash[:name]).to eq('example-mutator in default')
     end
   end
 
@@ -71,7 +71,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
 
   describe 'destroy' do
     it 'should delete a mutator' do
-      expect(@resource.provider).to receive(:sensuctl_delete).with('mutator', 'test')
+      expect(@resource.provider).to receive(:sensuctl_delete).with('mutator', 'test', 'default')
       @resource.provider.destroy
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash).to eq({})

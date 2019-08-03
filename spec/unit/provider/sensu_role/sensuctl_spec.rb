@@ -19,7 +19,7 @@ describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
     it 'should return the resource for a role' do
       allow(@provider).to receive(:sensuctl_list).with('role').and_return(JSON.parse(my_fixture_read('role_list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('prod-admin')
+      expect(property_hash[:name]).to eq('prod-admin in default')
       expect(property_hash[:rules]).to include({'verbs' => ['get','list','create','update','delete'], 'resources' => ['*'], 'resource_names' => []})
     end
   end
@@ -57,7 +57,7 @@ describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
 
   describe 'destroy' do
     it 'should delete a role' do
-      expect(@resource.provider).to receive(:sensuctl_delete).with('role', 'test')
+      expect(@resource.provider).to receive(:sensuctl_delete).with('role', 'test', 'default')
       @resource.provider.destroy
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash).to eq({})

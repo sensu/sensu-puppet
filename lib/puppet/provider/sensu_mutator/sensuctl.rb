@@ -13,8 +13,9 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
     data.each do |d|
       mutator = {}
       mutator[:ensure] = :present
-      mutator[:name] = d['metadata']['name']
+      mutator[:resource_name] = d['metadata']['name']
       mutator[:namespace] = d['metadata']['namespace']
+      mutator[:name] = "#{mutator[:resource_name]} in #{mutator[:namespace]}"
       mutator[:labels] = d['metadata']['labels']
       mutator[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
@@ -34,7 +35,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
   def self.prefetch(resources)
     mutators = instances
     resources.keys.each do |name|
-      if provider = mutators.find { |c| c.name == name }
+      if provider = mutators.find { |c| c.resource_name == resources[name][:resource_name] && c.namespace == resources[name][:namespace] }
         resources[name].provider = provider
       end
     end
@@ -58,7 +59,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
   def create
     spec = {}
     metadata = {}
-    metadata[:name] = resource[:name]
+    metadata[:name] = resource[:resource_name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -88,7 +89,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
     if !@property_flush.empty?
       spec = {}
       metadata = {}
-      metadata[:name] = resource[:name]
+      metadata[:name] = resource[:resource_name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -122,7 +123,7 @@ Puppet::Type.type(:sensu_mutator).provide(:sensuctl, :parent => Puppet::Provider
 
   def destroy
     begin
-      sensuctl_delete('mutator', resource[:name])
+      sensuctl_delete('mutator', resource[:resource_name], resource[:namespace])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete mutator #{resource[:name]} failed\nError message: #{e.message}"
     end

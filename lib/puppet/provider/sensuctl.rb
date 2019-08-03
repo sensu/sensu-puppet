@@ -88,11 +88,15 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.sensuctl_create(*args)
   end
 
-  def self.sensuctl_delete(command, name)
+  def self.sensuctl_delete(command, name, namespace = nil)
     args = [command]
     args << 'delete'
     args << name
     args << '--skip-confirm'
+    if namespace
+      args << '--namespace'
+      args << namespace
+    end
     sensuctl(args)
   end
   def sensuctl_delete(*args)

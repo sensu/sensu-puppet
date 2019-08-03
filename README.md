@@ -22,6 +22,7 @@
     * [Sensu backend cluster](#sensu-backend-cluster)
         * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
     * [Large Environment Considerations](#large-environment-considerations)
+    * [Composite Names for Namespaces](#composite-names-for-namespaces)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -481,6 +482,35 @@ class { '::sensu::backend':
   sensuctl_chunk_size => 100,
 }
 ```
+
+### Composite Names for Namespaces
+
+All resources that support having a `namespace` also support a composite name to define the namespace.
+
+For example, the `sensu_check` with name `check-cpu in team1` would be named `check-cpu` and put into the `team1` namespace.
+
+Using composite names is necessary if you wish to have multiple resources with the same name but in different namespaces.
+
+For example to define the same check in two namespaces using the same check name:
+
+```puppet
+sensu_check { 'check-cpu in default':
+  ensure        => 'present',
+  command       => 'check-cpu.sh -w 75 -c 90',
+  interval      => 60,
+  subscriptions => ['linux'],
+}
+sensu_check { 'check-cpu in team1':
+  ensure        => 'present',
+  command       => 'check-cpu.sh -w 75 -c 90',
+  interval      => 60,
+  subscriptions => ['linux'],
+}
+```
+
+The example above would add the `check-cpu` check to both the `default` and `team1` namespaces.
+
+**NOTE:** If you use composite names for namespaces, the `namespace` property takes precedence.
 
 ## Reference
 

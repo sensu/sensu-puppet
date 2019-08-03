@@ -26,6 +26,13 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         handlers      => ['email'],
         interval      => 60,
       }
+      sensu_namespace { 'test': ensure => 'present' }
+      sensu_check { 'test2 in test':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -51,6 +58,14 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['proxy_requests']['entity_attributes']).to eq(["entity.Class == 'proxy'"])
         expect(data['output_metric_format']).to eq('nagios_perfdata')
         expect(data['metadata']['labels']['foo']).to eq('baz')
+      end
+    end
+
+    it 'should have a valid check in namespace' do
+      on node, 'sensuctl check info test2 --namespace test --format json' do
+        data = JSON.parse(stdout)
+        expect(data['metadata']['name']).to eq('test2')
+        expect(data['metadata']['namespace']).to eq('test')
       end
     end
 

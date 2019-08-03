@@ -13,8 +13,9 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
     data.each do |d|
       role = {}
       role[:ensure] = :present
-      role[:name] = d['metadata']['name']
+      role[:resource_name] = d['metadata']['name']
       role[:namespace] = d['metadata']['namespace']
+      role[:name] = "#{role[:resource_name]} in #{role[:namespace]}"
       d.each_pair do |key, value|
         next if key == 'metadata'
         if !!value == value
@@ -32,7 +33,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
   def self.prefetch(resources)
     roles = instances
     resources.keys.each do |name|
-      if provider = roles.find { |c| c.name == name }
+      if provider = roles.find { |c| c.resource_name == resources[name][:resource_name] && c.namespace == resources[name][:namespace] }
         resources[name].provider = provider
       end
     end
@@ -56,7 +57,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
   def create
     spec = {}
     metadata = {}
-    metadata[:name] = resource[:name]
+    metadata[:name] = resource[:resource_name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -84,7 +85,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
     if !@property_flush.empty?
       spec = {}
       metadata = {}
-      metadata[:name] = resource[:name]
+      metadata[:name] = resource[:resource_name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -114,7 +115,7 @@ Puppet::Type.type(:sensu_role).provide(:sensuctl, :parent => Puppet::Provider::S
 
   def destroy
     begin
-      sensuctl_delete('role', resource[:name])
+      sensuctl_delete('role', resource[:resource_name], resource[:namespace])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete role #{resource[:name]} failed\nError message: #{e.message}"
     end

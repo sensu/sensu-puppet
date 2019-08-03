@@ -16,6 +16,15 @@ Puppet::Type.newtype(:sensu_role_binding) do
     ], 
   }
 
+@example Add a role binding with namespace `dev` in the name
+  sensu_role_binding { 'test in dev':
+    ensure   => 'present',
+    role_ref => 'test-role',
+    subjects => [
+      { 'type' => 'User', 'name' => 'test-user' }
+    ], 
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -32,10 +41,26 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
-    desc "The name of the role binding."
+    desc <<-EOS
+    The name of the binding.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
   end
 
-  newproperty(:namespace) do
+  newparam(:resource_name, :namevar => true) do
+    desc "The name of the role binding."
+    validate do |value|
+      unless value =~ /^[\w\.\-]+$/
+        raise ArgumentError, "sensu_role_binding name invalid"
+      end
+    end
+    defaultto do
+      @resource[:name]
+    end
+  end
+
+  newproperty(:namespace, :namevar => true) do
     desc "Namespace the role binding is restricted to."
     defaultto 'default'
   end
@@ -97,7 +122,26 @@ DESC
     users
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :role_ref,
       :subjects,

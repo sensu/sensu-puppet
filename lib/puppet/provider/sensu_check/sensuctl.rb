@@ -13,8 +13,9 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
     data.each do |d|
       check = {}
       check[:ensure] = :present
-      check[:name] = d['metadata']['name']
+      check[:resource_name] = d['metadata']['name']
       check[:namespace] = d['metadata']['namespace']
+      check[:name] = "#{check[:resource_name]} in #{check[:namespace]}"
       check[:labels] = d['metadata']['labels']
       check[:annotations] = d['metadata']['annotations']
       d.each_pair do |key,value|
@@ -46,7 +47,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
   def self.prefetch(resources)
     checks = instances
     resources.keys.each do |name|
-      if provider = checks.find { |c| c.name == name }
+      if provider = checks.find { |c| c.resource_name == resources[name][:resource_name] && c.namespace == resources[name][:namespace] }
         resources[name].provider = provider
       end
     end
@@ -70,7 +71,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
   def create
     spec = {}
     metadata = {}
-    metadata[:name] = resource[:name]
+    metadata[:name] = resource[:resource_name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -107,7 +108,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
     if !@property_flush.empty?
       spec = {}
       metadata = {}
-      metadata[:name] = resource[:name]
+      metadata[:name] = resource[:resource_name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -155,7 +156,7 @@ Puppet::Type.type(:sensu_check).provide(:sensuctl, :parent => Puppet::Provider::
 
   def destroy
     begin
-      sensuctl_delete('check', resource[:name])
+      sensuctl_delete('check', resource[:resource_name], resource[:namespace])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete check #{resource[:name]} failed\nError message: #{e.message}"
     end

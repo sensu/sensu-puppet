@@ -13,6 +13,12 @@ Puppet::Type.newtype(:sensu_role) do
     rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
   }
 
+@example Add a role with namespace `dev` in the name
+  sensu_role { 'test in dev':
+    ensure => 'present',
+    rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -27,10 +33,26 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
-    desc "The name of the role."
+    desc <<-EOS
+    The name of the role.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
   end
 
-  newproperty(:namespace) do
+  newparam(:resource_name, :namevar => true) do
+    desc "The name of the role."
+    validate do |value|
+      unless value =~ /^[\w\.\-]+$/
+        raise ArgumentError, "sensu_role name invalid"
+      end
+    end
+    defaultto do
+      @resource[:name]
+    end
+  end
+
+  newproperty(:namespace, :namevar => true) do
     desc "Namespace the role is restricted to."
     defaultto 'default'
   end
@@ -67,8 +89,26 @@ DESC
     end
   end
 
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
 
-  validate do
+  def pre_run_check
     required_properties = [
       :rules
     ]

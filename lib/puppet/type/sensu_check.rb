@@ -28,6 +28,15 @@ Puppet::Type.newtype(:sensu_check) do
     interval      => 60,
   }
 
+@example Create a check with namespace `dev` in the name
+  sensu_check { 'test in dev':
+    ensure        => 'present',
+    command       => 'check-http.rb',
+    subscriptions => ['demo'],
+    handlers      => ['email'],
+    interval      => 60,
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -45,11 +54,22 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
+    desc <<-EOS
+    The name of the check.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
+  end
+
+  newparam(:resource_name, :namevar => true) do
     desc "The name of the check."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
         raise ArgumentError, "sensu_check name invalid"
       end
+    end
+    defaultto do
+      @resource[:name]
     end
   end
 
@@ -200,7 +220,7 @@ DESC
     newvalues(:true, :false)
   end
 
-  newproperty(:namespace) do
+  newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this check belongs to."
     defaultto 'default'
   end
@@ -233,7 +253,26 @@ DESC
     check_hooks
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :command,
       :subscriptions,
