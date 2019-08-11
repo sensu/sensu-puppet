@@ -48,6 +48,7 @@ describe 'sensu_event', if: RSpec.configuration.sensu_full do
 
       apply_manifest_on(node, check_pp, :catch_failures => true)
       on node, 'sensuctl check execute test'
+      sleep 20
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu_backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
