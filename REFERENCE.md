@@ -905,6 +905,17 @@ sensu_asset { 'test':
 }
 ```
 
+##### Create an asset with namespace `dev` in the name
+
+```puppet
+sensu_asset { 'test in dev':
+  ensure  => 'present',
+  url     => 'http://example.com/asset/example.tar',
+  sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
+  filters  => ["entity.system.os == 'linux'"],
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_asset` type.
@@ -958,6 +969,12 @@ The following parameters are available in the `sensu_asset` type.
 namevar
 
 The name of the asset.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
+
+The name of the asset.
 
 ### sensu_check
 
@@ -996,6 +1013,18 @@ sensu_check { 'test':
     { 'critical' => ['ps'] },
     { 'warning'  => ['ps'] },
   ],
+  interval      => 60,
+}
+```
+
+##### Create a check with namespace `dev` in the name
+
+```puppet
+sensu_check { 'test in dev':
+  ensure        => 'present',
+  command       => 'check-http.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
   interval      => 60,
 }
 ```
@@ -1167,6 +1196,12 @@ The following parameters are available in the `sensu_check` type.
 ##### `name`
 
 namevar
+
+The name of the check.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
 
 The name of the check.
 
@@ -1437,6 +1472,15 @@ sensu_entity { 'test':
 }
 ```
 
+##### Create an entity with namespace `dev` in the name
+
+```puppet
+sensu_entity { 'test in dev':
+  ensure       => 'present',
+  entity_class => 'proxy',
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_entity` type.
@@ -1503,7 +1547,13 @@ The following parameters are available in the `sensu_entity` type.
 
 namevar
 
-The unique name of the entity
+The name of the entity.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
+
+The name of the entity.
 
 ### sensu_event
 
@@ -1590,6 +1640,16 @@ sensu_filter { 'test':
 }
 ```
 
+##### Create a filter with namespace `dev` in the name
+
+```puppet
+sensu_filter { 'test in dev':
+  ensure      => 'present',
+  action      => 'allow',
+  expressions => ["event.entity.labels.environment == 'production'"],
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_filter` type.
@@ -1641,6 +1701,12 @@ The following parameters are available in the `sensu_filter` type.
 namevar
 
 The name of the filter.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
+
+The name of the filter.
 
 ### sensu_handler
 
@@ -1661,6 +1727,16 @@ The name of the filter.
 
 ```puppet
 sensu_handler { 'test':
+  ensure  => 'present',
+  type    => 'pipe',
+  command => 'notify.rb'
+}
+```
+
+##### Create a handler with namespace `dev` in the name
+
+```puppet
+sensu_handler { 'test in dev':
   ensure  => 'present',
   type    => 'pipe',
   command => 'notify.rb'
@@ -1758,6 +1834,12 @@ The following parameters are available in the `sensu_handler` type.
 namevar
 
 The name of the handler.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
+
+The name of the handler.
 
 ### sensu_hook
 
@@ -1774,6 +1856,15 @@ The name of the handler.
 
 ```puppet
 sensu_hook { 'test':
+  ensure  => 'present',
+  command => 'ps aux',
+}
+```
+
+##### Create a hook with namespace `dev` in the name
+
+```puppet
+sensu_hook { 'test in dev':
   ensure  => 'present',
   command => 'ps aux',
 }
@@ -1830,6 +1921,12 @@ The following parameters are available in the `sensu_hook` type.
 ##### `name`
 
 namevar
+
+The name of the hook.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
 
 The name of the hook.
 
@@ -1960,6 +2057,15 @@ sensu_mutator { 'example':
 }
 ```
 
+##### Create a mutator with namespace `dev` in the name
+
+```puppet
+sensu_mutator { 'example in dev':
+  ensure  => 'present',
+  command => 'example-mutator.rb',
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_mutator` type.
@@ -2015,6 +2121,12 @@ The following parameters are available in the `sensu_mutator` type.
 ##### `name`
 
 namevar
+
+The name of the mutator.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
 
 The name of the mutator.
 
@@ -2163,6 +2275,15 @@ sensu_role { 'test':
 }
 ```
 
+##### Add a role with namespace `dev` in the name
+
+```puppet
+sensu_role { 'test in dev':
+  ensure => 'present',
+  rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_role` type.
@@ -2194,6 +2315,12 @@ The following parameters are available in the `sensu_role` type.
 namevar
 
 The name of the role.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
+
+The name of the role.
 
 ### sensu_role_binding
 
@@ -2212,6 +2339,18 @@ The name of the role.
 
 ```puppet
 sensu_role_binding { 'test':
+  ensure   => 'present',
+  role_ref => 'test-role',
+  subjects => [
+    { 'type' => 'User', 'name' => 'test-user' }
+  ],
+}
+```
+
+##### Add a role binding with namespace `dev` in the name
+
+```puppet
+sensu_role_binding { 'test in dev':
   ensure   => 'present',
   role_ref => 'test-role',
   subjects => [
@@ -2253,6 +2392,12 @@ The following parameters are available in the `sensu_role_binding` type.
 ##### `name`
 
 namevar
+
+The name of the binding.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
 
 The name of the role binding.
 

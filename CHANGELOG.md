@@ -1,6 +1,13 @@
 # Change Log
 
-## [v3.5.0](https://github.com/sensu/sensu-puppet/tree/v3.5.0) (2019-07-21)
+## [v3.6.0](https://github.com/sensu/sensu-puppet/tree/v3.6.0) (2019-08-16)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.5.0...v3.6.0)
+
+**Merged pull requests:**
+
+- Better support for resources in different namespaces [\#1126](https://github.com/sensu/sensu-puppet/pull/1126) ([treydock](https://github.com/treydock))
+
+## [v3.5.0](https://github.com/sensu/sensu-puppet/tree/v3.5.0) (2019-07-22)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.4.1...v3.5.0)
 
 **Merged pull requests:**
