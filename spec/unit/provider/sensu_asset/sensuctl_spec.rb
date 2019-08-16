@@ -20,7 +20,7 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
     it 'should return the resource for a asset' do
       allow(@provider).to receive(:sensuctl_list).with('asset').and_return(JSON.parse(my_fixture_read('asset_list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('check-cpu.sh')
+      expect(property_hash[:name]).to eq('check-cpu.sh in default')
     end
   end
 
@@ -78,7 +78,7 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
 
   describe 'destroy' do
     it 'should delete a asset' do
-      expect(@resource.provider).to receive(:sensuctl_delete).with('asset', 'test')
+      expect(@resource.provider).to receive(:sensuctl_delete).with('asset', 'test', 'default')
       @resource.provider.destroy
       property_hash = @resource.provider.instance_variable_get("@property_hash")
       expect(property_hash).to eq({})

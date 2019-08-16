@@ -12,6 +12,12 @@ Puppet::Type.newtype(:sensu_hook) do
     command => 'ps aux',
   }
 
+@example Create a hook with namespace `dev` in the name
+  sensu_hook { 'test in dev':
+    ensure  => 'present',
+    command => 'ps aux',
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -26,11 +32,22 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
+    desc <<-EOS
+    The name of the hook.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
+  end
+
+  newparam(:resource_name, :namevar => true) do
     desc "The name of the hook."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
         raise ArgumentError, "sensu_hook name invalid"
       end
+    end
+    defaultto do
+      @resource[:name]
     end
   end
 
@@ -49,7 +66,7 @@ DESC
     defaultto(:false)
   end
 
-  newproperty(:namespace) do
+  newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this hook belongs to."
     defaultto 'default'
   end
@@ -62,7 +79,26 @@ DESC
     desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :command,
     ]

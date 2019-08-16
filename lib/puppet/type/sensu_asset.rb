@@ -14,6 +14,14 @@ Puppet::Type.newtype(:sensu_asset) do
     filters  => ["entity.system.os == 'linux'"],
   }
 
+@example Create an asset with namespace `dev` in the name
+  sensu_asset { 'test in dev':
+    ensure  => 'present',
+    url     => 'http://example.com/asset/example.tar',
+    sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
+    filters  => ["entity.system.os == 'linux'"],
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -36,11 +44,22 @@ DESC
   end
 
   newparam(:name, :namevar => true) do
+    desc <<-EOS
+    The name of the asset.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
+  end
+
+  newparam(:resource_name, :namevar => true) do
     desc "The name of the asset."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
         raise ArgumentError, "sensu_asset name invalid"
       end
+    end
+    defaultto do
+      @resource[:name]
     end
   end
 
@@ -61,7 +80,7 @@ DESC
     desc "HTTP headers to appy to asset retrieval requests."
   end
 
-  newproperty(:namespace) do
+  newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this asset belongs to."
     defaultto 'default'
   end
@@ -74,7 +93,26 @@ DESC
     desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :url,
       :sha512,

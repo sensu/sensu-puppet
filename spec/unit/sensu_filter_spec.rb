@@ -29,6 +29,33 @@ describe Puppet::Type.type(:sensu_filter) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  it 'should handle composite title' do
+    config.delete(:namespace)
+    config[:name] = 'test in dev'
+    expect(filter[:name]).to eq('test in dev')
+    expect(filter[:resource_name]).to eq('test')
+    expect(filter[:namespace]).to eq('dev')
+  end
+
+  it 'should handle non-composite title' do
+    config[:name] = 'test'
+    expect(filter[:name]).to eq('test')
+    expect(filter[:resource_name]).to eq('test')
+    expect(filter[:namespace]).to eq('default')
+  end
+
+  it 'should handle composite title and namespace' do
+    config[:namespace] = 'test'
+    config[:name] = 'test in qa'
+    expect(filter[:resource_name]).to eq('test')
+    expect(filter[:namespace]).to eq('test')
+  end
+
+  it 'should handle invalid composites' do
+    config[:name] = 'test test in qa'
+    expect { filter }.to raise_error(Puppet::Error, /name invalid/)
+  end
+
   it 'should accept action allow' do
     filter[:action] = 'allow'
     expect(filter[:action]).to eq(:allow)
@@ -204,7 +231,7 @@ describe Puppet::Type.type(:sensu_filter) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { filter }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { filter.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

@@ -13,8 +13,9 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
     data.each do |d|
       binding = {}
       binding[:ensure] = :present
-      binding[:name] = d['metadata']['name']
+      binding[:resource_name] = d['metadata']['name']
       binding[:namespace] = d['metadata']['namespace']
+      binding[:name] = "#{binding[:resource_name]} in #{binding[:namespace]}"
       binding[:role_ref] = d['role_ref']['name']
       binding[:subjects] = d['subjects']
       bindings << new(binding)
@@ -25,7 +26,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
   def self.prefetch(resources)
     bindings = instances
     resources.keys.each do |name|
-      if provider = bindings.find { |c| c.name == name }
+      if provider = bindings.find { |c| c.resource_name == resources[name][:resource_name] && c.namespace == resources[name][:namespace] }
         resources[name].provider = provider
       end
     end
@@ -49,7 +50,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
   def create
     spec = {}
     metadata = {}
-    metadata[:name] = resource[:name]
+    metadata[:name] = resource[:resource_name]
     spec[:role_ref] = { type: 'Role' }
     type_properties.each do |property|
       value = resource[property]
@@ -78,7 +79,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
     if !@property_flush.empty?
       spec = {}
       metadata = {}
-      metadata[:name] = resource[:name]
+      metadata[:name] = resource[:resource_name]
       spec[:role_ref] = { type: 'Role' }
       type_properties.each do |property|
         if @property_flush[property]
@@ -111,7 +112,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
 
   def destroy
     begin
-      sensuctl_delete('role-binding', resource[:name])
+      sensuctl_delete('role-binding', resource[:resource_name], resource[:namespace])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete role_binding #{resource[:name]} failed\nError message: #{e.message}"
     end

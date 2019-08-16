@@ -12,6 +12,12 @@ Puppet::Type.newtype(:sensu_entity) do
     entity_class => 'proxy',
   }
 
+@example Create an entity with namespace `dev` in the name
+  sensu_entity { 'test in dev':
+    ensure       => 'present',
+    entity_class => 'proxy',
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -27,11 +33,22 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
-    desc "The unique name of the entity"
+    desc <<-EOS
+    The name of the entity.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
+  end
+
+  newparam(:resource_name, :namevar => true) do
+    desc "The name of the entity."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
         raise ArgumentError, "sensu_entity name invalid"
       end
+    end
+    defaultto do
+      @resource[:name]
     end
   end
 
@@ -76,7 +93,7 @@ DESC
     desc "List of items to redact from log messages."
   end
 
-  newproperty(:namespace) do
+  newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this entity belongs to."
     defaultto 'default'
   end
@@ -93,7 +110,26 @@ DESC
     [ self[:deregistration_handler] ]
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :entity_class,
     ]

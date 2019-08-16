@@ -13,8 +13,9 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
     data.each do |d|
       filter = {}
       filter[:ensure] = :present
-      filter[:name] = d['metadata']['name']
+      filter[:resource_name] = d['metadata']['name']
       filter[:namespace] = d['metadata']['namespace']
+      filter[:name] = "#{filter[:resource_name]} in #{filter[:namespace]}"
       filter[:labels] = d['metadata']['labels']
       filter[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
@@ -34,7 +35,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
   def self.prefetch(resources)
     filters = instances
     resources.keys.each do |name|
-      if provider = filters.find { |c| c.name == name }
+      if provider = filters.find { |c| c.resource_name == resources[name][:resource_name] && c.namespace == resources[name][:namespace] }
         resources[name].provider = provider
       end
     end
@@ -58,7 +59,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
   def create
     spec = {}
     metadata = {}
-    metadata[:name] = resource[:name]
+    metadata[:name] = resource[:resource_name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -88,7 +89,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
     if !@property_flush.empty?
       spec = {}
       metadata = {}
-      metadata[:name] = resource[:name]
+      metadata[:name] = resource[:resource_name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -123,7 +124,7 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
 
   def destroy
     begin
-      sensuctl_delete('filter', resource[:name])
+      sensuctl_delete('filter', resource[:resource_name], resource[:namespace])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete filter #{resource[:name]} failed\nError message: #{e.message}"
     end

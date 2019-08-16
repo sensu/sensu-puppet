@@ -12,6 +12,12 @@ Puppet::Type.newtype(:sensu_mutator) do
     command => 'example-mutator.rb',
   }
 
+@example Create a mutator with namespace `dev` in the name
+  sensu_mutator { 'example in dev':
+    ensure  => 'present',
+    command => 'example-mutator.rb',
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -27,11 +33,22 @@ DESC
   ensurable
 
   newparam(:name, :namevar => true) do
+    desc <<-EOS
+    The name of the mutator.
+    The name supports composite names that can define the namespace.
+    An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+    EOS
+  end
+
+  newparam(:resource_name, :namevar => true) do
     desc "The name of the mutator."
     validate do |value|
       unless value =~ /^[\w\.\-]+$/
         raise ArgumentError, "sensu_mutator name invalid"
       end
+    end
+    defaultto do
+      @resource[:name]
     end
   end
 
@@ -54,7 +71,7 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:namespace) do
+  newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this mutator belongs to."
     defaultto 'default'
   end
@@ -71,7 +88,26 @@ DESC
     self[:runtime_assets]
   end
 
-  validate do
+  def self.title_patterns
+    [
+      [
+        /^((\S+) in (\S+))$/,
+        [
+          [:name],
+          [:resource_name],
+          [:namespace],
+        ],
+      ],
+      [
+        /(.*)/,
+        [
+          [:name],
+        ],
+      ],
+    ]
+  end
+
+  def pre_run_check
     required_properties = [
       :command,
     ]

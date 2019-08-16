@@ -13,8 +13,9 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
     data.each do |d|
       entity = {}
       entity[:ensure] = :present
-      entity[:name] = d['metadata']['name']
+      entity[:resource_name] = d['metadata']['name']
       entity[:namespace] = d['metadata']['namespace']
+      entity[:name] = "#{entity[:resource_name]} in #{entity[:namespace]}"
       entity[:labels] = d['metadata']['labels']
       entity[:annotations] = d['metadata']['annotations']
       d.each_pair do |key,value|
@@ -38,7 +39,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
   def self.prefetch(resources)
     entities = instances
     resources.keys.each do |name|
-      if provider = entities.find { |e| e.name == name }
+      if provider = entities.find { |e| e.resource_name == resources[name][:resource_name] && e.namespace == resources[name][:namespace] }
         resources[name].provider = provider
       end
     end
@@ -63,7 +64,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
     spec = {}
     metadata = {}
     metadata = {}
-    metadata[:name] = resource[:name]
+    metadata[:name] = resource[:resource_name]
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -97,7 +98,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
       spec = {}
       metadata = {}
       metadata = {}
-      metadata[:name] = resource[:name]
+      metadata[:name] = resource[:resource_name]
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -139,7 +140,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
 
   def destroy
     begin
-      sensuctl_delete('entity', resource[:name])
+      sensuctl_delete('entity', resource[:resource_name], resource[:namespace])
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete entity #{resource[:name]} failed\nError message: #{e.message}"
     end

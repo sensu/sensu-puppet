@@ -29,6 +29,33 @@ describe Puppet::Type.type(:sensu_asset) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  it 'should handle composite title' do
+    config.delete(:namespace)
+    config[:name] = 'test in dev'
+    expect(asset[:name]).to eq('test in dev')
+    expect(asset[:resource_name]).to eq('test')
+    expect(asset[:namespace]).to eq('dev')
+  end
+
+  it 'should handle non-composite title' do
+    config[:name] = 'test'
+    expect(asset[:name]).to eq('test')
+    expect(asset[:resource_name]).to eq('test')
+    expect(asset[:namespace]).to eq('default')
+  end
+
+  it 'should handle composite title and namespace' do
+    config[:namespace] = 'test'
+    config[:name] = 'test in qa'
+    expect(asset[:resource_name]).to eq('test')
+    expect(asset[:namespace]).to eq('test')
+  end
+
+  it 'should handle invalid composites' do
+    config[:name] = 'test test in qa'
+    expect { asset }.to raise_error(Puppet::Error, /name invalid/)
+  end
+
   it 'should not accept ensure => absent' do
     config[:ensure] = 'absent'
     expect { asset[:ensure] = 'absent' }.to raise_error(Puppet::Error, /ensure does not support absent/)
@@ -184,7 +211,7 @@ describe Puppet::Type.type(:sensu_asset) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { asset }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { asset.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end

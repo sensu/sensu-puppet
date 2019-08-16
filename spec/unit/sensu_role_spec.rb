@@ -28,6 +28,33 @@ describe Puppet::Type.type(:sensu_role) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  it 'should handle composite title' do
+    config.delete(:namespace)
+    config[:name] = 'test in dev'
+    expect(role[:name]).to eq('test in dev')
+    expect(role[:resource_name]).to eq('test')
+    expect(role[:namespace]).to eq('dev')
+  end
+
+  it 'should handle non-composite title' do
+    config[:name] = 'test'
+    expect(role[:name]).to eq('test')
+    expect(role[:resource_name]).to eq('test')
+    expect(role[:namespace]).to eq('default')
+  end
+
+  it 'should handle composite title and namespace' do
+    config[:namespace] = 'test'
+    config[:name] = 'test in qa'
+    expect(role[:resource_name]).to eq('test')
+    expect(role[:namespace]).to eq('test')
+  end
+
+  it 'should handle invalid composites' do
+    config[:name] = 'test test in qa'
+    expect { role }.to raise_error(Puppet::Error, /name invalid/)
+  end
+
   defaults = {
     :namespace => 'default',
   }
@@ -161,7 +188,7 @@ describe Puppet::Type.type(:sensu_role) do
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { role }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { role.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 end
