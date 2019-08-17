@@ -16,7 +16,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
       binding[:resource_name] = d['metadata']['name']
       binding[:namespace] = d['metadata']['namespace']
       binding[:name] = "#{binding[:resource_name]} in #{binding[:namespace]}"
-      binding[:role_ref] = d['role_ref']['name']
+      binding[:role_ref] = d['role_ref']
       binding[:subjects] = d['subjects']
       bindings << new(binding)
     end
@@ -51,7 +51,6 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
     spec = {}
     metadata = {}
     metadata[:name] = resource[:resource_name]
-    spec[:role_ref] = { type: 'Role' }
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -59,9 +58,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
-      if property == :role_ref
-        spec[:role_ref][:name] = value
-      elsif property == :namespace
+      if property == :namespace
         metadata[:namespace] = value
       else
         spec[property] = value
@@ -80,7 +77,6 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
       spec = {}
       metadata = {}
       metadata[:name] = resource[:resource_name]
-      spec[:role_ref] = { type: 'Role' }
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -93,9 +89,7 @@ Puppet::Type.type(:sensu_role_binding).provide(:sensuctl, :parent => Puppet::Pro
         elsif value == :absent
           value = nil
         end
-        if property == :role_ref
-          spec[:role_ref][:name] = value
-        elsif property == :namespace
+        if property == :namespace
           metadata[:namespace] = value
         else
           spec[property] = value

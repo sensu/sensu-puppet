@@ -9,8 +9,15 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
       sensu_cluster_role { 'test':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
+      sensu_role { 'test':
+        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+      }
       sensu_cluster_role_binding { 'test':
         role_ref => 'test',
+        subjects => [{'type' => 'User', 'name' => 'admin'}],
+      }
+      sensu_cluster_role_binding { 'test2':
+        role_ref => {'type' => 'Role', 'name' => 'test'},
         subjects => [{'type' => 'User', 'name' => 'admin'}],
       }
       EOS
@@ -31,7 +38,15 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
     it 'should have a valid cluster_role_binding' do
       on node, 'sensuctl cluster-role-binding info test --format json' do
         data = JSON.parse(stdout)
-        expect(data['role_ref']['name']).to eq('test')
+        expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
+        expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
+      end
+    end
+
+    it 'should have a valid cluster_role_binding with Role' do
+      on node, 'sensuctl cluster-role-binding info test2 --format json' do
+        data = JSON.parse(stdout)
+        expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
@@ -44,9 +59,16 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
       sensu_cluster_role { 'test':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
+      sensu_role { 'test2':
+        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+      }
       sensu_cluster_role_binding { 'test':
         role_ref => 'test',
         subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
+      }
+      sensu_cluster_role_binding { 'test2':
+        role_ref => {'type' => 'Role', 'name' => 'test2'},
+        subjects => [{'type' => 'User', 'name' => 'admin'}],
       }
       EOS
 
@@ -66,8 +88,16 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
     it 'should have a valid cluster_role_binding with updated propery' do
       on node, 'sensuctl cluster-role-binding info test --format json' do
         data = JSON.parse(stdout)
-        expect(data['role_ref']['name']).to eq('test')
+        expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
+      end
+    end
+
+    it 'should have a valid cluster_role_binding with Role with updated property' do
+      on node, 'sensuctl cluster-role-binding info test2 --format json' do
+        data = JSON.parse(stdout)
+        expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
+        expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
   end
