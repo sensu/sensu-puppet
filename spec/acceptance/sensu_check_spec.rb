@@ -153,8 +153,41 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
     end
   end
 
+  context 'namespace validation when exists' do
+    it 'should produce no error' do
+      namespace_pp = <<-EOS
+      include ::sensu::backend
+      sensu_namespace { 'devs': ensure => 'present' }
+      EOS
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_check { 'test-namespace':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+        namespace     => 'devs',
+      }
+      EOS
+
+      apply_manifest_on(node, namespace_pp, :catch_failures => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+      else
+        apply_manifest_on(node, pp, :catch_failures => true)
+      end
+    end
+
+    describe command('sensuctl check info test-namespace --namespace devs'), :node => node do
+      its(:exit_status) { should eq 0 }
+    end
+  end
+
   context 'namespace validation' do
-    it 'should remove without errors' do
+    it 'should produce error' do
       pp = <<-EOS
       include ::sensu::backend
       sensu_check { 'test-no-namespace':
