@@ -185,5 +185,6 @@ DESC
     if self[:type] == :set && !self[:handlers]
       fail "handlers must be defined for type set"
     end
+    PuppetX::Sensu::Type.validate_namespace(self)
   end
 end

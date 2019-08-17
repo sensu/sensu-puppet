@@ -232,4 +232,8 @@ describe Puppet::Type.type(:sensu_silenced) do
     config[:name] = "test"
     expect { silenced }.to raise_error(Puppet::Error, /Must provide either check or subscription/)
   end
+
+  include_examples 'namespace' do
+    let(:res) { silenced }
+  end
 end

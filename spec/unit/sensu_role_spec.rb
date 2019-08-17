@@ -191,4 +191,8 @@ describe Puppet::Type.type(:sensu_role) do
       expect { role.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
+
+  include_examples 'namespace' do
+    let(:res) { role }
+  end
 end

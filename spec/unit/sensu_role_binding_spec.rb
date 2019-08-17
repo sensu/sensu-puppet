@@ -222,4 +222,8 @@ describe Puppet::Type.type(:sensu_role_binding) do
       expect { binding.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
+
+  include_examples 'namespace' do
+    let(:res) { binding }
+  end
 end
