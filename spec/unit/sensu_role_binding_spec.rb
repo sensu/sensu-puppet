@@ -63,7 +63,6 @@ describe Puppet::Type.type(:sensu_role_binding) do
   # String properties
   [
     :namespace,
-    :role_ref,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -149,6 +148,22 @@ describe Puppet::Type.type(:sensu_role_binding) do
     end
   end
 
+  describe 'role_ref' do
+    it 'converts string to hash' do
+      expect(binding[:role_ref]).to eq({'type' => 'Role', 'name' => 'test'})
+    end
+
+    it 'accepts hash' do
+      config[:role_ref] = {'type' => 'ClusterRole', 'name' => 'test'}
+      expect(binding[:role_ref]).to eq({'type' => 'ClusterRole', 'name' => 'test'})
+    end
+
+    it 'should verify type' do
+      config[:role_ref] = {'type' => 'foo', 'name' => 'test'}
+      expect { binding }.to raise_error(Puppet::Error, /'type' must be either/)
+    end
+  end
+
   describe 'subjects' do
     it 'accepts valid value' do
       expect(binding[:subjects]).to eq([{'type' => 'User', 'name' => 'test'}])
@@ -178,6 +193,17 @@ describe Puppet::Type.type(:sensu_role_binding) do
   it 'should autorequire sensu_role' do
     config[:role_ref] = 'test'
     role = Puppet::Type.type(:sensu_role).new(:name => 'test', :rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}])
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource binding
+    catalog.add_resource role
+    rel = binding.autorequire[0]
+    expect(rel.source.ref).to eq(role.ref)
+    expect(rel.target.ref).to eq(binding.ref)
+  end
+
+  it 'should autorequire sensu_cluster_role' do
+    config[:role_ref] = {'type' => 'ClusterRole', 'name' => 'test'}
+    role = Puppet::Type.type(:sensu_cluster_role).new(:name => 'test', :rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}])
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource binding
     catalog.add_resource role
