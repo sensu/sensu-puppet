@@ -60,6 +60,9 @@ RSpec.configure do |c|
     if collection == 'puppet6'
       on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
+    if RSpec.configuration.sensu_test_enterprise
+      on setup_nodes, puppet('module', 'install', 'puppetlabs-postgresql', '--version', '">= 6.0.0 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
+    end
     ssldir = File.join(project_dir, 'tests/ssl')
     scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/ssl')
     hosts.each do |host|
@@ -87,7 +90,7 @@ sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
 EOS
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
-    on setup_nodes, 'mkdir -m 0755 /etc/puppetlabs/puppet/data'
+    on setup_nodes, 'mkdir -p -m 0755 /etc/puppetlabs/puppet/data'
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/data/common.yaml', common_yaml)
 
     if RSpec.configuration.sensu_use_agent

@@ -68,13 +68,6 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['metadata']['namespace']).to eq('test')
       end
     end
-
-    it 'should have multiple checks' do
-      on node, 'sensuctl check list --format json' do
-        data = JSON.parse(stdout)
-        expect(data.size).to eq(2)
-      end
-    end
   end
 
   context 'with chunk size' do
