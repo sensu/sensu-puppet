@@ -56,7 +56,7 @@ RSpec.configure do |c|
     # Install sensuclassic to ensure no conflicts
     on setup_nodes, puppet('module', 'install', 'sensu-sensuclassic'), { :acceptable_exit_codes => [0,1] }
     # Install soft module dependencies
-    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 8.0.0"'), { :acceptable_exit_codes => [0,1] }
     if collection == 'puppet6'
       on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
