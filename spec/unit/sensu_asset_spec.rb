@@ -56,9 +56,9 @@ describe Puppet::Type.type(:sensu_asset) do
     expect { asset }.to raise_error(Puppet::Error, /name invalid/)
   end
 
-  it 'should not accept ensure => absent' do
+  it 'should accept ensure => absent' do
     config[:ensure] = 'absent'
-    expect { asset[:ensure] = 'absent' }.to raise_error(Puppet::Error, /ensure does not support absent/)
+    expect(asset[:ensure]).to eq(:absent)
   end
 
   defaults = {
