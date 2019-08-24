@@ -93,6 +93,7 @@ describe Puppet::Type.type(:sensu_hook) do
 
   # Array properties
   [
+    :runtime_assets,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
@@ -197,6 +198,17 @@ describe Puppet::Type.type(:sensu_hook) do
 
   include_examples 'autorequires' do
     let(:res) { hook }
+  end
+
+  it 'should autorequire sensu_asset' do
+    asset = Puppet::Type.type(:sensu_asset).new(:name => 'test', :url => 'http://example.com/asset/example.tar', :sha512 => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b')
+    catalog = Puppet::Resource::Catalog.new
+    config[:runtime_assets] = ['test']
+    catalog.add_resource hook
+    catalog.add_resource asset
+    rel = hook.autorequire[0]
+    expect(rel.source.ref).to eq(asset.ref)
+    expect(rel.target.ref).to eq(hook.ref)
   end
 
   [

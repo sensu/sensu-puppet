@@ -24,6 +24,7 @@ Puppet::Type.newtype(:sensu_hook) do
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 DESC
 
   extend PuppetX::Sensu::Type
@@ -66,6 +67,11 @@ DESC
     defaultto(:false)
   end
 
+  newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of Sensu assets (names), required at runtime for the execution of the command"
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this hook belongs to."
     defaultto 'default'
@@ -77,6 +83,10 @@ DESC
 
   newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
     desc "Arbitrary, non-identifying metadata to include with event data."
+  end
+
+  autorequire(:sensu_asset) do
+    self[:runtime_assets]
   end
 
   def self.title_patterns
