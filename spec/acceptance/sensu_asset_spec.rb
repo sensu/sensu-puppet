@@ -90,14 +90,16 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         site_pp = "node 'sensu_backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [1,4,6]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
-        apply_manifest_on(node, pp, :expect_failures => true)
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
       end
     end
 
     describe command('sensuctl asset info test'), :node => node do
-      its(:exit_status) { should eq 0 }
+      its(:exit_status) { should_not eq 0 }
     end
   end
 end
