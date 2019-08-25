@@ -85,6 +85,8 @@
 #   Hash of sensu_mutator resources
 # @param namespaces
 #   Hash of sensu_namespace resources
+# @param oidc_auths
+#   Hash of sensu_oidc_auth resources
 # @param role_bindings
 #   Hash of sensu_role_binding resources
 # @param roles
@@ -134,6 +136,7 @@ class sensu::backend (
   Hash $ldap_auths = {},
   Hash $mutators = {},
   Hash $namespaces = {},
+  Hash $oidc_auths = {},
   Hash $role_bindings = {},
   Hash $roles = {},
   Hash $silencings = {},

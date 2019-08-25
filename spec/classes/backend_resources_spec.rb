@@ -224,6 +224,22 @@ describe 'sensu::backend::resources', :type => :class do
         end
         it { should contain_sensu_namespace('test') }
       end
+      context 'oidc_auths defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::sensu::backend':
+            oidc_auths => {
+              'oidc' => {
+                client_id     => '0oa13ry4ypeDDBpxF357',
+                client_secret => 'DlArQRfND4BKBUyO0mE-TL2PWOVwyGjIO1fdk9gX',
+                server        => 'https://idp.example.com',
+              }
+            }
+          }
+          EOS
+        end
+        it { should contain_sensu_oidc_auth('oidc') }
+      end
       context 'role_bindings defined' do
         let(:pre_condition) do
           <<-EOS

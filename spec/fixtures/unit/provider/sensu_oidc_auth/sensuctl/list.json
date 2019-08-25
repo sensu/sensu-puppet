@@ -1,0 +1,123 @@
+[
+  {
+    "servers": [
+      {
+        "host": "127.0.0.1",
+        "port": 636,
+        "insecure": false,
+        "security": "tls",
+        "trusted_ca_file": "",
+        "client_cert_file": "",
+        "client_key_file": "",
+        "binding": {
+          "user_dn": "cn=binder,cn=users,dc=acme,dc=org",
+          "password": "P@ssw0rd!"
+        },
+        "group_search": {
+          "base_dn": "dc=acme,dc=org",
+          "attribute": "member",
+          "name_attribute": "cn",
+          "object_class": "group"
+        },
+        "user_search": {
+          "base_dn": "dc=acme,dc=org",
+          "attribute": "sAMAccountName",
+          "name_attribute": "displayName",
+          "object_class": "person"
+        },
+        "default_upn_domain": ""
+      }
+    ],
+    "groups_prefix": "",
+    "username_prefix": "",
+    "metadata": {
+      "name": "activedirectory"
+    }
+  },
+  {
+    "servers": [
+      {
+        "host": "127.0.0.1",
+        "port": 636,
+        "insecure": false,
+        "security": "tls",
+        "trusted_ca_file": "",
+        "client_cert_file": "",
+        "client_key_file": "",
+        "binding": {
+          "user_dn": "cn=binder,cn=users,dc=acme,dc=org",
+          "password": "P@ssw0rd!"
+        },
+        "group_search": {
+          "base_dn": "dc=acme,dc=org",
+          "attribute": "member",
+          "name_attribute": "cn",
+          "object_class": "group"
+        },
+        "user_search": {
+          "base_dn": "dc=acme,dc=org",
+          "attribute": "sAMAccountName",
+          "name_attribute": "displayName",
+          "object_class": "person"
+        },
+        "default_upn_domain": ""
+      }
+    ],
+    "groups_prefix": "",
+    "username_prefix": "",
+    "metadata": {
+      "name": "activedirectory2"
+    }
+  },
+  {
+    "servers": [
+      {
+        "host": "127.0.0.1",
+        "port": 389,
+        "insecure": false,
+        "security": "tls",
+        "trusted_ca_file": "",
+        "client_cert_file": "",
+        "client_key_file": "",
+        "binding": {
+          "user_dn": "cn=binder,dc=acme,dc=org",
+          "password": "P@ssw0rd!"
+        },
+        "group_search": {
+          "base_dn": "dc=acme,dc=org",
+          "attribute": "member",
+          "name_attribute": "cn",
+          "object_class": "groupOfNames"
+        },
+        "user_search": {
+          "base_dn": "dc=acme,dc=org",
+          "attribute": "uid",
+          "name_attribute": "cn",
+          "object_class": "person"
+        }
+      }
+    ],
+    "groups_prefix": "",
+    "username_prefix": "",
+    "metadata": {
+      "name": "openldap"
+    }
+  },
+  {
+    "server": "https://idp.example.com",
+    "client_id": "0oa13ry4ypeDDBpxF357",
+    "client_secret": "DlArQRfND4BKBUyO0mE-TL2PWOVwyGjIO1fdk9gX",
+    "redirect_uri": "https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback",
+    "additional_scopes": [
+      "email",
+      "groups"
+    ],
+    "username_claim": "email",
+    "username_prefix": "oidc:",
+    "groups_claim": "groups",
+    "groups_prefix": "oidc:",
+    "metadata": {
+      "name": "oidc"
+    }
+  }
+]
