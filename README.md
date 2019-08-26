@@ -14,6 +14,7 @@
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
     * [Enterprise support](#enterprise-support)
+    * [PostgreSQL datastore support](#postgresql-datastore-support)
     * [Installing Plugins](#installing-plugins)
     * [Installing Extensions](#installing-extensions)
     * [Exported resources](#exported-resources)
@@ -69,6 +70,8 @@ This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.c
 If using Puppet >= 6.0.0 there is a soft dependency on the [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`) for systems using `yum`.
 
 If managing Windows there is a soft dependency on the [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`).
+
+For PostgreSQL datastore support there is a soft dependency on [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`).
 
 ### Beginning with sensu
 
@@ -219,7 +222,40 @@ class { 'sensu::backend':
 }
 ```
 
-The type `sensu_ldap_auth` requires a valid enterprise license.
+The types `sensu_ad_auth` and `sensu_ldap_auth` require a valid enterprise license.
+
+### PostgreSQL datastore support
+
+**NOTE**: This features require a valid Sensu Go enterprise license.
+
+The following example will add a PostgreSQL server and database to the sensu-backend host and configure Sensu Go to use PostgreSQL as the event datastore.
+
+```puppet
+class { 'postgresql::globals':
+  manage_package_repo => true,
+  version             => '9.6',
+}
+class { 'postgresql::server': }
+class { '::sensu::backend':
+  license_source      => 'puppet:///modules/profile/sensu/license.json',
+  datastore           => 'postgresql',
+  postgresql_password => 'secret',
+}
+```
+
+Refer to the [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module documentation for details on how to manage PostgreSQL with Puppet.
+
+The following example uses an external PostgreSQL server.
+
+```puppet
+class { '::sensu::backend':
+  license_source       => 'puppet:///modules/profile/sensu/license.json',
+  datastore            => 'postgresql',
+  postgresql_password  => 'secret',
+  postgresql_host      => 'postgresql.example.com',
+  manage_postgresql_db => false,
+}
+```
 
 ### Installing Plugins
 

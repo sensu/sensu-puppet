@@ -95,6 +95,27 @@
 #   Hash of sensu_user resources
 # @param sensuctl_chunk_size
 #   Chunk size to use when listing sensuctl resources
+# @param datastore
+#   Datastore to configure for sensu events
+# @param datastore_ensure
+#   The datastore ensure property. If set to `absent` all
+#   datastore parameters must still be defined.
+# @param manage_postgresql_db
+#   Boolean that sets of postgresql database should be managed
+# @param postgresql_name
+#   Name of PostgresConfig that is configured with sensuctl
+# @param postgresql_user
+#   The PostgreSQL database user
+# @param postgresql_password
+#   The PostgreSQL database password
+# @param postgresql_host
+#   The PostgreSQL host
+# @param postgresql_port
+#   The PostgreSQL port
+# @param postgresql_dbname
+#   The name of the PostgreSQL database
+# @param postgresql_pool_size
+#   The PostgreSQL pool size
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -139,6 +160,16 @@ class sensu::backend (
   Hash $silencings = {},
   Hash $users = {},
   Optional[Integer] $sensuctl_chunk_size = undef,
+  Optional[Enum['postgresql']] $datastore = undef,
+  Enum['present','absent'] $datastore_ensure = 'present',
+  Boolean $manage_postgresql_db = true,
+  String $postgresql_name = 'postgresql',
+  String $postgresql_user = 'sensu',
+  String $postgresql_password = 'changeme',
+  Stdlib::Host $postgresql_host = 'localhost',
+  Stdlib::Port $postgresql_port = 5432,
+  String $postgresql_dbname = 'sensu',
+  Integer $postgresql_pool_size = 20,
 ) {
 
   if $license_source and $license_content {
@@ -149,6 +180,9 @@ class sensu::backend (
   include ::sensu::backend::resources
   if $manage_tessen {
     include ::sensu::backend::tessen
+  }
+  if $datastore == 'postgresql' {
+    include ::sensu::backend::datastore::postgresql
   }
 
   $etc_dir = $::sensu::etc_dir

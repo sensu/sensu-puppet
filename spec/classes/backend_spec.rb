@@ -18,6 +18,7 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
         it { should contain_class('sensu::backend::tessen') }
+        it { should_not contain_class('sensu::backend::datastore::postgresql') }
 
         it {
           should contain_package('sensu-go-cli').with({
@@ -284,6 +285,16 @@ describe 'sensu::backend', :type => :class do
       context 'manage_tessen => false' do
         let(:params) {{ :manage_tessen => false }}
         it { is_expected.not_to contain_class('sensu::backend::tessen') }
+      end
+
+      context 'datastore => postgresql' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::server': }
+          EOS
+        end
+        let(:params) {{ :datastore => 'postgresql' }}
+        it { should contain_class('sensu::backend::datastore::postgresql') }
       end
     end
   end
