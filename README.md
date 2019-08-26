@@ -588,6 +588,7 @@ Linux.
 * EL 7
 * Debian 8
 * Debian 9
+* Debian 10 (Puppet 6 only)
 * Ubuntu 16.04 LTS
 * Ubuntu 18.04 LTS
 * Amazon 2018.03

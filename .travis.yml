@@ -124,6 +124,18 @@ matrix:
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6
+    bundler_args:
+    script: bundle exec rake beaker
+  - rvm: 2.5.3
+    sudo: required
+    services: docker
+    env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    bundler_args:
+    script: bundle exec rake beaker
   - rvm: 2.4.4
     sudo: required
     services: docker
@@ -227,6 +239,8 @@ matrix:
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_ci_build=yes
   - rvm: 2.5.3
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+  - rvm: 2.5.3
+    env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
   - rvm: 2.5.3
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
   - rvm: 2.5.3
