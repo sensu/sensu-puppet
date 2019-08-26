@@ -11,6 +11,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
       let(:facts) { facts }
       let(:pre_condition) do
         <<-EOS
+        class { '::postgresql::globals': version => '9.6' }
         class { '::postgresql::server': }
         class { '::sensu::backend': }
         EOS
