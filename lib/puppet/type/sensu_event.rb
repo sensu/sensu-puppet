@@ -42,6 +42,22 @@ DESC
     def retrieve
       @resource.provider.state || :absent 
     end
+
+    def insync?(is)
+      if is.is_a?(Array)
+        is = is[0]
+      end
+      if @should.is_a?(Array)
+        should = @should[0]
+      else
+        should = @should
+      end
+      if is.to_sym == :absent && should.to_sym == :resolve
+        true
+      else
+        super
+      end
+    end
   end
 
   newparam(:name, :namevar => true) do
