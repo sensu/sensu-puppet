@@ -234,4 +234,8 @@ describe Puppet::Type.type(:sensu_filter) do
       expect { filter.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
+
+  include_examples 'namespace' do
+    let(:res) { filter }
+  end
 end

@@ -86,5 +86,8 @@ DESC
     end
   end
 
+  def pre_run_check
+    PuppetX::Sensu::Type.validate_namespace(self)
+  end
 end
 

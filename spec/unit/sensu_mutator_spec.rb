@@ -218,4 +218,8 @@ describe Puppet::Type.type(:sensu_mutator) do
       expect { mutator.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
+
+  include_examples 'namespace' do
+    let(:res) { mutator }
+  end
 end

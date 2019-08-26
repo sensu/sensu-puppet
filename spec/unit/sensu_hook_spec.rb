@@ -208,4 +208,8 @@ describe Puppet::Type.type(:sensu_hook) do
       expect { hook.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
+
+  include_examples 'namespace' do
+    let(:res) { hook }
+  end
 end

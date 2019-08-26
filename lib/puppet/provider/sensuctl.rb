@@ -116,5 +116,21 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     Puppet.debug("auth_types: #{auth_types}")
     auth_types
   end
+
+  def self.namespaces()
+    begin
+      data = self.sensuctl_list('namespace', false)
+      namespaces = []
+      data.each do |d|
+        namespaces << d['name']
+      end
+    rescue Exception
+      return []
+    end
+    namespaces
+  end
+  def namespaces()
+    self.class.namespaces()
+  end
 end
 

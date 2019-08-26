@@ -27,6 +27,19 @@ module PuppetX
           end
         end
       end
+
+      def self.validate_namespace(resource)
+        catalog_namespaces = []
+        resource.catalog.resources.each do |catalog_resource|
+          if catalog_resource.class.to_s == 'Puppet::Type::Sensu_namespace'
+            catalog_namespaces << catalog_resource.name
+          end
+        end
+        namespaces = resource.provider.namespaces()
+        if (resource[:ensure] && resource[:ensure].to_sym != :absent) && !( catalog_namespaces.include?(resource[:namespace]) || namespaces.include?(resource[:namespace]) )
+          raise Puppet::Error, "Sensu namespace '#{resource[:namespace]}' must be defined or exist"
+        end
+      end
     end
   end
 end

@@ -116,5 +116,6 @@ DESC
         fail "You must provide a #{property}"
       end
     end
+    PuppetX::Sensu::Type.validate_namespace(self)
   end
 end

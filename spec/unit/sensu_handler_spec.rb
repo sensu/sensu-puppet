@@ -313,4 +313,8 @@ describe Puppet::Type.type(:sensu_handler) do
     config.delete(:handlers)
     expect { handler.pre_run_check }.to raise_error(Puppet::Error, /handlers must be defined for type set/)
   end
+
+  include_examples 'namespace' do
+    let(:res) { handler }
+  end
 end

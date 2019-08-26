@@ -231,4 +231,8 @@ describe Puppet::Type.type(:sensu_entity) do
       expect { entity.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
+
+  include_examples 'namespace' do
+    let(:res) { entity }
+  end
 end
