@@ -1,5 +1,16 @@
 # Change Log
 
+## [v3.7.0](https://github.com/sensu/sensu-puppet/tree/v3.7.0) (2019-08-25)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.6.0...v3.7.0)
+
+**Merged pull requests:**
+
+- Support PostgreSQL datastore [\#1136](https://github.com/sensu/sensu-puppet/pull/1136) ([treydock](https://github.com/treydock))
+- Increase upper bound of module dependencies [\#1134](https://github.com/sensu/sensu-puppet/pull/1134) ([treydock](https://github.com/treydock))
+- Improved Validations [\#1132](https://github.com/sensu/sensu-puppet/pull/1132) ([treydock](https://github.com/treydock))
+- Do not resolve absent sensu\_events [\#1129](https://github.com/sensu/sensu-puppet/pull/1129) ([treydock](https://github.com/treydock))
+- Support Debian 10 [\#1128](https://github.com/sensu/sensu-puppet/pull/1128) ([treydock](https://github.com/treydock))
+
 ## [v3.6.0](https://github.com/sensu/sensu-puppet/tree/v3.6.0) (2019-08-16)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.5.0...v3.6.0)
 

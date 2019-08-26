@@ -10,6 +10,7 @@ _Public Classes_
 * [`sensu`](#sensu): Base Sensu class
 * [`sensu::agent`](#sensuagent): Manage Sensu agent
 * [`sensu::backend`](#sensubackend): Manage Sensu backend
+* [`sensu::backend::datastore::postgresql`](#sensubackenddatastorepostgresql): 
 * [`sensu::plugins`](#sensuplugins): Manage Sensu plugins
 
 _Private Classes_
@@ -619,6 +620,91 @@ Data type: `Optional[Integer]`
 Chunk size to use when listing sensuctl resources
 
 Default value: `undef`
+
+##### `datastore`
+
+Data type: `Optional[Enum['postgresql']]`
+
+Datastore to configure for sensu events
+
+Default value: `undef`
+
+##### `datastore_ensure`
+
+Data type: `Enum['present','absent']`
+
+The datastore ensure property. If set to `absent` all
+datastore parameters must still be defined.
+
+Default value: 'present'
+
+##### `manage_postgresql_db`
+
+Data type: `Boolean`
+
+Boolean that sets of postgresql database should be managed
+
+Default value: `true`
+
+##### `postgresql_name`
+
+Data type: `String`
+
+Name of PostgresConfig that is configured with sensuctl
+
+Default value: 'postgresql'
+
+##### `postgresql_user`
+
+Data type: `String`
+
+The PostgreSQL database user
+
+Default value: 'sensu'
+
+##### `postgresql_password`
+
+Data type: `String`
+
+The PostgreSQL database password
+
+Default value: 'changeme'
+
+##### `postgresql_host`
+
+Data type: `Stdlib::Host`
+
+The PostgreSQL host
+
+Default value: 'localhost'
+
+##### `postgresql_port`
+
+Data type: `Stdlib::Port`
+
+The PostgreSQL port
+
+Default value: 5432
+
+##### `postgresql_dbname`
+
+Data type: `String`
+
+The name of the PostgreSQL database
+
+Default value: 'sensu'
+
+##### `postgresql_pool_size`
+
+Data type: `Integer`
+
+The PostgreSQL pool size
+
+Default value: 20
+
+### sensu::backend::datastore::postgresql
+
+The sensu::backend::datastore::postgresql class.
 
 ### sensu::plugins
 
