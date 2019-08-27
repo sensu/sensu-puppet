@@ -290,6 +290,7 @@ describe 'sensu::backend', :type => :class do
       context 'datastore => postgresql' do
         let(:pre_condition) do
           <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
           class { '::postgresql::server': }
           EOS
         end
