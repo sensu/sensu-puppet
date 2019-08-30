@@ -149,7 +149,7 @@ describe 'sensu::backend::default_resources', :type => :class do
         it {
           should contain_sensu_cluster_role_binding('cluster-admin').with({
             'ensure'   => 'present',
-            'role_ref' => 'cluster-admin',
+            'role_ref' => {'type' => 'ClusterRole', 'name' => 'cluster-admin'},
             'subjects' => [
               {
                 'type' => 'Group',
@@ -161,7 +161,7 @@ describe 'sensu::backend::default_resources', :type => :class do
         it {
           should contain_sensu_cluster_role_binding('system:agent').with({
             'ensure'   => 'present',
-            'role_ref' => 'system:agent',
+            'role_ref' => {'type' => 'ClusterRole', 'name' => 'system:agent'},
             'subjects' => [
               {
                 'type' => 'Group',
@@ -173,7 +173,7 @@ describe 'sensu::backend::default_resources', :type => :class do
         it {
           should contain_sensu_cluster_role_binding('system:user').with({
             'ensure'   => 'present',
-            'role_ref' => 'system:user',
+            'role_ref' => {'type' => 'ClusterRole', 'name' => 'system:user'},
             'subjects' => [
               {
                 'type' => 'Group',

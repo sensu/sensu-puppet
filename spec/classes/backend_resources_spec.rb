@@ -80,7 +80,7 @@ describe 'sensu::backend::resources', :type => :class do
           class { '::sensu::backend':
             cluster_role_bindings => {
               'test' => {
-                'role_ref' => 'test',
+                'role_ref' => {'type' => 'ClusterRole', 'name' => 'test'},
                 'subjects' => [{'type' => 'User', 'name' => 'test'}],
               }
             }
@@ -261,7 +261,7 @@ describe 'sensu::backend::resources', :type => :class do
           class { '::sensu::backend':
             role_bindings => {
               'test' => {
-                'role_ref' => 'test',
+                'role_ref' => {'type' => 'Role', 'name' => 'test'},
                 'subjects' => [{'type' => 'User', 'name' => 'test'}],
               }
             }
