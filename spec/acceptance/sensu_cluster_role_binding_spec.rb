@@ -13,7 +13,7 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
       sensu_cluster_role_binding { 'test':
-        role_ref => 'test',
+        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
         subjects => [{'type' => 'User', 'name' => 'admin'}],
       }
       sensu_cluster_role_binding { 'test2':
@@ -63,7 +63,7 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
       sensu_cluster_role_binding { 'test':
-        role_ref => 'test',
+        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
         subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
       }
       sensu_cluster_role_binding { 'test2':

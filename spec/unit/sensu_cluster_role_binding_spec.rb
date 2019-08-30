@@ -5,7 +5,7 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
   let(:default_config) do
     {
       name: 'test',
-      role_ref: 'test',
+      role_ref: {'type' => 'ClusterRole', 'name' => 'test'},
       subjects: [{'type' => 'User', 'name' => 'test'}],
     }
   end
@@ -120,13 +120,14 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
   end
 
   describe 'role_ref' do
-    it 'converts string to hash' do
-      expect(binding[:role_ref]).to eq({'type' => 'ClusterRole', 'name' => 'test'})
-    end
-
     it 'accepts hash' do
       config[:role_ref] = {'type' => 'Role', 'name' => 'test'}
       expect(binding[:role_ref]).to eq({'type' => 'Role', 'name' => 'test'})
+    end
+
+    it 'requires hash' do
+      config[:role_ref] = 'test'
+      expect { binding }.to raise_error(Puppet::Error, /Hash/)
     end
 
     it 'should verify type' do
@@ -162,7 +163,7 @@ describe Puppet::Type.type(:sensu_cluster_role_binding) do
   end
 
   it 'should autorequire sensu_cluster_role' do
-    config[:role_ref] = 'test'
+    config[:role_ref] = {'type' => 'ClusterRole', 'name' => 'test'}
     role = Puppet::Type.type(:sensu_cluster_role).new(:name => 'test', :rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}])
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource binding

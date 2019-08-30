@@ -10,7 +10,7 @@ Puppet::Type.newtype(:sensu_role_binding) do
 @example Add a role binding
   sensu_role_binding { 'test':
     ensure   => 'present',
-    role_ref => 'test-role',
+    role_ref => {'type' => 'Role', 'name' => 'test-role'},
     subjects => [
       { 'type' => 'User', 'name' => 'test-user' }
     ], 
@@ -27,7 +27,7 @@ Puppet::Type.newtype(:sensu_role_binding) do
 @example Add a role binding with namespace `dev` in the name
   sensu_role_binding { 'test in dev':
     ensure   => 'present',
-    role_ref => 'test-role',
+    role_ref => {'type' => 'Role', 'name' => 'test-role'},
     subjects => [
       { 'type' => 'User', 'name' => 'test-user' }
     ], 
@@ -73,26 +73,15 @@ DESC
     defaultto 'default'
   end
 
-  newproperty(:role_ref) do
-    desc "References a role."
+  newproperty(:role_ref, :parent => PuppetX::Sensu::HashProperty) do
+    desc "References a role in the current namespace or a cluster role."
     validate do |value|
-      if ! ['String','Hash'].include?(value.class.to_s)
-        raise ArgumentError, "role_ref must be a String or Hash"
+      super(value)
+      if value.keys.sort != ["name","type"]
+        raise ArgumentError, "role_ref must only contain keys of 'name' and 'type'"
       end
-      if value.is_a?(Hash)
-        if value.keys.sort != ["name","type"]
-          raise ArgumentError, "role_ref must only contain keys of 'name' and 'type'"
-        end
-        if ! ["Role","ClusterRole"].include?(value["type"])
-          raise ArgumentError, "role_ref 'type' must be either 'Role' or 'ClusterRole'"
-        end
-      end
-    end
-    munge do |value|
-      if value.is_a?(String)
-        { "type" => "Role", "name" => value }
-      else
-        value
+      if ! ["Role","ClusterRole"].include?(value["type"])
+        raise ArgumentError, "role_ref 'type' must be either 'Role' or 'ClusterRole'"
       end
     end
   end

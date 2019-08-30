@@ -6,7 +6,7 @@ describe Puppet::Type.type(:sensu_cluster_role_binding).provider(:sensuctl) do
     @type = Puppet::Type.type(:sensu_cluster_role_binding)
     @resource = @type.new({
       :name => 'test',
-      :role_ref => 'test-role',
+      :role_ref => {'type' => 'ClusterRole', 'name' => 'test-role'},
       :subjects => [{'type' => 'User', 'name' => 'test-user'}],
     })
   end

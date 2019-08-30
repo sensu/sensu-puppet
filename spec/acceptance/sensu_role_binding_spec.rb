@@ -13,7 +13,7 @@ describe 'sensu_role_binding', if: RSpec.configuration.sensu_full do
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
       sensu_role_binding { 'test':
-        role_ref => 'test',
+        role_ref => {'type' => 'Role', 'name' => 'test'},
         subjects => [{'type' => 'User', 'name' => 'admin'}],
       }
       sensu_role_binding { 'test2':
@@ -66,7 +66,7 @@ describe 'sensu_role_binding', if: RSpec.configuration.sensu_full do
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
       sensu_role_binding { 'test':
-        role_ref => 'test2',
+        role_ref => {'type' => 'Role', 'name' => 'test2'},
         subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
       }
       sensu_role_binding { 'test2':

@@ -121,7 +121,7 @@ class sensu::backend::default_resources {
 
   sensu_cluster_role_binding { 'cluster-admin':
     ensure   => 'present',
-    role_ref => 'cluster-admin',
+    role_ref => {'type' => 'ClusterRole', 'name' => 'cluster-admin'},
     subjects => [
       {
         'type' => 'Group',
@@ -131,7 +131,7 @@ class sensu::backend::default_resources {
   }
   sensu_cluster_role_binding { 'system:agent':
     ensure   => 'present',
-    role_ref => 'system:agent',
+    role_ref => {'type' => 'ClusterRole', 'name' => 'system:agent'},
     subjects => [
       {
         'type' => 'Group',
@@ -141,7 +141,7 @@ class sensu::backend::default_resources {
   }
   sensu_cluster_role_binding { 'system:user':
     ensure   => 'present',
-    role_ref => 'system:user',
+    role_ref => {'type' => 'ClusterRole', 'name' => 'system:user'},
     subjects => [
       {
         'type' => 'Group',
