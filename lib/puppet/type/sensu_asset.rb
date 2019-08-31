@@ -7,21 +7,6 @@ require_relative '../../puppet_x/sensu/integer_property'
 Puppet::Type.newtype(:sensu_asset) do
   desc <<-DESC
 @summary Manages Sensu assets
-@example Create an asset
-  sensu_asset { 'test':
-    ensure  => 'present',
-    url     => 'http://example.com/asset/example.tar',
-    sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-    filters  => ["entity.system.os == 'linux'"],
-  }
-
-@example Create an asset with namespace `dev` in the name
-  sensu_asset { 'test in dev':
-    ensure  => 'present',
-    url     => 'http://example.com/asset/example.tar',
-    sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-    filters  => ["entity.system.os == 'linux'"],
-  }
 
 @exampe Create an asset with multiple builds
   sensu_asset { 'test':
@@ -33,7 +18,11 @@ Puppet::Type.newtype(:sensu_asset) do
         "filters" => [
           "entity.system.os == 'linux'",
           "entity.system.arch == 'amd64'"
-        ]
+        ],
+        "headers" => {
+          "Authorization" => "Bearer $TOKEN",
+          "X-Forwarded-For" => "client1, proxy1, proxy2",
+        }
       },
       {
         "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz",
@@ -42,7 +31,11 @@ Puppet::Type.newtype(:sensu_asset) do
           "entity.system.os == 'linux'",
           "entity.system.arch == 'arm'",
           "entity.system.arm_version == 7"
-        ]
+        ],
+        "headers" => {
+          "Authorization" => "Bearer $TOKEN",
+          "X-Forwarded-For" => "client1, proxy1, proxy2",
+        }
       },
       {
         "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz",
@@ -50,7 +43,11 @@ Puppet::Type.newtype(:sensu_asset) do
         "filters" => [
           "entity.system.os == 'windows'",
           "entity.system.arch == 'amd64'"
-        ]
+        ],
+        "headers" => {
+          "Authorization" => "Bearer $TOKEN",
+          "X-Forwarded-For" => "client1, proxy1, proxy2",
+        }
       }
     ],
   }
@@ -192,6 +189,12 @@ DESC
         if self[:ensure] == :present && self[property].nil?
           fail "You must provide a #{property}"
         end
+      end
+    end
+    if self[:url] || self[:sha512] || self[:filters] || self[:headers]
+      Puppet.warning("#{PuppetX::Sensu::Type.error_prefix(self)} Using url, sha512, filters, or headers properties for single build is deprecated, use builds property")
+      if self[:builds]
+        fail "Defining builds with url, sha512, or filters is not suppoed, they are mutually exclusive. Use only builds property"
       end
     end
     PuppetX::Sensu::Type.validate_namespace(self)

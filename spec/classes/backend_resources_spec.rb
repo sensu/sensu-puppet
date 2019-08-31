@@ -31,8 +31,10 @@ describe 'sensu::backend::resources', :type => :class do
           class { '::sensu::backend':
             assets => {
               'test' => {
-                'url'    => 'http://localhost',
-                'sha512' => '0e3e75234abc68f4378a86b3f4b32a198ba301845b0cd6e50106e874345700cc6663a86c1ea125dc5e92be17c98f9a0f85ca9d5f595db2012f7cc3571945c123',
+                'builds' => [{
+                  'url'    => 'http://localhost',
+                  'sha512' => '0e3e75234abc68f4378a86b3f4b32a198ba301845b0cd6e50106e874345700cc6663a86c1ea125dc5e92be17c98f9a0f85ca9d5f595db2012f7cc3571945c123',
+                }]
               }
             }
           }

@@ -5,8 +5,10 @@ describe Puppet::Type.type(:sensu_asset) do
   let(:default_config) do
     {
       name: 'test',
-      url: 'http://localhost',
-      sha512: '0e3e75234abc68f4378a86b3f4b32a198ba301845b0cd6e50106e874345700cc6663a86c1ea125dc5e92be17c98f9a0f85ca9d5f595db2012f7cc3571945c123',
+      builds: [{
+        "url" => 'http://localhost',
+        "sha512" => '0e3e75234abc68f4378a86b3f4b32a198ba301845b0cd6e50106e874345700cc6663a86c1ea125dc5e92be17c98f9a0f85ca9d5f595db2012f7cc3571945c123',
+      }]
     }
   end
   let(:config) do
@@ -67,8 +69,6 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # String properties
   [
-    :url,
-    :sha512,
     :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
@@ -98,7 +98,6 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # Array properties
   [
-    :filters,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
@@ -201,6 +200,12 @@ describe Puppet::Type.type(:sensu_asset) do
   end
 
   describe 'builds' do
+    let(:catalog) do
+      catalog = Puppet::Resource::Catalog.new
+      namespace = Puppet::Type.type(:sensu_namespace).new(:name => 'default')
+      catalog.add_resource namespace
+      catalog
+    end
     it 'should accept builds' do
       config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => ['something=something'], 'headers' => {'foo' => 'bar'}}]
       expect(asset[:builds]).to eq([{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => ['something=something'], 'headers' => {'foo' => 'bar'}}])
@@ -229,6 +234,43 @@ describe Puppet::Type.type(:sensu_asset) do
       config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'foo' => 'bar'}]
       expect { asset }.to raise_error(Puppet::Error, /foo is not a valid key for a build/)
     end
+    it 'should error if url property defined' do
+      config[:url] = 'http://foo.com'
+      catalog.add_resource asset
+      expect { asset.pre_run_check }.to raise_error(Puppet::Error, /mutually exclusive/)
+    end
+    it 'should error if sha512 property defined' do
+      config[:sha512] = 'foo'
+      catalog.add_resource asset
+      expect { asset.pre_run_check }.to raise_error(Puppet::Error, /mutually exclusive/)
+    end
+    it 'should error if filters property defined' do
+      config[:filters] = ['foo==bar']
+      catalog.add_resource asset
+      expect { asset.pre_run_check }.to raise_error(Puppet::Error, /mutually exclusive/)
+    end
+    it 'should error if headers property defined' do
+      config[:headers] = {'foo' => 'bar'}
+      catalog.add_resource asset
+      expect { asset.pre_run_check }.to raise_error(Puppet::Error, /mutually exclusive/)
+    end
+  end
+
+  describe 'deprecating' do
+    let(:catalog) do
+      catalog = Puppet::Resource::Catalog.new
+      namespace = Puppet::Type.type(:sensu_namespace).new(:name => 'default')
+      catalog.add_resource namespace
+      catalog
+    end
+    it 'should deprecate url' do
+      config[:url] = 'http://foo.com'
+      config[:sha512] = 'foo'
+      config.delete(:builds)
+      expect(Puppet).to receive(:warning).with(/Sensu_asset\[test\]:.*deprecated/)
+      catalog.add_resource asset
+      asset.pre_run_check
+    end
   end
 
   include_examples 'autorequires' do
@@ -236,8 +278,6 @@ describe Puppet::Type.type(:sensu_asset) do
   end
 
   [
-    :url,
-    :sha512,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)
