@@ -90,6 +90,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
         END
           content
         end
+        it { should compile.with_all_deps }
         it { should contain_file('/etc/sensu/postgresql.yaml').with_ensure('file').with_content(config_content) }
         it { should contain_exec('sensuctl-postgresql').with_command('sensuctl delete --file /etc/sensu/postgresql.yaml') }
         it { should_not contain_postgresql__server__db('sensu') }
@@ -103,6 +104,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should_not contain_postgresql__server__db('sensu') }
       end
     end

@@ -15,20 +15,24 @@ before_install:
   - 'if [ -n "$encrypted_f942601034d6_key" -a -n "$encrypted_f942601034d6_iv" ]; then openssl aes-256-cbc -K $encrypted_f942601034d6_key -iv $encrypted_f942601034d6_iv -in tests/secrets.tar.enc -out tests/secrets.tar -d; cd tests && tar xvf secrets.tar ; fi'
 sudo: false
 
-script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec strings:generate reference'
+script: 'bundle exec rake $CHECK'
 
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.4.4
-    env: PUPPET_GEM_VERSION="~> 5"
-  - rvm: 2.4.4
-    env: PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
+  - rvm: 2.4.5
+    env: CHECK="validate lint strings:generate reference" PUPPET_GEM_VERSION="~> 5"
   - rvm: 2.5.3
-    env: PUPPET_GEM_VERSION="~> 6"
+    env: CHECK="validate lint strings:generate reference" PUPPET_GEM_VERSION="~> 6"
+  - rvm: 2.4.5
+    env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5"
+  - rvm: 2.4.5
+    env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.3
-    env: PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
-  - rvm: 2.4.4
+    env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6"
+  - rvm: 2.5.3
+    env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet5
@@ -46,7 +50,7 @@ matrix:
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes
@@ -64,7 +68,7 @@ matrix:
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
@@ -76,7 +80,7 @@ matrix:
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes
@@ -88,7 +92,7 @@ matrix:
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes
@@ -106,7 +110,7 @@ matrix:
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet5
@@ -136,7 +140,7 @@ matrix:
     env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet5
@@ -154,7 +158,7 @@ matrix:
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
@@ -172,7 +176,7 @@ matrix:
     env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet5
@@ -190,7 +194,7 @@ matrix:
     env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet5
@@ -208,7 +212,7 @@ matrix:
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
     bundler_args:
     script: bundle exec rake beaker
-  - rvm: 2.4.4
+  - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet5
@@ -227,10 +231,10 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
   allow_failures:
-  - rvm: 2.4.4
-    env: PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
+  - rvm: 2.4.5
+    env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.3
-    env: PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
+    env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.3
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
   - rvm: 2.5.3
