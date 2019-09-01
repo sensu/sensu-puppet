@@ -156,6 +156,7 @@ describe 'sensu::backend', :type => :class do
           "class { 'sensu': use_ssl => false }"
         end
 
+        it { should compile.with_all_deps }
         it {
           should contain_sensu_api_validator('sensu').with({
             'sensu_api_server' => 'test.example.com',
@@ -198,12 +199,12 @@ describe 'sensu::backend', :type => :class do
 
         context 'when puppet_hostcert undefined' do
           let(:facts) { facts.merge(puppet_hostcert: nil) }
-          it { should compile }
+          it { should compile.with_all_deps }
         end
 
         context 'when puppet_hostprivkey undefined' do
           let(:facts) { facts.merge(puppet_hostprivkey: nil) }
-          it { should compile }
+          it { should compile.with_all_deps }
         end
       end
 
@@ -216,17 +217,20 @@ describe 'sensu::backend', :type => :class do
         let(:pre_condition) do
           "class { 'sensu': manage_repo => false }"
         end
+        it { should compile.with_all_deps }
         it { should contain_package('sensu-go-cli').without_require }
         it { should contain_package('sensu-go-backend').without_require }
       end
 
       context 'with include_default_resources => false' do
         let(:params) {{ :include_default_resources => false }}
+        it { should compile.with_all_deps }
         it { should_not contain_class('sensu::backend::default_resources') }
       end
 
       context 'with license_source defined' do
         let(:params) {{ :license_source => 'puppet:///modules/site_sensu/license.json' }}
+        it { should compile.with_all_deps }
         it {
           should contain_file('sensu_license').with({
             'ensure'    => 'file',
@@ -252,6 +256,7 @@ describe 'sensu::backend', :type => :class do
 
       context 'with license_content defined' do
         let(:params) {{ :license_content => '{ }' }}
+        it { should compile.with_all_deps }
         it {
           should contain_file('sensu_license').with({
             'ensure'    => 'file',
@@ -284,6 +289,7 @@ describe 'sensu::backend', :type => :class do
 
       context 'manage_tessen => false' do
         let(:params) {{ :manage_tessen => false }}
+        it { should compile.with_all_deps }
         it { is_expected.not_to contain_class('sensu::backend::tessen') }
       end
 
@@ -295,6 +301,7 @@ describe 'sensu::backend', :type => :class do
           EOS
         end
         let(:params) {{ :datastore => 'postgresql' }}
+        it { should compile.with_all_deps }
         it { should contain_class('sensu::backend::datastore::postgresql') }
       end
     end

@@ -157,6 +157,12 @@ describe 'sensu::agent', :type => :class do
         let(:pre_condition) do
           "class { 'sensu': manage_repo => false }"
         end
+        # Unknown bug in rspec-puppet fails to compile windows paths
+        # when they are used for file source of sensu_ssl_ca, issue with windows mocking
+        # https://github.com/rodjek/rspec-puppet/issues/750
+        if facts[:os]['family'] != 'windows'
+          it { should compile.with_all_deps }
+        end
         it { should contain_package('sensu-go-agent').without_require }
       end
 

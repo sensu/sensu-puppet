@@ -13,6 +13,7 @@ describe 'sensu::backend::tessen', :type => :class do
           class { '::sensu::backend': }
           EOS
         end
+        it { should compile.with_all_deps }
         it do
           should contain_exec('sensuctl tessen opt-in').with({
             :path => '/usr/bin:/bin:/usr/sbin:/sbin',
@@ -32,6 +33,7 @@ describe 'sensu::backend::tessen', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it do
           should contain_exec('sensuctl tessen opt-out --skip-confirm').with({
             :path => '/usr/bin:/bin:/usr/sbin:/sbin',

@@ -22,6 +22,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_ad_auth('ad') }
       end
       context 'assets defined' do
@@ -37,6 +38,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_asset('test') }
       end
       context 'checks defined' do
@@ -54,6 +56,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_check('test') }
       end
       context 'cluster_members defined' do
@@ -68,6 +71,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_cluster_member('test') }
       end
       context 'cluster_role_bindings defined' do
@@ -83,6 +87,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_cluster_role_binding('test') }
       end
       context 'cluster_roles defined' do
@@ -97,6 +102,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_cluster_role('test') }
       end
       context 'configs defined' do
@@ -111,6 +117,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_config('format') }
       end
       context 'entities defined' do
@@ -125,6 +132,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_entity('test') }
       end
       context 'events defined' do
@@ -137,6 +145,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_event('checkalive for test') }
       end
       context 'filters defined' do
@@ -152,6 +161,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_filter('test') }
       end
       context 'handlers defined' do
@@ -169,6 +179,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_handler('test') }
       end
       context 'hooks defined' do
@@ -181,6 +192,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_hook('test') }
       end
       context 'ldap_auths defined' do
@@ -198,6 +210,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_ldap_auth('ldap') }
       end
       context 'mutators defined' do
@@ -210,6 +223,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_mutator('test') }
       end
       context 'namespaces defined' do
@@ -222,6 +236,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_namespace('test') }
       end
       context 'role_bindings defined' do
@@ -237,6 +252,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_role_binding('test') }
       end
       context 'roles defined' do
@@ -251,6 +267,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_role('test') }
       end
       context 'silencings defined' do
@@ -263,6 +280,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_silenced('test') }
       end
       context 'users defined' do
@@ -275,6 +293,7 @@ describe 'sensu::backend::resources', :type => :class do
           }
           EOS
         end
+        it { should compile.with_all_deps }
         it { should contain_sensu_user('test') }
       end
     end

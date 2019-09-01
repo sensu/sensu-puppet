@@ -9,7 +9,7 @@ describe 'sensu::ssl', :type => :class do
         # when they are used for file source of sensu_ssl_ca, issue with windows mocking
         # https://github.com/rodjek/rspec-puppet/issues/750
         if facts[:os]['family'] != 'windows'
-          it { should compile }
+          it { should compile.with_all_deps }
         end
 
         it { should create_class('sensu::ssl') }

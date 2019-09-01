@@ -8,7 +8,7 @@ describe 'sensu::backend::default_resources', :type => :class do
     context "on #{os}" do
       let(:facts) { facts }
       context 'with default values for all parameters' do
-        it { should compile }
+        it { should compile.with_all_deps }
         it { should have_sensu_namespace_resource_count(1) }
         it { should contain_sensu_namespace('default').with_ensure('present') }
         it { should have_sensu_user_resource_count(2) }
