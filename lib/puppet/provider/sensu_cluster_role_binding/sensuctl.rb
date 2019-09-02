@@ -14,7 +14,7 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
       binding = {}
       binding[:ensure] = :present
       binding[:name] = d['metadata']['name']
-      binding[:role_ref] = d['role_ref']['name']
+      binding[:role_ref] = d['role_ref']
       binding[:subjects] = d['subjects']
       bindings << new(binding)
     end
@@ -49,7 +49,6 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
     spec = {}
     metadata = {}
     metadata[:name] = resource[:name]
-    spec[:role_ref] = { type: 'ClusterRole' }
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
@@ -57,11 +56,7 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
-      if property == :role_ref
-        spec[:role_ref][:name] = value
-      else
-        spec[property] = value
-      end
+      spec[property] = value
     end
     begin
       sensuctl_create('ClusterRoleBinding', metadata, spec)
@@ -76,7 +71,6 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
       spec = {}
       metadata = {}
       metadata[:name] = resource[:name]
-      spec[:role_ref] = { type: 'ClusterRole' }
       type_properties.each do |property|
         if @property_flush[property]
           value = @property_flush[property]
@@ -89,11 +83,7 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
         elsif value == :absent
           value = nil
         end
-        if property == :role_ref
-          spec[:role_ref][:name] = value
-        else
-          spec[property] = value
-        end
+        spec[property] = value
       end
       begin
         sensuctl_create('ClusterRoleBinding', metadata, spec)

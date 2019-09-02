@@ -6,7 +6,7 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
     @type = Puppet::Type.type(:sensu_role_binding)
     @resource = @type.new({
       :name => 'test',
-      :role_ref => 'test-role',
+      :role_ref => {'type' => 'Role', 'name' => 'test-role'},
       :subjects => [{'type' => 'User', 'name' => 'test-user'}],
     })
   end
@@ -21,7 +21,7 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
       allow(@provider).to receive(:sensuctl_list).with('role-binding').and_return(JSON.parse(my_fixture_read('list.json')))
       property_hash = @provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('test in default')
-      expect(property_hash[:role_ref]).to eq('test')
+      expect(property_hash[:role_ref]).to eq({'type' => 'Role', 'name' => 'test'})
     end
   end
 
@@ -32,7 +32,7 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
         :namespace => 'default',
       }
       expected_spec = {
-        :role_ref => {'type': 'Role', 'name': 'test-role'},
+        :role_ref => {'type' => 'Role', 'name' => 'test-role'},
         :subjects => [{'type' => 'User', 'name' => 'test-user'}],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('RoleBinding', expected_metadata, expected_spec)
@@ -49,7 +49,7 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
         :namespace => 'default',
       }
       expected_spec = {
-        :role_ref => {'type': 'Role', 'name': 'test-role'},
+        :role_ref => {'type' => 'Role', 'name' => 'test-role'},
         :subjects => [{'type' => 'User', 'name' => 'test'}],
       }
       expect(@resource.provider).to receive(:sensuctl_create).with('RoleBinding', expected_metadata, expected_spec)

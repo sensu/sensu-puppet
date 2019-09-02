@@ -10,10 +10,19 @@ Puppet::Type.newtype(:sensu_cluster_role_binding) do
 @example Add a cluster role binding
   sensu_cluster_role_binding { 'test':
     ensure   => 'present',
-    role_ref => 'test-role',
+    role_ref => {'type' => 'ClusterRole', 'name' => 'test-role'},
     subjects => [
       { 'type' => 'User', 'name' => 'test-user' }
     ], 
+  }
+
+@example Add a cluster role binding for a Role
+  sensu_cluster_role_binding { 'test':
+    ensure   => 'present',
+    role_ref => {'type' => 'Role', 'name' => 'test-role'},
+    subjects => [
+      { 'type' => 'User', 'name' => 'test-user' }
+    ],
   }
 
 **Autorequires**:
@@ -34,8 +43,17 @@ DESC
     desc "The name of the role binding."
   end
 
-  newproperty(:role_ref) do
-    desc "References a cluster role."
+  newproperty(:role_ref, :parent => PuppetX::Sensu::HashProperty) do
+    desc "References a role in the current namespace or a cluster role."
+    validate do |value|
+      super(value)
+      if value.keys.sort != ["name","type"]
+        raise ArgumentError, "role_ref must only contain keys of 'name' and 'type'"
+      end
+      if ! ["Role","ClusterRole"].include?(value["type"])
+        raise ArgumentError, "role_ref 'type' must be either 'Role' or 'ClusterRole'"
+      end
+    end
   end
 
   newproperty(:subjects, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
@@ -65,7 +83,31 @@ DESC
   end
 
   autorequire(:sensu_cluster_role) do
-    [ self[:role_ref] ]
+    roles = []
+    if self[:role_ref] && self[:role_ref]["type"] == 'ClusterRole'
+      catalog.resources.each do |resource|
+        if resource.class.to_s == "Puppet::Type::Sensu_cluster_role"
+          if resource.name == self[:role_ref]["name"]
+            roles << resource.name
+          end
+        end
+      end
+    end
+    roles
+  end
+
+  autorequire(:sensu_role) do
+    roles = []
+    if self[:role_ref] && self[:role_ref]["type"] == 'Role'
+      catalog.resources.each do |resource|
+        if resource.class.to_s == "Puppet::Type::Sensu_role"
+          if resource[:resource_name] == self[:role_ref]["name"]
+            roles << resource[:resource_name]
+          end
+        end
+      end
+    end
+    roles
   end
 
   autorequire(:sensu_user) do
