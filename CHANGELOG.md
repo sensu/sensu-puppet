@@ -1,6 +1,16 @@
 # Change Log
 
-## [v3.7.0](https://github.com/sensu/sensu-puppet/tree/v3.7.0) (2019-08-25)
+## [v3.8.0](https://github.com/sensu/sensu-puppet/tree/v3.8.0) (2019-09-02)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.7.0...v3.8.0)
+
+**Merged pull requests:**
+
+- Testing improvements [\#1139](https://github.com/sensu/sensu-puppet/pull/1139) ([treydock](https://github.com/treydock))
+- Fix unit tests [\#1138](https://github.com/sensu/sensu-puppet/pull/1138) ([treydock](https://github.com/treydock))
+- Support Sensu go 5.12 [\#1137](https://github.com/sensu/sensu-puppet/pull/1137) ([treydock](https://github.com/treydock))
+- Support role\_ref property being Hash [\#1133](https://github.com/sensu/sensu-puppet/pull/1133) ([treydock](https://github.com/treydock))
+
+## [v3.7.0](https://github.com/sensu/sensu-puppet/tree/v3.7.0) (2019-08-26)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.6.0...v3.7.0)
 
 **Merged pull requests:**

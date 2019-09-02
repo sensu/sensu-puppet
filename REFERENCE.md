@@ -41,6 +41,7 @@ _Private Classes_
 * [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth. Requires valid enterprise license.
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
+* [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth. Requires valid enterprise license.
 * [`sensu_plugin`](#sensu_plugin): Manages Sensu plugins
 * [`sensu_role`](#sensu_role): Manages Sensu roles
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
@@ -581,6 +582,14 @@ Hash of sensu_namespace resources
 
 Default value: {}
 
+##### `oidc_auths`
+
+Data type: `Hash`
+
+Hash of sensu_oidc_auth resources
+
+Default value: {}
+
 ##### `role_bindings`
 
 Data type: `Hash`
@@ -1028,6 +1037,16 @@ Valid values: /.*/, absent
 
 A set of filters used by the agent to determine of the asset should be installed.
 
+##### `builds`
+
+A list of asset builds used to define multiple artifacts which provide the named asset.
+
+Keys:
+* url: required
+* sha512: required
+* filters: optional Array
+* headers: optional Hash
+
 ##### `headers`
 
 HTTP headers to appy to asset retrieval requests.
@@ -1402,7 +1421,19 @@ The name of the role.
 ```puppet
 sensu_cluster_role_binding { 'test':
   ensure   => 'present',
-  role_ref => 'test-role',
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test-role'},
+  subjects => [
+    { 'type' => 'User', 'name' => 'test-user' }
+  ],
+}
+```
+
+##### Add a cluster role binding for a Role
+
+```puppet
+sensu_cluster_role_binding { 'test':
+  ensure   => 'present',
+  role_ref => {'type' => 'Role', 'name' => 'test-role'},
   subjects => [
     { 'type' => 'User', 'name' => 'test-user' }
   ],
@@ -1423,7 +1454,7 @@ Default value: present
 
 ##### `role_ref`
 
-References a cluster role.
+References a role in the current namespace or a cluster role.
 
 ##### `subjects`
 
@@ -1935,6 +1966,7 @@ The name of the handler.
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+* `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
 #### Examples
 
@@ -1985,6 +2017,12 @@ Valid values: `true`, `false`
 If the Sensu agent writes JSON serialized Sensu entity and check data to the command process’ STDIN.
 
 Default value: false
+
+##### `runtime_assets`
+
+Valid values: /.*/, absent
+
+An array of Sensu assets (names), required at runtime for the execution of the command
 
 ##### `namespace`
 
@@ -2256,6 +2294,92 @@ namevar
 
 The name of the namespace.
 
+### sensu_oidc_auth
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `Exec[sensu-add-license]`
+
+#### Examples
+
+##### Add an Active Directory auth
+
+```puppet
+sensu_oidc_auth { 'oidc':
+  ensure            => 'present',
+  additional_scopes => ['email','groups'],
+  client_id         => '0oa13ry4ypeDDBpxF357',
+  client_secret     => 'DlArQRfND4BKBUyO0mE-TL2PWOVwyGjIO1fdk9gX',
+  groups_claim      => 'groups',
+  groups_prefix     => 'oidc:',
+  redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+  server            => 'https://idp.example.com',
+  username_claim    => 'email',
+  username_prefix   => 'oidc:'
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_oidc_auth` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `client_id`
+
+The OIDC provider application "Client ID"
+
+##### `client_secret`
+
+The OIDC provider application "Client Secret"
+
+##### `server`
+
+The location of the OIDC server you wish to authenticate against.
+
+##### `redirect_uri`
+
+Redirect URL to provide to the OIDC provider.
+
+##### `groups_claim`
+
+The claim to use to form the associated RBAC groups.
+
+##### `groups_prefix`
+
+A prefix to use to form the final RBAC groups if required.
+
+##### `username_claim`
+
+The claim to use to form the final RBAC user name.
+
+##### `username_prefix`
+
+A prefix to use to form the final RBAC user name.
+
+##### `additional_scopes`
+
+Scopes to include in the claims
+
+#### Parameters
+
+The following parameters are available in the `sensu_oidc_auth` type.
+
+##### `name`
+
+namevar
+
+The name of the AD auth.
+
 ### sensu_plugin
 
 **Autorequires**:
@@ -2426,7 +2550,19 @@ The name of the role.
 ```puppet
 sensu_role_binding { 'test':
   ensure   => 'present',
-  role_ref => 'test-role',
+  role_ref => {'type' => 'Role', 'name' => 'test-role'},
+  subjects => [
+    { 'type' => 'User', 'name' => 'test-user' }
+  ],
+}
+```
+
+##### Add a role binding for a ClusterRole
+
+```puppet
+sensu_role_binding { 'test':
+  ensure   => 'present',
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test-role'},
   subjects => [
     { 'type' => 'User', 'name' => 'test-user' }
   ],
@@ -2438,7 +2574,7 @@ sensu_role_binding { 'test':
 ```puppet
 sensu_role_binding { 'test in dev':
   ensure   => 'present',
-  role_ref => 'test-role',
+  role_ref => {'type' => 'Role', 'name' => 'test-role'},
   subjects => [
     { 'type' => 'User', 'name' => 'test-user' }
   ],
@@ -2465,7 +2601,7 @@ Default value: default
 
 ##### `role_ref`
 
-References a role.
+References a role in the current namespace or a cluster role.
 
 ##### `subjects`
 
