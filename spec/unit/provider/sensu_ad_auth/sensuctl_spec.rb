@@ -3,14 +3,19 @@ require 'spec_helper'
 describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_ad_auth) }
-  let(:resource) do
-    type.new({
+  let(:config) do
+    {
       :name => 'test',
-      :servers => [{'host' => 'test', 'port' => 389}],
-      :server_binding => {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}},
-      :server_group_search => {'test' => {'base_dn' => 'ou=Groups'}},
-      :server_user_search => {'test' => {'base_dn' => 'ou=People'}},
-    })
+      :servers => [{
+        'host' => 'test', 'port' => 389,
+        'binding' => {'user_dn' => 'cn=foo','password' => 'foo'},
+        'group_search' => {'base_dn' => 'ou=Groups'},
+        'user_search' => {'base_dn' => 'ou=People'},
+      }],
+    }
+  end
+  let(:resource) do
+    type.new(config)
   end
 
   describe 'self.instances' do
@@ -43,7 +48,6 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
           'client_cert_file' => '',
           'client_key_file' => '',
           'default_upn_domain' => '',
-          'include_nested_groups' => nil,
           'binding' => {'user_dn' => 'cn=foo', 'password' => 'foo'},
           'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'},
           'user_search' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'},
@@ -68,22 +72,16 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
           'client_cert_file' => '',
           'client_key_file' => '',
           'default_upn_domain' => '',
-          'include_nested_groups' => nil,
           'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'},
           'user_search' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'},
         }]
       }
-      resource = type.new({
-        :name => 'test',
-        :servers => [{'host' => 'test', 'port' => 389}],
-        :server_group_search => {'test' => {'base_dn' => 'ou=Groups'}},
-        :server_user_search => {'test' => {'base_dn' => 'ou=People'}},
-      })
+      config[:servers][0].delete('binding')
       expect(resource.provider).to receive(:sensuctl_create).with('ad', expected_metadata, expected_spec, 'authentication/v2')
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
-    end
+    end 
   end
 
   describe 'flush' do
@@ -101,7 +99,6 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
           'client_cert_file' => '',
           'client_key_file' => '',
           'default_upn_domain' => '',
-          'include_nested_groups' => nil,
           'binding' => {'user_dn' => 'cn=foo', 'password' => 'bar'},
           'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'},
           'user_search' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'},
@@ -109,8 +106,9 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
         :groups_prefix => nil,
         :username_prefix => nil,
       }
+      config[:servers][0]['binding'] = {'user_dn' => 'cn=foo', 'password' => 'bar'}
       expect(resource.provider).to receive(:sensuctl_create).with('ad', expected_metadata, expected_spec, 'authentication/v2')
-      resource.provider.server_binding = {'test' => {'user_dn' => 'cn=foo', 'password' => 'bar'}}
+      resource.provider.servers = config[:servers]
       resource.provider.flush
     end
   end
