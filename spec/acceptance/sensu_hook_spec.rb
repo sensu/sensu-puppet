@@ -9,6 +9,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       sensu_hook { 'test':
         command => 'ps aux',
         labels  => { 'foo' => 'baz' },
+        runtime_assets => ['test'],
       }
       EOS
 
@@ -30,6 +31,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['command']).to eq('ps aux')
         expect(data['stdin']).to eq(false)
+        expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
@@ -42,6 +44,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       sensu_hook { 'test':
         command => 'ps aux',
         timeout => 120,
+        runtime_assets => ['test2'],
         labels  => { 'foo' => 'bar' },
       }
       EOS
@@ -63,6 +66,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl hook info test --format json' do
         data = JSON.parse(stdout)
         expect(data['timeout']).to eq(120)
+        expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end

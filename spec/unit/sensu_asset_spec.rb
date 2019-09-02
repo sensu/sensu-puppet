@@ -56,9 +56,9 @@ describe Puppet::Type.type(:sensu_asset) do
     expect { asset }.to raise_error(Puppet::Error, /name invalid/)
   end
 
-  it 'should not accept ensure => absent' do
+  it 'should accept ensure => absent' do
     config[:ensure] = 'absent'
-    expect { asset[:ensure] = 'absent' }.to raise_error(Puppet::Error, /ensure does not support absent/)
+    expect(asset[:ensure]).to eq(:absent)
   end
 
   defaults = {
@@ -197,6 +197,37 @@ describe Puppet::Type.type(:sensu_asset) do
       it "should not have default for #{property}" do
         expect(asset[property]).to eq(default_config[property])
       end
+    end
+  end
+
+  describe 'builds' do
+    it 'should accept builds' do
+      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => ['something=something'], 'headers' => {'foo' => 'bar'}}]
+      expect(asset[:builds]).to eq([{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => ['something=something'], 'headers' => {'foo' => 'bar'}}])
+    end
+    it 'should accept builds - minimal' do
+      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo'}]
+      expect(asset[:builds]).to eq([{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => nil, 'headers' => nil}])
+    end
+    it 'should require url' do
+      config[:builds] = [{'sha512' => 'foo'}]
+      expect { asset }.to raise_error(Puppet::Error, /build requires key url/)
+    end
+    it 'should require sha512' do
+      config[:builds] = [{'url' => 'http://example.com'}]
+      expect { asset }.to raise_error(Puppet::Error, /build requires key sha512/)
+    end
+    it 'should require filters be an array' do
+      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => 'foo'}]
+      expect { asset }.to raise_error(Puppet::Error, /build filters must be an Array/)
+    end
+    it 'should require headers be a hash' do
+      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'headers' => 'foo'}]
+      expect { asset }.to raise_error(Puppet::Error, /build headers must be a Hash/)
+    end
+    it 'should does not allow unknown keys' do
+      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'foo' => 'bar'}]
+      expect { asset }.to raise_error(Puppet::Error, /foo is not a valid key for a build/)
     end
   end
 

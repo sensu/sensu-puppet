@@ -78,6 +78,11 @@ class sensu::backend::resources {
       * => $namespace,
     }
   }
+  $::sensu::backend::oidc_auths.each |$name, $oidc_auth| {
+    sensu_oidc_auth { $name:
+      * => $oidc_auth,
+    }
+  }
   $::sensu::backend::role_bindings.each |$name, $role_binding| {
     sensu_role_binding { $name:
       * => $role_binding,
