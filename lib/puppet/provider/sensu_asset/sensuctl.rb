@@ -10,7 +10,18 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
 
     data = sensuctl_list('asset')
 
+    asset_names = {}
+
     data.each do |d|
+      name = d['metadata']['name']
+      namespace = d['metadata']['namespace']
+      if ! asset_names.key?(name)
+        asset_names[name] = namespace
+      end
+    end
+
+    asset_names.each_pair do |name, namespace|
+      d = sensuctl_info('asset', name, namespace)
       asset = {}
       asset[:ensure] = :present
       asset[:resource_name] = d['metadata']['name']

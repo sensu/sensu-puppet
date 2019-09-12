@@ -103,6 +103,31 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.sensuctl_delete(*args)
   end
 
+  def self.sensuctl_info(command, name, namespace = nil)
+    args = [command]
+    args << 'info'
+    args << name
+    args << '--format'
+    args << 'json'
+    if namespace
+      args << '--namespace'
+      args << namespace
+    end
+    output = sensuctl(args)
+    Puppet.debug("sensuctl #{args.join(' ')}: #{output}")
+    begin
+      data = JSON.parse(output)
+    rescue JSON::ParserError => e
+      Puppet.debug("Unable to parse output from sensuctl #{args.join(' ')}")
+      return {}
+    end
+    return {} if data.nil?
+    data
+  end
+  def sensuctl_info(*args)
+    self.class.sensuctl_info(*args)
+  end
+
   def self.sensuctl_auth_types()
     output = sensuctl(['auth','list','--format','yaml'])
     Puppet.debug("YAML auth list: #{output}")

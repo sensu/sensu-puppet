@@ -12,15 +12,30 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
   end
 
   describe 'self.instances' do
+    let(:fixture) do
+      JSON.parse(my_fixture_read('asset_list.json'))
+    end
+    let(:asset1) do
+      JSON.parse(my_fixture_read('asset1_info.json'))
+    end
+    let(:asset2) do
+      JSON.parse(my_fixture_read('asset2_info.json'))
+    end
+
     it 'should create instances' do
-      allow(provider).to receive(:sensuctl_list).with('asset').and_return(JSON.parse(my_fixture_read('asset_list.json')))
-      expect(provider.instances.length).to eq(1)
+      allow(provider).to receive(:sensuctl_list).with('asset').and_return(fixture)
+      allow(provider).to receive(:sensuctl_info).with('asset','check_cpu','default').and_return(asset1)
+      allow(provider).to receive(:sensuctl_info).with('asset','check_cpu_linux_amd64','default').and_return(asset2)
+      expect(provider.instances.length).to eq(2)
     end
 
     it 'should return the resource for a asset' do
-      allow(provider).to receive(:sensuctl_list).with('asset').and_return(JSON.parse(my_fixture_read('asset_list.json')))
+      allow(provider).to receive(:sensuctl_list).with('asset').and_return(fixture)
+      allow(provider).to receive(:sensuctl_info).with('asset','check_cpu','default').and_return(asset1)
+      allow(provider).to receive(:sensuctl_info).with('asset','check_cpu_linux_amd64','default').and_return(asset2)
       property_hash = provider.instances[0].instance_variable_get("@property_hash")
-      expect(property_hash[:name]).to eq('check-cpu.sh in default')
+      expect(property_hash[:name]).to eq('check_cpu in default')
+      expect(property_hash[:builds].size).to eq(3)
     end
   end
 

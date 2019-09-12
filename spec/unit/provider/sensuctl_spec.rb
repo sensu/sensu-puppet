@@ -93,6 +93,14 @@ describe Puppet::Provider::Sensuctl do
     end
   end
 
+  context 'sensuctl_info' do
+    it 'should get info for a resource' do
+      expected_args = ['check','info','test','--format','json','--namespace','default']
+      expect(subject).to receive(:sensuctl).with(expected_args).and_return("{}\n")
+      subject.sensuctl_info('check', 'test', 'default')
+    end
+  end
+
   context 'sensuctl_auth_types' do
     it 'should return auth and their types' do
       allow(subject).to receive(:sensuctl).with(['auth','list','--format','yaml']).and_return(my_fixture_read('auths.txt'))
