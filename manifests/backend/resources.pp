@@ -43,11 +43,6 @@ class sensu::backend::resources {
       * => $entity,
     }
   }
-  $::sensu::backend::events.each |$name, $event| {
-    sensu_event { $name:
-      * => $event,
-    }
-  }
   $::sensu::backend::filters.each |$name, $filter| {
     sensu_filter { $name:
       * => $filter,
@@ -91,11 +86,6 @@ class sensu::backend::resources {
   $::sensu::backend::roles.each |$name, $role| {
     sensu_role { $name:
       * => $role,
-    }
-  }
-  $::sensu::backend::silencings.each |$name, $silencing| {
-    sensu_silenced { $name:
-      * => $silencing,
     }
   }
   $::sensu::backend::users.each |$name, $user| {
