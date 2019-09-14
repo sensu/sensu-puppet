@@ -97,6 +97,7 @@ class sensu::agent (
       ],
     }
     if $package_source and ($package_source =~ Stdlib::HTTPSUrl or $package_source =~ Stdlib::HTTPUrl) {
+      $package_provider = undef
       $package_source_basename = basename($package_source)
       $_package_source = "${package_download_path}\\${package_source_basename}"
       archive { 'sensu-go-agent.msi':
@@ -107,6 +108,7 @@ class sensu::agent (
         before  => Package['sensu-go-agent'],
       }
     } elsif $package_source and $package_source =~ /^puppet:/ {
+      $package_provider = undef
       $package_source_basename = basename($package_source)
       $_package_source = "${package_download_path}\\${package_source_basename}"
       file { 'sensu-go-agent.msi':
@@ -115,19 +117,26 @@ class sensu::agent (
         source => $package_source,
         before => Package['sensu-go-agent'],
       }
+    } elsif $package_source {
+        $package_provider = undef
+        $_package_source = $package_source
     } else {
+      include ::chocolatey
+      $package_provider = 'chocolatey'
       $_package_source = $package_source
     }
   } else {
+    $package_provider = undef
     $_package_source = undef
   }
 
   package { 'sensu-go-agent':
-    ensure  => $_version,
-    name    => $package_name,
-    source  => $_package_source,
-    before  => File['sensu_etc_dir'],
-    require => $::sensu::package_require,
+    ensure   => $_version,
+    name     => $package_name,
+    source   => $_package_source,
+    provider => $package_provider,
+    before   => File['sensu_etc_dir'],
+    require  => $::sensu::package_require,
   }
 
   file { 'sensu_agent_config':

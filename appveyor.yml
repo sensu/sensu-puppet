@@ -31,6 +31,7 @@ install:
 - set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
 - puppet --version
 - puppet module install puppetlabs-stdlib
+- puppet module install puppetlabs-chocolatey
 - puppet module install puppet-archive
 - puppet config set --section main certname sensu_agent
 - facter -p --debug

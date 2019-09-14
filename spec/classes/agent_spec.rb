@@ -35,11 +35,12 @@ describe 'sensu::agent', :type => :class do
 
         it {
           should contain_package('sensu-go-agent').with({
-            'ensure'  => 'installed',
-            'name'    => platforms[facts[:osfamily]][:agent_package_name],
-            'source'  => nil,
-            'before'  => 'File[sensu_etc_dir]',
-            'require' => platforms[facts[:osfamily]][:package_require],
+            'ensure'   => 'installed',
+            'name'     => platforms[facts[:osfamily]][:agent_package_name],
+            'source'   => nil,
+            'provider' => platforms[facts[:osfamily]][:package_provider],
+            'before'   => 'File[sensu_etc_dir]',
+            'require'  => platforms[facts[:osfamily]][:package_require],
           })
         }
 
@@ -86,6 +87,7 @@ describe 'sensu::agent', :type => :class do
             })
           }
           it { should contain_package('sensu-go-agent').with_source('C:\\\\sensu-go-agent.msi') }
+          it { should contain_package('sensu-go-agent').without_provider }
         else
           it { should_not contain_archive('sensu-go-agent.msi') }
           it { should contain_package('sensu-go-agent').without_source }
@@ -104,6 +106,7 @@ describe 'sensu::agent', :type => :class do
             })
           }
           it { should contain_package('sensu-go-agent').with_source('C:\\\\sensu-go-agent.msi') }
+          it { should contain_package('sensu-go-agent').without_provider }
         else
           it { should_not contain_archive('sensu-go-agent.msi') }
           it { should contain_package('sensu-go-agent').without_source }
@@ -115,6 +118,7 @@ describe 'sensu::agent', :type => :class do
         it { should_not contain_archive('sensu-go-agent.msi') }
         if facts[:os]['family'] == 'windows'
           it { should contain_package('sensu-go-agent').with_source('C:\\sensu-go-agent.msi') }
+          it { should contain_package('sensu-go-agent').without_provider }
         else
           it { should contain_package('sensu-go-agent').without_source }
         end
