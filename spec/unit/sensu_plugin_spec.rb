@@ -186,6 +186,28 @@ describe Puppet::Type.type(:sensu_plugin) do
       config[:version] = 'foo'
       expect { plugin }.to raise_error(Puppet::Error, /Invalid value/)
     end
+    it 'should be in sync' do
+      config[:version] = '1.0.0'
+      expect(plugin.property(:version).insync?('1.0.0')).to eq(true)
+    end
+    it 'should not be in sync' do
+      config[:version] = '1.1.0'
+      expect(plugin.property(:version).insync?('1.0.0')).to eq(false)
+      expect(plugin.property(:version).should_to_s('1.1.0')).to eq("'1.1.0'")
+    end
+    it 'should be in sync with latest' do
+      config[:provider] = 'sensu_install'
+      allow(Puppet::Type::Sensu_plugin::ProviderSensu_install).to receive(:latest_versions).and_return({config[:name] => '1.1.0', 'foo' => '1.2.0'})
+      config[:version] = 'latest'
+      expect(plugin.property(:version).insync?('1.1.0')).to eq(true)
+    end
+    it 'should not be in sync with latest' do
+      config[:provider] = 'sensu_install'
+      allow(Puppet::Type::Sensu_plugin::ProviderSensu_install).to receive(:latest_versions).and_return({config[:name] => '1.1.0', 'foo' => '1.2.0'})
+      config[:version] = 'latest'
+      expect(plugin.property(:version).insync?('1.0.0')).to eq(false)
+      expect(plugin.property(:version).should_to_s('latest')).to eq("'1.1.0'")
+    end
   end
 
   it 'should autorequire sensu-plugins-ruby' do
