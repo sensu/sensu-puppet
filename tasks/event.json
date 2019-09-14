@@ -1,0 +1,22 @@
+{
+  "description": "Manage Sensu Go events",
+  "input_method": "stdin",
+  "parameters": {
+    "action": {
+      "description": "The action to perform",
+      "type": "Enum[resolve,delete]"
+    },
+    "entity": {
+      "description": "The entity for event",
+      "type": "String[1]"
+    },
+    "check": {
+      "description": "The check for event",
+      "type": "String[1]"
+    },
+    "namespace": {
+      "description": "The namespace for event",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
