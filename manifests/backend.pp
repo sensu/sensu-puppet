@@ -75,8 +75,6 @@
 #   Hash of sensu_entity resources
 # @param etcd_replicators
 #   Hash of sensu_etcd_replicator resources
-# @param events
-#   Hash of sensu_event resources
 # @param filters
 #   Hash of sensu_filter resources
 # @param handlers
@@ -95,8 +93,6 @@
 #   Hash of sensu_role_binding resources
 # @param roles
 #   Hash of sensu_role resources
-# @param silencings
-#   Hash of sensu_silenced resources
 # @param users
 #   Hash of sensu_user resources
 # @param sensuctl_chunk_size
@@ -156,7 +152,6 @@ class sensu::backend (
   Hash $configs = {},
   Hash $entities = {},
   Hash $etcd_replicators = {},
-  Hash $events = {},
   Hash $filters = {},
   Hash $handlers = {},
   Hash $hooks = {},
@@ -166,7 +161,6 @@ class sensu::backend (
   Hash $oidc_auths = {},
   Hash $role_bindings = {},
   Hash $roles = {},
-  Hash $silencings = {},
   Hash $users = {},
   Optional[Integer] $sensuctl_chunk_size = undef,
   Optional[Enum['postgresql']] $datastore = undef,
