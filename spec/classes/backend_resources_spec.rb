@@ -41,6 +41,19 @@ describe 'sensu::backend::resources', :type => :class do
         it { should compile.with_all_deps }
         it { should contain_sensu_asset('test') }
       end
+      context 'bonsai_assets defined' do
+        let(:pre_condition) do
+          <<-EOS
+            class { '::sensu::backend':
+              bonsai_assets => {
+                'sensu/sensu-pagerduty-handler' => { 'ensure' => 'present' }
+              }
+            }
+          EOS
+        end
+        it { should compile.with_all_deps }
+        it { should contain_sensu_bonsai_asset('sensu/sensu-pagerduty-handler') }
+      end
       context 'checks defined' do
         let(:pre_condition) do
           <<-EOS

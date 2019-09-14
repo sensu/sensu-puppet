@@ -1,12 +1,10 @@
 require 'spec_helper'
 require 'puppet/type/sensu_asset'
 
-describe Puppet::Type.type(:sensu_asset) do
+describe Puppet::Type.type(:sensu_bonsai_asset) do
   let(:default_config) do
     {
-      name: 'test',
-      url: 'http://localhost',
-      sha512: '0e3e75234abc68f4378a86b3f4b32a198ba301845b0cd6e50106e874345700cc6663a86c1ea125dc5e92be17c98f9a0f85ca9d5f595db2012f7cc3571945c123',
+      name: 'sensu/sensu-pagerduty-handler',
     }
   end
   let(:config) do
@@ -29,52 +27,46 @@ describe Puppet::Type.type(:sensu_asset) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
-  it 'allows bonsai name' do
-    config[:name] = 'sensu/sensu-pagerduty-handler'
-    expect(asset[:name]).to eq('sensu/sensu-pagerduty-handler')
-  end
-
-  it 'should handle composite title' do
-    config.delete(:namespace)
-    config[:name] = 'test in dev'
-    expect(asset[:name]).to eq('test in dev')
-    expect(asset[:resource_name]).to eq('test')
-    expect(asset[:namespace]).to eq('dev')
-  end
-
-  it 'should handle non-composite title' do
-    config[:name] = 'test'
-    expect(asset[:name]).to eq('test')
-    expect(asset[:resource_name]).to eq('test')
+  it 'should handle title pattern' do
+    expect(asset[:bonsai_namespace]).to eq('sensu')
+    expect(asset[:bonsai_name]).to eq('sensu-pagerduty-handler')
     expect(asset[:namespace]).to eq('default')
   end
 
-  it 'should handle composite title and namespace' do
+  it 'should handle title pattern with namespace' do
+    config[:name] = 'sensu/sensu-pagerduty-handler in dev'
+    expect(asset[:bonsai_namespace]).to eq('sensu')
+    expect(asset[:bonsai_name]).to eq('sensu-pagerduty-handler')
+    expect(asset[:namespace]).to eq('dev')
+  end
+
+  it 'should have bonsai_namespace over composite name' do
+    config[:bonsai_namespace] = 'sensu'
+    config[:name] = 'foo/bar'
+    expect(asset[:bonsai_namespace]).to eq('sensu')
+    expect(asset[:bonsai_name]).to eq('bar')
+    expect(asset[:name]).to eq('foo/bar')
+  end
+
+  it 'should have bonsai_name over composite name' do
+    config[:bonsai_name] = 'baz'
+    config[:name] = 'foo/bar'
+    expect(asset[:bonsai_namespace]).to eq('foo')
+    expect(asset[:bonsai_name]).to eq('baz')
+    expect(asset[:name]).to eq('foo/bar')
+  end
+
+  it 'should have namespace over composite name' do
+    config[:name] = 'sensu/sensu-pagerduty-handler in dev'
     config[:namespace] = 'test'
-    config[:name] = 'test in qa'
-    expect(asset[:resource_name]).to eq('test')
+    expect(asset[:name]).to eq('sensu/sensu-pagerduty-handler in dev')
     expect(asset[:namespace]).to eq('test')
   end
 
-  it 'should handle invalid composites' do
-    config[:name] = 'test test in qa'
-    expect { asset }.to raise_error(Puppet::Error, /name invalid/)
-  end
-
-  it 'should accept ensure => absent' do
-    config[:ensure] = 'absent'
-    expect(asset[:ensure]).to eq(:absent)
-  end
-
-  defaults = {
-    'namespace': 'default',
-  }
+  defaults = {}
 
   # String properties
   [
-    :url,
-    :sha512,
-    :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -93,7 +85,6 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # String regex validated properties
   [
-    :name,
   ].each do |property|
     it "should not accept invalid #{property}" do
       config[property] = 'foo bar'
@@ -103,7 +94,6 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # Array properties
   [
-    :filters,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = ['foo', 'bar']
@@ -182,9 +172,6 @@ describe Puppet::Type.type(:sensu_asset) do
 
   # Hash properties
   [
-    :headers,
-    :labels,
-    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
@@ -205,34 +192,40 @@ describe Puppet::Type.type(:sensu_asset) do
     end
   end
 
-  describe 'builds' do
-    it 'should accept builds' do
-      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => ['something=something'], 'headers' => {'foo' => 'bar'}}]
-      expect(asset[:builds]).to eq([{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => ['something=something'], 'headers' => {'foo' => 'bar'}}])
+  describe 'version' do
+    it 'should allow latest' do
+      config[:version] = 'latest'
+      expect(asset[:version]).to eq(:latest)
     end
-    it 'should accept builds - minimal' do
-      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo'}]
-      expect(asset[:builds]).to eq([{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => nil, 'headers' => nil}])
+    it 'should allow a version' do
+      config[:version] = '1.0.0'
+      expect(asset[:version]).to eq('1.0.0')
     end
-    it 'should require url' do
-      config[:builds] = [{'sha512' => 'foo'}]
-      expect { asset }.to raise_error(Puppet::Error, /build requires key url/)
+    it 'should raise error if not latest or version' do
+      config[:version] = 'foo'
+      expect { asset }.to raise_error(Puppet::Error, /Invalid value/)
     end
-    it 'should require sha512' do
-      config[:builds] = [{'url' => 'http://example.com'}]
-      expect { asset }.to raise_error(Puppet::Error, /build requires key sha512/)
+    it 'should be in sync' do
+      config[:version] = '1.0.0'
+      expect(asset.property(:version).insync?('1.0.0')).to eq(true)
     end
-    it 'should require filters be an array' do
-      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'filters' => 'foo'}]
-      expect { asset }.to raise_error(Puppet::Error, /build filters must be an Array/)
+    it 'should not be in sync' do
+      config[:version] = '1.1.0'
+      expect(asset.property(:version).insync?('1.0.0')).to eq(false)
+      expect(asset.property(:version).should_to_s('1.1.0')).to eq("'1.1.0'")
     end
-    it 'should require headers be a hash' do
-      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'headers' => 'foo'}]
-      expect { asset }.to raise_error(Puppet::Error, /build headers must be a Hash/)
+    it 'should be in sync with latest' do
+      config[:provider] = 'sensuctl'
+      allow(Puppet::Type::Sensu_bonsai_asset::ProviderSensuctl).to receive(:latest_version).and_return('1.1.0')
+      config[:version] = 'latest'
+      expect(asset.property(:version).insync?('1.1.0')).to eq(true)
     end
-    it 'should does not allow unknown keys' do
-      config[:builds] = [{'url' => 'http://example.com', 'sha512' => 'foo', 'foo' => 'bar'}]
-      expect { asset }.to raise_error(Puppet::Error, /foo is not a valid key for a build/)
+    it 'should not be in sync with latest' do
+      config[:provider] = 'sensuctl'
+      allow(Puppet::Type::Sensu_bonsai_asset::ProviderSensuctl).to receive(:latest_version).and_return('1.1.0')
+      config[:version] = 'latest'
+      expect(asset.property(:version).insync?('1.0.0')).to eq(false)
+      expect(asset.property(:version).should_to_s('latest')).to eq("'1.1.0'")
     end
   end
 
@@ -240,14 +233,26 @@ describe Puppet::Type.type(:sensu_asset) do
     let(:res) { asset }
   end
 
+  it 'should require bonsai_namespace' do
+    config.delete(:bonsai_namespace)
+    config[:bonsai_name] = 'foo'
+    config[:name] = 'foo'
+    expect { asset }.to raise_error(Puppet::Error, /bonsai_namespace/)
+  end
+
+  it 'should require bonsai_name' do
+    config[:bonsai_namespace] = 'sensu'
+    config.delete(:bonsai_name)
+    config[:name] = 'foo'
+    expect { asset }.to raise_error(Puppet::Error, /bonsai_name/)
+  end
+
   [
-    :url,
-    :sha512,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
-      expect { asset.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+      expect { asset }.to raise_error(Puppet::Error, /You must provide a #{property}/)
     end
   end
 

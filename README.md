@@ -24,6 +24,7 @@
         * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
     * [Large Environment Considerations](#large-environment-considerations)
     * [Composite Names for Namespaces](#composite-names-for-namespaces)
+    * [Installing Bonsai Assets](#installing-bonsai-assets)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -547,6 +548,32 @@ sensu_check { 'check-cpu in team1':
 The example above would add the `check-cpu` check to both the `default` and `team1` namespaces.
 
 **NOTE:** If you use composite names for namespaces, the `namespace` property takes precedence.
+
+### Installing Bonsai Assets
+Install a bonsai asset. The latest version will be installed but not automatically upgraded.
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+}
+```
+
+Install specific version of a bonsai asset.
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => '1.2.0',
+}
+```
+
+Install latest version of a bonsai asset. Puppet will update the Bonsai asset if a new version is released.
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => 'latest',
+}
+```
 
 ## Reference
 
