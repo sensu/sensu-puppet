@@ -23,7 +23,7 @@ Puppet::Type.newtype(:sensu_asset) do
     filters  => ["entity.system.os == 'linux'"],
   }
 
-@exampe Create an asset with multiple builds
+@example Create an asset with multiple builds
   sensu_asset { 'test':
     ensure => 'present',
     builds => [
