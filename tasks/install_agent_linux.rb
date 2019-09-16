@@ -7,16 +7,8 @@ require 'tempfile'
 begin
   params = JSON.parse(STDIN.read)
   backend = params['backend']
-  if backend.is_a?(String)
-    backend = [backend]
-  end
   subscription = params['subscription']
-  if subscription.is_a?(String)
-    subscription = [subscription]
-  end
   namespace = params['namespace'] || 'default'
-  backends_param = backend.map { |b| "'#{b}'" }.join(',')
-  subscriptions_param = subscription.map { |b| "'#{b}'" }.join(',')
 
   puppet = '/opt/puppetlabs/bin/puppet'
   _stdout, stderr, status = Open3.capture3(puppet,'module','install','sensu-sensu')
@@ -37,9 +29,9 @@ class { '::sensu':
   use_ssl => false,
 }
 class { '::sensu::agent':
-  backends    => [#{backends_param}],
+  backends    => ['#{backend}'],
   config_hash => {
-    'subscriptions' => [#{subscriptions_param}],
+    'subscriptions' => ['#{subscription}'],
     'namespace'     => '#{namespace}',
   },
 }

@@ -4,11 +4,11 @@
   "parameters": {
     "backend": {
       "description": "The backend(s) to connect agent to",
-      "type": "Variant[Array, String]"
+      "type": "String[1]"
     },
     "subscription": {
       "description": "The subscription(s) for the agent",
-      "type": "Variant[Array, String]"
+      "type": "String[1]"
     },
     "namespace": {
       "description": "The namespace for the agent, default is 'default'",
