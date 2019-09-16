@@ -16,6 +16,7 @@
     }
   },
   "implementations": [
-    {"name": "install_agent_linux.rb", "requirements": ["shell"]}
+    {"name": "install_agent_linux.rb", "requirements": ["shell"]},
+    {"name": "install_agent_windows.ps1", "requirements": ["powershell"], "input_method": "powershell"}
   ]
 }
