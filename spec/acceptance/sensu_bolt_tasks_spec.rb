@@ -114,3 +114,46 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
   end
 end
 
+describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
+  backend = hosts_as('sensu_backend')[0]
+  agent = hosts_as('sensu_agent')[0]
+  context 'setup' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu':
+        use_ssl => false,
+      }
+      include '::sensu::backend'
+      sensu_entity { 'sensu_agent':
+        ensure => 'absent',
+      }
+      EOS
+
+      on agent, 'puppet resource service sensu-agent ensure=stopped'
+      if fact('os.family') == 'RedHat'
+        on agent, 'rm -f /etc/yum.repos.d/sensu.repo'
+      end
+      if fact('os.family') == 'Debian'
+        on agent, 'rm -f /etc/apt/sources.list.d/sensu.list'
+        on agent, 'apt-get update'
+      end
+      on agent, 'puppet resource package sensu-go-agent ensure=absent'
+      on agent, 'rm -rf /etc/sensu'
+      apply_manifest_on(backend, pp, :catch_failures => true)
+    end
+  end
+  context 'install_agent' do
+    it 'should work without errors' do
+      on backend, 'bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux --nodes sensu_agent'
+      sleep 5
+    end
+
+    it 'should have a valid entity' do
+      on backend, 'sensuctl entity info sensu_agent --format json' do
+        data = JSON.parse(stdout)
+        expect(data['subscriptions']).to include('linux')
+        expect(data['metadata']['namespace']).to eq('default')
+      end
+    end
+  end
+end
