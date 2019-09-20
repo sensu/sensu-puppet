@@ -94,12 +94,32 @@ DESC
     newvalues(/.*/, :absent)
   end
 
-  newproperty(:socket_host) do
-    desc "The socket host address (IP or hostname) to connect to."
-  end
+  newproperty(:socket, :parent => PuppetX::Sensu::HashProperty) do
+    desc <<-EOS
+    The socket definition scope, used to configure the TCP/UDP handler socket.
 
-  newproperty(:socket_port, :parent => PuppetX::Sensu::IntegerProperty) do
-    desc "The socket port to connect to."
+    Valid keys:
+    * host - Required - The socket host address (IP or hostname) to connect to.
+    * port - Required - The socket port to connect to.
+    EOS
+    validate do |value|
+      super(value)
+      required_keys = ['host','port']
+      valid_keys = ['host','port']
+      value.keys.each do |key|
+        if ! valid_keys.include?(key)
+          raise ArgumentError, "#{key} is not a valid key for socket"
+        end
+      end
+      required_keys.each do |key|
+        if ! value.key?(key)
+          raise ArgumentError, "#{key} is required for socket"
+        end
+      end
+      if ! value['port'].is_a?(Integer)
+        raise ArgumentError, "socket.port must be an Integer"
+      end
+    end
   end
 
   newproperty(:handlers, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
@@ -173,14 +193,8 @@ DESC
       fail "command must be defined for type pipe"
     end
     if (self[:type] == :tcp || self[:type] == :udp) &&
-        (!self[:socket_host] || !self[:socket_port])
-      fail "socket_host and socket_port are required for type tcp or type udp"
-    end
-    if self[:socket_host] && !self[:socket_port]
-      fail "socket_port is required if socket_host is set"
-    end
-    if !self[:socket_host] && self[:socket_port]
-      fail "socket_host is required if socket_port is set"
+        !self[:socket]
+      fail "socket is required for type tcp or type udp"
     end
     if self[:type] == :set && !self[:handlers]
       fail "handlers must be defined for type set"

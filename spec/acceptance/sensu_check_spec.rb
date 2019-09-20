@@ -16,7 +16,9 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           { 1          => ['test.sh'] },
           { 'critical' => ['httpd-restart'] },
         ],
-        proxy_requests_entity_attributes => ["entity.Class == 'proxy'"],
+        proxy_requests                   => {
+          'entity_attributes' => ["entity.Class == 'proxy'"],
+        },
         output_metric_format             => 'nagios_perfdata',
         labels                           => { 'foo' => 'baz' }
       }
@@ -116,7 +118,9 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           { 'critical' => ['httpd-restart'] },
           { 'warning'  => ['httpd-restart'] },
         ],
-        proxy_requests_entity_attributes => ['System.OS==linux'],
+        proxy_requests                   => {
+          'entity_attributes' => ['System.OS==linux'],
+        },
         output_metric_format             => 'graphite_plaintext',
         labels                           => { 'foo' => 'bar' }
       }

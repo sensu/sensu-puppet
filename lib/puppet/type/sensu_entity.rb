@@ -24,7 +24,7 @@ Puppet::Type.newtype(:sensu_entity) do
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
-* `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration_handler` property.
+* `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration.handler` property.
 DESC
 
   extend PuppetX::Sensu::Type
@@ -85,8 +85,25 @@ DESC
     defaultto(:false)
   end
 
-  newproperty(:deregistration_handler) do
-    desc "The name of the handler to be called when an entity is deregistered."
+  newproperty(:deregistration, :parent => PuppetX::Sensu::HashProperty) do
+    desc <<-EOS
+    A map containing a handler name, for use when an entity is deregistered.
+
+    Valid keys:
+    * handler - Opional - The name of the handler to be called when an entity is deregistered.
+    EOS
+    validate do |value|
+      super(value)
+      valid_keys = ['handler']
+      value.keys.each do |key|
+        if ! valid_keys.include?(key)
+          raise ArgumentError, "#{key} is not a valid key for deregistration"
+        end
+      end
+      if value.key?('handler') && ! value['handler'].is_a?(String)
+        raise ArgumentError, "deregistration.handler must be a String"
+      end
+    end
   end
 
   newproperty(:redact, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
@@ -107,7 +124,13 @@ DESC
   end
 
   autorequire(:sensu_handler) do
-    [ self[:deregistration_handler] ]
+    handler = []
+    if self[:deregistration]
+      if self[:deregistration].key?('handler')
+        handler = [self[:deregistration]['handler']]
+      end
+    end
+    handler
   end
 
   def self.title_patterns

@@ -102,7 +102,6 @@ describe Puppet::Type.type(:sensu_check) do
     :subscriptions,
     :handlers,
     :runtime_assets,
-    :proxy_requests_entity_attributes,
     :output_metric_handlers,
     :env_vars
   ].each do |property|
@@ -127,7 +126,6 @@ describe Puppet::Type.type(:sensu_check) do
     :timeout,
     :low_flap_threshold,
     :high_flap_threshold,
-    :proxy_requests_splay_coverage,
     :max_output_size,
   ].each do |property|
     it "should accept valid #{property}" do
@@ -158,7 +156,6 @@ describe Puppet::Type.type(:sensu_check) do
     :publish,
     :stdin,
     :round_robin,
-    :proxy_requests_splay,
     :silenced,
     :discard_output,
   ].each do |property|
@@ -332,6 +329,33 @@ describe Puppet::Type.type(:sensu_check) do
     it 'should not accept invalid values' do
       config[:output_metric_format] = 'foo'
       expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, absent/)
+    end
+  end
+
+  describe 'proxy_requests' do
+    it 'accepts valid value' do
+      config[:proxy_requests] = {'entity_attributes' => ['foo==bar'],'splay' => true, 'splay_coverage' => 60}
+      expect(check[:proxy_requests]).to eq({'entity_attributes' => ['foo==bar'],'splay' => true, 'splay_coverage' => 60})
+    end
+    it 'requires a hash' do
+      config[:proxy_requests] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    it 'does not accept invalid key' do
+      config[:proxy_requests] = {'foo' => 'bar'}
+      expect { check }.to raise_error(Puppet::Error, /foo is not a valid key for proxy_requests/)
+    end
+    it 'requires array for entity_attributes' do
+      config[:proxy_requests] = {'entity_attributes' => 'foo==bar','splay' => true, 'splay_coverage' => 60}
+      expect { check }.to raise_error(Puppet::Error, /must be an Array/)
+    end
+    it 'requires boolean for splay' do
+      config[:proxy_requests] = {'entity_attributes' => ['foo==bar'],'splay' => 'foo', 'splay_coverage' => 60}
+      expect { check }.to raise_error(Puppet::Error, /must be a Boolean/)
+    end
+    it 'requires integer for splay_coverage' do
+      config[:proxy_requests] = {'entity_attributes' => ['foo==bar'],'splay' => true, 'splay_coverage' => 'foo'}
+      expect { check }.to raise_error(Puppet::Error, /must be an Integer/)
     end
   end
 

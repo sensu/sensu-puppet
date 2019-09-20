@@ -20,20 +20,11 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       handler[:annotations] = d['metadata']['annotations']
       d.each_pair do |key, value|
         next if key == 'metadata'
-        next if key == 'socket'
         if !!value == value
           value = value.to_s.to_sym
         end
         if type_properties.include?(key.to_sym)
           handler[key.to_sym] = value
-        end
-      end
-      if d['socket']
-        d['socket'].each_pair do |k,v|
-          property = "socket_#{k}".to_sym
-          if type_properties.include?(property)
-            handler[property] = v
-          end
         end
       end
       handlers << new(handler)
@@ -73,7 +64,6 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
-      next if property.to_s =~ /^socket/
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
@@ -86,11 +76,6 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
       else
         spec[property] = value
       end
-    end
-    if resource[:socket_host] ||  resource[:socket_port]
-      spec[:socket] = {}
-      spec[:socket][:host] = resource[:socket_host] if resource[:socket_host]
-      spec[:socket][:port] = resource[:socket_port] if resource[:socket_port]
     end
     begin
       sensuctl_create('Handler', metadata, spec)
@@ -112,7 +97,6 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
           value = resource[property]
         end
         next if value.nil?
-        next if property.to_s =~ /^socket/
         if [:true, :false].include?(value)
           value = convert_boolean_property_value(value)
         elsif value == :absent
@@ -127,17 +111,6 @@ Puppet::Type.type(:sensu_handler).provide(:sensuctl, :parent => Puppet::Provider
         else
           spec[property] = value
         end
-      end
-      # Use values from existing resource then overwrite with new values if they exist
-      if resource[:socket_host] || resource[:socket_port]
-        spec[:socket] = {}
-        spec[:socket][:host] = resource[:socket_host] if resource[:socket_host]
-        spec[:socket][:port] = resource[:socket_port] if resource[:socket_port]
-      end
-      if @property_flush[:socket_host] || @property_flush[:socket_port]
-        spec[:socket] = {} unless spec[:socket]
-        spec[:socket][:host] = @property_flush[:socket_host] if @property_flush[:socket_host]
-        spec[:socket][:port] = @property_flush[:socket_port] if @property_flush[:socket_port]
       end
       begin
         sensuctl_create('Handler', metadata, spec)

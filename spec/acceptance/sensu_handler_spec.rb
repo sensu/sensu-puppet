@@ -14,8 +14,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       }
       sensu_handler { 'test2':
         type           => 'tcp',
-        socket_host    => '127.0.0.1',
-        socket_port    => 1234,
+        socket         => {'host' => '127.0.0.1', 'port' => 1234},
         labels         => { 'foo' => 'bar' },
       }
       EOS
@@ -67,8 +66,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       }
       sensu_handler { 'test2':
         type           => 'tcp',
-        socket_host    => 'localhost',
-        socket_port    => 5678,
+        socket         => {'host' => 'localhost', 'port' => 5678},
         labels         => { 'foo' => 'bar' },
       }
       EOS
