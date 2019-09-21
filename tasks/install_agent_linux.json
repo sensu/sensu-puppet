@@ -1,5 +1,6 @@
 {
   "name": "Install Agent Linux",
   "description": "Install Sensu Go agent on Linux",
-  "private": true
+  "private": true,
+  "parameters": []
 }
