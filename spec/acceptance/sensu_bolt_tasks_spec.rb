@@ -157,3 +157,44 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
     end
   end
 end
+
+describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
+  backend = hosts_as('sensu_backend')[0]
+  agent = hosts_as('sensu_agent')[0]
+  context 'setup' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_check { 'test':
+        command       => 'exit 1',
+        subscriptions => ['entity:sensu_agent'],
+        interval      => 3600,
+      }
+      EOS
+      agent_pp = <<-EOS
+      class { '::sensu': }
+      class { '::sensu::agent':
+        backends    => ['sensu_backend:8081'],
+        config_hash => {
+          'name' => 'sensu_agent',
+        }
+      }
+      EOS
+      apply_manifest_on(agent, agent_pp, :catch_failures => true)
+      apply_manifest_on(backend, pp, :catch_failures => true)
+    end
+  end
+  context 'check_execute' do
+    it 'should work without errors' do
+      on backend, 'bolt task run sensu::check_execute check=test subscription=entity:sensu_agent --nodes localhost'
+      sleep 5
+    end
+
+    it 'should have executed check' do
+      on backend, 'sensuctl event info sensu_agent test --format json' do
+        data = JSON.parse(stdout)
+        expect(data['check']['status']).to eq(1)
+      end
+    end
+  end
+end
