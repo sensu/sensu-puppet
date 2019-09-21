@@ -13,6 +13,10 @@
     "namespace": {
       "description": "The namespace for the agent, default is 'default'",
       "type": "Optional[String[1]]"
+    },
+    "output": {
+      "description": "Return output from commands",
+      "type": "Optional[Boolean]"
     }
   },
   "implementations": [

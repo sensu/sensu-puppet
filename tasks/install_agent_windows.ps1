@@ -2,21 +2,21 @@
 Param(
   [Parameter(Mandatory = $True)] [String] $Backend,
   [Parameter(Mandatory = $True)] [String] $Subscription,
-  [Parameter(Mandatory = $False)] [String] $Namespace = "default"
+  [Parameter(Mandatory = $False)] [String] $Namespace = "default",
+  [Parameter(Mandatory = $False)] [Bool] $Output = $False
 )
 
 $Package_source = "https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.13.1/sensu-go-agent_5.13.1.5957_en-US.x64.msi"
 
 $env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin"
 
-$output = iex "puppet module install sensu-sensu"
-Write-Output $output
-$output = iex "puppet module install puppet-archive"
-Write-Output $output
+$return_output = @{}
+$module_output1 = iex "puppet module install sensu-sensu --color false"
+$module_output2 = iex "puppet module install puppet-archive --color false"
+$module_install_output = $module_output1 + $module_output2
+$return_output.Add("module-install", $($module_install_output -Split "`n").TrimEnd("`r"))
 
-#$MANIFEST = [System.IO.Path]::GetTempFileName()
-$MANIFEST = "C:/manifest.pp"
-Write-Output $MANIFEST
+$MANIFEST = [System.IO.Path]::GetTempFileName()
 $manifest_content = @"
 class { '::sensu':
   use_ssl => false,
@@ -31,19 +31,18 @@ class { '::sensu::agent':
 }
 "@
 
+$return_output.Add("manifest", $($manifest_content -Split "`n").TrimEnd("`r"))
 $manifest_content | Out-File -FilePath $MANIFEST -Encoding ascii
 $manifest_content = Get-Content -Path $MANIFEST
-Write-Output $manifest_content
 
-Write-Output "Execute: puppet apply $MANIFEST"
-$output = iex "puppet apply -v --debug --trace $MANIFEST 2>&1"
-$output | Out-File -FilePath C:\output
-Write-Output $output
+$output_apply = iex "puppet apply $MANIFEST --color false 2>&1"
+$return_output.Add("apply", $($output_apply -Split "`n").TrimEnd("`r"))
 
 Remove-Item -Path $MANIFEST
 
 $return = @{
 status = "install agent successful"
 }
+if ($Output -eq $True) { $return.Add("output", $return_output) }
 ConvertTo-Json -InputObject $return -Compress
 

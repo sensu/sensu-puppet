@@ -44,7 +44,7 @@ test_script:
 - ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
 - set BEAKER_skip_apply=yes
 - '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" task show'
-- '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" --debug task run sensu::install_agent backend=sensu_backend:8081 subscription=windows --nodes localhost'
+- '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" --debug task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --nodes localhost'
 - bundle exec rake acceptance:windows
 image:
   # Windows 2012 R2

@@ -144,7 +144,7 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
   end
   context 'install_agent' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux --nodes sensu_agent'
+      on backend, 'bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux output=true --nodes sensu_agent'
       sleep 5
     end
 

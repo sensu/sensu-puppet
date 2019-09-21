@@ -9,20 +9,25 @@ begin
   backend = params['backend']
   subscription = params['subscription']
   namespace = params['namespace'] || 'default'
+  output = params.fetch('output', false)
 
+  return_output = {}
   puppet = '/opt/puppetlabs/bin/puppet'
-  _stdout, stderr, status = Open3.capture3(puppet,'module','install','sensu-sensu')
+  _stdout, _stderr, status = Open3.capture3(puppet,'module','install','sensu-sensu','--color','false')
+  return_output['module-install'] = _stdout + _stderr
   if status != 0
     raise Puppet::Error, "Failed to execute install sensu-sensu: #{_stdout + _stderr}"
   end
 
   `which apt 2>/dev/null 1>/dev/null`
   if $?.success?
-    _stdout, stderr, status = Open3.capture3(puppet,'module','install','puppetlabs-apt')
+    _stdout, _stderr, status = Open3.capture3(puppet,'module','install','puppetlabs-apt','--color','false')
+    return_output['module-install'] = return_output['module-install'] + _stdout + _stderr
     if status != 0
       raise Puppet::Error, "Failed to execute install puppetlabs-apt: #{_stdout + _stderr}"
     end
   end
+  return_output['module-install'] = return_output['module-install'].split(/\n/)
   f = Tempfile.new('manifest')
   manifest = <<-EOS
 class { '::sensu':
@@ -36,14 +41,18 @@ class { '::sensu::agent':
   },
 }
 EOS
+  return_output['manifest'] = manifest.split(/\n/)
   f.write(manifest)
   f.close
-  _stdout, stderr, status = Open3.capture3(puppet,'apply',f.path)
+  _stdout, _stderr, status = Open3.capture3(puppet,'apply',f.path,'--color','false')
+  return_output['apply'] = (_stdout + _stderr).split(/\n/)
   if status != 0
     raise Puppet::Error, "Failed to execute install sensu-sensu: #{_stdout + _stderr}"
   end
 
-  puts({ status: "install agent successful" }.to_json)
+  ret = {status: "install agent successful"}
+  ret['output'] = return_output if output
+  puts(ret.to_json)
   exit 0
 rescue Puppet::Error => e
   puts({ status: 'failure', error: e.message }.to_json)
