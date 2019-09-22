@@ -11,7 +11,9 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
     it 'should work without errors' do
       pp = <<-EOS
       include ::sensu::agent
-      include ::sensu::plugins
+      class { '::sensu::plugins':
+        gem_dependencies => ['vmstat'],
+      }
       sensu_plugin { 'cpu-checks':
         ensure  => 'present',
         version => '2.0.0',
@@ -34,6 +36,12 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
     it 'should have plugin installed' do
       on agent, '/opt/sensu-plugins-ruby/embedded/bin/gem list --local' do
         expect(stdout).to match(/^sensu-plugins-cpu-checks \(2.0.0\)/)
+      end
+    end
+
+    it 'should have gem installed' do
+      on agent, '/opt/sensu-plugins-ruby/embedded/bin/gem list --local' do
+        expect(stdout).to match(/^vmstat \(/)
       end
     end
   end

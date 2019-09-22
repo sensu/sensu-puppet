@@ -28,6 +28,8 @@
 # @param dependencies
 #   Package dependencies needed to install plugins and extensions.
 #   Default is OS dependent.
+# @param gem_dependencies
+#   Gem dependencies.
 # @param plugins
 #   Plugins to install
 # @param extensions
@@ -38,6 +40,7 @@ class sensu::plugins (
   String $package_ensure = 'installed',
   String $package_name = 'sensu-plugins-ruby',
   Array $dependencies = [],
+  Array $gem_dependencies = [],
   Variant[Array, Hash] $plugins = [],
   Variant[Array, Hash] $extensions = [],
 ) {
@@ -67,6 +70,7 @@ class sensu::plugins (
   $dependencies.each |$package| {
     Package[$package] -> Sensu_plugin <| |> # lint:ignore:spaceship_operator_without_tag
   }
+  ensure_packages($gem_dependencies, {'provider' => 'sensu_gem', 'require' => [Package[$dependencies],Package['sensu-plugins-ruby']]})
 
   if $plugins =~ Array {
     $plugins.each |$plugin| {
