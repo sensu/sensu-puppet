@@ -437,8 +437,17 @@ sensu::backend::checks:
 ### Resource purging
 
 All the types provided by this module support purging except `sensu_config`.
-At this time `sensu_asset` can not be purged, see [Limitations](#limitations).
 This example will remove all unmanaged Sensu checks:
+
+```puppet
+sensu_resources { 'sensu_check':
+  purge => true,
+}
+```
+
+**NOTE**: The Puppet built-in `resources` can also be used for purging but you must ensure that resources that support namespaces are defined using composite names in the form of `$name in $namespace`. See [Composite Names for Namespaces](#composite-names-for-namespaces) for details on composite names.
+
+Using the Puppet built-in `resources` would look like this:
 
 ```puppet
 resources { 'sensu_check':
@@ -595,8 +604,6 @@ facter -p sensuctl
 
 The Sensu v2 support is designed so that all resources managed by `sensuctl` are defined on the `sensu-backend` host.
 This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
-
-The type `sensu_asset` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#988](https://github.com/sensu/sensu-go/issues/988).
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 
