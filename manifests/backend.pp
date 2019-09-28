@@ -24,9 +24,9 @@
 #   Sensu backend state directory path.
 # @param config_hash
 #   Sensu backend configuration hash used to define backend.yml.
-# @param url_host
+# @param api_host
 #   Sensu backend host used to configure sensuctl and verify API access.
-# @param url_port
+# @param api_port
 #   Sensu backend port used to configure sensuctl and verify API access.
 # @param ssl_cert_source
 #   The SSL certificate source
@@ -128,8 +128,8 @@ class sensu::backend (
   Boolean $service_enable = true,
   Stdlib::Absolutepath $state_dir = '/var/lib/sensu/sensu-backend',
   Hash $config_hash = {},
-  String $url_host = $trusted['certname'],
-  Stdlib::Port $url_port = 8080,
+  String $api_host = $trusted['certname'],
+  Stdlib::Port $api_port = 8080,
   Optional[String] $ssl_cert_source = $facts['puppet_hostcert'],
   Optional[String] $ssl_key_source = $facts['puppet_hostprivkey'],
   String $password = 'P@ssw0rd!',
@@ -201,7 +201,7 @@ class sensu::backend (
   }
 
   if $use_ssl {
-    $url_protocol = 'https'
+    $api_protocol = 'https'
     $trusted_ca_file = "${ssl_dir}/ca.crt"
     $ssl_config = {
       'cert-file'       => "${ssl_dir}/cert.pem",
@@ -211,16 +211,16 @@ class sensu::backend (
     $service_subscribe = Class['::sensu::ssl']
     Class['::sensu::ssl'] -> Sensu_configure['puppet']
   } else {
-    $url_protocol = 'http'
+    $api_protocol = 'http'
     $trusted_ca_file = 'absent'
     $ssl_config = {}
     $service_subscribe = undef
   }
 
-  $url = "${url_protocol}://${url_host}:${url_port}"
+  $api_url = "${api_protocol}://${api_host}:${api_port}"
   $default_config = {
     'state-dir' => $state_dir,
-    'api-url'   => $url,
+    'api-url'   => $api_url,
   }
   $config = $default_config + $ssl_config + $config_hash
 
@@ -240,14 +240,14 @@ class sensu::backend (
   }
 
   sensu_api_validator { 'sensu':
-    sensu_api_server => $url_host,
-    sensu_api_port   => $url_port,
+    sensu_api_server => $api_host,
+    sensu_api_port   => $api_port,
     use_ssl          => $use_ssl,
     require          => Service['sensu-backend'],
   }
 
   sensu_configure { 'puppet':
-    url                => $url,
+    url                => $api_url,
     username           => 'admin',
     password           => $password,
     bootstrap_password => 'P@ssw0rd!',
@@ -260,7 +260,7 @@ class sensu::backend (
     groups        => ['cluster-admins'],
     disabled      => false,
     configure     => true,
-    configure_url => $url,
+    configure_url => $api_url,
   }
 
   if $license_source or $license_content {
