@@ -10,7 +10,8 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
         backends    => ['sensu_backend:8081'],
         config_hash => {
           'name' => 'sensu_agent',
-        }
+        },
+        service_env_vars => { 'SENSU_API_PORT' => '4041' },
       }
       EOS
 
@@ -30,6 +31,10 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
     describe service('sensu-agent'), :node => node do
       it { should be_enabled }
       it { should be_running }
+    end
+
+    describe port(4041), :node => node do
+      it { should be_listening }
     end
   end
 end

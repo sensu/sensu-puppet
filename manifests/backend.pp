@@ -14,6 +14,12 @@
 #   Name of Sensu backend package.
 # @param cli_package_name
 #   Name of Sensu CLI package.
+# @param service_env_vars_file
+#   Path to the backend service ENV variables file.
+#   Debian based default: `/etc/default/sensu-backend`
+#   RedHat based default: `/etc/sysconfig/sensu-backend`
+# @param service_env_vars
+#   Hash of environment variables loaded by sensu-backend service
 # @param service_name
 #   Name of the Sensu backend service.
 # @param service_ensure
@@ -127,6 +133,8 @@ class sensu::backend (
   Optional[String] $version = undef,
   String $package_name = 'sensu-go-backend',
   String $cli_package_name = 'sensu-go-cli',
+  Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
+  Hash $service_env_vars = {},
   String $service_name = 'sensu-backend',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
@@ -229,7 +237,10 @@ class sensu::backend (
     'api-url'   => $url,
   }
   $config = $default_config + $ssl_config + $config_hash
-
+  $_service_env_vars = $service_env_vars.map |$key,$value| {
+    "${key}=\"${value}\""
+  }
+  $_service_env_vars_content = ['# File managed by Puppet'] + $_service_env_vars
 
   if $include_default_resources {
     include ::sensu::backend::default_resources
@@ -340,6 +351,20 @@ class sensu::backend (
     show_diff => $show_diff,
     require   => Package['sensu-go-backend'],
     notify    => Service['sensu-backend'],
+  }
+
+  if $service_env_vars_file {
+    file { 'sensu-backend_env_vars':
+      ensure    => 'file',
+      path      => $service_env_vars_file,
+      content   => join($_service_env_vars_content, "\n"),
+      owner     => $::sensu::sensu_user,
+      group     => $::sensu::sensu_group,
+      mode      => '0640',
+      show_diff => $show_diff,
+      require   => Package['sensu-go-backend'],
+      notify    => Service['sensu-backend'],
+    }
   }
 
   service { 'sensu-backend':

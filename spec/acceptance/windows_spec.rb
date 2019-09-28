@@ -9,7 +9,8 @@ describe 'sensu::agent class', if: Gem.win_platform? do
       backends       => ['sensu_backend:8081'],
       config_hash    => {
         'name' => 'sensu_agent',
-      }
+      },
+      service_env_vars => { 'SENSU_API_PORT' => '4041' },
     }
     EOS
 
@@ -70,6 +71,9 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     describe service('SensuAgent') do
       it { should be_enabled }
       it { should be_running }
+    end
+    describe port(4041) do
+      it { should be_listening }
     end
     describe 'sensu_agent.version fact' do
       it 'has version fact' do

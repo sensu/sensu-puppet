@@ -109,6 +109,8 @@ If managing Windows there is a soft dependency on the [puppetlabs/chocolatey](ht
 
 If managing Windows and defining `package_source`, there is a soft dependency on the [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`).
 
+If managing Windows and defining `service_env_vars` there is a soft depedency on [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
+
 For PostgreSQL datastore support there is a soft dependency on [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`).
 
 ### Beginning with sensu

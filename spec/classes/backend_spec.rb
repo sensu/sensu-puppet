@@ -131,6 +131,25 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
+        service_env_vars_content = ['# File managed by Puppet'].join("\n")
+
+        if platforms[facts[:osfamily]][:backend_service_env_vars_file]
+          it {
+            should contain_file('sensu-backend_env_vars').with({
+              'ensure'  => 'file',
+              'path'    => platforms[facts[:osfamily]][:backend_service_env_vars_file],
+              'content' => service_env_vars_content,
+              'owner'   => platforms[facts[:osfamily]][:user],
+              'group'   => platforms[facts[:osfamily]][:group],
+              'mode'    => '0640',
+              'require' => 'Package[sensu-go-backend]',
+              'notify'  => 'Service[sensu-backend]',
+            })
+          }
+        else
+          it { should_not contain_file('sensu-backend_env_vars') }
+        end
+
         it {
           should contain_service('sensu-backend').with({
             'ensure'    => 'running',
@@ -303,6 +322,18 @@ describe 'sensu::backend', :type => :class do
         let(:params) {{ :datastore => 'postgresql' }}
         it { should compile.with_all_deps }
         it { should contain_class('sensu::backend::datastore::postgresql') }
+      end
+
+      context 'with service_env_vars defined' do
+        let(:params) {{ :service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' } }}
+        service_env_vars_content = [
+          '# File managed by Puppet',
+          'SENSU_BACKEND_AGENT_PORT="9081"',
+        ].join("\n")
+
+        if platforms[facts[:osfamily]][:backend_service_env_vars_file]
+          it { should contain_file('sensu-backend_env_vars').with_content(service_env_vars_content) }
+        end
       end
     end
   end

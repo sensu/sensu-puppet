@@ -22,6 +22,12 @@
 #   This parameter only used when `package_source` is an URL or when it's a puppet source (`puppet://`).
 # @param package_name
 #   Name of Sensu agent package.
+# @param service_env_vars_file
+#   Path to the agent service ENV variables file.
+#   Debian based default: `/etc/default/sensu-agent`
+#   RedHat based default: `/etc/sysconfig/sensu-agent`
+# @param service_env_vars
+#   Hash of environment variables loaded by sensu-agent service
 # @param service_name
 #   Name of the Sensu agent service.
 # @param service_ensure
@@ -46,6 +52,8 @@ class sensu::agent (
   Optional[String[1]] $package_source = undef,
   Optional[Stdlib::Absolutepath] $package_download_path = undef,
   String $package_name = 'sensu-go-agent',
+  Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
+  Hash $service_env_vars = {},
   String $service_name = 'sensu-agent',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
@@ -84,6 +92,10 @@ class sensu::agent (
     'backend-url' => $backend_urls,
   }
   $config = $default_config + $ssl_config + $config_hash
+  $_service_env_vars = $service_env_vars.map |$key,$value| {
+    "${key}=\"${value}\""
+  }
+  $_service_env_vars_content = ['# File managed by Puppet'] + $_service_env_vars
 
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
@@ -149,6 +161,30 @@ class sensu::agent (
     show_diff => $show_diff,
     require   => Package['sensu-go-agent'],
     notify    => Service['sensu-agent'],
+  }
+
+  if $service_env_vars_file {
+    file { 'sensu-agent_env_vars':
+      ensure    => 'file',
+      path      => $service_env_vars_file,
+      content   => join($_service_env_vars_content, "\n"),
+      owner     => $::sensu::sensu_user,
+      group     => $::sensu::sensu_group,
+      mode      => $::sensu::file_mode,
+      show_diff => $show_diff,
+      require   => Package['sensu-go-agent'],
+      notify    => Service['sensu-agent'],
+    }
+  }
+  if $facts['os']['family'] == 'windows' {
+    $service_env_vars.each |$key,$value| {
+      windows_env { $key:
+        ensure    => 'present',
+        value     => $value,
+        mergemode => 'clobber',
+        notify    => Service['sensu-agent'],
+      }
+    }
   }
 
   service { 'sensu-agent':

@@ -59,6 +59,39 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
     end
   end
 
+  context 'service env_vars' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu': }
+      class { '::sensu::backend':
+        password         => 'supersecret',
+        old_password     => 'P@ssw0rd!',
+        service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
+      }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    describe service('sensu-backend'), :node => node do
+      it { should be_enabled }
+      it { should be_running }
+    end
+    describe port(9081), :node => node do
+      it { should be_listening }
+    end
+  end
+
   context 'backend and agent' do
     it 'should work without errors' do
       pp = <<-EOS
