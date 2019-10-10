@@ -234,12 +234,43 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
 
   context 'resources purge' do
     it 'should remove without errors' do
+      before_pp = <<-EOS
+      include ::sensu::backend
+      sensu_namespace { 'dev': ensure => 'present' }
+      sensu_check { 'test1':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
+      sensu_check { 'test1 in dev':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
+      EOS
       pp = <<-EOS
-      resources { 'sensu_check':
+      include ::sensu::backend
+      sensu_namespace { 'dev': ensure => 'present' }
+      sensu_check { 'test':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
+      sensu_check { 'test in dev':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+      }
+      sensu_resources { 'sensu_check':
         purge => true,
       }
       EOS
 
+      apply_manifest_on(node, before_pp, :catch_failures => true)
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu_backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
@@ -253,16 +284,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       end
     end
 
-    it 'should have no checks' do
-      on node, 'sensuctl check list --format json' do
-        begin
-          data = JSON.parse(stdout) || []
-        rescue JSON::ParserError => e
-          if stdout =~ /null/
-            data = []
-          end
-        end
-        expect(data.size).to eq(0)
+    it 'should have purged checks' do
+      on node, 'sensuctl check list --format json --all-namespaces' do
+        data = JSON.parse(stdout) || []
+        expect(data.size).to eq(2)
       end
     end
   end

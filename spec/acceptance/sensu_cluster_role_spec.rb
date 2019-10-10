@@ -91,5 +91,45 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
       its(:exit_status) { should_not eq 0 }
     end
   end
+
+  context 'resource purging' do
+    it 'should purge without errors' do
+      before_pp = <<-EOS
+      include ::sensu::backend
+      sensu_cluster_role { 'test1':
+        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+      }
+      EOS
+      pp = <<-EOS
+      sensu_resources { 'sensu_cluster_role':
+        purge => true
+      }
+      include ::sensu::backend
+      sensu_cluster_role { 'test2':
+        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+      }
+      EOS
+
+      apply_manifest_on(node, before_pp, :catch_failures => true)
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    describe command('sensuctl cluster-role info test1'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl cluster-role info test2'), :node => node do
+      its(:exit_status) { should eq 0 }
+    end
+  end
 end
 
