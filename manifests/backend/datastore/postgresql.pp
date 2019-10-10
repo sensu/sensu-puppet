@@ -1,3 +1,5 @@
+# @summary Manage Sensu backend PostgreSQL datastore
+# @api private
 #
 class sensu::backend::datastore::postgresql {
   include ::sensu
