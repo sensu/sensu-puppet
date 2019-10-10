@@ -47,6 +47,8 @@ RSpec.configure do |config|
     :fqdn                      => 'testfqdn.example.com',
     :puppet_hostcert           => '/dne/cert.pem',
     :puppet_hostprivkey        => '/dne/key.pem',
+    :choco_install_path        => 'C:\ProgramData\chocolatey',
+    :chocolateyversion         => '1.0.0',
   }
   config.backtrace_exclusion_patterns = [
     %r{/\.bundle/},
@@ -80,6 +82,7 @@ def platforms
   {
     'Debian' => {
       :package_require => ['Class[Sensu::Repo]', 'Class[Apt::Update]'],
+      package_provider: nil,
       :plugins_package_require => ['Class[Sensu::Repo::Community]', 'Class[Apt::Update]'],
       :plugins_dependencies => ['make','gcc','g++','libssl-dev'],
       agent_package_name: 'sensu-go-agent',
@@ -98,6 +101,7 @@ def platforms
     },
     'RedHat' => {
       :package_require => ['Class[Sensu::Repo]'],
+      package_provider: nil,
       :plugins_package_require => ['Class[Sensu::Repo::Community]'],
       :plugins_dependencies => ['make','gcc','gcc-c++','openssl-devel'],
       agent_package_name: 'sensu-go-agent',
@@ -115,7 +119,8 @@ def platforms
       log_file: nil,
     },
     'windows' => {
-      agent_package_name: 'Sensu Agent',
+      agent_package_name: 'sensu-agent',
+      package_provider: 'chocolatey',
       :agent_config_path => 'C:\ProgramData\Sensu\config\agent.yml',
       agent_config_mode: nil,
       etc_dir: 'C:\\ProgramData\\Sensu\\config',

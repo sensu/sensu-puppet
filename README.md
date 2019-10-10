@@ -69,7 +69,9 @@ This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.c
 
 If using Puppet >= 6.0.0 there is a soft dependency on the [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`) for systems using `yum`.
 
-If managing Windows there is a soft dependency on the [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`).
+If managing Windows there is a soft dependency on the [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey) module (`>= 3.0.0 < 5.0.0`).
+
+If managing Windows and defining `package_source`, there is a soft dependency on the [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`).
 
 For PostgreSQL datastore support there is a soft dependency on [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`).
 
@@ -129,15 +131,25 @@ associated to `linux` and `apache-servers` subscriptions.
 
 ### Manage Windows Agent
 
-This module supports Windows Sensu Go agent starting with version 5.7.0.
+This module supports Windows Sensu Go agent via chocolatey beginning with version 5.12.0.
 
-The Windows package source must be specified as either a URL, a Puppet source or a filesystem path.
+```puppet
+class { 'sensu::agent':
+  backends    => ['sensu-backend.example.com:8081'],
+  config_hash => {
+    'subscriptions' => ['windows'],
+  },
+}
+```
+
+If you do not wish to install using chocolatey then you must define `package_source` as either a URL, a Puppet source or a filesystem path.
 
 Install sensu-go-agent on Windows from URL:
 
 ```puppet
 class { 'sensu::agent':
-  package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.7.0/sensu-go-agent_5.7.0.2380_en-US.x64.msi',
+  package_name   => 'Sensu Agent',
+  package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.13.1/sensu-go-agent_5.13.1.5957_en-US.x64.msi',
 }
 ```
 
@@ -145,6 +157,7 @@ Install sensu-go-agent on Windows from Puppet source:
 
 ```puppet
 class { 'sensu::agent':
+  package_name   => 'Sensu Agent',
   package_source => 'puppet:///modules/profile/sensu/sensu-go-agent.msi',
 }
 ```
@@ -153,6 +166,7 @@ If a system already has the necessary MSI present it can be installed without do
 
 ```puppet
 class { 'sensu::agent':
+  package_name   => 'Sensu Agent',
   package_source => 'C:\Temp\sensu-go-agent.msi',
 }
 ```

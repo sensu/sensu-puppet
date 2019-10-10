@@ -40,7 +40,7 @@ $hiera_content | Out-File -FilePath "$hiera_file" -Encoding ascii
 # Puppet in the PATH.
 $env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin"
 iex "puppet module install puppetlabs-stdlib"
-iex "puppet module install puppet-archive"
+iex "puppet module install puppetlabs-chocolatey"
 New-Item -Path "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -ItemType directory -Force | Out-Null
 Copy-Item -Path "C:\vagrant\tests\ssl\*" -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl\" -Recurse -Force
 
