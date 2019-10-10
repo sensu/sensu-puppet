@@ -10,11 +10,11 @@ _Public Classes_
 * [`sensu`](#sensu): Base Sensu class
 * [`sensu::agent`](#sensuagent): Manage Sensu agent
 * [`sensu::backend`](#sensubackend): Manage Sensu backend
-* [`sensu::backend::datastore::postgresql`](#sensubackenddatastorepostgresql): 
 * [`sensu::plugins`](#sensuplugins): Manage Sensu plugins
 
 _Private Classes_
 
+* `sensu::backend::datastore::postgresql`: Manage Sensu backend PostgreSQL datastore
 * `sensu::backend::default_resources`: Default sensu resources
 * `sensu::backend::resources`: Define sensu resources
 * `sensu::backend::tessen`: Manage tessen phone home
@@ -27,6 +27,7 @@ _Private Classes_
 * [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu Active Directory auth. Requires valid enterprise license.
 * [`sensu_api_validator`](#sensu_api_validator): Verify that a connection can be successfully established between a node and the sensu-backend server.  Its primary use is as a precondition t
 * [`sensu_asset`](#sensu_asset): Manages Sensu assets
+* [`sensu_bonsai_asset`](#sensu_bonsai_asset): Manages Sensu Bonsai assets
 * [`sensu_check`](#sensu_check): Manages Sensu checks
 * [`sensu_cluster_member`](#sensu_cluster_member): Manages Sensu cluster members
 * [`sensu_cluster_role`](#sensu_cluster_role): Manages Sensu cluster roles
@@ -43,6 +44,7 @@ _Private Classes_
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
 * [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth. Requires valid enterprise license.
 * [`sensu_plugin`](#sensu_plugin): Manages Sensu plugins
+* [`sensu_resources`](#sensu_resources): Metatype for sensu resources
 * [`sensu_role`](#sensu_role): Manages Sensu roles
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
 * [`sensu_silenced`](#sensu_silenced): Manages Sensu silencing
@@ -478,6 +480,14 @@ Hash of sensu_asset resources
 
 Default value: {}
 
+##### `bonsai_assets`
+
+Data type: `Hash`
+
+Hash of sensu_bonsai_asset resources
+
+Default value: {}
+
 ##### `checks`
 
 Data type: `Hash`
@@ -711,10 +721,6 @@ The PostgreSQL pool size
 
 Default value: 20
 
-### sensu::backend::datastore::postgresql
-
-The sensu::backend::datastore::postgresql class.
-
 ### sensu::plugins
 
 Class to manage the Sensu plugins.
@@ -778,6 +784,14 @@ Data type: `Array`
 
 Package dependencies needed to install plugins and extensions.
 Default is OS dependent.
+
+Default value: []
+
+##### `gem_dependencies`
+
+Data type: `Array`
+
+Gem dependencies.
 
 Default value: []
 
@@ -1011,6 +1025,41 @@ sensu_asset { 'test in dev':
 }
 ```
 
+##### Create an asset with multiple builds
+
+```puppet
+sensu_asset { 'test':
+  ensure => 'present',
+  builds => [
+    {
+      "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz",
+      "sha512" => "487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3",
+      "filters" => [
+        "entity.system.os == 'linux'",
+        "entity.system.arch == 'amd64'"
+      ]
+    },
+    {
+      "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz",
+      "sha512" => "70df8b7e9aa36cf942b972e1781af04815fa560441fcdea1d1538374066a4603fc5566737bfd6c7ffa18314edb858a9f93330a57d430deeb7fd6f75670a8c68b",
+      "filters" => [
+        "entity.system.os == 'linux'",
+        "entity.system.arch == 'arm'",
+        "entity.system.arm_version == 7"
+      ]
+    },
+    {
+      "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz",
+      "sha512" => "10d6411e5c8bd61349897cf8868087189e9ba59c3c206257e1ebc1300706539cf37524ac976d0ed9c8099bdddc50efadacf4f3c89b04a1a8bf5db581f19c157f",
+      "filters" => [
+        "entity.system.os == 'windows'",
+        "entity.system.arch == 'amd64'"
+      ]
+    }
+  ],
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_asset` type.
@@ -1080,6 +1129,95 @@ An example composite name to define resource named `test` in namespace `dev`: `t
 ##### `resource_name`
 
 The name of the asset.
+
+##### `bonsai`
+
+Valid values: `true`, `false`
+
+Private property used by sensu_bonsai_asset type
+
+### sensu_bonsai_asset
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+
+#### Examples
+
+##### Install a bonsai asset
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+}
+```
+
+##### Install specific version of a bonsai asset
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => '1.2.0',
+}
+```
+
+##### Install latest version of a bonsai asset
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => 'latest',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_bonsai_asset` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+Bonsai asset state for Sensu Go asset
+
+Default value: present
+
+##### `version`
+
+Valid values: latest, /[0-9\.]+/
+
+Specific version to install, or latest
+
+#### Parameters
+
+The following parameters are available in the `sensu_bonsai_asset` type.
+
+##### `name`
+
+namevar
+
+Bonsai asset name
+
+##### `bonsai_namespace`
+
+Bonsai asset namespace
+
+##### `bonsai_name`
+
+Bonsai asset name
+
+##### `namespace`
+
+The Sensu RBAC namespace that this asset belongs to.
+
+Default value: default
+
+##### `rename`
+
+Name for Sensu Go asset
 
 ### sensu_check
 
@@ -2464,6 +2602,40 @@ Default value: `true`
 ##### `proxy`
 
 Install Sensu plugins and extensions via a PROXY URL
+
+### sensu_resources
+
+Metatype for sensu resources
+
+#### Examples
+
+##### Purge unmanaged sensu_check resources
+
+```puppet
+sensu_resources { 'sensu_check':
+  purge => true,
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu_resources` type.
+
+##### `name`
+
+namevar
+
+The name of the type to be managed.
+
+##### `purge`
+
+Valid values: `true`, `false`, yes, no
+
+Whether to purge unmanaged sensu resources.  When set to `true`, this will
+delete any resource that is not specified in your configuration and is not
+autorequired by any managed resources.
+
+Default value: `false`
 
 ### sensu_role
 

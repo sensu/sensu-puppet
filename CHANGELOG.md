@@ -1,5 +1,18 @@
 # Change Log
 
+## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.8.0...v3.9.0)
+
+**Merged pull requests:**
+
+- Add sensu\_resources type that will handle resource purging [\#1158](https://github.com/sensu/sensu-puppet/pull/1158) ([treydock](https://github.com/treydock))
+- Add sensu\_gem package provider [\#1156](https://github.com/sensu/sensu-puppet/pull/1156) ([treydock](https://github.com/treydock))
+- Install Windows agent via chocolatey [\#1152](https://github.com/sensu/sensu-puppet/pull/1152) ([treydock](https://github.com/treydock))
+- Fix Puppet strings warnings [\#1150](https://github.com/sensu/sensu-puppet/pull/1150) ([treydock](https://github.com/treydock))
+- Add sensu\_bonsai\_asset type [\#1149](https://github.com/sensu/sensu-puppet/pull/1149) ([treydock](https://github.com/treydock))
+- Fix sensu\_plugin version insync? check [\#1148](https://github.com/sensu/sensu-puppet/pull/1148) ([treydock](https://github.com/treydock))
+- Replace unit test instance variables with let [\#1143](https://github.com/sensu/sensu-puppet/pull/1143) ([treydock](https://github.com/treydock))
+
 ## [v3.8.0](https://github.com/sensu/sensu-puppet/tree/v3.8.0) (2019-09-02)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.7.0...v3.8.0)
 
