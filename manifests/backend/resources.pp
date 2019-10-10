@@ -13,6 +13,11 @@ class sensu::backend::resources {
       * => $asset,
     }
   }
+  $::sensu::backend::bonsai_assets.each |$name, $bonsai_asset| {
+    sensu_bonsai_asset { $name:
+      * => $bonsai_asset,
+    }
+  }
   $::sensu::backend::checks.each |$name, $check| {
     sensu_check { $name:
       * => $check,

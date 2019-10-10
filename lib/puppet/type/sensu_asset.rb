@@ -79,7 +79,7 @@ DESC
   newparam(:resource_name, :namevar => true) do
     desc "The name of the asset."
     validate do |value|
-      unless value =~ /^[\w\.\-]+$/
+      unless value =~ /^[\w\.\-\/]+$/
         raise ArgumentError, "sensu_asset name invalid"
       end
     end
@@ -163,6 +163,11 @@ DESC
     desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
+  newparam(:bonsai, :boolean => true) do
+    desc "Private property used by sensu_bonsai_asset type"
+    newvalues(:true, :false)
+  end
+
   def self.title_patterns
     [
       [
@@ -183,6 +188,10 @@ DESC
   end
 
   def pre_run_check
+    # Do not validate bonsai assets
+    if self[:bonsai]
+      return
+    end
     if ! self[:builds]
       required_properties = [
         :url,

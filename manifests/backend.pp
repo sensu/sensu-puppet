@@ -59,6 +59,8 @@
 #   Hash of sensu_ad_auth resources
 # @param assets
 #   Hash of sensu_asset resources
+# @param bonsai_assets
+#   Hash of sensu_bonsai_asset resources
 # @param checks
 #   Hash of sensu_check resources
 # @param cluster_members
@@ -144,6 +146,7 @@ class sensu::backend (
   Enum['present','absent'] $tessen_ensure = 'present',
   Hash $ad_auths = {},
   Hash $assets = {},
+  Hash $bonsai_assets = {},
   Hash $checks = {},
   Hash $cluster_members = {},
   Hash $cluster_role_bindings = {},

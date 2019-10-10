@@ -132,5 +132,15 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def namespaces()
     self.class.namespaces()
   end
+
+  def self.valid_json?(json)
+    JSON.parse(json)
+    return true
+  rescue JSON::ParseError => e
+    return false
+  end
+  def valid_json?(json)
+    self.class.valid_json?(json)
+  end
 end
 
