@@ -314,6 +314,15 @@ Set `dependencies` to an empty Array to disable the `sensu::plugins` dependency 
   }
 ```
 
+If gems are required and not pulled in as gem dependencies they can also be installed.
+
+```puppet
+class { 'sensu::plugins':
+  plugins          => ['memory-checks'],
+  gem_dependencies => ['vmstat'],
+}
+```
+
 You can uninstall plugins by passing `ensure` as `absent`.
 
 ```puppet

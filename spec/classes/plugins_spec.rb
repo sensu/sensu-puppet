@@ -93,6 +93,15 @@ describe 'sensu::plugins', :type => :class do
         it { should_not contain_class('sensu::repo::community') }
         it { should contain_package('sensu-plugins-ruby').without_require }
       end
+
+      context 'with gem_dependencies' do
+        let(:params) {{ :gem_dependencies => ['test'] }}
+        it { should contain_package('test').with_provider('sensu_gem') }
+        it { should contain_package('test').that_requires('Package[sensu-plugins-ruby]') }
+        platforms[facts[:osfamily]][:plugins_dependencies].each do |package|
+          it { should contain_package('test').that_requires("Package[#{package}]") }
+        end
+      end
     end
   end
 end
