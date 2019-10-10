@@ -187,7 +187,7 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
   context 'check_execute' do
     it 'should work without errors' do
       on backend, 'bolt task run sensu::check_execute check=test subscription=entity:sensu_agent --nodes localhost'
-      sleep 5
+      sleep 30
     end
 
     it 'should have executed check' do
