@@ -6,7 +6,7 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
     it 'should work without errors' do
       pp = <<-EOS
       include ::sensu::backend
-      sensu_asset { 'test':
+      sensu_asset { 'test2':
         url      => 'http://example.com/asset/example.tar',
         sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
         filters  => ["entity.system.os == 'linux'"],
@@ -15,16 +15,12 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
           "X-Forwarded-For" => "client1, proxy1, proxy2"
         },
       }
-      sensu_asset { 'test2':
+      sensu_asset { 'test':
         ensure => 'present',
         builds => [
         {
           "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz",
           "sha512" => "487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3",
-          "headers"  => {
-            "Authorization" => 'Bearer $TOKEN',
-            "X-Forwarded-For" => "client1, proxy1, proxy2"
-          }
         },
         {
           "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz",
@@ -33,7 +29,11 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
             "entity.system.os == 'linux'",
             "entity.system.arch == 'arm'",
             "entity.system.arm_version == 7"
-          ]
+          ],
+          "headers" => {
+            "Authorization" => 'Bearer $TOKEN',
+            "X-Forwarded-For" => "client1, proxy1, proxy2"
+          },
         },
         {
           "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz",
@@ -41,13 +41,13 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
           "filters" => [
             "entity.system.os == 'windows'",
             "entity.system.arch == 'amd64'"
-          ]
+          ],
+          "headers" => {
+            "Authorization" => 'Bearer $TOKEN',
+            "X-Forwarded-For" => "client1, proxy1, proxy2"
+          },
         }
         ],
-        headers  => {
-          "Authorization" => 'Bearer $TOKEN',
-          "X-Forwarded-For" => "client1, proxy1, proxy2"
-        },
       }
       EOS
 
@@ -64,31 +64,19 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       end
     end
 
-    it 'should have a valid asset' do
-      on node, 'sensuctl asset info test --format json' do
-        data = JSON.parse(stdout)
-        expect(data['url']).to eq('http://example.com/asset/example.tar')
-        expect(data['filters']).to eq(["entity.system.os == 'linux'"])
-        expect(data['headers']['Authorization']).to eq('Bearer $TOKEN')
-        expect(data['headers']['X-Forwarded-For']).to eq('client1, proxy1, proxy2')
-      end
-    end
-
     it 'should have a valid asset with multiple builds' do
-      on node, 'sensuctl asset info test2 --format json' do
+      on node, 'sensuctl asset info test --format json' do
         data = JSON.parse(stdout)
         expect(data['builds'].size).to eq(3)
         expect(data['builds'][0]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz')
         expect(data['builds'][0]['sha512']).to eq('487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3')
         expect(data['builds'][0]['filters']).to be_nil
-        expect(data['builds'][0]['headers']['Authorization']).to eq('Bearer $TOKEN')
-        expect(data['builds'][0]['headers']['X-Forwarded-For']).to eq('client1, proxy1, proxy2')
+        expect(data['builds'][0]['headers']).to be_nil
         expect(data['builds'][1]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz')
         expect(data['builds'][1]['sha512']).to eq('70df8b7e9aa36cf942b972e1781af04815fa560441fcdea1d1538374066a4603fc5566737bfd6c7ffa18314edb858a9f93330a57d430deeb7fd6f75670a8c68b')
         expect(data['builds'][1]['filters'].size).to eq(3)
-        expect(data['builds'][1]['headers']).to be_nil
-        expect(data['headers']['Authorization']).to eq('Bearer $TOKEN')
-        expect(data['headers']['X-Forwarded-For']).to eq('client1, proxy1, proxy2')
+        expect(data['builds'][1]['headers']['Authorization']).to eq('Bearer $TOKEN')
+        expect(data['builds'][1]['headers']['X-Forwarded-For']).to eq('client1, proxy1, proxy2')
       end
     end
   end
@@ -98,14 +86,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_asset { 'test':
-        url      => 'http://example.com/asset/example.zip',
-        sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-        filters  => ["entity.system.os == 'windows'"],
-        headers  => {
-          "X-Forwarded-For" => "client1, proxy1"
-        },
-      }
-      sensu_asset { 'test2':
         ensure => 'present',
         builds => [
         {
@@ -127,7 +107,11 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
             "entity.system.os == 'linux'",
             "entity.system.arch == 'arm'",
             "entity.system.arm_version == 7"
-          ]
+          ],
+          "headers" => {
+            "Authorization" => 'Bearer $TOKEN',
+            "X-Forwarded-For" => "client1, proxy1"
+          },
         },
         {
           "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz",
@@ -135,13 +119,13 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
           "filters" => [
             "entity.system.os == 'windows'",
             "entity.system.arch == 'amd64'"
-          ]
+          ],
+          "headers" => {
+            "Authorization" => 'Bearer $TOKEN',
+            "X-Forwarded-For" => "client1, proxy1"
+          },
         }
         ],
-        headers  => {
-          "Authorization" => 'Bearer $TOKEN',
-          "X-Forwarded-For" => "client1, proxy1"
-        },
       }
       EOS
 
@@ -158,18 +142,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
       end
     end
 
-    it 'should have a valid asset with updated propery' do
-      on node, 'sensuctl asset info test --format json' do
-        data = JSON.parse(stdout)
-        expect(data['url']).to eq('http://example.com/asset/example.zip')
-        expect(data['filters']).to eq(["entity.system.os == 'windows'"])
-        expect(data['headers']['Authorization']).to be_nil
-        expect(data['headers']['X-Forwarded-For']).to eq('client1, proxy1')
-      end
-    end
-
     it 'should have a valid asset with multiple builds with updated properties' do
-      on node, 'sensuctl asset info test2 --format json' do
+      on node, 'sensuctl asset info test --format json' do
         data = JSON.parse(stdout)
         expect(data['builds'].size).to eq(3)
         expect(data['builds'][0]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.4_linux_amd64.tar.gz')
@@ -180,9 +154,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
         expect(data['builds'][1]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.4_linux_armv7.tar.gz')
         expect(data['builds'][1]['sha512']).to eq('70df8b7e9aa36cf942b972e1781af04815fa560441fcdea1d1538374066a4603fc5566737bfd6c7ffa18314edb858a9f93330a57d430deeb7fd6f75670a8c68c')
         expect(data['builds'][1]['filters'].size).to eq(3)
-        expect(data['builds'][1]['headers']).to be_nil
-        expect(data['headers']['Authorization']).to eq('Bearer $TOKEN')
-        expect(data['headers']['X-Forwarded-For']).to eq('client1, proxy1')
+        expect(data['builds'][1]['headers']['Authorization']).to eq('Bearer $TOKEN')
+        expect(data['builds'][1]['headers']['X-Forwarded-For']).to eq('client1, proxy1')
       end
     end
   end
@@ -208,9 +181,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl asset info test'), :node => node do
-      its(:exit_status) { should_not eq 0 }
-    end
-    describe command('sensuctl asset info test2'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end

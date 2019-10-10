@@ -40,6 +40,12 @@ module PuppetX
           raise Puppet::Error, "Sensu namespace '#{resource[:namespace]}' must be defined or exist"
         end
       end
+
+      # Used to take type class name and name to generate friendly error prefix
+      # Puppet::Type::Sensu_asset[test] becomes Sensu_asset[test]
+      def self.error_prefix(s)
+        "#{s.class.to_s.split(':').last}[#{s[:name]}]:"
+      end
     end
   end
 end
