@@ -43,14 +43,17 @@ DESC
     desc "Specific version to install, or latest"
     newvalues(:latest, /[0-9\.]+/)
     def insync?(is)
-      @should.each do |should|
-        if should == :latest || should == 'latest'
-          latest_versions = provider.class.latest_versions
-          @latest = latest_versions[@resource.name]
-          return is == @latest
-        else
-          super
-        end
+      if @should.is_a?(Array)
+        should = @should[0]
+      else
+        should = @should
+      end
+      if should == :latest || should == 'latest'
+        latest_versions = provider.class.latest_versions
+        @latest = latest_versions[@resource.name]
+        return is == @latest
+      else
+        super(is)
       end
     end
     def should_to_s(newvalue)
