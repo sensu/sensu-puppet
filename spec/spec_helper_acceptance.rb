@@ -110,6 +110,7 @@ EOS
       on puppetserver, "chmod 0644 /etc/puppetlabs/code/environments/production/manifests/site.pp"
     end
 
+    # Setup Puppet Bolt
     on setup_nodes, puppet("resource package puppet-bolt ensure=installed")
     bolt_cfg = <<-EOS
 modulepath: "/etc/puppetlabs/code/modules:/etc/puppetlabs/code/environments/production/modules"
