@@ -16,6 +16,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
   c.add_setting :sensu_use_agent, default: false
+  # Necessary to be present even though only used by Windows tests
   c.add_setting :skip_apply, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
   c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
