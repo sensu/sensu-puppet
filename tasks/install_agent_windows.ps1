@@ -45,4 +45,3 @@ status = "install agent successful"
 }
 if ($Output -eq $True) { $return.Add("output", $return_output) }
 ConvertTo-Json -InputObject $return -Compress
-

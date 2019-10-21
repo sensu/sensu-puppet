@@ -58,4 +58,3 @@ rescue Puppet::Error => e
   puts({ status: 'failure', error: e.message }.to_json)
   exit 1
 end
-
