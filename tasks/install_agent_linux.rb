@@ -13,12 +13,14 @@ begin
 
   return_output = {}
   puppet = '/opt/puppetlabs/bin/puppet'
+  # Install sensu module
   _stdout, _stderr, status = Open3.capture3(puppet,'module','install','sensu-sensu','--color','false')
   return_output['module-install'] = _stdout + _stderr
   if status != 0
     raise Puppet::Error, "Failed to execute install sensu-sensu: #{_stdout + _stderr}"
   end
 
+  # Install apt module for apt systems
   `which apt 2>/dev/null 1>/dev/null`
   if $?.success?
     _stdout, _stderr, status = Open3.capture3(puppet,'module','install','puppetlabs-apt','--color','false')
@@ -28,6 +30,8 @@ begin
     end
   end
   return_output['module-install'] = return_output['module-install'].split(/\n/)
+
+  # Apply sensu and sensu::agent classes to actually install Sensu Go Agent
   f = Tempfile.new('manifest')
   manifest = <<-EOS
 class { '::sensu':
