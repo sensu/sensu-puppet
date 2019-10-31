@@ -16,6 +16,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
   c.add_setting :sensu_use_agent, default: false
+  c.add_setting :skip_apply, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
   c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
   c.sensu_use_agent = (ENV['BEAKER_sensu_use_agent'] == 'yes' || ENV['BEAKER_sensu_use_agent'] == 'true')
@@ -108,5 +109,17 @@ EOS
       create_remote_file(puppetserver, '/etc/puppetlabs/code/environments/production/manifests/site.pp', '')
       on puppetserver, "chmod 0644 /etc/puppetlabs/code/environments/production/manifests/site.pp"
     end
+
+    # Setup Puppet Bolt
+    on setup_nodes, puppet("resource package puppet-bolt ensure=installed")
+    bolt_cfg = <<-EOS
+modulepath: "/etc/puppetlabs/code/modules:/etc/puppetlabs/code/environments/production/modules"
+ssh:
+  host-key-check: false
+  user: root
+  password: root
+EOS
+    on setup_nodes, 'mkdir -p -m 0755 /root/.puppetlabs/bolt'
+    create_remote_file(setup_nodes, '/root/.puppetlabs/bolt/bolt.yaml', bolt_cfg)
   end
 end

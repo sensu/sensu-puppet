@@ -7,9 +7,6 @@ branches:
   only:
     - master
     - /^v\d/
-cache:
-- C:\downloads
-- C:\vendor\bundle
 init:
 - ps: $env:GEM_SOURCE = "http://rubygems.org"
 install:
@@ -28,6 +25,7 @@ install:
 - ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
 - ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/tests/ssl" -Destination C:/ProgramData/PuppetLabs/puppet/etc/ssl -Recurse
 - ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/lib/facter" -Destination C:/ProgramData/PuppetLabs/puppet/cache/lib/facter -Recurse
+- choco install puppet-bolt
 - set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
 - puppet --version
 - puppet module install puppetlabs-stdlib
@@ -36,11 +34,17 @@ install:
 - puppet config set --section main certname sensu_agent
 - facter -p --debug
 - ruby -v
-- gem update --system 2.7.9
-- gem -v
 - bundle -v
 - bundle install --jobs 4 --retry 2 --path C:\vendor\bundle
 test_script:
+- bundle exec rake acceptance:windows
+- '"C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe" service uninstall'
+- 'puppet resource package "Sensu Agent" ensure=absent'
+- rmdir C:\\ProgramData\\PuppetLabs\\code\\environments\\production\\modules /s /q
+- ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
+- set BEAKER_skip_apply=yes
+- '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" task show'
+- '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" --debug task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --nodes localhost'
 - bundle exec rake acceptance:windows
 image:
   # Windows 2012 R2

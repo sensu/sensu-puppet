@@ -1,0 +1,42 @@
+{
+  "description": "Manage Sensu Go silencings",
+  "input_method": "stdin",
+  "parameters": {
+    "action": {
+      "description": "The action to perform",
+      "type": "Enum[create,update,delete]"
+    },
+    "subscription": {
+      "description": "The subscription to silence",
+      "type": "Optional[String[1]]"
+    },
+    "check": {
+      "description": "The check to silence",
+      "type": "Optional[String[1]]"
+    },
+    "namespace": {
+      "description": "The namespace for silenced resources",
+      "type": "Optional[String[1]]"
+    },
+    "begin": {
+      "description": "Time at which silence entry goes into effect, in epoch.",
+      "type": "Optional[Integer]"
+    },
+    "expire": {
+      "description": "Number of seconds until this entry should be deleted.",
+      "type": "Optional[Integer]"
+    },
+    "expire_on_resolve": {
+      "description": "If the entry should be deleted when a check begins return OK status (resolves).",
+      "type": "Optional[Boolean]"
+    },
+    "creator": {
+      "description": "Person/application/entity responsible for creating the entry.",
+      "type": "Optional[String]"
+    },
+    "reason": {
+      "description": "Explanation for the creation of this entry.",
+      "type": "Optional[String]"
+    }
+  }
+}

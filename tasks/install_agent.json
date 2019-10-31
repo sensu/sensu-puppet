@@ -1,0 +1,26 @@
+{
+  "description": "Install Sensu Go agent",
+  "input_method": "stdin",
+  "parameters": {
+    "backend": {
+      "description": "The backend(s) to connect agent to",
+      "type": "String[1]"
+    },
+    "subscription": {
+      "description": "The subscription(s) for the agent",
+      "type": "String[1]"
+    },
+    "namespace": {
+      "description": "The namespace for the agent, default is 'default'",
+      "type": "Optional[String[1]]"
+    },
+    "output": {
+      "description": "Return output from commands",
+      "type": "Optional[Boolean]"
+    }
+  },
+  "implementations": [
+    {"name": "install_agent_linux.rb", "requirements": ["shell"]},
+    {"name": "install_agent_windows.ps1", "requirements": ["powershell"], "input_method": "powershell"}
+  ]
+}

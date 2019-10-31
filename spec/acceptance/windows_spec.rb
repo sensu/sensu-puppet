@@ -13,14 +13,16 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     }
     EOS
 
-    it 'creates manifest' do
-      File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
-      puts "C:\manifest-agent.pp"
-      puts File.read('C:\manifest-agent.pp')
-    end
+    unless RSpec.configuration.skip_apply
+      it 'creates manifest' do
+        File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
+        puts "C:\manifest-agent.pp"
+        puts File.read('C:\manifest-agent.pp')
+      end
 
-    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp') do
-      its(:exit_status) { is_expected.to eq 256 }
+      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp') do
+        its(:exit_status) { is_expected.to eq 256 }
+      end
     end
 
     describe service('SensuAgent') do
@@ -49,18 +51,20 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     }
     EOS
 
-    it 'creates manifest' do
-      File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
-      puts "C:\manifest-agent.pp"
-      puts File.read('C:\manifest-agent.pp')
-    end
+    unless RSpec.configuration.skip_apply
+      it 'creates manifest' do
+        File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
+        puts "C:\manifest-agent.pp"
+        puts File.read('C:\manifest-agent.pp')
+      end
 
-    describe command('puppet resource package sensu-agent ensure=absent provider=chocolatey') do
-      its(:exit_status) { is_expected.to eq 0 }
-    end
+      describe command('puppet resource package sensu-agent ensure=absent provider=chocolatey') do
+        its(:exit_status) { is_expected.to eq 0 }
+      end
 
-    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp') do
-      its(:exit_status) { is_expected.to eq 256 }
+      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp') do
+        its(:exit_status) { is_expected.to eq 256 }
+      end
     end
 
     describe service('SensuAgent') do

@@ -1,0 +1,26 @@
+{
+  "description": "Create a Sensu Go agent event via the agent API",
+  "input_method": "stdin",
+  "parameters": {
+    "name": {
+      "description": "The name of the event",
+      "type": "String[1]"
+    },
+    "status": {
+      "description": "The event status",
+      "type": "Integer"
+    },
+    "output": {
+      "description": "The event output",
+      "type": "String[1]"
+    },
+    "ttl": {
+      "description": "The event TTL",
+      "type": "Optional[Integer]"
+    },
+    "port": {
+      "description": "The agent API port, defaults to 3031",
+      "type": "Optional[Integer]"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "description": "Execute a Sensu Go check",
+  "input_method": "stdin",
+  "parameters": {
+    "check": {
+      "description": "The name of the check to execute",
+      "type": "String[1]"
+    },
+    "subscription": {
+      "description": "The subscription",
+      "type": "Optional[String[1]]"
+    },
+    "namespace": {
+      "description": "The namespace, defaults to `default`",
+      "type": "Optional[String[1]]"
+    },
+    "reason": {
+      "description": "Explanation for the creation of this entry.",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
