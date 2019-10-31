@@ -1,5 +1,14 @@
 # Change Log
 
+## [v3.10.0](https://github.com/sensu/sensu-puppet/tree/v3.10.0) (2019-10-31)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.9.0...v3.10.0)
+
+**Merged pull requests:**
+
+- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
+- Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
+- Deprecate defining single asset builds [\#1140](https://github.com/sensu/sensu-puppet/pull/1140) ([treydock](https://github.com/treydock))
+
 ## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.8.0...v3.9.0)
 
