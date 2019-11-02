@@ -57,7 +57,7 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
 
   def create
     begin
-      configure_cmd(true)
+      configure_cmd(resource[:bootstrap])
     rescue Puppet::ExecutionFailure => e
       File.delete(config_path)
       raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"

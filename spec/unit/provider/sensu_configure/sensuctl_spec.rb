@@ -9,6 +9,7 @@ describe Puppet::Type.type(:sensu_configure).provider(:sensuctl) do
       :username => 'admin',
       :password => 'foobar',
       :url => 'http://localhost:8080',
+      :bootstrap => true,
     })
   end
 

@@ -124,6 +124,9 @@
 #   The name of the PostgreSQL database
 # @param postgresql_pool_size
 #   The PostgreSQL pool size
+# @param declare_cli_class
+#   When `true` the sensu::cli class is included by class declaration of `class { 'sensu::cli': ... }`
+#   When `false` the sensu::cli class is included by `include ::sensu::cli`
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -181,6 +184,7 @@ class sensu::backend (
   Stdlib::Port $postgresql_port = 5432,
   String $postgresql_dbname = 'sensu',
   Integer $postgresql_pool_size = 20,
+  Boolean $declare_cli_class = true,
 ) {
 
   if $license_source and $license_content {
@@ -206,6 +210,20 @@ class sensu::backend (
   }
   if $use_ssl and ! $ssl_key_source {
     fail('sensu::backend: ssl_key_source must be defined when sensu::use_ssl is true')
+  }
+
+  if $declare_cli_class {
+    class { '::sensu::cli':
+      version             => $_version,
+      package_name        => $cli_package_name,
+      url_host            => $url_host,
+      url_port            => $url_port,
+      password            => $password,
+      bootstrap           => true,
+      sensuctl_chunk_size => $sensuctl_chunk_size,
+    }
+  } else {
+    include ::sensu::cli
   }
 
   if $use_ssl {
@@ -240,16 +258,6 @@ class sensu::backend (
     include sensu::backend::default_resources
   }
 
-  package { 'sensu-go-cli':
-    ensure  => $_version,
-    name    => $cli_package_name,
-    require => $::sensu::package_require,
-  }
-
-  sensuctl_config { 'sensu':
-    chunk_size => $sensuctl_chunk_size,
-  }
-
   sensu_api_validator { 'sensu':
     sensu_api_server => $url_host,
     sensu_api_port   => $url_port,
@@ -257,13 +265,6 @@ class sensu::backend (
     require          => Service['sensu-backend'],
   }
 
-  sensu_configure { 'puppet':
-    url                => $url,
-    username           => 'admin',
-    password           => $password,
-    bootstrap_password => 'P@ssw0rd!',
-    trusted_ca_file    => $trusted_ca_file,
-  }
   sensu_user { 'admin':
     ensure        => 'present',
     password      => $password,

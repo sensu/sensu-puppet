@@ -95,6 +95,7 @@ describe Puppet::Type.type(:sensu_configure) do
 
   # Boolean properties
   [
+    :bootstrap,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true

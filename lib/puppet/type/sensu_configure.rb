@@ -35,6 +35,11 @@ DESC
     desc "Password to use with sensuctl configure"
   end
 
+  newparam(:bootstrap, :boolean => true) do
+    desc "Should sensuctl be bootstrapped"
+    newvalues(:true, :false)
+  end
+
   newparam(:bootstrap_password) do
     desc "Password to use when bootstrapping sensuctl"
     defaultto('P@ssw0rd!')

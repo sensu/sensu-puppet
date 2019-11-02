@@ -11,6 +11,7 @@
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
+    * [Basic Sensu CLI](#basic-sensu-cli)
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
@@ -183,6 +184,19 @@ associated to `linux` and `apache-servers` subscriptions.
     subscriptions => ['linux', 'apache-servers'],
   }
 ```
+
+### Basic Sensu CLI
+
+The following example will manage the resources necessary to use `sensuctl`.
+
+```puppet
+class { '::sensu::cli':
+  url_host => 'sensu-backend.example.com',
+  password => 'supersecret',
+}
+```
+
+**NOTE**: The `sensu::backend` class calls the `sensu::cli` class so it is only necessary to directly call the `sensu::cli` class on hosts not using the `sensu::backend` class.
 
 ### Manage Windows Agent
 

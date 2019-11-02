@@ -12,8 +12,14 @@
 # @param ssl_dir
 #   Absolute path to the Sensu ssl directory.
 #
+# @param manage_user
+#   Boolean that determines if sensu user should be managed
+#
 # @param user
 #   User used by sensu services
+#
+# @param manage_group
+#   Boolean that determines if sensu group should be managed
 #
 # @param group
 #   User group used by sensu services
@@ -40,7 +46,9 @@ class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
   Stdlib::Absolutepath $ssl_dir = '/etc/sensu/ssl',
+  Boolean $manage_user = true,
   String $user = 'sensu',
+  Boolean $manage_group = true,
   String $group = 'sensu',
   Boolean $etc_dir_purge = true,
   Boolean $ssl_dir_purge = true,
@@ -56,12 +64,14 @@ class sensu (
   if $facts['os']['family'] == 'windows' {
     $sensu_user = undef
     $sensu_group = undef
+    $directory_mode = undef
     $file_mode = undef
     $trusted_ca_file_path = "${ssl_dir}\\ca.crt"
     $agent_config_path = "${etc_dir}\\agent.yml"
   } else {
     $sensu_user = $user
     $sensu_group = $group
+    $directory_mode = '0755'
     $file_mode = '0640'
     $join_path = '/'
     $trusted_ca_file_path = "${ssl_dir}/ca.crt"
@@ -71,6 +81,9 @@ class sensu (
   file { 'sensu_etc_dir':
     ensure  => 'directory',
     path    => $etc_dir,
+    owner   => $sensu_user,
+    group   => $sensu_group,
+    mode    => $directory_mode,
     purge   => $etc_dir_purge,
     recurse => $etc_dir_purge,
     force   => $etc_dir_purge,
@@ -78,6 +91,29 @@ class sensu (
 
   if $use_ssl {
     contain sensu::ssl
+  }
+
+  if $manage_user and $sensu_user {
+    user { 'sensu':
+      ensure     => 'present',
+      name       => $sensu_user,
+      forcelocal => true,
+      shell      => '/bin/false',
+      gid        => $sensu_group,
+      uid        => undef,
+      home       => '/var/lib/sensu',
+      managehome => false,
+      system     => true,
+    }
+  }
+  if $manage_group and $sensu_group {
+    group { 'sensu':
+      ensure     => 'present',
+      name       => $sensu_group,
+      forcelocal => true,
+      gid        => undef,
+      system     => true,
+    }
   }
 
   case $facts['os']['family'] {

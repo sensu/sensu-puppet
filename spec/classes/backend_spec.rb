@@ -21,10 +21,13 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
 
         it {
-          should contain_package('sensu-go-cli').with({
-            'ensure'  => 'installed',
-            'name'    => 'sensu-go-cli',
-            'require' => platforms[facts[:osfamily]][:package_require],
+          should contain_class('sensu::cli').with({
+            'version'             => 'installed',
+            'package_name'        => 'sensu-go-cli',
+            'url_host'            => 'test.example.com',
+            'url_port'            => '8080',
+            'password'            => 'P@ssw0rd!',
+            'sensuctl_chunk_size' => nil,
           })
         }
 
@@ -34,16 +37,6 @@ describe 'sensu::backend', :type => :class do
             'sensu_api_port'   => 8080,
             'use_ssl'          => 'true',
             'require'          => 'Service[sensu-backend]',
-          })
-        }
-
-        it {
-          should contain_sensu_configure('puppet').with({
-            'url'                 => 'https://test.example.com:8080',
-            'username'            => 'admin',
-            'password'            => 'P@ssw0rd!',
-            'bootstrap_password'  => 'P@ssw0rd!',
-            'trusted_ca_file'     => '/etc/sensu/ssl/ca.crt',
           })
         }
 
@@ -190,16 +183,6 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
-        it {
-          should contain_sensu_configure('puppet').with({
-            'url'                 => 'http://test.example.com:8080',
-            'username'            => 'admin',
-            'password'            => 'P@ssw0rd!',
-            'bootstrap_password'  => 'P@ssw0rd!',
-            'trusted_ca_file'     => 'absent',
-          })
-        }
-
         it { should_not contain_file('sensu_ssl_cert') }
         it { should_not contain_file('sensu_ssl_key') }
 
@@ -242,7 +225,6 @@ describe 'sensu::backend', :type => :class do
           "class { 'sensu': manage_repo => false }"
         end
         it { should compile.with_all_deps }
-        it { should contain_package('sensu-go-cli').without_require }
         it { should contain_package('sensu-go-backend').without_require }
       end
 
