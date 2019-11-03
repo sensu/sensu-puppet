@@ -24,9 +24,15 @@ describe 'sensu::cli class', if: Gem.win_platform? do
         its(:exit_status) { is_expected.to eq 256 }
       end
 
-      it 'has installed sensuctl' do
-        output = `sensuctl version`
-        expect(output).to eq(/5\.14\.1/)
+      describe file('C:/Program Files/Sensu/sensuctl.exe') do
+        it { should exist }
+      end
+      describe 'sensuctl.version fact' do
+        it 'has version fact' do
+          output = `facter --json -p sensuctl`
+          data = JSON.parse(output.strip)
+          expect(data['sensuctl']['version']).to match(/^[0-9\.]+$/)
+        end
       end
     end
   end
