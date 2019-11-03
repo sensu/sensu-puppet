@@ -24,8 +24,6 @@
 #   Sensu backend port used to configure sensuctl and verify API access.
 # @param password
 #   Sensu backend admin password used to confiure sensuctl.
-# @param bootstrap
-#   Should sensuctl be bootstrapped. This is a private parameter used by sensu::backend class.
 # @param configure
 #   Determines if sensuctl should be configured
 # @param sensuctl_chunk_size
@@ -39,7 +37,6 @@ class sensu::cli (
   String $url_host = $trusted['certname'],
   Stdlib::Port $url_port = 8080,
   String $password = 'P@ssw0rd!',
-  Boolean $bootstrap = false,
   Boolean $configure = true,
   Optional[Integer] $sensuctl_chunk_size = undef,
 ) {
@@ -102,12 +99,10 @@ class sensu::cli (
     }
 
     sensu_configure { 'puppet':
-      url                => $url,
-      username           => 'admin',
-      password           => $password,
-      bootstrap          => $bootstrap,
-      bootstrap_password => 'P@ssw0rd!',
-      trusted_ca_file    => $trusted_ca_file,
+      url             => $url,
+      username        => 'admin',
+      password        => $password,
+      trusted_ca_file => $trusted_ca_file,
     }
   }
 }

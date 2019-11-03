@@ -84,6 +84,8 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
     end
   end
 
+  # TODO: Remove this once changing SSL and passwords can be done at same time
+  # Currently changing SSL and password at same time does not work
   context 'reset password' do
     it 'should work without errors' do
       backend_pp = <<-EOS

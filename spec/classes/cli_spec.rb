@@ -72,7 +72,6 @@ describe 'sensu::cli', :type => :class do
             'url'                 => 'https://test.example.com:8080',
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
-            'bootstrap_password'  => 'P@ssw0rd!',
             'trusted_ca_file'     => platforms[facts[:osfamily]][:ca_path],
           })
         }
@@ -113,7 +112,6 @@ describe 'sensu::cli', :type => :class do
             'url'                 => 'http://test.example.com:8080',
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
-            'bootstrap_password'  => 'P@ssw0rd!',
             'trusted_ca_file'     => 'absent',
           })
         }

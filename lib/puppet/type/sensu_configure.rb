@@ -35,16 +35,6 @@ DESC
     desc "Password to use with sensuctl configure"
   end
 
-  newparam(:bootstrap, :boolean => true) do
-    desc "Should sensuctl be bootstrapped"
-    newvalues(:true, :false)
-  end
-
-  newparam(:bootstrap_password) do
-    desc "Password to use when bootstrapping sensuctl"
-    defaultto('P@ssw0rd!')
-  end
-
   newproperty(:trusted_ca_file) do
     desc "Path to trusted CA"
     defaultto('/etc/sensu/ssl/ca.crt')

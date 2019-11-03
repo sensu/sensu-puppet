@@ -9,11 +9,15 @@ describe Puppet::Type.type(:sensu_configure).provider(:sensuctl) do
       :username => 'admin',
       :password => 'foobar',
       :url => 'http://localhost:8080',
-      :bootstrap => true,
     })
   end
 
   describe 'create' do
+    before(:each) do
+      allow(resource.provider).to receive(:exists?).and_return(false)
+      allow(resource.provider.api).to receive(:auth_test).and_return(true)
+    end
+
     it 'should run sensuctl configure' do
       expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','P@ssw0rd!'])
       resource.provider.create
@@ -23,9 +27,18 @@ describe Puppet::Type.type(:sensu_configure).provider(:sensuctl) do
       expect(resource.provider).to receive(:sensuctl).with(['configure','--non-interactive','--url','http://localhost:8080','--username','admin','--password','P@ssw0rd!'])
       resource.provider.create
     end
+    it 'should run sensuctl configure with password' do
+      allow(resource.provider.api).to receive(:auth_test).and_return(false)
+      expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
+      resource.provider.create
+    end
   end
 
   describe 'flush' do
+    before(:each) do
+      allow(resource.provider).to receive(:exists?).and_return(true)
+    end
+
     it 'should update a configure' do
       expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
       resource.provider.url = 'https://localhost:8080'

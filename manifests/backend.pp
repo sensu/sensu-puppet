@@ -219,7 +219,6 @@ class sensu::backend (
       url_host            => $url_host,
       url_port            => $url_port,
       password            => $password,
-      bootstrap           => true,
       sensuctl_chunk_size => $sensuctl_chunk_size,
     }
   } else {

@@ -31,13 +31,11 @@ describe Puppet::Type.type(:sensu_configure) do
   end
 
   defaults = {
-    bootstrap_password: 'P@ssw0rd!',
     trusted_ca_file: '/etc/sensu/ssl/ca.crt',
   }
 
   # String properties
   [
-    :bootstrap_password,
     :username,
     :password,
     :url,
@@ -95,7 +93,6 @@ describe Puppet::Type.type(:sensu_configure) do
 
   # Boolean properties
   [
-    :bootstrap,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true

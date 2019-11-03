@@ -1,4 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
 
 Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
   desc "Provider sensu_configure using sensuctl"
@@ -10,6 +11,10 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
   def initialize(value = {})
     super(value)
     @property_flush = {}
+  end
+
+  def api
+    @api ||= Puppet::Provider::SensuAPI.new()
   end
 
   def url
@@ -34,7 +39,12 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
     @property_flush[:trusted_ca_file] = value
   end
 
-  def configure_cmd(bootstrap)
+  # The default Sensu Go admin password
+  def bootstrap_password
+    'P@ssw0rd!'
+  end
+
+  def configure_cmd()
     trusted_ca_file = @property_flush[:trusted_ca_file] || resource[:trusted_ca_file]
     cmd = ['configure']
     if trusted_ca_file && trusted_ca_file != 'absent'
@@ -47,8 +57,14 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
     cmd << '--username'
     cmd << resource[:username]
     cmd << '--password'
-    if bootstrap
-      cmd << resource[:bootstrap_password]
+    # Test if default password works and use that password first
+    # This supports bootstrapping sensuctl on fresh installs of sensu backend
+    if ! exists?
+      if api.auth_test(resource[:url], resource[:username], bootstrap_password)
+        cmd << bootstrap_password
+      else
+        cmd << resource[:password]
+      end
     else
       cmd << resource[:password]
     end
@@ -57,7 +73,7 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
 
   def create
     begin
-      output = configure_cmd(resource[:bootstrap])
+      output = configure_cmd()
     rescue Puppet::ExecutionFailure => e
       File.delete(config_path) if File.exist?(config_path)
       raise Puppet::Error, "sensuctl configure failed\nOutput: #{output}\nError message: #{e.message}"
@@ -73,7 +89,7 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
           Puppet.info("Deleting #{config_path} to clear trusted-ca-file")
           File.delete(config_path) if File.exist?(config_path)
         end
-        configure_cmd(false)
+        configure_cmd()
       rescue Exception => e
         raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"
       end
