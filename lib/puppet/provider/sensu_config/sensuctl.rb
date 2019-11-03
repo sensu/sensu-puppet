@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_config).provide(:sensuctl, :parent => Puppet::Provider:
   def self.instances
     configs = []
 
-    output = sensuctl('config', 'view', '--format', 'json')
+    output = sensuctl(['config', 'view', '--format', 'json'])
     Puppet.debug("sensu configs: #{output}")
     begin
       data = JSON.parse(output)
@@ -53,7 +53,7 @@ Puppet::Type.type(:sensu_config).provide(:sensuctl, :parent => Puppet::Provider:
 
   def create
     begin
-      sensuctl('config', "set-#{resource[:name]}", resource[:value])
+      sensuctl(['config', "set-#{resource[:name]}", resource[:value]])
     rescue Exception => e
       raise Puppet::Error, "sensuctl set-#{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -63,7 +63,7 @@ Puppet::Type.type(:sensu_config).provide(:sensuctl, :parent => Puppet::Provider:
   def flush
     if !@property_flush.empty?
       begin
-        sensuctl('config', "set-#{resource[:name]}", @property_flush[:value])
+        sensuctl(['config', "set-#{resource[:name]}", @property_flush[:value]])
       rescue Exception => e
         raise Puppet::Error, "sensuctl set-#{resource[:name]} failed\nError message: #{e.message}"
       end

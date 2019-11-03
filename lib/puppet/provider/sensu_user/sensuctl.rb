@@ -76,10 +76,10 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
       raise Puppet::Error, "sensuctl user create #{resource[:name]} failed\nError message: #{e.message}"
     end
     if ! resource[:disabled].nil? && resource[:disabled].to_s == 'true'
-      sensuctl('user', 'disable', resource[:name], '--skip-confirm')
+      sensuctl(['user', 'disable', resource[:name], '--skip-confirm'])
     end
     if resource[:configure] == :true
-      sensuctl('configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password])
+      sensuctl(['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password]])
     end
     @property_hash[:ensure] = :present
   end
@@ -93,9 +93,9 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         if ! password_insync?(resource[:name], resource[:old_password])
           fail("old_password given for #{resource[:name]} is incorrect")
         end
-        sensuctl('user', 'change-password', resource[:name], '--current-password', resource[:old_password], '--new-password', @property_flush[:password])
+        sensuctl(['user', 'change-password', resource[:name], '--current-password', resource[:old_password], '--new-password', @property_flush[:password]])
         if resource[:configure] == :true
-          sensuctl('configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password])
+          sensuctl(['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]])
         end
       end
       if @property_flush[:groups]
@@ -103,22 +103,22 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         # Add groups not currently set
         @property_flush[:groups].each do |group|
           if ! current_groups.include?(group)
-            sensuctl('user', 'add-group', resource[:name], group)
+            sensuctl(['user', 'add-group', resource[:name], group])
           end
         end
         # Remove current groups not set by Puppet
         current_groups.each do |group|
           if ! @property_flush[:groups].include?(group)
-            sensuctl('user', 'remove-group', resource[:name], group)
+            sensuctl(['user', 'remove-group', resource[:name], group])
           end
         end
       end
       if ! @property_flush[:disabled].nil?
         if @property_flush[:disabled].to_s == 'true'
-          sensuctl('user', 'disable', resource[:name], '--skip-confirm')
+          sensuctl(['user', 'disable', resource[:name], '--skip-confirm'])
         end
         if @property_flush[:disabled].to_s == 'false'
-          sensuctl('user', 'reinstate', resource[:name])
+          sensuctl(['user', 'reinstate', resource[:name]])
         end
       end
     end
