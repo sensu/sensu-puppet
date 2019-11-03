@@ -1,6 +1,37 @@
 require 'spec_helper_acceptance_windows' if Gem.win_platform?
 require 'json'
 
+describe 'sensu::cli class', if: Gem.win_platform? do
+  context 'default' do
+    pp = <<-EOS
+    class { '::sensu': }
+    class { '::sensu::cli':
+      install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
+      url_host       => 'localhost',
+      # Not yet able to run backend in appveyor so configure will not work
+      configure      => false,
+    }
+    EOS
+
+    unless RSpec.configuration.skip_apply
+      it 'creates manifest' do
+        File.open('C:\manifest-cli.pp', 'w') { |f| f.write(pp) }
+        puts "C:\manifest-cli.pp"
+        puts File.read('C:\manifest-cli.pp')
+      end
+
+      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-cli.pp') do
+        its(:exit_status) { is_expected.to eq 256 }
+      end
+
+      it 'has installed sensuctl' do
+        output = `sensuctl version`
+        expect(output).to eq(/5\.14\.1/)
+      end
+    end
+  end
+end
+
 describe 'sensu::agent class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS

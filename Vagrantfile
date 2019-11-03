@@ -172,6 +172,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network "forwarded_port", host: 3390, guest: 3389, auto_correct: true
     agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
     agent.vm.provision :shell, :inline => '$env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" ; iex "puppet apply -v C:/vagrant/tests/sensu-agent.pp"'
+    agent.vm.provision :shell, :inline => '$env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" ; iex "puppet apply -v C:/vagrant/tests/sensu-cli.pp"'
     agent.vm.provision :shell, :inline => '$env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" ; iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
   end
 
@@ -186,6 +187,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
     agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
     agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent.pp"'
+    agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-cli.pp"'
     agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
   end
 
@@ -215,6 +217,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.network "forwarded_port", host: 3391, guest: 3389, auto_correct: true
     agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
     agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent.pp"'
+    agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-cli.pp"'
     agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
   end
 

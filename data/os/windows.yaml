@@ -6,3 +6,4 @@ sensu::agent::package_name: 'sensu-agent'
 sensu::agent::package_download_path: 'C:\'
 sensu::agent::log_file: 'C:\ProgramData\sensu\log\sensu-agent.log'
 sensu::agent::service_name: SensuAgent
+sensu::cli::install_path: 'C:\Program Files\Sensu'

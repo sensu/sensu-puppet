@@ -16,6 +16,10 @@ DESC
     desc "sensuctl chunk-size"
   end
 
+  newparam(:path) do
+    desc "path to sensuctl"
+  end
+
   # First collect all types with sensuctl provider that come from this module
   # For each sensuctl type, set the class variable 'chunk_size' used by
   # each provider to list resources
@@ -29,6 +33,7 @@ DESC
     sensuctl_types.each do |type|
       provider_class = Puppet::Type.type(type).provider(:sensuctl)
       provider_class.chunk_size = self[:chunk_size]
+      provider_class.path = self[:path]
     end
     []
   end

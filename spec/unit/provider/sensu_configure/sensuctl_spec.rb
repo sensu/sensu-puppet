@@ -33,6 +33,7 @@ describe Puppet::Type.type(:sensu_configure).provider(:sensuctl) do
     end
     it 'should remove SSL trusted ca' do
       allow(resource.provider).to receive(:config_path).and_return('/root/.config/sensu/sensuctl/cluster')
+      allow(File).to receive(:exist?).with('/root/.config/sensu/sensuctl/cluster').and_return(true)
       expect(resource.provider).to receive(:sensuctl).with(['configure','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
       expect(File).to receive(:delete).with('/root/.config/sensu/sensuctl/cluster')
       resource.provider.trusted_ca_file = 'absent'

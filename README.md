@@ -102,17 +102,21 @@ This module will install packages, create configuration and start services neces
 
 Plugin sync is required if the custom sensu types and providers are used.
 
-This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 8.0.0`) for systems using `apt`.
+#### Soft module dependencies
 
-If using Puppet >= 6.0.0 there is a soft dependency on the [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`) for systems using `yum`.
+For systems using `apt`:
+  * [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 8.0.0`)
 
-If managing Windows there is a soft dependency on the [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey) module (`>= 3.0.0 < 5.0.0`).
+For systems using `yum` and Puppet >= 6.0.0:
+  * [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`)
 
-If managing Windows and defining `package_source`, there is a soft dependency on the [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`).
+For Windows:
+  * [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey) module (`>= 3.0.0 < 5.0.0`)
+  * [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
+  * [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.    0 < 5.0.0`)
 
-If managing Windows and defining `service_env_vars` there is a soft depedency on [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
-
-For PostgreSQL datastore support there is a soft dependency on [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`).
+For PostgreSQL datastore support:
+* [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`)
 
 ### Beginning with sensu
 
@@ -197,6 +201,16 @@ class { '::sensu::cli':
 ```
 
 **NOTE**: The `sensu::backend` class calls the `sensu::cli` class so it is only necessary to directly call the `sensu::cli` class on hosts not using the `sensu::backend` class.
+
+For Windows the `install_source` parameter must be provided:
+
+```puppet
+class { '::sensu::cli':
+  install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
+  url_host       => 'sensu-backend.example.com',
+  password       => 'supersecret',
+}
+```
 
 ### Manage Windows Agent
 

@@ -57,10 +57,10 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
 
   def create
     begin
-      configure_cmd(resource[:bootstrap])
+      output = configure_cmd(resource[:bootstrap])
     rescue Puppet::ExecutionFailure => e
-      File.delete(config_path)
-      raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"
+      File.delete(config_path) if File.exist?(config_path)
+      raise Puppet::Error, "sensuctl configure failed\nOutput: #{output}\nError message: #{e.message}"
     rescue Exception => e
       raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"
     end
@@ -71,7 +71,7 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
       begin
         if @property_flush[:trusted_ca_file] == 'absent'
           Puppet.info("Deleting #{config_path} to clear trusted-ca-file")
-          File.delete(config_path)
+          File.delete(config_path) if File.exist?(config_path)
         end
         configure_cmd(false)
       rescue Exception => e
