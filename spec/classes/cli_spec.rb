@@ -49,7 +49,6 @@ describe 'sensu::cli', :type => :class do
               'value'     => 'C:\\Program Files\\Sensu',
               'mergemode' => 'append',
               'require'   => 'Archive[sensu-go-cli.zip]',
-              'before'    => 'Sensu_configure[puppet]',
             })
           }
           it { should_not contain_package('sensu-go-cli') }

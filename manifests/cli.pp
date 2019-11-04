@@ -50,7 +50,9 @@ class sensu::cli (
   if $use_ssl {
     $url_protocol = 'https'
     $trusted_ca_file = $::sensu::trusted_ca_file_path
-    Class['::sensu::ssl'] -> Sensu_configure['puppet']
+    if $configure {
+      Class['::sensu::ssl'] -> Sensu_configure['puppet']
+    }
   } else {
     $url_protocol = 'http'
     $trusted_ca_file = 'absent'
@@ -81,7 +83,6 @@ class sensu::cli (
       value     => $install_path,
       mergemode => 'append',
       require   => Archive['sensu-go-cli.zip'],
-      before    => Sensu_configure['puppet'],
     }
   } else {
     $sensuctl_path = undef
