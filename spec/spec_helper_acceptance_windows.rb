@@ -5,6 +5,7 @@ set :backend, :cmd
 RSpec.configure do |c|
   # Readable test descriptions
   c.formatter = :documentation
+  # Only used to test Bolt
   c.add_setting :skip_apply, default: false
   c.skip_apply = (ENV['BEAKER_skip_apply'] == 'yes' || ENV['BEAKER_skip_apply'] == 'true')
   c.before :suite do

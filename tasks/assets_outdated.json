@@ -1,0 +1,10 @@
+{
+  "description": "Retreive outdated Sensu Go assets",
+  "input_method": "stdin",
+  "parameters": {
+    "namespace": {
+      "description": "The namespace, defaults to all namespaces",
+      "type": "Optional[String[1]]"
+    }
+  }
+}

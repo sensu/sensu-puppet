@@ -25,6 +25,7 @@
     * [Large Environment Considerations](#large-environment-considerations)
     * [Composite Names for Namespaces](#composite-names-for-namespaces)
     * [Installing Bonsai Assets](#installing-bonsai-assets)
+    * [Bolt Tasks](#bolt-tasks)
 4. [Reference](#reference)
     * [Facts](#facts)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -606,6 +607,40 @@ sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
   version => 'latest',
 }
 ```
+
+### Bolt Tasks
+
+The following Bolt tasks are provided by this Module:
+
+**sensu::agent\_event**: Create a Sensu Go agent event via the agent API
+
+Example: `bolt task run sensu::agent_event name=bolttest status=1 output=test --nodes sensu_agent`
+
+**sensu::assets\_outdated**: Retreive outdated Sensu Go assets
+
+Example: `bolt task run sensu::assets_outdated --nodes sensu_backend`
+
+**sensu::check\_execute**: Execute a Sensu Go check
+
+Example: `bolt task run sensu::check_execute check=test subscription=entity:sensu_agent --nodes sensu_backend`
+
+**sensu::event.json**: Manage Sensu Go events
+
+Example: `bolt task run sensu::event action=resolve entity=sensu_agent check=test --nodes sensu_backend`
+
+Example: `bolt task run sensu::event action=delete entity=sensu_agent check=test --nodes sensu_backend`
+
+**sensu::silenced**: Manage Sensu Go silencings
+
+Example: `bolt task run sensu::silenced action=create subscription=entity:sensu_agent expire_on_resolve=true --nodes sensu_backend`
+
+Example: `bolt task run sensu::silenced action=delete subscription=entity:sensu_agent --nodes sensu_backend`
+
+**sensu::install\_agent**: Install Sensu Go agent (Windows and Linux)
+
+Example: `bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux output=true --nodes linux`
+
+Example: `bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --nodes windows`
 
 ## Reference
 

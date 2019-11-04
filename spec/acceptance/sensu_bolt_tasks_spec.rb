@@ -190,6 +190,29 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
   end
 end
 
+describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_full do
+  backend = hosts_as('sensu_backend')[0]
+  context 'setup' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      include ::sensu::backend
+      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler': version => '1.0.2' }
+      EOS
+      apply_manifest_on(backend, pp, :catch_failures => true)
+    end
+  end
+
+  context 'assets_outdated' do
+    it 'should return outdated assets' do
+      on backend, 'bolt task run sensu::assets_outdated --nodes localhost --format json' do
+        data = JSON.parse(stdout)
+        d = data['items'][0]['result']['data']
+        expect(d[0]['asset_name']).to eq('sensu/sensu-pagerduty-handler')
+      end
+    end
+  end
+end
+
 describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
   backend = hosts_as('sensu_backend')[0]
   agent = hosts_as('sensu_agent')[0]
