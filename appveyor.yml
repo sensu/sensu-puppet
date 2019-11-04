@@ -35,7 +35,7 @@ install:
 - facter -p --debug
 - ruby -v
 - bundle -v
-- bundle install --jobs 4 --retry 2 --path C:\vendor\bundle
+- bundle install --jobs 4 --retry 2 --path C:\vendor\bundle --without documentation
 test_script:
 - bundle exec rake acceptance:windows
 - '"C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe" service uninstall'

@@ -43,16 +43,5 @@ To generate the CHANGELOG.md run the following.
 # Release process
 
 1. Update version in `metadata.json`
-1. Update CHANGELOG.md with the following command replacing `--future-release` with appropriate value.
-```
-github_changelog_generator -u sensu -p sensu-puppet --since-tag v3.0.0 --exclude-labels "sensu v2","sensu v1" --max-issues 100 --no-issues --future-release v3.1.0
-```
-1. Update `REFERENCE.md` with the command `bundle exec rake reference`
-1. Commit changes and push to master
-1. Tag the new version, such as `git tag -a 'v2.0.0' -m 'v2.0.0'`
-1. Push tags `git push --tags`
-1. Update the puppet strings documentation with `bundle exec rake strings:gh_pages:update`
-1. Clean up tests with `bundle exec rake spec_clean`
-1. Remove junit directory from beaker runs `rm -fr junit`
-1. Build module with `puppet module build`
-1. Upload module to Puppet Forge.
+1. Run Rake task to release module: `bundle exec rake release`
+1. Push to master with tags: `git push --tags`
