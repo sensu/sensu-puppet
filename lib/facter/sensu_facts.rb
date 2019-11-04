@@ -5,6 +5,8 @@ module SensuFacts
     path = nil
     if File.exists?("C:\\Program Files\\sensu\\sensu-agent\\bin\\#{cmd}.exe")
       path = "C:\\Program Files\\sensu\\sensu-agent\\bin\\#{cmd}.exe"
+    elsif File.exists?("C:\\Program Files\\Sensu\\#{cmd}.exe")
+      path = "C:\\Program Files\\Sensu\\#{cmd}.exe"
     else
       path = Facter::Core::Execution.which(cmd)
     end
