@@ -213,6 +213,48 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_full do
   end
 end
 
+describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
+  backend = hosts_as('sensu_backend')[0]
+  context 'setup' do
+    it 'should work without errors' do
+      apply_manifest_on(backend, 'include ::sensu::backend', :catch_failures => true)
+    end
+  end
+
+  context 'create' do
+    it 'should work without errors' do
+      on backend, 'bolt task run sensu::apikey action=create username=admin --nodes sensu_backend'
+    end
+
+    it 'should have created api key' do
+      on backend, 'sensuctl api-key list --format json' do
+        data = JSON.parse(stdout)
+        key = data.select { |k| k["username"] == "admin" }[0]
+        expect(key).not_to be_nil
+      end
+    end
+  end
+
+  context 'list' do
+    describe command('bolt task run sensu::apikey action=list --nodes sensu_backend'), :node => backend do
+      its(:exit_status) { should eq 0 }
+    end
+  end
+
+  context 'delete' do
+    it 'should remove without errors' do
+      key = nil
+      # Get key
+      on backend, 'sensuctl api-key list --format json' do
+        data = JSON.parse(stdout)
+        apikey = data.select { |k| k["username"] == "admin" }[0]
+        key = apikey["metadata"]["name"]
+      end
+      on backend, "bolt task run sensu::apikey action=delete key=#{key} --nodes sensu_backend"
+    end
+  end
+end
+
 describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
   backend = hosts_as('sensu_backend')[0]
   agent = hosts_as('sensu_agent')[0]

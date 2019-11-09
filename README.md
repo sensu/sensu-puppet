@@ -616,6 +616,12 @@ The following Bolt tasks are provided by this Module:
 
 Example: `bolt task run sensu::agent_event name=bolttest status=1 output=test --nodes sensu_agent`
 
+**sensu::apikey**: Manage Sensu Go API keys
+
+Example: `bolt task run sensu::apikey action=create username=foobar --nodes sensu_backend`
+Example: `bolt task run sensu::apikey action=list --nodes sensu_backend`
+Example: `bolt task run sensu::apikey action=delete key=replace-with-uuid-key --nodes sensu_backend`
+
 **sensu::assets\_outdated**: Retreive outdated Sensu Go assets
 
 Example: `bolt task run sensu::assets_outdated --nodes sensu_backend`
