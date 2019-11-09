@@ -4,6 +4,7 @@
 
 1. [Module Description](#module-description)
     * [Deprecations](#deprecations)
+    * [Updating this module from 3.x to 4.x](#updating-this-module-from-3x-to-4x)
 2. [Setup - The basics of getting started with sensu](#setup)
     * [What sensu affects](#what-sensu-affects)
     * [Setup requirements](#setup-requirements)
@@ -90,6 +91,33 @@ sensu_asset { 'test':
   ],
 }
 ```
+
+### Updating this module from 3.x to 4.x
+
+Class parameter changes:
+
+* Move `sensu::backend::cli_package_name` to `sensu::cli::package_name`
+* Move `sensu::backend::sensuctl_chunk_size` to `sensu::cli::sensuctl_chunk_size`
+* Move `sensu::backend::url_host` to `sensu::api_host`
+* Move `sensu::backend::url_port` to `sensu::api_port`
+* Move `sensu::backend::password` to `sensu::password`
+* Move `sensu::backend::old_password` to `sensu::old_password`
+* Move `sensu::backend::agent_password` to `sensu::agent_password`
+* Move `sensu::backend::agent_old_password` to `sensu::agent_old_password`
+
+Type property changes:
+
+* Replace `sensu_check` `proxy_requests*` properties with `proxy_requests` Hash
+* Replace `sensu_entity` `deregistration_handler` with `deregistration` Hash
+* Replace `sensu_handler` `socket_*` properties with `socket` Hash
+* Refactor `sensu_ldap_auth` and `sensu_ad_auth` on how properties are defined.
+  * Move `server_binding`, `server_group_search` and `server_user_search` into `servers` property
+
+Breaking changes:
+
+* Remove `sensu_event` type, replaced with `sensu::event` Bolt task
+* Remove `sensu_silenced` type, replaced with `sensu::silenced` Bolt task
+* Remove `sensu_config` type, replaced with `sensu::cli::config_format` and `sensu::cli::config_namespace` parameters
 
 ## Setup
 
