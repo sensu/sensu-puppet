@@ -39,9 +39,10 @@
 #   Sensu agent configuration hash used to define agent.yml.
 # @param backends
 #   Array of sensu backends to pass to `backend-url` config option.
+#   Default is `["${::sensu::api_host}:8081"]`
 #   The protocol prefix of `ws://` or `wss://` are optional and will be determined
 #   based on `sensu::use_ssl` parameter by default.
-#   Passing `backend-url` as part of `config_hash` takes precedence.
+#   Passing `backend-url` as part of `config_hash` takes precedence over this parameter.
 # @param entity_name
 #   The value for agent.yml `name`.
 #   Passing `name` as part of `config_hash` takes precedence
@@ -74,7 +75,7 @@ class sensu::agent (
   String $service_ensure = 'running',
   Boolean $service_enable = true,
   Hash $config_hash = {},
-  Array[Sensu::Backend_URL] $backends = ['localhost:8081'],
+  Optional[Array[Sensu::Backend_URL]] $backends = undef,
   Optional[String] $entity_name = undef,
   Optional[Array] $subscriptions = undef,
   Optional[Hash] $annotations = undef,
@@ -90,6 +91,7 @@ class sensu::agent (
   $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl
   $_version = pick($version, $::sensu::version)
+  $_backends = pick($backends, ["${::sensu::api_host}:8081"])
 
   if $use_ssl {
     $backend_protocol = 'wss'
@@ -102,7 +104,7 @@ class sensu::agent (
     $ssl_config = {}
     $service_subscribe = undef
   }
-  $backend_urls = $backends.map |$backend| {
+  $backend_urls = $_backends.map |$backend| {
     if 'ws://' in $backend or 'wss://' in $backend {
       $backend
     } else {

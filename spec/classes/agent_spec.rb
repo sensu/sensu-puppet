@@ -4,6 +4,7 @@ describe 'sensu::agent', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
+      let(:node) { 'localhost' }
       describe 'with default values for all parameters' do
         # Unknown bug in rspec-puppet fails to compile windows paths
         # when they are used for file source of sensu_ssl_ca, issue with windows mocking

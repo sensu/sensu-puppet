@@ -54,11 +54,11 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
   context 'on backend' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
-      class { '::sensu': }
-      class { '::sensu::backend':
+      class { '::sensu':
         password     => 'P@ssw0rd!',
         old_password => 'supersecret',
       }
+      class { '::sensu::backend': }
       class { '::sensu::plugins':
         plugins => ['disk-checks'],
         extensions => ['ruby-hash']

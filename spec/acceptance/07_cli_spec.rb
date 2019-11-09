@@ -6,17 +6,18 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu': }
-      class { '::sensu::cli':
-        url_host => 'sensu_backend',
+      class { '::sensu':
+        api_host => 'sensu_backend',
         password => 'P@ssw0rd!',
       }
+      class { '::sensu::cli': }
       EOS
       backend_pp = <<-EOS
-      class { '::sensu::backend':
+      class { '::sensu':
         password      => 'P@ssw0rd!',
         old_password  => 'supersecret',
       }
+      class { '::sensu::backend': }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -49,16 +50,18 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
   context 'handles changed password' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::cli':
-        url_host => 'sensu_backend',
+      class { '::sensu':
+        api_host => 'sensu_backend',
         password => 'supersecret',
       }
+      class { '::sensu::cli': }
       EOS
       backend_pp = <<-EOS
-      class { '::sensu::backend':
+      class { '::sensu':
         password      => 'supersecret',
         old_password  => 'P@ssw0rd!',
       }
+      class { '::sensu::backend': }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -89,10 +92,11 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
   context 'reset password' do
     it 'should work without errors' do
       backend_pp = <<-EOS
-      class { '::sensu::backend':
+      class { '::sensu':
         password     => 'P@ssw0rd!',
         old_password => 'supersecret',
       }
+      class { '::sensu::backend': }
       EOS
 
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
@@ -104,20 +108,18 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
       pp = <<-EOS
       class { '::sensu':
         use_ssl  => false,
-      }
-      class { '::sensu::cli':
-        url_host => 'sensu_backend',
+        api_host => 'sensu_backend',
         password => 'P@ssw0rd!',
       }
+      class { '::sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
-        use_ssl => false,
-      }
-      class { '::sensu::backend':
+        use_ssl       => false,
         password      => 'P@ssw0rd!',
         old_password  => 'supersecret',
       }
+      class { '::sensu::backend': }
       EOS
 
       if RSpec.configuration.sensu_use_agent

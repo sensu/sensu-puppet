@@ -14,22 +14,12 @@ describe 'sensu::backend', :type => :class do
 
         it { should create_class('sensu::backend') }
         it { should contain_class('sensu') }
+        it { should contain_class('sensu::cli') }
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
         it { should contain_class('sensu::backend::tessen') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
-
-        it {
-          should contain_class('sensu::cli').with({
-            'version'             => 'installed',
-            'package_name'        => 'sensu-go-cli',
-            'url_host'            => 'test.example.com',
-            'url_port'            => '8080',
-            'password'            => 'P@ssw0rd!',
-            'sensuctl_chunk_size' => nil,
-          })
-        }
 
         it {
           should contain_sensu_api_validator('sensu').with({

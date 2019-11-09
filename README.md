@@ -164,10 +164,11 @@ By default this module will configure the backend to use Puppet's SSL certificat
 It's advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   include sensu::agent
   sensu_check { 'check-cpu':
     ensure        => 'present',
@@ -194,10 +195,11 @@ associated to `linux` and `apache-servers` subscriptions.
 The following example will manage the resources necessary to use `sensuctl`.
 
 ```puppet
-class { '::sensu::cli':
-  url_host => 'sensu-backend.example.com',
+class { '::sensu':
+  api_host => 'sensu-backend.example.com',
   password => 'supersecret',
 }
+include ::sensu::cli
 ```
 
 **NOTE**: The `sensu::backend` class calls the `sensu::cli` class so it is only necessary to directly call the `sensu::cli` class on hosts not using the `sensu::backend` class.
@@ -205,10 +207,12 @@ class { '::sensu::cli':
 For Windows the `install_source` parameter must be provided:
 
 ```puppet
+class { '::sensu':
+  api_host => 'sensu-backend.example.com',
+  password => 'supersecret',
+}
 class { '::sensu::cli':
   install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
-  url_host       => 'sensu-backend.example.com',
-  password       => 'supersecret',
 }
 ```
 
@@ -274,15 +278,15 @@ class { 'sensu::agent':
 
 By default this module uses Puppet's SSL certificates and CA.
 If you would prefer to use different certificates override the `ssl_ca_source`, `ssl_cert_source` and `ssl_key_source` parameters.
-The value for `url_host` must be valid for the provided certificate and the value used for agent's `backends` must also match the certificate used by the specified backend.
+The value for `api_host` must be valid for the provided certificate and the value used for agent's `backends` must also match the certificate used by the specified backend.
 If the certificates and keys are already installed then define the source parameters as filesystem paths.
 
 ```puppet
 class { 'sensu':
   ssl_ca_source => 'puppet:///modules/profile/sensu/ca.pem',
+  api_host      => 'sensu-backend.example.com',
 }
 class { 'sensu::backend':
-  url_host        => 'sensu-backend.example.com',
   ssl_cert_source => 'puppet:///modules/profile/sensu/cert.pem',
   ssl_key_source  => 'puppet:///modules/profile/sensu/key.pem',
 }
@@ -418,10 +422,11 @@ Extension management is handled by the `sensu::plugins` class.
 Example installing extension on backend:
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   class { 'sensu::plugins':
     extensions => ['graphite'],
   }
@@ -430,10 +435,11 @@ Example installing extension on backend:
 The `extensions` parameter can also be a Hash that sets the version:
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   class { 'sensu::plugins':
     extensions => {
       'graphite' => { 'version' => 'latest' },
@@ -444,10 +450,11 @@ The `extensions` parameter can also be a Hash that sets the version:
 You can uninstall extensions by passing `ensure` as `absent`.
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   class { 'sensu::plugins':
     extensions => {
       'graphite' => { 'ensure' => 'absent' },

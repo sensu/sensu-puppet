@@ -42,6 +42,14 @@
 # @param ssl_ca_source
 #   Source of SSL CA used by sensu services
 #
+# @param api_host
+#   Sensu backend host used to configure sensuctl and verify API access.
+# @param api_port
+#   Sensu backend port used to configure sensuctl and verify API access.
+# @param password
+#   Sensu backend admin password used to confiure sensuctl.
+# @param old_password
+#   Sensu backend admin old password needed when changing password.
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
@@ -55,6 +63,10 @@ class sensu (
   Boolean $manage_repo = true,
   Boolean $use_ssl = true,
   Optional[String] $ssl_ca_source = $facts['puppet_localcacert'],
+  String $api_host = $trusted['certname'],
+  Stdlib::Port $api_port = 8080,
+  String $password = 'P@ssw0rd!',
+  Optional[String] $old_password = undef,
 ) {
 
   if $use_ssl and ! $ssl_ca_source {
@@ -91,6 +103,9 @@ class sensu (
 
   if $use_ssl {
     contain sensu::ssl
+    $api_protocol = 'https'
+  } else {
+    $api_protocol = 'http'
   }
 
   if $manage_user and $sensu_user {

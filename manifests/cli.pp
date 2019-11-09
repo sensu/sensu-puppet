@@ -18,12 +18,6 @@
 #   Paths with puppet:// or file:// paths will also be installed.
 # @param install_path
 #   Where to install sensuctl for Windows. Default to `C:\Program Files\Sensu`.
-# @param url_host
-#   Sensu backend host used to configure sensuctl and verify API access.
-# @param url_port
-#   Sensu backend port used to configure sensuctl and verify API access.
-# @param password
-#   Sensu backend admin password used to confiure sensuctl.
 # @param configure
 #   Determines if sensuctl should be configured
 # @param sensuctl_chunk_size
@@ -34,9 +28,6 @@ class sensu::cli (
   String $package_name = 'sensu-go-cli',
   Optional[Variant[Stdlib::HTTPSUrl, Stdlib::HTTPUrl, Pattern[/^(file|puppet):/]]] $install_source = undef,
   Optional[Stdlib::Absolutepath] $install_path = undef,
-  String $url_host = $trusted['certname'],
-  Stdlib::Port $url_port = 8080,
-  String $password = 'P@ssw0rd!',
   Boolean $configure = true,
   Optional[Integer] $sensuctl_chunk_size = undef,
 ) {
@@ -46,19 +37,21 @@ class sensu::cli (
   $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl
   $_version = pick($version, $::sensu::version)
+  $api_host = $::sensu::api_host
+  $api_port = $::sensu::api_port
+  $api_protocol = $::sensu::api_protocol
+  $password = $::sensu::password
 
   if $use_ssl {
-    $url_protocol = 'https'
     $trusted_ca_file = $::sensu::trusted_ca_file_path
     if $configure {
       Class['::sensu::ssl'] -> Sensu_configure['puppet']
     }
   } else {
-    $url_protocol = 'http'
     $trusted_ca_file = 'absent'
   }
 
-  $url = "${url_protocol}://${url_host}:${url_port}"
+  $api_url = "${api_protocol}://${api_host}:${api_port}"
 
   if $facts['os']['family'] == 'windows' {
     if ! $install_source {
@@ -100,7 +93,7 @@ class sensu::cli (
     }
 
     sensu_configure { 'puppet':
-      url             => $url,
+      url             => $api_url,
       username        => 'admin',
       password        => $password,
       trusted_ca_file => $trusted_ca_file,

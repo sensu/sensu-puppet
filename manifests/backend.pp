@@ -3,17 +3,13 @@
 # Class to manage the Sensu backend.
 #
 # @example
-#   class { 'sensu::backend':
-#     password => 'secret',
-#   }
+#   include sensu::backend
 #
 # @param version
 #   Version of sensu backend to install.  Defaults to `installed` to support
 #   Windows MSI packaging and to avoid surprising upgrades.
 # @param package_name
 #   Name of Sensu backend package.
-# @param cli_package_name
-#   Name of Sensu CLI package.
 # @param service_env_vars_file
 #   Path to the backend service ENV variables file.
 #   Debian based default: `/etc/default/sensu-backend`
@@ -30,18 +26,10 @@
 #   Sensu backend state directory path.
 # @param config_hash
 #   Sensu backend configuration hash used to define backend.yml.
-# @param url_host
-#   Sensu backend host used to configure sensuctl and verify API access.
-# @param url_port
-#   Sensu backend port used to configure sensuctl and verify API access.
 # @param ssl_cert_source
 #   The SSL certificate source
 # @param ssl_key_source
 #   The SSL private key source
-# @param password
-#   Sensu backend admin password used to confiure sensuctl.
-# @param old_password
-#   Sensu backend admin old password needed when changing password.
 # @param agent_password
 #   The sensu agent password
 # @param agent_old_password
@@ -101,8 +89,6 @@
 #   Hash of sensu_role resources
 # @param users
 #   Hash of sensu_user resources
-# @param sensuctl_chunk_size
-#   Chunk size to use when listing sensuctl resources
 # @param datastore
 #   Datastore to configure for sensu events
 # @param datastore_ensure
@@ -124,14 +110,10 @@
 #   The name of the PostgreSQL database
 # @param postgresql_pool_size
 #   The PostgreSQL pool size
-# @param declare_cli_class
-#   When `true` the sensu::cli class is included by class declaration of `class { 'sensu::cli': ... }`
-#   When `false` the sensu::cli class is included by `include ::sensu::cli`
 #
 class sensu::backend (
   Optional[String] $version = undef,
   String $package_name = 'sensu-go-backend',
-  String $cli_package_name = 'sensu-go-cli',
   Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
   Hash $service_env_vars = {},
   String $service_name = 'sensu-backend',
@@ -139,12 +121,8 @@ class sensu::backend (
   Boolean $service_enable = true,
   Stdlib::Absolutepath $state_dir = '/var/lib/sensu/sensu-backend',
   Hash $config_hash = {},
-  String $url_host = $trusted['certname'],
-  Stdlib::Port $url_port = 8080,
   Optional[String] $ssl_cert_source = $facts['puppet_hostcert'],
   Optional[String] $ssl_key_source = $facts['puppet_hostprivkey'],
-  String $password = 'P@ssw0rd!',
-  Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
   Optional[String] $agent_old_password = undef,
   Boolean $include_default_resources = true,
@@ -173,7 +151,6 @@ class sensu::backend (
   Hash $role_bindings = {},
   Hash $roles = {},
   Hash $users = {},
-  Optional[Integer] $sensuctl_chunk_size = undef,
   Optional[Enum['postgresql']] $datastore = undef,
   Enum['present','absent'] $datastore_ensure = 'present',
   Boolean $manage_postgresql_db = true,
@@ -184,7 +161,6 @@ class sensu::backend (
   Stdlib::Port $postgresql_port = 5432,
   String $postgresql_dbname = 'sensu',
   Integer $postgresql_pool_size = 20,
-  Boolean $declare_cli_class = true,
 ) {
 
   if $license_source and $license_content {
@@ -192,6 +168,7 @@ class sensu::backend (
   }
 
   include sensu
+  include sensu::cli
   include sensu::backend::resources
   if $manage_tessen {
     include sensu::backend::tessen
@@ -204,6 +181,10 @@ class sensu::backend (
   $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl
   $_version = pick($version, $::sensu::version)
+  $api_host = $::sensu::api_host
+  $api_port = $::sensu::api_port
+  $api_protocol = $::sensu::api_protocol
+  $password = $::sensu::password
 
   if $use_ssl and ! $ssl_cert_source {
     fail('sensu::backend: ssl_cert_source must be defined when sensu::use_ssl is true')
@@ -212,21 +193,7 @@ class sensu::backend (
     fail('sensu::backend: ssl_key_source must be defined when sensu::use_ssl is true')
   }
 
-  if $declare_cli_class {
-    class { '::sensu::cli':
-      version             => $_version,
-      package_name        => $cli_package_name,
-      url_host            => $url_host,
-      url_port            => $url_port,
-      password            => $password,
-      sensuctl_chunk_size => $sensuctl_chunk_size,
-    }
-  } else {
-    include ::sensu::cli
-  }
-
   if $use_ssl {
-    $url_protocol = 'https'
     $trusted_ca_file = "${ssl_dir}/ca.crt"
     $ssl_config = {
       'cert-file'       => "${ssl_dir}/cert.pem",
@@ -236,16 +203,15 @@ class sensu::backend (
     $service_subscribe = Class['::sensu::ssl']
     Class['::sensu::ssl'] -> Sensu_configure['puppet']
   } else {
-    $url_protocol = 'http'
     $trusted_ca_file = 'absent'
     $ssl_config = {}
     $service_subscribe = undef
   }
 
-  $url = "${url_protocol}://${url_host}:${url_port}"
+  $api_url = "${api_protocol}://${api_host}:${api_port}"
   $default_config = {
     'state-dir' => $state_dir,
-    'api-url'   => $url,
+    'api-url'   => $api_url,
   }
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
@@ -258,8 +224,8 @@ class sensu::backend (
   }
 
   sensu_api_validator { 'sensu':
-    sensu_api_server => $url_host,
-    sensu_api_port   => $url_port,
+    sensu_api_server => $api_host,
+    sensu_api_port   => $api_port,
     use_ssl          => $use_ssl,
     require          => Service['sensu-backend'],
   }
@@ -267,11 +233,11 @@ class sensu::backend (
   sensu_user { 'admin':
     ensure        => 'present',
     password      => $password,
-    old_password  => $old_password,
+    old_password  => $::sensu::old_password,
     groups        => ['cluster-admins'],
     disabled      => false,
     configure     => true,
-    configure_url => $url,
+    configure_url => $api_url,
   }
 
   if $license_source or $license_content {
