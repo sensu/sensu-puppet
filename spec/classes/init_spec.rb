@@ -48,6 +48,20 @@ describe 'sensu', :type => :class do
           }
         end
 
+        if platforms[facts[:osfamily]][:etc_parent_dir]
+          it {
+            should contain_file('sensu_dir').with({
+              'ensure'  => 'directory',
+              'path'    => platforms[facts[:osfamily]][:etc_parent_dir],
+              'owner'   => platforms[facts[:osfamily]][:user],
+              'group'   => platforms[facts[:osfamily]][:group],
+              'mode'    => platforms[facts[:osfamily]][:etc_dir_mode],
+            })
+          }
+        else
+          it { should_not contain_file('sensu_dir') }
+        end
+
         it {
           should contain_file('sensu_etc_dir').with({
             'ensure'  => 'directory',

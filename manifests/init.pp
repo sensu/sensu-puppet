@@ -74,6 +74,10 @@ class sensu (
   }
 
   if $facts['os']['family'] == 'windows' {
+    # dirname can not handle back slashes so convert to forward slash then back to back slash
+    $etc_dir_fixed = regsubst($etc_dir, '\\\\', '/', 'G')
+    $etc_parent_dirname = dirname($etc_dir_fixed)
+    $etc_parent_dir = regsubst($etc_parent_dirname, '/', '\\\\', 'G')
     $sensu_user = undef
     $sensu_group = undef
     $directory_mode = undef
@@ -81,6 +85,7 @@ class sensu (
     $trusted_ca_file_path = "${ssl_dir}\\ca.crt"
     $agent_config_path = "${etc_dir}\\agent.yml"
   } else {
+    $etc_parent_dir = undef
     $sensu_user = $user
     $sensu_group = $group
     $directory_mode = '0755'
@@ -88,6 +93,16 @@ class sensu (
     $join_path = '/'
     $trusted_ca_file_path = "${ssl_dir}/ca.crt"
     $agent_config_path = "${etc_dir}/agent.yml"
+  }
+
+  if $etc_parent_dir {
+    file { 'sensu_dir':
+      ensure => 'directory',
+      path   => $etc_parent_dir,
+      owner  => $sensu_user,
+      group  => $sensu_group,
+      mode   => $directory_mode,
+    }
   }
 
   file { 'sensu_etc_dir':
