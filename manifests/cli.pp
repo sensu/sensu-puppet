@@ -96,6 +96,7 @@ class sensu::cli (
       url             => $api_url,
       username        => 'admin',
       password        => $password,
+      old_password    => $::sensu::old_password,
       trusted_ca_file => $trusted_ca_file,
     }
   }

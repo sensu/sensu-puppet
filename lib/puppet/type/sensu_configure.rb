@@ -35,6 +35,11 @@ DESC
     desc "Password to use with sensuctl configure"
   end
 
+  newparam(:old_password) do
+    desc "The previous sensuctl password, needed in order to change passwords"
+  end
+
+
   newproperty(:trusted_ca_file) do
     desc "Path to trusted CA"
     defaultto('/etc/sensu/ssl/ca.crt')

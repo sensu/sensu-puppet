@@ -26,12 +26,24 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.config_path
   end
 
-  def load_config(path)
+  def load_config(path = nil)
+    path ||= config_path
     return {} unless File.file?(path)
     file = File.read(path)
     config = JSON.parse(file)
     Puppet.debug("CONFIG: #{config}")
     config
+  end
+
+  def self.save_config(config, path = nil)
+    path ||= config_path
+    return unless File.exist?(path)
+    File.open(path, "w") do |f|
+      f.write(JSON.pretty_generate(config))
+    end
+  end
+  def save_config(*args)
+    self.class.save_config(*args)
   end
 
   def self.type_properties
