@@ -2,16 +2,17 @@
 
 ## Classes
 
-There are four main public classes and other can be added if they need to be managed separately than the existing classes:
+There are five main public classes and other can be added if they need to be managed separately than the existing classes:
 
 * sensu - Resources shared by all other public classes such as agent and backend
 * sensu::agent - Sensu Agent
 * sensu::backend - Sensu Backend
+* sensu::cli - Manage sensuctl
 * sensu::plugins - Sensu plugins
 
 Subclasses to the above hold resources for that resources to keep the logic in the main public class shorter. So `sensu::backend::default_resources` is a private classes that adds functionality to `sensu::backend`. There are also some shared classes like `sensu::ssl` that are private and have resources shared by other public classes.
 
-If a parameter is used by both agent and backend, it belongs in `sensu` class. All other parameters should be added to the appropriate public class.
+If a parameter is used by multiple public classes, it belongs in `sensu` class. All other parameters should be added to the appropriate public class.
 
 ## Types/Provides
 
