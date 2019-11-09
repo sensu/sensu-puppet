@@ -21,8 +21,8 @@ describe 'sensu::cli class', if: Gem.win_platform? do
         puts File.read('C:\manifest-cli.pp')
       end
 
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-cli.pp') do
-        its(:exit_status) { is_expected.to eq 256 }
+      describe command('puppet apply --debug C:\manifest-cli.pp') do
+        its(:exit_status) { is_expected.to eq 0 }
       end
 
       describe file('C:/Program Files/Sensu/sensuctl.exe') do
