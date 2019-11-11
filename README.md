@@ -3,6 +3,7 @@
 #### Table of Contents
 
 1. [Module Description](#module-description)
+    * [Deprecations](#deprecations)
 2. [Setup - The basics of getting started with sensu](#setup)
     * [What sensu affects](#what-sensu-affects)
     * [Setup requirements](#setup-requirements)
@@ -56,6 +57,38 @@ Please log an issue if you identify any incompatibilities.
 Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu Go 5.x.
 
 Users wishing to use the old v2 Puppet module to support previous Ruby based Sensu should use [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic).
+
+### Deprecations
+
+#### sensu\_asset
+
+The `url`, `sha512`, `filters` and `headers` properties for `sensu_asset` are deprecated in favor of passing these values as part of `builds` property.
+Using these deprecated properties will still work but issue a warning when the Puppet catalog is applied.
+
+Before:
+
+```puppet
+sensu_asset { 'test':
+  ensure  => 'present',
+  url     => 'http://example.com/asset/example.tar',
+  sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
+  filters  => ["entity.system.os == 'linux'"],
+}
+```
+
+After:
+```puppet
+sensu_asset { 'test':
+  ensure => 'present',
+  builds => [
+    {
+      'url'     => 'http://example.com/asset/example.tar',
+      'sha512'  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
+      'filters' => ["entity.system.os == 'linux'"],
+    },
+  ],
+}
+```
 
 ## Setup
 
