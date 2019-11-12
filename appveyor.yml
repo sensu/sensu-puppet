@@ -51,6 +51,8 @@ image:
   - Visual Studio 2015
   # Windows 2016
   - Visual Studio 2017
+  # Windows 2019
+  - Visual Studio 2019
 environment:
   matrix:
     - PUPPET_GEM_VERSION: '~>5.x'

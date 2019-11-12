@@ -754,6 +754,10 @@ Linux.
 * Ubuntu 18.04 LTS
 * Amazon 2018.03
 * Amazon 2
+* Windows Server 2008 R2
+* Windows Server 2012 R2
+* Windows Server 2016
+* Windows Server 2019
 
 ## Development
 
