@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_check
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -131,6 +131,18 @@
     { &#39;critical&#39; =&gt; [&#39;ps&#39;] },
     { &#39;warning&#39;  =&gt; [&#39;ps&#39;] },
   ],
+  interval      =&gt; 60,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a check with namespace <code>dev</code> in the name</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_check { &#39;test in dev&#39;:
+  ensure        =&gt; &#39;present&#39;,
+  command       =&gt; &#39;check-http.rb&#39;,
+  subscriptions =&gt; [&#39;demo&#39;],
+  handlers      =&gt; [&#39;email&#39;],
   interval      =&gt; 60,
 }</code></pre>
     
@@ -873,6 +885,22 @@
     
     <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the check.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">

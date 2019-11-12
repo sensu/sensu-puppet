@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_role
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -113,6 +113,15 @@
   rules  =&gt; [{&#39;verbs&#39; =&gt; [&#39;get&#39;,&#39;list&#39;], &#39;resources&#39; =&gt; [&#39;checks&#39;], &#39;resource_names&#39; =&gt; [&#39;&#39;]}],
 }</code></pre>
     
+      
+        <p class="example_title"><div class='inline'><p>Add a role with namespace <code>dev</code> in the name</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_role { &#39;test in dev&#39;:
+  ensure =&gt; &#39;present&#39;,
+  rules  =&gt; [{&#39;verbs&#39; =&gt; [&#39;get&#39;,&#39;list&#39;], &#39;resources&#39; =&gt; [&#39;checks&#39;], &#39;resource_names&#39; =&gt; [&#39;&#39;]}],
+}</code></pre>
+    
   </div>
 
 
@@ -194,6 +203,22 @@
     
     <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the role.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">

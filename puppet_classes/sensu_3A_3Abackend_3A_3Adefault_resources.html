@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu::backend::default_resources
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -365,7 +365,7 @@ class sensu::backend::default_resources {
 
   sensu_cluster_role_binding { &#39;cluster-admin&#39;:
     ensure   =&gt; &#39;present&#39;,
-    role_ref =&gt; &#39;cluster-admin&#39;,
+    role_ref =&gt; {&#39;type&#39; =&gt; &#39;ClusterRole&#39;, &#39;name&#39; =&gt; &#39;cluster-admin&#39;},
     subjects =&gt; [
       {
         &#39;type&#39; =&gt; &#39;Group&#39;,
@@ -375,7 +375,7 @@ class sensu::backend::default_resources {
   }
   sensu_cluster_role_binding { &#39;system:agent&#39;:
     ensure   =&gt; &#39;present&#39;,
-    role_ref =&gt; &#39;system:agent&#39;,
+    role_ref =&gt; {&#39;type&#39; =&gt; &#39;ClusterRole&#39;, &#39;name&#39; =&gt; &#39;system:agent&#39;},
     subjects =&gt; [
       {
         &#39;type&#39; =&gt; &#39;Group&#39;,
@@ -385,7 +385,7 @@ class sensu::backend::default_resources {
   }
   sensu_cluster_role_binding { &#39;system:user&#39;:
     ensure   =&gt; &#39;present&#39;,
-    role_ref =&gt; &#39;system:user&#39;,
+    role_ref =&gt; {&#39;type&#39; =&gt; &#39;ClusterRole&#39;, &#39;name&#39; =&gt; &#39;system:user&#39;},
     subjects =&gt; [
       {
         &#39;type&#39; =&gt; &#39;Group&#39;,

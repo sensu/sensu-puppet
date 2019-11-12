@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_asset
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -105,14 +105,50 @@
     <p class="tag_title">Examples:</p>
     
       
-        <p class="example_title"><div class='inline'><p>Create an asset</p>
+        <p class="example_title"><div class='inline'><p>Create an asset with multiple builds</p>
 </div></p>
       
       <pre class="example code"><code>sensu_asset { &#39;test&#39;:
-  ensure  =&gt; &#39;present&#39;,
-  url     =&gt; &#39;http://example.com/asset/example.tar&#39;,
-  sha512  =&gt; &#39;4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b&#39;,
-  filters =&gt; [&#39;System.OS==linux&#39;],
+  ensure =&gt; &#39;present&#39;,
+  builds =&gt; [
+    {
+      &quot;url&quot; =&gt; &quot;https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz&quot;,
+      &quot;sha512&quot; =&gt; &quot;487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3&quot;,
+      &quot;filters&quot; =&gt; [
+        &quot;entity.system.os == &#39;linux&#39;&quot;,
+        &quot;entity.system.arch == &#39;amd64&#39;&quot;
+      ],
+      &quot;headers&quot; =&gt; {
+        &quot;Authorization&quot; =&gt; &quot;Bearer $TOKEN&quot;,
+        &quot;X-Forwarded-For&quot; =&gt; &quot;client1, proxy1, proxy2&quot;,
+      }
+    },
+    {
+      &quot;url&quot; =&gt; &quot;https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz&quot;,
+      &quot;sha512&quot; =&gt; &quot;70df8b7e9aa36cf942b972e1781af04815fa560441fcdea1d1538374066a4603fc5566737bfd6c7ffa18314edb858a9f93330a57d430deeb7fd6f75670a8c68b&quot;,
+      &quot;filters&quot; =&gt; [
+        &quot;entity.system.os == &#39;linux&#39;&quot;,
+        &quot;entity.system.arch == &#39;arm&#39;&quot;,
+        &quot;entity.system.arm_version == 7&quot;
+      ],
+      &quot;headers&quot; =&gt; {
+        &quot;Authorization&quot; =&gt; &quot;Bearer $TOKEN&quot;,
+        &quot;X-Forwarded-For&quot; =&gt; &quot;client1, proxy1, proxy2&quot;,
+      }
+    },
+    {
+      &quot;url&quot; =&gt; &quot;https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz&quot;,
+      &quot;sha512&quot; =&gt; &quot;10d6411e5c8bd61349897cf8868087189e9ba59c3c206257e1ebc1300706539cf37524ac976d0ed9c8099bdddc50efadacf4f3c89b04a1a8bf5db581f19c157f&quot;,
+      &quot;filters&quot; =&gt; [
+        &quot;entity.system.os == &#39;windows&#39;&quot;,
+        &quot;entity.system.arch == &#39;amd64&#39;&quot;
+      ],
+      &quot;headers&quot; =&gt; {
+        &quot;Authorization&quot; =&gt; &quot;Bearer $TOKEN&quot;,
+        &quot;X-Forwarded-For&quot; =&gt; &quot;client1, proxy1, proxy2&quot;,
+      }
+    }
+  ],
 }</code></pre>
     
   </div>
@@ -130,6 +166,29 @@
       <div class="docstring">
         <div class="discussion">
           <p>Arbitrary, non-identifying metadata to include with event data.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">builds</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>A list of asset builds used to define multiple artifacts which provide the named asset.</p>
+
+<p>Keys:</p>
+
+<ul>
+<li>url: required</li>
+<li>sha512: required</li>
+<li>filters: optional Array</li>
+<li>headers: optional Hash</li>
+</ul>
 
         </div>
       </div>
@@ -202,6 +261,20 @@
     </li>
     
     <li>
+      <span class="name">headers</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>HTTP headers to appy to asset retrieval requests.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
       <span class="name">labels</span>
       
       
@@ -268,7 +341,54 @@
   <ul>
     
     <li>
+      <span class="name">bonsai</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Private property used by sensu_bonsai_asset type</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            true
+          </li>
+          
+          <li>
+            
+            false
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the asset.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">

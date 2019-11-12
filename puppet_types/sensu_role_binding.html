@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_role_binding
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -112,7 +112,31 @@
       
       <pre class="example code"><code>sensu_role_binding { &#39;test&#39;:
   ensure   =&gt; &#39;present&#39;,
-  role_ref =&gt; &#39;test-role&#39;,
+  role_ref =&gt; {&#39;type&#39; =&gt; &#39;Role&#39;, &#39;name&#39; =&gt; &#39;test-role&#39;},
+  subjects =&gt; [
+    { &#39;type&#39; =&gt; &#39;User&#39;, &#39;name&#39; =&gt; &#39;test-user&#39; }
+  ],
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Add a role binding for a ClusterRole</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_role_binding { &#39;test&#39;:
+  ensure   =&gt; &#39;present&#39;,
+  role_ref =&gt; {&#39;type&#39; =&gt; &#39;ClusterRole&#39;, &#39;name&#39; =&gt; &#39;test-role&#39;},
+  subjects =&gt; [
+    { &#39;type&#39; =&gt; &#39;User&#39;, &#39;name&#39; =&gt; &#39;test-user&#39; }
+  ],
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Add a role binding with namespace <code>dev</code> in the name</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_role_binding { &#39;test in dev&#39;:
+  ensure   =&gt; &#39;present&#39;,
+  role_ref =&gt; {&#39;type&#39; =&gt; &#39;Role&#39;, &#39;name&#39; =&gt; &#39;test-role&#39;},
   subjects =&gt; [
     { &#39;type&#39; =&gt; &#39;User&#39;, &#39;name&#39; =&gt; &#39;test-user&#39; }
   ],
@@ -181,7 +205,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>References a role.</p>
+          <p>References a role in the current namespace or a cluster role.</p>
 
         </div>
       </div>
@@ -213,6 +237,22 @@
     
     <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the binding.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">

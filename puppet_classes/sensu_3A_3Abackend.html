@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu::backend
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -511,6 +511,23 @@ Do not define with license_source</p>
   
     <li>
       
+        <span class='name'>bonsai_assets</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_bonsai_asset resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>checks</span>
       
       
@@ -732,6 +749,23 @@ Do not define with license_source</p>
   
     <li>
       
+        <span class='name'>oidc_auths</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of sensu_oidc_auth resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>role_bindings</span>
       
       
@@ -798,6 +832,194 @@ Do not define with license_source</p>
       
     </li>
   
+    <li>
+      
+        <span class='name'>sensuctl_chunk_size</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Chunk size to use when listing sensuctl resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datastore</span>
+      
+      
+        <span class='type'>(<tt>Optional[Enum['postgresql']]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Datastore to configure for sensu events</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datastore_ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum['present','absent']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The datastore ensure property. If set to <code>absent</code> all
+datastore parameters must still be defined.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_postgresql_db</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Boolean that sets of postgresql database should be managed</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;postgresql&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Name of PostgresConfig that is configured with sensuctl</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The PostgreSQL database user</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;changeme&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The PostgreSQL database password</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_host</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Host</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;localhost&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The PostgreSQL host</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_port</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Port</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>5432</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The PostgreSQL port</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_dbname</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the PostgreSQL database</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_pool_size</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>20</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The PostgreSQL pool size</p>
+</div>
+      
+    </li>
+  
 </ul>
 
 
@@ -808,33 +1030,6 @@ Do not define with license_source</p>
         <pre class="lines">
 
 
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
 124
 125
 126
@@ -1009,10 +1204,60 @@ Do not define with license_source</p>
 295
 296
 297
-298</pre>
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 97</span>
+        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 124</span>
 
 class sensu::backend (
   Optional[String] $version = undef,
@@ -1039,6 +1284,7 @@ class sensu::backend (
   Enum[&#39;present&#39;,&#39;absent&#39;] $tessen_ensure = &#39;present&#39;,
   Hash $ad_auths = {},
   Hash $assets = {},
+  Hash $bonsai_assets = {},
   Hash $checks = {},
   Hash $cluster_members = {},
   Hash $cluster_role_bindings = {},
@@ -1052,10 +1298,22 @@ class sensu::backend (
   Hash $ldap_auths = {},
   Hash $mutators = {},
   Hash $namespaces = {},
+  Hash $oidc_auths = {},
   Hash $role_bindings = {},
   Hash $roles = {},
   Hash $silencings = {},
   Hash $users = {},
+  Optional[Integer] $sensuctl_chunk_size = undef,
+  Optional[Enum[&#39;postgresql&#39;]] $datastore = undef,
+  Enum[&#39;present&#39;,&#39;absent&#39;] $datastore_ensure = &#39;present&#39;,
+  Boolean $manage_postgresql_db = true,
+  String $postgresql_name = &#39;postgresql&#39;,
+  String $postgresql_user = &#39;sensu&#39;,
+  String $postgresql_password = &#39;changeme&#39;,
+  Stdlib::Host $postgresql_host = &#39;localhost&#39;,
+  Stdlib::Port $postgresql_port = 5432,
+  String $postgresql_dbname = &#39;sensu&#39;,
+  Integer $postgresql_pool_size = 20,
 ) {
 
   if $license_source and $license_content {
@@ -1066,6 +1324,9 @@ class sensu::backend (
   include ::sensu::backend::resources
   if $manage_tessen {
     include ::sensu::backend::tessen
+  }
+  if $datastore == &#39;postgresql&#39; {
+    include ::sensu::backend::datastore::postgresql
   }
 
   $etc_dir = $::sensu::etc_dir
@@ -1113,6 +1374,10 @@ class sensu::backend (
     ensure  =&gt; $_version,
     name    =&gt; $cli_package_name,
     require =&gt; $::sensu::package_require,
+  }
+
+  sensuctl_config { &#39;sensu&#39;:
+    chunk_size =&gt; $sensuctl_chunk_size,
   }
 
   sensu_api_validator { &#39;sensu&#39;:
@@ -1204,6 +1469,9 @@ class sensu::backend (
     ensure    =&gt; &#39;file&#39;,
     path      =&gt; &quot;${etc_dir}/backend.yml&quot;,
     content   =&gt; to_yaml($config),
+    owner     =&gt; $::sensu::user,
+    group     =&gt; $::sensu::group,
+    mode      =&gt; &#39;0640&#39;,
     show_diff =&gt; $show_diff,
     require   =&gt; Package[&#39;sensu-go-backend&#39;],
     notify    =&gt; Service[&#39;sensu-backend&#39;],

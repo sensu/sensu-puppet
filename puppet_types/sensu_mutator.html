@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_mutator
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -110,6 +110,15 @@
 </div></p>
       
       <pre class="example code"><code>sensu_mutator { &#39;example&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  command =&gt; &#39;example-mutator.rb&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a mutator with namespace <code>dev</code> in the name</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_mutator { &#39;example in dev&#39;:
   ensure  =&gt; &#39;present&#39;,
   command =&gt; &#39;example-mutator.rb&#39;,
 }</code></pre>
@@ -316,6 +325,22 @@
     
     <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the mutator.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">

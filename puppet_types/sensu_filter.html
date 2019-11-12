@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_filter
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -112,7 +112,17 @@
       <pre class="example code"><code>sensu_filter { &#39;test&#39;:
   ensure      =&gt; &#39;present&#39;,
   action      =&gt; &#39;allow&#39;,
-  expressions =&gt; [&quot;event.Entity.Environment == &#39;production&#39;&quot;],
+  expressions =&gt; [&quot;event.entity.labels.environment == &#39;production&#39;&quot;],
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a filter with namespace <code>dev</code> in the name</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_filter { &#39;test in dev&#39;:
+  ensure      =&gt; &#39;present&#39;,
+  action      =&gt; &#39;allow&#39;,
+  expressions =&gt; [&quot;event.entity.labels.environment == &#39;production&#39;&quot;],
 }</code></pre>
     
   </div>
@@ -286,6 +296,22 @@
     
     <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the filter.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">

@@ -6,7 +6,7 @@
 <title>
   Provider: sensu_gem
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -76,11 +76,16 @@
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p>Sensu Embedded Ruby Gem support. If a URL is passed via <code>source</code>, then
-that URL is used as the remote gem repository; if a source is present but is
-not a valid URL, it will be interpreted as the path to a local gem file.  If
-source is not present at all, the gem will be installed from the default gem
-repositories.</p>
+    <p>Sensu Embedded Ruby Gem support. If a URL is passed via <code>source</code>, then that URL is
+appended to the list of remote gem repositories; to ensure that only the
+specified source is used, also pass <code>--clear-sources</code> via <code>install_options</code>.
+If source is present but is not a valid URL, it will be interpreted as the
+path to a local gem file. If source is not present, the gem will be
+installed from the default gem repositories. Note that to modify this for Windows, it has to be a valid URL.
+This provider supports the <code>install_options</code> and <code>uninstall_options</code> attributes,
+which allow command-line flags to be passed to the gem command.
+These options should be specified as an array where each element is either a
+string or a hash.</p>
 
   </div>
 </div>
@@ -100,6 +105,14 @@ repositories.</p>
       <span class="name">install_options</span>
     </li>
     
+    <li>
+      <span class="name">uninstall_options</span>
+    </li>
+    
+    <li>
+      <span class="name">targetable</span>
+    </li>
+    
   </ul>
 </div>
 
@@ -112,11 +125,7 @@ repositories.</p>
 
   
     
-      <li><tt>gemcmd &mdash; if RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|winse|emx/
-      "#{ENV['SYSTEMDRIVE']}\\opt\\sensu\\embedded\\bin\\gem.cmd"
-    else
-      "/opt/sensu/embedded/bin/gem"
-    end</tt></li>
+      <li><tt>gemcmd &mdash; /opt/sensu-plugins-ruby/embedded/bin/gem</tt></li>
     
   
   </ul>

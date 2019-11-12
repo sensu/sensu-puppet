@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu::plugins
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -110,6 +110,24 @@
   
     <li>
       
+        <span class='name'>manage_repo</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determines if plugin repo should be managed.
+Defaults to value for <code>sensu::manage_repo</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>package_ensure</span>
       
       
@@ -162,6 +180,23 @@ Default is OS dependent.</p>
   
     <li>
       
+        <span class='name'>gem_dependencies</span>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Gem dependencies.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>plugins</span>
       
       
@@ -204,11 +239,6 @@ Default is OS dependent.</p>
         <pre class="lines">
 
 
-33
-34
-35
-36
-37
 38
 39
 40
@@ -263,22 +293,44 @@ Default is OS dependent.</p>
 89
 90
 91
-92</pre>
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/plugins.pp', line 33</span>
+        <pre class="code"><span class="info file"># File 'manifests/plugins.pp', line 38</span>
 
 class sensu::plugins (
+  Optional[Boolean] $manage_repo = undef,
   String $package_ensure = &#39;installed&#39;,
   String $package_name = &#39;sensu-plugins-ruby&#39;,
   Array $dependencies = [],
+  Array $gem_dependencies = [],
   Variant[Array, Hash] $plugins = [],
   Variant[Array, Hash] $extensions = [],
 ) {
 
+  if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
+    fail(&#39;sensu::plugins is not supported on Windows&#39;)
+  }
+
   include ::sensu
 
-  if $::sensu::manage_repo {
+  $_manage_repo = pick($manage_repo, $::sensu::manage_repo)
+
+  if $_manage_repo {
     include ::sensu::repo::community
     $package_require = [Class[&#39;::sensu::repo::community&#39;]] + $::sensu::os_package_require
   } else {
@@ -295,6 +347,7 @@ class sensu::plugins (
   $dependencies.each |$package| {
     Package[$package] -&gt; Sensu_plugin &lt;| |&gt; # lint:ignore:spaceship_operator_without_tag
   }
+  ensure_packages($gem_dependencies, {&#39;provider&#39; =&gt; &#39;sensu_gem&#39;, &#39;require&#39; =&gt; [Package[$dependencies],Package[&#39;sensu-plugins-ruby&#39;]]})
 
   if $plugins =~ Array {
     $plugins.each |$plugin| {

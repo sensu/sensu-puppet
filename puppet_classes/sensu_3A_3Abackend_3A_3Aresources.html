@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu::backend::resources
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -189,7 +189,17 @@
 98
 99
 100
-101</pre>
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/backend/resources.pp', line 4</span>
@@ -204,6 +214,11 @@ class sensu::backend::resources {
   $::sensu::backend::assets.each |$name, $asset| {
     sensu_asset { $name:
       * =&gt; $asset,
+    }
+  }
+  $::sensu::backend::bonsai_assets.each |$name, $bonsai_asset| {
+    sensu_bonsai_asset { $name:
+      * =&gt; $bonsai_asset,
     }
   }
   $::sensu::backend::checks.each |$name, $check| {
@@ -269,6 +284,11 @@ class sensu::backend::resources {
   $::sensu::backend::namespaces.each |$name, $namespace| {
     sensu_namespace { $name:
       * =&gt; $namespace,
+    }
+  }
+  $::sensu::backend::oidc_auths.each |$name, $oidc_auth| {
+    sensu_oidc_auth { $name:
+      * =&gt; $oidc_auth,
     }
   }
   $::sensu::backend::role_bindings.each |$name, $role_binding| {

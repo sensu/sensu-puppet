@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu::agent
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -114,6 +114,43 @@
         &mdash;
         <div class='inline'><p>Version of sensu agent to install.  Defaults to <code>installed</code> to support
 Windows MSI packaging and to avoid surprising upgrades.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String[1]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Source of package for installing Windows.
+Paths with http:// or https:// will be downloaded
+Paths with puppet:// or absolute filesystem paths will also be installed.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_download_path</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Where to download the MSI for Windows. Defaults to <code>C:\</code>.
+This parameter only used when <code>package_source</code> is an URL or when it&#39;s a puppet source (<code>puppet://</code>).</p>
 </div>
       
     </li>
@@ -240,6 +277,24 @@ Passing <code>backend-url</code> as part of <code>config_hash</code> takes prece
       
     </li>
   
+    <li>
+      
+        <span class='name'>log_file</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Path to agent log file, only for Windows.
+Defaults to <code>C:\ProgramData\sensu\log\sensu-agent.log</code></p>
+</div>
+      
+    </li>
+  
 </ul>
 
 
@@ -250,16 +305,6 @@ Passing <code>backend-url</code> as part of <code>config_hash</code> takes prece
         <pre class="lines">
 
 
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
 44
 45
 46
@@ -313,13 +358,78 @@ Passing <code>backend-url</code> as part of <code>config_hash</code> takes prece
 94
 95
 96
-97</pre>
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/agent.pp', line 34</span>
+        <pre class="code"><span class="info file"># File 'manifests/agent.pp', line 44</span>
 
 class sensu::agent (
   Optional[String] $version = undef,
+  Optional[String[1]] $package_source = undef,
+  Optional[Stdlib::Absolutepath] $package_download_path = undef,
   String $package_name = &#39;sensu-go-agent&#39;,
   String $service_name = &#39;sensu-agent&#39;,
   String $service_ensure = &#39;running&#39;,
@@ -327,6 +437,7 @@ class sensu::agent (
   Hash $config_hash = {},
   Array[Sensu::Backend_URL] $backends = [&#39;localhost:8081&#39;],
   Boolean $show_diff = true,
+  Optional[Stdlib::Absolutepath] $log_file = undef,
 ) {
 
   include ::sensu
@@ -339,7 +450,7 @@ class sensu::agent (
   if $use_ssl {
     $backend_protocol = &#39;wss&#39;
     $ssl_config = {
-      &#39;trusted-ca-file&#39; =&gt; &quot;${ssl_dir}/ca.crt&quot;,
+      &#39;trusted-ca-file&#39; =&gt; $::sensu::trusted_ca_file_path,
     }
     $service_subscribe = Class[&#39;::sensu::ssl&#39;]
   } else {
@@ -359,17 +470,67 @@ class sensu::agent (
   }
   $config = $default_config + $ssl_config + $config_hash
 
+  if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
+    $sensu_agent_exe = &quot;C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe&quot;
+    exec { &#39;install-agent-service&#39;:
+      command =&gt; &quot;C:\\windows\\system32\\cmd.exe /c \&quot;\&quot;${sensu_agent_exe}\&quot; service install --config-file \&quot;${::sensu::agent_config_path}\&quot; --log-file \&quot;${log_file}\&quot;\&quot;&quot;,
+      unless  =&gt; &quot;C:\\windows\\system32\\sc.exe query SensuAgent&quot;,
+      before  =&gt; Service[&#39;sensu-agent&#39;],
+      require =&gt; [
+        Package[&#39;sensu-go-agent&#39;],
+        File[&#39;sensu_agent_config&#39;],
+      ],
+    }
+    if $package_source and ($package_source =~ Stdlib::HTTPSUrl or $package_source =~ Stdlib::HTTPUrl) {
+      $package_provider = undef
+      $package_source_basename = basename($package_source)
+      $_package_source = &quot;${package_download_path}\\${package_source_basename}&quot;
+      archive { &#39;sensu-go-agent.msi&#39;:
+        source  =&gt; $package_source,
+        path    =&gt; $_package_source,
+        extract =&gt; false,
+        cleanup =&gt; false,
+        before  =&gt; Package[&#39;sensu-go-agent&#39;],
+      }
+    } elsif $package_source and $package_source =~ /^puppet:/ {
+      $package_provider = undef
+      $package_source_basename = basename($package_source)
+      $_package_source = &quot;${package_download_path}\\${package_source_basename}&quot;
+      file { &#39;sensu-go-agent.msi&#39;:
+        ensure =&gt; &#39;file&#39;,
+        path   =&gt; $_package_source,
+        source =&gt; $package_source,
+        before =&gt; Package[&#39;sensu-go-agent&#39;],
+      }
+    } elsif $package_source {
+        $package_provider = undef
+        $_package_source = $package_source
+    } else {
+      include ::chocolatey
+      $package_provider = &#39;chocolatey&#39;
+      $_package_source = $package_source
+    }
+  } else {
+    $package_provider = undef
+    $_package_source = undef
+  }
+
   package { &#39;sensu-go-agent&#39;:
-    ensure  =&gt; $_version,
-    name    =&gt; $package_name,
-    before  =&gt; File[&#39;sensu_etc_dir&#39;],
-    require =&gt; $::sensu::package_require,
+    ensure   =&gt; $_version,
+    name     =&gt; $package_name,
+    source   =&gt; $_package_source,
+    provider =&gt; $package_provider,
+    before   =&gt; File[&#39;sensu_etc_dir&#39;],
+    require  =&gt; $::sensu::package_require,
   }
 
   file { &#39;sensu_agent_config&#39;:
     ensure    =&gt; &#39;file&#39;,
-    path      =&gt; &quot;${etc_dir}/agent.yml&quot;,
+    path      =&gt; $::sensu::agent_config_path,
     content   =&gt; to_yaml($config),
+    owner     =&gt; $::sensu::sensu_user,
+    group     =&gt; $::sensu::sensu_group,
+    mode      =&gt; $::sensu::file_mode,
     show_diff =&gt; $show_diff,
     require   =&gt; Package[&#39;sensu-go-agent&#39;],
     notify    =&gt; Service[&#39;sensu-agent&#39;],

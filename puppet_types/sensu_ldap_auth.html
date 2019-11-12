@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_ldap_auth
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -210,12 +210,13 @@
       <div class="docstring">
         <div class="discussion">
           <p>Search configuration for groups.
-Defaults:</p>
+Keys:</p>
 
 <ul>
-<li>attribute: member</li>
-<li>name_attribute: cn</li>
-<li>object_class: groupOfNames</li>
+<li>base_dn: required</li>
+<li>attribute: default is <code>member</code></li>
+<li>name_attribute: default is <code>cn</code></li>
+<li>object_class: default is <code>groupOfNames</code></li>
 </ul>
 
         </div>
@@ -231,12 +232,13 @@ Defaults:</p>
       <div class="docstring">
         <div class="discussion">
           <p>Search configuration for users.
-Defaults:</p>
+Keys:</p>
 
 <ul>
-<li>attribute: uid</li>
-<li>name_attribute: cn</li>
-<li>object_class: person</li>
+<li>base_dn: required</li>
+<li>attribute: default is <code>uid</code></li>
+<li>name_attribute: default is <code>cn</code></li>
+<li>object_class: default is <code>person</code></li>
 </ul>
 
         </div>
@@ -251,12 +253,18 @@ Defaults:</p>
       
       <div class="docstring">
         <div class="discussion">
-          <p>LDAP servers
-Defaults:</p>
+          <p>LDAP servers as Array of Hashes</p>
+
+<p>Keys:</p>
 
 <ul>
-<li>insecure: false</li>
-<li>security: tls</li>
+<li>host: required</li>
+<li>port: required</li>
+<li>insecure: default is <code>false</code></li>
+<li>security: default is <code>tls</code></li>
+<li>trusted_ca_file: default is <code>&quot;&quot;</code></li>
+<li>client_cert_file: default is <code>&quot;&quot;</code></li>
+<li>client_key_file: default is <code>&quot;&quot;</code></li>
 </ul>
 
         </div>

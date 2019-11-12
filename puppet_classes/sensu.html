@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -321,7 +321,25 @@ should be managed.</p>
 86
 87
 88
-89</pre>
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 39</span>
@@ -343,6 +361,21 @@ class sensu (
     fail(&#39;sensu: ssl_ca_source must be defined when use_ssl is true&#39;)
   }
 
+  if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
+    $sensu_user = undef
+    $sensu_group = undef
+    $file_mode = undef
+    $trusted_ca_file_path = &quot;${ssl_dir}\\ca.crt&quot;
+    $agent_config_path = &quot;${etc_dir}\\agent.yml&quot;
+  } else {
+    $sensu_user = $user
+    $sensu_group = $group
+    $file_mode = &#39;0640&#39;
+    $join_path = &#39;/&#39;
+    $trusted_ca_file_path = &quot;${ssl_dir}/ca.crt&quot;
+    $agent_config_path = &quot;${etc_dir}/agent.yml&quot;
+  }
+
   file { &#39;sensu_etc_dir&#39;:
     ensure  =&gt; &#39;directory&#39;,
     path    =&gt; $etc_dir,
@@ -362,8 +395,11 @@ class sensu (
     &#39;Debian&#39;: {
       $os_package_require = [Class[&#39;::apt::update&#39;]]
     }
+    &#39;windows&#39;: {
+      $os_package_require = []
+    }
     default: {
-      fail(&quot;Detected osfamily &lt;${facts[&#39;os&#39;][&#39;family&#39;]}&gt;. Only RedHat and Debian are supported.&quot;)
+      fail(&quot;Detected osfamily &lt;${facts[&#39;os&#39;][&#39;family&#39;]}&gt;. Only RedHat, Debian and Windows are supported.&quot;)
     }
   }
 

@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_hook
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -93,6 +93,7 @@
 <li><code>Sensu_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
+<li><code>sensu_asset</code> - Puppet will autorequire <code>sensu_asset</code> resources defined in <code>runtime_assets</code> property.</li>
 </ul>
 
   </div>
@@ -109,6 +110,15 @@
 </div></p>
       
       <pre class="example code"><code>sensu_hook { &#39;test&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  command =&gt; &#39;ps aux&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create a hook with namespace <code>dev</code> in the name</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_hook { &#39;test in dev&#39;:
   ensure  =&gt; &#39;present&#39;,
   command =&gt; &#39;ps aux&#39;,
 }</code></pre>
@@ -213,6 +223,37 @@
     </li>
     
     <li>
+      <span class="name">runtime_assets</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>An array of Sensu assets (names), required at runtime for the execution of the command</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /.*/
+          </li>
+          
+          <li>
+            
+            absent
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
       <span class="name">stdin</span>
       
       <span class="default"> (defaults to: <em>false</em>)</span>
@@ -271,6 +312,22 @@
     
     <li>
       <span class="name">name (namevar)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The name of the hook.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">resource_name</span>
       
       
       <div class="docstring">
