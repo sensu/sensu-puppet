@@ -36,6 +36,7 @@ group :documentation do
   gem 'yard',           require: false
   gem 'redcarpet',      require: false
   gem 'puppet-strings', require: false
+  gem 'github_changelog_generator', require: false
 end
 
 group :system_tests do

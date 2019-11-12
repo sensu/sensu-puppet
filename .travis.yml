@@ -15,6 +15,12 @@ before_install:
   - 'if [ -n "$encrypted_f942601034d6_key" -a -n "$encrypted_f942601034d6_iv" ]; then openssl aes-256-cbc -K $encrypted_f942601034d6_key -iv $encrypted_f942601034d6_iv -in tests/secrets.tar.enc -out tests/secrets.tar -d; cd tests && tar xvf secrets.tar ; fi'
 sudo: false
 
+stages:
+  - unit
+  - acceptance
+  - if: tag =~ ^v\d
+    name: deploy
+
 script: 'bundle exec rake $CHECK'
 
 matrix:
@@ -22,239 +28,280 @@ matrix:
   include:
   - rvm: 2.4.5
     env: CHECK="validate lint strings:generate reference" PUPPET_GEM_VERSION="~> 5"
+    stage: unit
   - rvm: 2.5.7
     env: CHECK="validate lint strings:generate reference" PUPPET_GEM_VERSION="~> 6"
+    stage: unit
   - rvm: 2.4.5
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5"
+    stage: unit
   - rvm: 2.4.5
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
+    stage: unit
   - rvm: 2.5.7
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6"
+    stage: unit
   - rvm: 2.5.7
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
+    stage: unit
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.4.5
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
   - rvm: 2.5.7
     sudo: required
     services: docker
-    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
+    stage: acceptance
+  - env: DEPLOY_TO_FORGE=yes
+    stage: deploy
   allow_failures:
   - rvm: 2.4.5
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.7
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.7
-    env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
   - rvm: 2.5.7
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
   - rvm: 2.5.7
-    env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_ci_build=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet6
 branches:
   only:
     - master
@@ -266,3 +313,12 @@ notifications:
       - secure: R1ThBe5UcmcX5UqnMAWEl5e0JpO1MjsCJDvsDfgTZQ7Nb7gYzj6T9lls11HxxoALffkdMbi7g7qlrwQ9ajblIZlS27aMbucwaMbWt6uiepVITHTub6+ZhM1yAcgFgRk2HsfaZnaB0LERW4SIfTTe/hGFIMgHGDYSf+NYqM3ikhY=
     on_success: change
     on_failure: always
+deploy:
+  provider: puppetforge
+  user: sensu
+  password:
+    secure: "ldEabarYdZoJM8nFAYk4LpcZBz/rIxnHwYe5rxvTtqL/J3L1o5T0aUeJB4TH73NVulTVQH8nmQ+2Gaw/R1gn7krhplrmbIVojIryueSQsQ+P8Jly3+hRBMrZRUsoVBtKjzxQO/P2Jy3gpNIhSnA7FPttlJS5TRLWKGrKP0sD/sA="
+  on:
+    tags: true
+    all_branches: true
+    condition: "$DEPLOY_TO_FORGE = yes"
