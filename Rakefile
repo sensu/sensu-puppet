@@ -74,6 +74,22 @@ if Bundler.rubygems.find_name('github_changelog_generator').any?
     config.issues = false
     config.max_issues = 100
     config.exclude_labels = ["sensu v2","sensu v1"]
+    config.add_pr_wo_labels = true
+    config.merge_prefix = "### UNCATEGORIZED PRS; GO LABEL THEM"
+    config.configure_sections = {
+      "Changed" => {
+        "prefix" => "### Changed",
+        "labels" => ["breaking-change"],
+      },
+      "Added" => {
+        "prefix" => "### Added",
+        "labels" => ["feature", "enhancement"],
+      },
+      "Fixed" => {
+        "prefix" => "### Fixed",
+        "labels" => ["bugfix","bug"],
+      },
+    }
   end
 end
 
