@@ -55,6 +55,17 @@ _Private Classes_
 
 * [`Sensu::Backend_URL`](#sensubackend_url): Sensu Backend URL's require protocol of ws:// or wss://. A port is also required. There is logic in sensu::agent class to add the protocol so
 
+**Tasks**
+
+* [`agent_event`](#agent_event): Create a Sensu Go agent event via the agent API
+* [`assets_outdated`](#assets_outdated): Retreive outdated Sensu Go assets
+* [`check_execute`](#check_execute): Execute a Sensu Go check
+* [`event`](#event): Manage Sensu Go events
+* [`install_agent`](#install_agent): Install Sensu Go agent
+* [`install_agent_linux`](#install_agent_linux): Install Sensu Go agent on Linux
+* [`install_agent_windows`](#install_agent_windows): Install Sensu Go agent on Windows
+* [`silenced`](#silenced): Manage Sensu Go silencings
+
 ## Classes
 
 ### sensu
@@ -1003,28 +1014,6 @@ Default value: 30
 
 #### Examples
 
-##### Create an asset
-
-```puppet
-sensu_asset { 'test':
-  ensure  => 'present',
-  url     => 'http://example.com/asset/example.tar',
-  sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-  filters  => ["entity.system.os == 'linux'"],
-}
-```
-
-##### Create an asset with namespace `dev` in the name
-
-```puppet
-sensu_asset { 'test in dev':
-  ensure  => 'present',
-  url     => 'http://example.com/asset/example.tar',
-  sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-  filters  => ["entity.system.os == 'linux'"],
-}
-```
-
 ##### Create an asset with multiple builds
 
 ```puppet
@@ -1037,7 +1026,11 @@ sensu_asset { 'test':
       "filters" => [
         "entity.system.os == 'linux'",
         "entity.system.arch == 'amd64'"
-      ]
+      ],
+      "headers" => {
+        "Authorization" => "Bearer $TOKEN",
+        "X-Forwarded-For" => "client1, proxy1, proxy2",
+      }
     },
     {
       "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz",
@@ -1046,7 +1039,11 @@ sensu_asset { 'test':
         "entity.system.os == 'linux'",
         "entity.system.arch == 'arm'",
         "entity.system.arm_version == 7"
-      ]
+      ],
+      "headers" => {
+        "Authorization" => "Bearer $TOKEN",
+        "X-Forwarded-For" => "client1, proxy1, proxy2",
+      }
     },
     {
       "url" => "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz",
@@ -1054,7 +1051,11 @@ sensu_asset { 'test':
       "filters" => [
         "entity.system.os == 'windows'",
         "entity.system.arch == 'amd64'"
-      ]
+      ],
+      "headers" => {
+        "Authorization" => "Bearer $TOKEN",
+        "X-Forwarded-For" => "client1, proxy1, proxy2",
+      }
     }
   ],
 }
@@ -3044,4 +3045,228 @@ A port is also required.
 There is logic in sensu::agent class to add the protocol so it's optional.
 
 Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]++:\d+$/]]`
+
+## Tasks
+
+### agent_event
+
+Create a Sensu Go agent event via the agent API
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `name`
+
+Data type: `String[1]`
+
+The name of the event
+
+##### `status`
+
+Data type: `Integer`
+
+The event status
+
+##### `output`
+
+Data type: `String[1]`
+
+The event output
+
+##### `ttl`
+
+Data type: `Optional[Integer]`
+
+The event TTL
+
+##### `port`
+
+Data type: `Optional[Integer]`
+
+The agent API port, defaults to 3031
+
+### assets_outdated
+
+Retreive outdated Sensu Go assets
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+The namespace, defaults to all namespaces
+
+### check_execute
+
+Execute a Sensu Go check
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `check`
+
+Data type: `String[1]`
+
+The name of the check to execute
+
+##### `subscription`
+
+Data type: `Optional[String[1]]`
+
+The subscription
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+The namespace, defaults to `default`
+
+##### `reason`
+
+Data type: `Optional[String[1]]`
+
+Explanation for the creation of this entry.
+
+### event
+
+Manage Sensu Go events
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `action`
+
+Data type: `Enum[resolve,delete]`
+
+The action to perform
+
+##### `entity`
+
+Data type: `String[1]`
+
+The entity for event
+
+##### `check`
+
+Data type: `String[1]`
+
+The check for event
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+The namespace for event
+
+### install_agent
+
+Install Sensu Go agent
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `backend`
+
+Data type: `String[1]`
+
+The backend(s) to connect agent to
+
+##### `subscription`
+
+Data type: `String[1]`
+
+The subscription(s) for the agent
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+The namespace for the agent, default is 'default'
+
+##### `output`
+
+Data type: `Optional[Boolean]`
+
+Return output from commands
+
+### install_agent_linux
+
+Install Sensu Go agent on Linux
+
+**Supports noop?** false
+
+### install_agent_windows
+
+Install Sensu Go agent on Windows
+
+**Supports noop?** false
+
+### silenced
+
+Manage Sensu Go silencings
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `action`
+
+Data type: `Enum[create,update,delete]`
+
+The action to perform
+
+##### `subscription`
+
+Data type: `Optional[String[1]]`
+
+The subscription to silence
+
+##### `check`
+
+Data type: `Optional[String[1]]`
+
+The check to silence
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+The namespace for silenced resources
+
+##### `begin`
+
+Data type: `Optional[Integer]`
+
+Time at which silence entry goes into effect, in epoch.
+
+##### `expire`
+
+Data type: `Optional[Integer]`
+
+Number of seconds until this entry should be deleted.
+
+##### `expire_on_resolve`
+
+Data type: `Optional[Boolean]`
+
+If the entry should be deleted when a check begins return OK status (resolves).
+
+##### `creator`
+
+Data type: `Optional[String]`
+
+Person/application/entity responsible for creating the entry.
+
+##### `reason`
+
+Data type: `Optional[String]`
+
+Explanation for the creation of this entry.
 
