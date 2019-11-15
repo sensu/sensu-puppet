@@ -765,6 +765,50 @@ Example: `bolt task run sensu::install_agent backend=sensu_backend:8081 subscrip
 
 Example: `bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --nodes windows`
 
+### Bolt Inventory
+
+This module provides a plugin to populate Bolt v2 inventory targets.
+
+In order to use the `sensu` inventory plugin the host executing Bolt must have `sensuctl` configured, see [Basic Sensu CLI](#basic-sensu-cli).
+
+Example of configuring the Bolt inventory with two groups. The `linux` group pulls Sensu Go entities in the `default` namespace with the `linux` subscription. The `linux-qa` group is the same as `linux` group but instead pulling entities from the `qa` namespace.
+
+```yaml
+version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+        namespace: default
+        subscription: linux
+  - name: linux-qa
+    targets:
+      - _plugin: sensu
+        namespace: qa
+        subscription: linux
+```
+
+If your entities have more than one network interface it may be necessary to specify the order of interfaces to search when looking for the IP address:
+
+```yaml
+version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+        namespace: default
+        subscription: linux
+        interface_list:
+          - eth0
+          - eth1
+```
+
+The following rules for interface matching determine the value used for `uri`.
+
+1. If `interface_list` was defined then find first match
+1. If `interface_list` not defined and only one interface, use that as ipaddress
+1. If `interface_list` is not defined and more than one interface, use name
+
 ## Reference
 
 ### Facts
