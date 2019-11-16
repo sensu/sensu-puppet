@@ -41,6 +41,11 @@ DESC
 
   newparam(:name, :namevar => true) do
     desc "The name of the role binding."
+    validate do |value|
+      unless value =~ PuppetX::Sensu::Type.name_regex
+        raise ArgumentError, "sensu_cluster_role_binding name invalid"
+      end
+    end
   end
 
   newproperty(:role_ref, :parent => PuppetX::Sensu::HashProperty) do

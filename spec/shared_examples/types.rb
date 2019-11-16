@@ -1,5 +1,34 @@
 require 'spec_helper'
 
+RSpec.shared_examples 'name_regex' do
+  let(:params) { default_params }
+  let(:resource) { described_class.new(params) }
+
+  invalid_names = [
+    'foo!'
+  ]
+  valid_names = [
+    'foo',
+    'foo:',
+    'foo-',
+    'foo_',
+    'foo.example.com',
+  ]
+
+  invalid_names.each do |name|
+    it "does not allow invalid name #{name}" do
+      params[:name] = name
+      expect { resource }.to raise_error(/name/)
+    end
+  end
+  valid_names.each do |name|
+    it "does allow valid name #{name}" do
+      params[:name] = name
+      expect { resource }.not_to raise_error
+    end
+  end
+end
+
 RSpec.shared_examples 'autorequires' do |namespace, configure|
   namespace = true if namespace.nil?
   configure = true if configure.nil?

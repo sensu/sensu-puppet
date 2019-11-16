@@ -28,6 +28,31 @@ describe Puppet::Type.type(:sensu_user) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  valid_names = [
+    'foo',
+    'foo-bar',
+    'foo.bar',
+    'foo1',
+    'fooBar',
+    'foo_bar',
+  ]
+  invalid_names = [
+    'foo!',
+    'foo:',
+  ]
+  valid_names.each do |name|
+    it "allows valid name #{name}" do
+      config[:name] = name
+      expect { user }.to_not raise_error
+    end
+  end
+  invalid_names.each do |name|
+    it "does not allow invalid name #{name}" do
+      config[:name] = name
+      expect { user }.to raise_error(/name/)
+    end
+  end
+
   it 'should not accept ensure => absent' do
     config[:ensure] = 'absent'
     expect { user[:ensure] = 'absent' }.to raise_error(Puppet::Error, /ensure does not support absent/)

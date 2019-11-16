@@ -59,7 +59,7 @@ DESC
   newparam(:resource_name, :namevar => true) do
     desc "The name of the role binding."
     validate do |value|
-      unless value =~ /^[\w\.\-]+$/
+      unless value =~ PuppetX::Sensu::Type.name_regex
         raise ArgumentError, "sensu_role_binding name invalid"
       end
     end

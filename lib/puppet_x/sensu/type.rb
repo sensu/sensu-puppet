@@ -1,6 +1,9 @@
 module PuppetX
   module Sensu
     module Type
+      def self.name_regex
+        %r{^[\w.\-:]+$}
+      end
 
       def add_autorequires(namespace=true, require_configure=true)
         autorequire(:package) do

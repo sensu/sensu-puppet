@@ -34,7 +34,7 @@ DESC
   newparam(:name, :namevar => true) do
     desc "The name of the config."
     validate do |value|
-      unless value =~ /^[\w\.\-\_]+$/
+      unless value =~ PuppetX::Sensu::Type.name_regex
         raise ArgumentError, "sensu_config name invalid"
       end
     end

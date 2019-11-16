@@ -45,7 +45,7 @@ DESC
   newparam(:resource_name, :namevar => true) do
     desc "The name of the filter."
     validate do |value|
-      unless value =~ /^[\w\.\-]+$/
+      unless value =~ PuppetX::Sensu::Type.name_regex
         raise ArgumentError, "sensu_filter name invalid"
       end
     end

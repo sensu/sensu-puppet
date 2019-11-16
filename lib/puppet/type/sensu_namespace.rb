@@ -26,7 +26,7 @@ DESC
   newparam(:name, :namevar => true) do
     desc "The name of the namespace."
     validate do |value|
-      unless value =~ /^[\w\.\-]+$/
+      unless value =~ PuppetX::Sensu::Type.name_regex
         raise ArgumentError, "sensu_namespace name invalid"
       end
     end

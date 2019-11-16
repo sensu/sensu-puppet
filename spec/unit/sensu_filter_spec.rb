@@ -29,6 +29,10 @@ describe Puppet::Type.type(:sensu_filter) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  include_examples 'name_regex' do
+    let(:default_params) { default_config }
+  end
+
   it 'should handle composite title' do
     config.delete(:namespace)
     config[:name] = 'test in dev'
