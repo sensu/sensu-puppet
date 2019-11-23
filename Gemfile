@@ -26,6 +26,7 @@ group :development, :unit_tests do
   gem 'puppet-lint-resource_reference_syntax',            :require => false
   gem 'puppet-lint-spaceship_operator_without_tag-check', :require => false
   gem 'puppet-lint-trailing_comma-check',                 :require => false
+  gem 'puppet-lint-trailing_newline-check',               :require => false
   gem 'puppet-lint-undef_in_function-check',              :require => false
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-variable_contains_upcase',             :require => false
