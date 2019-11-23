@@ -83,14 +83,16 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.sensuctl(*args)
   end
 
-  def self.sensuctl_list(command, namespaces = true)
+  def self.sensuctl_list(command, namespaces = true, format = true)
     args = [command]
     args << 'list'
     if namespaces
       args << '--all-namespaces'
     end
-    args << '--format'
-    args << 'json'
+    if format
+      args << '--format'
+      args << 'json'
+    end
     if ! chunk_size.nil?
       args << '--chunk-size'
       args << chunk_size.to_s
@@ -194,6 +196,15 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   end
   def namespaces()
     self.class.namespaces()
+  end
+
+  def self.config
+    output = sensuctl(['config','view'])
+    data = JSON.parse(output)
+    return data
+  rescue Exception => e
+    Puppet.info("Error executing 'sensuctl config view': #{e}")
+    return {}
   end
 
   def self.valid_json?(json)
