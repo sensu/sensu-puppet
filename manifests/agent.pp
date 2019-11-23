@@ -95,7 +95,7 @@ class sensu::agent (
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
   }
-  $_service_env_vars_content = ['# File managed by Puppet'] + $_service_env_vars
+  $_service_env_vars_content = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
 
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
@@ -176,6 +176,7 @@ class sensu::agent (
       notify    => Service['sensu-agent'],
     }
   }
+  # No built in way to read environment variables from a file for Windows
   if $facts['os']['family'] == 'windows' {
     $service_env_vars.each |$key,$value| {
       windows_env { $key:

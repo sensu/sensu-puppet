@@ -131,7 +131,7 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
-        service_env_vars_content = ['# File managed by Puppet'].join("\n")
+        service_env_vars_content = ['# This file is being maintained by Puppet.','# DO NOT EDIT'].join("\n")
 
         if platforms[facts[:osfamily]][:backend_service_env_vars_file]
           it {
@@ -327,7 +327,8 @@ describe 'sensu::backend', :type => :class do
       context 'with service_env_vars defined' do
         let(:params) {{ :service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' } }}
         service_env_vars_content = [
-          '# File managed by Puppet',
+          '# This file is being maintained by Puppet.',
+          '# DO NOT EDIT',
           'SENSU_BACKEND_AGENT_PORT="9081"',
         ].join("\n")
 

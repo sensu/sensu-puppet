@@ -240,7 +240,7 @@ class sensu::backend (
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
   }
-  $_service_env_vars_content = ['# File managed by Puppet'] + $_service_env_vars
+  $_service_env_vars_content = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
 
   if $include_default_resources {
     include ::sensu::backend::default_resources
