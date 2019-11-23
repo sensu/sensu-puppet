@@ -20,6 +20,16 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
         role_ref => {'type' => 'Role', 'name' => 'test'},
         subjects => [{'type' => 'User', 'name' => 'admin'}],
       }
+      sensu_cluster_role_binding { 'test-api':
+        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+        subjects => [{'type' => 'User', 'name' => 'admin'}],
+        provider => 'sensu_api',
+      }
+      sensu_cluster_role_binding { 'test-api2':
+        role_ref => {'type' => 'Role', 'name' => 'test'},
+        subjects => [{'type' => 'User', 'name' => 'admin'}],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -50,6 +60,22 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
+
+    it 'should have a valid cluster_role_binding using API' do
+      on node, 'sensuctl cluster-role-binding info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
+        expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
+      end
+    end
+
+    it 'should have a valid cluster_role_binding with Role using API' do
+      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do
+        data = JSON.parse(stdout)
+        expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
+        expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
+      end
+    end
   end
 
   context 'update cluster_role_binding' do
@@ -69,6 +95,16 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
       sensu_cluster_role_binding { 'test2':
         role_ref => {'type' => 'Role', 'name' => 'test2'},
         subjects => [{'type' => 'User', 'name' => 'admin'}],
+      }
+      sensu_cluster_role_binding { 'test-api':
+        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+        subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
+        provider => 'sensu_api',
+      }
+      sensu_cluster_role_binding { 'test-api2':
+        role_ref => {'type' => 'Role', 'name' => 'test2'},
+        subjects => [{'type' => 'User', 'name' => 'admin'}],
+        provider => 'sensu_api',
       }
       EOS
 
@@ -100,6 +136,22 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
+
+    it 'should have a valid cluster_role_binding with updated propery using API' do
+      on node, 'sensuctl cluster-role-binding info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
+        expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
+      end
+    end
+
+    it 'should have a valid cluster_role_binding with Role with updated property using API' do
+      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do
+        data = JSON.parse(stdout)
+        expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
+        expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -107,6 +159,10 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_cluster_role_binding { 'test': ensure => 'absent' }
+      sensu_cluster_role_binding { 'test-api':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -123,6 +179,9 @@ describe 'sensu_cluster_role_binding', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl cluster-role-binding info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl cluster-role-binding info test-api'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end

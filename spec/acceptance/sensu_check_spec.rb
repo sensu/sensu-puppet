@@ -28,12 +28,26 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         handlers      => ['email'],
         interval      => 60,
       }
+      sensu_check { 'test-api':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+        provider      => 'sensu_api',
+      }
       sensu_namespace { 'test': ensure => 'present' }
       sensu_check { 'test2 in test':
         command       => 'check-cpu.rb',
         subscriptions => ['demo'],
         handlers      => ['email'],
         interval      => 60,
+      }
+      sensu_check { 'test-api in test':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo'],
+        handlers      => ['email'],
+        interval      => 60,
+        provider      => 'sensu_api',
       }
       EOS
 
@@ -63,11 +77,31 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       end
     end
 
+    it 'should have valid check using API' do
+      on node, 'sensuctl check info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['command']).to eq('check-cpu.rb')
+        expect(data['subscriptions']).to eq(['demo'])
+        expect(data['handlers']).to eq(['email'])
+        expect(data['interval']).to eq(60)
+      end
+    end
+
     it 'should have a valid check in namespace' do
       on node, 'sensuctl check info test2 --namespace test --format json' do
         data = JSON.parse(stdout)
         expect(data['metadata']['name']).to eq('test2')
         expect(data['metadata']['namespace']).to eq('test')
+      end
+    end
+
+    it 'should have a valid check in namespace using API' do
+      on node, 'sensuctl check info test-api --namespace test --format json' do
+        data = JSON.parse(stdout)
+        expect(data['command']).to eq('check-cpu.rb')
+        expect(data['subscriptions']).to eq(['demo'])
+        expect(data['handlers']).to eq(['email'])
+        expect(data['interval']).to eq(60)
       end
     end
   end
@@ -125,6 +159,20 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         output_metric_format             => 'graphite_plaintext',
         labels                           => { 'foo' => 'bar' }
       }
+      sensu_check { 'test-api':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo2'],
+        handlers      => ['email2'],
+        interval      => 120,
+        provider      => 'sensu_api',
+      }
+      sensu_check { 'test-api in test':
+        command       => 'check-cpu.rb',
+        subscriptions => ['demo2'],
+        handlers      => ['email2'],
+        interval      => 120,
+        provider      => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -147,6 +195,26 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
         expect(data['metadata']['labels']['foo']).to eq('bar')
+      end
+    end
+
+    it 'should have valid check using API' do
+      on node, 'sensuctl check info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['command']).to eq('check-cpu.rb')
+        expect(data['subscriptions']).to eq(['demo2'])
+        expect(data['handlers']).to eq(['email2'])
+        expect(data['interval']).to eq(120)
+      end
+    end
+
+    it 'should have a valid check in namespace using API' do
+      on node, 'sensuctl check info test-api --namespace test --format json' do
+        data = JSON.parse(stdout)
+        expect(data['command']).to eq('check-cpu.rb')
+        expect(data['subscriptions']).to eq(['demo2'])
+        expect(data['handlers']).to eq(['email2'])
+        expect(data['interval']).to eq(120)
       end
     end
   end
@@ -217,6 +285,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_check { 'test': ensure => 'absent' }
+      sensu_check { 'test-api':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent

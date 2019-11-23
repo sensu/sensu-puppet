@@ -1,0 +1,16 @@
+[
+  {
+    "username": "admin",
+    "groups": [
+      "cluster-admins"
+    ],
+    "disabled": false
+  },
+  {
+    "username": "agent",
+    "groups": [
+      "system:agents"
+    ],
+    "disabled": false
+  }
+]

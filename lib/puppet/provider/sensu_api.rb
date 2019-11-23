@@ -41,13 +41,15 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     opts = {
       :namespace => nil,
     }
+    Puppet.debug("Fetching namespaces via Sensu API")
     data = api_request('namespaces')
     names = []
     data.each do |d|
       names << d['name']
     end
     names
-  rescue Exception
+  rescue Exception => e
+    Puppet.debug("ERROR fetching namespaces via Sensu API: #{e.backtrace.join("\n")}")
     return []
   end
   def namespaces
@@ -100,7 +102,7 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     request.add_field("Accept", "application/json")
     request.add_field("Content-Type", "application/json")
     # Add either token or basic auth
-    if token.nil?
+    if token.nil? && username && password
       Puppet.debug("Sensu API: Using basic auth of #{username}:#{password}")
       request.basic_auth(username, password)
     else
@@ -196,5 +198,21 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
   end
   def auth_test(*args)
     self.class.auth_test(*args)
+  end
+
+  def self.get_bonsai_asset(name)
+    opts = {
+      :url => 'https://bonsai.sensu.io'
+    }
+    data = api_request("/api/v1/assets/#{name}", nil, opts)
+  rescue Exception => e
+    Puppet.notice "Unable to connect to bonsai at #{url}: #{e.message}"
+    Puppet.debug("ERROR: #{e.backtrace.join("\n")}")
+    return {}
+  else
+    return data
+  end
+  def get_bonsai_asset(name)
+    self.class.get_bonsai_asset(name)
   end
 end

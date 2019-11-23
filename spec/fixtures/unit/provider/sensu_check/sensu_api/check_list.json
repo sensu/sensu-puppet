@@ -1,0 +1,30 @@
+[
+  {
+    "command": "check-cpu.sh -w 75 -c 90",
+    "handlers": [],
+    "high_flap_threshold": 0,
+    "interval": 60,
+    "low_flap_threshold": 0,
+    "publish": true,
+    "runtime_assets": [],
+    "subscriptions": [
+      "linux"
+    ],
+    "proxy_entity_id": "",
+    "check_hooks": null,
+    "stdin": false,
+    "subdue": null,
+    "ttl": 0,
+    "timeout": 0,
+    "round_robin": false,
+    "output_metric_format": "",
+    "output_metric_handlers": [],
+    "env_vars": null,
+    "metadata": {
+      "name": "check-cpu",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    }
+  }
+]

@@ -5,6 +5,8 @@ Puppet::Type.type(:sensu_namespace).provide(:sensuctl, :parent => Puppet::Provid
 
   mk_resource_methods
 
+  defaultfor :kernel => ['Linux','windows']
+
   def self.instances
     namespaces = []
 

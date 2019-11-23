@@ -1,0 +1,20 @@
+[
+  {
+    "metadata": {
+      "name": "tcp_handler",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
+    "type": "tcp",
+    "timeout": 30,
+    "socket": {
+      "host": "10.0.1.99",
+      "port": 4444
+    },
+    "handlers": null,
+    "filters": null,
+    "env_vars": null,
+    "runtime_assets": null
+  }
+]

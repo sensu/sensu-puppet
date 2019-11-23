@@ -1,0 +1,261 @@
+[
+  {
+    "url": "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz",
+    "sha512": "487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == 'amd64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "check_cpu",
+      "namespace": "default",
+      "labels": {
+        "origin": "bonsai"
+      },
+      "annotations": {
+        "project_url": "https://bonsai.sensu.io/assets/asachs01/sensu-go-cpu-check",
+        "version": "0.0.3"
+      }
+    },
+    "headers": {
+      "Authorization": "Bearer $TOKEN",
+      "X-Forwarded-For": "client1, proxy1, proxy2"
+    }
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_armv7.tar.gz",
+    "sha512": "70df8b7e9aa36cf942b972e1781af04815fa560441fcdea1d1538374066a4603fc5566737bfd6c7ffa18314edb858a9f93330a57d430deeb7fd6f75670a8c68b",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == 'arm'",
+      "entity.system.arm_version == 7"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "check_cpu",
+      "namespace": "default",
+      "labels": {
+        "origin": "bonsai"
+      },
+      "annotations": {
+        "project_url": "https://bonsai.sensu.io/assets/asachs01/sensu-go-cpu-check",
+        "version": "0.0.3"
+      }
+    },
+    "headers": {
+      "Authorization": "Bearer $TOKEN",
+      "X-Forwarded-For": "client1, proxy1, proxy2"
+    }
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_windows_amd64.tar.gz",
+    "sha512": "10d6411e5c8bd61349897cf8868087189e9ba59c3c206257e1ebc1300706539cf37524ac976d0ed9c8099bdddc50efadacf4f3c89b04a1a8bf5db581f19c157f",
+    "filters": [
+      "entity.system.os == 'windows'",
+      "entity.system.arch == 'amd64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "check_cpu",
+      "namespace": "default",
+      "labels": {
+        "origin": "bonsai"
+      },
+      "annotations": {
+        "project_url": "https://bonsai.sensu.io/assets/asachs01/sensu-go-cpu-check",
+        "version": "0.0.3"
+      }
+    },
+    "headers": {
+      "Authorization": "Bearer $TOKEN",
+      "X-Forwarded-For": "client1, proxy1, proxy2"
+    }
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz",
+    "sha512": "487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == 'amd64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "check_cpu_linux_amd64",
+      "namespace": "default",
+      "labels": {
+        "origin": "bonsai"
+      },
+      "annotations": {
+        "project_url": "https://bonsai.sensu.io/assets/asachs01/sensu-go-cpu-check",
+        "version": "0.0.3"
+      }
+    },
+    "headers": {
+      "Authorization": "Bearer $TOKEN",
+      "X-Forwarded-For": "client1, proxy1, proxy2"
+    }
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_amd64.tar.gz",
+    "sha512": "e93ec4465af5a2057664e8c3cd68e9352457b81315b97578eaae5e21f0cf7419d4fc36feb0155eeb0dd5a227e267307a58ee58a9f3e85bf3d44da3738bf691ca",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == 'amd64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_386.tar.gz",
+    "sha512": "5f11f22704b4dddf1798bafcdcce1fec43380842a7c7ec48d8c48e9408abfb9e384b7bec3a4512bc92b1239f5867a4b43f6c45fb569a6546a749e0d11ad83a8f",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == '386'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_arm64.tar.gz",
+    "sha512": "1eec6b24b4201e060e5fc4c3071be67f74b12250d75954d2195b3a57346f0dd7a34d6515b136453032d594d5de225e9dc80b20c9f7123f1565420bd483c3d181",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == 'arm64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_armv7.tar.gz",
+    "sha512": "ddcf3cab808b0baa71f333e529ba76f10eec48f42e48f8164f3d9d911a4966ca6e64b2682d1d780bc448c6893d89df2aa8f3877f0dc742524381735a2f521ef4",
+    "filters": [
+      "entity.system.os == 'linux'",
+      "entity.system.arch == 'armv7'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_darwin_amd64.tar.gz",
+    "sha512": "dc9f25c4c8576cfed4cb8ebb16aac842c8a03bf5b84d4351ef233b750b4adc0187aadf0403b770ad7df5c247fc77803592df206e40d5658c84c3baa38e4ba7aa",
+    "filters": [
+      "entity.system.os == 'darwin'",
+      "entity.system.arch == 'amd64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_darwin_386.tar.gz",
+    "sha512": "d59ef175a4d379b8fe21fa0d97b2b6dfa7fcf796aa9bcc4375950f283322e5b208941fdb4bab65737201c4e5c6da592d280a3e8034bb96df4c858bbfd6e30458",
+    "filters": [
+      "entity.system.os == 'darwin'",
+      "entity.system.arch == '386'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  },
+  {
+    "url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_windows_amd64.tar.gz",
+    "sha512": "09fd04a0ee0bd049105b92e5ac672369defcd7ae7409d682362f7e56bf4a128fd0147745e72eb605c26634507b8cd8ca5479213bb0cd6ce7198a0c634ca7d798",
+    "filters": [
+      "entity.system.os == 'darwin'",
+      "entity.system.arch == 'amd64'"
+    ],
+    "builds": null,
+    "metadata": {
+      "name": "sensu/sensu-pagerduty-handler",
+      "namespace": "default",
+      "annotations": {
+        "io.sensu.bonsai.api_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.name": "sensu-pagerduty-handler",
+        "io.sensu.bonsai.namespace": "sensu",
+        "io.sensu.bonsai.tags": "handler",
+        "io.sensu.bonsai.tier": "Supported",
+        "io.sensu.bonsai.url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler",
+        "io.sensu.bonsai.version": "1.1.0"
+      }
+    },
+    "headers": null
+  }
+]
+

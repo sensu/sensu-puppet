@@ -11,6 +11,12 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
         labels  => { 'foo' => 'baz' },
         runtime_assets => ['test'],
       }
+      sensu_hook { 'test-api':
+        command => 'ps aux',
+        labels  => { 'foo' => 'baz' },
+        runtime_assets => ['test'],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -35,6 +41,16 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
         expect(data['metadata']['labels']['foo']).to eq('baz')
       end
     end
+
+    it 'should have a valid hook using API' do
+      on node, 'sensuctl hook info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['command']).to eq('ps aux')
+        expect(data['stdin']).to eq(false)
+        expect(data['runtime_assets']).to eq(['test'])
+        expect(data['metadata']['labels']['foo']).to eq('baz')
+      end
+    end
   end
 
   context 'update hook' do
@@ -46,6 +62,13 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
         timeout => 120,
         runtime_assets => ['test2'],
         labels  => { 'foo' => 'bar' },
+      }
+      sensu_hook { 'test-api':
+        command => 'ps aux',
+        timeout => 120,
+        runtime_assets => ['test2'],
+        labels  => { 'foo' => 'bar' },
+        provider => 'sensu_api',
       }
       EOS
 
@@ -70,6 +93,15 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
+
+    it 'should have a valid hook with updated propery using API' do
+      on node, 'sensuctl hook info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['timeout']).to eq(120)
+        expect(data['runtime_assets']).to eq(['test2'])
+        expect(data['metadata']['labels']['foo']).to eq('bar')
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -77,6 +109,10 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_hook { 'test': ensure => 'absent' }
+      sensu_hook { 'test-api':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -93,6 +129,9 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl hook info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl hook info test-api'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end

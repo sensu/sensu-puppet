@@ -5,6 +5,8 @@ Puppet::Type.type(:sensu_hook).provide(:sensuctl, :parent => Puppet::Provider::S
 
   mk_resource_methods
 
+  defaultfor :kernel => ['Linux','windows']
+
   def self.instances
     hooks = []
 

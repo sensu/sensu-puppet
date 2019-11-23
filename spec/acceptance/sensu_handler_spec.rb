@@ -17,6 +17,19 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         socket         => {'host' => '127.0.0.1', 'port' => 1234},
         labels         => { 'foo' => 'bar' },
       }
+      sensu_handler { 'test-api':
+        type           => 'pipe',
+        command        => 'notify.rb',
+        runtime_assets => ['test'],
+        labels         => { 'foo' => 'baz' },
+        provider       => 'sensu_api',
+      }
+      sensu_handler { 'test-api2':
+        type           => 'tcp',
+        socket         => {'host' => '127.0.0.1', 'port' => 1234},
+        labels         => { 'foo' => 'bar' },
+        provider       => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -51,6 +64,26 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
+
+    it 'should have a valid pipe handler using API' do
+      on node, 'sensuctl handler info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['type']).to eq('pipe')
+        expect(data['timeout']).to eq(0)
+        expect(data['command']).to eq('notify.rb')
+        expect(data['metadata']['labels']['foo']).to eq('baz')
+      end
+    end
+
+    it 'should have a valid tcp handler using API' do
+      on node, 'sensuctl handler info test-api2 --format json' do
+        data = JSON.parse(stdout)
+        expect(data['type']).to eq('tcp')
+        expect(data['timeout']).to eq(60)
+        expect(data['socket']).to eq({'host' => '127.0.0.1', 'port' => 1234})
+        expect(data['metadata']['labels']['foo']).to eq('bar')
+      end
+    end
   end
 
   context 'update handler' do
@@ -68,6 +101,20 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         type           => 'tcp',
         socket         => {'host' => 'localhost', 'port' => 5678},
         labels         => { 'foo' => 'bar' },
+      }
+      sensu_handler { 'test-api':
+        type           => 'pipe',
+        command        => 'notify.rb',
+        filters        => ['production'],
+        runtime_assets => ['test2'],
+        labels         => { 'foo' => 'bar' },
+        provider       => 'sensu_api',
+      }
+      sensu_handler { 'test-api2':
+        type           => 'tcp',
+        socket         => {'host' => 'localhost', 'port' => 5678},
+        labels         => { 'foo' => 'bar' },
+        provider       => 'sensu_api',
       }
       EOS
 
@@ -99,6 +146,22 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
       end
     end
+
+    it 'should have a valid pipe handler with updated propery using API' do
+      on node, 'sensuctl handler info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['filters']).to eq(['production'])
+        expect(data['runtime_assets']).to eq(['test2'])
+        expect(data['metadata']['labels']['foo']).to eq('bar')
+      end
+    end
+
+    it 'should have a valid tcp handler with updated propery using API' do
+      on node, 'sensuctl handler info test-api2 --format json' do
+        data = JSON.parse(stdout)
+        expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -106,6 +169,10 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_handler { 'test': ensure => 'absent' }
+      sensu_handler { 'test-api':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -122,6 +189,9 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl handler info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl handler info test-api'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end

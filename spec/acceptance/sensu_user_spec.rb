@@ -14,6 +14,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
         password => 'password',
         groups   => ['read-only'],
       }
+      sensu_user { 'test-api':
+        password => 'password',
+        groups   => ['read-only'],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -42,6 +47,20 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
       exit_code = on(node, 'sensuctl user test-creds test --password password').exit_code
       expect(exit_code).to eq(0)
     end
+
+    it 'should have a valid user using API' do
+      on node, 'sensuctl user list --format json' do
+        data = JSON.parse(stdout)
+        d = data.select { |o| o['username'] == 'test-api' }[0]
+        expect(d['groups']).to eq(['read-only'])
+        expect(d['disabled']).to eq(false)
+      end
+    end
+
+    it 'should have valid password using API' do
+      exit_code = on(node, 'sensuctl user test-creds test-api --password password').exit_code
+      expect(exit_code).to eq(0)
+    end
   end
 
   context 'updates user' do
@@ -57,6 +76,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
         password => 'password',
         groups   => ['read-only','admin'],
         disabled => true,
+      }
+      sensu_user { 'test-api':
+        password => 'password2',
+        groups   => ['read-only','admin'],
+        provider => 'sensu_api',
       }
       EOS
 
@@ -85,6 +109,19 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
       exit_code = on(node, 'sensuctl user test-creds test --password password2').exit_code
       expect(exit_code).to eq(0)
     end
+
+    it 'should have an updated user using API' do
+      on node, 'sensuctl user list --format json' do
+        data = JSON.parse(stdout)
+        d = data.select { |o| o['username'] == 'test-api' }[0]
+        expect(d['groups']).to eq(['read-only','admin'])
+        expect(d['disabled']).to eq(false)
+      end
+    end
+    it 'should have valid password using API' do
+      exit_code = on(node, 'sensuctl user test-creds test-api --password password2').exit_code
+      expect(exit_code).to eq(0)
+    end
   end
 
   context 'updates user password' do
@@ -95,6 +132,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
         password     => 'password3',
         old_password => 'password2',
         groups       => ['read-only'],
+      }
+      sensu_user { 'test-api':
+        password => 'password3',
+        groups   => ['read-only'],
+        provider => 'sensu_api',
       }
       EOS
 
@@ -113,6 +155,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
 
     it 'should have valid password' do
       exit_code = on(node, 'sensuctl user test-creds test --password password3').exit_code
+      expect(exit_code).to eq(0)
+    end
+
+    it 'should have valid password using API' do
+      exit_code = on(node, 'sensuctl user test-creds test-api --password password3').exit_code
       expect(exit_code).to eq(0)
     end
   end
@@ -144,6 +191,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_user { 'test': ensure => 'absent' }
+      sensu_user { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent

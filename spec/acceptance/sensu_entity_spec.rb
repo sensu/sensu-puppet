@@ -10,6 +10,10 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
         entity_class           => 'proxy',
         deregistration         => {'handler' => 'slack-handler'},
       }
+      sensu_entity { 'test-api':
+        entity_class           => 'proxy',
+        deregistration         => {'handler' => 'slack-handler'},
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -33,6 +37,15 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
         expect(data['deregistration']['handler']).to eq('slack-handler')
       end
     end
+
+    it 'should create an entity using API' do
+      on node, "sensuctl entity info test-api --format json" do
+        data = JSON.parse(stdout)
+        expect(data['entity_class']).to eq('proxy')
+        expect(data['deregister']).to eq(false)
+        expect(data['deregistration']['handler']).to eq('slack-handler')
+      end
+    end
   end
 
   context 'updates properties' do
@@ -40,6 +53,11 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_entity { 'test':
+        entity_class           => 'proxy',
+        deregistration         => {'handler' => 'email-handler'},
+        labels                 => { 'foo' => 'bar' }
+      }
+      sensu_entity { 'test-api':
         entity_class           => 'proxy',
         deregistration         => {'handler' => 'email-handler'},
         labels                 => { 'foo' => 'bar' }
@@ -66,6 +84,14 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
+
+    it 'should have a valid entity with extended_attributes properties with API' do
+      on node, "sensuctl entity info test-api --format json" do
+        data = JSON.parse(stdout)
+        expect(data['deregistration']['handler']).to eq('email-handler')
+        expect(data['metadata']['labels']['foo']).to eq('bar')
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -73,6 +99,10 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_entity { 'test': ensure => 'absent' }
+      sensu_entity { 'test-api':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -89,6 +119,9 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl entity info test'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl entity info test-api'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end
