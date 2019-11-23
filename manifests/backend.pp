@@ -72,7 +72,9 @@
 # @param configs
 #   Hash of sensu_config resources
 # @param entities
-#   Hash of sensu_entitie resources
+#   Hash of sensu_entity resources
+# @param etcd_replicators
+#   Hash of sensu_etcd_replicator resources
 # @param events
 #   Hash of sensu_event resources
 # @param filters
@@ -153,6 +155,7 @@ class sensu::backend (
   Hash $cluster_roles = {},
   Hash $configs = {},
   Hash $entities = {},
+  Hash $etcd_replicators = {},
   Hash $events = {},
   Hash $filters = {},
   Hash $handlers = {},
