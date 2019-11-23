@@ -1,0 +1,18 @@
+{
+  "description": "Manage Sensu Go API keys",
+  "input_method": "stdin",
+  "parameters": {
+    "action": {
+      "description": "The action to perform",
+      "type": "Enum[create,list,delete]"
+    },
+    "username": {
+      "description": "The username for the API key. Required for action=create",
+      "type": "Optional[String[1]]"
+    },
+    "key": {
+      "description": "The API key. Required for action=delete",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
