@@ -23,6 +23,7 @@
     * [Resource purging](#resource-purging)
     * [Sensu backend cluster](#sensu-backend-cluster)
         * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
+    * [Sensu backend federation](#sensu-backend-federation)
     * [Large Environment Considerations](#large-environment-considerations)
     * [Composite Names for Namespaces](#composite-names-for-namespaces)
     * [Installing Bonsai Assets](#installing-bonsai-assets)
@@ -126,6 +127,14 @@ Multiple Vagrant boxes are available for testing a sensu-backend cluster.
 ```bash
 vagrant up sensu-backend-peer1 sensu-backend-peer2
 vagrant provision sensu-backend-peer1 sensu-backend-peer2
+```
+
+#### Beginning with a Sensu federated cluster
+
+Multiple Vagrant boxes are available for testing a Sensu Go federated cluster
+
+```base
+vagrant up sensu-backend-federated1 sensu-backend-federated2
 ```
 
 ## Usage
@@ -575,6 +584,40 @@ sensu::backend::config_hash:
 ```
 
 The first step will not fully add the node to the cluster until the second step is performed.
+
+### Sensu backend federation
+
+Currently the federation support within this module involves configuring Etcd replicators. This allows resources to be sent from one Sensu cluster to another cluster.
+
+It's necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
+
+First configure backend Etcd to listen on an interface besides localhost:
+
+```puppet
+class { '::sensu::backend':
+  config_hash => {
+    'etcd-listen-client-urls' => ["http://localhost:2379","http://${facts['networking']['interfaces']['eth1']['ip']}:2379"],
+  },
+}
+```
+
+Next configure the Etcd replicator on the backend you wish to push resources from.
+In the following example all defined `Role` resources will be replicated to the backend at the IP address 192.168.52.30.
+
+```puppet
+sensu_etcd_replicator { 'role_replicator':
+  ensure        => 'present',
+  ca_cert       => '/etc/sensu/ssl/ca.crt',
+  cert          => '/etc/sensu/ssl/cert.pem',
+  key           => '/etc/sensu/ssl/key.pem',
+  url           => 'http://192.168.52.30:2379',
+  resource_name => 'Role',
+}
+sensu_role { 'test':
+  ensure => 'present',
+  rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
 
 ### Large Environment Considerations
 
