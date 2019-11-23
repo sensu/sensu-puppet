@@ -44,6 +44,7 @@ DESC
   newparam(:name, :namevar => true) do
     desc "The name of the user."
     validate do |value|
+      # Match only upper case letters, lowercase letters, numbers, underscores, periods and hyphens
       unless value =~ %r{^[\w.\-]+$}
         raise ArgumentError, "sensu_user name invalid"
       end

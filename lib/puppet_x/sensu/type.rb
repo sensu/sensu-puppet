@@ -2,6 +2,7 @@ module PuppetX
   module Sensu
     module Type
       def self.name_regex
+        # Match only upper case letters, lowercase letters, numbers, underscores, periods, hyphens, and colons
         %r{^[\w.\-:]+$}
       end
 
