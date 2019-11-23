@@ -72,7 +72,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     data
   end
 
-  def self.sensuctl_create(type, metadata, spec, api_version = 'core/v2')
+  def self.resource_file(type, metadata, spec, api_version = 'core/v2')
     data = {}
     data['type'] = type
     data['api_version'] = api_version
@@ -82,20 +82,31 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     f.write(JSON.pretty_generate(data))
     f.close
     Puppet.debug(IO.read(f.path))
+    f
+  end
+
+  def self.sensuctl_create(type, metadata, spec, api_version = 'core/v2')
+    f = resource_file(type, metadata, spec, api_version)
     sensuctl(['create', '--file', f.path])
   end
   def sensuctl_create(*args)
     self.class.sensuctl_create(*args)
   end
 
-  def self.sensuctl_delete(command, name, namespace = nil)
-    args = [command]
-    args << 'delete'
-    args << name
-    args << '--skip-confirm'
-    if namespace
-      args << '--namespace'
-      args << namespace
+  def self.sensuctl_delete(command, name, namespace = nil, metadata = nil, spec = nil, api_version = 'core/v2')
+    f = nil
+    if spec && metadata
+      f = resource_file(command, metadata, spec, api_version)
+      args = ['delete','--file',f.path]
+    else
+      args = [command]
+      args << 'delete'
+      args << name
+      args << '--skip-confirm'
+      if namespace
+        args << '--namespace'
+        args << namespace
+      end
     end
     sensuctl(args)
   end
@@ -115,6 +126,17 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
     Puppet.debug("auth_types: #{auth_types}")
     auth_types
+  end
+
+  def self.dump(resource_type)
+    output = sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'])
+    Puppet.debug("YAML dump of #{resource_type}:\n#{output}")
+    resources = []
+    dumps = output.split('---')
+    dumps.each do |d|
+      resources << YAML.load(d)
+    end
+    resources
   end
 
   def self.namespaces()

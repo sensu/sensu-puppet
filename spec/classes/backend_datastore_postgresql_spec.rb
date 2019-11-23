@@ -19,43 +19,11 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
 
       it { should compile.with_all_deps }
 
-      let(:config_content) do
-        content = <<-END.gsub(/^\s+\|/, '')
-        |---
-        |type: PostgresConfig
-        |api_version: store/v1
-        |metadata:
-        |  name: postgresql
-        |spec:
-        |  dsn: postgresql://sensu:changeme@localhost:5432/sensu
-        |  pool_size: 20
-        |
-        |# File managed by Puppet
-        |# present
-      END
-        content
-      end
-
       it do
-        should contain_file('/etc/sensu/postgresql.yaml').with({
-          :ensure   => 'file',
-          :owner    => 'sensu',
-          :group    => 'sensu',
-          :mode     => '0640',
-          :content  => config_content,
-          :require  => 'Package[sensu-go-backend]',
-          :notify   => 'Exec[sensuctl-postgresql]',
-        })
-      end
-
-      it do
-        should contain_exec('sensuctl-postgresql').with({
-          :path => '/usr/bin:/bin:/usr/sbin:/sbin',
-          :command  => 'sensuctl create --file /etc/sensu/postgresql.yaml',
-          :require  => [
-            'Sensu_configure[puppet]',
-            'Sensu_user[admin]',
-          ]
+        should contain_sensu_postgres_config('postgresql').with({
+          :ensure    => 'present',
+          :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu',
+          :pool_size => '20',
         })
       end
 
@@ -74,25 +42,15 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
           }
           EOS
         end
-        let(:config_content) do
-          content = <<-END.gsub(/^\s+\|/, '')
-          |---
-          |type: PostgresConfig
-          |api_version: store/v1
-          |metadata:
-          |  name: postgresql
-          |spec:
-          |  dsn: postgresql://sensu:changeme@localhost:5432/sensu
-          |  pool_size: 20
-          |
-          |# File managed by Puppet
-          |# absent
-        END
-          content
-        end
+
         it { should compile.with_all_deps }
-        it { should contain_file('/etc/sensu/postgresql.yaml').with_ensure('file').with_content(config_content) }
-        it { should contain_exec('sensuctl-postgresql').with_command('sensuctl delete --file /etc/sensu/postgresql.yaml') }
+        it do
+          should contain_sensu_postgres_config('postgresql').with({
+           :ensure    => 'absent',
+           :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu',
+           :pool_size => '20',
+         })
+        end
         it { should_not contain_postgresql__server__db('sensu') }
       end
 

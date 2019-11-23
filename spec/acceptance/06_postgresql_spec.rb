@@ -43,6 +43,14 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl check execute event-test'
     end
 
+    it 'configured postgres' do
+      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
+        data = YAML.load(stdout)
+        expect(data['spec']['dsn']).to eq('postgresql://sensu:changeme@localhost:5432/sensu')
+        expect(data['spec']['pool_size']).to eq(20)
+      end
+    end
+
     it 'should have an event' do
       on node, 'sensuctl event info sensu_agent event-test --format json' do
         data = JSON.parse(stdout)
@@ -81,6 +89,12 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
       end
       apply_manifest_on(node, check_pp, :catch_failures => true)
       on node, 'sensuctl check execute event-test'
+    end
+
+    it 'removed postgres config' do
+      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
+        expect(stdout).to be_empty
+      end
     end
 
     it 'should have an event' do
