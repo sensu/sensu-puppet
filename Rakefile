@@ -58,6 +58,7 @@ namespace :acceptance do
 end
 
 def future_release
+  return unless (Rake.application.top_level_tasks.include?("changelog") || Rake.application.top_level_tasks.include?("release"))
   returnVal = "v%s" % JSON.load(File.read('metadata.json'))['version']
   raise "unable to find the future_release (version) in metadata.json" if returnVal.nil?
   puts "future_release:#{returnVal}"
