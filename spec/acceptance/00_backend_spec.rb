@@ -7,8 +7,9 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
       pp = <<-EOS
       class { '::sensu': }
       class { '::sensu::backend':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password                  => 'supersecret',
+        old_password              => 'P@ssw0rd!',
+        include_default_resources => false,
       }
       EOS
 
@@ -31,6 +32,30 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
     end
     describe package('sensu-go-agent'), :node => node do
       it { should_not be_installed }
+    end
+  end
+
+  context 'default resources' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu': }
+      class { '::sensu::backend':
+        password                  => 'supersecret',
+        old_password              => 'P@ssw0rd!',
+        include_default_resources => true,
+      }
+      EOS
+
+      # There should be no changes as default resources
+      # Should not result in changes
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
     end
   end
 

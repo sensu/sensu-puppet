@@ -91,10 +91,6 @@ class sensu::backend::default_resources {
         'verbs'     => ['get', 'update'],
         'resources' => ['localselfuser'],
       },
-      {
-        'verbs'     => ['get', 'list'],
-        'resources' => ['namespaces'],
-      },
     ],
   }
   sensu_cluster_role { 'view':
