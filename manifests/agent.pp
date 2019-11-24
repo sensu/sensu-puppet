@@ -95,7 +95,7 @@ class sensu::agent (
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
   }
-  $_service_env_vars_content = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
+  $_service_env_vars_lines = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
 
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
@@ -164,10 +164,11 @@ class sensu::agent (
   }
 
   if $service_env_vars_file {
+    $_service_env_vars_content = join($_service_env_vars_lines, "\n")
     file { 'sensu-agent_env_vars':
       ensure    => 'file',
       path      => $service_env_vars_file,
-      content   => join($_service_env_vars_content, "\n"),
+      content   => "${_service_env_vars_content}\n",
       owner     => $::sensu::sensu_user,
       group     => $::sensu::sensu_group,
       mode      => $::sensu::file_mode,
