@@ -24,6 +24,51 @@ Copy certs from vagrant instance to this repo
 \cp -r /etc/puppetlabs/puppet/ssl/* /vagrant/tests/ssl/
 ```
 
+# Generate self signed certs for Etcd
+
+Boot `sensu-backend` vagrant box and log in as root
+
+```
+vagrant up sensu-backend
+vagrant ssh sensu-backend
+sudo su -
+```
+
+Bootstrap SSL cert tool
+
+```
+yum install golang-bin
+cd /root
+git clone https://github.com/cloudflare/cfssl.git
+cfssl/
+make
+export PATH=/root/cfssl/bin:$PATH
+```
+
+Generate CA
+
+```
+mkdir -p /vagrant/tests/etcd-ssl
+cd /vagrant/tests/etcd-ssl
+echo '{"CN":"CA","key":{"algo":"rsa","size":2048}}' | cfssl gencert -initca - | cfssljson -bare ca -
+echo '{"signing":{"default":{"expiry":"43800h","usages":["signing","key encipherment","server auth","client auth"]}}}' > ca-config.json
+```
+
+Generate certs
+
+```
+export ADDRESS=192.168.52.30,sensu-backend1
+export NAME=sensu-backend1
+echo '{"CN":"'$NAME'","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname="$ADDRESS" -profile=peer - | cfssljson -bare $NAME
+
+export ADDRESS=192.168.52.31,sensu-backend2
+export NAME=sensu-backend2
+echo '{"CN":"'$NAME'","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname="$ADDRESS" -profile=peer - | cfssljson -bare $NAME
+
+export NAME=client
+echo '{"CN":"'$NAME'","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname="" -profile=client - | cfssljson -bare $NAME
+```
+
 # Secrets
 
 Currently `tests/secrets.tar` holds secrets:

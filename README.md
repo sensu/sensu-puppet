@@ -131,11 +131,15 @@ vagrant provision sensu-backend-peer1 sensu-backend-peer2
 
 #### Beginning with a Sensu federated cluster
 
-Multiple Vagrant boxes are available for testing a Sensu Go federated cluster
+Multiple Vagrant boxes are available for testing a Sensu Go federated cluster.
+First build and provision both then provision the first a second time to view that the custom role was replicated.
 
 ```base
 vagrant up sensu-backend-federated1 sensu-backend-federated2
+vagrant provision sensu-backend-federated1
 ```
+
+The `provision` command should output from `sensuctl` the `test` Sensu Go Role that was created on the other backend.
 
 ## Usage
 
@@ -591,12 +595,17 @@ Currently the federation support within this module involves configuring Etcd re
 
 It's necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
 
-First configure backend Etcd to listen on an interface besides localhost:
+First configure backend Etcd to listen on an interface besides localhost and also use SSL:
 
 ```puppet
 class { '::sensu::backend':
   config_hash => {
-    'etcd-listen-client-urls' => ["http://localhost:2379","http://${facts['networking']['interfaces']['eth1']['ip']}:2379"],
+    'etcd-listen-client-urls' => "https://0.0.0.0:2379",
+    'etcd-advertise-client-urls' => "https://0.0.0.0:2379",
+    'etcd-cert-file' => "/etc/sensu/etcd-ssl/${facts['fqdn'].pem",
+    'etcd-key-file' => "/etc/sensu/etcd-ssl/${facts['fqdn']}-key.pem",
+    'etcd-trusted-ca-file' => "/etc/sensu/etcd-ssl/ca.pem",
+    'etcd-client-cert-auth' => true,
   },
 }
 ```
@@ -607,10 +616,10 @@ In the following example all defined `Role` resources will be replicated to the 
 ```puppet
 sensu_etcd_replicator { 'role_replicator':
   ensure        => 'present',
-  ca_cert       => '/etc/sensu/ssl/ca.crt',
-  cert          => '/etc/sensu/ssl/cert.pem',
-  key           => '/etc/sensu/ssl/key.pem',
-  url           => 'http://192.168.52.30:2379',
+  ca_cert       => '/etc/sensu/etcd-ssl/ca.pem',
+  cert          => '/etc/sensu/etcd-ssl/client.pem',
+  key           => '/etc/sensu/etcd-ssl/client-key.pem',
+  url           => 'https://192.168.52.30:2379',
   resource_name => 'Role',
 }
 sensu_role { 'test':
