@@ -140,6 +140,13 @@ vagrant provision sensu-backend-federated1
 ```
 
 The `provision` command should output from `sensuctl` the `test` Sensu Go Role that was created on the other backend.
+The output should look like the following:
+
+```
+    sensu-backend-federated1:   Name   Namespace   Rules  
+    sensu-backend-federated1:  ────── ─────────── ─────── 
+    sensu-backend-federated1:   test   default         1  
+```
 
 ## Usage
 

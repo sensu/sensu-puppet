@@ -40,7 +40,7 @@ Bootstrap SSL cert tool
 yum install golang-bin
 cd /root
 git clone https://github.com/cloudflare/cfssl.git
-cfssl/
+cd cfssl/
 make
 export PATH=/root/cfssl/bin:$PATH
 ```
