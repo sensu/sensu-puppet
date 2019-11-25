@@ -2,6 +2,5 @@
   "name": "Install Agent Windows",
   "description": "Install Sensu Go agent on Windows",
   "input_method": "powershell",
-  "private": true,
-  "parameters": []
+  "private": true
 }

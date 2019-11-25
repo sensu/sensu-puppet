@@ -1,6 +1,6 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-if puppetversion = ENV['PUPPET_GEM_VERSION'] || "~> 5.x"
+if puppetversion = ENV['PUPPET_GEM_VERSION']
   gem 'puppet', puppetversion, :require => false
 else
   gem 'puppet', :require => false
@@ -31,6 +31,9 @@ group :development, :unit_tests do
   gem 'puppet-lint-unquoted_string-check',                :require => false
   gem 'puppet-lint-variable_contains_upcase',             :require => false
   gem 'puppet-lint-version_comparison-check',             :require => false
+  gem "rubocop", '~> 0.49.0',                             :require => false
+  gem "rubocop-i18n", '~> 1.2.0',                         :require => false
+  gem "rubocop-rspec", '~> 1.16.0',                       :require => false
 end
 
 group :documentation do

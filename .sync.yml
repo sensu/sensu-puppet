@@ -1,0 +1,33 @@
+.rubocop.yml:
+  default_configs:
+    AllCops:
+      Exclude:
+        - '**/*'
+.vscode/extensions.json:
+  delete: true
+spec/default_facts.yml:
+  delete: true
+.gitlab-ci.yml:
+  delete: true
+.pdkignore:
+  paths: &ignorepaths
+    - '*.log'
+    - tests/sensu_license.json
+    - tests/secrets
+    - tests/secrets.tar
+data/common.yaml:
+  unmanaged: true
+Rakefile:
+  unmanaged: true
+.travis.yml:
+  unmanaged: true
+spec/spec_helper.rb:
+  unmanaged: true
+.gitignore:
+  paths: *ignorepaths
+Gemfile:
+  unmanaged: true
+appveyor.yml:
+  unmanaged: true
+.rspec:
+  unmanaged: true
