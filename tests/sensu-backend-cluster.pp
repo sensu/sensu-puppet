@@ -5,6 +5,7 @@ case $facts['hostname'] {
   /peer2/: {
     $backend_name = 'backend2'
   }
+  default: {}
 }
 
 class { '::sensu::backend':
@@ -17,6 +18,6 @@ class { '::sensu::backend':
     'etcd-initial-cluster-state'       => 'new',
     'etcd-initial-cluster-token'       => '',
     'etcd-name'                        => $backend_name,
-  }
+  },
 }
 

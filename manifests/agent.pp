@@ -88,7 +88,7 @@ class sensu::agent (
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
     exec { 'install-agent-service':
-      command => "C:\\windows\\system32\\cmd.exe /c \"\"${sensu_agent_exe}\" service install --config-file \"${::sensu::agent_config_path}\" --log-file \"${log_file}\"\"",
+      command => "C:\\windows\\system32\\cmd.exe /c \"\"${sensu_agent_exe}\" service install --config-file \"${::sensu::agent_config_path}\" --log-file \"${log_file}\"\"", # lint:ignore:140chars
       unless  => "C:\\windows\\system32\\sc.exe query SensuAgent",
       before  => Service['sensu-agent'],
       require => [
