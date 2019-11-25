@@ -129,6 +129,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   end
 
   def self.dump(resource_type)
+    # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+    # https://github.com/sensu/sensu-go/issues/3424
     output = sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'])
     Puppet.debug("YAML dump of #{resource_type}:\n#{output}")
     resources = []

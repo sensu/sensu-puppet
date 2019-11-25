@@ -44,6 +44,8 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
     end
 
     it 'configured postgres' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
       on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
         data = YAML.load(stdout)
         expect(data['spec']['dsn']).to eq('postgresql://sensu:changeme@localhost:5432/sensu')
@@ -92,6 +94,8 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
     end
 
     it 'removed postgres config' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
       on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
         expect(stdout).to be_empty
       end
