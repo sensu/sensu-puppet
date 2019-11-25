@@ -38,6 +38,8 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have a valid etcd replicators' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
       on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do
         resources = []
         dumps = stdout.split('---')
@@ -102,6 +104,8 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have a valid etcd replicators' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
       on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do
         resources = []
         dumps = stdout.split('---')
@@ -150,6 +154,8 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_full do
     end
 
     it 'removed etcd replicators' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
       on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do
         expect(stdout).to be_empty
       end
