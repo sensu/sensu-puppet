@@ -1,5 +1,19 @@
 # Changelog
 
+## [v3.12.0](https://github.com/sensu/sensu-puppet/tree/v3.12.0) (2019-11-24)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.11.0...v3.12.0)
+
+### Added
+
+- Improve name validations to match Sensu Go [\#1173](https://github.com/sensu/sensu-puppet/pull/1173) ([treydock](https://github.com/treydock))
+- Add bolt task to manage API keys [\#1171](https://github.com/sensu/sensu-puppet/pull/1171) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Add lint plugin [\#1177](https://github.com/sensu/sensu-puppet/pull/1177) ([ghoneycutt](https://github.com/ghoneycutt))
+- Update steps to release software [\#1172](https://github.com/sensu/sensu-puppet/pull/1172) ([ghoneycutt](https://github.com/ghoneycutt))
+
 ## [v3.11.0](https://github.com/sensu/sensu-puppet/tree/v3.11.0) (2019-11-12)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.10.0...v3.11.0)
@@ -11,7 +25,7 @@
 - \(ci\) Use correct Ruby version 2.5.7 for latest Puppet 6 tests [\#1165](https://github.com/sensu/sensu-puppet/pull/1165) ([ghoneycutt](https://github.com/ghoneycutt))
 - Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
 
-### UNCATEGORIZED PRS; GO LABEL THEM
+### Fixed
 
 - Document sensu\_asset deprecations [\#1170](https://github.com/sensu/sensu-puppet/pull/1170) ([treydock](https://github.com/treydock))
 
@@ -106,6 +120,7 @@
 ### Added
 
 - Add headers property to sensu\_assets [\#1119](https://github.com/sensu/sensu-puppet/pull/1119) ([treydock](https://github.com/treydock))
+- Add ability to run acceptance tests against Sensu-Go CI builds [\#1115](https://github.com/sensu/sensu-puppet/pull/1115) ([treydock](https://github.com/treydock))
 - Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
 
 ### Fixed
@@ -133,7 +148,6 @@
 
 ### Added
 
-- Add ability to run acceptance tests against Sensu-Go CI builds [\#1115](https://github.com/sensu/sensu-puppet/pull/1115) ([treydock](https://github.com/treydock))
 - Support Sensu Go 5.6 [\#1105](https://github.com/sensu/sensu-puppet/pull/1105) ([treydock](https://github.com/treydock))
 
 ## [v3.1.0](https://github.com/sensu/sensu-puppet/tree/v3.1.0) (2019-04-19)

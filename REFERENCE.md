@@ -58,6 +58,7 @@ _Private Classes_
 **Tasks**
 
 * [`agent_event`](#agent_event): Create a Sensu Go agent event via the agent API
+* [`apikey`](#apikey): Manage Sensu Go API keys
 * [`assets_outdated`](#assets_outdated): Retreive outdated Sensu Go assets
 * [`check_execute`](#check_execute): Execute a Sensu Go check
 * [`event`](#event): Manage Sensu Go events
@@ -3085,6 +3086,32 @@ The event TTL
 Data type: `Optional[Integer]`
 
 The agent API port, defaults to 3031
+
+### apikey
+
+Manage Sensu Go API keys
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `action`
+
+Data type: `Enum[create,list,delete]`
+
+The action to perform
+
+##### `username`
+
+Data type: `Optional[String[1]]`
+
+The username for the API key. Required for action=create
+
+##### `key`
+
+Data type: `Optional[String[1]]`
+
+The API key. Required for action=delete
 
 ### assets_outdated
 
