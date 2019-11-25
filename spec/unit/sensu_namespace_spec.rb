@@ -27,6 +27,10 @@ describe Puppet::Type.type(:sensu_namespace) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  include_examples 'name_regex' do
+    let(:default_params) { default_config }
+  end
+
   defaults = {
   }
 

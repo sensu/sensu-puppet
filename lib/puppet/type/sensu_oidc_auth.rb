@@ -37,7 +37,7 @@ DESC
   newparam(:name, :namevar => true) do
     desc "The name of the AD auth."
     validate do |value|
-      unless value =~ /^[\w\.\-]+$/
+      unless value =~ PuppetX::Sensu::Type.name_regex
         raise ArgumentError, "sensu_ad_auth name invalid"
       end
     end

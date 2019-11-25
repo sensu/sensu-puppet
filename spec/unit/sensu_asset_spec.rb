@@ -31,6 +31,33 @@ describe Puppet::Type.type(:sensu_asset) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
+  valid_names = [
+    'foo',
+    'foo-bar',
+    'foo.bar',
+    'foo1',
+    'foo_bar',
+    'foo:bar',
+    'foo/bar',
+  ]
+  invalid_names = [
+    'foo!',
+    'Foo',
+    'fooBar',
+  ]
+  valid_names.each do |name|
+    it "allows valid name #{name}" do
+      config[:name] = name
+      expect { asset }.to_not raise_error
+    end
+  end
+  invalid_names.each do |name|
+    it "does not allow invalid name #{name}" do
+      config[:name] = name
+      expect { asset }.to raise_error(/name/)
+    end
+  end
+
   it 'allows bonsai name' do
     config[:name] = 'sensu/sensu-pagerduty-handler'
     expect(asset[:name]).to eq('sensu/sensu-pagerduty-handler')

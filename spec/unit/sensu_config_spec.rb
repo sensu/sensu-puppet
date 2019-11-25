@@ -33,6 +33,10 @@ describe Puppet::Type.type(:sensu_config) do
     expect { sensu_config[:ensure] = 'absent' }.to raise_error(Puppet::Error, /ensure does not support absent/)
   end
 
+  include_examples 'name_regex' do
+    let(:default_params) { default_config }
+  end
+
   defaults = {}
 
   # String properties

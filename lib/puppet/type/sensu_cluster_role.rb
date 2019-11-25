@@ -27,6 +27,11 @@ DESC
 
   newparam(:name, :namevar => true) do
     desc "The name of the role."
+    validate do |value|
+      unless value =~ PuppetX::Sensu::Type.name_regex
+        raise ArgumentError, "sensu_cluster_role name invalid"
+      end
+    end
   end
 
   newproperty(:rules, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
