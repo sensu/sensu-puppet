@@ -113,11 +113,6 @@ describe 'sensu::backend::default_resources', :type => :class do
                 'resources' => ['localselfuser'],
                 'resource_names' => nil,
               },
-              {
-                'verbs'     => ['get', 'list'],
-                'resources' => ['namespaces'],
-                'resource_names' => nil,
-              },
             ],
           })
         }
