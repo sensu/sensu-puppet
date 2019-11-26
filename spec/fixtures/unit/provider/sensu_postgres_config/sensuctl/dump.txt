@@ -1,0 +1,8 @@
+type: PostgresConfig
+api_version: store/v1
+metadata:
+  name: my-postgres
+  namespace: default
+spec:
+  dsn: postgresql://user:secret@host:port/dbname
+  pool_size: 20
