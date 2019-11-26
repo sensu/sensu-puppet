@@ -50,6 +50,10 @@
 #   Sensu backend admin password used to confiure sensuctl.
 # @param old_password
 #   Sensu backend admin old password needed when changing password.
+# @param agent_password
+#   The sensu agent password
+# @param agent_old_password
+#   The sensu agent old password needed when changing agent_password
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
@@ -67,6 +71,8 @@ class sensu (
   Stdlib::Port $api_port = 8080,
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
+  String $agent_password = 'P@ssw0rd!',
+  Optional[String] $agent_old_password = undef,
 ) {
 
   if $use_ssl and ! $ssl_ca_source {

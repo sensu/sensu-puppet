@@ -8,14 +8,6 @@ class sensu::backend::default_resources {
     ensure => 'present',
   }
 
-  sensu_user { 'agent':
-    ensure       => 'present',
-    disabled     => false,
-    password     => $::sensu::backend::agent_password,
-    old_password => $::sensu::backend::agent_old_password,
-    groups       => ['system:agents'],
-  }
-
   sensu_cluster_role { 'admin':
     ensure => 'present',
     rules  => [

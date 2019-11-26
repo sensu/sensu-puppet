@@ -30,6 +30,7 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
+        it { should have_sensu_user_resource_count(2) }
         it {
           should contain_sensu_user('admin').with({
             'ensure'        => 'present',
@@ -39,6 +40,15 @@ describe 'sensu::backend', :type => :class do
             'disabled'      => 'false',
             'configure'     => 'true',
             'configure_url' => 'https://test.example.com:8080',
+          })
+        }
+        it {
+          should contain_sensu_user('agent').with({
+            'ensure'       => 'present',
+            'disabled'     => 'false',
+            'password'     => 'P@ssw0rd!',
+            'old_password' => nil,
+            'groups'       => ['system:agents'],
           })
         }
 

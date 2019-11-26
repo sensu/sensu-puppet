@@ -49,6 +49,7 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- wss://localhost:8081
+          |password: P@ssw0rd!
           |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
 
@@ -158,6 +159,7 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- ws://localhost:8081
+          |password: P@ssw0rd!
         END
 
         it {
@@ -315,6 +317,7 @@ describe 'sensu::agent', :type => :class do
             |---
             |backend-url:
             |- #{backend}
+            |password: P@ssw0rd!
             |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
           END
 

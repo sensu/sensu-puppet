@@ -118,6 +118,7 @@ class sensu::agent (
     'annotations'   => $annotations,
     'labels'        => $labels,
     'namespace'     => $namespace,
+    'password'      => $::sensu::agent_password,
   })
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
