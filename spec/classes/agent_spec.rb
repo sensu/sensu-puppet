@@ -176,6 +176,67 @@ describe 'sensu::agent', :type => :class do
         it { should contain_service('sensu-agent').without_notify }
       end
 
+      context 'with agent configs defined' do
+        let(:params) do
+          {
+            entity_name: 'hostname',
+            subscriptions: ['linux','base'],
+            annotations: { 'foo' => 'bar' },
+            labels: { 'bar' => 'baz' },
+            namespace: 'qa',
+          }
+        end
+
+        agent_content = <<-END.gsub(/^\s+\|/, '')
+          |---
+          |backend-url:
+          |- wss://localhost:8081
+          |name: hostname
+          |subscriptions:
+          |- linux
+          |- base
+          |annotations:
+          |  foo: bar
+          |labels:
+          |  bar: baz
+          |namespace: qa
+          |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
+        END
+        it { should contain_file('sensu_agent_config').with_content(agent_content) }
+      end
+
+      context 'with agent configs defined and config_hash' do
+        let(:params) do
+          {
+            entity_name: 'hostname',
+            subscriptions: ['linux','base'],
+            annotations: { 'foo' => 'bar' },
+            labels: { 'bar' => 'baz' },
+            namespace: 'qa',
+            config_hash: {
+              'subscriptions' => ['windows'],
+              'namespace' => 'default',
+            }
+          }
+        end
+
+        agent_content = <<-END.gsub(/^\s+\|/, '')
+          |---
+          |backend-url:
+          |- wss://localhost:8081
+          |name: hostname
+          |subscriptions:
+          |- windows
+          |annotations:
+          |  foo: bar
+          |labels:
+          |  bar: baz
+          |namespace: default
+          |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
+        END
+        it { should contain_file('sensu_agent_config').with_content(agent_content) }
+      end
+
       context 'with show_diff => false' do
         let(:params) {{ :show_diff => false }}
         it { should contain_file('sensu_agent_config').with_show_diff('false') }

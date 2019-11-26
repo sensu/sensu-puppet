@@ -4,9 +4,10 @@
 #
 # @example
 #   class { 'sensu::agent':
-#     backends    => ['sensu-backend.example.com:8081'],
-#     config_hash => {
-#       'subscriptions => ['linux', 'apache-servers'],
+#     backends      => ['sensu-backend.example.com:8081'],
+#     subscriptions => ['linux', 'apache-servers'],
+#     config_hash   => {
+#       'log-level' => 'info',
 #     },
 #   }
 #
@@ -41,6 +42,21 @@
 #   The protocol prefix of `ws://` or `wss://` are optional and will be determined
 #   based on `sensu::use_ssl` parameter by default.
 #   Passing `backend-url` as part of `config_hash` takes precedence.
+# @param entity_name
+#   The value for agent.yml `name`.
+#   Passing `name` as part of `config_hash` takes precedence
+# @param subscriptions
+#   The agent subscriptions to define in agent.yml
+#   Passing `subscriptions` as part of `config_hash` takes precedence
+# @param annotations
+#   The agent annotations value for agent.yml
+#   Passing `annotations` as part of `config_hash` takes precedence
+# @param labels
+#   The agent labels value for agent.yml
+#   Passing `labels` as part of `config_hash` takes precedence
+# @param namespace
+#   The agent namespace
+#   Passing `namespace` as part of `config_hash` takes precedence
 # @param show_diff
 #   Sets show_diff parameter for agent.yml configuration file
 # @param log_file
@@ -59,6 +75,11 @@ class sensu::agent (
   Boolean $service_enable = true,
   Hash $config_hash = {},
   Array[Sensu::Backend_URL] $backends = ['localhost:8081'],
+  Optional[String] $entity_name = undef,
+  Optional[Array] $subscriptions = undef,
+  Optional[Hash] $annotations = undef,
+  Optional[Hash] $labels = undef,
+  Optional[String] $namespace = undef,
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
 ) {
@@ -88,9 +109,14 @@ class sensu::agent (
       "${backend_protocol}://${backend}"
     }
   }
-  $default_config = {
-    'backend-url' => $backend_urls,
-  }
+  $default_config = delete_undef_values({
+    'backend-url'   => $backend_urls,
+    'name'          => $entity_name,
+    'subscriptions' => $subscriptions,
+    'annotations'   => $annotations,
+    'labels'        => $labels,
+    'namespace'     => $namespace,
+  })
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
