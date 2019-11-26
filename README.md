@@ -23,6 +23,7 @@
     * [Resource purging](#resource-purging)
     * [Sensu backend cluster](#sensu-backend-cluster)
         * [Adding backend members to an existing cluster](#adding-backend-members-to-an-existing-cluster)
+    * [Sensu backend federation](#sensu-backend-federation)
     * [Large Environment Considerations](#large-environment-considerations)
     * [Composite Names for Namespaces](#composite-names-for-namespaces)
     * [Installing Bonsai Assets](#installing-bonsai-assets)
@@ -126,6 +127,25 @@ Multiple Vagrant boxes are available for testing a sensu-backend cluster.
 ```bash
 vagrant up sensu-backend-peer1 sensu-backend-peer2
 vagrant provision sensu-backend-peer1 sensu-backend-peer2
+```
+
+#### Beginning with a Sensu federated cluster
+
+Multiple Vagrant boxes are available for testing a Sensu Go federated cluster.
+First build and provision both then provision the first a second time to view that the custom role was replicated.
+
+```base
+vagrant up sensu-backend-federated1 sensu-backend-federated2
+vagrant provision sensu-backend-federated1
+```
+
+The `provision` command should output from `sensuctl` the `test` Sensu Go Role that was created on the other backend.
+The output should look like the following:
+
+```
+    sensu-backend-federated1:   Name   Namespace   Rules  
+    sensu-backend-federated1:  ────── ─────────── ─────── 
+    sensu-backend-federated1:   test   default         1  
 ```
 
 ## Usage
@@ -575,6 +595,45 @@ sensu::backend::config_hash:
 ```
 
 The first step will not fully add the node to the cluster until the second step is performed.
+
+### Sensu backend federation
+
+Currently the federation support within this module involves configuring Etcd replicators. This allows resources to be sent from one Sensu cluster to another cluster.
+
+It's necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
+
+First configure backend Etcd to listen on an interface besides localhost and also use SSL:
+
+```puppet
+class { '::sensu::backend':
+  config_hash => {
+    'etcd-listen-client-urls' => "https://0.0.0.0:2379",
+    'etcd-advertise-client-urls' => "https://0.0.0.0:2379",
+    'etcd-cert-file' => "/etc/sensu/etcd-ssl/${facts['fqdn'].pem",
+    'etcd-key-file' => "/etc/sensu/etcd-ssl/${facts['fqdn']}-key.pem",
+    'etcd-trusted-ca-file' => "/etc/sensu/etcd-ssl/ca.pem",
+    'etcd-client-cert-auth' => true,
+  },
+}
+```
+
+Next configure the Etcd replicator on the backend you wish to push resources from.
+In the following example all defined `Role` resources will be replicated to the backend at the IP address 192.168.52.30.
+
+```puppet
+sensu_etcd_replicator { 'role_replicator':
+  ensure        => 'present',
+  ca_cert       => '/etc/sensu/etcd-ssl/ca.pem',
+  cert          => '/etc/sensu/etcd-ssl/client.pem',
+  key           => '/etc/sensu/etcd-ssl/client-key.pem',
+  url           => 'https://192.168.52.30:2379',
+  resource_name => 'Role',
+}
+sensu_role { 'test':
+  ensure => 'present',
+  rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
 
 ### Large Environment Considerations
 

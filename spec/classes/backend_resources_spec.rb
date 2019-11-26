@@ -150,6 +150,28 @@ describe 'sensu::backend::resources', :type => :class do
         it { should compile.with_all_deps }
         it { should contain_sensu_entity('test') }
       end
+      context 'etcd_replicators defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::sensu::backend':
+            etcd_replicators => {
+              'role_replicator' => {
+                'ca_cert'                      => '/path/to/ssl/trusted-certificate-authorities.pem',
+                'cert'                         => '/path/to/ssl/cert.pem',
+                'key'                          => '/path/to/ssl/key.pem',
+                'insecure'                     => false,
+                'url'                          => 'http://127.0.0.1:3379',
+                'api_version'                  => 'core/v2',
+                'resource_name'                => 'Role',
+                'replication_interval_seconds' => 30,
+              }
+            }
+          }
+          EOS
+        end
+        it { should compile.with_all_deps }
+        it { should contain_sensu_etcd_replicator('role_replicator') }
+      end
       context 'events defined' do
         let(:pre_condition) do
           <<-EOS

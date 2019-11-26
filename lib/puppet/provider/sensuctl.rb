@@ -167,4 +167,3 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.valid_json?(json)
   end
 end
-

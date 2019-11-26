@@ -73,6 +73,31 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_backend"
   end
 
+  config.vm.define "sensu-backend-federated1", autostart: false  do |backend|
+    backend.vm.box = "centos/7"
+    backend.vm.hostname = 'sensu-backend-peer1.example.com'
+    backend.vm.network :private_network, ip: '192.168.52.30'
+    backend.vm.network :forwarded_port, guest: 2380, host: 2383, auto_correct: true
+    backend.vm.network :forwarded_port, guest: 3000, host: 3003, auto_correct: true
+    backend.vm.network :forwarded_port, guest: 8080, host: 8084, auto_correct: true
+    backend.vm.network :forwarded_port, guest: 8081, host: 8086, auto_correct: true
+    backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
+    backend.vm.provision :shell, :inline => "sensuctl role list"
+  end
+
+  config.vm.define "sensu-backend-federated2", autostart: false do |backend|
+    backend.vm.box = "centos/7"
+    backend.vm.hostname = 'sensu-backend-peer2.example.com'
+    backend.vm.network :private_network, ip: '192.168.52.31'
+    backend.vm.network :forwarded_port, guest: 2380, host: 2384, auto_correct: true
+    backend.vm.network :forwarded_port, guest: 3000, host: 3004, auto_correct: true
+    backend.vm.network :forwarded_port, guest: 8080, host: 8085, auto_correct: true
+    backend.vm.network :forwarded_port, guest: 8081, host: 8086, auto_correct: true
+    backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
+  end
+
   config.vm.define "el7-agent", autostart: true do |agent|
     agent.vm.box = "centos/7"
     agent.vm.hostname = 'el7-agent.example.com'

@@ -48,6 +48,11 @@ class sensu::backend::resources {
       * => $entity,
     }
   }
+  $::sensu::backend::etcd_replicators.each |$name, $etcd_replicator| {
+    sensu_etcd_replicator { $name:
+      * => $etcd_replicator,
+    }
+  }
   $::sensu::backend::events.each |$name, $event| {
     sensu_event { $name:
       * => $event,
