@@ -35,6 +35,7 @@ _Private Classes_
 * [`sensu_config`](#sensu_config): Manages Sensu configs
 * [`sensu_configure`](#sensu_configure): Manages `sensuctl configure`. This is a private type not intended to be used directly.
 * [`sensu_entity`](#sensu_entity): Manages Sensu entities
+* [`sensu_etcd_replicator`](#sensu_etcd_replicator): Manages Sensu etcd replicators
 * [`sensu_event`](#sensu_event): Manages Sensu events
 * [`sensu_filter`](#sensu_filter): Manages Sensu filters
 * [`sensu_handler`](#sensu_handler): Manages Sensu handlers
@@ -44,6 +45,7 @@ _Private Classes_
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
 * [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth. Requires valid enterprise license.
 * [`sensu_plugin`](#sensu_plugin): Manages Sensu plugins
+* [`sensu_postgres_config`](#sensu_postgres_config): Manages Sensu postgres config
 * [`sensu_resources`](#sensu_resources): Metatype for sensu resources
 * [`sensu_role`](#sensu_role): Manages Sensu roles
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
@@ -544,7 +546,15 @@ Default value: {}
 
 Data type: `Hash`
 
-Hash of sensu_entitie resources
+Hash of sensu_entity resources
+
+Default value: {}
+
+##### `etcd_replicators`
+
+Data type: `Hash`
+
+Hash of sensu_etcd_replicator resources
 
 Default value: {}
 
@@ -996,7 +1006,7 @@ Default value: `false`
 
 URL to use for testing if the Sensu backend is up
 
-Default value: /health
+Default value: /version
 
 ##### `timeout`
 
@@ -1812,6 +1822,100 @@ An example composite name to define resource named `test` in namespace `dev`: `t
 
 The name of the entity.
 
+### sensu_etcd_replicator
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Examples
+
+##### Create an Etcd Replicator
+
+```puppet
+sensu_etcd_replicator { 'role_replicator':
+  ensure                       => 'present',
+  ca_cert                      => '/path/to/ssl/trusted-certificate-authorities.pem',
+  cert                         => '/path/to/ssl/cert.pem',
+  key                          => '/path/to/ssl/key.pem',
+  insecure                     => false,
+  url                          => 'http://127.0.0.1:2379',
+  api_version                  => 'core/v2',
+  resource_name                => 'Role',
+  replication_interval_seconds => 30,
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_etcd_replicator` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `ca_cert`
+
+Path to an the PEM-format CA certificate to use for TLS client authentication.
+
+##### `cert`
+
+Path to the PEM-format certificate to use for TLS client authentication.
+
+##### `key`
+
+Path to the PEM-format key file associated with the cert to use for TLS client authentication.
+
+##### `insecure`
+
+Valid values: `true`, `false`
+
+true to disable transport security.
+
+Default value: false
+
+##### `url`
+
+Destination cluster URL. If specifying more than one, use a comma to separate.
+
+##### `api_version`
+
+Sensu API version of the resource to replicate
+
+Default value: core/v2
+
+##### `resource_name`
+
+Name of the resource to replicate
+
+##### `namespace`
+
+Namespace to constrain replication to. If you do not include namespace, all namespaces for a given resource are replicated.
+
+##### `replication_interval_seconds`
+
+Valid values: /^[0-9]+$/, absent
+
+The interval at which the resource will be replicated
+
+Default value: 30
+
+#### Parameters
+
+The following parameters are available in the `sensu_etcd_replicator` type.
+
+##### `name`
+
+namevar
+
+The name of the Etcd Replicator.
+
 ### sensu_event
 
 **Autorequires**:
@@ -2604,6 +2708,58 @@ Default value: `true`
 ##### `proxy`
 
 Install Sensu plugins and extensions via a PROXY URL
+
+### sensu_postgres_config
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Examples
+
+##### Create an PostgreSQL datastore
+
+```puppet
+sensu_postgres_config { 'puppet':
+  ensure    => 'present',
+  dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu',
+  pool_size => 20,
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_postgres_config` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `dsn`
+
+Use the dsn attribute to specify the data source names as a URL or PostgreSQL connection string
+
+##### `pool_size`
+
+Valid values: /^[0-9]+$/
+
+The maximum number of connections to hold in the PostgreSQL connection pool
+
+#### Parameters
+
+The following parameters are available in the `sensu_postgres_config` type.
+
+##### `name`
+
+namevar
+
+The name of the postgres config
 
 ### sensu_resources
 

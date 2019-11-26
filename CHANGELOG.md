@@ -1,6 +1,22 @@
 # Changelog
 
-## [v3.12.0](https://github.com/sensu/sensu-puppet/tree/v3.12.0) (2019-11-24)
+## [v3.13.0](https://github.com/sensu/sensu-puppet/tree/v3.13.0) (2019-11-26)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.12.0...v3.13.0)
+
+### Added
+
+- Updates to travis-ci [\#1186](https://github.com/sensu/sensu-puppet/pull/1186) ([treydock](https://github.com/treydock))
+- Support PDK [\#1184](https://github.com/sensu/sensu-puppet/pull/1184) ([treydock](https://github.com/treydock))
+- Update default resources to match Sensu Go defaults [\#1181](https://github.com/sensu/sensu-puppet/pull/1181) ([treydock](https://github.com/treydock))
+- Move PostgresConfig to a type [\#1176](https://github.com/sensu/sensu-puppet/pull/1176) ([treydock](https://github.com/treydock))
+- Add support for Sensu etcd replicator [\#1175](https://github.com/sensu/sensu-puppet/pull/1175) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Only execute future release Rake function when generating changelog or release [\#1179](https://github.com/sensu/sensu-puppet/pull/1179) ([treydock](https://github.com/treydock))
+
+## [v3.12.0](https://github.com/sensu/sensu-puppet/tree/v3.12.0) (2019-11-25)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.11.0...v3.12.0)
 
