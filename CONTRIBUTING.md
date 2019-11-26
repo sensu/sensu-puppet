@@ -40,7 +40,7 @@ The `master` branch is for development against Sensu Go v5.
 # Release process
 
 1. Update version in `metadata.json`
-1. Run Rake task to release module: `bundle exec rake release`
+1. Run Rake task to release module: `pdk bundle exec rake release`
 1. Tag the release, such as `git tag -a 'v3.11.0' -m 'v3.11.0'`
 1. Push release to upstream master: `git push upstream master`
 1. Push tags upstream master: `git push upstream --tags`
