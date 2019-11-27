@@ -26,13 +26,16 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.config_path
   end
 
-  def load_config(path = nil)
+  def self.sensuctl_config(path = nil)
     path ||= config_path
     return {} unless File.file?(path)
     file = File.read(path)
     config = JSON.parse(file)
     Puppet.debug("CONFIG: #{config}")
     config
+  end
+  def sensuctl_config(*args)
+    self.class.sensuctl_config(*args)
   end
 
   def self.save_config(config, path = nil)
@@ -53,7 +56,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.type_properties
   end
 
-  def convert_boolean_property_value(value)
+  def self.convert_boolean_property_value(value)
     case value
     when :true
       true
@@ -62,6 +65,9 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     else
       value
     end
+  end
+  def convert_boolean_property_value(value)
+    self.class.convert_boolean_property_value(value)
   end
 
   def self.sensuctl(args)
@@ -188,9 +194,10 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   end
 
   def self.valid_json?(json)
+    return false if json.nil?
     JSON.parse(json)
     return true
-  rescue JSON::ParseError => e
+  rescue JSON::ParserError => e
     return false
   end
   def valid_json?(json)

@@ -128,6 +128,7 @@ class sensu (
   } else {
     $api_protocol = 'http'
   }
+  $api_url = "${api_protocol}://${api_host}:${api_port}"
 
   if $manage_user and $sensu_user {
     user { 'sensu':

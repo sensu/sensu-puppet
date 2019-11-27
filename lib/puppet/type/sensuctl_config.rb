@@ -6,6 +6,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 Puppet::Type.newtype(:sensuctl_config) do
   desc <<-DESC
 @summary Abstract type to configure other types
+@api private
 DESC
 
   newparam(:name, :namevar => true) do

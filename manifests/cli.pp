@@ -43,9 +43,7 @@ class sensu::cli (
   $ssl_dir = $sensu::ssl_dir
   $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
-  $api_host = $sensu::api_host
-  $api_port = $sensu::api_port
-  $api_protocol = $sensu::api_protocol
+  $api_url = $sensu::api_url
   $password = $sensu::password
 
   if $use_ssl {
@@ -56,8 +54,6 @@ class sensu::cli (
   } else {
     $trusted_ca_file = 'absent'
   }
-
-  $api_url = "${api_protocol}://${api_host}:${api_port}"
 
   if $facts['os']['family'] == 'windows' {
     if ! $install_source {

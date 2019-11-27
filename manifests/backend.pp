@@ -160,6 +160,7 @@ class sensu::backend (
 
   include sensu
   include sensu::cli
+  include sensu::api
   include sensu::backend::resources
   if $manage_tessen {
     include sensu::backend::tessen
