@@ -162,9 +162,6 @@ class sensu::backend (
   include sensu::cli
   include sensu::api
   include sensu::backend::resources
-  if $manage_tessen {
-    include sensu::backend::tessen
-  }
   if $datastore == 'postgresql' {
     include sensu::backend::datastore::postgresql
   }
@@ -238,6 +235,10 @@ class sensu::backend (
     password     => $sensu::agent_password,
     old_password => $sensu::agent_old_password,
     groups       => ['system:agents'],
+  }
+
+  if $manage_tessen {
+    sensu_tessen { 'puppet': ensure => $tessen_ensure }
   }
 
   if $license_source or $license_content {
