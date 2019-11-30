@@ -59,8 +59,6 @@
 #   Hash of sensu_cluster_role_binding resources
 # @param cluster_roles
 #   Hash of sensu_cluster_role resources
-# @param configs
-#   Hash of sensu_config resources
 # @param entities
 #   Hash of sensu_entity resources
 # @param etcd_replicators
@@ -132,7 +130,6 @@ class sensu::backend (
   Hash $cluster_members = {},
   Hash $cluster_role_bindings = {},
   Hash $cluster_roles = {},
-  Hash $configs = {},
   Hash $entities = {},
   Hash $etcd_replicators = {},
   Hash $filters = {},
@@ -195,7 +192,7 @@ class sensu::backend (
       'trusted-ca-file' => $trusted_ca_file,
     }
     $service_subscribe = Class['::sensu::ssl']
-    Class['::sensu::ssl'] -> Sensu_configure['puppet']
+    Class['::sensu::ssl'] -> Sensuctl_configure['puppet']
   } else {
     $trusted_ca_file = 'absent'
     $ssl_config = {}
@@ -259,7 +256,7 @@ class sensu::backend (
       path        => '/usr/bin:/bin:/usr/sbin:/sbin',
       command     => "sensuctl create --file ${etc_dir}/license.json",
       refreshonly => true,
-      require     => Sensu_configure['puppet'],
+      require     => Sensuctl_configure['puppet'],
     }
   }
 

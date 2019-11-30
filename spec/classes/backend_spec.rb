@@ -16,7 +16,7 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu') }
         it { should contain_class('sensu::cli') }
         it { should_not contain_class('sensu::agent') }
-        it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
+        it { should contain_class('sensu::ssl').that_comes_before('Sensuctl_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
         it { should contain_class('sensu::backend::tessen') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
@@ -255,7 +255,7 @@ describe 'sensu::backend', :type => :class do
             'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
             'command'     => 'sensuctl create --file /etc/sensu/license.json',
             'refreshonly' => 'true',
-            'require'     => 'Sensu_configure[puppet]',
+            'require'     => 'Sensuctl_configure[puppet]',
           })
         }
       end
@@ -281,7 +281,7 @@ describe 'sensu::backend', :type => :class do
             'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
             'command'     => 'sensuctl create --file /etc/sensu/license.json',
             'refreshonly' => 'true',
-            'require'     => 'Sensu_configure[puppet]',
+            'require'     => 'Sensuctl_configure[puppet]',
           })
         }
       end

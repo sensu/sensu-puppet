@@ -19,7 +19,7 @@ describe 'sensu::backend::tessen', :type => :class do
             :path => '/usr/bin:/bin:/usr/sbin:/sbin',
             :onlyif   => "sensuctl tessen info --format json | grep 'opt_out' | grep -q true",
             :require  => [
-              'Sensu_configure[puppet]',
+              'Sensuctl_configure[puppet]',
               'Sensu_user[admin]',
             ]
           })
@@ -39,7 +39,7 @@ describe 'sensu::backend::tessen', :type => :class do
             :path => '/usr/bin:/bin:/usr/sbin:/sbin',
             :onlyif   => "sensuctl tessen info --format json | grep 'opt_out' | grep -q false",
             :require  => [
-              'Sensu_configure[puppet]',
+              'Sensuctl_configure[puppet]',
               'Sensu_user[admin]',
             ]
           })

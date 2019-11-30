@@ -22,6 +22,10 @@
 #   Determines if sensuctl should be configured
 # @param sensuctl_chunk_size
 #   Chunk size to use when listing sensuctl resources
+# @param config_format
+#   Default format for sensuctl
+# @param config_namespace
+#   Default namespace for sensuctl
 #
 class sensu::cli (
   Optional[String] $version = undef,
@@ -30,6 +34,8 @@ class sensu::cli (
   Optional[Stdlib::Absolutepath] $install_path = undef,
   Boolean $configure = true,
   Optional[Integer] $sensuctl_chunk_size = undef,
+  Optional[Enum['tabular','json','wrapped-json','yaml']] $config_format = undef,
+  Optional[String] $config_namespace = undef,
 ) {
 
   include ::sensu
@@ -45,7 +51,7 @@ class sensu::cli (
   if $use_ssl {
     $trusted_ca_file = $::sensu::trusted_ca_file_path
     if $configure {
-      Class['::sensu::ssl'] -> Sensu_configure['puppet']
+      Class['::sensu::ssl'] -> Sensuctl_configure['puppet']
     }
   } else {
     $trusted_ca_file = 'absent'
@@ -92,12 +98,14 @@ class sensu::cli (
       path       => $sensuctl_path,
     }
 
-    sensu_configure { 'puppet':
-      url             => $api_url,
-      username        => 'admin',
-      password        => $password,
-      old_password    => $::sensu::old_password,
-      trusted_ca_file => $trusted_ca_file,
+    sensuctl_configure { 'puppet':
+      url              => $api_url,
+      username         => 'admin',
+      password         => $password,
+      old_password     => $::sensu::old_password,
+      trusted_ca_file  => $trusted_ca_file,
+      config_format    => $config_format,
+      config_namespace => $config_namespace,
     }
   }
 }

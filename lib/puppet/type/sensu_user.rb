@@ -24,7 +24,7 @@ Puppet::Type.newtype(:sensu_user) do
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Sensu_configure[puppet]`
+* `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 DESC
 

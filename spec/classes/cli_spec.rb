@@ -23,7 +23,7 @@ describe 'sensu::cli', :type => :class do
         # https://github.com/rodjek/rspec-puppet/issues/750
         if facts[:os]['family'] != 'windows'
           it { should compile.with_all_deps }
-          it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
+          it { should contain_class('sensu::ssl').that_comes_before('Sensuctl_configure[puppet]') }
         end
 
         it { should create_class('sensu::cli') }
@@ -67,11 +67,13 @@ describe 'sensu::cli', :type => :class do
         it { should contain_sensuctl_config('sensu').without_chunk_size }
 
         it {
-          should contain_sensu_configure('puppet').with({
+          should contain_sensuctl_configure('puppet').with({
             'url'                 => 'https://test.example.com:8080',
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
             'trusted_ca_file'     => platforms[facts[:osfamily]][:ca_path],
+            'config_format'       => nil,
+            'config_namespace'    => nil,
           })
         }
 
@@ -107,11 +109,13 @@ describe 'sensu::cli', :type => :class do
           it { should compile.with_all_deps }
         end
         it {
-          should contain_sensu_configure('puppet').with({
+          should contain_sensuctl_configure('puppet').with({
             'url'                 => 'http://test.example.com:8080',
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
             'trusted_ca_file'     => 'absent',
+            'config_format'       => nil,
+            'config_namespace'    => nil,
           })
         }
       end

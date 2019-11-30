@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'puppet/type/sensu_configure'
+require 'puppet/type/sensuctl_configure'
 
-describe Puppet::Type.type(:sensu_configure) do
+describe Puppet::Type.type(:sensuctl_configure) do
   let(:default_config) do
     {
       name: 'puppet',
@@ -40,6 +40,7 @@ describe Puppet::Type.type(:sensu_configure) do
     :password,
     :url,
     :trusted_ca_file,
+    :config_namespace,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -126,6 +127,20 @@ describe Puppet::Type.type(:sensu_configure) do
     it "should not accept invalid #{property}" do
       configure[property] = 'foo'
       expect { configure }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+  end
+
+  describe 'config_format' do
+    it 'should not have default' do
+      expect(configure[:config_format]).to be_nil
+    end
+    it 'should accept a valid value' do
+      config[:config_format] = 'json'
+      expect(configure[:config_format]).to eq('json')
+    end
+    it 'should not accept invalid value' do
+      config[:config_format] = 'foo'
+      expect { configure }.to raise_error(Puppet::Error, /Valid values are/)
     end
   end
 

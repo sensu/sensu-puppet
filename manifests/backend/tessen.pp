@@ -16,7 +16,7 @@ class sensu::backend::tessen {
     path    => '/usr/bin:/bin:/usr/sbin:/sbin',
     onlyif  => "sensuctl tessen info --format json | grep 'opt_out' | grep -q ${match}",
     require => [
-      Sensu_configure['puppet'],
+      Sensuctl_configure['puppet'],
       Sensu_user['admin'],
     ],
   }

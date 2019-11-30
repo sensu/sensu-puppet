@@ -28,7 +28,7 @@ Puppet::Type.newtype(:sensu_cluster_role_binding) do
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Sensu_configure[puppet]`
+* `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_cluster_role` - Puppet will autorequire `sensu_cluster_role` resource defined in `role_ref` property.
 * `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.

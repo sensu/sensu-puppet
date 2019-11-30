@@ -1,8 +1,8 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
 
-Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_configure using sensuctl"
+Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensuctl_configure using sensuctl"
 
   def exists?
     File.file?(config_path)
@@ -10,6 +10,7 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
 
   def initialize(value = {})
     super(value)
+    @config = nil
     @property_flush = {}
   end
 
@@ -42,6 +43,27 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
   # The default Sensu Go admin password
   def bootstrap_password
     'P@ssw0rd!'
+  end
+
+  def config
+    return @config unless @config.nil?
+    output = sensuctl(['config', 'view', '--format', 'json'])
+    @config = JSON.parse(output)
+    @config
+  end
+
+  def config_format
+    config['format']
+  end
+  def config_format=(value)
+    @property_flush[:config_format] = value
+  end
+
+  def config_namespace
+    config['namespace']
+  end
+  def config_namespace=(value)
+    @property_flush[:config_namespace] = value
   end
 
   def configure_cmd()
@@ -78,6 +100,8 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
   def create
     begin
       output = configure_cmd()
+      sensuctl(['config','set-format',resource[:config_format]]) if resource[:config_format]
+      sensuctl(['config','set-namespace',resource[:config_namespace]]) if resource[:config_namespace]
     rescue Puppet::ExecutionFailure => e
       File.delete(config_path) if File.exist?(config_path)
       raise Puppet::Error, "sensuctl configure failed\nOutput: #{output}\nError message: #{e.message}"
@@ -96,6 +120,8 @@ Puppet::Type.type(:sensu_configure).provide(:sensuctl, :parent => Puppet::Provid
           save_config(config)
         end
         configure_cmd()
+        sensuctl(['config','set-format',@property_flush[:config_format]]) if @property_flush[:config_format]
+        sensuctl(['config','set-namespace',@property_flush[:config_namespace]]) if @property_flush[:config_namespace]
       rescue Exception => e
         raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"
       end

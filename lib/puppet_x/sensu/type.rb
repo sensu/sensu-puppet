@@ -16,7 +16,7 @@ module PuppetX
         end
 
         if require_configure
-          autorequire(:sensu_configure) do
+          autorequire(:sensuctl_configure) do
             ['puppet']
           end
         end

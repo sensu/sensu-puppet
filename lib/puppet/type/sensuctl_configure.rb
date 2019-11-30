@@ -3,9 +3,10 @@ require_relative '../../puppet_x/sensu/array_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
 
-Puppet::Type.newtype(:sensu_configure) do
+Puppet::Type.newtype(:sensuctl_configure) do
   desc <<-DESC
 @summary Manages `sensuctl configure`. This is a private type not intended to be used directly.
+@api private
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -43,6 +44,18 @@ DESC
   newproperty(:trusted_ca_file) do
     desc "Path to trusted CA"
     defaultto('/etc/sensu/ssl/ca.crt')
+  end
+
+  newproperty(:config_format) do
+    desc "Set configured format for sensuctl"
+    newvalues('tabular','json','wrapped-json','yaml')
+    munge do |value|
+      value.to_s
+    end
+  end
+
+  newproperty(:config_namespace) do
+    desc "Set configured namespace for sensuctl"
   end
 
   autorequire(:file) do

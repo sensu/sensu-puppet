@@ -71,7 +71,7 @@ add_custom_fact :puppet_localcacert, ->(os, facts) {
 # Used in sensuctl_config tests
 def sensuctl_types
   types = []
-  Dir[File.join(File.dirname(__FILE__), '..', 'lib/puppet/provider') + '/*/sensuctl.rb'].each do |f|
+  Dir[File.join(File.dirname(__FILE__), '..', 'lib/puppet/provider') + '/sensu_*/sensuctl.rb'].each do |f|
     type = File.basename(File.dirname(f))
     types << type.to_sym
   end
