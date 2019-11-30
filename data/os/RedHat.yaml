@@ -1,4 +1,6 @@
 ---
+sensu::agent::service_env_vars_file: /etc/sysconfig/sensu-agent
+sensu::backend::service_env_vars_file: /etc/sysconfig/sensu-backend
 sensu::plugins::dependencies:
   - make
   - gcc

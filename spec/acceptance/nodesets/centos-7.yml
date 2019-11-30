@@ -11,7 +11,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
-      - 'yum install -y wget which'
+      - 'yum install -y wget which iproute'
     docker_container_name: 'sensu-agent-el7'
   sensu_backend:
     roles:
@@ -27,7 +27,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
-      - 'yum install -y wget which initscripts'
+      - 'yum install -y wget which initscripts iproute'
     docker_container_name: 'sensu-backend-el7'
 CONFIG:
   log_level: debug

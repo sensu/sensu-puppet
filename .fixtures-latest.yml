@@ -26,5 +26,7 @@ fixtures:
       repo: git://github.com/puppetlabs/puppetlabs-postgresql.git
     archive:
       repo: git://github.com/voxpupuli/puppet-archive.git
+    windows_env:
+      repo: git://github.com/voxpupuli/puppet-windows_env.git
   symlinks:
     sensu: "#{source_dir}"

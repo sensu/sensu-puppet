@@ -64,6 +64,30 @@ describe 'sensu::agent', :type => :class do
           })
         }
 
+        let(:service_env_vars_content) do
+          <<-END.gsub(/^\s+\|/, '')
+            |# This file is being maintained by Puppet.
+            |# DO NOT EDIT
+          END
+        end
+
+        if platforms[facts[:osfamily]][:agent_service_env_vars_file]
+          it {
+            should contain_file('sensu-agent_env_vars').with({
+              'ensure'  => 'file',
+              'path'    => platforms[facts[:osfamily]][:agent_service_env_vars_file],
+              'content' => service_env_vars_content,
+              'owner'   => platforms[facts[:osfamily]][:user],
+              'group'   => platforms[facts[:osfamily]][:group],
+              'mode'    => platforms[facts[:osfamily]][:agent_config_mode],
+              'require' => 'Package[sensu-go-agent]',
+              'notify'  => 'Service[sensu-agent]',
+            })
+          }
+        else
+          it { should_not contain_file('sensu-agent_env_vars') }
+        end
+
         it {
           should contain_service('sensu-agent').with({
             'ensure'    => 'running',
@@ -168,6 +192,33 @@ describe 'sensu::agent', :type => :class do
           it { should compile.with_all_deps }
         end
         it { should contain_package('sensu-go-agent').without_require }
+      end
+
+      context 'with service_env_vars defined' do
+        let(:params) {{ :service_env_vars => { 'SENSU_API_PORT' => '4041' } }}
+        let(:service_env_vars_content) do
+          <<-END.gsub(/^\s+\|/, '')
+            |# This file is being maintained by Puppet.
+            |# DO NOT EDIT
+            |SENSU_API_PORT="4041"
+          END
+        end
+
+        if platforms[facts[:osfamily]][:agent_service_env_vars_file]
+          it { should contain_file('sensu-agent_env_vars').with_content(service_env_vars_content) }
+        end
+        if facts[:os]['family'] == 'windows'
+          it {
+            should contain_windows_env('SENSU_API_PORT').with({
+              :ensure     => 'present',
+              :value      => '4041',
+              :mergemode  => 'clobber',
+              :notify     => 'Service[sensu-agent]',
+            })
+          }
+        else
+          it { should_not contain_windows_env('sensu_api_host') }
+        end
       end
 
       # Test various backend values

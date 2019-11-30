@@ -36,5 +36,8 @@ fixtures:
     archive:
       repo: git://github.com/voxpupuli/puppet-archive.git
       ref: 'v3.0.0'
+    windows_env:
+      repo: git://github.com/voxpupuli/puppet-windows_env.git
+      ref: 'v3.0.0'
   symlinks:
     sensu: "#{source_dir}"

@@ -98,6 +98,8 @@ def platforms
       ca_mode: '0644',
       agent_service_name: 'sensu-agent',
       log_file: nil,
+      agent_service_env_vars_file: '/etc/default/sensu-agent',
+      backend_service_env_vars_file: '/etc/default/sensu-backend',
     },
     'RedHat' => {
       :package_require => ['Class[Sensu::Repo]'],
@@ -117,6 +119,8 @@ def platforms
       ca_mode: '0644',
       agent_service_name: 'sensu-agent',
       log_file: nil,
+      agent_service_env_vars_file: '/etc/sysconfig/sensu-agent',
+      backend_service_env_vars_file: '/etc/sysconfig/sensu-backend',
     },
     'windows' => {
       agent_package_name: 'sensu-agent',
@@ -134,6 +138,8 @@ def platforms
       plugins_dependencies: [],
       agent_service_name: 'SensuAgent',
       log_file: 'C:\ProgramData\sensu\log\sensu-agent.log',
+      agent_service_env_vars_file: nil,
+      backend_service_env_vars_file: nil,
     }
   }
 end
