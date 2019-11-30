@@ -538,12 +538,12 @@ The backend system would collect all `sensu_check` resources.
 
 ### Hiera resources
 
-All the types provided by this module can have their resources defined via Hiera. A type such as `sensu_check` would be defined via `sensu::backend::checks`.
+All the types provided by this module can have their resources defined via Hiera. A type such as `sensu_check` would be defined via `sensu::resources::checks`.
 
 The following example adds an asset, filter, handler and checks via Hiera:
 
 ```yaml
-sensu::backend::assets:
+sensu::resources::assets:
   sensu-email-handler:
     ensure: present
     url: 'https://github.com/sensu/sensu-email-handler/releases/download/0.1.0/sensu-email-handler_0.1.0_linux_amd64.tar.gz'
@@ -551,13 +551,13 @@ sensu::backend::assets:
     filters:
       - "entity.system.os == 'linux'"
       - "entity.system.arch == 'amd64'"
-sensu::backend::filters:
+sensu::resources::filters:
   hourly:
     ensure: present
     action: allow
     expressions:
       - 'event.check.occurrences == 1 || event.check.occurrences % (3600 / event.check.interval) == 0'
-sensu::backend::handlers:
+sensu::resources::handlers:
   email:
     ensure: present
     type: pipe
@@ -569,7 +569,7 @@ sensu::backend::handlers:
       - is_incident
       - not_silenced
       - hourly
-sensu::backend::checks:
+sensu::resources::checks:
   check-cpu:
     ensure: present
     command: check-cpu.sh -w 75 -c 90

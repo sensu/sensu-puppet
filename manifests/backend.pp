@@ -45,44 +45,6 @@
 #   Boolean that determines if Tessen is managed
 # @param tessen_ensure
 #   Determine if Tessen is opt-in (present) or opt-out (absent)
-# @param ad_auths
-#   Hash of sensu_ad_auth resources
-# @param assets
-#   Hash of sensu_asset resources
-# @param bonsai_assets
-#   Hash of sensu_bonsai_asset resources
-# @param checks
-#   Hash of sensu_check resources
-# @param cluster_members
-#   Hash of sensu_cluster_member resources
-# @param cluster_role_bindings
-#   Hash of sensu_cluster_role_binding resources
-# @param cluster_roles
-#   Hash of sensu_cluster_role resources
-# @param entities
-#   Hash of sensu_entity resources
-# @param etcd_replicators
-#   Hash of sensu_etcd_replicator resources
-# @param filters
-#   Hash of sensu_filter resources
-# @param handlers
-#   Hash of sensu_handler resources
-# @param hooks
-#   Hash of sensu_hook resources
-# @param ldap_auths
-#   Hash of sensu_ldap_auth resources
-# @param mutators
-#   Hash of sensu_mutator resources
-# @param namespaces
-#   Hash of sensu_namespace resources
-# @param oidc_auths
-#   Hash of sensu_oidc_auth resources
-# @param role_bindings
-#   Hash of sensu_role_binding resources
-# @param roles
-#   Hash of sensu_role resources
-# @param users
-#   Hash of sensu_user resources
 # @param datastore
 #   Datastore to configure for sensu events
 # @param datastore_ensure
@@ -123,25 +85,6 @@ class sensu::backend (
   Optional[String] $license_content = undef,
   Boolean $manage_tessen = true,
   Enum['present','absent'] $tessen_ensure = 'present',
-  Hash $ad_auths = {},
-  Hash $assets = {},
-  Hash $bonsai_assets = {},
-  Hash $checks = {},
-  Hash $cluster_members = {},
-  Hash $cluster_role_bindings = {},
-  Hash $cluster_roles = {},
-  Hash $entities = {},
-  Hash $etcd_replicators = {},
-  Hash $filters = {},
-  Hash $handlers = {},
-  Hash $hooks = {},
-  Hash $ldap_auths = {},
-  Hash $mutators = {},
-  Hash $namespaces = {},
-  Hash $oidc_auths = {},
-  Hash $role_bindings = {},
-  Hash $roles = {},
-  Hash $users = {},
   Optional[Enum['postgresql']] $datastore = undef,
   Enum['present','absent'] $datastore_ensure = 'present',
   Boolean $manage_postgresql_db = true,
@@ -161,7 +104,7 @@ class sensu::backend (
   include sensu
   include sensu::cli
   include sensu::api
-  include sensu::backend::resources
+  include sensu::resources
   if $datastore == 'postgresql' {
     include sensu::backend::datastore::postgresql
   }
