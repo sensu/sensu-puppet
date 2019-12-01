@@ -220,6 +220,24 @@ Name of Sensu agent package.
 
 Default value: 'sensu-go-agent'
 
+##### `service_env_vars_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to the agent service ENV variables file.
+Debian based default: `/etc/default/sensu-agent`
+RedHat based default: `/etc/sysconfig/sensu-agent`
+
+Default value: `undef`
+
+##### `service_env_vars`
+
+Data type: `Hash`
+
+Hash of environment variables loaded by sensu-agent service
+
+Default value: {}
+
 ##### `service_name`
 
 Data type: `String`
@@ -322,6 +340,24 @@ Data type: `String`
 Name of Sensu CLI package.
 
 Default value: 'sensu-go-cli'
+
+##### `service_env_vars_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to the backend service ENV variables file.
+Debian based default: `/etc/default/sensu-backend`
+RedHat based default: `/etc/sysconfig/sensu-backend`
+
+Default value: `undef`
+
+##### `service_env_vars`
+
+Data type: `Hash`
+
+Hash of environment variables loaded by sensu-backend service
+
+Default value: {}
 
 ##### `service_name`
 
