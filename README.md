@@ -48,15 +48,19 @@ Please note, that this is a **Partner Supported** module, which means that techn
 ### Compatibility - supported sensu versions
 
 If not explicitly stated it should always support the latest Sensu release.
+Beginning with v4.0.0 this module will only support Sensu Go 5.16+.
 Please log an issue if you identify any incompatibilities.
 
-| Sensu Go Version   | Recommended Puppet Module Version   |
+| Sensu Go Version| Recommended Puppet Module Version   |
 | --------------- | ----------------------------------- |
-| 5.x             | latest v3 |
+| 5.0 - 5.15      | latest v3                           |
+| 5.16+           | latest v4                           |
 
 ### Upgrade note
 
-Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu Go 5.x.
+Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq.
+Version 3 of this module supports Sensu Go 5.0.0 to 5.15.x.
+Version 4 of this module supports Sensu Go 5.16+.
 
 Users wishing to use the old v2 Puppet module to support previous Ruby based Sensu should use [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic).
 
