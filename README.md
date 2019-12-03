@@ -13,6 +13,7 @@
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
     * [Basic Sensu CLI](#basic-sensu-cli)
+    * [API Providers](#api-providers)
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
@@ -267,6 +268,36 @@ class { '::sensu':
 class { 'sensu::cli':
   install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
 }
+```
+
+### API providers
+
+All the core resources have a provider that manages resources using the Sensu Go API.
+The new provider can be used by setting `provider` parameter on a resource to `sensu_api`.
+The default provider is still `sensuctl` but it's possible to change the provider when defining a resource.
+For example the following will create a check which can be defined on an host that's not the `sensu-backend`.
+
+```
+include sensu::api
+sensu_check { "check-cpu-${facts['hostname']}":
+  ensure        => 'present',
+  command       => 'check-cpu.sh -w 75 -c 90',
+  interval      => 60,
+  subscriptions => ["entity:${facts['hostname']}"],
+  provider      => 'sensu_api',
+}
+```
+
+The `sensu::api` class is required in order to configure the credentials and URL used to communicate with the Sensu backend API.
+
+The API URL, username and password used for the API are set in the `sensu` class and can be set easily with Hiera:
+
+```yaml
+sensu::api_host: sensu-backend.example.com
+sensu::api_port: 8080
+sensu::username: admin
+sensu::password: supersecret
+sensu::old_password: 'P@ssw0rd!'
 ```
 
 ### Manage Windows Agent
@@ -906,9 +937,6 @@ facter -p sensuctl
 ```
 
 ## Limitations
-
-The Sensu v2 support is designed so that all resources managed by `sensuctl` are defined on the `sensu-backend` host.
-This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 
