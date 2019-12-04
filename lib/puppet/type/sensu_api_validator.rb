@@ -53,4 +53,7 @@ DESC
     end
   end
 
+  autorequire(:service) do
+    ['sensu-backend']
+  end
 end

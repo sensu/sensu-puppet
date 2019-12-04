@@ -20,15 +20,6 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu::backend::default_resources') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
 
-        it {
-          should contain_sensu_api_validator('sensu').with({
-            'sensu_api_server' => 'test.example.com',
-            'sensu_api_port'   => 8080,
-            'use_ssl'          => 'true',
-            'require'          => 'Service[sensu-backend]',
-          })
-        }
-
         it { should have_sensu_user_resource_count(2) }
         it {
           should contain_sensu_user('admin').with({
@@ -175,15 +166,6 @@ describe 'sensu::backend', :type => :class do
         end
 
         it { should compile.with_all_deps }
-        it {
-          should contain_sensu_api_validator('sensu').with({
-            'sensu_api_server' => 'test.example.com',
-            'sensu_api_port'   => 8080,
-            'use_ssl'          => 'false',
-            'require'          => 'Service[sensu-backend]',
-          })
-        }
-
         it { should_not contain_file('sensu_ssl_cert') }
         it { should_not contain_file('sensu_ssl_key') }
 

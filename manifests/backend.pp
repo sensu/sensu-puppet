@@ -154,13 +154,6 @@ class sensu::backend (
     include sensu::backend::default_resources
   }
 
-  sensu_api_validator { 'sensu':
-    sensu_api_server => $api_host,
-    sensu_api_port   => $api_port,
-    use_ssl          => $use_ssl,
-    require          => Service['sensu-backend'],
-  }
-
   sensu_user { 'admin':
     ensure        => 'present',
     password      => $password,

@@ -25,6 +25,15 @@ describe 'sensu::api', :type => :class do
             'old_password' => nil,
           })
         }
+
+        it {
+          should contain_sensu_api_validator('sensu').with({
+            'sensu_api_server' => 'test.example.com',
+            'sensu_api_port'   => 8080,
+            'use_ssl'          => 'true',
+          })
+        }
+
       end
     end
   end
