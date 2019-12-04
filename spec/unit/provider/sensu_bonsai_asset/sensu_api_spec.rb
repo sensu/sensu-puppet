@@ -40,7 +40,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensu_api) do
 
   describe 'create' do
     it 'should create a bonsai_asset' do
-      expect(resource.provider).to receive(:create_asset).with(nil)
+      expect(resource.provider).to receive(:manage_asset).with(nil, false)
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -49,7 +49,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensu_api) do
 
   describe 'flush' do
     it 'should install latest bonsai asset' do
-      expect(resource.provider).to receive(:create_asset).with('latest')
+      expect(resource.provider).to receive(:manage_asset).with('latest', true)
       resource.provider.version = 'latest'
       resource.provider.flush
     end

@@ -28,7 +28,7 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
   describe 'create' do
     before(:each) do
       allow(resource.provider).to receive(:exists?).and_return(false)
-      allow(resource.provider.api).to receive(:auth_test).and_return(true)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).and_return(true)
     end
 
     it 'should run sensuctl configure' do
@@ -41,7 +41,7 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
       resource.provider.create
     end
     it 'should run sensuctl configure with password' do
-      allow(resource.provider.api).to receive(:auth_test).and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).and_return(false)
       expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
       resource.provider.create
     end
@@ -80,7 +80,7 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
     end
     it 'should use old_password' do
       resource[:old_password] = 'foo'
-      allow(resource.provider.api).to receive(:auth_test).and_return(true)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).and_return(true)
       expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foo'])
       resource.provider.url = 'https://localhost:8080'
       resource.provider.flush

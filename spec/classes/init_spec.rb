@@ -19,7 +19,7 @@ describe 'sensu', :type => :class do
           it { should contain_class('sensu::repo')}
         end
         it { should contain_class('sensu::ssl') }
-        it { should contain_class('sensu::resources' ) }
+        it { should contain_class('sensu::resources') }
 
         if facts[:osfamily] == 'windows'
           it { should_not contain_user('sensu') }

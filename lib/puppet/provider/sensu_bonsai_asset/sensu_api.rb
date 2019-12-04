@@ -84,7 +84,6 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Pr
       method = 'post'
       url = "assets"
     end
-    cmd = ['asset', 'add']
     if version && version.to_s != 'latest'
       version_match = version
     else
