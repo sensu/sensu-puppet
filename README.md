@@ -108,6 +108,27 @@ Class parameter changes:
 * Move `sensu::backend::old_password` to `sensu::old_password`
 * Move `sensu::backend::agent_password` to `sensu::agent_password`
 * Move `sensu::backend::agent_old_password` to `sensu::agent_old_password`
+* The following parameters were moved from `sensu::backend` class to `sensu::resources` class. (**Example:** `sensu::backend::checks` becomes `sensu::resources::checks`)
+  * `ad_auths`
+  * `assets`
+  * `bonsai_assets`
+  * `checks`
+  * `cluster_members`
+  * `cluster_role_bindings`
+  * `cluster_roles`
+  * `configs` (removed)
+  * `entities`
+  * `etcd_replicators`
+  * `filters`
+  * `handlers`
+  * `hooks`
+  * `ldap_auths`
+  * `mutators`
+  * `namespaces`
+  * `oidc_auths`
+  * `role_bindings`
+  * `roles`
+  * `users`
 
 Type property changes:
 
