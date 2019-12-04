@@ -270,7 +270,7 @@ class { 'sensu::cli':
 }
 ```
 
-### API providers
+### API Providers
 
 All the core resources have a provider that manages resources using the Sensu Go API.
 The new provider can be used by setting `provider` parameter on a resource to `sensu_api`.
@@ -278,7 +278,7 @@ The default provider is still `sensuctl` but it's possible to change the provide
 For example the following will create a check which can be defined on an host that's not the `sensu-backend`.
 
 ```
-include sensu::api
+include ::sensu::api
 sensu_check { "check-cpu-${facts['hostname']}":
   ensure        => 'present',
   command       => 'check-cpu.sh -w 75 -c 90',
@@ -570,6 +570,8 @@ The backend system would collect all `sensu_check` resources.
 ### Hiera resources
 
 All the types provided by this module can have their resources defined via Hiera. A type such as `sensu_check` would be defined via `sensu::resources::checks`.
+
+The `sensu` class must be included either directly or via `sensu::agent` or `sensu::backend`.
 
 The following example adds an asset, filter, handler and checks via Hiera:
 

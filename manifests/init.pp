@@ -177,4 +177,5 @@ class sensu (
     $package_require = undef
   }
 
+  include sensu::resources
 }
