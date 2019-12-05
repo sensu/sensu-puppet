@@ -62,7 +62,7 @@ Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq.
 Version 3 of this module supports Sensu Go 5.0.0 to 5.15.x.
 Version 4 of this module supports Sensu Go 5.16+.
 
-Users wishing to use the old v2 Puppet module to support previous Ruby based Sensu should use [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic).
+Users wishing to use the previous Ruby based Sensu should use the [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic) module.
 
 ### Deprecations
 
