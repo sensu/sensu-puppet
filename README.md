@@ -5,10 +5,10 @@
 1. [Module Description](#module-description)
     * [Deprecations](#deprecations)
     * [Updating this module from 3.x to 4.x](#updating-this-module-from-3x-to-4x)
-2. [Setup - The basics of getting started with sensu](#setup)
+2. [Setup - The basics of getting started with Sensu](#setup)
     * [What sensu affects](#what-sensu-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with sensu](#beginning-with-sensu)
+    * [Beginning with Sensu](#beginning-with-sensu)
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
@@ -45,7 +45,7 @@ Please note, that this is a **Partner Supported** module, which means that techn
 
 [Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
 
-### Compatibility - supported sensu versions
+### Compatibility - supported Sensu versions
 
 If not explicitly stated it should always support the latest Sensu release.
 Beginning with v4.0.0 this module will only support Sensu Go 5.16+.
@@ -166,7 +166,7 @@ If managing Windows and defining `service_env_vars` there is a soft depedency on
 
 For PostgreSQL datastore support there is a soft dependency on [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`).
 
-### Beginning with sensu
+### Beginning with Sensu
 
 This module provides Vagrant definitions that can be used to get started with Sensu.
 
