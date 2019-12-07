@@ -63,7 +63,7 @@ class sensu::agent (
   Optional[Stdlib::Absolutepath] $log_file = undef,
 ) {
 
-  include ::sensu
+  include sensu
 
   $etc_dir = $::sensu::etc_dir
   $ssl_dir = $::sensu::ssl_dir
@@ -133,7 +133,7 @@ class sensu::agent (
         $package_provider = undef
         $_package_source = $package_source
     } else {
-      include ::chocolatey
+      include chocolatey
       $package_provider = 'chocolatey'
       $_package_source = $package_source
     }

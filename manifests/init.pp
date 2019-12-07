@@ -77,7 +77,7 @@ class sensu (
   }
 
   if $use_ssl {
-    contain ::sensu::ssl
+    contain sensu::ssl
   }
 
   case $facts['os']['family'] {
@@ -98,7 +98,7 @@ class sensu (
   # $package_require is used by sensu::agent and sensu::backend
   # package resources
   if $manage_repo {
-    include ::sensu::repo
+    include sensu::repo
     $package_require = [Class['::sensu::repo']] + $os_package_require
   } else {
     $package_require = undef
