@@ -87,8 +87,10 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
   context 'Add sensu backend cluster member' do
     it 'should add member' do
       pp = <<-EOS
+      include sensu::api
       sensu_cluster_member { 'backend3':
         peer_urls => ['http://#{fact_on(node3, 'ipaddress')}:2380'],
+        provider  => '#{RSpec.configuration.sensu_provider}',
       }
       EOS
       node3_pp = <<-EOS

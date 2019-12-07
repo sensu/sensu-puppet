@@ -12,6 +12,8 @@ project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 RSpec.configure do |c|
   c.add_setting :sensu_full, default: false
   c.add_setting :sensu_cluster, default: false
+  # Used when testing clusters
+  c.add_setting :sensu_provider, default: 'sensuctl'
   c.add_setting :sensu_enterprise_file, default: nil
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
@@ -20,6 +22,7 @@ RSpec.configure do |c|
   c.add_setting :skip_apply, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
   c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
+  c.sensu_provider = ENV['BEAKER_sensu_provider'] unless ENV['BEAKER_sensu_provider'].nil?
   c.sensu_use_agent = (ENV['BEAKER_sensu_use_agent'] == 'yes' || ENV['BEAKER_sensu_use_agent'] == 'true')
   if ENV['SENSU_ENTERPRISE_FILE']
     enterprise_file = File.absolute_path(ENV['SENSU_ENTERPRISE_FILE'])

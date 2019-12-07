@@ -99,18 +99,28 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       request.body = data.to_json unless data.nil?
     end
     # Add headers
-    request.add_field("Accept", "application/json")
-    request.add_field("Content-Type", "application/json")
+    request.add_field("Accept", "application/json") if defined?(request) && !request.nil?
+    request.add_field("Content-Type", "application/json") if defined?(request) && !request.nil?
     # Add either token or basic auth
     if token.nil? && username && password
       Puppet.debug("Sensu API: Using basic auth of #{username}:#{password}")
-      request.basic_auth(username, password)
+      request.basic_auth(username, password) if defined?(request) && !request.nil?
     else
       Puppet.debug("Sensu API: Using token #{token}")
-      request.add_field("Authorization", "Bearer #{token}")
+      request.add_field("Authorization", "Bearer #{token}") if defined?(request) && !request.nil?
     end
     # Make request
-    response = http.request(request)
+    if method == 'post-form' || method == 'put-form'
+      encoded_form = URI.encode_www_form(data)
+      headers = { content_type: "application/x-www-form-urlencoded", authorization: "Bearer #{token}" }
+    end
+    if method == 'post-form'
+      response = http.request_post(uri.path, encoded_form, headers)
+    elsif method == 'put-form'
+      response = http.request_put(uri.path, encoded_form, headers)
+    else
+      response = http.request(request)
+    end
     Puppet.debug("RESPONSE: #{response.code}\n#{response.body}")
     return response if opts[:return_response]
     # Handle expired auth token and retry
