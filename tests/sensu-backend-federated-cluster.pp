@@ -19,7 +19,7 @@ case $facts['hostname'] {
 class { '::sensu::backend':
   config_hash => {
     'etcd-listen-client-urls' => "https://0.0.0.0:2379",
-    'etcd-advertise-client-urls' => "https://0.0.0.0:2379",
+    'etcd-advertise-client-urls' => "https://${facts['networking']['interfaces']['eth1']['ip']}:2379",
     'etcd-cert-file' => "/etc/sensu/etcd-ssl/${cert_name}.pem",
     'etcd-key-file' => "/etc/sensu/etcd-ssl/${cert_name}-key.pem",
     'etcd-trusted-ca-file' => "/etc/sensu/etcd-ssl/ca.pem",

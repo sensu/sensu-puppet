@@ -2,7 +2,7 @@
 # @api private
 #
 class sensu::ssl {
-  include ::sensu
+  include sensu
 
   if $facts['os']['family'] == 'windows' {
     $directory_mode = undef

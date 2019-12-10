@@ -2,7 +2,7 @@
 # @api private
 #
 class sensu::backend::resources {
-  include ::sensu::backend
+  include sensu::backend
   $::sensu::backend::ad_auths.each |$name, $ad_auth| {
     sensu_ad_auth { $name:
       * => $ad_auth,
