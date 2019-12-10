@@ -193,13 +193,13 @@ class sensu::backend (
     fail('sensu::backend: Do not define both license_source and license_content')
   }
 
-  include ::sensu
-  include ::sensu::backend::resources
+  include sensu
+  include sensu::backend::resources
   if $manage_tessen {
-    include ::sensu::backend::tessen
+    include sensu::backend::tessen
   }
   if $datastore == 'postgresql' {
-    include ::sensu::backend::datastore::postgresql
+    include sensu::backend::datastore::postgresql
   }
 
   $etc_dir = $::sensu::etc_dir
@@ -243,7 +243,7 @@ class sensu::backend (
   $_service_env_vars_lines = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
 
   if $include_default_resources {
-    include ::sensu::backend::default_resources
+    include sensu::backend::default_resources
   }
 
   package { 'sensu-go-cli':

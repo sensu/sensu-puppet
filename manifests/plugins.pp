@@ -49,12 +49,12 @@ class sensu::plugins (
     fail('sensu::plugins is not supported on Windows')
   }
 
-  include ::sensu
+  include sensu
 
   $_manage_repo = pick($manage_repo, $::sensu::manage_repo)
 
   if $_manage_repo {
-    include ::sensu::repo::community
+    include sensu::repo::community
     $package_require = [Class['::sensu::repo::community']] + $::sensu::os_package_require
   } else {
     $package_require = undef

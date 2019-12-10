@@ -2,7 +2,7 @@
 # @api private
 #
 class sensu::backend::default_resources {
-  include ::sensu::backend
+  include sensu::backend
 
   sensu_namespace { 'default':
     ensure => 'present',

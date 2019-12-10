@@ -2,7 +2,7 @@
 # @api private
 #
 class sensu::backend::tessen {
-  include ::sensu::backend
+  include sensu::backend
 
   if $::sensu::backend::tessen_ensure == 'present' {
     $command = 'sensuctl tessen opt-in'

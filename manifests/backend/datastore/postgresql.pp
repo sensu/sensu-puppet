@@ -2,8 +2,8 @@
 # @api private
 #
 class sensu::backend::datastore::postgresql {
-  include ::sensu
-  include ::sensu::backend
+  include sensu
+  include sensu::backend
 
   $user = $::sensu::backend::postgresql_user
   $password = $::sensu::backend::postgresql_password
