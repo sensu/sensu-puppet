@@ -283,7 +283,7 @@ notifications:
   email: false
   slack:
     rooms:
-      - secure: R1ThBe5UcmcX5UqnMAWEl5e0JpO1MjsCJDvsDfgTZQ7Nb7gYzj6T9lls11HxxoALffkdMbi7g7qlrwQ9ajblIZlS27aMbucwaMbWt6uiepVITHTub6+ZhM1yAcgFgRk2HsfaZnaB0LERW4SIfTTe/hGFIMgHGDYSf+NYqM3ikhY=
+      - secure: "KomdJMZyKI1dXFQVkXtM0dgAhWtVI3xksT3FCywh1MOxmS8U2A0Bik7FA0WHSXhwx2Tg6b9bSd8p23LO4sH4gRm0px1It/Cxnf77rq9sRxzmLlObwcg1LQTTTCZDFof2I9vBBmQiXmQYBprOn1e/aefbZRBBcGqOfFWyBvVsfsE="
     on_success: change
     on_failure: always
 deploy:
