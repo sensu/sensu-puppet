@@ -27,8 +27,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
   describe 'create' do
     it 'should create a handler' do
       resource[:filters] = ["recurrence", "production"]
-      resource[:socket_host] = "localhost"
-      resource[:socket_port] = 9000
+      resource[:socket] = {'host' => "localhost", 'port' => 9000}
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',
@@ -37,7 +36,7 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
         :type => :pipe,
         :command => 'test',
         :filters => ["recurrence", "production"],
-        :socket => {:host => "localhost", :port => 9000}
+        :socket => {"host" => "localhost", "port" => 9000}
       }
       expect(resource.provider).to receive(:sensuctl_create).with('Handler', expected_metadata, expected_spec)
       resource.provider.create
@@ -49,8 +48,6 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
   describe 'flush' do
     it 'should update a handler socket' do
       resource[:type] = 'tcp'
-      resource[:socket_host] = "localhost"
-      resource[:socket_port] = 9000
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',
@@ -58,10 +55,10 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
       expected_spec = {
         :type => :tcp,
         :command => 'test',
-        :socket => { :host => 'localhost', :port => 9001 }
+        :socket => { 'host' => 'localhost', 'port' => 9001 }
       }
       expect(resource.provider).to receive(:sensuctl_create).with('Handler', expected_metadata, expected_spec)
-      resource.provider.socket_port = 9001
+      resource.provider.socket = {'host' => 'localhost', 'port' => 9001}
       resource.provider.flush
     end
     it 'should remove timeout' do

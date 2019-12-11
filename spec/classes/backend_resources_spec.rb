@@ -209,8 +209,7 @@ describe 'sensu::backend::resources', :type => :class do
               'test' => {
                 'type'        => 'pipe',
                 'command'     => 'test',
-                'socket_host' => '127.0.0.1',
-                'socket_port' => 9000,
+                'socket'      => {'host' => '127.0.0.1', 'port' => 9000},
               }
             }
           }

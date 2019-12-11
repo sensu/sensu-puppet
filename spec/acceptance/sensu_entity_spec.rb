@@ -8,7 +8,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_entity { 'test':
         entity_class           => 'proxy',
-        deregistration_handler => 'slack-handler',
+        deregistration         => {'handler' => 'slack-handler'},
       }
       EOS
 
@@ -41,7 +41,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_entity { 'test':
         entity_class           => 'proxy',
-        deregistration_handler => 'email-handler',
+        deregistration         => {'handler' => 'email-handler'},
         labels                 => { 'foo' => 'bar' }
       }
       EOS

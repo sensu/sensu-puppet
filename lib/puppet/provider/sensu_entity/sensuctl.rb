@@ -23,9 +23,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
         if !!value == value
           value = value.to_s.to_sym
         end
-        if key == 'deregistration'
-          entity[:deregistration_handler] = value['handler']
-        elsif type_properties.include?(key.to_sym)
+        if type_properties.include?(key.to_sym)
           entity[key.to_sym] = value
         else
           next
@@ -73,9 +71,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
-      if property == :deregistration_handler
-        spec[:deregistration] = {handler: value}
-      elsif property == :namespace
+      if property == :namespace
         metadata[:namespace] = value
       elsif property == :labels
         metadata[:labels] = value
@@ -117,9 +113,7 @@ Puppet::Type.type(:sensu_entity).provide(:sensuctl, :parent => Puppet::Provider:
         elsif value == :absent
           value = nil
         end
-        if property == :deregistration_handler
-          spec[:deregistration] = {handler: value}
-        elsif property == :namespace
+        if property == :namespace
           metadata[:namespace] = value
         elsif property == :labels
           metadata[:labels] = value

@@ -7,8 +7,7 @@ describe Puppet::Type.type(:sensu_handler) do
       name: 'test',
       type: 'pipe',
       command: 'test',
-      socket_host: '127.0.0.1',
-      socket_port: 9000,
+      socket: {'host' => '127.0.0.1', 'port' => 9000},
     }
   end
   let(:config) do
@@ -82,7 +81,6 @@ describe Puppet::Type.type(:sensu_handler) do
     :mutator,
     :command,
     :namespace,
-    :socket_host,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -134,7 +132,6 @@ describe Puppet::Type.type(:sensu_handler) do
   # Integer properties
   [
     :timeout,
-    :socket_port,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
@@ -229,6 +226,32 @@ describe Puppet::Type.type(:sensu_handler) do
     end
   end
 
+  describe 'socket' do
+    it 'accepts valid value' do
+      expect(handler[:socket]).to eq({'host' => '127.0.0.1', 'port' => 9000})
+    end
+    it 'requires a hash' do
+      config[:socket] = 'foo'
+      expect { handler }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    it 'does not accept invalid key' do
+      config[:socket] = {'host' => '127.0.0.1', 'port' => 9000, 'foo' => 'bar'}
+      expect { handler }.to raise_error(Puppet::Error, /foo is not a valid key for socket/)
+    end
+    it 'requires host' do
+      config[:socket] = {'port' => 9000}
+      expect { handler }.to raise_error(Puppet::Error, /is required for socket/)
+    end
+    it 'requires port' do
+      config[:socket] = {'host' => '127.0.0.1'}
+      expect { handler }.to raise_error(Puppet::Error, /is required for socket/)
+    end
+    it 'requires integer for port' do
+      config[:socket] = {'host' => '127.0.0.1', 'port' => '9000'}
+      expect { handler }.to raise_error(Puppet::Error, /must be an Integer/)
+    end
+  end
+
   include_examples 'autorequires' do
     let(:res) { handler }
   end
@@ -292,25 +315,15 @@ describe Puppet::Type.type(:sensu_handler) do
     expect { handler.pre_run_check }.to raise_error(Puppet::Error, /command must be defined for type pipe/)
   end
 
-  it 'should require socket_host and socket_port' do
-    config.delete(:socket_port)
-    expect { handler.pre_run_check }.to raise_error(Puppet::Error, /socket_port is required if socket_host is set/)
-  end
-  it 'should require socket_host and socket_port' do
-    config.delete(:socket_host)
-    expect { handler.pre_run_check }.to raise_error(Puppet::Error, /socket_host is required if socket_port is set/)
-  end
-  it 'should require socket properties for tcp type' do
-    config.delete(:socket_host)
-    config.delete(:socket_port)
+  it 'should require socket for tcp type' do
+    config.delete(:socket)
     config[:type] = :tcp
-    expect { handler.pre_run_check }.to raise_error(Puppet::Error, /socket_host and socket_port are required for type tcp or type udp/)
+    expect { handler.pre_run_check }.to raise_error(Puppet::Error, /socket is required for type tcp or type udp/)
   end
-  it 'should require socket properties for udp type' do
-    config.delete(:socket_host)
-    config.delete(:socket_port)
+  it 'should require socket for udp type' do
+    config.delete(:socket)
     config[:type] = :udp
-    expect { handler.pre_run_check }.to raise_error(Puppet::Error, /socket_host and socket_port are required for type tcp or type udp/)
+    expect { handler.pre_run_check }.to raise_error(Puppet::Error, /socket is required for type tcp or type udp/)
   end
   it 'should require handlers for type set' do
     config[:type] = 'set'

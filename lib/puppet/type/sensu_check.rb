@@ -178,17 +178,42 @@ DESC
     newvalues(:true, :false)
   end
 
-  newproperty(:proxy_requests_entity_attributes, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "Sensu entity attributes to match entities in the registry, using Sensu Query Expressions"
-  end
+  newproperty(:proxy_requests, :parent => PuppetX::Sensu::HashProperty) do
+    desc <<-EOS
+    Proxy requests attributes
 
-  newproperty(:proxy_requests_splay, :boolean => true) do
-    desc "If proxy check requests should be splayed"
-    newvalues(:true, :false)
-  end
-
-  newproperty(:proxy_requests_splay_coverage, :parent => PuppetX::Sensu::IntegerProperty) do
-    desc "The splay coverage percentage use for proxy check request splay calculation."
+    Valid keys:
+    * entity_attributes - Optional Array
+    * splay - Optional Boolean (default: false)
+    * splay_coverage - Optional Integer (default: 0)
+    EOS
+    validate do |value|
+      super(value)
+      valid_keys = ['entity_attributes','splay','splay_coverage']
+      value.keys.each do |key|
+        if ! valid_keys.include?(key)
+          raise ArgumentError, "#{key} is not a valid key for proxy_requests"
+        end
+      end
+      if value.key?('entity_attributes') && ! value['entity_attributes'].is_a?(Array)
+        raise ArgumentError, "proxy_requests.entity_attributes must be an Array"
+      end
+      if value.key?('splay') && !!value['splay'] != value['splay']
+        raise ArgumentError, "proxy_requests.splay must be a Boolean"
+      end
+      if value.key?('splay_coverage') && ! value['splay_coverage'].is_a?(Integer)
+        raise ArgumentError, "proxy_requests.splay_coverage must be an Integer"
+      end
+    end
+    munge do |v|
+      if ! v.key?('splay')
+        v['splay'] = false
+      end
+      if ! v.key?('splay_coverage')
+        v['splay_coverage'] = 0
+      end
+      v
+    end
   end
 
   newproperty(:silenced, :boolean => true) do

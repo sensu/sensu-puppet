@@ -77,7 +77,6 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # String properties
   [
-    :deregistration_handler,
     :namespace,
   ].each do |property|
     it "should accept valid #{property}" do
@@ -211,6 +210,25 @@ describe Puppet::Type.type(:sensu_entity) do
     end
   end
 
+  describe 'deregistration' do
+    it 'accepts valid value' do
+      config[:deregistration] = {'handler' => 'test'}
+      expect(entity[:deregistration]).to eq({'handler' => 'test'})
+    end
+    it 'requires a hash' do
+      config[:deregistration] = 'foo'
+      expect { entity }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    it 'does not accept invalid key' do
+      config[:deregistration] = {'foo' => 'bar'}
+      expect { entity }.to raise_error(Puppet::Error, /foo is not a valid key for deregistration/)
+    end
+    it 'requires string for handler' do
+      config[:deregistration] = {'handler' => ['test']}
+      expect { entity }.to raise_error(Puppet::Error, /must be a String/)
+    end
+  end
+
   include_examples 'autorequires' do
     let(:res) { entity }
   end
@@ -218,7 +236,7 @@ describe Puppet::Type.type(:sensu_entity) do
   it 'should autorequire sensu_handler' do
     handler = Puppet::Type.type(:sensu_handler).new(:name => 'test', :type => 'pipe', :command => 'test')
     catalog = Puppet::Resource::Catalog.new
-    config[:deregistration_handler] = ['test']
+    config[:deregistration] = {'handler' => 'test'}
     catalog.add_resource entity
     catalog.add_resource handler
     rel = entity.autorequire[0]

@@ -32,7 +32,7 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       resource[:handlers] = ['email', 'slack']
       resource[:stdin] = true
       resource[:publish] = false
-      resource[:proxy_requests_entity_attributes] = ["entity.Class == 'proxy'"]
+      resource[:proxy_requests] = {'entity_attributes' => ["entity.Class == 'proxy'"]}
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',
@@ -44,7 +44,7 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
         :interval => 60,
         :stdin => true,
         :publish => false,
-        :proxy_requests => { :entity_attributes => ["entity.Class == 'proxy'"] }
+        :proxy_requests => { "entity_attributes" => ["entity.Class == 'proxy'"], "splay" => false, "splay_coverage" => 0 }
       }
       expect(resource.provider).to receive(:sensuctl_create).with('CheckConfig', expected_metadata, expected_spec)
       resource.provider.create
@@ -55,7 +55,6 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
 
   describe 'flush' do
     it 'should update a check proxy_requests' do
-      resource[:proxy_requests_splay] = true
       expected_metadata = {
         :name => 'test',
         :namespace => 'default',
@@ -67,10 +66,10 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
         :publish => true,
         :stdin => false,
         :handlers => ['slack'],
-        :proxy_requests => { :splay => true, :entity_attributes => ["entity.Class == 'proxy'"] }
+        :proxy_requests => { "splay" => true, "entity_attributes" => ["entity.Class == 'proxy'"] }
       }
       expect(resource.provider).to receive(:sensuctl_create).with('CheckConfig', expected_metadata, expected_spec)
-      resource.provider.proxy_requests_entity_attributes = ["entity.Class == 'proxy'"]
+      resource.provider.proxy_requests = {'entity_attributes' => ["entity.Class == 'proxy'"], 'splay' => true}
       resource.provider.flush
     end
     it 'should update a check' do
