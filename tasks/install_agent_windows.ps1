@@ -27,10 +27,8 @@ class { '::sensu':
 class { '::sensu::agent':
   package_source => '$Package_source',
   backends       => ['$Backend'],
-  config_hash    => {
-    'subscriptions' => ['$Subscription'],
-    'namespace'     => '$Namespace',
-  },
+  subscriptions  => ['$Subscription'],
+  namespace      => '$Namespace',
 }
 "@
 

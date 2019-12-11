@@ -8,9 +8,7 @@ describe 'sensu event task', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       class { '::sensu::agent':
         backends    => ['sensu_backend:8081'],
-        config_hash => {
-          'name' => 'sensu_agent',
-        }
+        entity_name => 'sensu_agent',
       }
       EOS
 
@@ -166,9 +164,7 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
       agent_pp = <<-EOS
       class { '::sensu::agent':
         backends    => ['sensu_backend:8081'],
-        config_hash => {
-          'name' => 'sensu_agent',
-        }
+        entity_name => 'sensu_agent',
       }
       EOS
       apply_manifest_on(backend, pp, :catch_failures => true)
@@ -266,9 +262,7 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
       agent_pp = <<-EOS
       class { '::sensu::agent':
         backends    => ['sensu_backend:8081'],
-        config_hash => {
-          'name' => 'sensu_agent',
-        }
+        entity_name => 'sensu_agent',
       }
       EOS
       apply_manifest_on(agent, agent_pp, :catch_failures => true)

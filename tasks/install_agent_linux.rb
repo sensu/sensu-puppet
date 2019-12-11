@@ -38,11 +38,9 @@ class { '::sensu':
   use_ssl => false,
 }
 class { '::sensu::agent':
-  backends    => ['#{backend}'],
-  config_hash => {
-    'subscriptions' => ['#{subscription}'],
-    'namespace'     => '#{namespace}',
-  },
+  backends      => ['#{backend}'],
+  subscriptions => ['#{subscription}'],
+  namespace     => '#{namespace}',
 }
 EOS
   return_output['manifest'] = manifest.split(/\n/)

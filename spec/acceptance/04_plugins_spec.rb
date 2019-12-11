@@ -14,9 +14,7 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
       class { '::sensu': }
       class { '::sensu::agent':
         backends    => ['sensu_backend:8081'],
-        config_hash => {
-          'name' => 'sensu_agent',
-        }
+        entity_name => 'sensu_agent',
       }
       class { '::sensu::plugins':
         plugins => ['disk-checks'],

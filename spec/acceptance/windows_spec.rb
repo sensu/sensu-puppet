@@ -6,11 +6,12 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     pp = <<-EOS
     class { '::sensu': }
     class { '::sensu::agent':
-      backends       => ['sensu_backend:8081'],
-      config_hash    => {
-        'name' => 'sensu_agent',
-      },
+      backends         => ['sensu_backend:8081'],
+      entity_name      => 'sensu_agent',
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
+      config_hash      => {
+        'log-level' => 'info',
+      }
     }
     EOS
 
@@ -21,8 +22,8 @@ describe 'sensu::agent class', if: Gem.win_platform? do
         puts File.read('C:\manifest-agent.pp')
       end
 
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp') do
-        its(:exit_status) { is_expected.to eq 256 }
+      describe command('puppet apply --debug C:\manifest-agent.pp') do
+        its(:exit_status) { is_expected.to eq 0 }
       end
     end
 
@@ -46,8 +47,9 @@ describe 'sensu::agent class', if: Gem.win_platform? do
       package_name   => 'Sensu Agent',
       package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.13.1/sensu-go-agent_5.13.1.5957_en-US.x64.msi',
       backends       => ['sensu_backend:8081'],
+      entity_name    => 'sensu_agent',
       config_hash    => {
-        'name' => 'sensu_agent',
+        'log-level' => 'info',
       }
     }
     EOS
@@ -63,8 +65,8 @@ describe 'sensu::agent class', if: Gem.win_platform? do
         its(:exit_status) { is_expected.to eq 0 }
       end
 
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp') do
-        its(:exit_status) { is_expected.to eq 256 }
+      describe command('puppet apply --debug C:\manifest-agent.pp') do
+        its(:exit_status) { is_expected.to eq 0 }
       end
     end
 
