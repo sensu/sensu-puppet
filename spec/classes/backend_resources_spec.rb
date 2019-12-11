@@ -174,19 +174,6 @@ describe 'sensu::backend::resources', :type => :class do
         it { should compile.with_all_deps }
         it { should contain_sensu_etcd_replicator('role_replicator') }
       end
-      context 'events defined' do
-        let(:pre_condition) do
-          <<-EOS
-          class { '::sensu::backend':
-            events => {
-              'checkalive for test' => { 'ensure' => 'resolve' }
-            }
-          }
-          EOS
-        end
-        it { should compile.with_all_deps }
-        it { should contain_sensu_event('checkalive for test') }
-      end
       context 'filters defined' do
         let(:pre_condition) do
           <<-EOS
@@ -325,19 +312,6 @@ describe 'sensu::backend::resources', :type => :class do
         end
         it { should compile.with_all_deps }
         it { should contain_sensu_role('test') }
-      end
-      context 'silencings defined' do
-        let(:pre_condition) do
-          <<-EOS
-          class { '::sensu::backend':
-            silencings => {
-              'test' => { 'subscription' => 'test' },
-            }
-          }
-          EOS
-        end
-        it { should compile.with_all_deps }
-        it { should contain_sensu_silenced('test') }
       end
       context 'users defined' do
         let(:pre_condition) do
