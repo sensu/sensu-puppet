@@ -13,10 +13,12 @@ describe 'sensu::backend::resources', :type => :class do
           class { '::sensu::backend':
             ad_auths => {
               'ad' => {
-                'servers'             => [{'host' => 'test', 'port' => 389}],
-                'server_binding'      => {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}},
-                'server_group_search' => {'test' => {'base_dn' => 'ou=Groups'}},
-                'server_user_search'  => {'test' => {'base_dn' => 'ou=People'}},
+                'servers'             => [{
+                  'host'         => 'test', 'port' => 389,
+                  'binding'      => {'user_dn' => 'cn=foo','password' => 'foo'},
+                  'group_search' => {'base_dn' => 'ou=Groups'},
+                  'user_search'  => {'base_dn' => 'ou=People'},
+                }],
               }
             }
           }
@@ -237,10 +239,12 @@ describe 'sensu::backend::resources', :type => :class do
           class { '::sensu::backend':
             ldap_auths => {
               'ldap' => {
-                'servers'             => [{'host' => 'test', 'port' => 389}],
-                'server_binding'      => {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}},
-                'server_group_search' => {'test' => {'base_dn' => 'ou=Groups'}},
-                'server_user_search'  => {'test' => {'base_dn' => 'ou=People'}},
+                'servers'             => [{
+                  'host'         => 'test', 'port' => 389,
+                  'binding'      => {'user_dn' => 'cn=foo','password' => 'foo'},
+                  'group_search' => {'base_dn' => 'ou=Groups'},
+                  'user_search'  => {'base_dn' => 'ou=People'},
+                }]
               }
             }
           }

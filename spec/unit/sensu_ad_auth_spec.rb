@@ -5,11 +5,11 @@ describe Puppet::Type.type(:sensu_ad_auth) do
   let(:default_config) do
     {
       name: 'ad',
-      servers: [
-        {'host' => 'test', 'port' => 389},
-      ],
-      server_group_search: {'test' => {'base_dn' => 'ou=Groups'}},
-      server_user_search: {'test' => {'base_dn' => 'ou=People'}},
+      servers: [{
+        'host' => 'test', 'port' => 389,
+        'group_search' => {'base_dn' => 'ou=Groups'},
+        'user_search' => {'base_dn' => 'ou=People'},
+      }],
     }
   end
   let(:config) do
@@ -180,7 +180,8 @@ describe Puppet::Type.type(:sensu_ad_auth) do
         'client_cert_file' => '',
         'client_key_file' => '',
         'default_upn_domain' => '',
-        'include_nested_groups' => nil,
+        'group_search' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'},
+        'user_search' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'},
       }]
       expect(auth[:servers]).to eq(expected)
     end
@@ -201,110 +202,64 @@ describe Puppet::Type.type(:sensu_ad_auth) do
       expect { auth }.to raise_error(Puppet::Error, /is not a valid key for server/)
     end
     it 'should require boolean for insecure' do
-      config[:servers] = [{'host' => 'test', 'port' => 389, 'insecure' => 'true'}]
+      config[:servers][0]['insecure'] = 'true'
       expect { auth }.to raise_error(Puppet::Error, /server insecure must be a Boolean/)
     end
     it 'should require valid security' do
-      config[:servers] = [{'host' => 'test', 'port' => 389, 'security' => 'foo'}]
+      config[:servers][0]['security'] = 'foo'
       expect { auth }.to raise_error(Puppet::Error, /server security must be tls, starttls or insecure/)
     end
-    it 'should require boolean for include_nested_groups' do
-      config[:servers] = [{'host' => 'test', 'port' => 389, 'include_nested_groups' => 'true'}]
-      expect { auth }.to raise_error(Puppet::Error, /server include_nested_groups must be a Boolean/)
+    it 'should accept valid value for binding' do
+      config[:servers][0]['binding'] = {'user_dn' => 'cn=foo','password' => 'foo'}
+      expect(auth[:servers][0]['binding']).to eq({'user_dn' => 'cn=foo','password' => 'foo'})
     end
-  end
-
-  describe 'server_binding' do
-    it 'should accept valid value' do
-      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}}
-      expect(auth[:server_binding]).to eq({'test' => {'user_dn' => 'cn=foo','password' => 'foo'}})
+    it 'should require a hash for binding' do
+      config[:servers][0]['binding'] = 'foo'
+      expect { auth }.to raise_error(Puppet::Error, /must be a hash/)
     end
-    it 'should require a hash' do
-      config[:server_binding] = 'foo'
-      expect { auth }.to raise_error(Puppet::Error, /should be a Hash/)
+    it 'should require user_dn for binding' do
+      config[:servers][0]['binding'] = {'password' => 'foo'}
+      expect { auth }.to raise_error(Puppet::Error, /server binding must contain keys/)
     end
-    it 'should require a binding hash' do
-      config[:server_binding] = { 'foo' => 'bar' }
-      expect { auth }.to raise_error(Puppet::Error, /binding must be a Hash/)
+    it 'should require password for binding' do
+      config[:servers][0]['binding'] = {'user_dn' => 'cn=foo'}
+      expect { auth }.to raise_error(Puppet::Error, /server binding must contain keys/)
     end
-    it 'should require user_dn' do
-      config[:server_binding] = {'test' => {'password' => 'foo'}}
-      expect { auth }.to raise_error(Puppet::Error, /binding requires user_dn/)
+    it 'should not accept invalid key for binding' do
+      config[:servers][0]['binding'] = {'user_dn' => 'cn=foo','password' => 'foo','foo' => 'bar'}
+      expect { auth }.to raise_error(Puppet::Error, /server binding must contain keys/)
     end
-    it 'should require password' do
-      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo'}}
-      expect { auth }.to raise_error(Puppet::Error, /binding requires password/)
+    it 'should require a hash for group_search' do
+      config[:servers][0]['group_search'] = 'foo'
+      expect { auth }.to raise_error(Puppet::Error, /must be a Hash/)
     end
-    it 'should not accept invalid key' do
-      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo','password' => 'foo','foo' => 'bar'}}
-      expect { auth }.to raise_error(Puppet::Error, /is not a valid key for binding/)
-    end
-    it 'should fail if server not defined' do
-      config[:server_binding] = {'foo' => {'user_dn' => 'cn=foo','password' => 'foo'}}
-      expect { auth }.to raise_error(Puppet::Error, /Server binding for foo not found in servers property/)
-    end
-  end
-
-  describe 'server_group_search' do
-    it 'should accept valid value and apply defaults' do
-      expect(auth[:server_group_search]).to eq({'test' => {'base_dn' => 'ou=Groups','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'}})
-    end
-    it 'should require a hash' do
-      config[:server_group_search] = 'foo'
-      expect { auth }.to raise_error(Puppet::Error, /should be a Hash/)
-    end
-    it 'should require a group_search hash' do
-      config[:server_group_search] = { 'foo' => 'bar' }
-      expect { auth }.to raise_error(Puppet::Error, /group_search must be a Hash/)
-    end
-    it 'should require base_dn' do
-      config[:server_group_search] = {'test' => {}}
+    it 'should require base_dn for group_search' do
+      config[:servers][0]['group_search'] = {}
       expect { auth }.to raise_error(Puppet::Error, /group_search requires base_dn/)
     end
-    it 'should not accept invalid key' do
-      config[:server_group_search]['test']['foo'] = 'bar'
+    it 'should not accept invalid key for group_search' do
+      config[:servers][0]['group_search'] = {'base_dn' => 'foo', 'foo' => 'bar'}
       expect { auth }.to raise_error(Puppet::Error, /is not a valid key for group_search/)
     end
-    it 'should fail if server not defined' do
-      config[:server_group_search] = {'foo' => {'base_dn' => 'ou=Groups'}}
-      expect { auth }.to raise_error(Puppet::Error, /Server group_search for foo not found in servers property/)
+    it 'should fail if group_search not defined' do
+      config[:servers][0].delete('group_search')
+      expect { auth }.to raise_error(Puppet::Error, /requires key group_search/)
     end
-    it 'should fail if group_search missing' do
-      config[:servers] << {'host' => 'foo' , 'port' => 389}
-      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}, 'foo' => {'user_dn' => 'cn=foo','password' => 'foo'}}
-      expect { auth }.to raise_error(Puppet::Error, /server foo has no group_search defined/)
+    it 'should require a hash for user_search' do
+      config[:servers][0]['user_search'] = 'foo'
+      expect { auth }.to raise_error(Puppet::Error, /must be a Hash/)
     end
-  end
-
-  describe 'server_user_search' do
-    it 'should accept valid value and apply defaults' do
-      expect(auth[:server_user_search]).to eq({'test' => {'base_dn' => 'ou=People','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'}})
-    end
-    it 'should require a hash' do
-      config[:server_user_search] = 'foo'
-      expect { auth }.to raise_error(Puppet::Error, /should be a Hash/)
-    end
-    it 'should require a user_search hash' do
-      config[:server_user_search] = { 'foo' => 'bar' }
-      expect { auth }.to raise_error(Puppet::Error, /user_search must be a Hash/)
-    end
-    it 'should require base_dn' do
-      config[:server_user_search] = {'test' => {}}
+    it 'should require base_dn for user_search' do
+      config[:servers][0]['user_search'] = {}
       expect { auth }.to raise_error(Puppet::Error, /user_search requires base_dn/)
     end
-    it 'should not accept invalid key' do
-      config[:server_user_search]['test']['foo'] = 'bar'
+    it 'should not accept invalid key for user_search' do
+      config[:servers][0]['user_search'] = {'base_dn' => 'foo', 'foo' => 'bar'}
       expect { auth }.to raise_error(Puppet::Error, /is not a valid key for user_search/)
     end
-    it 'should fail if server not defined' do
-      config[:server_user_search] = {'foo' => {'base_dn' => 'ou=People'}}
-      expect { auth }.to raise_error(Puppet::Error, /Server user_search for foo not found in servers property/)
-    end
-    it 'should fail if user_search missing' do
-      config[:servers] << {'host' => 'foo' , 'port' => 389}
-      config[:server_binding] = {'test' => {'user_dn' => 'cn=foo','password' => 'foo'}, 'foo' => {'user_dn' => 'cn=foo','password' => 'foo'}}
-      config[:server_group_search] = {'test' => {'base_dn' => 'ou=Groups'}, 'foo' => {'base_dn' => 'ou=Groups'}}
-      expect { auth }.to raise_error(Puppet::Error, /server foo has no user_search defined/)
+    it 'should fail if user_search not defined' do
+      config[:servers][0].delete('user_search')
+      expect { auth }.to raise_error(Puppet::Error, /requires key user_search/)
     end
   end
 
@@ -324,8 +279,6 @@ describe Puppet::Type.type(:sensu_ad_auth) do
 
   [
     :servers,
-    :server_group_search,
-    :server_user_search,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)

@@ -19,24 +19,18 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           {
             'host' => '127.0.0.1',
             'port' => 389,
-          },
-        ],
-        server_binding      => {
-          '127.0.0.1' => {
-            'user_dn' => 'cn=binder,dc=acme,dc=org',
-            'password' => 'P@ssw0rd!'
+            'binding'      => {
+              'user_dn' => 'cn=binder,dc=acme,dc=org',
+              'password' => 'P@ssw0rd!'
+            },
+            'group_search' => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
           }
-        },
-        server_group_search => {
-          '127.0.0.1' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
-        server_user_search  => {
-          '127.0.0.1' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
+        ]
       }
       EOS
 
@@ -84,24 +78,18 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
             'port' => 636,
             'default_upn_domain' => 'example.com',
             'include_nested_groups' => true,
-          },
-        ],
-        server_binding      => {
-          'localhost' => {
-            'user_dn' => 'cn=test,dc=acme,dc=org',
-            'password' => 'password'
+            'binding'      => {
+              'user_dn' => 'cn=test,dc=acme,dc=org',
+              'password' => 'password'
+            },
+            'group_search' => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
           }
-        },
-        server_group_search => {
-          'localhost' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
-        server_user_search  => {
-          'localhost' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
+        ]
       }
       EOS
 

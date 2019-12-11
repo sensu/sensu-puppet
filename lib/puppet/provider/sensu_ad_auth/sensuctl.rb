@@ -18,32 +18,9 @@ Puppet::Type.type(:sensu_ad_auth).provide(:sensuctl, :parent => Puppet::Provider
       if auth_types[auth[:name]] != 'AD'
         next
       end
+      auth[:servers] = d['servers']
       auth[:groups_prefix] = d['groups_prefix']
       auth[:username_prefix] = d['username_prefix']
-      binding = {}
-      group_search = {}
-      user_search = {}
-      servers = []
-      d['servers'].each do |server|
-        s = {}
-        s['host'] = server['host']
-        s['port'] = server['port']
-        s['insecure'] = server['insecure']
-        s['security'] = server['security']
-        s['trusted_ca_file'] = server['trusted_ca_file']
-        s['client_cert_file'] = server['client_cert_file']
-        s['client_key_file'] = server['client_key_file']
-        s['default_upn_domain'] = server['default_upn_domain']
-        s['include_nested_groups'] = server['include_nested_groups']
-        binding[s['host']] = server['binding']
-        group_search[s['host']] = server['group_search']
-        user_search[s['host']] = server['user_search']
-        servers << s
-      end
-      auth[:servers] = servers
-      auth[:server_binding] = binding
-      auth[:server_group_search] = group_search
-      auth[:server_user_search] = user_search
       auths << new(auth)
     end
     auths
@@ -77,14 +54,7 @@ Puppet::Type.type(:sensu_ad_auth).provide(:sensuctl, :parent => Puppet::Provider
     spec = {}
     metadata = {}
     metadata[:name] = resource[:name]
-    spec[:servers] = []
-    resource[:servers].each do |server|
-      host = server['host']
-      server['binding'] = resource[:server_binding][host] if resource[:server_binding]
-      server['group_search'] = resource[:server_group_search][host]
-      server['user_search'] = resource[:server_user_search][host]
-      spec[:servers] << server
-    end
+    spec[:servers] = resource[:servers]
     spec[:groups_prefix] = resource[:groups_prefix] if resource[:groups_prefix]
     spec[:username_prefix] = resource[:username_prefix] if resource[:username_prefix]
     begin
@@ -100,36 +70,9 @@ Puppet::Type.type(:sensu_ad_auth).provide(:sensuctl, :parent => Puppet::Provider
       spec = {}
       metadata = {}
       metadata[:name] = resource[:name]
-      spec[:servers] = []
-      (@property_flush[:servers] || resource[:servers]).each do |server|
-        host = server['host']
-        if @property_flush[:server_binding]
-          server['binding'] = @property_flush[:server_binding][host]
-        else
-          server['binding'] = resource[:server_binding][host] if resource[:server_binding]
-        end
-        if @property_flush[:server_group_search]
-          server['group_search'] = @property_flush[:server_group_search][host]
-        else
-          server['group_search'] = resource[:server_group_search][host]
-        end
-        if @property_flush[:server_user_search]
-          server['user_search'] = @property_flush[:server_user_search][host]
-        else
-          server['user_search'] = resource[:server_user_search][host]
-        end
-        spec[:servers] << server
-      end
-      if @property_flush[:groups_prefix]
-        spec[:groups_prefix] = @property_flush[:groups_prefix]
-      else
-        spec[:groups_prefix] = resource[:groups_prefix]
-      end
-      if @property_flush[:username_prefix]
-        spec[:username_prefix] = @property_flush[:username_prefix]
-      else
-        spec[:username_prefix] = resource[:username_prefix]
-      end
+      spec[:servers] = @property_flush[:servers] || resource[:servers]
+      spec[:groups_prefix] = @property_flush[:groups_prefix] || resource[:groups_prefix]
+      spec[:username_prefix] = @property_flush[:username_prefix] || resource[:username_prefix]
       begin
         sensuctl_create('ad', metadata, spec, 'authentication/v2')
       rescue Exception => e

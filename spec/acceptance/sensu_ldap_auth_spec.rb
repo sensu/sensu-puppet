@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_check', if: RSpec.configuration.sensu_full do
+describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
   node = hosts_as('sensu_backend')[0]
   before do
     if ! RSpec.configuration.sensu_test_enterprise
@@ -17,26 +17,20 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         ensure              => 'present',
         servers             => [
           {
-            'host' => '127.0.0.1',
-            'port' => 389,
-          },
-        ],
-        server_binding      => {
-          '127.0.0.1' => {
-            'user_dn' => 'cn=binder,dc=acme,dc=org',
-            'password' => 'P@ssw0rd!'
+            'host'         => '127.0.0.1',
+            'port'         => 389,
+            'binding'      => {
+              'user_dn' => 'cn=binder,dc=acme,dc=org',
+              'password' => 'P@ssw0rd!'
+            },
+            'group_search' => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
           }
-        },
-        server_group_search => {
-          '127.0.0.1' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
-        server_user_search  => {
-          '127.0.0.1' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
+        ]
       }
       EOS
 
@@ -80,24 +74,18 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           {
             'host' => 'localhost',
             'port' => 636,
-          },
-        ],
-        server_binding      => {
-          'localhost' => {
-            'user_dn' => 'cn=test,dc=acme,dc=org',
-            'password' => 'password'
+            'binding'      => {
+              'user_dn' => 'cn=test,dc=acme,dc=org',
+              'password' => 'password'
+            },
+            'group_search' => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
           }
-        },
-        server_group_search => {
-          'localhost' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
-        server_user_search  => {
-          'localhost' => {
-            'base_dn' => 'dc=acme,dc=org',
-          }
-        },
+        ]
       }
       EOS
 
