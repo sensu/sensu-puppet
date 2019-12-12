@@ -4,10 +4,11 @@
 
 1. [Module Description](#module-description)
     * [Deprecations](#deprecations)
-2. [Setup - The basics of getting started with sensu](#setup)
+    * [Updating this module from 3.x to 4.x](#updating-this-module-from-3x-to-4x)
+2. [Setup - The basics of getting started with Sensu](#setup)
     * [What sensu affects](#what-sensu-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with sensu](#beginning-with-sensu)
+    * [Beginning with Sensu](#beginning-with-sensu)
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
@@ -45,20 +46,24 @@ Please note, that this is a **Partner Supported** module, which means that techn
 
 [Puppet Strings documentation](http://sensu.github.io/sensu-puppet/)
 
-### Compatibility - supported sensu versions
+### Compatibility - supported Sensu versions
 
 If not explicitly stated it should always support the latest Sensu release.
+Beginning with v4.0.0 this module will only support Sensu Go 5.16+.
 Please log an issue if you identify any incompatibilities.
 
-| Sensu Go Version   | Recommended Puppet Module Version   |
+| Sensu Go Version| Recommended Puppet Module Version   |
 | --------------- | ----------------------------------- |
-| 5.x             | latest v3 |
+| 5.0 - 5.15      | latest v3                           |
+| 5.16+           | latest v4                           |
 
 ### Upgrade note
 
-Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu Go 5.x.
+Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq.
+Version 3 of this module supports Sensu Go 5.0.0 to 5.15.x.
+Version 4 of this module supports Sensu Go 5.16+.
 
-Users wishing to use the old v2 Puppet module to support previous Ruby based Sensu should use [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic).
+Users wishing to use the previous Ruby based Sensu should use the [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic) module.
 
 ### Deprecations
 
@@ -92,6 +97,54 @@ sensu_asset { 'test':
 }
 ```
 
+### Updating this module from 3.x to 4.x
+
+Class parameter changes:
+
+* Move `sensu::backend::cli_package_name` to `sensu::cli::package_name`
+* Move `sensu::backend::sensuctl_chunk_size` to `sensu::cli::sensuctl_chunk_size`
+* Move `sensu::backend::url_host` to `sensu::api_host`
+* Move `sensu::backend::url_port` to `sensu::api_port`
+* Move `sensu::backend::password` to `sensu::password`
+* Move `sensu::backend::old_password` to `sensu::old_password`
+* Move `sensu::backend::agent_password` to `sensu::agent_password`
+* Move `sensu::backend::agent_old_password` to `sensu::agent_old_password`
+* The following parameters were moved from `sensu::backend` class to `sensu::resources` class. (**Example:** `sensu::backend::checks` becomes `sensu::resources::checks`)
+  * `ad_auths`
+  * `assets`
+  * `bonsai_assets`
+  * `checks`
+  * `cluster_members`
+  * `cluster_role_bindings`
+  * `cluster_roles`
+  * `configs` (removed)
+  * `entities`
+  * `etcd_replicators`
+  * `filters`
+  * `handlers`
+  * `hooks`
+  * `ldap_auths`
+  * `mutators`
+  * `namespaces`
+  * `oidc_auths`
+  * `role_bindings`
+  * `roles`
+  * `users`
+
+Type property changes:
+
+* Replace `sensu_check` `proxy_requests*` properties with `proxy_requests` Hash
+* Replace `sensu_entity` `deregistration_handler` with `deregistration` Hash
+* Replace `sensu_handler` `socket_*` properties with `socket` Hash
+* Refactor `sensu_ldap_auth` and `sensu_ad_auth` on how properties are defined.
+  * Move `server_binding`, `server_group_search` and `server_user_search` into `servers` property
+
+Breaking changes:
+
+* Remove `sensu_event` type, replaced with `sensu::event` Bolt task
+* Remove `sensu_silenced` type, replaced with `sensu::silenced` Bolt task
+* Remove `sensu_config` type, replaced with `sensu::cli::config_format` and `sensu::cli::config_namespace` parameters
+
 ## Setup
 
 ### What sensu effects
@@ -118,7 +171,7 @@ For Windows:
 For PostgreSQL datastore support:
 * [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`)
 
-### Beginning with sensu
+### Beginning with Sensu
 
 This module provides Vagrant definitions that can be used to get started with Sensu.
 
