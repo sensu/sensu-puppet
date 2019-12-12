@@ -194,7 +194,6 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- wss://localhost:8081
-          |password: P@ssw0rd!
           |name: hostname
           |subscriptions:
           |- linux
@@ -229,7 +228,6 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- wss://localhost:8081
-          |password: P@ssw0rd!
           |name: hostname
           |subscriptions:
           |- windows

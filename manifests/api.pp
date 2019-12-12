@@ -6,7 +6,7 @@
 #   include ::sensu::api
 #
 class sensu::api {
-  include ::sensu
+  include sensu
 
   sensu_api_config { 'sensu':
     url          => $::sensu::api_url,

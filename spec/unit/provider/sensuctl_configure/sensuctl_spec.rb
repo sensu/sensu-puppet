@@ -47,7 +47,7 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
     end
     it 'should run sensuctl configure with namespace' do
       resource[:config_namespace] = 'qa'
-      allow(resource.provider.api).to receive(:auth_test).and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).and_return(false)
       expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
       expect(resource.provider).to receive(:sensuctl).with(['config','set-namespace','qa'])
       resource.provider.create
@@ -86,7 +86,7 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
       resource.provider.flush
     end
     it 'should use update namespace' do
-      allow(resource.provider.api).to receive(:auth_test).and_return(true)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).and_return(true)
       expect(resource.provider).to receive(:sensuctl).with(['configure','--trusted-ca-file','/etc/sensu/ssl/ca.crt','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
       expect(resource.provider).to receive(:sensuctl).with(['config','set-namespace','qa'])
       resource.provider.config_namespace = 'qa'
