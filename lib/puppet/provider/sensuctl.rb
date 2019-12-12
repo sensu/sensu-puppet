@@ -5,28 +5,45 @@ require 'tempfile'
 class Puppet::Provider::Sensuctl < Puppet::Provider
   initvars
 
-  commands :sensuctl => 'sensuctl'
+  commands :sensuctl_cmd => 'sensuctl'
 
   class << self
     attr_accessor :chunk_size
+    attr_accessor :path
   end
 
   def self.config_path
-    # https://github.com/sensu/sensu-puppet/issues/1072
-    # since $HOME is not set in systemd service File.expand_path('~') won't work
-    home = Etc.getpwuid(Process.uid).dir
+    if Dir.respond_to?(:home)
+      home = Dir.home
+    else
+      # https://github.com/sensu/sensu-puppet/issues/1072
+      # since $HOME is not set in systemd service File.expand_path('~') won't work
+      home = Etc.getpwuid(Process.uid).dir
+    end
     File.join(home, '.config/sensu/sensuctl/cluster')
   end
   def config_path
     self.class.config_path
   end
 
-  def load_config(path)
+  def load_config(path = nil)
+    path ||= config_path
     return {} unless File.file?(path)
     file = File.read(path)
     config = JSON.parse(file)
     Puppet.debug("CONFIG: #{config}")
     config
+  end
+
+  def self.save_config(config, path = nil)
+    path ||= config_path
+    return unless File.exist?(path)
+    File.open(path, "w") do |f|
+      f.write(JSON.pretty_generate(config))
+    end
+  end
+  def save_config(*args)
+    self.class.save_config(*args)
   end
 
   def self.type_properties
@@ -45,6 +62,19 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     else
       value
     end
+  end
+
+  def self.sensuctl(args)
+    sensuctl_cmd = which('sensuctl')
+    if ! path.nil?
+      cmd = [path] + args
+    else
+      cmd = [sensuctl_cmd] + args
+    end
+    execute(cmd)
+  end
+  def sensuctl(*args)
+    self.class.sensuctl(*args)
   end
 
   def self.sensuctl_list(command, namespaces = true)

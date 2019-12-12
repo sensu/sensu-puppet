@@ -1,0 +1,353 @@
+[
+  {
+    "entity_class": "agent",
+    "system": {
+      "hostname": "el7-agent.example.com",
+      "os": "linux",
+      "platform": "centos",
+      "platform_family": "rhel",
+      "platform_version": "7.6.1810",
+      "network": {
+        "interfaces": [
+          {
+            "name": "lo",
+            "addresses": [
+              "127.0.0.1/8",
+              "::1/128"
+            ]
+          },
+          {
+            "name": "eth0",
+            "mac": "52:54:00:26:10:60",
+            "addresses": [
+              "10.0.2.15/24",
+              "fe80::5054:ff:fe26:1060/64"
+            ]
+          },
+          {
+            "name": "eth1",
+            "mac": "08:00:27:04:81:77",
+            "addresses": [
+              "192.168.52.11/24",
+              "fe80::a00:27ff:fe04:8177/64"
+            ]
+          }
+        ]
+      },
+      "arch": "amd64"
+    },
+    "subscriptions": [
+      "linux",
+      "entity:el7-agent.example.com"
+    ],
+    "last_seen": 1568497126,
+    "deregister": false,
+    "deregistration": {},
+    "user": "agent",
+    "redact": [
+      "password",
+      "passwd",
+      "pass",
+      "api_key",
+      "api_token",
+      "access_key",
+      "secret_key",
+      "private_key",
+      "secret"
+    ],
+    "metadata": {
+      "name": "el7-agent.example.com",
+      "namespace": "default"
+    },
+    "sensu_agent_version": ""
+  },
+  {
+    "entity_class": "agent",
+    "system": {
+      "hostname": "sensu-backend.example.com",
+      "os": "linux",
+      "platform": "centos",
+      "platform_family": "rhel",
+      "platform_version": "7.4.1708",
+      "network": {
+        "interfaces": [
+          {
+            "name": "lo",
+            "addresses": [
+              "127.0.0.1/8",
+              "::1/128"
+            ]
+          },
+          {
+            "name": "eth0",
+            "mac": "52:54:00:da:a7:10",
+            "addresses": [
+              "10.0.2.15/24",
+              "fe80::5054:ff:feda:a710/64"
+            ]
+          },
+          {
+            "name": "eth1",
+            "mac": "08:00:27:7a:3f:38",
+            "addresses": [
+              "192.168.52.10/24",
+              "fe80::a00:27ff:fe7a:3f38/64"
+            ]
+          }
+        ]
+      },
+      "arch": "amd64"
+    },
+    "subscriptions": [
+      "entity:sensu-backend.example.com"
+    ],
+    "last_seen": 1573506728,
+    "deregister": false,
+    "deregistration": {},
+    "user": "agent",
+    "redact": [
+      "password",
+      "passwd",
+      "pass",
+      "api_key",
+      "api_token",
+      "access_key",
+      "secret_key",
+      "private_key",
+      "secret"
+    ],
+    "metadata": {
+      "name": "sensu-backend.example.com",
+      "namespace": "default"
+    },
+    "sensu_agent_version": "5.14.1"
+  },
+  {
+    "entity_class": "agent",
+    "system": {
+      "hostname": "win2012r2-agent",
+      "os": "windows",
+      "platform": "Microsoft Windows Server 2012 R2 Standard",
+      "platform_family": "Server",
+      "platform_version": "6.3.9600 Build 9600",
+      "network": {
+        "interfaces": [
+          {
+            "name": "Ethernet 2",
+            "mac": "08:00:27:f9:a8:38",
+            "addresses": [
+              "fe80::4dd:5644:505f:8bdb/64",
+              "192.168.52.24/24"
+            ]
+          },
+          {
+            "name": "Ethernet",
+            "mac": "08:00:27:d5:9d:5a",
+            "addresses": [
+              "fe80::e488:b85c:5262:ff86/64",
+              "10.0.2.15/24"
+            ]
+          },
+          {
+            "name": "Loopback Pseudo-Interface 1",
+            "addresses": [
+              "::1/128",
+              "127.0.0.1/8"
+            ]
+          },
+          {
+            "name": "isatap.{31B440AF-632F-4FBF-8FFB-C2A80DC19FBA}",
+            "mac": "00:00:00:00:00:00:00:e0",
+            "addresses": [
+              "fe80::5efe:c0a8:3418/128"
+            ]
+          },
+          {
+            "name": "isatap.{DD72B02C-4E48-4924-8D0F-F80EA2755534}",
+            "mac": "00:00:00:00:00:00:00:e0",
+            "addresses": [
+              "fe80::5efe:a00:20f/128"
+            ]
+          }
+        ]
+      },
+      "arch": "amd64"
+    },
+    "subscriptions": [
+      "windows",
+      "entity:win2012r2-agent"
+    ],
+    "last_seen": 1568480067,
+    "deregister": false,
+    "deregistration": {},
+    "user": "agent",
+    "redact": [
+      "password",
+      "passwd",
+      "pass",
+      "api_key",
+      "api_token",
+      "access_key",
+      "secret_key",
+      "private_key",
+      "secret"
+    ],
+    "metadata": {
+      "name": "win2012r2-agent",
+      "namespace": "default"
+    },
+    "sensu_agent_version": ""
+  },
+  {
+    "entity_class": "agent",
+    "system": {
+      "hostname": "win2016-agent",
+      "os": "windows",
+      "platform": "Microsoft Windows Server 2016 Datacenter Evaluation",
+      "platform_family": "Server",
+      "platform_version": "10.0.14393 Build 14393",
+      "network": {
+        "interfaces": [
+          {
+            "name": "Ethernet",
+            "mac": "08:00:27:5b:c4:19",
+            "addresses": [
+              "fe80::fd05:cca8:8abc:1bd7/64",
+              "10.0.2.15/24"
+            ]
+          },
+          {
+            "name": "Ethernet 2",
+            "mac": "08:00:27:df:81:b8",
+            "addresses": [
+              "fe80::91dd:9473:f3c4:d126/64",
+              "192.168.52.26/24"
+            ]
+          },
+          {
+            "name": "Loopback Pseudo-Interface 1",
+            "addresses": [
+              "::1/128",
+              "127.0.0.1/8"
+            ]
+          },
+          {
+            "name": "isatap.{5664CB88-D0B0-4AC6-A773-47F4225ACE02}",
+            "mac": "00:00:00:00:00:00:00:e0",
+            "addresses": [
+              "fe80::5efe:a00:20f/128"
+            ]
+          },
+          {
+            "name": "isatap.{17F06521-8485-46B5-8743-B22D083C966B}",
+            "mac": "00:00:00:00:00:00:00:e0",
+            "addresses": [
+              "fe80::5efe:c0a8:341a/128"
+            ]
+          }
+        ]
+      },
+      "arch": "amd64"
+    },
+    "subscriptions": [
+      "windows",
+      "entity:win2016-agent"
+    ],
+    "last_seen": 1568846066,
+    "deregister": false,
+    "deregistration": {},
+    "user": "agent",
+    "redact": [
+      "password",
+      "passwd",
+      "pass",
+      "api_key",
+      "api_token",
+      "access_key",
+      "secret_key",
+      "private_key",
+      "secret"
+    ],
+    "metadata": {
+      "name": "win2016-agent",
+      "namespace": "default"
+    },
+    "sensu_agent_version": ""
+  },
+  {
+    "entity_class": "agent",
+    "system": {
+      "hostname": "win2016-agent-bolt",
+      "os": "windows",
+      "platform": "Microsoft Windows Server 2016 Datacenter Evaluation",
+      "platform_family": "Server",
+      "platform_version": "10.0.14393 Build 14393",
+      "network": {
+        "interfaces": [
+          {
+            "name": "Ethernet",
+            "mac": "08:00:27:5b:c4:19",
+            "addresses": [
+              "fe80::5410:8c9a:d8ea:d5eb/64",
+              "10.0.2.15/24"
+            ]
+          },
+          {
+            "name": "Ethernet 2",
+            "mac": "08:00:27:a0:83:46",
+            "addresses": [
+              "fe80::a045:af1a:da31:1967/64",
+              "192.168.52.28/24"
+            ]
+          },
+          {
+            "name": "Loopback Pseudo-Interface 1",
+            "addresses": [
+              "::1/128",
+              "127.0.0.1/8"
+            ]
+          },
+          {
+            "name": "isatap.{47619EEE-CC3D-4AF0-A1C9-773FBD9588A8}",
+            "mac": "00:00:00:00:00:00:00:e0",
+            "addresses": [
+              "fe80::5efe:a00:20f/128"
+            ]
+          },
+          {
+            "name": "isatap.{3C08F25D-C308-46B7-BAB5-A028FF8B9A09}",
+            "mac": "00:00:00:00:00:00:00:e0",
+            "addresses": [
+              "fe80::5efe:c0a8:341c/128"
+            ]
+          }
+        ]
+      },
+      "arch": "amd64"
+    },
+    "subscriptions": [
+      "windows",
+      "entity:win2016-agent-bolt"
+    ],
+    "last_seen": 1569081707,
+    "deregister": false,
+    "deregistration": {},
+    "user": "agent",
+    "redact": [
+      "password",
+      "passwd",
+      "pass",
+      "api_key",
+      "api_token",
+      "access_key",
+      "secret_key",
+      "private_key",
+      "secret"
+    ],
+    "metadata": {
+      "name": "win2016-agent-bolt",
+      "namespace": "default"
+    },
+    "sensu_agent_version": ""
+  }
+]

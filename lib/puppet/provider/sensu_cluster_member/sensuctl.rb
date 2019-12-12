@@ -8,7 +8,7 @@ Puppet::Type.type(:sensu_cluster_member).provide(:sensuctl, :parent => Puppet::P
   def self.instances
     cluster_members = []
 
-    output = sensuctl('cluster', 'member-list', '--format', 'json')
+    output = sensuctl(['cluster', 'member-list', '--format', 'json'])
     Puppet.debug("sensu cluster members: #{output}")
     begin
       j = output.split(/\n\n/)
@@ -67,7 +67,7 @@ Puppet::Type.type(:sensu_cluster_member).provide(:sensuctl, :parent => Puppet::P
   def create
     peer_urls = resource[:peer_urls].join(',')
     begin
-      output = sensuctl('cluster', 'member-add', resource[:name], peer_urls)
+      output = sensuctl(['cluster', 'member-add', resource[:name], peer_urls])
       output.each_line do |line|
         Puppet.info("Cluster member-add #{resource[:name]}: #{line}")
       end
@@ -81,7 +81,7 @@ Puppet::Type.type(:sensu_cluster_member).provide(:sensuctl, :parent => Puppet::P
     if @property_flush[:peer_urls]
       peer_urls = @property_flush[:peer_urls].join(',')
       begin
-        output = sensuctl('cluster', 'member-update', @property_hash[:id], peer_urls)
+        output = sensuctl(['cluster', 'member-update', @property_hash[:id], peer_urls])
         output.each_line do |line|
           Puppet.info("Cluster member-update #{resource[:name]}: #{line}")
         end
@@ -94,7 +94,7 @@ Puppet::Type.type(:sensu_cluster_member).provide(:sensuctl, :parent => Puppet::P
 
   def destroy
     begin
-      sensuctl('cluster', 'member-remove', @property_hash[:id])
+      sensuctl(['cluster', 'member-remove', @property_hash[:id]])
     rescue Exception => e
       raise Puppet::Error, "sensuctl cluster member-remove #{@property_hash[:id]} failed\nError message: #{e.message}"
     end

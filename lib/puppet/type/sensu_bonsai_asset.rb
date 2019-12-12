@@ -26,7 +26,7 @@ Puppet::Type.newtype(:sensu_bonsai_asset) do
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Sensu_configure[puppet]`
+* `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 DESC

@@ -38,11 +38,6 @@ class sensu::backend::resources {
       * => $cluster_role,
     }
   }
-  $::sensu::backend::configs.each |$name, $config| {
-    sensu_config { $name:
-      * => $config,
-    }
-  }
   $::sensu::backend::entities.each |$name, $entity| {
     sensu_entity { $name:
       * => $entity,

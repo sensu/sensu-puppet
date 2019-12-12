@@ -284,3 +284,40 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
     end
   end
 end
+
+describe 'sensu bolt inventory', if: RSpec.configuration.sensu_full do
+  backend = hosts_as('sensu_backend')[0]
+  agent = hosts_as('sensu_agent')[0]
+  context 'setup' do
+    it 'should work without errors' do
+      agent_pp = <<-EOS
+      class { '::sensu::agent':
+        backends => ['sensu_backend:8081'],
+      }
+      EOS
+      pp = <<-EOS
+      include ::sensu::backend
+      #{agent_pp}
+      EOS
+      apply_manifest_on(agent, agent_pp, :catch_failures => true)
+      apply_manifest_on(backend, pp, :catch_failures => true)
+      inventory_cfg1 = <<-EOS
+version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+      EOS
+      create_remote_file(backend, '/root/.puppetlabs/bolt/inventory1.yaml', inventory_cfg1)
+    end
+  end
+
+  context 'inventory' do
+    it 'produces inventory' do
+      on backend, 'bolt inventory show --targets linux --format json -i /root/.puppetlabs/bolt/inventory1.yaml' do
+        data = JSON.parse(stdout)
+        expect(data["count"]).to eq(2)
+      end
+    end
+  end
+end

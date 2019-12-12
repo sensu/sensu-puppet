@@ -14,19 +14,12 @@ describe 'sensu::backend', :type => :class do
 
         it { should create_class('sensu::backend') }
         it { should contain_class('sensu') }
+        it { should contain_class('sensu::cli') }
         it { should_not contain_class('sensu::agent') }
-        it { should contain_class('sensu::ssl').that_comes_before('Sensu_configure[puppet]') }
+        it { should contain_class('sensu::ssl').that_comes_before('Sensuctl_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
         it { should contain_class('sensu::backend::tessen') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
-
-        it {
-          should contain_package('sensu-go-cli').with({
-            'ensure'  => 'installed',
-            'name'    => 'sensu-go-cli',
-            'require' => platforms[facts[:osfamily]][:package_require],
-          })
-        }
 
         it {
           should contain_sensu_api_validator('sensu').with({
@@ -37,16 +30,7 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
-        it {
-          should contain_sensu_configure('puppet').with({
-            'url'                 => 'https://test.example.com:8080',
-            'username'            => 'admin',
-            'password'            => 'P@ssw0rd!',
-            'bootstrap_password'  => 'P@ssw0rd!',
-            'trusted_ca_file'     => '/etc/sensu/ssl/ca.crt',
-          })
-        }
-
+        it { should have_sensu_user_resource_count(2) }
         it {
           should contain_sensu_user('admin').with({
             'ensure'        => 'present',
@@ -56,6 +40,15 @@ describe 'sensu::backend', :type => :class do
             'disabled'      => 'false',
             'configure'     => 'true',
             'configure_url' => 'https://test.example.com:8080',
+          })
+        }
+        it {
+          should contain_sensu_user('agent').with({
+            'ensure'       => 'present',
+            'disabled'     => 'false',
+            'password'     => 'P@ssw0rd!',
+            'old_password' => nil,
+            'groups'       => ['system:agents'],
           })
         }
 
@@ -190,16 +183,6 @@ describe 'sensu::backend', :type => :class do
           })
         }
 
-        it {
-          should contain_sensu_configure('puppet').with({
-            'url'                 => 'http://test.example.com:8080',
-            'username'            => 'admin',
-            'password'            => 'P@ssw0rd!',
-            'bootstrap_password'  => 'P@ssw0rd!',
-            'trusted_ca_file'     => 'absent',
-          })
-        }
-
         it { should_not contain_file('sensu_ssl_cert') }
         it { should_not contain_file('sensu_ssl_key') }
 
@@ -242,7 +225,6 @@ describe 'sensu::backend', :type => :class do
           "class { 'sensu': manage_repo => false }"
         end
         it { should compile.with_all_deps }
-        it { should contain_package('sensu-go-cli').without_require }
         it { should contain_package('sensu-go-backend').without_require }
       end
 
@@ -273,7 +255,7 @@ describe 'sensu::backend', :type => :class do
             'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
             'command'     => 'sensuctl create --file /etc/sensu/license.json',
             'refreshonly' => 'true',
-            'require'     => 'Sensu_configure[puppet]',
+            'require'     => 'Sensuctl_configure[puppet]',
           })
         }
       end
@@ -299,7 +281,7 @@ describe 'sensu::backend', :type => :class do
             'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
             'command'     => 'sensuctl create --file /etc/sensu/license.json',
             'refreshonly' => 'true',
-            'require'     => 'Sensu_configure[puppet]',
+            'require'     => 'Sensuctl_configure[puppet]',
           })
         }
       end

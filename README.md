@@ -11,6 +11,7 @@
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
+    * [Basic Sensu CLI](#basic-sensu-cli)
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
@@ -101,17 +102,21 @@ This module will install packages, create configuration and start services neces
 
 Plugin sync is required if the custom sensu types and providers are used.
 
-This module has a soft dependency on the [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 8.0.0`) for systems using `apt`.
+#### Soft module dependencies
 
-If using Puppet >= 6.0.0 there is a soft dependency on the [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`) for systems using `yum`.
+For systems using `apt`:
+  * [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 8.0.0`)
 
-If managing Windows there is a soft dependency on the [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey) module (`>= 3.0.0 < 5.0.0`).
+For systems using `yum` and Puppet >= 6.0.0:
+  * [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`)
 
-If managing Windows and defining `package_source`, there is a soft dependency on the [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`).
+For Windows:
+  * [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey) module (`>= 3.0.0 < 5.0.0`)
+  * [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
+  * [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.    0 < 5.0.0`)
 
-If managing Windows and defining `service_env_vars` there is a soft depedency on [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
-
-For PostgreSQL datastore support there is a soft dependency on [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`).
+For PostgreSQL datastore support:
+* [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`)
 
 ### Beginning with sensu
 
@@ -159,10 +164,11 @@ By default this module will configure the backend to use Puppet's SSL certificat
 It's advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   include sensu::agent
   sensu_check { 'check-cpu':
     ensure        => 'present',
@@ -182,6 +188,32 @@ associated to `linux` and `apache-servers` subscriptions.
     backends      => ['sensu-backend.example.com:8081'],
     subscriptions => ['linux', 'apache-servers'],
   }
+```
+
+### Basic Sensu CLI
+
+The following example will manage the resources necessary to use `sensuctl`.
+
+```puppet
+class { '::sensu':
+  api_host => 'sensu-backend.example.com',
+  password => 'supersecret',
+}
+include ::sensu::cli
+```
+
+**NOTE**: The `sensu::backend` class calls the `sensu::cli` class so it is only necessary to directly call the `sensu::cli` class on hosts not using the `sensu::backend` class.
+
+For Windows the `install_source` parameter must be provided:
+
+```puppet
+class { '::sensu':
+  api_host => 'sensu-backend.example.com',
+  password => 'supersecret',
+}
+class { '::sensu::cli':
+  install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
+}
 ```
 
 ### Manage Windows Agent
@@ -246,15 +278,15 @@ class { 'sensu::agent':
 
 By default this module uses Puppet's SSL certificates and CA.
 If you would prefer to use different certificates override the `ssl_ca_source`, `ssl_cert_source` and `ssl_key_source` parameters.
-The value for `url_host` must be valid for the provided certificate and the value used for agent's `backends` must also match the certificate used by the specified backend.
+The value for `api_host` must be valid for the provided certificate and the value used for agent's `backends` must also match the certificate used by the specified backend.
 If the certificates and keys are already installed then define the source parameters as filesystem paths.
 
 ```puppet
 class { 'sensu':
   ssl_ca_source => 'puppet:///modules/profile/sensu/ca.pem',
+  api_host      => 'sensu-backend.example.com',
 }
 class { 'sensu::backend':
-  url_host        => 'sensu-backend.example.com',
   ssl_cert_source => 'puppet:///modules/profile/sensu/cert.pem',
   ssl_key_source  => 'puppet:///modules/profile/sensu/key.pem',
 }
@@ -390,10 +422,11 @@ Extension management is handled by the `sensu::plugins` class.
 Example installing extension on backend:
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   class { 'sensu::plugins':
     extensions => ['graphite'],
   }
@@ -402,10 +435,11 @@ Example installing extension on backend:
 The `extensions` parameter can also be a Hash that sets the version:
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   class { 'sensu::plugins':
     extensions => {
       'graphite' => { 'version' => 'latest' },
@@ -416,10 +450,11 @@ The `extensions` parameter can also be a Hash that sets the version:
 You can uninstall extensions by passing `ensure` as `absent`.
 
 ```puppet
-  class { 'sensu::backend':
+  class { 'sensu':
     password     => 'supersecret',
     old_password => 'P@ssw0rd!',
   }
+  include sensu::backend
   class { 'sensu::plugins':
     extensions => {
       'graphite' => { 'ensure' => 'absent' },
@@ -729,6 +764,50 @@ Example: `bolt task run sensu::silenced action=delete subscription=entity:sensu_
 Example: `bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux output=true --nodes linux`
 
 Example: `bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --nodes windows`
+
+### Bolt Inventory
+
+This module provides a plugin to populate Bolt v2 inventory targets.
+
+In order to use the `sensu` inventory plugin the host executing Bolt must have `sensuctl` configured, see [Basic Sensu CLI](#basic-sensu-cli).
+
+Example of configuring the Bolt inventory with two groups. The `linux` group pulls Sensu Go entities in the `default` namespace with the `linux` subscription. The `linux-qa` group is the same as `linux` group but instead pulling entities from the `qa` namespace.
+
+```yaml
+version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+        namespace: default
+        subscription: linux
+  - name: linux-qa
+    targets:
+      - _plugin: sensu
+        namespace: qa
+        subscription: linux
+```
+
+If your entities have more than one network interface it may be necessary to specify the order of interfaces to search when looking for the IP address:
+
+```yaml
+version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+        namespace: default
+        subscription: linux
+        interface_list:
+          - eth0
+          - eth1
+```
+
+The following rules for interface matching determine the value used for `uri`.
+
+1. If `interface_list` was defined then find first match
+1. If `interface_list` not defined and only one interface, use that as ipaddress
+1. If `interface_list` is not defined and more than one interface, use name
 
 ## Reference
 

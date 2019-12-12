@@ -54,8 +54,8 @@ RSpec.shared_examples 'autorequires' do |namespace, configure|
   end
 
   if configure
-    it 'should autorequire Sensu_configure[puppet]' do
-      c = Puppet::Type.type(:sensu_configure).new(:name => 'puppet', :username => 'admin', :password => 'P@ssw0rd!', :url => 'http://127.0.0.1:8080')
+    it 'should autorequire Sensuctl_configure[puppet]' do
+      c = Puppet::Type.type(:sensuctl_configure).new(:name => 'puppet', :username => 'admin', :password => 'P@ssw0rd!', :url => 'http://127.0.0.1:8080')
       catalog = Puppet::Resource::Catalog.new
       catalog.add_resource res
       catalog.add_resource c

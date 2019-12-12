@@ -7,12 +7,11 @@ describe 'sensu without SSL', unless: RSpec.configuration.sensu_cluster do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        use_ssl => false,
-      }
-      class { '::sensu::backend':
+        use_ssl      => false,
         password     => 'P@ssw0rd!',
         old_password => 'supersecret',
       }
+      class { '::sensu::backend': }
       sensu_entity { 'sensu_agent':
         ensure => 'absent',
       }

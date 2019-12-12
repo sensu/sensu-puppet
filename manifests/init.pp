@@ -12,8 +12,14 @@
 # @param ssl_dir
 #   Absolute path to the Sensu ssl directory.
 #
+# @param manage_user
+#   Boolean that determines if sensu user should be managed
+#
 # @param user
 #   User used by sensu services
+#
+# @param manage_group
+#   Boolean that determines if sensu group should be managed
 #
 # @param group
 #   User group used by sensu services
@@ -36,17 +42,37 @@
 # @param ssl_ca_source
 #   Source of SSL CA used by sensu services
 #
+# @param api_host
+#   Sensu backend host used to configure sensuctl and verify API access.
+# @param api_port
+#   Sensu backend port used to configure sensuctl and verify API access.
+# @param password
+#   Sensu backend admin password used to confiure sensuctl.
+# @param old_password
+#   Sensu backend admin old password needed when changing password.
+# @param agent_password
+#   The sensu agent password
+# @param agent_old_password
+#   The sensu agent old password needed when changing agent_password
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
   Stdlib::Absolutepath $ssl_dir = '/etc/sensu/ssl',
+  Boolean $manage_user = true,
   String $user = 'sensu',
+  Boolean $manage_group = true,
   String $group = 'sensu',
   Boolean $etc_dir_purge = true,
   Boolean $ssl_dir_purge = true,
   Boolean $manage_repo = true,
   Boolean $use_ssl = true,
   Optional[String] $ssl_ca_source = $facts['puppet_localcacert'],
+  String $api_host = $trusted['certname'],
+  Stdlib::Port $api_port = 8080,
+  String $password = 'P@ssw0rd!',
+  Optional[String] $old_password = undef,
+  String $agent_password = 'P@ssw0rd!',
+  Optional[String] $agent_old_password = undef,
 ) {
 
   if $use_ssl and ! $ssl_ca_source {
@@ -54,23 +80,43 @@ class sensu (
   }
 
   if $facts['os']['family'] == 'windows' {
+    # dirname can not handle back slashes so convert to forward slash then back to back slash
+    $etc_dir_fixed = regsubst($etc_dir, '\\\\', '/', 'G')
+    $etc_parent_dirname = dirname($etc_dir_fixed)
+    $etc_parent_dir = regsubst($etc_parent_dirname, '/', '\\\\', 'G')
     $sensu_user = undef
     $sensu_group = undef
+    $directory_mode = undef
     $file_mode = undef
     $trusted_ca_file_path = "${ssl_dir}\\ca.crt"
     $agent_config_path = "${etc_dir}\\agent.yml"
   } else {
+    $etc_parent_dir = undef
     $sensu_user = $user
     $sensu_group = $group
+    $directory_mode = '0755'
     $file_mode = '0640'
     $join_path = '/'
     $trusted_ca_file_path = "${ssl_dir}/ca.crt"
     $agent_config_path = "${etc_dir}/agent.yml"
   }
 
+  if $etc_parent_dir {
+    file { 'sensu_dir':
+      ensure => 'directory',
+      path   => $etc_parent_dir,
+      owner  => $sensu_user,
+      group  => $sensu_group,
+      mode   => $directory_mode,
+    }
+  }
+
   file { 'sensu_etc_dir':
     ensure  => 'directory',
     path    => $etc_dir,
+    owner   => $sensu_user,
+    group   => $sensu_group,
+    mode    => $directory_mode,
     purge   => $etc_dir_purge,
     recurse => $etc_dir_purge,
     force   => $etc_dir_purge,
@@ -78,6 +124,32 @@ class sensu (
 
   if $use_ssl {
     contain sensu::ssl
+    $api_protocol = 'https'
+  } else {
+    $api_protocol = 'http'
+  }
+
+  if $manage_user and $sensu_user {
+    user { 'sensu':
+      ensure     => 'present',
+      name       => $sensu_user,
+      forcelocal => true,
+      shell      => '/bin/false',
+      gid        => $sensu_group,
+      uid        => undef,
+      home       => '/var/lib/sensu',
+      managehome => false,
+      system     => true,
+    }
+  }
+  if $manage_group and $sensu_group {
+    group { 'sensu':
+      ensure     => 'present',
+      name       => $sensu_group,
+      forcelocal => true,
+      gid        => undef,
+      system     => true,
+    }
   }
 
   case $facts['os']['family'] {

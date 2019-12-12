@@ -71,7 +71,7 @@ add_custom_fact :puppet_localcacert, ->(os, facts) {
 # Used in sensuctl_config tests
 def sensuctl_types
   types = []
-  Dir[File.join(File.dirname(__FILE__), '..', 'lib/puppet/provider') + '/*/sensuctl.rb'].each do |f|
+  Dir[File.join(File.dirname(__FILE__), '..', 'lib/puppet/provider') + '/sensu_*/sensuctl.rb'].each do |f|
     type = File.basename(File.dirname(f))
     types << type.to_sym
   end
@@ -89,12 +89,14 @@ def platforms
       :agent_config_path => '/etc/sensu/agent.yml',
       agent_config_mode: '0640',
       etc_dir: '/etc/sensu',
+      etc_parent_dir: nil,
       ssl_dir: '/etc/sensu/ssl',
       ca_path: '/etc/sensu/ssl/ca.crt',
       ca_path_yaml: '"/etc/sensu/ssl/ca.crt"',
       user: 'sensu',
       group: 'sensu',
       ssl_dir_mode: '0700',
+      etc_dir_mode: '0755',
       ca_mode: '0644',
       agent_service_name: 'sensu-agent',
       log_file: nil,
@@ -111,11 +113,13 @@ def platforms
       agent_config_mode: '0640',
       ssl_dir: '/etc/sensu/ssl',
       etc_dir: '/etc/sensu',
+      etc_parent_dir: nil,
       ca_path: '/etc/sensu/ssl/ca.crt',
       ca_path_yaml: '"/etc/sensu/ssl/ca.crt"',
       user: 'sensu',
       group: 'sensu',
       ssl_dir_mode: '0700',
+      etc_dir_mode: '0755',
       ca_mode: '0644',
       agent_service_name: 'sensu-agent',
       log_file: nil,
@@ -128,12 +132,14 @@ def platforms
       :agent_config_path => 'C:\ProgramData\Sensu\config\agent.yml',
       agent_config_mode: nil,
       etc_dir: 'C:\\ProgramData\\Sensu\\config',
+      etc_parent_dir: 'C:\\ProgramData\\Sensu',
       ssl_dir: 'C:\\ProgramData\\Sensu\\config\\ssl',
       ca_path: 'C:\\ProgramData\\Sensu\\config\\ssl\\ca.crt',
       ca_path_yaml: 'C:\\ProgramData\\Sensu\\config\\ssl\\ca.crt',
       user: nil,
       group: nil,
       ssl_dir_mode: nil,
+      etc_dir_mode: nil,
       ca_mode: nil,
       plugins_dependencies: [],
       agent_service_name: 'SensuAgent',

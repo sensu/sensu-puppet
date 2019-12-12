@@ -36,7 +36,7 @@ Puppet::Type.newtype(:sensu_role_binding) do
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
-* `Sensu_configure[puppet]`
+* `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
 * `sensu_role` - Puppet will autorequire `sensu_role` resource defined in `role_ref` property.
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.

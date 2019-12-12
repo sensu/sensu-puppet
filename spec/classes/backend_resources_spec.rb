@@ -122,21 +122,6 @@ describe 'sensu::backend::resources', :type => :class do
         it { should compile.with_all_deps }
         it { should contain_sensu_cluster_role('test') }
       end
-      context 'configs defined' do
-        let(:pre_condition) do
-          <<-EOS
-          class { '::sensu::backend':
-            configs => {
-              'format' => {
-                'value' => 'json',
-              }
-            }
-          }
-          EOS
-        end
-        it { should compile.with_all_deps }
-        it { should contain_sensu_config('format') }
-      end
       context 'entities defined' do
         let(:pre_condition) do
           <<-EOS

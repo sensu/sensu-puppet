@@ -75,9 +75,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'with chunk size' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { '::sensu::cli':
         sensuctl_chunk_size => 1,
       }
+      include ::sensu::backend
       sensu_check { 'test3':
         command       => 'check-http3.rb',
         subscriptions => ['demo'],

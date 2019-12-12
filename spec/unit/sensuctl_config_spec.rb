@@ -29,6 +29,7 @@ describe Puppet::Type.type(:sensuctl_config) do
 
   # String properties
   [
+    :path,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

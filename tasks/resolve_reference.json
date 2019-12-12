@@ -1,0 +1,18 @@
+{
+  "description": "Generate targets from Sensu Go",
+  "input_method": "stdin",
+  "parameters": {
+    "namespace": {
+      "type": "Optional[String[1]]"
+    },
+    "subscription": {
+      "type": "Optional[String[1]]"
+    },
+    "interface_list": {
+      "type": "Optional[Array]"
+    },
+    "uri_ipaddress": {
+      "type": "Optional[Boolean]"
+    }
+  }
+}

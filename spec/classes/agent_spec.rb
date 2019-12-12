@@ -4,6 +4,7 @@ describe 'sensu::agent', :type => :class do
   on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
+      let(:node) { 'localhost' }
       describe 'with default values for all parameters' do
         # Unknown bug in rspec-puppet fails to compile windows paths
         # when they are used for file source of sensu_ssl_ca, issue with windows mocking
@@ -48,6 +49,7 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- wss://localhost:8081
+          |password: P@ssw0rd!
           |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
 
@@ -157,6 +159,7 @@ describe 'sensu::agent', :type => :class do
           |---
           |backend-url:
           |- ws://localhost:8081
+          |password: P@ssw0rd!
         END
 
         it {
@@ -200,6 +203,7 @@ describe 'sensu::agent', :type => :class do
           |labels:
           |  bar: baz
           |namespace: qa
+          |password: P@ssw0rd!
           |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
         it { should contain_file('sensu_agent_config').with_content(agent_content) }
@@ -232,6 +236,7 @@ describe 'sensu::agent', :type => :class do
           |labels:
           |  bar: baz
           |namespace: default
+          |password: P@ssw0rd!
           |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
         it { should contain_file('sensu_agent_config').with_content(agent_content) }
@@ -314,6 +319,7 @@ describe 'sensu::agent', :type => :class do
             |---
             |backend-url:
             |- #{backend}
+            |password: P@ssw0rd!
             |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
           END
 
