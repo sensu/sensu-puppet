@@ -38,7 +38,7 @@ class sensu::cli (
   Optional[String] $config_namespace = undef,
 ) {
 
-  include ::sensu
+  include sensu
 
   $ssl_dir = $::sensu::ssl_dir
   $use_ssl = $::sensu::use_ssl

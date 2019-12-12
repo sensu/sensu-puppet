@@ -203,6 +203,7 @@ describe 'sensu::agent', :type => :class do
           |labels:
           |  bar: baz
           |namespace: qa
+          |password: P@ssw0rd!
           |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
         it { should contain_file('sensu_agent_config').with_content(agent_content) }
@@ -235,6 +236,7 @@ describe 'sensu::agent', :type => :class do
           |labels:
           |  bar: baz
           |namespace: default
+          |password: P@ssw0rd!
           |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
         END
         it { should contain_file('sensu_agent_config').with_content(agent_content) }
