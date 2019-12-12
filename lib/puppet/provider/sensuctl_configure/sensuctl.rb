@@ -66,6 +66,20 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     @property_flush[:config_namespace] = value
   end
 
+  def backend_init
+    backend = which('sensu-backend')
+    return if backend.nil?
+    return if api.auth_test(resource[:url], resource[:username], resource[:password])
+    return if api.auth_test(resource[:url], resource[:username], resource[:old_password])
+    return if api.auth_test(resource[:url], resource[:username], bootstrap_password)
+    custom_environment = {
+      'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME' => resource[:username],
+      'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD' => resource[:password],
+    }
+    Puppet.notice("Sensuctl_configure[#{resource[:name]}]: Initializing sensu-backend")
+    execute([backend, 'init'], :failonfail => false, :custom_environment => custom_environment)
+  end
+
   def configure_cmd()
     trusted_ca_file = @property_flush[:trusted_ca_file] || resource[:trusted_ca_file]
     cmd = ['configure']
@@ -99,6 +113,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
 
   def create
     begin
+      backend_init
       output = configure_cmd()
       sensuctl(['config','set-format',resource[:config_format]]) if resource[:config_format]
       sensuctl(['config','set-namespace',resource[:config_namespace]]) if resource[:config_namespace]
@@ -119,6 +134,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
           config['trusted-ca-file'] = ''
           save_config(config)
         end
+        backend_init
         configure_cmd()
         sensuctl(['config','set-format',@property_flush[:config_format]]) if @property_flush[:config_format]
         sensuctl(['config','set-namespace',@property_flush[:config_namespace]]) if @property_flush[:config_namespace]
