@@ -177,7 +177,7 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       return_response: true,
       method: 'post',
     }
-    response = api_request('/auth/token', {'refresh_token': @refresh_token}, opts)
+    response = api_request('/auth/token', {'refresh_token' => @refresh_token}, opts)
     if response.kind_of?(Net::HTTPSuccess)
       data = JSON.parse(response.body)
       @access_token = data['access_token']
@@ -190,11 +190,11 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
 
   def self.auth_test(url = nil, username, password)
     opts = {
-      url: url,
-      username: username,
-      password: password,
-      return_response: true,
-      use_token: false
+      :url => url,
+      :username => username,
+      :password => password,
+      :return_response => true,
+      :use_token => false
     }
     response = api_request('/auth/test', nil, opts)
     if response.kind_of?(Net::HTTPSuccess)
