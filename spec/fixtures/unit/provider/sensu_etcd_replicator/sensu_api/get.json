@@ -1,0 +1,20 @@
+[
+    {
+        "api_version": "federation/v1",
+        "metadata": {
+          "name": "role_replicator"
+        },
+        "spec": {
+            "api_version": "core/v2",
+            "ca_cert": "/path/to/ssl/trusted-certificate-authorities.pem",
+            "cert": "/path/to/ssl/cert.pem",
+            "insecure": true,
+            "key": "/path/to/ssl/key.pem",
+            "namespace": "",
+            "replication_interval_seconds": 30,
+            "resource": "Role",
+            "url": "http://127.0.0.1:3379"
+        },
+        "type": "EtcdReplicator"
+    }
+]

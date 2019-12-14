@@ -21,6 +21,7 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_full do
         key           => '/path/to/ssl/key.pem',
         url           => 'http://127.0.0.1:3379',
         resource_name => 'RoleBinding',
+        provider      => 'sensu_api',
       }
       EOS
 
@@ -87,6 +88,7 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_full do
         url                          => 'http://127.0.0.1:3379',
         resource_name                => 'RoleBinding',
         replication_interval_seconds => 60,
+        provider                     => 'sensu_api',
       }
       EOS
 
@@ -137,7 +139,10 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_etcd_replicator { 'role_replicator': ensure => 'absent' }
-      sensu_etcd_replicator { 'rolebinding_replicator': ensure => 'absent' }
+      sensu_etcd_replicator { 'rolebinding_replicator':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent

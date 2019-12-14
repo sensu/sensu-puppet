@@ -1,16 +1,18 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
 
-Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_etcd_replicator using sensuctl"
+Puppet::Type.type(:sensu_etcd_replicator).provide(:sensu_api, :parent => Puppet::Provider::SensuAPI) do
+  desc "Provider sensu_etcd_replicator using sensu API"
 
   mk_resource_methods
-
-  defaultfor :kernel => ['Linux','windows']
 
   def self.instances
     replicators = []
 
-    data = dump('federation/v1.EtcdReplicator')
+    opts = {
+      :api_group => 'enterprise/federation',
+      :api_version => 'v1',
+    }
+    data = api_request('etcd-replicators', nil, opts)
 
     data.each do |d|
       replicator = {}
@@ -71,11 +73,17 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
       property = :resource if property == :resource_name
       spec[property] = value
     end
-    begin
-      sensuctl_create('EtcdReplicator', metadata, spec, 'federation/v1')
-    rescue Exception => e
-      raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
-    end
+    data = {}
+    data[:spec] = spec
+    data[:metadata] = metadata
+    data[:api_version] = 'federation/v1'
+    data[:type] = 'EtcdReplicator'
+    opts = {
+      :api_group => 'enterprise/federation',
+      :api_version => 'v1',
+      :method => 'post',
+    }
+    api_request('etcd-replicators', data, opts)
     @property_hash[:ensure] = :present
   end
 
@@ -99,39 +107,28 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
         property = :resource if property == :resource_name
         spec[property] = value
       end
-      begin
-        sensuctl_create('EtcdReplicator', metadata, spec, 'federation/v1')
-      rescue Exception => e
-        raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
-      end
+      data = {}
+      data[:spec] = spec
+      data[:metadata] = metadata
+      data[:api_version] = 'federation/v1'
+      data[:type] = 'EtcdReplicator'
+      opts = {
+        :api_group => 'enterprise/federation',
+        :api_version => 'v1',
+        :method => 'put',
+      }
+      api_request("etcd-replicators/#{resource[:name]}", data, opts)
     end
     @property_hash = resource.to_hash
   end
 
   def destroy
-    spec = {}
-    metadata = {}
-    metadata[:name] = resource[:name]
-    type_properties.each do |property|
-      if @property_hash[property]
-        value = @property_hash[property]
-      else
-        value = resource[property]
-      end
-      next if value.nil?
-      if [:true, :false].include?(value)
-        value = convert_boolean_property_value(value)
-      elsif value == :absent
-        value = nil
-      end
-      property = :resource if property == :resource_name
-      spec[property] = value
-    end
-    begin
-      sensuctl_delete('EtcdReplicator', resource[:name], nil, metadata, spec, 'federation/v1')
-    rescue Exception => e
-      raise Puppet::Error, "sensuctl delete check #{resource[:name]} failed\nError message: #{e.message}"
-    end
+    opts = {
+      :api_group => 'enterprise/federation',
+      :api_version => 'v1',
+      :method => 'delete',
+    }
+    api_request("etcd-replicators/#{resource[:name]}", nil, opts)
     @property_hash.clear
   end
 end
