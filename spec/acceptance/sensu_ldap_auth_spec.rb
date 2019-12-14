@@ -32,6 +32,26 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
           }
         ]
       }
+      sensu_ldap_auth { 'openldap-api':
+        ensure              => 'present',
+        servers             => [
+          {
+            'host'         => '127.0.0.1',
+            'port'         => 389,
+            'binding'      => {
+              'user_dn' => 'cn=binder,dc=acme,dc=org',
+              'password' => 'P@ssw0rd!'
+            },
+            'group_search' => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+          }
+        ],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -49,6 +69,20 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
 
     it 'should have a valid LDAP auth' do
       on node, 'sensuctl auth info openldap --format json' do
+        data = JSON.parse(stdout)
+        expect(data['servers'].size).to eq(1)
+        expect(data['servers'][0]['host']).to eq('127.0.0.1')
+        expect(data['servers'][0]['port']).to eq(389)
+        expect(data['servers'][0]['insecure']).to eq(false)
+        expect(data['servers'][0]['security']).to eq('tls')
+        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=binder,dc=acme,dc=org', 'password' => 'P@ssw0rd!'})
+        expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'})
+        expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'})
+      end
+    end
+
+    it 'should have a valid LDAP auth using API' do
+      on node, 'sensuctl auth info openldap-api --format json' do
         data = JSON.parse(stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
@@ -87,6 +121,26 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
           }
         ]
       }
+      sensu_ldap_auth { 'openldap-api':
+        ensure              => 'present',
+        servers             => [
+          {
+            'host' => 'localhost',
+            'port' => 636,
+            'binding'      => {
+              'user_dn' => 'cn=test,dc=acme,dc=org',
+              'password' => 'password'
+            },
+            'group_search' => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+          }
+        ],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -115,6 +169,20 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'})
       end
     end
+
+    it 'should have a valid ldap auth using API' do
+      on node, 'sensuctl auth info openldap-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['servers'].size).to eq(1)
+        expect(data['servers'][0]['host']).to eq('localhost')
+        expect(data['servers'][0]['port']).to eq(636)
+        expect(data['servers'][0]['insecure']).to eq(false)
+        expect(data['servers'][0]['security']).to eq('tls')
+        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=test,dc=acme,dc=org', 'password' => 'password'})
+        expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'})
+        expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'})
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -122,6 +190,7 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_ldap_auth { 'openldap': ensure => 'absent' }
+      sensu_ldap_auth { 'openldap-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -138,6 +207,9 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl auth info openldap'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl auth info openldap-api'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end

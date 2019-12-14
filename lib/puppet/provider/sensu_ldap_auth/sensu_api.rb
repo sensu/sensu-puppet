@@ -1,28 +1,22 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
 
-Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_ldap_auth using sensuctl"
+Puppet::Type.type(:sensu_ldap_auth).provide(:sensu_api, :parent => Puppet::Provider::SensuAPI) do
+  desc "Provider sensu_ldap_auth using sensu API"
 
   mk_resource_methods
-
-  defaultfor :kernel => ['Linux','windows']
 
   def self.instances
     auths = []
 
-    data = sensuctl_list('auth', false)
-
-    auth_types = sensuctl_auth_types()
+    data = api_request('authproviders', nil, {:api_group => 'enterprise/authentication'})
     data.each do |d|
+      next unless d['type'] == 'ldap'
       auth = {}
       auth[:ensure] = :present
       auth[:name] = d['metadata']['name']
-      if auth_types[auth[:name]] != 'LDAP'
-        next
-      end
-      auth[:servers] = d['servers']
-      auth[:groups_prefix] = d['groups_prefix']
-      auth[:username_prefix] = d['username_prefix']
+      auth[:servers] = d['spec']['servers']
+      auth[:groups_prefix] = d['spec']['groups_prefix']
+      auth[:username_prefix] = d['spec']['username_prefix']
       auths << new(auth)
     end
     auths
@@ -59,11 +53,16 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
     spec[:servers] = resource[:servers]
     spec[:groups_prefix] = resource[:groups_prefix] if resource[:groups_prefix]
     spec[:username_prefix] = resource[:username_prefix] if resource[:username_prefix]
-    begin
-      sensuctl_create('ldap', metadata, spec, 'authentication/v2')
-    rescue Exception => e
-      raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
-    end
+    data = {}
+    data[:spec] = spec
+    data[:metadata] = metadata
+    data[:type] = 'ldap'
+    data[:api_version] = 'authentication/v2'
+    opts = {
+      :api_group => 'enterprise/authentication',
+      :method    => 'put',
+    }
+    api_request("authproviders/#{resource[:name]}", data, opts)
     @property_hash[:ensure] = :present
   end
 
@@ -75,21 +74,26 @@ Puppet::Type.type(:sensu_ldap_auth).provide(:sensuctl, :parent => Puppet::Provid
       spec[:servers] = @property_flush[:servers] || resource[:servers]
       spec[:groups_prefix] = @property_flush[:groups_prefix] || resource[:groups_prefix]
       spec[:username_prefix] = @property_flush[:username_prefix] || resource[:username_prefix]
-      begin
-        sensuctl_create('ldap', metadata, spec, 'authentication/v2')
-      rescue Exception => e
-        raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
-      end
+      data = {}
+      data[:spec] = spec
+      data[:metadata] = metadata
+      data[:type] = 'ldap'
+      data[:api_version] = 'authentication/v2'
+      opts = {
+        :api_group => 'enterprise/authentication',
+        :method    => 'put',
+      }
+      api_request("authproviders/#{resource[:name]}", data, opts)
     end
     @property_hash = resource.to_hash
   end
 
   def destroy
-    begin
-      sensuctl_delete('auth', resource[:name])
-    rescue Exception => e
-      raise Puppet::Error, "sensuctl delete auth #{resource[:name]} failed\nError message: #{e.message}"
-    end
+    opts = {
+      :api_group => 'enterprise/authentication',
+      :method    => 'delete',
+    }
+    api_request("authproviders/#{resource[:name]}", nil, opts)
     @property_hash.clear
   end
 end
