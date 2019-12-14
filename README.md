@@ -747,12 +747,30 @@ sensu_role { 'test':
 This module also supports defining a federated cluster:
 
 ```puppet
-sensu_clusters_federation { 'us-west-2a':
+sensu_cluster_federation { 'us-west-2a':
   ensure   => 'present',
   api_urls => [
     'https://sensu-backend-site1.example.com:8080',
     'https://sensu-backend-site2.example.com:8080',
   ],
+}
+```
+
+It's also possible to add a backend to an existing Sensu federated cluster.
+The following example adds the API URL https://sensu-backend-site3.example.com:8080 to the federated cluster named us-west-2a.
+
+```puppet
+sensu_cluster_federation_member { 'https://sensu-backend-site3.example.com:8080 in us-west-2a':
+  ensure => 'present',
+}
+```
+
+The above can also be defined using the following example:
+
+```puppet
+sensu_cluster_federation_member { 'https://sensu-backend-site3.example.com:8080':
+  ensure  => 'present',
+  cluster => 'us-west-2a',
 }
 ```
 

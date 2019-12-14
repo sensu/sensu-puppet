@@ -1,0 +1,15 @@
+[
+  {
+    "type": "Cluster",
+    "api_version": "federation/v1",
+    "metadata": {
+      "name": "test"
+    },
+    "spec": {
+      "api_urls": [
+        "https://10.0.0.1:8080",
+        "https://10.0.0.2:8080"
+      ]
+    }
+  }
+]
