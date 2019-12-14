@@ -39,6 +39,7 @@ class sensu::cli (
 ) {
 
   include sensu
+  include sensu::common
 
   $ssl_dir = $sensu::ssl_dir
   $use_ssl = $sensu::use_ssl

@@ -15,6 +15,7 @@ describe 'sensu::plugins', :type => :class do
 
         it { should create_class('sensu::plugins')}
         it { should contain_class('sensu')}
+        it { should contain_class('sensu::common')}
         it { should contain_class('sensu::repo::community')}
 
         it {

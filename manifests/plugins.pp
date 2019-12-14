@@ -50,6 +50,7 @@ class sensu::plugins (
   }
 
   include sensu
+  include sensu::common
 
   $_manage_repo = pick($manage_repo, $sensu::manage_repo)
 

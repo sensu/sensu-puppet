@@ -102,6 +102,7 @@ class sensu::backend (
   }
 
   include sensu
+  include sensu::common
   include sensu::cli
   include sensu::api
   if $datastore == 'postgresql' {

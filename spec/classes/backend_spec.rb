@@ -14,6 +14,7 @@ describe 'sensu::backend', :type => :class do
 
         it { should create_class('sensu::backend') }
         it { should contain_class('sensu') }
+        it { should contain_class('sensu::common')}
         it { should contain_class('sensu::cli') }
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensuctl_configure[puppet]') }

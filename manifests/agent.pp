@@ -86,6 +86,7 @@ class sensu::agent (
 ) {
 
   include sensu
+  include sensu::common
 
   $etc_dir = $sensu::etc_dir
   $ssl_dir = $sensu::ssl_dir
