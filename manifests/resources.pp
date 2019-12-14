@@ -8,6 +8,10 @@
 #   Hash of sensu_bonsai_asset resources
 # @param checks
 #   Hash of sensu_check resources
+# @param cluster_federations
+#   Hash of sensu_cluster_federation resources
+# @param cluster_federation_members
+#   Hash of sensu_cluster_federation_member resources
 # @param cluster_members
 #   Hash of sensu_cluster_member resources
 # @param cluster_role_bindings
@@ -46,6 +50,8 @@ class sensu::resources (
   Hash $assets = {},
   Hash $bonsai_assets = {},
   Hash $checks = {},
+  Hash $cluster_federations = {},
+  Hash $cluster_federation_members = {},
   Hash $cluster_members = {},
   Hash $cluster_role_bindings = {},
   Hash $cluster_roles = {},
@@ -83,7 +89,17 @@ class sensu::resources (
       * => $check,
     }
   }
-    $cluster_members.each |$name, $cluster_member| {
+  $cluster_federations.each |$name, $cluster_federation| {
+    sensu_cluster_federation { $name:
+      * => $cluster_federation,
+    }
+  }
+  $cluster_federation_members.each |$name, $cluster_federation_member| {
+    sensu_cluster_federation_member { $name:
+      * => $cluster_federation_member,
+    }
+  }
+  $cluster_members.each |$name, $cluster_member| {
     sensu_cluster_member { $name:
       * => $cluster_member,
     }

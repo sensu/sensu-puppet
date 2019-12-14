@@ -76,6 +76,32 @@ describe 'sensu::resources', :type => :class do
         it { should compile.with_all_deps }
         it { should contain_sensu_check('test') }
       end
+      context 'cluster_federations defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::sensu::resources':
+            cluster_federations => {
+              'test' => {'api_urls' => ['http://10.0.0.1:8080'] },
+            }
+          }
+          EOS
+        end
+        it { should compile.with_all_deps }
+        it { should contain_sensu_cluster_federation('test') }
+      end
+      context 'cluster_federation_members defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::sensu::resources':
+            cluster_federation_members => {
+              'test' => {'api_url' => ['http://10.0.0.1:8080'], 'cluster' => 'test' },
+            }
+          }
+          EOS
+        end
+        it { should compile.with_all_deps }
+        it { should contain_sensu_cluster_federation_member('test') }
+      end
       context 'cluster_members defined' do
         let(:pre_condition) do
           <<-EOS
