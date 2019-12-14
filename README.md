@@ -709,10 +709,8 @@ The first step will not fully add the node to the cluster until the second step 
 
 ### Sensu backend federation
 
-Currently the federation support within this module involves configuring Etcd replicators. This allows resources to be sent from one Sensu cluster to another cluster.
-
+This module supports defining Etcd replicators which allows resources to be sent from one Sensu cluster to another cluster.
 It's necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
-
 First configure backend Etcd to listen on an interface besides localhost and also use SSL:
 
 ```puppet
@@ -743,6 +741,18 @@ sensu_etcd_replicator { 'role_replicator':
 sensu_role { 'test':
   ensure => 'present',
   rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
+
+This module also supports defining a federated cluster:
+
+```puppet
+sensu_clusters_federation { 'us-west-2a':
+  ensure   => 'present',
+  api_urls => [
+    'https://sensu-backend-site1.example.com:8080',
+    'https://sensu-backend-site2.example.com:8080',
+  ],
 }
 ```
 
