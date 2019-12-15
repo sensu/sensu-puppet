@@ -123,36 +123,6 @@ matrix:
     stage: acceptance
   - rvm: 2.4.5
     services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes BEAKER_sensu_provider=sensu_api
-    bundler_args:
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.5.7
-    services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_provider=sensu_api
-    bundler_args:
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.4.5
-    services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes BEAKER_sensu_provider=sensu_api
-    bundler_args:
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.5.7
-    services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes BEAKER_sensu_provider=sensu_api
-    bundler_args:
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.5.7
-    services: docker
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_provider=sensu_api
-    bundler_args:
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.4.5
-    services: docker
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
     script: bundle exec rake beaker
@@ -290,8 +260,6 @@ matrix:
     env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
   - rvm: 2.5.7
     env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
-  - rvm: 2.5.7
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_provider=sensu_api
   - rvm: 2.5.7
     env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
