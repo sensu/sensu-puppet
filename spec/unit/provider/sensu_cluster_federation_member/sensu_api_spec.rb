@@ -8,6 +8,7 @@ describe Puppet::Type.type(:sensu_cluster_federation_member).provider(:sensu_api
       :name => 'test',
       :api_url => 'https://10.0.0.3:8080',
       :cluster => 'test',
+      :provider => 'sensu_api',
     })
   end
 

@@ -1,0 +1,6 @@
+type: Cluster
+api_version: federation/v1
+metadata:
+  name: test
+spec:
+  api_urls: []

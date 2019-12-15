@@ -1,41 +1,39 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 
-Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
-  desc "Provider sensu_etcd_replicator using sensuctl"
+Puppet::Type.type(:sensu_cluster_federation).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensu_cluster_federation using sensuctl"
 
   mk_resource_methods
 
   defaultfor :kernel => ['Linux','windows']
 
   def self.instances
-    replicators = []
+    clusters = []
 
-    data = dump('federation/v1.EtcdReplicator')
-
+    data = dump('federation/v1.Cluster')
     data.each do |d|
-      replicator = {}
-      replicator[:ensure] = :present
-      replicator[:name] = d['metadata']['name']
+      cluster = {}
+      cluster[:ensure] = :present
+      cluster[:name] = d['metadata']['name']
       d['spec'].each_pair do |key,value|
         if !!value == value
           value = value.to_s.to_sym
         end
-        key = 'resource_name' if key == 'resource'
         if type_properties.include?(key.to_sym)
-          replicator[key.to_sym] = value
+          cluster[key.to_sym] = value
         else
           next
         end
       end
-      replicators << new(replicator)
+      clusters << new(cluster)
     end
-    replicators
+    clusters
   end
 
   def self.prefetch(resources)
-    replicators = instances
+    clusters = instances
     resources.keys.each do |name|
-      if provider = replicators.find { |c| c.name == name }
+      if provider = clusters.find { |c| c.name == name }
         resources[name].provider = provider
       end
     end
@@ -68,11 +66,10 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
       elsif value == :absent
         value = nil
       end
-      property = :resource if property == :resource_name
       spec[property] = value
     end
     begin
-      sensuctl_create('EtcdReplicator', metadata, spec, 'federation/v1')
+      sensuctl_create('Cluster', metadata, spec, 'federation/v1')
     rescue Exception => e
       raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
@@ -96,11 +93,10 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
         elsif value == :absent
           value = nil
         end
-        property = :resource if property == :resource_name
         spec[property] = value
       end
       begin
-        sensuctl_create('EtcdReplicator', metadata, spec, 'federation/v1')
+        sensuctl_create('Cluster', metadata, spec, 'federation/v1')
       rescue Exception => e
         raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
@@ -128,7 +124,7 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
       spec[property] = value
     end
     begin
-      sensuctl_delete('EtcdReplicator', resource[:name], nil, metadata, spec, 'federation/v1')
+      sensuctl_delete('Cluster', resource[:name], nil, metadata, spec, 'federation/v1')
     rescue Exception => e
       raise Puppet::Error, "sensuctl delete #{resource[:name]} failed\nError message: #{e.message}"
     end

@@ -9,6 +9,10 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_full do
       sensu_cluster_federation { 'test':
         api_urls => ['https://#{fact_on(node, 'ipaddress')}:8080'],
       }
+      sensu_cluster_federation { 'testapi':
+        api_urls => ['https://#{fact_on(node, 'ipaddress')}:8080'],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -25,15 +29,31 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have a valid federated cluster' do
-      # Force token refresh and get access token for API request
-      token = nil
-      on node, 'sensuctl namespace list 2>/dev/null 1>/dev/null ; cat ~/.config/sensu/sensuctl/cluster' do
-        data = JSON.parse(stdout)
-        token = data['access_token']
-      end
-      on node, "curl -k -H 'Authorization: Bearer #{token}' https://sensu_backend:8080/api/enterprise/federation/v1/clusters/test" do
-        data = JSON.parse(stdout)
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+        resources = []
+        dumps = stdout.split('---')
+        dumps.each do |d|
+          resources << YAML.load(d)
+        end
+        data = resources.find { |r| r['metadata']['name'] == 'test' }
         expect(data['metadata']['name']).to eq('test')
+        expect(data['spec']['api_urls']).to eq(["https://#{fact_on(node, 'ipaddress')}:8080"])
+      end
+    end
+
+    it 'should have a valid federated cluster using API' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+        resources = []
+        dumps = stdout.split('---')
+        dumps.each do |d|
+          resources << YAML.load(d)
+        end
+        data = resources.find { |r| r['metadata']['name'] == 'testapi' }
+        expect(data['metadata']['name']).to eq('testapi')
         expect(data['spec']['api_urls']).to eq(["https://#{fact_on(node, 'ipaddress')}:8080"])
       end
     end
@@ -45,6 +65,10 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_full do
       include ::sensu::backend
       sensu_cluster_federation { 'test':
         api_urls => ['https://#{fact_on(node, 'ipaddress')}:9080'],
+      }
+      sensu_cluster_federation { 'testapi':
+        api_urls => ['https://#{fact_on(node, 'ipaddress')}:9080'],
+        provider => 'sensu_api',
       }
       EOS
 
@@ -62,15 +86,31 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_full do
     end
 
     it 'should have updated a federated cluster' do
-      # Force token refresh and get access token for API request
-      token = nil
-      on node, 'sensuctl namespace list 2>/dev/null 1>/dev/null ; cat ~/.config/sensu/sensuctl/cluster' do
-        data = JSON.parse(stdout)
-        token = data['access_token']
-      end
-      on node, "curl -k -H 'Authorization: Bearer #{token}' https://sensu_backend:8080/api/enterprise/federation/v1/clusters/test" do
-        data = JSON.parse(stdout)
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+        resources = []
+        dumps = stdout.split('---')
+        dumps.each do |d|
+          resources << YAML.load(d)
+        end
+        data = resources.find { |r| r['metadata']['name'] == 'test' }
         expect(data['metadata']['name']).to eq('test')
+        expect(data['spec']['api_urls']).to eq(["https://#{fact_on(node, 'ipaddress')}:9080"])
+      end
+    end
+
+    it 'should have updated a federated cluster using API' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+        resources = []
+        dumps = stdout.split('---')
+        dumps.each do |d|
+          resources << YAML.load(d)
+        end
+        data = resources.find { |r| r['metadata']['name'] == 'testapi' }
+        expect(data['metadata']['name']).to eq('testapi')
         expect(data['spec']['api_urls']).to eq(["https://#{fact_on(node, 'ipaddress')}:9080"])
       end
     end
@@ -81,6 +121,7 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include ::sensu::backend
       sensu_cluster_federation { 'test': ensure => 'absent' }
+      sensu_cluster_federation { 'testapi': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -96,16 +137,16 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_full do
       end
     end
 
-    it 'should have removed a federated cluster' do
-      # Force token refresh and get access token for API request
-      token = nil
-      on node, 'sensuctl namespace list 2>/dev/null 1>/dev/null ; cat ~/.config/sensu/sensuctl/cluster' do
-        data = JSON.parse(stdout)
-        token = data['access_token']
-      end
-      on node, "curl -k -H 'Authorization: Bearer #{token}' https://sensu_backend:8080/api/enterprise/federation/v1/clusters" do
-        data = JSON.parse(stdout)
-        expect(data.size).to eq(0)
+    it 'should have removed a federated clusters' do
+      # Dump YAML because 'sensuctl dump' does not yet support '--format json'
+      # https://github.com/sensu/sensu-go/issues/3424
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+        resources = []
+        dumps = stdout.split('---')
+        dumps.each do |d|
+          resources << YAML.load(d)
+        end
+        expect(resources.size).to eq(0)
       end
     end
   end

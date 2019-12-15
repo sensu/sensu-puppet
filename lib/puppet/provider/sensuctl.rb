@@ -176,6 +176,9 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
     resources
   end
+  def dump(*args)
+    self.class.dump(*args)
+  end
 
   def self.namespaces()
     begin

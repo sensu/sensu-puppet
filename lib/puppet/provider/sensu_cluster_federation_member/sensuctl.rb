@@ -1,18 +1,16 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
 
-Puppet::Type.type(:sensu_cluster_federation_member).provide(:sensu_api, :parent => Puppet::Provider::SensuAPI) do
-  desc "Provider sensu_cluster_federation_member using sensu API"
+Puppet::Type.type(:sensu_cluster_federation_member).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
+  desc "Provider sensu_cluster_federation_member using sensuctl"
 
   mk_resource_methods
+
+  defaultfor :kernel => ['Linux','windows']
 
   def self.instances
     members = []
 
-    opts = {
-      :api_group => 'enterprise/federation',
-      :api_version => 'v1',
-    }
-    data = api_request('clusters', nil, opts)
+    data = dump('federation/v1.Cluster')
     data.each do |d|
       cluster = d['metadata']['name']
       d['spec']['api_urls'].each do |api_url|
@@ -52,45 +50,39 @@ Puppet::Type.type(:sensu_cluster_federation_member).provide(:sensu_api, :parent 
   end
 
   def api_urls
-    opts = {
-      :api_group => 'enterprise/federation',
-      :api_version => 'v1',
-      :failonfail => false,
-    }
-    data = api_request("clusters/#{resource[:cluster]}", nil, opts)
+    data = dump('federation/v1.Cluster')
     return [] if data.empty?
-    data['spec']['api_urls']
+    data.each do |d|
+      if d['metadata']['name'] == resource[:cluster]
+        return d['spec']['api_urls']
+      end
+    end
+    return []
   end
 
-  def request(urls)
+  def update(urls)
     spec = {}
+    spec[:api_urls] = urls
     metadata = {}
     metadata[:name] = resource[:cluster]
-    spec[:api_urls] = urls
-    data = {}
-    data[:spec] = spec
-    data[:metadata] = metadata
-    data[:api_version] = 'federation/v1'
-    data[:type] = 'Cluster'
-    opts = {
-      :api_group => 'enterprise/federation',
-      :api_version => 'v1',
-      :method => 'put',
-    }
-    api_request("clusters/#{resource[:cluster]}", data, opts)
+    begin
+      sensuctl_create('Cluster', metadata, spec, 'federation/v1')
+    rescue Exception => e
+      raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
+    end
   end
 
   def create
     urls = api_urls
     urls << resource[:api_url]
-    request(urls)
+    update(urls)
     @property_hash[:ensure] = :present
   end
 
   def destroy
     urls = api_urls
     urls.delete(resource[:api_url])
-    request(urls)
+    update(urls)
     @property_hash.clear
   end
 end
