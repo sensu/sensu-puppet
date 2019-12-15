@@ -63,9 +63,9 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
   def backend_init
     backend = which('sensu-backend')
     return if backend.nil?
-    return if api.auth_test(resource[:url], resource[:username], resource[:password])
-    return if api.auth_test(resource[:url], resource[:username], resource[:old_password])
-    return if api.auth_test(resource[:url], resource[:username], bootstrap_password)
+    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:password])
+    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:old_password])
+    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], bootstrap_password)
     custom_environment = {
       'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME' => resource[:username],
       'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD' => resource[:password],

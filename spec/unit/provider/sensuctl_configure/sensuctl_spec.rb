@@ -25,6 +25,58 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
     end
   end
 
+  describe 'backend_init' do
+    before(:each) do
+      resource[:old_password] = 'barbaz'
+    end
+
+    let(:custom_environment) do
+      {
+        'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME' => resource[:username],
+        'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD' => resource[:password],
+      }
+    end
+
+    it 'should execute sensu-backend init' do
+      allow(resource.provider).to receive(:which).with('sensu-backend').and_return('/usr/sbin/sensu-backend')
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'foobar').and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'barbaz').and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'P@ssw0rd!').and_return(false)
+      expect(resource.provider).to receive(:execute).with(['/usr/sbin/sensu-backend','init'],{failonfail: false, custom_environment: custom_environment})
+      resource.provider.backend_init
+    end
+
+    it 'should skip if not sensu-backend' do
+      allow(resource.provider).to receive(:which).with('sensu-backend').and_return(nil)
+      expect(resource.provider).not_to receive(:execute)
+      resource.provider.backend_init
+    end
+
+    it 'should skip if password matches' do
+      allow(resource.provider).to receive(:which).with('sensu-backend').and_return('/usr/sbin/sensu-backend')
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'foobar').and_return(true)
+      expect(resource.provider).not_to receive(:execute)
+      resource.provider.backend_init
+    end
+
+    it 'should skip if old_password matches' do
+      allow(resource.provider).to receive(:which).with('sensu-backend').and_return('/usr/sbin/sensu-backend')
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'foobar').and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'barbaz').and_return(true)
+      expect(resource.provider).not_to receive(:execute)
+      resource.provider.backend_init
+    end
+
+    it 'should skip if bootstrap_password matches' do
+      allow(resource.provider).to receive(:which).with('sensu-backend').and_return('/usr/sbin/sensu-backend')
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'foobar').and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'barbaz').and_return(false)
+      allow(Puppet::Provider::SensuAPI).to receive(:auth_test).with(resource[:url], resource[:username], 'P@ssw0rd!').and_return(true)
+      expect(resource.provider).not_to receive(:execute)
+      resource.provider.backend_init
+    end
+  end
+
   describe 'create' do
     before(:each) do
       allow(resource.provider).to receive(:exists?).and_return(false)
