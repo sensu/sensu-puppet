@@ -10,8 +10,8 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
   context 'install plugin' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::agent
-      class { '::sensu::plugins':
+      include sensu::agent
+      class { 'sensu::plugins':
         gem_dependencies => ['vmstat'],
       }
       sensu_plugin { 'cpu-checks':
@@ -49,8 +49,8 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
   context 'install plugin latest version' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::agent
-      include ::sensu::plugins
+      include sensu::agent
+      include sensu::plugins
       sensu_plugin { 'cpu-checks':
         ensure  => 'present',
         version => 'latest',
@@ -81,8 +81,8 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
   context 'downgrade plugin' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::agent
-      include ::sensu::plugins
+      include sensu::agent
+      include sensu::plugins
       sensu_plugin { 'cpu-checks':
         ensure  => 'present',
         version => '2.0.0',
@@ -112,8 +112,8 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
   context 'upgrade plugin' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::agent
-      include ::sensu::plugins
+      include sensu::agent
+      include sensu::plugins
       sensu_plugin { 'cpu-checks':
         ensure  => 'present',
         version => '3.0.0',
@@ -143,8 +143,8 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
   context 'uninstall plugin' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::agent
-      include ::sensu::plugins
+      include sensu::agent
+      include sensu::plugins
       sensu_plugin { 'cpu-checks':
         ensure  => 'absent',
       }

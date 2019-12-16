@@ -12,11 +12,11 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
       class { '::sensu': }
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends    => ['sensu_backend:8081'],
         entity_name => 'sensu_agent',
       }
-      class { '::sensu::plugins':
+      class { 'sensu::plugins':
         plugins => ['disk-checks'],
         extensions => ['ruby-hash']
       }
@@ -58,8 +58,8 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
         password     => 'P@ssw0rd!',
         old_password => 'supersecret',
       }
-      class { '::sensu::backend': }
-      class { '::sensu::plugins':
+      class { 'sensu::backend': }
+      class { 'sensu::plugins':
         plugins => ['disk-checks'],
         extensions => ['ruby-hash']
       }

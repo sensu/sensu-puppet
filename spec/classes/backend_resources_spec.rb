@@ -10,7 +10,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'ad_auths defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             ad_auths => {
               'ad' => {
                 'servers'             => [{
@@ -30,7 +30,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'assets defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             assets => {
               'test' => {
                 'builds' => [{
@@ -48,7 +48,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'bonsai_assets defined' do
         let(:pre_condition) do
           <<-EOS
-            class { '::sensu::backend':
+            class { 'sensu::backend':
               bonsai_assets => {
                 'sensu/sensu-pagerduty-handler' => { 'ensure' => 'present' }
               }
@@ -61,7 +61,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'checks defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             checks => {
               'test' => {
                 'command' => 'foobar',
@@ -79,7 +79,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'cluster_members defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             cluster_members => {
               'test' => {
                 'peer_urls' => ['http://localhost:2380'],
@@ -94,7 +94,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'cluster_role_bindings defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             cluster_role_bindings => {
               'test' => {
                 'role_ref' => {'type' => 'ClusterRole', 'name' => 'test'},
@@ -110,7 +110,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'cluster_roles defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             cluster_roles => {
               'test'  => {
                 'rules' => [{'verbs' => ['get','list'], 'resources' => ['checks']}]
@@ -125,7 +125,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'entities defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             entities => {
               'test' => {
                 'entity_class' => 'proxy',
@@ -140,7 +140,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'etcd_replicators defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             etcd_replicators => {
               'role_replicator' => {
                 'ca_cert'                      => '/path/to/ssl/trusted-certificate-authorities.pem',
@@ -162,7 +162,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'filters defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             filters => {
               'test' => {
                 'action'      => 'allow',
@@ -178,7 +178,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'handlers defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             handlers => {
               'test' => {
                 'type'        => 'pipe',
@@ -195,7 +195,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'hooks defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             hooks => {
               'test' => { 'command' => 'test' },
             }
@@ -208,7 +208,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'ldap_auths defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             ldap_auths => {
               'ldap' => {
                 'servers'             => [{
@@ -228,7 +228,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'mutators defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             mutators => {
               'test' => { 'command' => 'test' },
             }
@@ -241,7 +241,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'namespaces defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             namespaces => {
               'test' => { 'ensure' => 'present' },
             }
@@ -254,7 +254,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'oidc_auths defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             oidc_auths => {
               'oidc' => {
                 client_id     => '0oa13ry4ypeDDBpxF357',
@@ -270,7 +270,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'role_bindings defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             role_bindings => {
               'test' => {
                 'role_ref' => {'type' => 'Role', 'name' => 'test'},
@@ -286,7 +286,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'roles defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             roles => {
               'test'  => {
                 'rules' => [{'verbs' => ['get','list'], 'resources' => ['checks']}]
@@ -301,7 +301,7 @@ describe 'sensu::backend::resources', :type => :class do
       context 'users defined' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             users => {
               'test' => { 'password' => 'foobar' },
             }

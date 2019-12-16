@@ -6,7 +6,7 @@ describe 'sensu::backend class', if: !(RSpec.configuration.sensu_cluster || RSpe
   context 'backend facts' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -36,7 +36,7 @@ describe 'sensu::backend class', if: !(RSpec.configuration.sensu_cluster || RSpe
   context 'agent facts' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::agent
+      include sensu::agent
       EOS
 
       if RSpec.configuration.sensu_use_agent

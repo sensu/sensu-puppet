@@ -40,18 +40,18 @@ class sensu::cli (
 
   include sensu
 
-  $ssl_dir = $::sensu::ssl_dir
-  $use_ssl = $::sensu::use_ssl
-  $_version = pick($version, $::sensu::version)
-  $api_host = $::sensu::api_host
-  $api_port = $::sensu::api_port
-  $api_protocol = $::sensu::api_protocol
-  $password = $::sensu::password
+  $ssl_dir = $sensu::ssl_dir
+  $use_ssl = $sensu::use_ssl
+  $_version = pick($version, $sensu::version)
+  $api_host = $sensu::api_host
+  $api_port = $sensu::api_port
+  $api_protocol = $sensu::api_protocol
+  $password = $sensu::password
 
   if $use_ssl {
-    $trusted_ca_file = $::sensu::trusted_ca_file_path
+    $trusted_ca_file = $sensu::trusted_ca_file_path
     if $configure {
-      Class['::sensu::ssl'] -> Sensuctl_configure['puppet']
+      Class['sensu::ssl'] -> Sensuctl_configure['puppet']
     }
   } else {
     $trusted_ca_file = 'absent'
@@ -88,7 +88,7 @@ class sensu::cli (
     package { 'sensu-go-cli':
       ensure  => $_version,
       name    => $package_name,
-      require => $::sensu::package_require,
+      require => $sensu::package_require,
     }
   }
 
@@ -102,7 +102,7 @@ class sensu::cli (
       url              => $api_url,
       username         => 'admin',
       password         => $password,
-      old_password     => $::sensu::old_password,
+      old_password     => $sensu::old_password,
       trusted_ca_file  => $trusted_ca_file,
       config_format    => $config_format,
       config_namespace => $config_namespace,

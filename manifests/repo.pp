@@ -41,4 +41,3 @@ class sensu::repo {
     }
   }
 }
-

@@ -42,4 +42,3 @@ class sensu::repo::community {
     }
   }
 }
-

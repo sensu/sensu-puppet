@@ -16,7 +16,7 @@ case $facts['hostname'] {
   }
 }
 
-class { '::sensu::backend':
+class { 'sensu::backend':
   config_hash => {
     'etcd-listen-client-urls' => "https://0.0.0.0:2379",
     'etcd-advertise-client-urls' => "https://${facts['networking']['interfaces']['eth1']['ip']}:2379",

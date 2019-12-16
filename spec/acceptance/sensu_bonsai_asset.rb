@@ -5,7 +5,7 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
   context 'install bonsai asset' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
         ensure  => 'present',
         version => '1.1.0',
@@ -37,7 +37,7 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
   context 'install bonsai asset - latest' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
         ensure  => 'present',
         version => 'latest',
@@ -71,7 +71,7 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
   context 'downgrade bonsai asset' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
         ensure  => 'present',
         version => '1.1.0',
@@ -103,7 +103,7 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
   context 'upgrade bonsai asset' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
         ensure  => 'present',
         version => '1.2.0',
@@ -135,7 +135,7 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
   context 'asset purging' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
         ensure  => 'present',
         version => '1.2.0',
@@ -168,7 +168,7 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
   context 'remove bonsai asset' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
         ensure  => 'absent',
       }

@@ -6,7 +6,7 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu': }
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends         => ['sensu_backend:8081'],
         entity_name      => 'sensu_agent',
         service_env_vars => { 'SENSU_API_PORT' => '4041' },

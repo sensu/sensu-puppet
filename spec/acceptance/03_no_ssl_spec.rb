@@ -11,7 +11,7 @@ describe 'sensu without SSL', unless: RSpec.configuration.sensu_cluster do
         password     => 'P@ssw0rd!',
         old_password => 'supersecret',
       }
-      class { '::sensu::backend': }
+      class { 'sensu::backend': }
       sensu_entity { 'sensu_agent':
         ensure => 'absent',
       }
@@ -48,7 +48,7 @@ describe 'sensu without SSL', unless: RSpec.configuration.sensu_cluster do
       class { '::sensu':
         use_ssl => false,
       }
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends    => ['sensu_backend:8081'],
         entity_name => 'sensu_agent',
       }

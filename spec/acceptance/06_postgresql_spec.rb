@@ -15,7 +15,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
         version             => '9.6',
       }
       class { 'postgresql::server':}
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
         datastore      => 'postgresql',
       }
@@ -64,7 +64,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
   context 'removes postgresql datastore' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source    => '/root/sensu_license.json',
         datastore         => 'postgresql',
         datastore_ensure  => 'absent',

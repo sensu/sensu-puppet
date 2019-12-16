@@ -39,7 +39,7 @@
 #   Sensu agent configuration hash used to define agent.yml.
 # @param backends
 #   Array of sensu backends to pass to `backend-url` config option.
-#   Default is `["${::sensu::api_host}:8081"]`
+#   Default is `["${sensu::api_host}:8081"]`
 #   The protocol prefix of `ws://` or `wss://` are optional and will be determined
 #   based on `sensu::use_ssl` parameter by default.
 #   Passing `backend-url` as part of `config_hash` takes precedence over this parameter.
@@ -87,18 +87,18 @@ class sensu::agent (
 
   include sensu
 
-  $etc_dir = $::sensu::etc_dir
-  $ssl_dir = $::sensu::ssl_dir
-  $use_ssl = $::sensu::use_ssl
-  $_version = pick($version, $::sensu::version)
-  $_backends = pick($backends, ["${::sensu::api_host}:8081"])
+  $etc_dir = $sensu::etc_dir
+  $ssl_dir = $sensu::ssl_dir
+  $use_ssl = $sensu::use_ssl
+  $_version = pick($version, $sensu::version)
+  $_backends = pick($backends, ["${sensu::api_host}:8081"])
 
   if $use_ssl {
     $backend_protocol = 'wss'
     $ssl_config = {
-      'trusted-ca-file' => $::sensu::trusted_ca_file_path,
+      'trusted-ca-file' => $sensu::trusted_ca_file_path,
     }
-    $service_subscribe = Class['::sensu::ssl']
+    $service_subscribe = Class['sensu::ssl']
   } else {
     $backend_protocol = 'ws'
     $ssl_config = {}
@@ -118,7 +118,7 @@ class sensu::agent (
     'annotations'   => $annotations,
     'labels'        => $labels,
     'namespace'     => $namespace,
-    'password'      => $::sensu::agent_password,
+    'password'      => $sensu::agent_password,
   })
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
@@ -129,7 +129,7 @@ class sensu::agent (
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
     exec { 'install-agent-service':
-      command => "C:\\windows\\system32\\cmd.exe /c \"\"${sensu_agent_exe}\" service install --config-file \"${::sensu::agent_config_path}\" --log-file \"${log_file}\"\"", # lint:ignore:140chars
+      command => "C:\\windows\\system32\\cmd.exe /c \"\"${sensu_agent_exe}\" service install --config-file \"${sensu::agent_config_path}\" --log-file \"${log_file}\"\"", # lint:ignore:140chars
       unless  => "C:\\windows\\system32\\sc.exe query SensuAgent",
       before  => Service['sensu-agent'],
       require => [
@@ -177,16 +177,16 @@ class sensu::agent (
     source   => $_package_source,
     provider => $package_provider,
     before   => File['sensu_etc_dir'],
-    require  => $::sensu::package_require,
+    require  => $sensu::package_require,
   }
 
   file { 'sensu_agent_config':
     ensure    => 'file',
-    path      => $::sensu::agent_config_path,
+    path      => $sensu::agent_config_path,
     content   => to_yaml($config),
-    owner     => $::sensu::sensu_user,
-    group     => $::sensu::sensu_group,
-    mode      => $::sensu::file_mode,
+    owner     => $sensu::sensu_user,
+    group     => $sensu::sensu_group,
+    mode      => $sensu::file_mode,
     show_diff => $show_diff,
     require   => Package['sensu-go-agent'],
     notify    => Service['sensu-agent'],
@@ -198,9 +198,9 @@ class sensu::agent (
       ensure    => 'file',
       path      => $service_env_vars_file,
       content   => "${_service_env_vars_content}\n",
-      owner     => $::sensu::sensu_user,
-      group     => $::sensu::sensu_group,
-      mode      => $::sensu::file_mode,
+      owner     => $sensu::sensu_user,
+      group     => $sensu::sensu_group,
+      mode      => $sensu::file_mode,
       show_diff => $show_diff,
       require   => Package['sensu-go-agent'],
       notify    => Service['sensu-agent'],

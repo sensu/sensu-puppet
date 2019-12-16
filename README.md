@@ -252,7 +252,7 @@ class { '::sensu':
   api_host => 'sensu-backend.example.com',
   password => 'supersecret',
 }
-include ::sensu::cli
+include sensu::cli
 ```
 
 **NOTE**: The `sensu::backend` class calls the `sensu::cli` class so it is only necessary to directly call the `sensu::cli` class on hosts not using the `sensu::backend` class.
@@ -264,7 +264,7 @@ class { '::sensu':
   api_host => 'sensu-backend.example.com',
   password => 'supersecret',
 }
-class { '::sensu::cli':
+class { 'sensu::cli':
   install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
 }
 ```
@@ -386,7 +386,7 @@ class { 'postgresql::globals':
   version             => '9.6',
 }
 class { 'postgresql::server': }
-class { '::sensu::backend':
+class { 'sensu::backend':
   license_source      => 'puppet:///modules/profile/sensu/license.json',
   datastore           => 'postgresql',
   postgresql_password => 'secret',
@@ -398,7 +398,7 @@ Refer to the [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgre
 The following example uses an external PostgreSQL server.
 
 ```puppet
-class { '::sensu::backend':
+class { 'sensu::backend':
   license_source       => 'puppet:///modules/profile/sensu/license.json',
   datastore            => 'postgresql',
   postgresql_password  => 'secret',
@@ -683,14 +683,14 @@ It's necessary that Etcd be listening on an interface that can be accessed by ot
 First configure backend Etcd to listen on an interface besides localhost and also use SSL:
 
 ```puppet
-class { '::sensu::backend':
+class { 'sensu::backend':
   config_hash => {
-    'etcd-listen-client-urls' => "https://0.0.0.0:2379",
+    'etcd-listen-client-urls'    => "https://0.0.0.0:2379",
     'etcd-advertise-client-urls' => "https://0.0.0.0:2379",
-    'etcd-cert-file' => "/etc/sensu/etcd-ssl/${facts['fqdn'].pem",
-    'etcd-key-file' => "/etc/sensu/etcd-ssl/${facts['fqdn']}-key.pem",
-    'etcd-trusted-ca-file' => "/etc/sensu/etcd-ssl/ca.pem",
-    'etcd-client-cert-auth' => true,
+    'etcd-cert-file'             => "/etc/sensu/etcd-ssl/${facts['fqdn'].pem",
+    'etcd-key-file'              => "/etc/sensu/etcd-ssl/${facts['fqdn']}-key.pem",
+    'etcd-trusted-ca-file'       => "/etc/sensu/etcd-ssl/ca.pem",
+    'etcd-client-cert-auth'      => true,
   },
 }
 ```
@@ -718,7 +718,7 @@ sensu_role { 'test':
 If the backend system has a large number of resources it may be necessary to query resources using chunk size added in Sensu Go 5.8.
 
 ```
-class { '::sensu::backend':
+class { 'sensu::backend':
   sensuctl_chunk_size => 100,
 }
 ```

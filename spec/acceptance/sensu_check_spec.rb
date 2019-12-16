@@ -5,7 +5,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test':
         command                          => 'check-http.rb',
         subscriptions                    => ['demo'],
@@ -75,10 +75,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'with chunk size' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::cli':
+      class { 'sensu::cli':
         sensuctl_chunk_size => 1,
       }
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test3':
         command       => 'check-http3.rb',
         subscriptions => ['demo'],
@@ -110,7 +110,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'updates check' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test':
         command                          => 'check-http.rb',
         subscriptions                    => ['demo'],
@@ -154,11 +154,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'namespace validation when exists' do
     it 'should produce no error' do
       namespace_pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_namespace { 'devs': ensure => 'present' }
       EOS
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test-namespace':
         command       => 'check-cpu.rb',
         subscriptions => ['demo'],
@@ -187,7 +187,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'namespace validation' do
     it 'should produce error' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test-no-namespace':
         command       => 'check-cpu.rb',
         subscriptions => ['demo'],
@@ -215,7 +215,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test': ensure => 'absent' }
       EOS
 
@@ -240,7 +240,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'resources purge' do
     it 'should remove without errors' do
       before_pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_namespace { 'dev': ensure => 'present' }
       sensu_check { 'test1':
         command       => 'check-cpu.rb',
@@ -256,7 +256,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       }
       EOS
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_namespace { 'dev': ensure => 'present' }
       sensu_check { 'test':
         command       => 'check-cpu.rb',

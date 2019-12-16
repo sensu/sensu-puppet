@@ -10,7 +10,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
       sensu_oidc_auth { 'oidc':
@@ -59,7 +59,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
       sensu_oidc_auth { 'oidc':
@@ -108,7 +108,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_oidc_auth { 'oidc': ensure => 'absent' }
       EOS
 
