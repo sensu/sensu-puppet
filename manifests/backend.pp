@@ -168,14 +168,14 @@ class sensu::backend (
     include sensu::backend::datastore::postgresql
   }
 
-  $etc_dir = $::sensu::etc_dir
-  $ssl_dir = $::sensu::ssl_dir
-  $use_ssl = $::sensu::use_ssl
-  $_version = pick($version, $::sensu::version)
-  $api_host = $::sensu::api_host
-  $api_port = $::sensu::api_port
-  $api_protocol = $::sensu::api_protocol
-  $password = $::sensu::password
+  $etc_dir = $sensu::etc_dir
+  $ssl_dir = $sensu::ssl_dir
+  $use_ssl = $sensu::use_ssl
+  $_version = pick($version, $sensu::version)
+  $api_host = $sensu::api_host
+  $api_port = $sensu::api_port
+  $api_protocol = $sensu::api_protocol
+  $password = $sensu::password
 
   if $use_ssl and ! $ssl_cert_source {
     fail('sensu::backend: ssl_cert_source must be defined when sensu::use_ssl is true')
@@ -191,8 +191,8 @@ class sensu::backend (
       'key-file'        => "${ssl_dir}/key.pem",
       'trusted-ca-file' => $trusted_ca_file,
     }
-    $service_subscribe = Class['::sensu::ssl']
-    Class['::sensu::ssl'] -> Sensuctl_configure['puppet']
+    $service_subscribe = Class['sensu::ssl']
+    Class['sensu::ssl'] -> Sensuctl_configure['puppet']
   } else {
     $trusted_ca_file = 'absent'
     $ssl_config = {}
@@ -224,7 +224,7 @@ class sensu::backend (
   sensu_user { 'admin':
     ensure        => 'present',
     password      => $password,
-    old_password  => $::sensu::old_password,
+    old_password  => $sensu::old_password,
     groups        => ['cluster-admins'],
     disabled      => false,
     configure     => true,
@@ -234,8 +234,8 @@ class sensu::backend (
   sensu_user { 'agent':
     ensure       => 'present',
     disabled     => false,
-    password     => $::sensu::agent_password,
-    old_password => $::sensu::agent_old_password,
+    password     => $sensu::agent_password,
+    old_password => $sensu::agent_old_password,
     groups       => ['system:agents'],
   }
 
@@ -245,8 +245,8 @@ class sensu::backend (
       path      => "${etc_dir}/license.json",
       source    => $license_source,
       content   => $license_content,
-      owner     => $::sensu::user,
-      group     => $::sensu::group,
+      owner     => $sensu::user,
+      group     => $sensu::group,
       mode      => '0600',
       show_diff => false,
       notify    => Exec['sensu-add-license'],
@@ -265,8 +265,8 @@ class sensu::backend (
       ensure    => 'file',
       path      => "${ssl_dir}/cert.pem",
       source    => $ssl_cert_source,
-      owner     => $::sensu::user,
-      group     => $::sensu::group,
+      owner     => $sensu::user,
+      group     => $sensu::group,
       mode      => '0644',
       show_diff => false,
       notify    => Service['sensu-backend'],
@@ -275,8 +275,8 @@ class sensu::backend (
       ensure    => 'file',
       path      => "${ssl_dir}/key.pem",
       source    => $ssl_key_source,
-      owner     => $::sensu::user,
-      group     => $::sensu::group,
+      owner     => $sensu::user,
+      group     => $sensu::group,
       mode      => '0600',
       show_diff => false,
       notify    => Service['sensu-backend'],
@@ -287,14 +287,14 @@ class sensu::backend (
     ensure  => $_version,
     name    => $package_name,
     before  => File['sensu_etc_dir'],
-    require => $::sensu::package_require,
+    require => $sensu::package_require,
   }
 
   file { 'sensu_backend_state_dir':
     ensure  => 'directory',
     path    => $state_dir,
-    owner   => $::sensu::user,
-    group   => $::sensu::group,
+    owner   => $sensu::user,
+    group   => $sensu::group,
     mode    => '0750',
     require => Package['sensu-go-backend'],
     before  => Service['sensu-backend'],
@@ -304,8 +304,8 @@ class sensu::backend (
     ensure    => 'file',
     path      => "${etc_dir}/backend.yml",
     content   => to_yaml($config),
-    owner     => $::sensu::user,
-    group     => $::sensu::group,
+    owner     => $sensu::user,
+    group     => $sensu::group,
     mode      => '0640',
     show_diff => $show_diff,
     require   => Package['sensu-go-backend'],
@@ -318,8 +318,8 @@ class sensu::backend (
       ensure    => 'file',
       path      => $service_env_vars_file,
       content   => "${_service_env_vars_content}\n",
-      owner     => $::sensu::sensu_user,
-      group     => $::sensu::sensu_group,
+      owner     => $sensu::sensu_user,
+      group     => $sensu::sensu_group,
       mode      => '0640',
       show_diff => $show_diff,
       require   => Package['sensu-go-backend'],

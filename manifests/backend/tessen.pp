@@ -4,7 +4,7 @@
 class sensu::backend::tessen {
   include sensu::backend
 
-  if $::sensu::backend::tessen_ensure == 'present' {
+  if $sensu::backend::tessen_ensure == 'present' {
     $command = 'sensuctl tessen opt-in'
     $match = 'true' # lint:ignore:quoted_booleans
   } else {

@@ -14,22 +14,22 @@ class sensu::ssl {
 
   file { 'sensu_ssl_dir':
     ensure  => 'directory',
-    path    => $::sensu::ssl_dir,
-    purge   => $::sensu::ssl_dir_purge,
-    recurse => $::sensu::ssl_dir_purge,
-    force   => $::sensu::ssl_dir_purge,
-    owner   => $::sensu::sensu_user,
-    group   => $::sensu::sensu_group,
+    path    => $sensu::ssl_dir,
+    purge   => $sensu::ssl_dir_purge,
+    recurse => $sensu::ssl_dir_purge,
+    force   => $sensu::ssl_dir_purge,
+    owner   => $sensu::sensu_user,
+    group   => $sensu::sensu_group,
     mode    => $directory_mode,
   }
 
   file { 'sensu_ssl_ca':
     ensure    => 'file',
-    path      => $::sensu::trusted_ca_file_path,
-    owner     => $::sensu::sensu_user,
-    group     => $::sensu::sensu_group,
+    path      => $sensu::trusted_ca_file_path,
+    owner     => $sensu::sensu_user,
+    group     => $sensu::sensu_group,
     mode      => $file_mode,
     show_diff => false,
-    source    => $::sensu::ssl_ca_source,
+    source    => $sensu::ssl_ca_source,
   }
 }

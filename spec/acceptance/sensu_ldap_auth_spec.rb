@@ -10,7 +10,7 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
       sensu_ldap_auth { 'openldap':
@@ -65,7 +65,7 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
       sensu_ldap_auth { 'openldap':
@@ -120,7 +120,7 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_ldap_auth { 'openldap': ensure => 'absent' }
       EOS
 

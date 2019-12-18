@@ -7,7 +7,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
   context 'new cluster' do
     it 'should work without errors' do
       node1_pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node1, 'ipaddress')}:2379',
           'etcd-listen-client-urls'          => 'http://#{fact_on(node1, 'ipaddress')}:2379',
@@ -21,7 +21,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       }
       EOS
       node2_pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node2, 'ipaddress')}:2379',
           'etcd-listen-client-urls'          => 'http://#{fact_on(node2, 'ipaddress')}:2379',
@@ -92,7 +92,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
       }
       EOS
       node3_pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node3, 'ipaddress')}:2379',
           'etcd-listen-client-urls'          => 'http://#{fact_on(node3, 'ipaddress')}:2379',

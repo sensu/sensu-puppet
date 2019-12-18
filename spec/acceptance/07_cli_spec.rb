@@ -10,14 +10,14 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
         api_host => 'sensu_backend',
         password => 'P@ssw0rd!',
       }
-      class { '::sensu::cli': }
+      class { 'sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
         password      => 'P@ssw0rd!',
         old_password  => 'supersecret',
       }
-      class { '::sensu::backend': }
+      class { 'sensu::backend': }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -54,14 +54,14 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
         api_host => 'sensu_backend',
         password => 'supersecret',
       }
-      class { '::sensu::cli': }
+      class { 'sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
         password      => 'supersecret',
         old_password  => 'P@ssw0rd!',
       }
-      class { '::sensu::backend': }
+      class { 'sensu::backend': }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -95,7 +95,7 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
         api_host => 'sensu_backend',
         password => 'P@ssw0rd!',
       }
-      class { '::sensu::cli': }
+      class { 'sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
@@ -103,7 +103,7 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
         password      => 'P@ssw0rd!',
         old_password  => 'supersecret',
       }
-      class { '::sensu::backend': }
+      class { 'sensu::backend': }
       EOS
 
       if RSpec.configuration.sensu_use_agent

@@ -5,7 +5,7 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_cluster_role { 'test':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
@@ -35,7 +35,7 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
   context 'update cluster_role' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_cluster_role { 'test':
         rules => [
           {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
@@ -70,7 +70,7 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_cluster_role { 'test': ensure => 'absent' }
       EOS
 
@@ -95,7 +95,7 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
   context 'resource purging' do
     it 'should purge without errors' do
       before_pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_cluster_role { 'test1':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
@@ -104,7 +104,7 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
       sensu_resources { 'sensu_cluster_role':
         purge => true
       }
-      include ::sensu::backend
+      include sensu::backend
       sensu_cluster_role { 'test2':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }

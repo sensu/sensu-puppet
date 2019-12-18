@@ -5,7 +5,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_filter { 'test':
         action         => 'allow',
         expressions    => ["event.entity.labels.environment == 'production'"],
@@ -41,7 +41,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
   context 'update filter' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_filter { 'test':
         action     => 'allow',
         expressions => ["event.entity.labels.environment == 'test'"],
@@ -76,7 +76,7 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_filter { 'test': ensure => 'absent' }
       EOS
 

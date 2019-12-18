@@ -13,7 +13,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
         <<-EOS
         class { '::postgresql::globals': version => '9.6' }
         class { '::postgresql::server': }
-        class { '::sensu::backend': }
+        class { 'sensu::backend': }
         EOS
       end
 
@@ -37,7 +37,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
       context 'datastore_ensure => absent' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             datastore_ensure => 'absent',
           }
           EOS
@@ -57,7 +57,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
       context 'manage_postgresql => false' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             manage_postgresql_db => false,
           }
           EOS

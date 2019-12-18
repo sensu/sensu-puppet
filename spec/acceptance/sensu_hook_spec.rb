@@ -5,7 +5,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_hook { 'test':
         command => 'ps aux',
         labels  => { 'foo' => 'baz' },
@@ -40,7 +40,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
   context 'update hook' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_hook { 'test':
         command => 'ps aux',
         timeout => 120,
@@ -75,7 +75,7 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_hook { 'test': ensure => 'absent' }
       EOS
 

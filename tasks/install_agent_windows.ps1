@@ -24,7 +24,7 @@ $manifest_content = @"
 class { '::sensu':
   use_ssl => false,
 }
-class { '::sensu::agent':
+class { 'sensu::agent':
   package_source => '$Package_source',
   backends       => ['$Backend'],
   subscriptions  => ['$Subscription'],

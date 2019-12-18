@@ -5,7 +5,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_entity { 'test':
         entity_class           => 'proxy',
         deregistration         => {'handler' => 'slack-handler'},
@@ -38,7 +38,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
   context 'updates properties' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_entity { 'test':
         entity_class           => 'proxy',
         deregistration         => {'handler' => 'email-handler'},
@@ -71,7 +71,7 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_entity { 'test': ensure => 'absent' }
       EOS
 

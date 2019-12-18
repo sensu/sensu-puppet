@@ -10,7 +10,7 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
   context 'adds license file' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
       EOS

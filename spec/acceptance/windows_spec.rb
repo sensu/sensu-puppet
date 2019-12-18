@@ -7,7 +7,7 @@ describe 'sensu::cli class', if: Gem.win_platform? do
     class { '::sensu':
       api_host => 'localhost',
     }
-    class { '::sensu::cli':
+    class { 'sensu::cli':
       install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
       # Not yet able to run backend in appveyor so configure will not work
       configure      => false,
@@ -43,7 +43,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS
     class { '::sensu': }
-    class { '::sensu::agent':
+    class { 'sensu::agent':
       backends         => ['sensu_backend:8081'],
       entity_name      => 'sensu_agent',
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
@@ -81,7 +81,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
   context 'using package_source' do
     pp = <<-EOS
     class { '::sensu': }
-    class { '::sensu::agent':
+    class { 'sensu::agent':
       package_name   => 'Sensu Agent',
       package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.13.1/sensu-go-agent_5.13.1.5957_en-US.x64.msi',
       backends       => ['sensu_backend:8081'],

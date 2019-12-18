@@ -9,7 +9,7 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
         password     => 'supersecret',
         old_password => 'P@ssw0rd!',
       }
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         include_default_resources => false,
       }
       EOS
@@ -43,7 +43,7 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
         password     => 'supersecret',
         old_password => 'P@ssw0rd!',
       }
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         include_default_resources => true,
       }
       EOS
@@ -68,7 +68,7 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
         password     => 'supersecret',
         old_password => 'P@ssw0rd!',
       }
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
       }
       EOS
@@ -102,8 +102,8 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
         password     => 'supersecret',
         old_password => 'P@ssw0rd!',
       }
-      class { '::sensu::backend': }
-      class { '::sensu::agent':
+      class { 'sensu::backend': }
+      class { 'sensu::agent':
         backends => ['sensu_backend:8081'],
       }
       EOS
@@ -138,7 +138,7 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
         password      => 'P@ssw0rd!',
         old_password  => 'supersecret',
       }
-      class { '::sensu::backend':
+      class { 'sensu::backend':
         tessen_ensure => 'absent',
       }
       EOS

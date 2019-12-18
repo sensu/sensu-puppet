@@ -5,7 +5,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_user { 'test':
         password => 'password',
         groups   => ['read-only'],
@@ -47,7 +47,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
   context 'updates user' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_user { 'test':
         password     => 'password2',
         old_password => 'password',
@@ -90,7 +90,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
   context 'updates user password' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_user { 'test':
         password     => 'password3',
         old_password => 'password2',
@@ -120,7 +120,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
   context 'invalid old_password' do
     it 'should result in an error' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_user { 'test':
         password     => 'password2',
         old_password => 'password4',
@@ -142,7 +142,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_full do
   context 'ensure => absent' do
     it 'should result in error as unsupported' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_user { 'test': ensure => 'absent' }
       EOS
 

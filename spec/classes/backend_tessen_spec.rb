@@ -10,7 +10,7 @@ describe 'sensu::backend::tessen', :type => :class do
       context 'default (present)' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend': }
+          class { 'sensu::backend': }
           EOS
         end
         it { should compile.with_all_deps }
@@ -28,7 +28,7 @@ describe 'sensu::backend::tessen', :type => :class do
       context 'opt-out (absent)' do
         let(:pre_condition) do
           <<-EOS
-          class { '::sensu::backend':
+          class { 'sensu::backend':
             tessen_ensure => 'absent',
           }
           EOS

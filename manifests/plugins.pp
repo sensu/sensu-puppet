@@ -51,11 +51,11 @@ class sensu::plugins (
 
   include sensu
 
-  $_manage_repo = pick($manage_repo, $::sensu::manage_repo)
+  $_manage_repo = pick($manage_repo, $sensu::manage_repo)
 
   if $_manage_repo {
     include sensu::repo::community
-    $package_require = [Class['::sensu::repo::community']] + $::sensu::os_package_require
+    $package_require = [Class['sensu::repo::community']] + $sensu::os_package_require
   } else {
     $package_require = undef
   }

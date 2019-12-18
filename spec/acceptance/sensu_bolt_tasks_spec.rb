@@ -6,21 +6,21 @@ describe 'sensu event task', if: RSpec.configuration.sensu_full do
   context 'setup agent' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends    => ['sensu_backend:8081'],
         entity_name => 'sensu_agent',
       }
       EOS
 
       apply_manifest_on(agent, pp, :catch_failures => true)
-      apply_manifest_on(backend, 'include ::sensu::backend', :catch_failures => true)
+      apply_manifest_on(backend, 'include sensu::backend', :catch_failures => true)
     end
   end
 
   context 'resolve' do
     it 'should work without errors' do
       check_pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test':
         command       => 'exit 1',
         subscriptions => ['entity:sensu_agent'],
@@ -61,7 +61,7 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
   backend = hosts_as('sensu_backend')[0]
   context 'setup agent' do
     it 'should work without errors' do
-      apply_manifest_on(backend, 'include ::sensu::backend', :catch_failures => true)
+      apply_manifest_on(backend, 'include sensu::backend', :catch_failures => true)
     end
   end
 
@@ -113,7 +113,7 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
       class { '::sensu':
         use_ssl => false,
       }
-      include '::sensu::backend'
+      include 'sensu::backend'
       sensu_entity { 'sensu_agent':
         ensure => 'absent',
       }
@@ -154,7 +154,7 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
   context 'setup' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_check { 'test':
         command       => 'exit 1',
         subscriptions => ['entity:sensu_agent'],
@@ -162,7 +162,7 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
       }
       EOS
       agent_pp = <<-EOS
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends    => ['sensu_backend:8081'],
         entity_name => 'sensu_agent',
       }
@@ -191,7 +191,7 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_full do
   context 'setup' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler': version => '1.0.2' }
       EOS
       apply_manifest_on(backend, pp, :catch_failures => true)
@@ -213,7 +213,7 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
   backend = hosts_as('sensu_backend')[0]
   context 'setup' do
     it 'should work without errors' do
-      apply_manifest_on(backend, 'include ::sensu::backend', :catch_failures => true)
+      apply_manifest_on(backend, 'include sensu::backend', :catch_failures => true)
     end
   end
 
@@ -257,10 +257,10 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
   context 'setup' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       EOS
       agent_pp = <<-EOS
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends    => ['sensu_backend:8081'],
         entity_name => 'sensu_agent',
       }
@@ -291,12 +291,12 @@ describe 'sensu bolt inventory', if: RSpec.configuration.sensu_full do
   context 'setup' do
     it 'should work without errors' do
       agent_pp = <<-EOS
-      class { '::sensu::agent':
+      class { 'sensu::agent':
         backends => ['sensu_backend:8081'],
       }
       EOS
       pp = <<-EOS
-      include ::sensu::backend
+      include sensu::backend
       #{agent_pp}
       EOS
       apply_manifest_on(agent, agent_pp, :catch_failures => true)

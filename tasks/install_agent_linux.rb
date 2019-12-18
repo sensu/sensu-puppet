@@ -37,7 +37,7 @@ begin
 class { '::sensu':
   use_ssl => false,
 }
-class { '::sensu::agent':
+class { 'sensu::agent':
   backends      => ['#{backend}'],
   subscriptions => ['#{subscription}'],
   namespace     => '#{namespace}',
