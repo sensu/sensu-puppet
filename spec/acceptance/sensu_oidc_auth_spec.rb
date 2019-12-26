@@ -25,6 +25,19 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         username_claim    => 'email',
         username_prefix   => 'oidc:',
       }
+      sensu_oidc_auth { 'oidc-api':
+        ensure            => 'present',
+        additional_scopes => ['email','groups'],
+        client_id         => '0oa13ry4ypeDDBpxF357',
+        client_secret     => 'DlArQRfND4BKBUyO0mE-TL2PWOVwyGjIO1fdk9gX',
+        groups_claim      => 'groups',
+        groups_prefix     => 'oidc:',
+        redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+        server            => 'https://idp.example.com',
+        username_claim    => 'email',
+        username_prefix   => 'oidc:',
+        provider          => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -42,6 +55,21 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
 
     it 'should have a valid OIDC auth' do
       on node, 'sensuctl auth info oidc --format json' do
+        data = JSON.parse(stdout)
+        expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
+        expect(data['client_secret']).to eq('DlArQRfND4BKBUyO0mE-TL2PWOVwyGjIO1fdk9gX')
+        expect(data['server']).to eq('https://idp.example.com')
+        expect(data['groups_claim']).to eq('groups')
+        expect(data['groups_prefix']).to eq('oidc:')
+        expect(data['username_claim']).to eq('email')
+        expect(data['username_prefix']).to eq('oidc:')
+        expect(data['redirect_uri']).to eq('https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback')
+        expect(data['additional_scopes']).to eq(['email','groups'])
+      end
+    end
+
+    it 'should have a valid OIDC auth using API' do
+      on node, 'sensuctl auth info oidc-api --format json' do
         data = JSON.parse(stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('DlArQRfND4BKBUyO0mE-TL2PWOVwyGjIO1fdk9gX')
@@ -74,6 +102,19 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         username_claim    => 'username',
         username_prefix   => 'oidc:',
       }
+      sensu_oidc_auth { 'oidc-api':
+        ensure            => 'present',
+        additional_scopes => ['email','groups','openid'],
+        client_id         => '0oa13ry4ypeDDBpxF357',
+        client_secret     => 'secret',
+        groups_claim      => 'roles',
+        groups_prefix     => 'oidc:',
+        redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+        server            => 'https://idp.example.com',
+        username_claim    => 'username',
+        username_prefix   => 'oidc:',
+        provider          => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -103,6 +144,21 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['additional_scopes']).to eq(['email','groups','openid'])
       end
     end
+
+    it 'should have a valid OIDC auth using API' do
+      on node, 'sensuctl auth info oidc-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
+        expect(data['client_secret']).to eq('secret')
+        expect(data['server']).to eq('https://idp.example.com')
+        expect(data['groups_claim']).to eq('roles')
+        expect(data['groups_prefix']).to eq('oidc:')
+        expect(data['username_claim']).to eq('username')
+        expect(data['username_prefix']).to eq('oidc:')
+        expect(data['redirect_uri']).to eq('https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback')
+        expect(data['additional_scopes']).to eq(['email','groups','openid'])
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -110,6 +166,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_oidc_auth { 'oidc': ensure => 'absent' }
+      sensu_oidc_auth { 'oidc-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -126,6 +183,9 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
     end
 
     describe command('sensuctl auth info oidc'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
+    describe command('sensuctl auth info oidc-api'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
   end

@@ -14,13 +14,8 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     @property_flush = {}
   end
 
-  def api
-    @api ||= Puppet::Provider::SensuAPI.new()
-  end
-
   def url
-    config = load_config(config_path)
-    config['api-url']
+    sensuctl_config['api-url']
   end
 
   def url=(value)
@@ -28,8 +23,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
   end
 
   def trusted_ca_file
-    config = load_config(config_path)
-    value = config['trusted-ca-file']
+    value = sensuctl_config['trusted-ca-file']
     if value == ''
       value = 'absent'
     end
@@ -69,9 +63,9 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
   def backend_init
     backend = which('sensu-backend')
     return if backend.nil?
-    return if api.auth_test(resource[:url], resource[:username], resource[:password])
-    return if api.auth_test(resource[:url], resource[:username], resource[:old_password])
-    return if api.auth_test(resource[:url], resource[:username], bootstrap_password)
+    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:password])
+    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:old_password])
+    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], bootstrap_password)
     custom_environment = {
       'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME' => resource[:username],
       'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD' => resource[:password],
@@ -94,7 +88,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     cmd << resource[:username]
     cmd << '--password'
     if exists?
-      if resource[:old_password] && api.auth_test(resource[:url], resource[:username], resource[:old_password])
+      if resource[:old_password] && Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:old_password])
         cmd << resource[:old_password]
       else
         cmd << resource[:password]
@@ -102,7 +96,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     else
       # Test if default password works and use that password first
       # This supports bootstrapping sensuctl on fresh installs of sensu backend
-      if api.auth_test(resource[:url], resource[:username], bootstrap_password)
+      if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], bootstrap_password)
         cmd << bootstrap_password
       else
         cmd << resource[:password]
@@ -120,8 +114,6 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     rescue Puppet::ExecutionFailure => e
       File.delete(config_path) if File.exist?(config_path)
       raise Puppet::Error, "sensuctl configure failed\nOutput: #{output}\nError message: #{e.message}"
-    rescue Exception => e
-      raise Puppet::Error, "sensuctl configure failed\nError message: #{e.message}"
     end
   end
 
@@ -130,7 +122,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
       begin
         if @property_flush[:trusted_ca_file] == 'absent'
           Puppet.info("Clearing trusted-ca-file in #{config_path}")
-          config = load_config
+          config = sensuctl_config
           config['trusted-ca-file'] = ''
           save_config(config)
         end

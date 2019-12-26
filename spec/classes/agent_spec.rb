@@ -14,6 +14,7 @@ describe 'sensu::agent', :type => :class do
         end
 
         it { should contain_class('sensu')}
+        it { should contain_class('sensu::common')}
         it { should contain_class('sensu::agent')}
 
         if facts[:os]['family'] == 'windows'

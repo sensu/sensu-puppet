@@ -9,6 +9,10 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
       sensu_cluster_role { 'test':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
+      sensu_cluster_role { 'test-api':
+        rules    => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -30,6 +34,13 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
+
+    it 'should have a valid cluster_role from API' do
+      on node, 'sensuctl cluster-role info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
+      end
+    end
   end
 
   context 'update cluster_role' do
@@ -41,6 +52,13 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
           {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
           {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
         ],
+      }
+      sensu_cluster_role { 'test-api':
+        rules    => [
+          {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
+          {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
+        ],
+        provider => 'sensu_api',
       }
       EOS
 
@@ -65,6 +83,15 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
       end
     end
+
+    it 'should have a valid cluster_role with updated propery using API' do
+      on node, 'sensuctl cluster-role info test-api --format json' do
+        data = JSON.parse(stdout)
+        expect(data['rules'].size).to eq(2)
+        expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
+        expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -72,6 +99,10 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_cluster_role { 'test': ensure => 'absent' }
+      sensu_cluster_role { 'test-api':
+        ensure   => 'absent',
+        provider => 'sensu_api',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -90,6 +121,9 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
     describe command('sensuctl cluster-role info test'), :node => node do
       its(:exit_status) { should_not eq 0 }
     end
+    describe command('sensuctl cluster-role info test-api'), :node => node do
+      its(:exit_status) { should_not eq 0 }
+    end
   end
 
   context 'resource purging' do
@@ -101,10 +135,10 @@ describe 'sensu_cluster_role', if: RSpec.configuration.sensu_full do
       }
       EOS
       pp = <<-EOS
+      include ::sensu::backend
       sensu_resources { 'sensu_cluster_role':
         purge => true
       }
-      include sensu::backend
       sensu_cluster_role { 'test2':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }

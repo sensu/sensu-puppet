@@ -28,6 +28,7 @@ describe 'sensu::cli', :type => :class do
 
         it { should create_class('sensu::cli') }
         it { should contain_class('sensu') }
+        it { should contain_class('sensu::common')}
 
         if facts[:os]['family'] == 'windows'
           it { should contain_file('C:\\Program Files\\Sensu').with_ensure('directory') }

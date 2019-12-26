@@ -1,0 +1,405 @@
+{
+    "description": "Sensu Go PagerDuty Handler",
+    "download_url": "https://bonsai.sensu.io/assets/sensu/sensu-pagerduty-handler/download",
+    "github_url": "https://github.com/sensu/sensu-pagerduty-handler",
+    "name": "sensu/sensu-pagerduty-handler",
+    "url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler",
+    "versions": [
+        {
+            "assets": [],
+            "version": "master"
+        },
+        {
+            "assets": [
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "528633012b5e377a28afb78f30ed0bf53762e709851fd551a141ba39cae320644c2db0be527e1fc7d504264a412e06f7bdcac50043e097575b332243c721fd57",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_windows_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/Windows/amd64/release_asset",
+                    "filter": [
+                        "System.OS == darwin",
+                        "System.Arch == amd64"
+                    ],
+                    "last_modified": "2019-09-09T00:03:57.000Z",
+                    "platform": "Windows"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "7b94f4dfb456f4625be6767f066c58dd84f27a3f44ea8ac75978dd21f2f793edfda26c3ecb42f6cbc0b880b22240c44f8154bf3e74316ba1373f50d45227ad21",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_darwin_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/OSX/386/release_asset",
+                    "filter": [
+                        "System.OS == darwin",
+                        "System.Arch == 386"
+                    ],
+                    "last_modified": "2019-09-09T00:03:56.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "65e280e916b693a5041cdf25c6c2e6bd10f1bed37b0f710171cf9a7123bf8c683049ee1cd0ee137344ded19156a69966f5e36ff4313f9306cc59613e1b2d7822",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_linux_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/linux/amd64/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == amd64"
+                    ],
+                    "last_modified": "2019-09-09T00:03:50.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "b1026656358382e88cf41c8a4cdcae1075be4b002dc6dc9c8eb903ecedc42e7c778aa4cd40f5849c6f42ea66d0a03501c12a519ab50afcb372ac191bf0602322",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_linux_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/linux/386/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == 386"
+                    ],
+                    "last_modified": "2019-09-09T00:03:51.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "arm64",
+                    "asset_sha": "49b28511054e3699db083662846373c8210d53011e4b062e2ab860268bde16b6d65ca9d79a0ecbc21f165c3af056df30c5b6d35ce8795635a5062ef25617dbba",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_linux_arm64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/linux/arm64/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == arm64"
+                    ],
+                    "last_modified": "2019-09-09T00:03:52.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "armv7",
+                    "asset_sha": "c74932c17638880a031f9acda4b057217e504a4b7bb995967af1b9fa01f045147dc80076bb336bcb3d910c674186bd7ebe646ff3f3ce43827217523752032a14",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_linux_armv7.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/linux/armv7/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == armv7"
+                    ],
+                    "last_modified": "2019-09-09T00:03:53.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "7c1793eec88df9379a2dbe2315763926e0a01ed5222c5cade66c431fcd0fcac1a299da35b614ef3e0275cacde1d73b6ed93ccb255dc77b356da2bafedf2bafb8",
+                    "asset_url": "https://assets.bonsai.sensu.io/ee009a3fa2c6e7fb1dc7b3a5fddc69a1bc3e7060/sensu-pagerduty-handler_1.0.2_darwin_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.2/OSX/amd64/release_asset",
+                    "filter": [
+                        "System.OS == darwin",
+                        "System.Arch == amd64"
+                    ],
+                    "last_modified": "2019-09-09T00:03:55.000Z",
+                    "platform": "OSX"
+                }
+            ],
+            "version": "1.0.2"
+        },
+        {
+            "assets": [
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "5be236b5b9ccceb10920d3a171ada4ac4f4caaf87f822475cd48bd7f2fab3235fa298f79ef6f97b0eb6498205740bb1af1120ca036fd3381edfebd9fb15aaa99",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_linux_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/linux/amd64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == 'amd64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:33.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "1665884187b9915c930ccaabf898109fb7597242cf7e6a83b1634cd1b6f017a894ed096f9ad2444a656367ab9a8329a385f309f45636e5b0043b96312cffc229",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_linux_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/linux/386/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == '386'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:34.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "arm64",
+                    "asset_sha": "3519de0a1d3f3e1a4f9929f62eff1f217974208fbaed2b78c945b6712d5f2871a476f20d9ea05deb098065810ed7820f1a6dd4a5563c4a5f7eb90997ac7eb53e",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_linux_arm64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/linux/arm64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == 'arm64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:35.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "armv7",
+                    "asset_sha": "7313e5155b4ab9956b7a28d4e033977e106350498bc02f1cd0bfc23ec8a3e77b1f9b1747defaa649a61f90cb950449489ed0edf431ed49520b86b0ddb494ebfd",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_linux_armv7.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/linux/armv7/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == 'armv7'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:36.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "06ac514b64670a5f21835c09e1aea96669aa5eaf9f90e70083783eb8cdd082003ad2238d7afab483f82e47eeb2b9a37e9b2e0a6b53bb7d1c1b3bb77da6c02386",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_darwin_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/OSX/amd64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'darwin'",
+                        "entity.system.arch == 'amd64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:37.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "cfbfed2e5a5a2acf6bd4bd143abc53d5e6642611626868b0a69de81cba4971fb96738f11218ea85cacb6bfceb501b367d3963d46c6aa79f78ac35b7c3a6a165d",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_darwin_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/OSX/386/release_asset",
+                    "filter": [
+                        "entity.system.os == 'darwin'",
+                        "entity.system.arch == '386'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:38.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "a5fd30f016ea7fc0d5bce276337244dcf7dcea9426937603e0cfefdbbca331c0d65872c6b397217bd9ea7c2ad56d6952f7c473688da91a75e72c8aedc6754997",
+                    "asset_url": "https://assets.bonsai.sensu.io/02fc48fb7cbfd27f36915489af2725034a046772/sensu-pagerduty-handler_1.2.0_windows_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.2.0/Windows/amd64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'darwin'",
+                        "entity.system.arch == 'amd64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:39.000Z",
+                    "platform": "Windows"
+                }
+            ],
+            "version": "1.2.0"
+        },
+        {
+            "assets": [
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "b47b33af890f9fbfa8652b804b7441b7a1ba64a71a63fe876e043ccd28421d0ed326d7637c8b11f43fb0b589cad6d63515a4ae84ba04b4c062bb20c819f22f95",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_linux_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/linux/386/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == 386"
+                    ],
+                    "last_modified": "2019-09-09T00:04:01.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "armv7",
+                    "asset_sha": "ac6a02e0c632de3ee3e03de90db122365c1c16968d1fa11d1b119bbceea3943c8861856bec6326cadbb181489b8f5e0ef283906e0430e7232f45ded6f1db4acb",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_linux_armv7.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/linux/armv7/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == armv7"
+                    ],
+                    "last_modified": "2019-09-09T00:04:03.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "7cdb60324ef8ce8dc9c9690341680ea4564ae2bc423b5993cfe7ac210c0cb714bff2ef8dbef6e93531df137a62fb3ef3c68a859a803bf7b85a44738e7dce08a4",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_darwin_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/OSX/amd64/release_asset",
+                    "filter": [
+                        "System.OS == darwin",
+                        "System.Arch == amd64"
+                    ],
+                    "last_modified": "2019-09-09T00:04:04.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "f29af962eb1e987c233d3161e94e10b4c3050c49360084c10e039c18087eed6e606357a7b754837e9b3c2f21f6cbaff9965d2155d90dfef8da02f3df19fab9bb",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_darwin_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/OSX/386/release_asset",
+                    "filter": [
+                        "System.OS == darwin",
+                        "System.Arch == 386"
+                    ],
+                    "last_modified": "2019-09-09T00:04:07.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "311994675a3d655f24058aa4e869992556052ae6ccdcf58082902bd4c8cee078d8f973941951548312bfa1d1547f654131b0318e82546471c119a27c72b2b064",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_windows_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/Windows/amd64/release_asset",
+                    "filter": [
+                        "System.OS == darwin",
+                        "System.Arch == amd64"
+                    ],
+                    "last_modified": "2019-09-09T00:04:09.000Z",
+                    "platform": "Windows"
+                },
+                {
+                    "annotations": {},
+                    "arch": "arm64",
+                    "asset_sha": "26c936afbef32772f16d4589948af19a4b08ebc6c47566d0d3aee22e15c740bc41a418d9cc806a1391b693d4ff5f2adc732888e987b50e287d8885bb5626f6a7",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_linux_arm64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/linux/arm64/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == arm64"
+                    ],
+                    "last_modified": "2019-09-09T00:04:02.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "5facfb0706e5e36edc5d13993ecc813a4689c5ca502d70670268ca1c0679e9e2af79af75ee4f7a423b48f2e55524f6d81ce81485975eb3b70048cfa58f4af961",
+                    "asset_url": "https://assets.bonsai.sensu.io/e8dcfbb4b7e01608ca29f36c7c5ca6bf9618f07b/sensu-pagerduty-handler_1.0.1_linux_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.0.1/linux/amd64/release_asset",
+                    "filter": [
+                        "System.OS == linux",
+                        "System.Arch == amd64"
+                    ],
+                    "last_modified": "2019-09-09T00:04:00.000Z",
+                    "platform": "linux"
+                }
+            ],
+            "version": "1.0.1"
+        },
+        {
+            "assets": [],
+            "version": "1.0.0"
+        },
+        {
+            "assets": [],
+            "version": "0.0.3"
+        },
+        {
+            "assets": [
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "e93ec4465af5a2057664e8c3cd68e9352457b81315b97578eaae5e21f0cf7419d4fc36feb0155eeb0dd5a227e267307a58ee58a9f3e85bf3d44da3738bf691ca",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/linux/amd64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == 'amd64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:41.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "5f11f22704b4dddf1798bafcdcce1fec43380842a7c7ec48d8c48e9408abfb9e384b7bec3a4512bc92b1239f5867a4b43f6c45fb569a6546a749e0d11ad83a8f",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/linux/386/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == '386'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:42.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "arm64",
+                    "asset_sha": "1eec6b24b4201e060e5fc4c3071be67f74b12250d75954d2195b3a57346f0dd7a34d6515b136453032d594d5de225e9dc80b20c9f7123f1565420bd483c3d181",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_arm64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/linux/arm64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == 'arm64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:43.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "armv7",
+                    "asset_sha": "ddcf3cab808b0baa71f333e529ba76f10eec48f42e48f8164f3d9d911a4966ca6e64b2682d1d780bc448c6893d89df2aa8f3877f0dc742524381735a2f521ef4",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_linux_armv7.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/linux/armv7/release_asset",
+                    "filter": [
+                        "entity.system.os == 'linux'",
+                        "entity.system.arch == 'armv7'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:44.000Z",
+                    "platform": "linux"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "dc9f25c4c8576cfed4cb8ebb16aac842c8a03bf5b84d4351ef233b750b4adc0187aadf0403b770ad7df5c247fc77803592df206e40d5658c84c3baa38e4ba7aa",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_darwin_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/OSX/amd64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'darwin'",
+                        "entity.system.arch == 'amd64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:45.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "386",
+                    "asset_sha": "d59ef175a4d379b8fe21fa0d97b2b6dfa7fcf796aa9bcc4375950f283322e5b208941fdb4bab65737201c4e5c6da592d280a3e8034bb96df4c858bbfd6e30458",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_darwin_386.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/OSX/386/release_asset",
+                    "filter": [
+                        "entity.system.os == 'darwin'",
+                        "entity.system.arch == '386'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:46.000Z",
+                    "platform": "OSX"
+                },
+                {
+                    "annotations": {},
+                    "arch": "amd64",
+                    "asset_sha": "09fd04a0ee0bd049105b92e5ac672369defcd7ae7409d682362f7e56bf4a128fd0147745e72eb605c26634507b8cd8ca5479213bb0cd6ce7198a0c634ca7d798",
+                    "asset_url": "https://assets.bonsai.sensu.io/698710262d59c72ace3e31524960630dc1e4f190/sensu-pagerduty-handler_1.1.0_windows_amd64.tar.gz",
+                    "details_url": "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-pagerduty-handler/1.1.0/Windows/amd64/release_asset",
+                    "filter": [
+                        "entity.system.os == 'darwin'",
+                        "entity.system.arch == 'amd64'"
+                    ],
+                    "last_modified": "2019-09-09T00:03:47.000Z",
+                    "platform": "Windows"
+                }
+            ],
+            "version": "1.1.0"
+        }
+    ]
+}

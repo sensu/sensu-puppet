@@ -5,6 +5,8 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
 
   mk_resource_methods
 
+  defaultfor :kernel => ['Linux','windows']
+
   def self.instances
     replicators = []
 
@@ -14,9 +16,6 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
       replicator = {}
       replicator[:ensure] = :present
       replicator[:name] = d['metadata']['name']
-      # Currently dump does not include insecure if value is false
-      # See https://github.com/sensu/sensu-go/issues/3422
-      replicator[:insecure] = :false
       d['spec'].each_pair do |key,value|
         if !!value == value
           value = value.to_s.to_sym
@@ -131,7 +130,7 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
     begin
       sensuctl_delete('EtcdReplicator', resource[:name], nil, metadata, spec, 'federation/v1')
     rescue Exception => e
-      raise Puppet::Error, "sensuctl delete check #{resource[:name]} failed\nError message: #{e.message}"
+      raise Puppet::Error, "sensuctl delete #{resource[:name]} failed\nError message: #{e.message}"
     end
     @property_hash.clear
   end

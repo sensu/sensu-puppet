@@ -7,6 +7,7 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_namespace { 'test': ensure => 'present' }
+      sensu_namespace { 'test-api': ensure => 'present', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -29,6 +30,14 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_full do
         expect(d[0]['name']).to eq('test')
       end
     end
+
+    it 'should have a valid namespace using API' do
+      on node, 'sensuctl namespace list --format json' do
+        data = JSON.parse(stdout)
+        d = data.select { |o| o['name'] == 'test-api' }
+        expect(d[0]['name']).to eq('test-api')
+      end
+    end
   end
 
   context 'ensure => absent' do
@@ -36,6 +45,7 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_full do
       pp = <<-EOS
       include sensu::backend
       sensu_namespace { 'test': ensure => 'absent' }
+      sensu_namespace { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -55,6 +65,14 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_full do
       on node, 'sensuctl namespace list --format json' do
         data = JSON.parse(stdout)
         d = data.select { |o| o['name'] == 'test' }
+        expect(d.size).to eq(0)
+      end
+    end
+
+    it 'should not have test namespace using API' do
+      on node, 'sensuctl namespace list --format json' do
+        data = JSON.parse(stdout)
+        d = data.select { |o| o['name'] == 'test-api' }
         expect(d.size).to eq(0)
       end
     end

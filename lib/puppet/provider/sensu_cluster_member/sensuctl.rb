@@ -5,6 +5,8 @@ Puppet::Type.type(:sensu_cluster_member).provide(:sensuctl, :parent => Puppet::P
 
   mk_resource_methods
 
+  defaultfor :kernel => ['Linux','windows']
+
   def self.instances
     cluster_members = []
 

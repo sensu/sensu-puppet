@@ -98,6 +98,7 @@ DESC
     asset_opts[:name] = "#{self[:rename]} in #{self[:namespace]}"
     asset_opts[:require] = "Sensu_bonsai_asset[#{self[:name]}]"
     asset_opts[:bonsai] = true
+    asset_opts[:provider] = self[:provider] if self[:provider]
     asset = Puppet::Type.type(:sensu_asset).new(asset_opts)
     [asset]
   end

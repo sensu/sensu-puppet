@@ -1,0 +1,80 @@
+[
+    {
+        "api_version": "authentication/v2",
+        "metadata": {
+            "name": "ad"
+        },
+        "spec": {
+            "groups_prefix": "",
+            "servers": [
+                {
+                    "binding": {
+                        "password": "P@ssw0rd!",
+                        "user_dn": "cn=binder,dc=acme,dc=org"
+                    },
+                    "client_cert_file": "",
+                    "client_key_file": "",
+                    "default_upn_domain": "",
+                    "group_search": {
+                        "attribute": "member",
+                        "base_dn": "dc=acme,dc=org",
+                        "name_attribute": "cn",
+                        "object_class": "group"
+                    },
+                    "host": "127.0.0.1",
+                    "insecure": false,
+                    "port": 389,
+                    "security": "tls",
+                    "trusted_ca_file": "",
+                    "user_search": {
+                        "attribute": "sAMAccountName",
+                        "base_dn": "dc=acme,dc=org",
+                        "name_attribute": "displayName",
+                        "object_class": "person"
+                    }
+                }
+            ],
+            "username_prefix": ""
+        },
+        "type": "ad"
+    },
+    {
+        "api_version": "authentication/v2",
+        "metadata": {
+            "name": "openldap"
+        },
+        "spec": {
+            "groups_prefix": "",
+            "servers": [
+                {
+                    "binding": {
+                        "password": "P@ssw0rd!",
+                        "user_dn": "cn=binder,dc=acme,dc=org"
+                    },
+                    "client_cert_file": "",
+                    "client_key_file": "",
+                    "default_upn_domain": "",
+                    "group_search": {
+                        "attribute": "member",
+                        "base_dn": "dc=acme,dc=org",
+                        "name_attribute": "cn",
+                        "object_class": "groupOfNames"
+                    },
+                    "host": "127.0.0.1",
+                    "insecure": false,
+                    "port": 389,
+                    "security": "tls",
+                    "trusted_ca_file": "",
+                    "user_search": {
+                        "attribute": "uid",
+                        "base_dn": "dc=acme,dc=org",
+                        "name_attribute": "cn",
+                        "object_class": "person"
+                    }
+                }
+            ],
+            "username_prefix": ""
+        },
+        "type": "ldap"
+    }
+]

@@ -5,6 +5,8 @@ Puppet::Type.type(:sensu_cluster_role_binding).provide(:sensuctl, :parent => Pup
 
   mk_resource_methods
 
+  defaultfor :kernel => ['Linux','windows']
+
   def self.instances
     bindings = []
 

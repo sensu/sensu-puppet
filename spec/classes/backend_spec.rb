@@ -14,21 +14,12 @@ describe 'sensu::backend', :type => :class do
 
         it { should create_class('sensu::backend') }
         it { should contain_class('sensu') }
+        it { should contain_class('sensu::common')}
         it { should contain_class('sensu::cli') }
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensuctl_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
-        it { should contain_class('sensu::backend::tessen') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
-
-        it {
-          should contain_sensu_api_validator('sensu').with({
-            'sensu_api_server' => 'test.example.com',
-            'sensu_api_port'   => 8080,
-            'use_ssl'          => 'true',
-            'require'          => 'Service[sensu-backend]',
-          })
-        }
 
         it { should have_sensu_user_resource_count(2) }
         it {
@@ -51,6 +42,8 @@ describe 'sensu::backend', :type => :class do
             'groups'       => ['system:agents'],
           })
         }
+
+        it { should contain_sensu_tessen('puppet').with_ensure('present') }
 
         it { should_not contain_file('sensu_license') }
         it { should_not contain_exec('sensu-add-license') }
@@ -174,15 +167,6 @@ describe 'sensu::backend', :type => :class do
         end
 
         it { should compile.with_all_deps }
-        it {
-          should contain_sensu_api_validator('sensu').with({
-            'sensu_api_server' => 'test.example.com',
-            'sensu_api_port'   => 8080,
-            'use_ssl'          => 'false',
-            'require'          => 'Service[sensu-backend]',
-          })
-        }
-
         it { should_not contain_file('sensu_ssl_cert') }
         it { should_not contain_file('sensu_ssl_key') }
 
@@ -293,10 +277,16 @@ describe 'sensu::backend', :type => :class do
         end
       end
 
+      context 'tessen_ensure => absent' do
+        let(:params) {{ :tessen_ensure => 'absent' }}
+        it { should compile.with_all_deps }
+        it { is_expected.to contain_sensu_tessen('puppet').with_ensure('absent') }
+      end
+
       context 'manage_tessen => false' do
         let(:params) {{ :manage_tessen => false }}
         it { should compile.with_all_deps }
-        it { is_expected.not_to contain_class('sensu::backend::tessen') }
+        it { is_expected.not_to contain_sensu_tessen('puppet') }
       end
 
       context 'datastore => postgresql' do

@@ -5,6 +5,8 @@ Puppet::Type.type(:sensu_filter).provide(:sensuctl, :parent => Puppet::Provider:
 
   mk_resource_methods
 
+  defaultfor :kernel => ['Linux','windows']
+
   def self.instances
     filters = []
 

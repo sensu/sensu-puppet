@@ -101,56 +101,12 @@ class sensu (
     $agent_config_path = "${etc_dir}/agent.yml"
   }
 
-  if $etc_parent_dir {
-    file { 'sensu_dir':
-      ensure => 'directory',
-      path   => $etc_parent_dir,
-      owner  => $sensu_user,
-      group  => $sensu_group,
-      mode   => $directory_mode,
-    }
-  }
-
-  file { 'sensu_etc_dir':
-    ensure  => 'directory',
-    path    => $etc_dir,
-    owner   => $sensu_user,
-    group   => $sensu_group,
-    mode    => $directory_mode,
-    purge   => $etc_dir_purge,
-    recurse => $etc_dir_purge,
-    force   => $etc_dir_purge,
-  }
-
   if $use_ssl {
-    contain sensu::ssl
     $api_protocol = 'https'
   } else {
     $api_protocol = 'http'
   }
-
-  if $manage_user and $sensu_user {
-    user { 'sensu':
-      ensure     => 'present',
-      name       => $sensu_user,
-      forcelocal => true,
-      shell      => '/bin/false',
-      gid        => $sensu_group,
-      uid        => undef,
-      home       => '/var/lib/sensu',
-      managehome => false,
-      system     => true,
-    }
-  }
-  if $manage_group and $sensu_group {
-    group { 'sensu':
-      ensure     => 'present',
-      name       => $sensu_group,
-      forcelocal => true,
-      gid        => undef,
-      system     => true,
-    }
-  }
+  $api_url = "${api_protocol}://${api_host}:${api_port}"
 
   case $facts['os']['family'] {
     'RedHat': {
@@ -170,10 +126,10 @@ class sensu (
   # $package_require is used by sensu::agent and sensu::backend
   # package resources
   if $manage_repo {
-    include sensu::repo
     $package_require = [Class['::sensu::repo']] + $os_package_require
   } else {
     $package_require = undef
   }
 
+  include sensu::resources
 }

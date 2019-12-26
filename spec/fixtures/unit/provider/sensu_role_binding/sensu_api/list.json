@@ -1,0 +1,18 @@
+[
+  {
+    "subjects": [
+      {
+        "type": "User",
+        "name": "test"
+      }
+    ],
+    "role_ref": {
+      "type": "Role",
+      "name": "test"
+    },
+    "metadata": {
+      "namespace": "default",
+      "name": "test"
+    }
+  }
+]

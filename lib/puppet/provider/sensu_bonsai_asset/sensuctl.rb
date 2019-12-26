@@ -1,9 +1,12 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensuctl'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
 
 Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Provider::Sensuctl) do
   desc "Provider sensu_bonsai_asset using sensuctl"
 
   mk_resource_methods
+
+  defaultfor :kernel => ['Linux','windows']
 
   def self.instances
     assets = []
@@ -47,7 +50,7 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Pro
     @latest_version = nil
     return nil if namespace.nil? || name.nil?
     versions = []
-    bonsai_asset = self.get_bonsai_asset("#{namespace}/#{name}")
+    bonsai_asset = Puppet::Provider::SensuAPI.get_bonsai_asset("#{namespace}/#{name}")
     (bonsai_asset['versions'] || []).each do |bonsai_version|
       version = bonsai_version['version']
       next unless version =~ /^[0-9]/
@@ -56,34 +59,6 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Pro
     versions = versions.sort_by { |v| Gem::Version.new(v) }
     @latest_version = versions.last
     @latest_version
-  end
-
-  def self.get_bonsai_asset(name)
-    data = {}
-    url = "https://bonsai.sensu.io/api/v1/assets/#{name}"
-    uri = URI(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    #http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(uri.path)
-    request.add_field("Accept", "application/json")
-    Puppet.debug("GET: #{url}")
-    response = http.request(request)
-    if valid_json?(response.body)
-      data = JSON.parse(response.body)
-      Puppet.debug("BODY: #{JSON.pretty_generate(data)}")
-    else
-      Puppet.debug("BODY: Not valid JSON")
-    end
-    unless response.kind_of?(Net::HTTPSuccess)
-      Puppet.notice "Unable to connect to bonsai at #{url}"
-      return {}
-    end
-  rescue Exception => e
-    Puppet.notice "Unable to connect to bonsai at #{url}: #{e.message}"
-    return {}
-  else
-    return data
   end
 
   def exists?

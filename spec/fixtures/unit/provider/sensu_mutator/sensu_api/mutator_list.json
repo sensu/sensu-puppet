@@ -1,0 +1,14 @@
+[
+  {
+    "metadata": {
+      "name": "example-mutator",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    },
+    "command": "example_mutator.rb",
+    "timeout": 60,
+    "env_vars": null,
+    "runtime_assets": null
+  }
+]

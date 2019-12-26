@@ -13,6 +13,7 @@
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
     * [Basic Sensu CLI](#basic-sensu-cli)
+    * [API Providers](#api-providers)
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
@@ -267,6 +268,36 @@ class { '::sensu':
 class { 'sensu::cli':
   install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
 }
+```
+
+### API Providers
+
+All the core resources have a provider that manages resources using the Sensu Go API.
+The new provider can be used by setting `provider` parameter on a resource to `sensu_api`.
+The default provider is still `sensuctl` but it's possible to change the provider when defining a resource.
+For example the following will create a check which can be defined on an host that's not the `sensu-backend`.
+
+```
+include ::sensu::api
+sensu_check { "check-cpu-${facts['hostname']}":
+  ensure        => 'present',
+  command       => 'check-cpu.sh -w 75 -c 90',
+  interval      => 60,
+  subscriptions => ["entity:${facts['hostname']}"],
+  provider      => 'sensu_api',
+}
+```
+
+The `sensu::api` class is required in order to configure the credentials and URL used to communicate with the Sensu backend API.
+
+The API URL, username and password used for the API are set in the `sensu` class and can be set easily with Hiera:
+
+```yaml
+sensu::api_host: sensu-backend.example.com
+sensu::api_port: 8080
+sensu::username: admin
+sensu::password: supersecret
+sensu::old_password: 'P@ssw0rd!'
 ```
 
 ### Manage Windows Agent
@@ -538,12 +569,14 @@ The backend system would collect all `sensu_check` resources.
 
 ### Hiera resources
 
-All the types provided by this module can have their resources defined via Hiera. A type such as `sensu_check` would be defined via `sensu::backend::checks`.
+All the types provided by this module can have their resources defined via Hiera. A type such as `sensu_check` would be defined via `sensu::resources::checks`.
+
+The `sensu` class must be included either directly or via `sensu::agent` or `sensu::backend`.
 
 The following example adds an asset, filter, handler and checks via Hiera:
 
 ```yaml
-sensu::backend::assets:
+sensu::resources::assets:
   sensu-email-handler:
     ensure: present
     url: 'https://github.com/sensu/sensu-email-handler/releases/download/0.1.0/sensu-email-handler_0.1.0_linux_amd64.tar.gz'
@@ -551,13 +584,13 @@ sensu::backend::assets:
     filters:
       - "entity.system.os == 'linux'"
       - "entity.system.arch == 'amd64'"
-sensu::backend::filters:
+sensu::resources::filters:
   hourly:
     ensure: present
     action: allow
     expressions:
       - 'event.check.occurrences == 1 || event.check.occurrences % (3600 / event.check.interval) == 0'
-sensu::backend::handlers:
+sensu::resources::handlers:
   email:
     ensure: present
     type: pipe
@@ -569,7 +602,7 @@ sensu::backend::handlers:
       - is_incident
       - not_silenced
       - hourly
-sensu::backend::checks:
+sensu::resources::checks:
   check-cpu:
     ensure: present
     command: check-cpu.sh -w 75 -c 90
@@ -676,10 +709,8 @@ The first step will not fully add the node to the cluster until the second step 
 
 ### Sensu backend federation
 
-Currently the federation support within this module involves configuring Etcd replicators. This allows resources to be sent from one Sensu cluster to another cluster.
-
+This module supports defining Etcd replicators which allows resources to be sent from one Sensu cluster to another cluster.
 It's necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
-
 First configure backend Etcd to listen on an interface besides localhost and also use SSL:
 
 ```puppet
@@ -710,6 +741,36 @@ sensu_etcd_replicator { 'role_replicator':
 sensu_role { 'test':
   ensure => 'present',
   rules  => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+}
+```
+
+This module also supports defining a federated cluster:
+
+```puppet
+sensu_cluster_federation { 'us-west-2a':
+  ensure   => 'present',
+  api_urls => [
+    'https://sensu-backend-site1.example.com:8080',
+    'https://sensu-backend-site2.example.com:8080',
+  ],
+}
+```
+
+It's also possible to add a backend to an existing Sensu federated cluster.
+The following example adds the API URL https://sensu-backend-site3.example.com:8080 to the federated cluster named us-west-2a.
+
+```puppet
+sensu_cluster_federation_member { 'https://sensu-backend-site3.example.com:8080 in us-west-2a':
+  ensure => 'present',
+}
+```
+
+The above can also be defined using the following example:
+
+```puppet
+sensu_cluster_federation_member { 'https://sensu-backend-site3.example.com:8080':
+  ensure  => 'present',
+  cluster => 'us-west-2a',
 }
 ```
 
@@ -906,9 +967,6 @@ facter -p sensuctl
 ```
 
 ## Limitations
-
-The Sensu v2 support is designed so that all resources managed by `sensuctl` are defined on the `sensu-backend` host.
-This module does not support adding `sensuctl` resources on a host other than the `sensu-backend` host.
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 
