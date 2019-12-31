@@ -44,7 +44,7 @@ Puppet::Type.type(:sensu_asset).provide(:sensuctl, :parent => Puppet::Provider::
   end
 
   def exists?
-    @property_hash[:ensure] == :present
+    (@property_hash[:ensure] == :present || resource[:bonsai] == :true)
   end
 
   def initialize(value = {})

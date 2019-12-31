@@ -96,6 +96,7 @@ DESC
     asset_opts = {}
     asset_opts[:ensure] = self[:ensure]
     asset_opts[:name] = "#{self[:rename]} in #{self[:namespace]}"
+    asset_opts[:namespace] = self[:namespace]
     asset_opts[:require] = "Sensu_bonsai_asset[#{self[:name]}]"
     asset_opts[:bonsai] = true
     asset_opts[:provider] = self[:provider] if self[:provider]
