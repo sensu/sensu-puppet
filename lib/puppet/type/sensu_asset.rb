@@ -151,6 +151,10 @@ DESC
   newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this asset belongs to."
     defaultto 'default'
+    def insync?(is)
+      return true if @resource[:bonsai] == :true
+      super(is)
+    end
   end
 
   newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do

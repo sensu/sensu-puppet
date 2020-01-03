@@ -18,6 +18,7 @@
     * [Advanced agent](#advanced-agent)
     * [Advanced SSL](#advanced-ssl)
     * [Enterprise support](#enterprise-support)
+    * [Contact routing](#contact-routing)
     * [PostgreSQL datastore support](#postgresql-datastore-support)
     * [Installing Plugins](#installing-plugins)
     * [Installing Extensions](#installing-extensions)
@@ -404,6 +405,98 @@ class { 'sensu::backend':
 ```
 
 The types `sensu_ad_auth` and `sensu_ldap_auth` require a valid enterprise license.
+
+### Contact routing
+
+See [Sensu Go - Contact Routing](https://docs.sensu.io/sensu-go/latest/guides/contact-routing/) for details. The following is one way to configure contact routing in Puppet.
+
+Add the sensu-go-has-contact-filter bonsai asset:
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':
+  ensure  => 'present',
+  version => '0.2.0',
+}
+```
+
+Add the filters for the defined contacts
+
+```puppet
+sensu_filter { 'contact_dev':
+  ensure         => 'present',
+  action         => 'allow',
+  runtime_assets => ['sensu/sensu-go-has-contact-filter'],
+  expressions    => ['has_contact(event, "dev")'],
+}
+sensu_filter { 'contact_ops':
+  ensure         => 'present',
+  action         => 'allow',
+  runtime_assets => ['sensu/sensu-go-has-contact-filter'],
+  expressions    => ['has_contact(event, "ops")'],
+}
+```
+
+Add the handlers asset and  handlers for each contact
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure  => 'present',
+  version => '0.2.0',
+}
+sensu_handler { 'email_dev':
+  ensure          => 'present',
+  type            => 'pipe',
+  command         => 'sensu-email-handler -f root@localhost -t dev@example.com -s localhost -i',
+  timeout         => 10,
+  runtime_assets  => ['sensu/sensu-email-handler'],
+  filters         => ['is_incident','not_silenced','contact_dev'],
+}
+sensu_handler { 'email_ops':
+  ensure          => 'present',
+  type            => 'pipe',
+  command         => 'sensu-email-handler -f root@localhost -t ops@example.com -s localhost -i',
+  timeout         => 10,
+  runtime_assets  => ['sensu/sensu-email-handler'],
+  filters         => ['is_incident','not_silenced','contact_ops'],
+}
+```
+
+Create a handler set to centralize handler management for emails
+
+```puppet
+sensu_handler { 'email':
+  ensure    => 'present',
+  type      => 'set',
+  handlers  => ['email_dev','email_ops'],
+}
+```
+
+Lastly define a service that use the contact and the email handler:
+
+```puppet
+sensu_check { 'check_cpu':
+  ensure         => 'present',
+  labels         => {
+    'contacts' => 'dev, ops',
+  },
+  command        => 'check-cpu.rb -w 75 -c 90',
+  handlers       => ['email'],
+  interval       => 30,
+  publish        => true,
+  subscriptions  => ['linux'],
+  runtime_assets => ['sensu-plugins-cpu-checks','sensu-ruby-runtime'],
+}
+```
+
+Agents can also have contacts defined:
+
+```puppet
+class { 'sensu::agent':
+  labels => {
+    'contacts' => 'dev, ops',
+  },
+}
+```
 
 ### PostgreSQL datastore support
 
