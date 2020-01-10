@@ -1,5 +1,30 @@
 # Changelog
 
+## [v4.0.0](https://github.com/sensu/sensu-puppet/tree/v4.0.0) (2020-01-10)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.14.0...v4.0.0)
+
+### Changed
+
+- BREAKING: Add API providers [\#1191](https://github.com/sensu/sensu-puppet/pull/1191) ([treydock](https://github.com/treydock))
+- Add several parameters to sensu::agent class [\#1185](https://github.com/sensu/sensu-puppet/pull/1185) ([treydock](https://github.com/treydock))
+- Document upcoming breaking changes [\#1167](https://github.com/sensu/sensu-puppet/pull/1167) ([treydock](https://github.com/treydock))
+- BREAKING: Move cli resources to sensu::cli class [\#1164](https://github.com/sensu/sensu-puppet/pull/1164) ([treydock](https://github.com/treydock))
+- BREAKING: Update type properties to map to Sensu Go specifications [\#1154](https://github.com/sensu/sensu-puppet/pull/1154) ([treydock](https://github.com/treydock))
+- BREAKING: Refactor how sensu\_ldap\_auth and sensu\_ad\_auth define servers [\#1142](https://github.com/sensu/sensu-puppet/pull/1142) ([treydock](https://github.com/treydock))
+- BREAKING: Remove sensu\_event and sensu\_silenced types [\#1141](https://github.com/sensu/sensu-puppet/pull/1141) ([treydock](https://github.com/treydock))
+
+### Added
+
+- Document contact routing and bonsai asset bugfix [\#1194](https://github.com/sensu/sensu-puppet/pull/1194) ([treydock](https://github.com/treydock))
+- Support 'sensu-backend init' added in Sensu Go 5.16 [\#1192](https://github.com/sensu/sensu-puppet/pull/1192) ([treydock](https://github.com/treydock))
+- Misc test fixes [\#1189](https://github.com/sensu/sensu-puppet/pull/1189) ([treydock](https://github.com/treydock))
+
+### UNCATEGORIZED PRS; GO LABEL THEM
+
+- Style [\#1193](https://github.com/sensu/sensu-puppet/pull/1193) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(ci\) Update TravisCI configuration for new Slack channel [\#1190](https://github.com/sensu/sensu-puppet/pull/1190) ([ghoneycutt](https://github.com/ghoneycutt))
+
 ## [v3.14.0](https://github.com/sensu/sensu-puppet/tree/v3.14.0) (2019-12-01)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.13.0...v3.14.0)
@@ -47,7 +72,6 @@
 - Support Windows 2019 [\#1168](https://github.com/sensu/sensu-puppet/pull/1168) ([treydock](https://github.com/treydock))
 - Improve release process [\#1166](https://github.com/sensu/sensu-puppet/pull/1166) ([treydock](https://github.com/treydock))
 - \(ci\) Use correct Ruby version 2.5.7 for latest Puppet 6 tests [\#1165](https://github.com/sensu/sensu-puppet/pull/1165) ([ghoneycutt](https://github.com/ghoneycutt))
-- Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -59,7 +83,10 @@
 
 ### Added
 
+- Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
 - Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
+- Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
+- Deprecate defining single asset builds [\#1140](https://github.com/sensu/sensu-puppet/pull/1140) ([treydock](https://github.com/treydock))
 
 ## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
 
@@ -69,11 +96,9 @@
 
 - Add sensu\_resources type that will handle resource purging [\#1158](https://github.com/sensu/sensu-puppet/pull/1158) ([treydock](https://github.com/treydock))
 - Add sensu\_gem package provider [\#1156](https://github.com/sensu/sensu-puppet/pull/1156) ([treydock](https://github.com/treydock))
-- Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
 - Install Windows agent via chocolatey [\#1152](https://github.com/sensu/sensu-puppet/pull/1152) ([treydock](https://github.com/treydock))
 - Add sensu\_bonsai\_asset type [\#1149](https://github.com/sensu/sensu-puppet/pull/1149) ([treydock](https://github.com/treydock))
 - Replace unit test instance variables with let [\#1143](https://github.com/sensu/sensu-puppet/pull/1143) ([treydock](https://github.com/treydock))
-- Deprecate defining single asset builds [\#1140](https://github.com/sensu/sensu-puppet/pull/1140) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
