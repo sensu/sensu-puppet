@@ -10,9 +10,7 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      include sensu::backend
       sensu_ldap_auth { 'openldap':
         ensure              => 'present',
         servers             => [
@@ -99,9 +97,7 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_full do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      include sensu::backend
       sensu_ldap_auth { 'openldap':
         ensure              => 'present',
         servers             => [
