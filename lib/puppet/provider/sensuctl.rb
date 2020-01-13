@@ -89,6 +89,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     if namespaces
       args << '--all-namespaces'
     end
+    #TODO: Making format optional is necessary to support sensuctl command list
+    # Fixed in https://github.com/sensu/sensu-go/pull/3495
     if format
       args << '--format'
       args << 'json'
