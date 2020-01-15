@@ -38,6 +38,7 @@ _Public Resource types_
 * [`sensu_cluster_member`](#sensu_cluster_member): Manages Sensu cluster members
 * [`sensu_cluster_role`](#sensu_cluster_role): Manages Sensu cluster roles
 * [`sensu_cluster_role_binding`](#sensu_cluster_role_binding): Manages Sensu cluster role bindings
+* [`sensu_command`](#sensu_command): Manage sensuctl command resources
 * [`sensu_entity`](#sensu_entity): Manages Sensu entities
 * [`sensu_etcd_replicator`](#sensu_etcd_replicator): Manages Sensu etcd replicators
 * [`sensu_filter`](#sensu_filter): Manages Sensu filters
@@ -1891,6 +1892,85 @@ The following parameters are available in the `sensu_cluster_role_binding` type.
 namevar
 
 The name of the role binding.
+
+### sensu_command
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Examples
+
+##### Add sensuctl command from Bonsai asset
+
+```puppet
+sensu_command { 'command-test':
+  ensure      => 'present',
+  bonsai_name => 'sensu/command-test',
+}
+```
+
+##### Add command from specific version of a Bonsai asset
+
+```puppet
+sensu_command { 'command-test':
+  ensure         => 'present',
+  bonsai_name    => 'sensu/command-test',
+  bonsai_version => '0.4.0',
+}
+```
+
+##### Add command from URL
+
+```puppet
+sensu_command { 'command-test':
+  ensure => 'present',
+  url    => 'https://github.com/amdprophet/command-test/releases/download/v0.0.4/command-test_0.0.4_linux_amd64.tar.gz',
+  sha512 => '67aeba3652def271b1921bc1b4621354ad254c89946ebc8d1e39327f69a902d91f4b0326c9020a4a03e4cfbb718b454b6180f9c39aaff1e60daf6310be66244f'
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_command` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `bonsai_version`
+
+Valid values: latest, /[0-9\.]+/
+
+Specific Bonsai asset version to install, or latest
+
+##### `url`
+
+The URL location of the asset.
+
+##### `sha512`
+
+The checksum of the asset
+
+#### Parameters
+
+The following parameters are available in the `sensu_command` type.
+
+##### `name`
+
+namevar
+
+command name
+
+##### `bonsai_name`
+
+Bonsai asset name
 
 ### sensu_entity
 

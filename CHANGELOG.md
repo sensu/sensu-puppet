@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.1.0](https://github.com/sensu/sensu-puppet/tree/v4.1.0) (2020-01-15)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.0.0...v4.1.0)
+
+### Added
+
+- Add support for sensuctl 'command' subcommand [\#1195](https://github.com/sensu/sensu-puppet/pull/1195) ([treydock](https://github.com/treydock))
+
 ## [v4.0.0](https://github.com/sensu/sensu-puppet/tree/v4.0.0) (2020-01-10)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.14.0...v4.0.0)
@@ -72,6 +80,7 @@
 - Support Windows 2019 [\#1168](https://github.com/sensu/sensu-puppet/pull/1168) ([treydock](https://github.com/treydock))
 - Improve release process [\#1166](https://github.com/sensu/sensu-puppet/pull/1166) ([treydock](https://github.com/treydock))
 - \(ci\) Use correct Ruby version 2.5.7 for latest Puppet 6 tests [\#1165](https://github.com/sensu/sensu-puppet/pull/1165) ([ghoneycutt](https://github.com/ghoneycutt))
+- Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -83,7 +92,6 @@
 
 ### Added
 
-- Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
 - Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
 - Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
 - Deprecate defining single asset builds [\#1140](https://github.com/sensu/sensu-puppet/pull/1140) ([treydock](https://github.com/treydock))
@@ -158,10 +166,6 @@
 
 - Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
 
-### Fixed
-
-- Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
-
 ## [v3.4.0](https://github.com/sensu/sensu-puppet/tree/v3.4.0) (2019-07-11)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.3.0...v3.4.0)
@@ -174,6 +178,7 @@
 
 ### Fixed
 
+- Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
 - Update several usage examples to match Sensu Go docs [\#1117](https://github.com/sensu/sensu-puppet/pull/1117) ([treydock](https://github.com/treydock))
 - Regenerate backend test cert to include additional SANs [\#1113](https://github.com/sensu/sensu-puppet/pull/1113) ([treydock](https://github.com/treydock))
 
