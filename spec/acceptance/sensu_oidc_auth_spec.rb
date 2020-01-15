@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_check', if: RSpec.configuration.sensu_full do
+describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_full do
   node = hosts_as('sensu_backend')[0]
   before do
     if ! RSpec.configuration.sensu_test_enterprise
@@ -10,9 +10,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      include sensu::backend
       sensu_oidc_auth { 'oidc':
         ensure            => 'present',
         additional_scopes => ['email','groups'],
@@ -87,9 +85,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      include sensu::backend
       sensu_oidc_auth { 'oidc':
         ensure            => 'present',
         additional_scopes => ['email','groups','openid'],

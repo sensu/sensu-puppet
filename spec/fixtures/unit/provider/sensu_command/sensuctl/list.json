@@ -1,0 +1,17 @@
+[
+  {
+    "alias": "command-test",
+    "asset": {
+      "url": "https://github.com/amdprophet/command-test/releases/download/v0.0.4/command-test_0.0.4_linux_amd64.tar.gz",
+      "sha512": "67aeba3652def271b1921bc1b4621354ad254c89946ebc8d1e39327f69a902d91f4b0326c9020a4a03e4cfbb718b454b6180f9c39aaff1e60daf6310be66244f",
+      "filters": null,
+      "builds": null,
+      "metadata": {
+        "name": "command-test",
+        "namespace": "sensuctl"
+      },
+      "headers": null
+    }
+  }
+]
+

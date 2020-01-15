@@ -16,8 +16,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
       }
       class { 'postgresql::server':}
       class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-        datastore      => 'postgresql',
+        datastore => 'postgresql',
       }
       EOS
       check_pp = <<-EOS
@@ -65,9 +64,8 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_full do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
       class { 'sensu::backend':
-        license_source    => '/root/sensu_license.json',
-        datastore         => 'postgresql',
-        datastore_ensure  => 'absent',
+        datastore        => 'postgresql',
+        datastore_ensure => 'absent',
       }
       EOS
       check_pp = <<-EOS
