@@ -41,8 +41,10 @@
 #
 # @param ssl_ca_source
 #   Source of SSL CA used by sensu services
+#   Do not define with ssl_ca_content
 # @param ssl_ca_content
 #   Content of SSL CA used by sensu services
+#   Do not define with ssl_ca_source
 #
 # @param api_host
 #   Sensu backend host used to configure sensuctl and verify API access.
