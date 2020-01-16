@@ -80,11 +80,11 @@ class sensu (
   Optional[String] $agent_old_password = undef,
 ) {
 
-  if $use_ssl and ! ($ssl_ca_source or $ssl_ca_content) {
-    fail('sensu: ssl_ca_source or $ssl_ca_content must be defined when use_ssl is true')
-  }
   if $use_ssl and $ssl_ca_source and $ssl_ca_content {
     fail('sensu::backend: Do not define both ssl_ca_source and ssl_ca_content_content')
+  }
+  if $use_ssl and ! ($ssl_ca_source or $ssl_ca_content) {
+    $ssl_ca_source = $facts['puppet_localcacert']
   }
 
   if $facts['os']['family'] == 'windows' {

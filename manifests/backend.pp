@@ -128,17 +128,17 @@ class sensu::backend (
   $api_protocol = $sensu::api_protocol
   $password = $sensu::password
 
-  if $use_ssl and ! ($ssl_cert_source or $ssl_cert_content) {
-    fail('sensu::backend: ssl_cert_source or ssl_cert_content must be defined when sensu::use_ssl is true')
-  }
   if $use_ssl and $ssl_cert_source and $ssl_cert_content {
     fail('sensu::backend: Do not define both ssl_cert_source and ssl_cert_content_content')
   }
-  if $use_ssl and ! ($ssl_key_source or $ssl_key_content) {
-    fail('sensu::backend: ssl_key_source or ssl_cert_content must be defined when sensu::use_ssl is true')
+  if $use_ssl and ! ($ssl_cert_source and $ssl_cert_content) {
+    $ssl_cert_source = $facts['puppet_hostcert']
   }
   if $use_ssl and $ssl_key_source and $ssl_key_content {
     fail('sensu::backend: Do not define both ssl_key_source and ssl_key_content')
+  }
+  if $use_ssl and ! ($ssl_key_source and $ssl_key_content) {
+    $ssl_key_source = $facts['puppet_hostprivkey']
   }
 
   if $use_ssl {
