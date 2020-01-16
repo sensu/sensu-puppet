@@ -186,8 +186,19 @@ Default value: `true`
 Data type: `Optional[String]`
 
 Source of SSL CA used by sensu services
+Supports any valid Puppet File sources such as absolute paths or puppet:///
+Do not define with ssl_ca_content
 
-Default value: $facts['puppet_localcacert']
+Default value: `undef`
+
+##### `ssl_ca_content`
+
+Data type: `Optional[String]`
+
+Content of SSL CA used by sensu services
+Do not define with ssl_ca_source
+
+Default value: `undef`
 
 ##### `api_host`
 
@@ -527,16 +538,38 @@ Default value: {}
 Data type: `Optional[String]`
 
 The SSL certificate source
+Supports any valid Puppet File sources such as absolute paths or puppet:///
+Do not define with ssl_cert_content
 
-Default value: $facts['puppet_hostcert']
+Default value: `undef`
+
+##### `ssl_cert_content`
+
+Data type: `Optional[String]`
+
+The SSL certificate content
+Do not define with ssl_cert_source
+
+Default value: `undef`
 
 ##### `ssl_key_source`
 
 Data type: `Optional[String]`
 
 The SSL private key source
+Supports any valid Puppet File sources such as absolute paths or puppet:///
+Do not define with ssl_key_content
 
-Default value: $facts['puppet_hostprivkey']
+Default value: `undef`
+
+##### `ssl_key_content`
+
+Data type: `Optional[String]`
+
+The SSL private key content
+Do not define with ssl_key_source
+
+Default value: `undef`
 
 ##### `include_default_resources`
 
