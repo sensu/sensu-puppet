@@ -53,6 +53,7 @@ describe 'sensu::backend', :type => :class do
             'ensure'    => 'file',
             'path'      => '/etc/sensu/ssl/cert.pem',
             'source'    => '/dne/cert.pem',
+            'content'   => nil,
             'owner'     => 'sensu',
             'group'     => 'sensu',
             'mode'      => '0644',
@@ -66,6 +67,7 @@ describe 'sensu::backend', :type => :class do
             'ensure'    => 'file',
             'path'      => '/etc/sensu/ssl/key.pem',
             'source'    => '/dne/key.pem',
+            'content'   => nil,
             'owner'     => 'sensu',
             'group'     => 'sensu',
             'mode'      => '0600',
@@ -153,12 +155,22 @@ describe 'sensu::backend', :type => :class do
 
       context 'when puppet_hostcert undefined' do
         let(:facts) { facts.merge(puppet_hostcert: nil) }
-        it { should compile.and_raise_error(/ssl_cert_source must be defined/) }
+        it { should compile.and_raise_error(/ssl_cert_source or ssl_cert_content must be defined/) }
       end
 
       context 'when puppet_hostprivkey undefined' do
         let(:facts) { facts.merge(puppet_hostprivkey: nil) }
-        it { should compile.and_raise_error(/ssl_key_source must be defined/) }
+        it { should compile.and_raise_error(/ssl_key_source or ssl_key_content must be defined/) }
+      end
+
+      context 'when ssl_cert_content defined' do
+        let(:params) { { ssl_cert_content: 'foo' } }
+        it { should contain_file('sensu_ssl_cert').with_content('foo').without_source }
+      end
+
+      context 'when ssl_key_content defined' do
+        let(:params) { { ssl_key_content: 'foo' } }
+        it { should contain_file('sensu_ssl_key').with_content('foo').without_source }
       end
 
       context 'with use_ssl => false' do
