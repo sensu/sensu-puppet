@@ -41,6 +41,8 @@
 #
 # @param ssl_ca_source
 #   Source of SSL CA used by sensu services
+# @param ssl_ca_content
+#   Content of SSL CA used by sensu services
 #
 # @param api_host
 #   Sensu backend host used to configure sensuctl and verify API access.
@@ -66,7 +68,8 @@ class sensu (
   Boolean $ssl_dir_purge = true,
   Boolean $manage_repo = true,
   Boolean $use_ssl = true,
-  Optional[String] $ssl_ca_source = $facts['puppet_localcacert'],
+  Optional[String] $ssl_ca_source = undef,
+  Optional[String] $ssl_ca_content = undef,
   String $api_host = $trusted['certname'],
   Stdlib::Port $api_port = 8080,
   String $password = 'P@ssw0rd!',
@@ -75,8 +78,11 @@ class sensu (
   Optional[String] $agent_old_password = undef,
 ) {
 
-  if $use_ssl and ! $ssl_ca_source {
-    fail('sensu: ssl_ca_source must be defined when use_ssl is true')
+  if $use_ssl and ! ($ssl_ca_source or $ssl_ca_content) {
+    fail('sensu: ssl_ca_source or $ssl_ca_content must be defined when use_ssl is true')
+  }
+  if $use_ssl and $ssl_ca_source and $ssl_ca_content {
+    fail('sensu::backend: Do not define both ssl_ca_source and ssl_ca_content_content')
   }
 
   if $facts['os']['family'] == 'windows' {

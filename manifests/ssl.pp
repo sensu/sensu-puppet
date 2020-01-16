@@ -31,5 +31,6 @@ class sensu::ssl {
     mode      => $file_mode,
     show_diff => false,
     source    => $sensu::ssl_ca_source,
+    content   => $sensu::ssl_ca_content,
   }
 }
