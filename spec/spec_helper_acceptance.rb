@@ -16,6 +16,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
   c.add_setting :sensu_use_agent, default: false
+  c.add_setting :sensu_examples, default: []
   # Necessary to be present even though only used by Windows tests
   c.add_setting :skip_apply, default: false
   c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
@@ -42,6 +43,9 @@ RSpec.configure do |c|
     c.sensu_manage_repo = true
     add_ci_repo = false
   end
+
+  examples_dir = File.join(project_dir, 'examples')
+  c.sensu_examples = Dir["#{examples_dir}/*.pp"]
 
   if RSpec.configuration.sensu_use_agent
     puppetserver = hosts_as('puppetserver')[0]
