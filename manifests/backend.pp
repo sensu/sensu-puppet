@@ -28,16 +28,16 @@
 #   Sensu backend configuration hash used to define backend.yml.
 # @param ssl_cert_source
 #   The SSL certificate source
-#   Do not define with ssl_cert_content
+#   This parameter is mutually exclusive with ssl_cert_content
 # @param ssl_cert_content
 #   The SSL certificate content
-#   Do not define with ssl_cert_source
+#   This parameter is mutually exclusive with ssl_cert_source
 # @param ssl_key_source
 #   The SSL private key source
-#   Do not define with ssl_key_content
+#   This parameter is mutually exclusive with ssl_key_content
 # @param ssl_key_content
 #   The SSL private key content
-#   Do not define with ssl_key_content
+#   This parameter is mutually exclusive with ssl_key_source
 # @param include_default_resources
 #   Sets if default sensu resources should be included
 # @param show_diff
