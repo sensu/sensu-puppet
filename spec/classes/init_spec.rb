@@ -22,7 +22,7 @@ describe 'sensu', :type => :class do
 
       context 'when puppet_localcacert undefined' do
         let(:facts) { facts.merge!(puppet_localcacert: nil) }
-        it { should compile.and_raise_error(/ssl_ca_source must be defined/) }
+        it { should compile.and_raise_error(/ssl_ca_source or ssl_ca_content must be defined/) }
       end
     end
   end

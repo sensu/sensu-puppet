@@ -37,8 +37,14 @@ describe 'sensu::ssl', :type => :class do
             'mode'      => platforms[facts[:osfamily]][:ca_mode],
             'show_diff' => 'false',
             'source'    => facts['puppet_localcacert'],
+            'content'   => nil,
           })
         }
+
+        context 'when ssl_ca_content is defined' do
+          let(:pre_condition) { "class { 'sensu': ssl_ca_content => 'foo' }" }
+          it { should contain_file('sensu_ssl_ca').with_content('foo').without_source }
+        end
       end
     end
   end

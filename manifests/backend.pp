@@ -28,8 +28,16 @@
 #   Sensu backend configuration hash used to define backend.yml.
 # @param ssl_cert_source
 #   The SSL certificate source
+#   This parameter is mutually exclusive with ssl_cert_content
+# @param ssl_cert_content
+#   The SSL certificate content
+#   This parameter is mutually exclusive with ssl_cert_source
 # @param ssl_key_source
 #   The SSL private key source
+#   This parameter is mutually exclusive with ssl_key_content
+# @param ssl_key_content
+#   The SSL private key content
+#   This parameter is mutually exclusive with ssl_key_source
 # @param include_default_resources
 #   Sets if default sensu resources should be included
 # @param show_diff
@@ -78,7 +86,9 @@ class sensu::backend (
   Stdlib::Absolutepath $state_dir = '/var/lib/sensu/sensu-backend',
   Hash $config_hash = {},
   Optional[String] $ssl_cert_source = $facts['puppet_hostcert'],
+  Optional[String] $ssl_cert_content = undef,
   Optional[String] $ssl_key_source = $facts['puppet_hostprivkey'],
+  Optional[String] $ssl_key_content = undef,
   Boolean $include_default_resources = true,
   Boolean $show_diff = true,
   Optional[String] $license_source = undef,
@@ -118,14 +128,24 @@ class sensu::backend (
   $api_protocol = $sensu::api_protocol
   $password = $sensu::password
 
-  if $use_ssl and ! $ssl_cert_source {
-    fail('sensu::backend: ssl_cert_source must be defined when sensu::use_ssl is true')
+  if $ssl_cert_content {
+    $_ssl_cert_source = undef
+  } else {
+    $_ssl_cert_source = $ssl_cert_source
   }
-  if $use_ssl and ! $ssl_key_source {
-    fail('sensu::backend: ssl_key_source must be defined when sensu::use_ssl is true')
+  if $ssl_key_content {
+    $_ssl_key_source = undef
+  } else {
+    $_ssl_key_source = $ssl_key_source
   }
 
   if $use_ssl {
+    if !($_ssl_cert_source or $ssl_cert_content) {
+      fail('sensu::backend: ssl_cert_source or ssl_cert_content must be defined when sensu::use_ssl is true')
+    }
+    if !($_ssl_key_source or $ssl_key_content) {
+      fail('sensu::backend: ssl_key_source or ssl_key_content must be defined when sensu::use_ssl is true')
+    }
     $trusted_ca_file = "${ssl_dir}/ca.crt"
     $ssl_config = {
       'cert-file'       => "${ssl_dir}/cert.pem",
@@ -202,7 +222,8 @@ class sensu::backend (
     file { 'sensu_ssl_cert':
       ensure    => 'file',
       path      => "${ssl_dir}/cert.pem",
-      source    => $ssl_cert_source,
+      source    => $_ssl_cert_source,
+      content   => $ssl_cert_content,
       owner     => $sensu::user,
       group     => $sensu::group,
       mode      => '0644',
@@ -212,7 +233,8 @@ class sensu::backend (
     file { 'sensu_ssl_key':
       ensure    => 'file',
       path      => "${ssl_dir}/key.pem",
-      source    => $ssl_key_source,
+      source    => $_ssl_key_source,
+      content   => $ssl_key_content,
       owner     => $sensu::user,
       group     => $sensu::group,
       mode      => '0600',
