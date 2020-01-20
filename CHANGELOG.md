@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.2.0](https://github.com/sensu/sensu-puppet/tree/v4.2.0) (2020-01-20)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.1.0...v4.2.0)
+
+### Added
+
+- Add examples for Slack and InfluxDB [\#1199](https://github.com/sensu/sensu-puppet/pull/1199) ([treydock](https://github.com/treydock))
+- Allow SSL files to be defined via content parameters [\#1198](https://github.com/sensu/sensu-puppet/pull/1198) ([treydock](https://github.com/treydock))
+
 ## [v4.1.0](https://github.com/sensu/sensu-puppet/tree/v4.1.0) (2020-01-15)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.0.0...v4.1.0)
@@ -162,9 +171,9 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.4.0...v3.4.1)
 
-### Added
+### Fixed
 
-- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
+- Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
 
 ## [v3.4.0](https://github.com/sensu/sensu-puppet/tree/v3.4.0) (2019-07-11)
 
@@ -178,7 +187,6 @@
 
 ### Fixed
 
-- Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
 - Update several usage examples to match Sensu Go docs [\#1117](https://github.com/sensu/sensu-puppet/pull/1117) ([treydock](https://github.com/treydock))
 - Regenerate backend test cert to include additional SANs [\#1113](https://github.com/sensu/sensu-puppet/pull/1113) ([treydock](https://github.com/treydock))
 
@@ -188,6 +196,7 @@
 
 ### Added
 
+- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
 - \(GH-1111\) Remove Ubuntu 14.04 LTS as it is end of life \(EOL\) [\#1112](https://github.com/sensu/sensu-puppet/pull/1112) ([ghoneycutt](https://github.com/ghoneycutt))
 - Add Windows support for Sensu Go agent [\#1108](https://github.com/sensu/sensu-puppet/pull/1108) ([treydock](https://github.com/treydock))
 
@@ -212,12 +221,10 @@
 
 - Prep 3.1.0 release [\#1103](https://github.com/sensu/sensu-puppet/pull/1103) ([treydock](https://github.com/treydock))
 - Support opting out of tessen phone home [\#1101](https://github.com/sensu/sensu-puppet/pull/1101) ([treydock](https://github.com/treydock))
-- Hiera resources [\#1097](https://github.com/sensu/sensu-puppet/pull/1097) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
 - Do not raise errors if custom puppet facts are undefined [\#1100](https://github.com/sensu/sensu-puppet/pull/1100) ([treydock](https://github.com/treydock))
-- Fix Puppet Strings documentation URL [\#1096](https://github.com/sensu/sensu-puppet/pull/1096) ([treydock](https://github.com/treydock))
 
 
 
