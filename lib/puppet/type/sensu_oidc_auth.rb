@@ -6,7 +6,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_oidc_auth) do
   desc <<-DESC
-@summary Manages Sensu OIDC auth. Requires valid enterprise license.
+@summary Manages Sensu OIDC auth.
 @example Add an Active Directory auth
   sensu_oidc_auth { 'oidc':
     ensure            => 'present',
@@ -26,7 +26,6 @@ Puppet::Type.newtype(:sensu_oidc_auth) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
-* `Exec[sensu-add-license]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -87,10 +86,6 @@ DESC
 
   newproperty(:additional_scopes, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc 'Scopes to include in the claims'
-  end
-
-  autorequire(:exec) do
-    [ 'sensu-add-license' ]
   end
 
   validate do
