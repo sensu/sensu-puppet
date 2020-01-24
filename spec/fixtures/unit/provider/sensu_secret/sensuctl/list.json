@@ -1,0 +1,11 @@
+[
+  {
+    "metadata": {
+      "name": "sensu-ansible",
+      "namespace": "default"
+    },
+    "provider": "vault",
+    "id": "secret/database#password"
+  }
+]
+

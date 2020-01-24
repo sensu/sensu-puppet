@@ -252,6 +252,10 @@ describe Puppet::Type.type(:sensu_handler) do
     end
   end
 
+  include_examples 'secrets property' do
+    let(:res) { handler }
+  end
+
   include_examples 'autorequires' do
     let(:res) { handler }
   end

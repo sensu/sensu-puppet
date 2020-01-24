@@ -137,4 +137,8 @@ class sensu::backend::default_resources {
       },
     ],
   }
+  sensu_secrets_provider { 'env':
+    ensure => 'present',
+    type   => 'Env',
+  }
 }

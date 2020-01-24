@@ -198,6 +198,10 @@ describe Puppet::Type.type(:sensu_mutator) do
     end
   end
 
+  include_examples 'secrets property' do
+    let(:res) { handler }
+  end
+
   include_examples 'autorequires' do
     let(:res) { mutator }
   end

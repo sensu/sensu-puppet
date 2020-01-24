@@ -363,6 +363,10 @@ describe Puppet::Type.type(:sensu_check) do
     end
   end
 
+  include_examples 'secrets property' do
+    let(:res) { check }
+  end
+
   include_examples 'autorequires' do
     let(:res) { check }
   end

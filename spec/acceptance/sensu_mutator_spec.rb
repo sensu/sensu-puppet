@@ -10,6 +10,9 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         command        => 'test',
         runtime_assets => ['test'],
         labels         => { 'foo' => 'baz' },
+        secrets        => [
+          {'name' => 'TEST', 'secret' => 'test'}
+        ],
       }
       sensu_mutator { 'test-api':
         command        => 'test',
@@ -38,6 +41,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         expect(data['command']).to eq('test')
         expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
+        expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test'}])
       end
     end
 
@@ -60,6 +64,9 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         timeout        => 60,
         runtime_assets => ['test2'],
         labels         => { 'foo' => 'bar' },
+        secrets        => [
+          {'name' => 'TEST', 'secret' => 'test2'}
+        ],
       }
       sensu_mutator { 'test-api':
         command        => 'test',
@@ -89,6 +96,7 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_full do
         expect(data['timeout']).to eq(60)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
+        expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test2'}])
       end
     end
 

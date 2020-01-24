@@ -20,7 +20,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           'entity_attributes' => ["entity.Class == 'proxy'"],
         },
         output_metric_format             => 'nagios_perfdata',
-        labels                           => { 'foo' => 'baz' }
+        labels                           => { 'foo' => 'baz' },
+        secrets                          => [
+          {'name' => 'TEST', 'secret' => 'test'}
+        ],
       }
       sensu_check { 'test2':
         command       => 'check-cpu.rb',
@@ -74,6 +77,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['proxy_requests']['entity_attributes']).to eq(["entity.Class == 'proxy'"])
         expect(data['output_metric_format']).to eq('nagios_perfdata')
         expect(data['metadata']['labels']['foo']).to eq('baz')
+        expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test'}])
       end
     end
 
@@ -157,7 +161,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
           'entity_attributes' => ['System.OS==linux'],
         },
         output_metric_format             => 'graphite_plaintext',
-        labels                           => { 'foo' => 'bar' }
+        labels                           => { 'foo' => 'bar' },
+        secrets                          => [
+          {'name' => 'TEST', 'secret' => 'test2'}
+        ],
       }
       sensu_check { 'test-api':
         command       => 'check-cpu.rb',
@@ -195,6 +202,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_full do
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
         expect(data['metadata']['labels']['foo']).to eq('bar')
+        expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test2'}])
       end
     end
 

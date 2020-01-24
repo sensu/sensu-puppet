@@ -11,6 +11,9 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         command        => 'notify.rb',
         runtime_assets => ['test'],
         labels         => { 'foo' => 'baz' },
+        secrets        => [
+          {'name' => 'TEST', 'secret' => 'test'}
+        ],
       }
       sensu_handler { 'test2':
         type           => 'tcp',
@@ -52,6 +55,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         expect(data['timeout']).to eq(0)
         expect(data['command']).to eq('notify.rb')
         expect(data['metadata']['labels']['foo']).to eq('baz')
+        expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test'}])
       end
     end
 
@@ -96,6 +100,9 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         filters        => ['production'],
         runtime_assets => ['test2'],
         labels         => { 'foo' => 'bar' },
+        secrets        => [
+          {'name' => 'TEST', 'secret' => 'test2'}
+        ],
       }
       sensu_handler { 'test2':
         type           => 'tcp',
@@ -137,6 +144,7 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_full do
         expect(data['filters']).to eq(['production'])
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
+        expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test2'}])
       end
     end
 

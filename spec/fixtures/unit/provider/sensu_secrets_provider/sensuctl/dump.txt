@@ -1,0 +1,63 @@
+type: Env
+api_version: secrets/v1
+metadata:
+  name: env
+spec: {}
+---
+type: VaultProvider
+api_version: secrets/v1
+metadata:
+  name: my_vault
+spec:
+  client:
+    address: https://vaultserver.example.com:8200
+    agent_address: ""
+    max_retries: 2
+    rate_limiter:
+      burst: 100
+      limit: 10
+    timeout: 20s
+    tls:
+      ca_cert: /etc/ssl/certs/ca-bundle.crt
+      ca_path: ""
+      client_cert: ""
+      client_key: ""
+      cname: ""
+      insecure: false
+      tls_server_name: ""
+    token: VAULT_TOKEN
+    version: v1
+---
+type: VaultProvider
+api_version: secrets/v1
+metadata:
+  name: my_vault2
+spec:
+  client:
+    address: https://vaultserver.example.com:8200
+    agent_address: ""
+    max_retries: 2
+    rate_limiter:
+      burst: 100
+      limit: 10
+    timeout: 20s
+    tls: null
+    token: VAULT_TOKEN
+    version: v1
+---
+type: VaultProvider
+api_version: secrets/v1
+metadata:
+  name: my_vault3
+spec:
+  client:
+    address: https://vaultserver.example.com:8200
+    agent_address: ""
+    max_retries: 0
+    rate_limiter:
+      burst: 0
+      limit: 10
+    timeout: 0s
+    tls: null
+    token: VAULT_TOKEN
+    version: v1
