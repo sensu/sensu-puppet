@@ -93,15 +93,19 @@ DESC
   # Generate sensu_asset resource to avoid resource purging deleting
   # sensu_bonsai_asset resources
   def generate
-    asset_opts = {}
-    asset_opts[:ensure] = self[:ensure]
-    asset_opts[:name] = "#{self[:rename]} in #{self[:namespace]}"
-    asset_opts[:namespace] = self[:namespace]
-    asset_opts[:require] = "Sensu_bonsai_asset[#{self[:name]}]"
-    asset_opts[:bonsai] = true
-    asset_opts[:provider] = self[:provider] if self[:provider]
-    asset = Puppet::Type.type(:sensu_asset).new(asset_opts)
-    [asset]
+    resources = []
+    if self[:ensure].to_s == 'present'
+      asset_opts = {}
+      asset_opts[:ensure] = self[:ensure]
+      asset_opts[:name] = "#{self[:rename]} in #{self[:namespace]}"
+      asset_opts[:namespace] = self[:namespace]
+      asset_opts[:require] = "Sensu_bonsai_asset[#{self[:name]}]"
+      asset_opts[:bonsai] = true
+      asset_opts[:provider] = self[:provider] if self[:provider]
+      asset = Puppet::Type.type(:sensu_asset).new(asset_opts)
+      resources << asset
+    end
+    resources
   end
 
   def self.title_patterns
