@@ -60,6 +60,10 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
         version  => 'latest',
         provider => 'sensu_api',
       }
+      sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':
+        ensure  => 'present',
+        version => 'latest',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
