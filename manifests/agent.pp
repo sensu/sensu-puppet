@@ -173,7 +173,9 @@ class sensu::agent (
   }
 
   # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
-  if $facts['service_provider'] == 'systemd' {
+  # Only necessary for Puppet < 6.1.0,
+  # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
+  if versioncmp($facts['puppetversion'],'6.1.0') < 0 and $facts['service_provider'] == 'systemd' {
     Package['sensu-go-agent'] ~> Exec['sensu systemctl daemon-reload']
     Exec['sensu systemctl daemon-reload'] -> Service['sensu-agent']
   }

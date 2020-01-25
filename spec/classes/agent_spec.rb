@@ -35,7 +35,7 @@ describe 'sensu::agent', :type => :class do
         end
         it { should_not contain_archive('sensu-go-agent.msi') }
 
-        context 'on systemd host', if: facts[:kernel] == 'Linux' do
+        context 'on systemd host', if: (facts[:kernel] == 'Linux' && Puppet.version.to_s =~ %r{^5}) do
           let(:facts) { facts.merge({:service_provider => 'systemd'}) }
           it { should contain_package('sensu-go-agent').that_notifies('Exec[sensu systemctl daemon-reload]') }
           it { should contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
