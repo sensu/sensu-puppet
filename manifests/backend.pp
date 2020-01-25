@@ -175,6 +175,12 @@ class sensu::backend (
     include sensu::backend::default_resources
   }
 
+  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
+  if $facts['service_provider'] == 'systemd' {
+    Package['sensu-go-backend'] ~> Exec['sensu systemctl daemon-reload']
+    Exec['sensu systemctl daemon-reload'] -> Service['sensu-backend']
+  }
+
   sensu_user { 'admin':
     ensure        => 'present',
     password      => $password,
@@ -248,6 +254,7 @@ class sensu::backend (
     name    => $package_name,
     before  => File['sensu_etc_dir'],
     require => $sensu::package_require,
+    notify  => Service['sensu-backend'],
   }
 
   file { 'sensu_backend_state_dir':

@@ -172,6 +172,12 @@ class sensu::agent (
     $_package_source = undef
   }
 
+  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
+  if $facts['service_provider'] == 'systemd' {
+    Package['sensu-go-agent'] ~> Exec['sensu systemctl daemon-reload']
+    Exec['sensu systemctl daemon-reload'] -> Service['sensu-agent']
+  }
+
   package { 'sensu-go-agent':
     ensure   => $_version,
     name     => $package_name,
@@ -179,6 +185,7 @@ class sensu::agent (
     provider => $package_provider,
     before   => File['sensu_etc_dir'],
     require  => $sensu::package_require,
+    notify   => Service['sensu-agent'],
   }
 
   file { 'sensu_agent_config':
