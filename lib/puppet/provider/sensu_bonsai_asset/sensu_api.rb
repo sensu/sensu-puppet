@@ -45,19 +45,7 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Pr
   end
 
   def self.latest_version(namespace, name)
-    return @latest_version if @latest_version
-    @latest_version = nil
-    return nil if namespace.nil? || name.nil?
-    versions = []
-    bonsai_asset = self.get_bonsai_asset("#{namespace}/#{name}")
-    (bonsai_asset['versions'] || []).each do |bonsai_version|
-      version = bonsai_version['version']
-      next unless version =~ /^[0-9]/
-      versions << version
-    end
-    versions = versions.sort_by { |v| Gem::Version.new(v) }
-    @latest_version = versions.last
-    @latest_version
+    get_bonsai_latest_version(namespace, name)
   end
 
   def exists?

@@ -49,9 +49,16 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
 
   context 'install bonsai asset - latest' do
     it 'should work without errors' do
+      # Define two assets as 'latest' using different providers
+      # to ensure the latest of each is used
+      # See https://github.com/sensu/sensu-puppet/pull/1202
       pp = <<-EOS
       include sensu::backend
       sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+        ensure  => 'present',
+        version => 'latest',
+      }
+      sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':
         ensure  => 'present',
         version => 'latest',
       }

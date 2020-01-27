@@ -225,4 +225,21 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
   def get_bonsai_asset(name)
     self.class.get_bonsai_asset(name)
   end
+  def self.get_bonsai_latest_version(namespace, name)
+    return nil if namespace.nil? || name.nil?
+    full_name = "#{namespace}/#{name}"
+    @latest_version = {} if @latest_version.nil?
+    return @latest_version[full_name] if @latest_version[full_name]
+    @latest_version[full_name] = nil
+    versions = []
+    bonsai_asset = Puppet::Provider::SensuAPI.get_bonsai_asset(full_name)
+    (bonsai_asset['versions'] || []).each do |bonsai_version|
+      version = bonsai_version['version']
+      next unless version =~ /^[0-9]/
+      versions << version
+    end
+    versions = versions.sort_by { |v| Gem::Version.new(v) }
+    @latest_version[full_name] = versions.last
+    @latest_version[full_name]
+  end
 end
