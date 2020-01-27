@@ -187,9 +187,9 @@ describe Puppet::Type.type(:sensu_secret) do
   end
 
   it 'should autorequire sensu_secrets_provider' do
-    secrets_provider = Puppet::Type.type(:sensu_secrets_provider).new(:name => 'env', :type => 'Env')
+    secrets_provider = Puppet::Type.type(:sensu_secrets_vault_provider).new(:name => 'test', :address => 'foo', :token => 'secret', :version => 'v1')
     catalog = Puppet::Resource::Catalog.new
-    config[:secrets_provider] = 'env'
+    config[:secrets_provider] = 'test'
     catalog.add_resource resource
     catalog.add_resource secrets_provider
     rel = resource.autorequire[0]

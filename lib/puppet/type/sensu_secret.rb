@@ -55,7 +55,7 @@ DESC
     defaultto 'default'
   end
 
-  autorequire(:sensu_secrets_provider) do
+  autorequire(:sensu_secrets_vault_provider) do
     [ self[:secrets_provider] ]
   end
 

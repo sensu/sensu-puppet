@@ -1,16 +1,14 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensuctl) do
+describe Puppet::Type.type(:sensu_secrets_vault_provider).provider(:sensuctl) do
   let(:provider) { described_class }
-  let(:type) { Puppet::Type.type(:sensu_secrets_provider) }
+  let(:type) { Puppet::Type.type(:sensu_secrets_vault_provider) }
   let(:config) do
     {
       :name => 'vault',
-      :client => {
-        'address' => 'https://vaultserver.example.com:8200',
-        'token' => 'secret',
-        'version' => 'v1',
-      },
+      :address => 'https://vaultserver.example.com:8200',
+      :token => 'secret',
+      :version => 'v1',
     }
   end
   let(:resource) do
@@ -20,12 +18,12 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensuctl) do
   describe 'self.instances' do
     it 'should create instances' do
       allow(provider).to receive(:sensuctl).with(['dump','secrets/v1.Provider','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.txt'))
-      expect(provider.instances.length).to eq(4)
+      expect(provider.instances.length).to eq(3)
     end
 
     it 'should return the resource for a check' do
       allow(provider).to receive(:sensuctl).with(['dump','secrets/v1.Provider','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.txt'))
-      property_hash = provider.instances[1].instance_variable_get("@property_hash")
+      property_hash = provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('my_vault')
     end
   end
@@ -37,14 +35,11 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensuctl) do
       }
       expected_spec = {
         :client => {
-          'address' => 'https://vaultserver.example.com:8200',
-          'token' => 'secret',
-          'version' => 'v1',
-          'tls' => nil,
-          'rate_limiter' => nil,
-          'agent_address' => '',
-          'max_retries' => 2,
-          'timeout' => '60s',
+          :address => 'https://vaultserver.example.com:8200',
+          :token => 'secret',
+          :version => 'v1',
+          :max_retries => 2,
+          :timeout => '60s',
         }
       }
       expect(resource.provider).to receive(:sensuctl_create).with('VaultProvider', expected_metadata, expected_spec, 'secrets/v1')
@@ -61,19 +56,17 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensuctl) do
       }
       expected_spec = {
         :client => {
-          'address' => 'https://vaultserver.example.com:8200',
-          'token' => 'secret',
-          'version' => 'v1',
-          'tls' => nil,
-          'rate_limiter' => nil,
-          'agent_address' => '',
-          'max_retries' => 2,
-          'timeout' => '20s',
+          :address => 'https://vaultserver.example.com:8200',
+          :token => 'secret',
+          :version => 'v1',
+          :max_retries => 2,
+          :timeout => '20s',
+          :tls => nil,
+          :rate_limiter => nil,
         }
       }
-      config[:client]['timeout'] = '20s'
       expect(resource.provider).to receive(:sensuctl_create).with('VaultProvider', expected_metadata, expected_spec, 'secrets/v1')
-      resource.provider.client = config[:client]
+      resource.provider.timeout = '20s'
       resource.provider.flush
     end
   end
@@ -85,14 +78,13 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensuctl) do
       }
       expected_spec = {
         :client => {
-          'address' => 'https://vaultserver.example.com:8200',
-          'token' => 'secret',
-          'version' => 'v1',
-          'tls' => nil,
-          'rate_limiter' => nil,
-          'agent_address' => '',
-          'max_retries' => 2,
-          'timeout' => '60s',
+          :address => 'https://vaultserver.example.com:8200',
+          :token => 'secret',
+          :version => 'v1',
+          :max_retries => 2,
+          :timeout => '60s',
+          :tls => nil,
+          :rate_limiter => nil,
         }
       }
       expect(resource.provider).to receive(:sensuctl_delete).with('VaultProvider', 'vault', nil, expected_metadata, expected_spec, 'secrets/v1')

@@ -337,18 +337,22 @@ describe 'sensu::resources', :type => :class do
         it { should compile.with_all_deps }
         it { should contain_sensu_secret('test') }
       end
-      context 'secrets_providers defined' do
+      context 'secrets_vault_providers defined' do
         let(:pre_condition) do
         <<-EOS
         class { 'sensu::resources':
-          secrets_providers => {
-            'test' => { 'type' => 'Env' },
+          secrets_vault_providers => {
+            'test' => {
+              'address' => 'https://foo.example.com',
+              'token'   => 'secret',
+              'version' => 'v1',
+            },
           }
         }
         EOS
         end
         it { should compile.with_all_deps }
-        it { should contain_sensu_secrets_provider('test') }
+        it { should contain_sensu_secrets_vault_provider('test') }
       end
       context 'users defined' do
         let(:pre_condition) do

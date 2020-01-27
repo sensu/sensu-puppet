@@ -1,16 +1,14 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensu_api) do
+describe Puppet::Type.type(:sensu_secrets_vault_provider).provider(:sensu_api) do
   let(:provider) { described_class }
-  let(:type) { Puppet::Type.type(:sensu_secrets_provider) }
+  let(:type) { Puppet::Type.type(:sensu_secrets_vault_provider) }
   let(:config) do
     {
       :name => 'vault',
-      :client => {
-        'address' => 'https://vaultserver.example.com:8200',
-        'token' => 'secret',
-        'version' => 'v1',
-      },
+      :address => 'https://vaultserver.example.com:8200',
+      :token => 'secret',
+      :version => 'v1',
       :provider => 'sensu_api',
     }
   end
@@ -24,12 +22,12 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensu_api) do
     end
     it 'should create instances' do
       allow(provider).to receive(:api_request).with('providers', nil, opts).and_return(JSON.parse(my_fixture_read('list.json')))
-      expect(provider.instances.length).to eq(4)
+      expect(provider.instances.length).to eq(3)
     end
 
     it 'should return the resource for a auth' do
       allow(provider).to receive(:api_request).with('providers', nil, opts).and_return(JSON.parse(my_fixture_read('list.json')))
-      property_hash = provider.instances[1].instance_variable_get("@property_hash")
+      property_hash = provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('my_vault')
     end
   end
@@ -39,14 +37,11 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensu_api) do
       expected_spec = {
         :spec => {
           :client => {
-            'address' => 'https://vaultserver.example.com:8200',
-            'token' => 'secret',
-            'version' => 'v1',
-            'tls' => nil,
-            'rate_limiter' => nil,
-            'agent_address' => '',
-            'max_retries' => 2,
-            'timeout' => '60s',
+            :address => 'https://vaultserver.example.com:8200',
+            :token => 'secret',
+            :version => 'v1',
+            :max_retries => 2,
+            :timeout => '60s',
           }
         },
         :metadata => {
@@ -67,14 +62,13 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensu_api) do
       expected_spec = {
         :spec => {
           :client => {
-            'address' => 'https://vaultserver.example.com:8200',
-            'token' => 'secret',
-            'version' => 'v1',
-            'tls' => nil,
-            'rate_limiter' => nil,
-            'agent_address' => '',
-            'max_retries' => 2,
-            'timeout' => '20s',
+            :address => 'https://vaultserver.example.com:8200',
+            :token => 'secret',
+            :version => 'v1',
+            :max_retries => 2,
+            :timeout => '20s',
+            :tls => nil,
+            :rate_limiter => nil,
           }
         },
         :metadata => {
@@ -83,9 +77,8 @@ describe Puppet::Type.type(:sensu_secrets_provider).provider(:sensu_api) do
         :api_version => 'secrets/v1',
         :type => 'VaultProvider',
       }
-      config[:client]['timeout'] = '20s'
       expect(resource.provider).to receive(:api_request).with('providers/vault', expected_spec, {:api_group => 'enterprise/secrets', :api_version => 'v1', :method => 'put'})
-      resource.provider.client = config[:client]
+      resource.provider.timeout = '20s'
       resource.provider.flush
     end
   end

@@ -44,8 +44,8 @@
 #   Hash of sensu_role resources
 # @param secrets
 #   Hash of secrets
-# @param secrets_providers
-#   Hash of sensu_secrets_providers
+# @param secrets_vault_providers
+#   Hash of sensu_secrets_vault_providers
 # @param users
 #   Hash of sensu_user resources
 #
@@ -72,7 +72,7 @@ class sensu::resources (
   Hash $role_bindings = {},
   Hash $roles = {},
   Hash $secrets = {},
-  Hash $secrets_providers = {},
+  Hash $secrets_vault_providers = {},
   Hash $users = {},
 ) {
   $ad_auths.each |$name, $ad_auth| {
@@ -185,9 +185,9 @@ class sensu::resources (
       * => $secret,
     }
   }
-  $secrets_providers.each |$name, $secrets_provider| {
-    sensu_secrets_provider { $name:
-      * => $secrets_provider,
+  $secrets_vault_providers.each |$name, $secrets_vault_provider| {
+    sensu_secrets_vault_provider { $name:
+      * => $secrets_vault_provider,
     }
   }
   $users.each |$name, $user| {

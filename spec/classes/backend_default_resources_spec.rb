@@ -167,12 +167,6 @@ describe 'sensu::backend::default_resources', :type => :class do
             ],
           })
         }
-        it {
-          should contain_sensu_secrets_provider('env').with({
-            'ensure' => 'present',
-            'type'   => 'Env',
-          })
-        }
       end
     end
   end

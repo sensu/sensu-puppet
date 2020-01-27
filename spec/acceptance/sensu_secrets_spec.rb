@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_secrets_provider', if: RSpec.configuration.sensu_full do
+describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_full do
   node = hosts_as('sensu_backend')[0]
   before do
     if ! RSpec.configuration.sensu_test_enterprise
@@ -11,42 +11,36 @@ describe 'sensu_secrets_provider', if: RSpec.configuration.sensu_full do
     it 'should work without errors' do
       pp = <<-EOS
       include sensu::backend
-      sensu_secrets_provider { 'my_vault':
-        ensure  => 'present',
-        type    => 'VaultProvider',
-        client  => {
-          "address"      => "https://vaultserver.example.com:8200",
-          "token"        => "VAULT_TOKEN",
-          "version"      => "v1",
-          "max_retries"  => 2,
-          "timeout"      => "20s",
-          "tls"          => {
-            "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
-          },
-          "rate_limiter" => {
-            "limit" => 10,
-            "burst" => 100
-          },
-        }
-      }
-      sensu_secrets_provider { 'my_vault-api':
-        ensure   => 'present',
-        type     => 'VaultProvider',
-        client   => {
-          "address"      => "https://vaultserver.example.com:8200",
-          "token"        => "VAULT_TOKEN",
-          "version"      => "v1",
-          "max_retries"  => 2,
-          "timeout"      => "20s",
-          "tls"          => {
-            "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
-          },
-          "rate_limiter" => {
-            "limit" => 10,
-            "burst" => 100
-          },
+      sensu_secrets_vault_provider { 'my_vault':
+        ensure       => 'present',
+        address      => "https://vaultserver.example.com:8200",
+        token        => "VAULT_TOKEN",
+        version      => "v1",
+        max_retries  => 2,
+        timeout      => "20s",
+        tls          => {
+          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
         },
-        provider => 'sensu_api',
+        rate_limiter => {
+          "limit" => 10,
+          "burst" => 100
+        },
+      }
+      sensu_secrets_vault_provider { 'my_vault-api':
+        ensure       => 'present',
+        address      => "https://vaultserver.example.com:8200",
+        token        => "VAULT_TOKEN",
+        version      => "v1",
+        max_retries  => 2,
+        timeout      => "20s",
+        tls          => {
+          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+        },
+        rate_limiter => {
+          "limit" => 10,
+          "burst" => 100
+        },
+        provider     => 'sensu_api',
       }
       sensu_secret { 'test':
         ensure           => 'present',
@@ -134,36 +128,30 @@ describe 'sensu_secrets_provider', if: RSpec.configuration.sensu_full do
     it 'should work without errors' do
       pp = <<-EOS
       include sensu::backend
-      sensu_secrets_provider { 'my_vault':
-        ensure => 'present',
-        type   => 'VaultProvider',
-        client => {
-          "address"      => "https://vaultserver.example.com:8201",
-          "token"        => "VAULT_TOKEN1",
-          "version"      => "v1",
-          "max_retries"  => 4,
-          "timeout"      => "40s",
-          "rate_limiter" => {
-            "limit" => 20,
-            "burst" => 200
-          },
-        }
-      }
-      sensu_secrets_provider { 'my_vault-api':
-        ensure   => 'present',
-        type     => 'VaultProvider',
-        client   => {
-          "address"      => "https://vaultserver.example.com:8201",
-          "token"        => "VAULT_TOKEN1",
-          "version"      => "v1",
-          "max_retries"  => 4,
-          "timeout"      => "40s",
-          "rate_limiter" => {
-            "limit" => 20,
-            "burst" => 200
-          },
+      sensu_secrets_vault_provider { 'my_vault':
+        ensure       => 'present',
+        address      => "https://vaultserver.example.com:8201",
+        token        => "VAULT_TOKEN1",
+        version      => "v1",
+        max_retries  => 4,
+        timeout      => "40s",
+        rate_limiter => {
+          "limit" => 20,
+          "burst" => 200
         },
-        provider => 'sensu_api',
+      }
+      sensu_secrets_vault_provider { 'my_vault-api':
+        ensure       => 'present',
+        address      => "https://vaultserver.example.com:8201",
+        token        => "VAULT_TOKEN1",
+        version      => "v1",
+        max_retries  => 4,
+        timeout      => "40s",
+        rate_limiter => {
+          "limit" => 20,
+          "burst" => 200
+        },
+        provider     => 'sensu_api',
       }
       sensu_secret { 'test in default':
         ensure           => 'present',
@@ -251,8 +239,8 @@ describe 'sensu_secrets_provider', if: RSpec.configuration.sensu_full do
     it 'should remove without errors' do
       pp = <<-EOS
       include sensu::backend
-      sensu_secrets_provider { 'my_vault': ensure => 'absent' }
-      sensu_secrets_provider { 'my_vault-api': ensure => 'absent', provider => 'sensu_api' }
+      sensu_secrets_vault_provider { 'my_vault': ensure => 'absent' }
+      sensu_secrets_vault_provider { 'my_vault-api': ensure => 'absent', provider => 'sensu_api' }
       sensu_secret { 'test': ensure => 'absent' }
       sensu_secret { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS

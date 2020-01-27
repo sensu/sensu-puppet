@@ -1,15 +1,13 @@
 require 'spec_helper'
-require 'puppet/type/sensu_secrets_provider'
+require 'puppet/type/sensu_secrets_vault_provider'
 
-describe Puppet::Type.type(:sensu_secrets_provider) do
+describe Puppet::Type.type(:sensu_secrets_vault_provider) do
   let(:default_config) do
     {
       name: 'vault',
-      client: {
-        'address' => 'https://vaultserver.example.com:8200',
-        'token' => 'secret',
-        'version' => 'v1',
-      }
+      address: 'https://vaultserver.example.com:8200',
+      token: 'secret',
+      version: 'v1',
     }
   end
   let(:config) do
@@ -32,10 +30,17 @@ describe Puppet::Type.type(:sensu_secrets_provider) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
-  defaults = {}
+  defaults = {
+    max_retries: 2,
+    timeout: '60s',
+  }
 
   # String properties
   [
+    :address,
+    :token,
+    :version,
+    :timeout,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'
@@ -81,6 +86,7 @@ describe Puppet::Type.type(:sensu_secrets_provider) do
 
   # Integer properties
   [
+    :max_retries
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
@@ -161,67 +167,42 @@ describe Puppet::Type.type(:sensu_secrets_provider) do
     end
   end
 
-  describe 'type' do
-    it 'has default' do
-      expect(resource[:type]).to eq('VaultProvider')
+  describe 'tls' do
+    it 'should accept value and apply defaults' do
+      expected = {
+        'ca_cert' => '/dne',
+        'ca_path' => '',
+        'client_cert' => '',
+        'client_key' => '',
+        'cname' => '',
+        'insecure' => false,
+        'tls_server_name' => '',
+      }
+      config[:tls] = {'ca_cert' => '/dne'}
+      expect(resource[:tls]).to eq(expected)
+    end
+    it 'should require a hash for tls' do
+      config[:tls] = 'foo'
+      expect { resource }.to raise_error(Puppet::Error, /should be a Hash/)
+    end
+    it 'should not accept invalid key for tls' do
+      config[:tls] = {'foo' => 'bar'}
+      expect { resource }.to raise_error(Puppet::Error, /foo/)
     end
   end
 
-  describe 'client' do
-    it 'should accept servers and apply defaults' do
-      expected = {
-        'address' => 'https://vaultserver.example.com:8200',
-        'token' => 'secret',
-        'version' => 'v1',
-        'max_retries' => 2,
-        'timeout' => '60s',
-        'agent_address' => '',
-        'tls' => nil,
-        'rate_limiter' => nil,
-      }
-      expect(resource[:client]).to eq(expected)
-    end
-    it 'should be required hash' do
-      config[:client] = ['foo']
-      expect { resource }.to raise_error(Puppet::Error, /Hash/)
-    end
-    it 'should require address' do
-      config[:client] = {'token' => 'secret','version' => 'v1'}
-      expect { resource }.to raise_error(Puppet::Error, /client requires key address/)
-    end
-    it 'should require token' do
-      config[:client] = {'address' => 'https://foo.example.com','version' => 'v1'}
-      expect { resource }.to raise_error(Puppet::Error, /client requires key token/)
-    end
-    it 'should require version' do
-      config[:client] = {'address' => 'https://foo.example.com','token' => 'secret'}
-      expect { resource }.to raise_error(Puppet::Error, /client requires key version/)
-    end
-    it 'should require a hash for tls' do
-      config[:client]['tls'] = 'foo'
-      expect { resource }.to raise_error(Puppet::Error, /must be a Hash/)
-    end
-    it 'should not accept invalid key for tls' do
-      config[:client]['tls'] = {'foo' => 'bar'}
-      expect { resource }.to raise_error(Puppet::Error, /foo/)
-    end
+  describe 'rate_limiter' do
     it 'accepts valid value for rate_limiter' do
-      config[:client] = default_config[:client].merge({'rate_limiter' => {'limit' => 10, 'burst' => 100}})
-      expect(resource[:client]['rate_limiter']).to eq({'limit' => 10, 'burst' => 100})
+      config[:rate_limiter] = {'limit' => 10, 'burst' => 100}
+      expect(resource[:rate_limiter]).to eq({'limit' => 10, 'burst' => 100})
     end
     it 'raises error if rate_limiter not hash' do
-      config[:client]['rate_limiter'] = ['foo']
+      config[:rate_limiter] = ['foo']
       expect { resource }.to raise_error(/Hash/)
     end
     it 'does not accept invalid key for rate_limiter' do
-      config[:client]['rate_limiter'] = {'foo' => 'bar', 'limit' => 10, 'burst' => 100}
+      config[:rate_limiter] = {'foo' => 'bar', 'limit' => 10, 'burst' => 100}
       expect { resource }.to raise_error(/not a valid key for rate_limiter/)
-    end
-    it 'requires client for VaultProvider' do
-      config[:ensure] = :present
-      config[:type] = 'VaultProvider'
-      config.delete(:client)
-      expect { resource }.to raise_error(/must provider client property/)
     end
   end
 
@@ -230,6 +211,9 @@ describe Puppet::Type.type(:sensu_secrets_provider) do
   end
 
   [
+    :address,
+    :token,
+    :version,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)
