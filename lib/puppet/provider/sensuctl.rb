@@ -83,18 +83,14 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.sensuctl(*args)
   end
 
-  def self.sensuctl_list(command, namespaces = true, format = true)
+  def self.sensuctl_list(command, namespaces = true)
     args = [command]
     args << 'list'
     if namespaces
       args << '--all-namespaces'
     end
-    #TODO: Making format optional is necessary to support sensuctl command list
-    # Fixed in https://github.com/sensu/sensu-go/pull/3495
-    if format
-      args << '--format'
-      args << 'json'
-    end
+    args << '--format'
+    args << 'json'
     if ! chunk_size.nil?
       args << '--chunk-size'
       args << chunk_size.to_s
