@@ -143,4 +143,10 @@ class sensu (
   }
 
   include sensu::resources
+
+  exec { 'sensu systemctl daemon-reload':
+    path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+    command     => 'systemctl daemon-reload',
+    refreshonly => true,
+  }
 }
