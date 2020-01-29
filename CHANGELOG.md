@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.2.1](https://github.com/sensu/sensu-puppet/tree/v4.2.1) (2020-01-29)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.0...v4.2.1)
+
+### Added
+
+- Remove workaround for sensuctl command json formatting [\#1204](https://github.com/sensu/sensu-puppet/pull/1204) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Several fixes for sensu\_bonsai\_asset [\#1202](https://github.com/sensu/sensu-puppet/pull/1202) ([treydock](https://github.com/treydock))
+- Remove unnecessary auto requirement [\#1200](https://github.com/sensu/sensu-puppet/pull/1200) ([treydock](https://github.com/treydock))
+
 ## [v4.2.0](https://github.com/sensu/sensu-puppet/tree/v4.2.0) (2020-01-20)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.1.0...v4.2.0)
@@ -171,6 +184,10 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.4.0...v3.4.1)
 
+### Added
+
+- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
+
 ### Fixed
 
 - Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
@@ -196,7 +213,6 @@
 
 ### Added
 
-- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
 - \(GH-1111\) Remove Ubuntu 14.04 LTS as it is end of life \(EOL\) [\#1112](https://github.com/sensu/sensu-puppet/pull/1112) ([ghoneycutt](https://github.com/ghoneycutt))
 - Add Windows support for Sensu Go agent [\#1108](https://github.com/sensu/sensu-puppet/pull/1108) ([treydock](https://github.com/treydock))
 
@@ -220,11 +236,6 @@
 ### Added
 
 - Prep 3.1.0 release [\#1103](https://github.com/sensu/sensu-puppet/pull/1103) ([treydock](https://github.com/treydock))
-- Support opting out of tessen phone home [\#1101](https://github.com/sensu/sensu-puppet/pull/1101) ([treydock](https://github.com/treydock))
-
-### Fixed
-
-- Do not raise errors if custom puppet facts are undefined [\#1100](https://github.com/sensu/sensu-puppet/pull/1100) ([treydock](https://github.com/treydock))
 
 
 

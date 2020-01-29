@@ -28,7 +28,7 @@ _Private Classes_
 
 _Public Resource types_
 
-* [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu AD auth. Requires valid enterprise license.
+* [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu AD auth.
 * [`sensu_api_validator`](#sensu_api_validator): Verify that a connection can be successfully established between a node and the sensu-backend server.  Its primary use is as a precondition t
 * [`sensu_asset`](#sensu_asset): Manages Sensu assets
 * [`sensu_bonsai_asset`](#sensu_bonsai_asset): Manages Sensu Bonsai assets
@@ -44,10 +44,10 @@ _Public Resource types_
 * [`sensu_filter`](#sensu_filter): Manages Sensu filters
 * [`sensu_handler`](#sensu_handler): Manages Sensu handlers
 * [`sensu_hook`](#sensu_hook): Manages Sensu hooks
-* [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth. Requires valid enterprise license.
+* [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth.
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
-* [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth. Requires valid enterprise license.
+* [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth.
 * [`sensu_plugin`](#sensu_plugin): Manages Sensu plugins
 * [`sensu_postgres_config`](#sensu_postgres_config): Manages Sensu postgres config
 * [`sensu_resources`](#sensu_resources): Metatype for sensu resources
@@ -1068,7 +1068,6 @@ Default value: {}
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
-* `Exec[sensu-add-license]`
 
 #### Examples
 
@@ -2529,7 +2528,6 @@ The name of the hook.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
-* `Exec[sensu-add-license]`
 
 #### Examples
 
@@ -2758,7 +2756,6 @@ The name of the namespace.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
-* `Exec[sensu-add-license]`
 
 #### Examples
 
