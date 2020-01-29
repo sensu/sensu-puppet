@@ -40,6 +40,13 @@
 #   This parameter is mutually exclusive with ssl_key_source
 # @param include_default_resources
 #   Sets if default sensu resources should be included
+# @param manage_agent_user
+#   Sets if the Sensu agent user should be managed
+# @param agent_user_disabled
+#   Sets if the Sensu agent user should be disabled
+#   Not applicable if `manage_agent_user` is `false`
+#   This is useful if using agent TLS authentication
+#   See https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication
 # @param show_diff
 #   Sets show_diff parameter for backend.yml configuration file
 # @param license_source
@@ -90,6 +97,8 @@ class sensu::backend (
   Optional[String] $ssl_key_source = $facts['puppet_hostprivkey'],
   Optional[String] $ssl_key_content = undef,
   Boolean $include_default_resources = true,
+  Boolean $manage_agent_user = true,
+  Boolean $agent_user_disabled = false,
   Boolean $show_diff = true,
   Optional[String] $license_source = undef,
   Optional[String] $license_content = undef,
@@ -193,12 +202,14 @@ class sensu::backend (
     configure_url => $api_url,
   }
 
-  sensu_user { 'agent':
-    ensure       => 'present',
-    disabled     => false,
-    password     => $sensu::agent_password,
-    old_password => $sensu::agent_old_password,
-    groups       => ['system:agents'],
+  if $manage_agent_user {
+    sensu_user { 'agent':
+      ensure       => 'present',
+      disabled     => $agent_user_disabled,
+      password     => $sensu::agent_password,
+      old_password => $sensu::agent_old_password,
+      groups       => ['system:agents'],
+    }
   }
 
   if $manage_tessen {
