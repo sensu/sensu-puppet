@@ -6,7 +6,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_ad_auth) do
   desc <<-DESC
-@summary Manages Sensu AD auth. Requires valid enterprise license.
+@summary Manages Sensu AD auth.
 @example Add a AD auth
   sensu_ldap_auth { 'ad':
     ensure              => 'present',
@@ -33,7 +33,6 @@ Puppet::Type.newtype(:sensu_ad_auth) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
-* `Exec[sensu-add-license]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -220,10 +219,6 @@ DESC
 
   newproperty(:username_prefix) do
     desc 'The prefix added to all LDAP usernames.'
-  end
-
-  autorequire(:exec) do
-    [ 'sensu-add-license' ]
   end
 
   validate do

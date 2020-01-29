@@ -179,16 +179,6 @@ describe Puppet::Type.type(:sensu_oidc_auth) do
     let(:res) { auth }
   end
 
-  it 'should autorequire Exec[sensu-add-license]' do
-    exec = Puppet::Type.type(:exec).new(:name => 'sensu-add-license', :path => '/usr/bin')
-    catalog = Puppet::Resource::Catalog.new
-    catalog.add_resource auth
-    catalog.add_resource exec
-    rel = auth.autorequire[0]
-    expect(rel.source.ref).to eq(exec.ref)
-    expect(rel.target.ref).to eq(auth.ref)
-  end
-
   [
     :client_id,
     :client_secret,
