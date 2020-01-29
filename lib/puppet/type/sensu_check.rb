@@ -3,6 +3,7 @@ require_relative '../../puppet_x/sensu/array_property'
 require_relative '../../puppet_x/sensu/array_of_hashes_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
+require_relative '../../puppet_x/sensu/secrets_property'
 
 Puppet::Type.newtype(:sensu_check) do
   desc <<-DESC
@@ -243,6 +244,10 @@ DESC
   newproperty(:discard_output, :boolean => true) do
     desc 'Discard check output after extracting metrics.'
     newvalues(:true, :false)
+  end
+
+  newproperty(:secrets, :array_matching => :all, :parent => PuppetX::Sensu::SecretsProperty) do
+    desc 'List of Sensu secrets to set for the check execution environment.'
   end
 
   newproperty(:namespace, :namevar => true) do

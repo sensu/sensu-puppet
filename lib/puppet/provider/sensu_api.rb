@@ -140,11 +140,18 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       Puppet.debug("BODY: Not valid JSON")
       return {}
     end
+  rescue Exception => e
+    if failonfail
+      raise
+    else
+      Puppet.err "Unable to connect to #{uri.to_s}: #{e.message}"
+      return {}
+    end
   rescue Puppet::Error => e
     if failonfail
       raise
     else
-      Puppet.notice "Unable to connect to #{uri.to_s}: #{e.message}"
+      Puppet.err "Unable to connect to #{uri.to_s}: #{e.message}"
       return {}
     end
   end

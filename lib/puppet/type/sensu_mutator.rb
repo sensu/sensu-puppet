@@ -2,6 +2,7 @@ require_relative '../../puppet_x/sensu/type'
 require_relative '../../puppet_x/sensu/array_property'
 require_relative '../../puppet_x/sensu/hash_property'
 require_relative '../../puppet_x/sensu/integer_property'
+require_relative '../../puppet_x/sensu/secrets_property'
 
 Puppet::Type.newtype(:sensu_mutator) do
   desc <<-DESC
@@ -69,6 +70,10 @@ DESC
   newproperty(:env_vars, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "An array of environment variables to use with command execution."
     newvalues(/.*/, :absent)
+  end
+
+  newproperty(:secrets, :array_matching => :all, :parent => PuppetX::Sensu::SecretsProperty) do
+    desc 'List of Sensu secrets to set for the mutator execution environment.'
   end
 
   newproperty(:namespace, :namevar => true) do

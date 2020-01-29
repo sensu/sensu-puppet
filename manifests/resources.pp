@@ -42,6 +42,10 @@
 #   Hash of sensu_role_binding resources
 # @param roles
 #   Hash of sensu_role resources
+# @param secrets
+#   Hash of secrets
+# @param secrets_vault_providers
+#   Hash of sensu_secrets_vault_providers
 # @param users
 #   Hash of sensu_user resources
 #
@@ -67,6 +71,8 @@ class sensu::resources (
   Hash $oidc_auths = {},
   Hash $role_bindings = {},
   Hash $roles = {},
+  Hash $secrets = {},
+  Hash $secrets_vault_providers = {},
   Hash $users = {},
 ) {
   $ad_auths.each |$name, $ad_auth| {
@@ -172,6 +178,16 @@ class sensu::resources (
   $roles.each |$name, $role| {
     sensu_role { $name:
       * => $role,
+    }
+  }
+  $secrets.each |$name, $secret| {
+    sensu_secret { $name:
+      * => $secret,
+    }
+  }
+  $secrets_vault_providers.each |$name, $secrets_vault_provider| {
+    sensu_secrets_vault_provider { $name:
+      * => $secrets_vault_provider,
     }
   }
   $users.each |$name, $user| {

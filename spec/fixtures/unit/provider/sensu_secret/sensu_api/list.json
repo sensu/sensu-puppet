@@ -1,0 +1,14 @@
+[
+    {
+        "api_version": "secrets/v1",
+        "metadata": {
+            "name": "sensu-ansible",
+            "namespace": "default"
+        },
+        "spec": {
+            "id": "secret/database#password",
+            "provider": "vault"
+        },
+        "type": "Secret"
+    }
+]
