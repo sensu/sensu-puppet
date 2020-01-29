@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.3.0](https://github.com/sensu/sensu-puppet/tree/v4.3.0) (2020-01-29)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.1...v4.3.0)
+
+### Added
+
+- Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
+- Better support for Sensu Go upgrades [\#1201](https://github.com/sensu/sensu-puppet/pull/1201) ([treydock](https://github.com/treydock))
+
 ## [v4.2.1](https://github.com/sensu/sensu-puppet/tree/v4.2.1) (2020-01-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.0...v4.2.1)
@@ -200,7 +209,6 @@
 
 - Add headers property to sensu\_assets [\#1119](https://github.com/sensu/sensu-puppet/pull/1119) ([treydock](https://github.com/treydock))
 - Add ability to run acceptance tests against Sensu-Go CI builds [\#1115](https://github.com/sensu/sensu-puppet/pull/1115) ([treydock](https://github.com/treydock))
-- Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -227,15 +235,12 @@
 
 ### Added
 
+- Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
 - Support Sensu Go 5.6 [\#1105](https://github.com/sensu/sensu-puppet/pull/1105) ([treydock](https://github.com/treydock))
 
 ## [v3.1.0](https://github.com/sensu/sensu-puppet/tree/v3.1.0) (2019-04-19)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.0.0...v3.1.0)
-
-### Added
-
-- Prep 3.1.0 release [\#1103](https://github.com/sensu/sensu-puppet/pull/1103) ([treydock](https://github.com/treydock))
 
 
 

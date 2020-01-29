@@ -53,6 +53,8 @@ _Public Resource types_
 * [`sensu_resources`](#sensu_resources): Metatype for sensu resources
 * [`sensu_role`](#sensu_role): Manages Sensu roles
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
+* [`sensu_secret`](#sensu_secret): Manages Sensu Secrets
+* [`sensu_secrets_vault_provider`](#sensu_secrets_vault_provider): Manages Sensu Secrets provider
 * [`sensu_user`](#sensu_user): Manages Sensu users
 
 _Private Resource types_
@@ -1051,6 +1053,22 @@ Hash of sensu_role resources
 
 Default value: {}
 
+##### `secrets`
+
+Data type: `Hash`
+
+Hash of secrets
+
+Default value: {}
+
+##### `secrets_vault_providers`
+
+Data type: `Hash`
+
+Hash of sensu_secrets_vault_providers
+
+Default value: {}
+
 ##### `users`
 
 Data type: `Hash`
@@ -1637,6 +1655,10 @@ Maximum size, in bytes, of stored check outputs.
 Valid values: `true`, `false`
 
 Discard check output after extracting metrics.
+
+##### `secrets`
+
+List of Sensu secrets to set for the check execution environment.
 
 ##### `namespace`
 
@@ -2395,6 +2417,10 @@ Valid values: /.*/, absent
 
 An array of Sensu assets (names), required at runtime for the execution of the command
 
+##### `secrets`
+
+List of Sensu secrets to set for the handler execution environment.
+
 ##### `namespace`
 
 The Sensu RBAC namespace that this handler belongs to.
@@ -2678,6 +2704,10 @@ An array of Sensu assets (names), required at runtime for the execution of the c
 Valid values: /.*/, absent
 
 An array of environment variables to use with command execution.
+
+##### `secrets`
+
+List of Sensu secrets to set for the mutator execution environment.
 
 ##### `namespace`
 
@@ -3162,6 +3192,161 @@ An example composite name to define resource named `test` in namespace `dev`: `t
 ##### `resource_name`
 
 The name of the role binding.
+
+### sensu_secret
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensuctl_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+
+#### Examples
+
+##### Manage a secret in the default namespace
+
+```puppet
+sensu_secret { 'sensu-ansible-token in default':
+  ensure           => 'present',
+  id               => 'ANSIBLE_TOKEN',
+  secrets_provider => 'env',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_secret` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `id`
+
+The identifying key for the provider to retrieve the secret.
+
+##### `secrets_provider`
+
+The name of the Sensu provider with the secret.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this secret belongs to.
+
+Default value: default
+
+#### Parameters
+
+The following parameters are available in the `sensu_secret` type.
+
+##### `name`
+
+namevar
+
+The name of the secret.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### `resource_name`
+
+The name of the secret.
+
+### sensu_secrets_vault_provider
+
+**NOTE** Property names map to the `client` hash in Sensu Go reference for a secrets VaultProvider
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensuctl_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Examples
+
+##### Manage a secrets vault provider
+
+```puppet
+sensu_secrets_vault_provider { 'my_vault-api':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8200",
+  token        => "VAULT_TOKEN",
+  version      => "v1",
+  max_retries  => 2,
+  timeout      => "20s",
+  tls          => {
+    "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+  },
+  rate_limiter => {
+    "limit" => 10,
+    "burst" => 100
+  },
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_secrets_vault_provider` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `address`
+
+Vault server address.
+
+##### `token`
+
+Vault token to use for authentication.
+
+##### `version`
+
+HashiCorp Vault HTTP API version
+
+##### `max_retries`
+
+Number of times to retry connecting to the vault provider.
+
+Default value: 2
+
+##### `timeout`
+
+Provider connection timeout (hard stop).
+
+Default value: 60s
+
+##### `tls`
+
+TLS object. Vault only works with TLS configured.
+
+Default value: absent
+
+##### `rate_limiter`
+
+Keys:
+* limit - Maximum number of secrets requests per second that can be transmitted to the backend with the secrets API.
+* burst - Maximum amount of burst allowed in a rate interval for the secrets API.
+
+Default value: absent
+
+#### Parameters
+
+The following parameters are available in the `sensu_secrets_vault_provider` type.
+
+##### `name`
+
+namevar
+
+The name of the secrets provider.
 
 ### sensu_user
 
