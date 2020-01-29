@@ -16,19 +16,13 @@ describe Puppet::Type.type(:sensu_command).provider(:sensuctl) do
   end
 
   describe 'self.instances' do
-    before(:each) do
-      allow(provider).to receive(:config).and_return('format' => 'tabular')
-      allow(provider).to receive(:sensuctl).with(['config','set-format','json'])
-      allow(provider).to receive(:sensuctl).with(['config','set-format','tabular'])
-    end
-
     it 'should create instances' do
-      allow(provider).to receive(:sensuctl_list).with('command', false, false).and_return(JSON.parse(my_fixture_read('list.json')))
+      allow(provider).to receive(:sensuctl_list).with('command', false).and_return(JSON.parse(my_fixture_read('list.json')))
       expect(provider.instances.length).to eq(1)
     end
 
     it 'should return the resource for a command' do
-      allow(provider).to receive(:sensuctl_list).with('command', false, false).and_return(JSON.parse(my_fixture_read('list.json')))
+      allow(provider).to receive(:sensuctl_list).with('command', false).and_return(JSON.parse(my_fixture_read('list.json')))
       property_hash = provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('command-test')
     end

@@ -9,13 +9,7 @@ Puppet::Type.type(:sensu_command).provide(:sensuctl, :parent => Puppet::Provider
   def self.instances
     commands = []
 
-    #TODO: Hack to force JSON format
-    # Fixed in https://github.com/sensu/sensu-go/pull/3495
-    current_format = config['format']
-    sensuctl(['config','set-format','json'])
-    data = sensuctl_list('command', false, false)
-    sensuctl(['config','set-format',current_format])
-
+    data = sensuctl_list('command', false)
     data.each do |d|
       command = {}
       command[:ensure] = :present
