@@ -131,6 +131,32 @@ describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
     end
   end
 
+  context 'backend without agent' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu':
+        password     => 'supersecret',
+        old_password => 'P@ssw0rd!',
+      }
+      class { 'sensu::backend':
+        agent_user_disabled => true,
+      }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu_backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+  end
+
   context 'reset admin password and opt-out tessen' do
     it 'should work without errors' do
       pp = <<-EOS

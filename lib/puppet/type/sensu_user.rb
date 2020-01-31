@@ -55,8 +55,11 @@ DESC
     desc "The user's password."
 
     def insync?(is)
+      if @resource[:disabled].to_sym == :true
+        return true
+      end
       if @resource.provider
-        if @resource[:disabled].to_sym == :true
+        if @resource.provider.disabled.to_sym == :true
           return true
         end
         @resource.provider.password_insync?(@resource[:name], @should)

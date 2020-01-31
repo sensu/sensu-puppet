@@ -239,6 +239,18 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_class('sensu::backend::default_resources') }
       end
 
+      context 'with manage_agent_user => false' do
+        let(:params) {{ :manage_agent_user => false }}
+        it { should compile.with_all_deps }
+        it { should_not contain_sensu_user('agent') }
+      end
+
+      context 'with agent_user_disabled => true' do
+        let(:params) {{ :agent_user_disabled => true }}
+        it { should compile.with_all_deps }
+        it { should contain_sensu_user('agent').with_disabled('true') }
+      end
+
       context 'with license_source defined' do
         let(:params) {{ :license_source => 'puppet:///modules/site_sensu/license.json' }}
         it { should compile.with_all_deps }
