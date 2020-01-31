@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.4.0](https://github.com/sensu/sensu-puppet/tree/v4.4.0) (2020-01-31)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.3.0...v4.4.0)
+
+### Added
+
+- Add manage\_agent\_user parameter to sensu::backend [\#1206](https://github.com/sensu/sensu-puppet/pull/1206) ([treydock](https://github.com/treydock))
+
 ## [v4.3.0](https://github.com/sensu/sensu-puppet/tree/v4.3.0) (2020-01-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.1...v4.3.0)
@@ -68,10 +76,6 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.13.0...v3.14.0)
 
-### Added
-
-- Support defining agent and backend service environment variables [\#1160](https://github.com/sensu/sensu-puppet/pull/1160) ([treydock](https://github.com/treydock))
-
 ## [v3.13.0](https://github.com/sensu/sensu-puppet/tree/v3.13.0) (2019-11-26)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.12.0...v3.13.0)
@@ -112,6 +116,7 @@
 - Improve release process [\#1166](https://github.com/sensu/sensu-puppet/pull/1166) ([treydock](https://github.com/treydock))
 - \(ci\) Use correct Ruby version 2.5.7 for latest Puppet 6 tests [\#1165](https://github.com/sensu/sensu-puppet/pull/1165) ([ghoneycutt](https://github.com/ghoneycutt))
 - Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
+- Support defining agent and backend service environment variables [\#1160](https://github.com/sensu/sensu-puppet/pull/1160) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -168,6 +173,7 @@
 - Increase upper bound of module dependencies [\#1134](https://github.com/sensu/sensu-puppet/pull/1134) ([treydock](https://github.com/treydock))
 - Improved Validations [\#1132](https://github.com/sensu/sensu-puppet/pull/1132) ([treydock](https://github.com/treydock))
 - Support Debian 10 [\#1128](https://github.com/sensu/sensu-puppet/pull/1128) ([treydock](https://github.com/treydock))
+- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -193,10 +199,6 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.4.0...v3.4.1)
 
-### Added
-
-- Add acceptance tests that use puppetserver [\#1123](https://github.com/sensu/sensu-puppet/pull/1123) ([treydock](https://github.com/treydock))
-
 ### Fixed
 
 - Fix to support Puppetserver 5 [\#1122](https://github.com/sensu/sensu-puppet/pull/1122) ([treydock](https://github.com/treydock))
@@ -209,11 +211,13 @@
 
 - Add headers property to sensu\_assets [\#1119](https://github.com/sensu/sensu-puppet/pull/1119) ([treydock](https://github.com/treydock))
 - Add ability to run acceptance tests against Sensu-Go CI builds [\#1115](https://github.com/sensu/sensu-puppet/pull/1115) ([treydock](https://github.com/treydock))
+- Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
 - Update several usage examples to match Sensu Go docs [\#1117](https://github.com/sensu/sensu-puppet/pull/1117) ([treydock](https://github.com/treydock))
 - Regenerate backend test cert to include additional SANs [\#1113](https://github.com/sensu/sensu-puppet/pull/1113) ([treydock](https://github.com/treydock))
+- Fix repo path for EL vagrant [\#1110](https://github.com/sensu/sensu-puppet/pull/1110) ([treydock](https://github.com/treydock))
 
 ## [v3.3.0](https://github.com/sensu/sensu-puppet/tree/v3.3.0) (2019-05-18)
 
@@ -226,17 +230,11 @@
 
 ### Fixed
 
-- Fix repo path for EL vagrant [\#1110](https://github.com/sensu/sensu-puppet/pull/1110) ([treydock](https://github.com/treydock))
 - Fix cluster tests to work with Sensu Go 5.7 [\#1109](https://github.com/sensu/sensu-puppet/pull/1109) ([treydock](https://github.com/treydock))
 
 ## [v3.2.0](https://github.com/sensu/sensu-puppet/tree/v3.2.0) (2019-05-06)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.1.0...v3.2.0)
-
-### Added
-
-- Support listing sensuctl resources using chunk-size [\#1114](https://github.com/sensu/sensu-puppet/pull/1114) ([treydock](https://github.com/treydock))
-- Support Sensu Go 5.6 [\#1105](https://github.com/sensu/sensu-puppet/pull/1105) ([treydock](https://github.com/treydock))
 
 ## [v3.1.0](https://github.com/sensu/sensu-puppet/tree/v3.1.0) (2019-04-19)
 

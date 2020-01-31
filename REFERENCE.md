@@ -578,6 +578,25 @@ Sets if default sensu resources should be included
 
 Default value: `true`
 
+##### `manage_agent_user`
+
+Data type: `Boolean`
+
+Sets if the Sensu agent user should be managed
+
+Default value: `true`
+
+##### `agent_user_disabled`
+
+Data type: `Boolean`
+
+Sets if the Sensu agent user should be disabled
+Not applicable if `manage_agent_user` is `false`
+This is useful if using agent TLS authentication
+See https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication
+
+Default value: `false`
+
 ##### `show_diff`
 
 Data type: `Boolean`
