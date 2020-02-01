@@ -25,6 +25,17 @@ class sensu::repo::community {
       sslcacert       => '/etc/pki/tls/certs/ca-bundle.crt',
       sslverify       => 1,
     }
+    if versioncmp($repo_release, '8') >= 0 {
+      # This exec ensures GPG key is added without errors
+      # Initial GPG download for dnf appears to return no exit code, tries=2 is workaround
+      exec { 'dnf makecache sensu_community':
+        path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+        command     => "dnf -q makecache -y --disablerepo='*' --enablerepo='sensu_community'",
+        refreshonly => true,
+        tries       => 2,
+        subscribe   => Yumrepo['sensu_community'],
+      }
+    }
   }
   if $facts['os']['family'] == 'Debian' {
     apt::source { 'sensu_community':

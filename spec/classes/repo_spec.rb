@@ -8,11 +8,15 @@ describe 'sensu::repo', :type => :class do
     end
     context "on #{os}" do
       let(:facts) { facts }
+      makecache = false
       case os
       when /(redhat-6|centos-6|amazon-2017|amazon-2018)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/6/$basearch"
       when /(redhat-7|centos-7|amazon-2)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/7/$basearch"
+      when /(redhat-8|centos-8)-x86_64/
+        baseurl = "https://packagecloud.io/sensu/stable/el/8/$basearch"
+        makecache = true
       else
         baseurl = nil
       end
@@ -31,6 +35,19 @@ describe 'sensu::repo', :type => :class do
             'metadata_expire' => 300,
           })
         }
+        if makecache
+          it {
+            should contain_exec('dnf makecache sensu').with({
+              'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
+              'command'     => "dnf -q makecache -y --disablerepo='*' --enablerepo='sensu'",
+              'refreshonly' => 'true',
+              'tries'       => '2',
+              'subscribe'   => 'Yumrepo[sensu]',
+            })
+          }
+        else
+          it { should_not contain_exec('dnf makecache sensu') }
+        end
       elsif facts[:osfamily] == 'Debian'
         it {
           should contain_apt__source('sensu').with({

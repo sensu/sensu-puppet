@@ -54,7 +54,7 @@ end
 
 group :system_tests do
   gem 'beaker',                       :require => false
-  gem 'beaker-docker',                :require => false
+  gem "beaker-docker", require: false, git: 'https://github.com/treydock/beaker-docker', ref: 'c6d1d3dc5f1e8b7770109793d15cfc9927eb1961'
   gem 'beaker-module_install_helper', :require => false
   gem 'beaker-puppet',                :require => false
   gem 'beaker-puppet_install_helper', :require => false

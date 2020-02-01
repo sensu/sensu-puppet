@@ -7,6 +7,9 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
     if fact_on(agent, 'operatingsystem') == 'Debian'
       skip("TODO: package is missing on Debian - See https://github.com/sensu/sensu-plugins-omnibus/issues/3")
     end
+    if fact_on(agent, 'os.family') == 'RedHat' && fact_on(agent, 'os.release.major') == '8'
+      skip("TODO: package is missing on EL8 - See https://github.com/sensu/sensu-plugins-omnibus/issues/5")
+    end
   end
   context 'on agent' do
     it 'should work without errors and be idempotent' do

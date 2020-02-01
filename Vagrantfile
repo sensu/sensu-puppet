@@ -98,6 +98,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
   end
 
+  # Unable to use at this time
+  # https://github.com/dotless-de/vagrant-vbguest/issues/367
+  #config.vm.define "el8-agent", autostart: true do |agent|
+  #  agent.vm.box = "centos/8"
+  #  agent.vm.hostname = 'el8-agent.example.com'
+  #  agent.vm.network  :private_network, ip: "192.168.52.32"
+  #  agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+  #  agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
+  #  agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
+  #end
+
   config.vm.define "el7-agent", autostart: true do |agent|
     agent.vm.box = "centos/7"
     agent.vm.hostname = 'el7-agent.example.com'
