@@ -98,7 +98,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
   end
 
-  # Unable to use at this time
+  # TODO: Unable to use at this time
   # https://github.com/dotless-de/vagrant-vbguest/issues/367
   #config.vm.define "el8-agent", autostart: true do |agent|
   #  agent.vm.box = "centos/8"

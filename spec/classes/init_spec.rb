@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu', :type => :class do
-  on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
+  on_supported_os({facterversion: '3.11.9'}).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
       context 'with default values for all parameters' do

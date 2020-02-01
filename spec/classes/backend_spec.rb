@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu::backend', :type => :class do
-  on_supported_os({facterversion: '3.8.0'}).each do |os, facts|
+  on_supported_os({facterversion: '3.11.9'}).each do |os, facts|
     # Windows is not supported for backend
     if facts[:os]['family'] == 'windows'
       next
