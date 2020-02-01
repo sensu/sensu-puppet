@@ -3454,6 +3454,12 @@ URL to use with 'sensuctl configure'
 
 Default value: http://127.0.0.1:8080
 
+##### `configure_trusted_ca_file`
+
+Path to trusted CA to use with 'sensuctl configure'
+
+Default value: /etc/sensu/ssl/ca.crt
+
 ## Data types
 
 ### Sensu::Backend_URL
