@@ -76,8 +76,8 @@ DESC
   newparam(:resource_name, :namevar => true) do
     desc "The name of the asset."
     validate do |value|
-      # Must only contain lower case letters, numbers, underscores, periods, hyphens and colons
-      unless value =~ %r{^[a-z0-9\/\_\.\-\:]+$}
+      # Must only contain upper case letters, lower case letters, numbers, underscores, periods, hyphens and colons
+      unless value =~ %r{^[A-Za-z0-9\/\_\.\-\:]+$}
         raise ArgumentError, "sensu_asset name invalid"
       end
     end
