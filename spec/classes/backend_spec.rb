@@ -32,13 +32,14 @@ describe 'sensu::backend', :type => :class do
         it { should have_sensu_user_resource_count(2) }
         it {
           should contain_sensu_user('admin').with({
-            'ensure'        => 'present',
-            'password'      => 'P@ssw0rd!',
-            'old_password'  => nil,
-            'groups'        => ['cluster-admins'],
-            'disabled'      => 'false',
-            'configure'     => 'true',
-            'configure_url' => 'https://test.example.com:8080',
+            'ensure'                    => 'present',
+            'password'                  => 'P@ssw0rd!',
+            'old_password'              => nil,
+            'groups'                    => ['cluster-admins'],
+            'disabled'                  => 'false',
+            'configure'                 => 'true',
+            'configure_url'             => 'https://test.example.com:8080',
+            'configure_trusted_ca_file' => '/etc/sensu/ssl/ca.crt',
           })
         }
         it {
@@ -190,6 +191,19 @@ describe 'sensu::backend', :type => :class do
         it { should compile.with_all_deps }
         it { should_not contain_file('sensu_ssl_cert') }
         it { should_not contain_file('sensu_ssl_key') }
+
+        it {
+          should contain_sensu_user('admin').with({
+            'ensure'                    => 'present',
+            'password'                  => 'P@ssw0rd!',
+            'old_password'              => nil,
+            'groups'                    => ['cluster-admins'],
+            'disabled'                  => 'false',
+            'configure'                 => 'true',
+            'configure_url'             => 'http://test.example.com:8080',
+            'configure_trusted_ca_file' => 'absent',
+          })
+        }
 
         backend_content = <<-END.gsub(/^\s+\|/, '')
           |---

@@ -117,16 +117,7 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
       resource.provider.flush
     end
     it 'should remove SSL trusted ca' do
-      sensuctl_config = {
-        "api-url" => 'foo.example.com:8081',
-        "trusted-ca-file" => '/etc/sensu/ssl/ca.crt',
-      }
-      expected_config = sensuctl_config.clone
-      expected_config['trusted-ca-file'] = ''
-      allow(resource.provider).to receive(:config_path).and_return('/root/.config/sensu/sensuctl/cluster')
-      allow(resource.provider).to receive(:sensuctl_config).and_return(sensuctl_config)
       expect(resource.provider).to receive(:sensuctl).with(['configure','--non-interactive','--url','http://localhost:8080','--username','admin','--password','foobar'])
-      expect(resource.provider).to receive(:save_config).with(expected_config)
       resource.provider.trusted_ca_file = 'absent'
       resource.provider.flush
     end

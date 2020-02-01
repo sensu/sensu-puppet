@@ -69,7 +69,12 @@ Puppet::Type.type(:sensu_user).provide(:sensu_api, :parent => Puppet::Provider::
     data[:disabled] = convert_boolean_property_value(resource[:disabled]) unless resource[:disabled].nil?
     api_request('users', data, {:method => 'post'})
     if resource[:configure] == :true
-      Puppet::Provider::Sensuctl.sensuctl(['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password]])
+      configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password]]
+      if resource[:configure_trusted_ca_file] != "absent"
+        configure_cmd << '--trusted-ca-file'
+        configure_cmd << resource[:configure_trusted_ca_file]
+      end
+      Puppet::Provider::Sensuctl.sensuctl(configure_cmd)
     end
     @property_hash[:ensure] = :present
   end
@@ -87,7 +92,12 @@ Puppet::Type.type(:sensu_user).provide(:sensu_api, :parent => Puppet::Provider::
       end
       api_request("users/#{resource[:name]}", data, {:method => 'put'})
       if @property_flush[:password] && resource[:configure] == :true
-        Puppet::Provider::Sensuctl.sensuctl(['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]])
+        configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]]
+        if resource[:configure_trusted_ca_file] != "absent"
+          configure_cmd << '--trusted-ca-file'
+          configure_cmd << resource[:configure_trusted_ca_file]
+        end
+        Puppet::Provider::Sensuctl.sensuctl(configure_cmd)
       end
     end
     @property_hash = resource.to_hash

@@ -38,17 +38,6 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.sensuctl_config(*args)
   end
 
-  def self.save_config(config, path = nil)
-    path ||= config_path
-    return unless File.exist?(path)
-    File.open(path, "w") do |f|
-      f.write(JSON.pretty_generate(config))
-    end
-  end
-  def save_config(*args)
-    self.class.save_config(*args)
-  end
-
   def self.type_properties
     resource_type.validproperties.reject { |p| p.to_sym == :ensure }
   end
