@@ -35,7 +35,7 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
     it 'should create user and reconfigure sensuctl' do
       resource[:configure] = true
       expect(resource.provider).to receive(:sensuctl).with(['user', 'create', 'test', '--password', 'P@ssw0rd!', '--groups', 'test'])
-      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','P@ssw0rd!'])
+      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','P@ssw0rd!','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -61,7 +61,7 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
       resource[:old_password] = 'foo'
       expect(resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(true)
       expect(resource.provider).to receive(:sensuctl).with(['user', 'change-password', 'test', '--current-password', 'foo', '--new-password', 'foobar'])
-      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','foobar'])
+      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','foobar','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
       resource.provider.password = 'foobar'
       resource.provider.flush
     end

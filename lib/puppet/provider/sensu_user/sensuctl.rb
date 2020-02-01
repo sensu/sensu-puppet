@@ -81,7 +81,12 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
       sensuctl(['user', 'disable', resource[:name], '--skip-confirm'])
     end
     if resource[:configure] == :true
-      sensuctl(['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password]])
+      configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password]]
+      if resource[:configure_trusted_ca_file] != "absent"
+        configure_cmd << '--trusted-ca-file'
+        configure_cmd << resource[:configure_trusted_ca_file]
+      end
+      sensuctl(configure_cmd)
     end
     @property_hash[:ensure] = :present
   end
@@ -97,7 +102,12 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         end
         sensuctl(['user', 'change-password', resource[:name], '--current-password', resource[:old_password], '--new-password', @property_flush[:password]])
         if resource[:configure] == :true
-          sensuctl(['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]])
+          configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]]
+          if resource[:configure_trusted_ca_file] != "absent"
+            configure_cmd << '--trusted-ca-file'
+            configure_cmd << resource[:configure_trusted_ca_file]
+          end
+          sensuctl(configure_cmd)
         end
       end
       if @property_flush[:groups]

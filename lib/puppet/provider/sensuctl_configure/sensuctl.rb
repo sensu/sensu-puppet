@@ -120,12 +120,6 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
   def flush
     if !@property_flush.empty?
       begin
-        if @property_flush[:trusted_ca_file] == 'absent'
-          Puppet.info("Clearing trusted-ca-file in #{config_path}")
-          config = sensuctl_config
-          config['trusted-ca-file'] = ''
-          save_config(config)
-        end
         backend_init
         configure_cmd()
         sensuctl(['config','set-format',@property_flush[:config_format]]) if @property_flush[:config_format]

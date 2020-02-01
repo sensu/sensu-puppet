@@ -193,13 +193,14 @@ class sensu::backend (
   }
 
   sensu_user { 'admin':
-    ensure        => 'present',
-    password      => $password,
-    old_password  => $sensu::old_password,
-    groups        => ['cluster-admins'],
-    disabled      => false,
-    configure     => true,
-    configure_url => $api_url,
+    ensure                    => 'present',
+    password                  => $password,
+    old_password              => $sensu::old_password,
+    groups                    => ['cluster-admins'],
+    disabled                  => false,
+    configure                 => true,
+    configure_url             => $api_url,
+    configure_trusted_ca_file => $trusted_ca_file,
   }
 
   if $manage_agent_user {

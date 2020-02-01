@@ -62,13 +62,15 @@ describe Puppet::Type.type(:sensu_user) do
     'disabled': :false,
     'configure': :false,
     'configure_url': 'http://127.0.0.1:8080',
+    'configure_trusted_ca_file': '/etc/sensu/ssl/ca.crt',
   }
 
   # String properties
   [
     :password,
     :old_password,
-    :configure_url
+    :configure_url,
+    :configure_trusted_ca_file,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 'foo'

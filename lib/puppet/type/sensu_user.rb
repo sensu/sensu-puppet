@@ -102,6 +102,11 @@ DESC
     defaultto 'http://127.0.0.1:8080'
   end
 
+  newparam(:configure_trusted_ca_file) do
+    desc "Path to trusted CA to use with 'sensuctl configure'"
+    defaultto('/etc/sensu/ssl/ca.crt')
+  end
+
   validate do
     required_properties = [
       :password

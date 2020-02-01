@@ -32,6 +32,8 @@ describe Puppet::Type.type(:sensu_asset) do
   end
 
   valid_names = [
+    'Foo',
+    'fooBar',
     'foo',
     'foo-bar',
     'foo.bar',
@@ -42,8 +44,6 @@ describe Puppet::Type.type(:sensu_asset) do
   ]
   invalid_names = [
     'foo!',
-    'Foo',
-    'fooBar',
   ]
   valid_names.each do |name|
     it "allows valid name #{name}" do
