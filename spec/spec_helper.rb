@@ -55,6 +55,7 @@ RSpec.configure do |config|
     %r{/\.rbenv/},
     %r{/.rvm/},
   ]
+  config.default_facter_version = '3.11.9'
 end
 
 add_custom_fact :puppet_localcacert, ->(os, facts) {

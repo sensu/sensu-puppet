@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe 'sensu::backend::datastore::postgresql', :type => :class do
-  on_supported_os({
-    facterversion: '3.11.9',
-  }).each do |os, facts|
+  on_supported_os.each do |os, facts|
     if facts[:os]['family'] == 'windows'
       next
     end
