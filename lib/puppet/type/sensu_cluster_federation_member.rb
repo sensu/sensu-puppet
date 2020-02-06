@@ -13,6 +13,11 @@ Puppet::Type.newtype(:sensu_cluster_federation_member) do
     cluster  => 'us-west-2a',
   }
 
+@example Add to a federated cluster to `us-west-2a` cluster using composite name
+  sensu_cluster_federation_member { 'http://10.0.0.1:8080 in us-west-2a':
+    ensure => 'present',
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
