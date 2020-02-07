@@ -52,6 +52,12 @@ Puppet::Type.newtype(:sensu_asset) do
     ],
   }
 
+@example Create an asset with composite name in `dev` namespace
+  sensu_asset { 'test in dev':
+    ensure => 'present',
+    builds => ...
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`

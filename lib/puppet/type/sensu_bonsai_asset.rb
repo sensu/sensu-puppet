@@ -23,6 +23,11 @@ Puppet::Type.newtype(:sensu_bonsai_asset) do
     version => 'latest',
   }
 
+@example Install a bonsai asset into `dev` namespace using composite names
+  sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler in dev':
+    ensure  => 'present',
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
