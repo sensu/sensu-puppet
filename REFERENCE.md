@@ -1322,6 +1322,15 @@ sensu_asset { 'test':
 }
 ```
 
+##### Create an asset with composite name in `dev` namespace
+
+```puppet
+sensu_asset { 'test in dev':
+  ensure => 'present',
+  builds => ...
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_asset` type.
@@ -1432,6 +1441,14 @@ sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
 sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
   ensure  => 'present',
   version => 'latest',
+}
+```
+
+##### Install a bonsai asset into `dev` namespace using composite names
+
+```puppet
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler in dev':
+  ensure  => 'present',
 }
 ```
 
@@ -1770,6 +1787,14 @@ The name of the federated cluster
 sensu_cluster_federation_member { 'http://10.0.0.1:8080':
   ensure   => 'present',
   cluster  => 'us-west-2a',
+}
+```
+
+##### Add to a federated cluster to `us-west-2a` cluster using composite name
+
+```puppet
+sensu_cluster_federation_member { 'http://10.0.0.1:8080 in us-west-2a':
+  ensure => 'present',
 }
 ```
 

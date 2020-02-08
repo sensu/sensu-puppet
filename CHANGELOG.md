@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.5.0](https://github.com/sensu/sensu-puppet/tree/v4.5.0) (2020-02-07)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.4.1...v4.5.0)
+
+### Added
+
+- Update puppet-strings examples for composite names [\#1211](https://github.com/sensu/sensu-puppet/pull/1211) ([treydock](https://github.com/treydock))
+- Support EL8 [\#1208](https://github.com/sensu/sensu-puppet/pull/1208) ([treydock](https://github.com/treydock))
+
 ## [v4.4.1](https://github.com/sensu/sensu-puppet/tree/v4.4.1) (2020-02-01)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.4.0...v4.4.1)
@@ -239,12 +248,6 @@
 ### Added
 
 - \(GH-1111\) Remove Ubuntu 14.04 LTS as it is end of life \(EOL\) [\#1112](https://github.com/sensu/sensu-puppet/pull/1112) ([ghoneycutt](https://github.com/ghoneycutt))
-- Add Windows support for Sensu Go agent [\#1108](https://github.com/sensu/sensu-puppet/pull/1108) ([treydock](https://github.com/treydock))
-
-### Fixed
-
-- Fix repo path for EL vagrant [\#1110](https://github.com/sensu/sensu-puppet/pull/1110) ([treydock](https://github.com/treydock))
-- Fix cluster tests to work with Sensu Go 5.7 [\#1109](https://github.com/sensu/sensu-puppet/pull/1109) ([treydock](https://github.com/treydock))
 
 ## [v3.2.0](https://github.com/sensu/sensu-puppet/tree/v3.2.0) (2019-05-06)
 
