@@ -5,8 +5,8 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensuctl_configure) do
   desc <<-DESC
-@summary Manages `sensuctl configure`. This is a private type not intended to be used directly.
-@api private
+@summary Manages 'sensuctl configure'
+**NOTE** This is a private type not intended to be used directly.
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
