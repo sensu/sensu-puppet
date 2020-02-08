@@ -24,6 +24,19 @@ class sensu::repo {
       sslcacert       => '/etc/pki/tls/certs/ca-bundle.crt',
       metadata_expire => 300,
     }
+    if String($repo_release) == '8' {
+      # This exec ensures GPG key is added without errors
+      # Initial GPG download for dnf appears to return no exit code, tries=2 is workaround
+      # This is method used by upstream Package Cloud scripts and will download GPG key
+      # https://packagecloud.io/sensu/stable/install#bash-rpm
+      exec { 'dnf makecache sensu':
+        path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+        command     => "dnf -q makecache -y --disablerepo='*' --enablerepo='sensu'",
+        refreshonly => true,
+        tries       => 2,
+        subscribe   => Yumrepo['sensu'],
+      }
+    }
   }
   if $facts['os']['family'] == 'Debian' {
     apt::source { 'sensu':

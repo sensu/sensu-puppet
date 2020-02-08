@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'sensu::resources', :type => :class do
   on_supported_os({
-    facterversion: '3.8.0',
     supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemrelease' => ['7'] }]
   }).each do |os, facts|
     context "on #{os}" do

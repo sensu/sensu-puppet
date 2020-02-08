@@ -98,6 +98,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
   end
 
+  config.vm.define "el8-agent", autostart: true do |agent|
+    agent.vm.box = "centos/8"
+    # TODO: Using specific box until CentOS 8.1 box is used for centos/8
+    # https://github.com/dotless-de/vagrant-vbguest/issues/367
+    agent.vm.box_url = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-Vagrant-8.1.1911-20200113.3.x86_64.vagrant-virtualbox.box"
+    agent.vm.hostname = 'el8-agent.example.com'
+    agent.vm.network  :private_network, ip: "192.168.52.32"
+    agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
+    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
+  end
+
   config.vm.define "el7-agent", autostart: true do |agent|
     agent.vm.box = "centos/7"
     agent.vm.hostname = 'el7-agent.example.com'
