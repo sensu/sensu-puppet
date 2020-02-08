@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'contact routing', if: RSpec.configuration.sensu_full do
+describe 'examples', if: RSpec.configuration.sensu_full do
   node = hosts_as('sensu_backend')[0]
 
   RSpec.configuration.sensu_examples.each do |example|
