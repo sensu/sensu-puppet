@@ -74,6 +74,8 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_mutator/sensuctl.html" title="puppet_providers_sensu_mutator::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_mutator/sensu_api.html" title="puppet_providers_sensu_mutator::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
@@ -90,7 +92,7 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 <li><code>sensu_asset</code> - Puppet will autorequire <code>sensu_asset</code> resources defined in <code>runtime_assets</code> property.</li>
@@ -281,6 +283,20 @@
           
         </ul>
       </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">secrets</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>List of Sensu secrets to set for the mutator execution environment.</p>
+
+        </div>
+      </div>
+      
       
     </li>
     

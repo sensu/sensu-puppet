@@ -131,7 +131,20 @@
 40
 41
 42
-43</pre>
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/repo.pp', line 4</span>
@@ -158,6 +171,19 @@ class sensu::repo {
       sslverify       =&gt; 1,
       sslcacert       =&gt; &#39;/etc/pki/tls/certs/ca-bundle.crt&#39;,
       metadata_expire =&gt; 300,
+    }
+    if String($repo_release) == &#39;8&#39; {
+      # This exec ensures GPG key is added without errors
+      # Initial GPG download for dnf appears to return no exit code, tries=2 is workaround
+      # This is method used by upstream Package Cloud scripts and will download GPG key
+      # https://packagecloud.io/sensu/stable/install#bash-rpm
+      exec { &#39;dnf makecache sensu&#39;:
+        path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
+        command     =&gt; &quot;dnf -q makecache -y --disablerepo=&#39;*&#39; --enablerepo=&#39;sensu&#39;&quot;,
+        refreshonly =&gt; true,
+        tries       =&gt; 2,
+        subscribe   =&gt; Yumrepo[&#39;sensu&#39;],
+      }
     }
   }
   if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;Debian&#39; {

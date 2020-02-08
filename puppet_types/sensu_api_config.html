@@ -6,7 +6,7 @@
 <title>
   Resource Type: sensu_api_config
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -68,22 +68,15 @@
     </dd>
   </dl>
   
-  <dl>
-    <dt>Providers:</dt>
-    <dd>
-      
-        <span class='object_link'><a href="../puppet_providers_sensu_api_config/json.html" title="puppet_providers_sensu_api_config::json (puppet_provider)">json</a></span><br/>
-      
-    </dd>
-  </dl>
-  
 </div>
+
+  <h2>Summary</h2>
+  Abstract type to configure other types
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p>Manages Sensu API config</p>
-
+    
   </div>
 </div>
 
@@ -92,19 +85,18 @@
   
 
 </div>
+
 <div class="tags">
-  <p class="tag_title">Properties</p>
+  <p class="tag_title">Parameters</p>
   <ul>
     
     <li>
-      <span class="name">bind</span>
-      
-      <span class="default"> (defaults to: <em>0.0.0.0</em>)</span>
+      <span class="name">name (namevar)</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The bind IP that sensu will bind to</p>
+          <p>The name of the resource.</p>
 
         </div>
       </div>
@@ -113,47 +105,12 @@
     </li>
     
     <li>
-      <span class="name">ensure</span>
-      
-      <span class="default"> (defaults to: <em>present</em>)</span>
+      <span class="name">old_password</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The basic property that the resource should be in.</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            present
-          </li>
-          
-          <li>
-            
-            absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">host</span>
-      
-      <span class="default"> (defaults to: <em>127.0.0.1</em>)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>The hostname that the Sensu API is listening on</p>
+          <p>Sensu API old password</p>
 
         </div>
       </div>
@@ -167,7 +124,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>The password use for client authentication against the Sensu API</p>
+          <p>Sensu API password</p>
 
         </div>
       </div>
@@ -176,14 +133,12 @@
     </li>
     
     <li>
-      <span class="name">port</span>
-      
-      <span class="default"> (defaults to: <em>4567</em>)</span>
+      <span class="name">url</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The port that the Sensu API is listening on</p>
+          <p>Sensu API URL</p>
 
         </div>
       </div>
@@ -192,92 +147,12 @@
     </li>
     
     <li>
-      <span class="name">ssl_keystore_file</span>
+      <span class="name">username</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The file path for the SSL certificate keystore. Enterprise only feature.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">ssl_keystore_password</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>The SSL certificate keystore password. Enterprise only feature.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">ssl_port</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Port of the HTTPS (SSL) sensu api service. Enterprise only feature.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">user</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>The username used for clients to authenticate against the Sensu API</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-  </ul>
-</div>
-
-
-<div class="tags">
-  <p class="tag_title">Parameters</p>
-  <ul>
-    
-    <li>
-      <span class="name">base_path</span>
-      
-      <span class="default"> (defaults to: <em>/etc/sensu/conf.d/</em>)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>The base path to the client config file</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">name (namevar)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>This value has no effect, set it to what ever you want.</p>
+          <p>Sensu API username</p>
 
         </div>
       </div>

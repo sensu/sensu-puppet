@@ -74,6 +74,8 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_handler/sensuctl.html" title="puppet_providers_sensu_handler::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_handler/sensu_api.html" title="puppet_providers_sensu_handler::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
@@ -90,7 +92,7 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 <li><code>sensu_filter</code> - Puppet will autorequire <code>sensu_filter</code> resources defined in <code>filters</code> property.</li>
@@ -400,12 +402,12 @@
     </li>
     
     <li>
-      <span class="name">socket_host</span>
+      <span class="name">secrets</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The socket host address (IP or hostname) to connect to.</p>
+          <p>List of Sensu secrets to set for the handler execution environment.</p>
 
         </div>
       </div>
@@ -414,12 +416,19 @@
     </li>
     
     <li>
-      <span class="name">socket_port</span>
+      <span class="name">socket</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The socket port to connect to.</p>
+          <p>The socket definition scope, used to configure the TCP/UDP handler socket.</p>
+
+<p>Valid keys:</p>
+
+<ul>
+<li>host - Required - The socket host address (IP or hostname) to connect to.</li>
+<li>port - Required - The socket port to connect to.</li>
+</ul>
 
         </div>
       </div>

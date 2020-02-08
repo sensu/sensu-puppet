@@ -90,9 +90,10 @@
     
       
       <pre class="example code"><code>class { &#39;sensu::agent&#39;:
-  backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-  config_hash =&gt; {
-    &#39;subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
+  backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+  subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
+  config_hash   =&gt; {
+    &#39;log-level&#39; =&gt; &#39;info&#39;,
   },
 }</code></pre>
     
@@ -174,6 +175,42 @@ This parameter only used when <code>package_source</code> is an URL or when it&#
   
     <li>
       
+        <span class='name'>service_env_vars_file</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Path to the agent service ENV variables file.
+Debian based default: <code>/etc/default/sensu-agent</code>
+RedHat based default: <code>/etc/sysconfig/sensu-agent</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_env_vars</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of environment variables loaded by sensu-agent service</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>service_name</span>
       
       
@@ -245,17 +282,108 @@ This parameter only used when <code>package_source</code> is an URL or when it&#
         <span class='name'>backends</span>
       
       
-        <span class='type'>(<tt>Array[Sensu::Backend_URL]</tt>)</span>
+        <span class='type'>(<tt>Optional[Array[Sensu::Backend_URL]]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>[&#39;localhost:8081&#39;]</tt>)</em>
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
         <div class='inline'><p>Array of sensu backends to pass to <code>backend-url</code> config option.
+Default is <code>[&quot;${sensu::api_host}:8081&quot;]</code>
 The protocol prefix of <code>ws://</code> or <code>wss://</code> are optional and will be determined
 based on <code>sensu::use_ssl</code> parameter by default.
-Passing <code>backend-url</code> as part of <code>config_hash</code> takes precedence.</p>
+Passing <code>backend-url</code> as part of <code>config_hash</code> takes precedence over this parameter.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>entity_name</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The value for agent.yml <code>name</code>.
+Passing <code>name</code> as part of <code>config_hash</code> takes precedence</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>subscriptions</span>
+      
+      
+        <span class='type'>(<tt>Optional[Array]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The agent subscriptions to define in agent.yml
+Passing <code>subscriptions</code> as part of <code>config_hash</code> takes precedence</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>annotations</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The agent annotations value for agent.yml
+Passing <code>annotations</code> as part of <code>config_hash</code> takes precedence</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>labels</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The agent labels value for agent.yml
+Passing <code>labels</code> as part of <code>config_hash</code> takes precedence</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>namespace</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The agent namespace
+Passing <code>namespace</code> as part of <code>config_hash</code> takes precedence</p>
 </div>
       
     </li>
@@ -305,29 +433,6 @@ Defaults to <code>C:\ProgramData\sensu\log\sensu-agent.log</code></p>
         <pre class="lines">
 
 
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
 67
 68
 69
@@ -421,59 +526,155 @@ Defaults to <code>C:\ProgramData\sensu\log\sensu-agent.log</code></p>
 157
 158
 159
-160</pre>
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/agent.pp', line 44</span>
+        <pre class="code"><span class="info file"># File 'manifests/agent.pp', line 67</span>
 
 class sensu::agent (
   Optional[String] $version = undef,
   Optional[String[1]] $package_source = undef,
   Optional[Stdlib::Absolutepath] $package_download_path = undef,
   String $package_name = &#39;sensu-go-agent&#39;,
+  Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
+  Hash $service_env_vars = {},
   String $service_name = &#39;sensu-agent&#39;,
   String $service_ensure = &#39;running&#39;,
   Boolean $service_enable = true,
   Hash $config_hash = {},
-  Array[Sensu::Backend_URL] $backends = [&#39;localhost:8081&#39;],
+  Optional[Array[Sensu::Backend_URL]] $backends = undef,
+  Optional[String] $entity_name = undef,
+  Optional[Array] $subscriptions = undef,
+  Optional[Hash] $annotations = undef,
+  Optional[Hash] $labels = undef,
+  Optional[String] $namespace = undef,
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
 ) {
 
-  include ::sensu
+  include sensu
+  include sensu::common
 
-  $etc_dir = $::sensu::etc_dir
-  $ssl_dir = $::sensu::ssl_dir
-  $use_ssl = $::sensu::use_ssl
-  $_version = pick($version, $::sensu::version)
+  $etc_dir = $sensu::etc_dir
+  $ssl_dir = $sensu::ssl_dir
+  $use_ssl = $sensu::use_ssl
+  $_version = pick($version, $sensu::version)
+  $_backends = pick($backends, [&quot;${sensu::api_host}:8081&quot;])
 
   if $use_ssl {
     $backend_protocol = &#39;wss&#39;
     $ssl_config = {
-      &#39;trusted-ca-file&#39; =&gt; $::sensu::trusted_ca_file_path,
+      &#39;trusted-ca-file&#39; =&gt; $sensu::trusted_ca_file_path,
     }
-    $service_subscribe = Class[&#39;::sensu::ssl&#39;]
+    $service_subscribe = Class[&#39;sensu::ssl&#39;]
   } else {
     $backend_protocol = &#39;ws&#39;
     $ssl_config = {}
     $service_subscribe = undef
   }
-  $backend_urls = $backends.map |$backend| {
+  $backend_urls = $_backends.map |$backend| {
     if &#39;ws://&#39; in $backend or &#39;wss://&#39; in $backend {
       $backend
     } else {
       &quot;${backend_protocol}://${backend}&quot;
     }
   }
-  $default_config = {
-    &#39;backend-url&#39; =&gt; $backend_urls,
-  }
+  $default_config = delete_undef_values({
+    &#39;backend-url&#39;   =&gt; $backend_urls,
+    &#39;name&#39;          =&gt; $entity_name,
+    &#39;subscriptions&#39; =&gt; $subscriptions,
+    &#39;annotations&#39;   =&gt; $annotations,
+    &#39;labels&#39;        =&gt; $labels,
+    &#39;namespace&#39;     =&gt; $namespace,
+    &#39;password&#39;      =&gt; $sensu::agent_password,
+  })
   $config = $default_config + $ssl_config + $config_hash
+  $_service_env_vars = $service_env_vars.map |$key,$value| {
+    &quot;${key}=\&quot;${value}\&quot;&quot;
+  }
+  $_service_env_vars_lines = [&#39;# This file is being maintained by Puppet.&#39;,&#39;# DO NOT EDIT&#39;] + $_service_env_vars
 
   if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
     $sensu_agent_exe = &quot;C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe&quot;
     exec { &#39;install-agent-service&#39;:
-      command =&gt; &quot;C:\\windows\\system32\\cmd.exe /c \&quot;\&quot;${sensu_agent_exe}\&quot; service install --config-file \&quot;${::sensu::agent_config_path}\&quot; --log-file \&quot;${log_file}\&quot;\&quot;&quot;,
+      command =&gt; &quot;C:\\windows\\system32\\cmd.exe /c \&quot;\&quot;${sensu_agent_exe}\&quot; service install --config-file \&quot;${sensu::agent_config_path}\&quot; --log-file \&quot;${log_file}\&quot;\&quot;&quot;, # lint:ignore:140chars
       unless  =&gt; &quot;C:\\windows\\system32\\sc.exe query SensuAgent&quot;,
       before  =&gt; Service[&#39;sensu-agent&#39;],
       require =&gt; [
@@ -506,7 +707,7 @@ class sensu::agent (
         $package_provider = undef
         $_package_source = $package_source
     } else {
-      include ::chocolatey
+      include chocolatey
       $package_provider = &#39;chocolatey&#39;
       $_package_source = $package_source
     }
@@ -515,25 +716,60 @@ class sensu::agent (
     $_package_source = undef
   }
 
+  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
+  # Only necessary for Puppet &lt; 6.1.0,
+  # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
+  if versioncmp($facts[&#39;puppetversion&#39;],&#39;6.1.0&#39;) &lt; 0 and $facts[&#39;service_provider&#39;] == &#39;systemd&#39; {
+    Package[&#39;sensu-go-agent&#39;] ~&gt; Exec[&#39;sensu systemctl daemon-reload&#39;]
+    Exec[&#39;sensu systemctl daemon-reload&#39;] -&gt; Service[&#39;sensu-agent&#39;]
+  }
+
   package { &#39;sensu-go-agent&#39;:
     ensure   =&gt; $_version,
     name     =&gt; $package_name,
     source   =&gt; $_package_source,
     provider =&gt; $package_provider,
     before   =&gt; File[&#39;sensu_etc_dir&#39;],
-    require  =&gt; $::sensu::package_require,
+    require  =&gt; $sensu::package_require,
+    notify   =&gt; Service[&#39;sensu-agent&#39;],
   }
 
   file { &#39;sensu_agent_config&#39;:
     ensure    =&gt; &#39;file&#39;,
-    path      =&gt; $::sensu::agent_config_path,
+    path      =&gt; $sensu::agent_config_path,
     content   =&gt; to_yaml($config),
-    owner     =&gt; $::sensu::sensu_user,
-    group     =&gt; $::sensu::sensu_group,
-    mode      =&gt; $::sensu::file_mode,
+    owner     =&gt; $sensu::sensu_user,
+    group     =&gt; $sensu::sensu_group,
+    mode      =&gt; $sensu::file_mode,
     show_diff =&gt; $show_diff,
     require   =&gt; Package[&#39;sensu-go-agent&#39;],
     notify    =&gt; Service[&#39;sensu-agent&#39;],
+  }
+
+  if $service_env_vars_file {
+    $_service_env_vars_content = join($_service_env_vars_lines, &quot;\n&quot;)
+    file { &#39;sensu-agent_env_vars&#39;:
+      ensure    =&gt; &#39;file&#39;,
+      path      =&gt; $service_env_vars_file,
+      content   =&gt; &quot;${_service_env_vars_content}\n&quot;,
+      owner     =&gt; $sensu::sensu_user,
+      group     =&gt; $sensu::sensu_group,
+      mode      =&gt; $sensu::file_mode,
+      show_diff =&gt; $show_diff,
+      require   =&gt; Package[&#39;sensu-go-agent&#39;],
+      notify    =&gt; Service[&#39;sensu-agent&#39;],
+    }
+  }
+  # No built in way to read environment variables from a file for Windows
+  if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
+    $service_env_vars.each |$key,$value| {
+      windows_env { $key:
+        ensure    =&gt; &#39;present&#39;,
+        value     =&gt; $value,
+        mergemode =&gt; &#39;clobber&#39;,
+        notify    =&gt; Service[&#39;sensu-agent&#39;],
+      }
+    }
   }
 
   service { &#39;sensu-agent&#39;:

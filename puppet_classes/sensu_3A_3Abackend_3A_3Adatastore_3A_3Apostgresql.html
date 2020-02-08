@@ -116,101 +116,33 @@
 25
 26
 27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62</pre>
+28</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/backend/datastore/postgresql.pp', line 4</span>
 
 class sensu::backend::datastore::postgresql {
-  include ::sensu
-  include ::sensu::backend
+  include sensu
+  include sensu::backend
 
-  $config_path = &quot;${::sensu::etc_dir}/postgresql.yaml&quot;
-  $user = $::sensu::backend::postgresql_user
-  $password = $::sensu::backend::postgresql_password
-  $host = $::sensu::backend::postgresql_host
-  $port = $::sensu::backend::postgresql_port
-  $dbname = $::sensu::backend::postgresql_dbname
-  $config = {
-    &#39;type&#39;        =&gt; &#39;PostgresConfig&#39;,
-    &#39;api_version&#39; =&gt; &#39;store/v1&#39;,
-    &#39;metadata&#39;    =&gt; { &#39;name&#39; =&gt; $::sensu::backend::postgresql_name },
-    &#39;spec&#39;        =&gt; {
-      &#39;dsn&#39;         =&gt; &quot;postgresql://${user}:${password}@${host}:${port}/${dbname}&quot;,
-      &#39;pool_size&#39;   =&gt; $::sensu::backend::postgresql_pool_size,
-    },
-  }
-  $yaml_config = to_yaml($config)
+  $user = $sensu::backend::postgresql_user
+  $password = $sensu::backend::postgresql_password
+  $host = $sensu::backend::postgresql_host
+  $port = $sensu::backend::postgresql_port
+  $dbname = $sensu::backend::postgresql_dbname
+  $dsn = &quot;postgresql://${user}:${password}@${host}:${port}/${dbname}&quot;
 
-  case $::sensu::backend::datastore_ensure {
-    &#39;absent&#39;: {
-      $sensuctl_command = &#39;sensuctl delete&#39;
-    }
-    default: {
-      $sensuctl_command = &#39;sensuctl create&#39;
-    }
+  sensu_postgres_config { $sensu::backend::postgresql_name:
+    ensure    =&gt; $sensu::backend::datastore_ensure,
+    dsn       =&gt; Sensitive($dsn),
+    pool_size =&gt; $sensu::backend::postgresql_pool_size,
   }
 
-  file { $config_path:
-    ensure    =&gt; &#39;file&#39;,
-    owner     =&gt; $::sensu::user,
-    group     =&gt; $::sensu::group,
-    mode      =&gt; &#39;0640&#39;,
-    show_diff =&gt; false,
-    content   =&gt; &quot;${yaml_config}\n# File managed by Puppet\n# ${::sensu::backend::datastore_ensure}\n&quot;,
-    require   =&gt; Package[&#39;sensu-go-backend&#39;],
-    notify    =&gt; Exec[&#39;sensuctl-postgresql&#39;],
-  }
-
-  exec { &#39;sensuctl-postgresql&#39;:
-    path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
-    command     =&gt; &quot;${sensuctl_command} --file ${config_path}&quot;,
-    refreshonly =&gt; true,
-    require     =&gt; [
-      Sensu_configure[&#39;puppet&#39;],
-      Sensu_user[&#39;admin&#39;],
-    ],
-  }
-
-  if $::sensu::backend::manage_postgresql_db and $::sensu::backend::datastore_ensure == &#39;present&#39; {
+  if $sensu::backend::manage_postgresql_db and $sensu::backend::datastore_ensure == &#39;present&#39; {
     postgresql::server::db { $dbname:
       user     =&gt; $user,
       password =&gt; postgresql_password($user, $password),
-      before   =&gt; Exec[&#39;sensuctl-postgresql&#39;],
+      before   =&gt; Sensu_postgres_config[$sensu::backend::postgresql_name],
     }
   }
 }</pre>

@@ -6,7 +6,7 @@
 <title>
   Puppet Class: sensu::api
   
-    &mdash; Documentation by YARD 0.9.16
+    &mdash; Documentation by YARD 0.9.20
   
 </title>
 
@@ -71,41 +71,27 @@
   </dl>
 </div>
 
+  <h2>Summary</h2>
+  Manage Sensu API
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p>= Class: sensu::api</p>
-
-<p>Manages the Sensu api</p>
-
-<p>== Parameters</p>
-
-<p>[<em>hasrestart</em>]
-  Boolean. Value of hasrestart attribute for this service.
-  Default: true</p>
+    <p>Class to manage the Sensu API.</p>
 
   </div>
 </div>
 
 
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
       
-        <span class='name'>hasrestart</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>$::sensu::hasrestart</tt>)</em>
-      
-      
-    </li>
-  
-</ul>
+      <pre class="example code"><code><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_sensu'>sensu</span><span class='op'>::</span><span class='id identifier rubyid_api'>api</span></code></pre>
+    
+  </div>
 
 
 </div><div class="method_details_list">
@@ -115,6 +101,9 @@
         <pre class="lines">
 
 
+8
+9
+10
 11
 12
 13
@@ -127,138 +116,25 @@
 20
 21
 22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81</pre>
+23</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/api.pp', line 11</span>
+        <pre class="code"><span class="info file"># File 'manifests/api.pp', line 8</span>
 
-class sensu::api (
-  Boolean $hasrestart = $::sensu::hasrestart,
-) {
+class sensu::api {
+  include sensu
 
-  case $::osfamily {
-    &#39;Darwin&#39;: {
-      $service_path     = &#39;/Library/LaunchDaemons/org.sensuapp.sensu-api.plist&#39;
-      $service_provider = &#39;launchd&#39;
-    }
-    default: {
-      $service_path     = undef
-      $service_provider = undef
-    }
+  sensu_api_config { &#39;sensu&#39;:
+    url          =&gt; $sensu::api_url,
+    username     =&gt; &#39;admin&#39;,
+    password     =&gt; $sensu::password,
+    old_password =&gt; $sensu::old_password,
   }
 
-  if $::sensu::manage_services {
-
-    case $::sensu::api {
-      true: {
-        $service_ensure = &#39;running&#39;
-        $service_enable = true
-      }
-      default: {
-        $service_ensure = &#39;stopped&#39;
-        $service_enable = false
-      }
-    }
-
-    if $::osfamily != &#39;windows&#39; {
-      service { $::sensu::api_service_name:
-        ensure     =&gt; $service_ensure,
-        enable     =&gt; $service_enable,
-        hasrestart =&gt; $hasrestart,
-        path       =&gt; $service_path,
-        provider   =&gt; $service_provider,
-        subscribe  =&gt; [
-          Class[&#39;sensu::package&#39;],
-          Sensu_api_config[$::fqdn],
-          Class[&#39;sensu::redis::config&#39;],
-          Class[&#39;sensu::rabbitmq::config&#39;],
-        ],
-      }
-    }
-  }
-
-  if $::sensu::_purge_config and !$::sensu::server and !$::sensu::api and !$::sensu::enterprise {
-    $file_ensure = &#39;absent&#39;
-  } else {
-    $file_ensure = &#39;present&#39;
-  }
-
-  file { &quot;${sensu::etc_dir}/conf.d/api.json&quot;:
-    ensure =&gt; $file_ensure,
-    owner  =&gt; $::sensu::user,
-    group  =&gt; $::sensu::group,
-    mode   =&gt; $::sensu::file_mode,
-  }
-
-  sensu_api_config { $::fqdn:
-    ensure                =&gt; $file_ensure,
-    base_path             =&gt; &quot;${sensu::etc_dir}/conf.d&quot;,
-    bind                  =&gt; $::sensu::api_bind,
-    host                  =&gt; $::sensu::api_host,
-    port                  =&gt; $::sensu::api_port,
-    user                  =&gt; $::sensu::api_user,
-    password              =&gt; $::sensu::api_password,
-    ssl_port              =&gt; $::sensu::api_ssl_port,
-    ssl_keystore_file     =&gt; $::sensu::api_ssl_keystore_file,
-    ssl_keystore_password =&gt; $::sensu::api_ssl_keystore_password,
+  sensu_api_validator { &#39;sensu&#39;:
+    sensu_api_server =&gt; $sensu::api_host,
+    sensu_api_port   =&gt; $sensu::api_port,
+    use_ssl          =&gt; $sensu::use_ssl,
   }
 }</pre>
       </td>

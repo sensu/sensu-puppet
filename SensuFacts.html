@@ -254,8 +254,6 @@
       <pre class="lines">
 
 
-44
-45
 46
 47
 48
@@ -269,10 +267,12 @@
 56
 57
 58
-59</pre>
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_add_agent_facts'>add_agent_facts</span>
   <span class='id identifier rubyid_version'>version</span><span class='comma'>,</span> <span class='id identifier rubyid_build'>build</span><span class='comma'>,</span> <span class='id identifier rubyid_built'>built</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_version_info'>get_version_info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sensu-agent</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -310,8 +310,6 @@
       <pre class="lines">
 
 
-61
-62
 63
 64
 65
@@ -325,10 +323,12 @@
 73
 74
 75
-76</pre>
+76
+77
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_add_backend_facts'>add_backend_facts</span>
   <span class='id identifier rubyid_version'>version</span><span class='comma'>,</span> <span class='id identifier rubyid_build'>build</span><span class='comma'>,</span> <span class='id identifier rubyid_built'>built</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_version_info'>get_version_info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sensu-backend</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -366,14 +366,14 @@
       <pre class="lines">
 
 
-38
-39
 40
 41
-42</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_add_facts'>add_facts</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_add_agent_facts'>add_agent_facts</span>
@@ -400,8 +400,6 @@
       <pre class="lines">
 
 
-78
-79
 80
 81
 82
@@ -415,10 +413,12 @@
 90
 91
 92
-93</pre>
+93
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_add_sensuctl_facts'>add_sensuctl_facts</span>
   <span class='id identifier rubyid_version'>version</span><span class='comma'>,</span> <span class='id identifier rubyid_build'>build</span><span class='comma'>,</span> <span class='id identifier rubyid_built'>built</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_version_info'>get_version_info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sensuctl</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -456,8 +456,6 @@
       <pre class="lines">
 
 
-14
-15
 16
 17
 18
@@ -478,10 +476,12 @@
 33
 34
 35
-36</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_version_info'>get_version_info</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_which'>which</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='rparen'>)</span>
@@ -534,7 +534,9 @@
 9
 10
 11
-12</pre>
+12
+13
+14</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/facter/sensu_facts.rb', line 4</span>
@@ -543,6 +545,8 @@
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exists?'>exists?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>C:\\Program Files\\sensu\\sensu-agent\\bin\\</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cmd'>cmd</span><span class='embexpr_end'>}</span><span class='tstring_content'>.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
     <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>C:\\Program Files\\sensu\\sensu-agent\\bin\\</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cmd'>cmd</span><span class='embexpr_end'>}</span><span class='tstring_content'>.exe</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>elsif</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exists?'>exists?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>C:\\Program Files\\Sensu\\</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cmd'>cmd</span><span class='embexpr_end'>}</span><span class='tstring_content'>.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>C:\\Program Files\\Sensu\\</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cmd'>cmd</span><span class='embexpr_end'>}</span><span class='tstring_content'>.exe</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='const'>Facter</span><span class='op'>::</span><span class='const'>Core</span><span class='op'>::</span><span class='const'>Execution</span><span class='period'>.</span><span class='id identifier rubyid_which'>which</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='rparen'>)</span>
   <span class='kw'>end</span>

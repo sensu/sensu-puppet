@@ -74,6 +74,8 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_bonsai_asset/sensuctl.html" title="puppet_providers_sensu_bonsai_asset::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_bonsai_asset/sensu_api.html" title="puppet_providers_sensu_bonsai_asset::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
@@ -90,7 +92,7 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 </ul>
@@ -128,6 +130,14 @@
       <pre class="example code"><code>sensu_bonsai_asset { &#39;sensu/sensu-pagerduty-handler&#39;:
   ensure  =&gt; &#39;present&#39;,
   version =&gt; &#39;latest&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install a bonsai asset into <code>dev</code> namespace using composite names</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_bonsai_asset { &#39;sensu/sensu-pagerduty-handler in dev&#39;:
+  ensure  =&gt; &#39;present&#39;,
 }</code></pre>
     
   </div>

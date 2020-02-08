@@ -74,6 +74,8 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_user/sensuctl.html" title="puppet_providers_sensu_user::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_user/sensu_api.html" title="puppet_providers_sensu_user::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
@@ -90,7 +92,7 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 </ul>
 
@@ -264,6 +266,22 @@
           
         </ul>
       </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">configure_trusted_ca_file</span>
+      
+      <span class="default"> (defaults to: <em>/etc/sensu/ssl/ca.crt</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Path to trusted CA to use with &#39;sensuctl configure&#39;</p>
+
+        </div>
+      </div>
+      
       
     </li>
     

@@ -89,9 +89,7 @@
     <p class="tag_title">Examples:</p>
     
       
-      <pre class="example code"><code>class { &#39;sensu::backend&#39;:
-  password =&gt; &#39;secret&#39;,
-}</code></pre>
+      <pre class="example code"><code><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_sensu'>sensu</span><span class='op'>::</span><span class='id identifier rubyid_backend'>backend</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -134,17 +132,36 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
   
     <li>
       
-        <span class='name'>cli_package_name</span>
+        <span class='name'>service_env_vars_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;sensu-go-cli&#39;</tt>)</em>
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
-        <div class='inline'><p>Name of Sensu CLI package.</p>
+        <div class='inline'><p>Path to the backend service ENV variables file.
+Debian based default: <code>/etc/default/sensu-backend</code>
+RedHat based default: <code>/etc/sysconfig/sensu-backend</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_env_vars</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Hash of environment variables loaded by sensu-backend service</p>
 </div>
       
     </li>
@@ -236,40 +253,6 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
   
     <li>
       
-        <span class='name'>url_host</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>$trusted[&#39;certname&#39;]</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Sensu backend host used to configure sensuctl and verify API access.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>url_port</span>
-      
-      
-        <span class='type'>(<tt>Stdlib::Port</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>8080</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Sensu backend port used to configure sensuctl and verify API access.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>ssl_cert_source</span>
       
       
@@ -280,7 +263,26 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
       
       
         &mdash;
-        <div class='inline'><p>The SSL certificate source</p>
+        <div class='inline'><p>The SSL certificate source
+This parameter is mutually exclusive with ssl_cert_content</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ssl_cert_content</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The SSL certificate content
+This parameter is mutually exclusive with ssl_cert_source</p>
 </div>
       
     </li>
@@ -297,31 +299,15 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
       
       
         &mdash;
-        <div class='inline'><p>The SSL private key source</p>
+        <div class='inline'><p>The SSL private key source
+This parameter is mutually exclusive with ssl_key_content</p>
 </div>
       
     </li>
   
     <li>
       
-        <span class='name'>password</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>&#39;P@ssw0rd!&#39;</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Sensu backend admin password used to confiure sensuctl.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>old_password</span>
+        <span class='name'>ssl_key_content</span>
       
       
         <span class='type'>(<tt>Optional[String]</tt>)</span>
@@ -331,41 +317,8 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
       
       
         &mdash;
-        <div class='inline'><p>Sensu backend admin old password needed when changing password.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>agent_password</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>&#39;P@ssw0rd!&#39;</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>The sensu agent password</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>agent_old_password</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>The sensu agent old password needed when changing agent_password</p>
+        <div class='inline'><p>The SSL private key content
+This parameter is mutually exclusive with ssl_key_source</p>
 </div>
       
     </li>
@@ -383,6 +336,43 @@ Windows MSI packaging and to avoid surprising upgrades.</p>
       
         &mdash;
         <div class='inline'><p>Sets if default sensu resources should be included</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_agent_user</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sets if the Sensu agent user should be managed</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>agent_user_disabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sets if the Sensu agent user should be disabled
+Not applicable if <code>manage_agent_user</code> is <code>false</code>
+This is useful if using agent TLS authentication
+See <a href="https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication">https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication</a></p>
 </div>
       
     </li>
@@ -471,380 +461,6 @@ Do not define with license_source</p>
       
         &mdash;
         <div class='inline'><p>Determine if Tessen is opt-in (present) or opt-out (absent)</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>ad_auths</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_ad_auth resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>assets</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_asset resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>bonsai_assets</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_bonsai_asset resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>checks</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_check resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>cluster_members</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_cluster_member resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>cluster_role_bindings</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_cluster_role_binding resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>cluster_roles</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_cluster_role resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>configs</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_config resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>entities</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_entitie resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>events</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_event resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>filters</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_filter resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>handlers</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_handler resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>hooks</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_hook resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>ldap_auths</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_ldap_auth resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>mutators</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_mutator resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>namespaces</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_namespace resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>oidc_auths</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_oidc_auth resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>role_bindings</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_role_binding resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>roles</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_role resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>silencings</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_silenced resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>users</span>
-      
-      
-        <span class='type'>(<tt>Hash</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Hash of sensu_user resources</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>sensuctl_chunk_size</span>
-      
-      
-        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Chunk size to use when listing sensuctl resources</p>
 </div>
       
     </li>
@@ -1030,6 +646,45 @@ datastore parameters must still be defined.</p>
         <pre class="lines">
 
 
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
 124
 125
 126
@@ -1223,87 +878,33 @@ datastore parameters must still be defined.</p>
 314
 315
 316
-317
-318
-319
-320
-321
-322
-323
-324
-325
-326
-327
-328
-329
-330
-331
-332
-333
-334
-335
-336
-337
-338
-339
-340
-341
-342
-343
-344
-345
-346
-347
-348</pre>
+317</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 124</span>
+        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 85</span>
 
 class sensu::backend (
   Optional[String] $version = undef,
   String $package_name = &#39;sensu-go-backend&#39;,
-  String $cli_package_name = &#39;sensu-go-cli&#39;,
+  Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
+  Hash $service_env_vars = {},
   String $service_name = &#39;sensu-backend&#39;,
   String $service_ensure = &#39;running&#39;,
   Boolean $service_enable = true,
   Stdlib::Absolutepath $state_dir = &#39;/var/lib/sensu/sensu-backend&#39;,
   Hash $config_hash = {},
-  String $url_host = $trusted[&#39;certname&#39;],
-  Stdlib::Port $url_port = 8080,
   Optional[String] $ssl_cert_source = $facts[&#39;puppet_hostcert&#39;],
+  Optional[String] $ssl_cert_content = undef,
   Optional[String] $ssl_key_source = $facts[&#39;puppet_hostprivkey&#39;],
-  String $password = &#39;P@ssw0rd!&#39;,
-  Optional[String] $old_password = undef,
-  String $agent_password = &#39;P@ssw0rd!&#39;,
-  Optional[String] $agent_old_password = undef,
+  Optional[String] $ssl_key_content = undef,
   Boolean $include_default_resources = true,
+  Boolean $manage_agent_user = true,
+  Boolean $agent_user_disabled = false,
   Boolean $show_diff = true,
   Optional[String] $license_source = undef,
   Optional[String] $license_content = undef,
   Boolean $manage_tessen = true,
   Enum[&#39;present&#39;,&#39;absent&#39;] $tessen_ensure = &#39;present&#39;,
-  Hash $ad_auths = {},
-  Hash $assets = {},
-  Hash $bonsai_assets = {},
-  Hash $checks = {},
-  Hash $cluster_members = {},
-  Hash $cluster_role_bindings = {},
-  Hash $cluster_roles = {},
-  Hash $configs = {},
-  Hash $entities = {},
-  Hash $events = {},
-  Hash $filters = {},
-  Hash $handlers = {},
-  Hash $hooks = {},
-  Hash $ldap_auths = {},
-  Hash $mutators = {},
-  Hash $namespaces = {},
-  Hash $oidc_auths = {},
-  Hash $role_bindings = {},
-  Hash $roles = {},
-  Hash $silencings = {},
-  Hash $users = {},
-  Optional[Integer] $sensuctl_chunk_size = undef,
   Optional[Enum[&#39;postgresql&#39;]] $datastore = undef,
   Enum[&#39;present&#39;,&#39;absent&#39;] $datastore_ensure = &#39;present&#39;,
   Boolean $manage_postgresql_db = true,
@@ -1320,88 +921,101 @@ class sensu::backend (
     fail(&#39;sensu::backend: Do not define both license_source and license_content&#39;)
   }
 
-  include ::sensu
-  include ::sensu::backend::resources
-  if $manage_tessen {
-    include ::sensu::backend::tessen
-  }
+  include sensu
+  include sensu::common
+  include sensu::cli
+  include sensu::api
   if $datastore == &#39;postgresql&#39; {
-    include ::sensu::backend::datastore::postgresql
+    include sensu::backend::datastore::postgresql
   }
 
-  $etc_dir = $::sensu::etc_dir
-  $ssl_dir = $::sensu::ssl_dir
-  $use_ssl = $::sensu::use_ssl
-  $_version = pick($version, $::sensu::version)
+  $etc_dir = $sensu::etc_dir
+  $ssl_dir = $sensu::ssl_dir
+  $use_ssl = $sensu::use_ssl
+  $_version = pick($version, $sensu::version)
+  $api_host = $sensu::api_host
+  $api_port = $sensu::api_port
+  $api_protocol = $sensu::api_protocol
+  $password = $sensu::password
 
-  if $use_ssl and ! $ssl_cert_source {
-    fail(&#39;sensu::backend: ssl_cert_source must be defined when sensu::use_ssl is true&#39;)
+  if $ssl_cert_content {
+    $_ssl_cert_source = undef
+  } else {
+    $_ssl_cert_source = $ssl_cert_source
   }
-  if $use_ssl and ! $ssl_key_source {
-    fail(&#39;sensu::backend: ssl_key_source must be defined when sensu::use_ssl is true&#39;)
+  if $ssl_key_content {
+    $_ssl_key_source = undef
+  } else {
+    $_ssl_key_source = $ssl_key_source
   }
 
   if $use_ssl {
-    $url_protocol = &#39;https&#39;
+    if !($_ssl_cert_source or $ssl_cert_content) {
+      fail(&#39;sensu::backend: ssl_cert_source or ssl_cert_content must be defined when sensu::use_ssl is true&#39;)
+    }
+    if !($_ssl_key_source or $ssl_key_content) {
+      fail(&#39;sensu::backend: ssl_key_source or ssl_key_content must be defined when sensu::use_ssl is true&#39;)
+    }
     $trusted_ca_file = &quot;${ssl_dir}/ca.crt&quot;
     $ssl_config = {
       &#39;cert-file&#39;       =&gt; &quot;${ssl_dir}/cert.pem&quot;,
       &#39;key-file&#39;        =&gt; &quot;${ssl_dir}/key.pem&quot;,
       &#39;trusted-ca-file&#39; =&gt; $trusted_ca_file,
     }
-    $service_subscribe = Class[&#39;::sensu::ssl&#39;]
-    Class[&#39;::sensu::ssl&#39;] -&gt; Sensu_configure[&#39;puppet&#39;]
+    $service_subscribe = Class[&#39;sensu::ssl&#39;]
+    Class[&#39;sensu::ssl&#39;] -&gt; Sensuctl_configure[&#39;puppet&#39;]
   } else {
-    $url_protocol = &#39;http&#39;
     $trusted_ca_file = &#39;absent&#39;
     $ssl_config = {}
     $service_subscribe = undef
   }
 
-  $url = &quot;${url_protocol}://${url_host}:${url_port}&quot;
+  $api_url = &quot;${api_protocol}://${api_host}:${api_port}&quot;
   $default_config = {
     &#39;state-dir&#39; =&gt; $state_dir,
-    &#39;api-url&#39;   =&gt; $url,
+    &#39;api-url&#39;   =&gt; $api_url,
   }
   $config = $default_config + $ssl_config + $config_hash
-
+  $_service_env_vars = $service_env_vars.map |$key,$value| {
+    &quot;${key}=\&quot;${value}\&quot;&quot;
+  }
+  $_service_env_vars_lines = [&#39;# This file is being maintained by Puppet.&#39;,&#39;# DO NOT EDIT&#39;] + $_service_env_vars
 
   if $include_default_resources {
-    include ::sensu::backend::default_resources
+    include sensu::backend::default_resources
   }
 
-  package { &#39;sensu-go-cli&#39;:
-    ensure  =&gt; $_version,
-    name    =&gt; $cli_package_name,
-    require =&gt; $::sensu::package_require,
+  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
+  # Only necessary for Puppet &lt; 6.1.0,
+  # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
+  if versioncmp($facts[&#39;puppetversion&#39;],&#39;6.1.0&#39;) &lt; 0 and $facts[&#39;service_provider&#39;] == &#39;systemd&#39; {
+    Package[&#39;sensu-go-backend&#39;] ~&gt; Exec[&#39;sensu systemctl daemon-reload&#39;]
+    Exec[&#39;sensu systemctl daemon-reload&#39;] -&gt; Service[&#39;sensu-backend&#39;]
   }
 
-  sensuctl_config { &#39;sensu&#39;:
-    chunk_size =&gt; $sensuctl_chunk_size,
-  }
-
-  sensu_api_validator { &#39;sensu&#39;:
-    sensu_api_server =&gt; $url_host,
-    sensu_api_port   =&gt; $url_port,
-    use_ssl          =&gt; $use_ssl,
-    require          =&gt; Service[&#39;sensu-backend&#39;],
-  }
-
-  sensu_configure { &#39;puppet&#39;:
-    url                =&gt; $url,
-    username           =&gt; &#39;admin&#39;,
-    password           =&gt; $password,
-    bootstrap_password =&gt; &#39;P@ssw0rd!&#39;,
-    trusted_ca_file    =&gt; $trusted_ca_file,
-  }
   sensu_user { &#39;admin&#39;:
-    ensure        =&gt; &#39;present&#39;,
-    password      =&gt; $password,
-    old_password  =&gt; $old_password,
-    groups        =&gt; [&#39;cluster-admins&#39;],
-    disabled      =&gt; false,
-    configure     =&gt; true,
-    configure_url =&gt; $url,
+    ensure                    =&gt; &#39;present&#39;,
+    password                  =&gt; $password,
+    old_password              =&gt; $sensu::old_password,
+    groups                    =&gt; [&#39;cluster-admins&#39;],
+    disabled                  =&gt; false,
+    configure                 =&gt; true,
+    configure_url             =&gt; $api_url,
+    configure_trusted_ca_file =&gt; $trusted_ca_file,
+  }
+
+  if $manage_agent_user {
+    sensu_user { &#39;agent&#39;:
+      ensure       =&gt; &#39;present&#39;,
+      disabled     =&gt; $agent_user_disabled,
+      password     =&gt; $sensu::agent_password,
+      old_password =&gt; $sensu::agent_old_password,
+      groups       =&gt; [&#39;system:agents&#39;],
+    }
+  }
+
+  if $manage_tessen {
+    sensu_tessen { &#39;puppet&#39;: ensure =&gt; $tessen_ensure }
   }
 
   if $license_source or $license_content {
@@ -1410,8 +1024,8 @@ class sensu::backend (
       path      =&gt; &quot;${etc_dir}/license.json&quot;,
       source    =&gt; $license_source,
       content   =&gt; $license_content,
-      owner     =&gt; $::sensu::user,
-      group     =&gt; $::sensu::group,
+      owner     =&gt; $sensu::user,
+      group     =&gt; $sensu::group,
       mode      =&gt; &#39;0600&#39;,
       show_diff =&gt; false,
       notify    =&gt; Exec[&#39;sensu-add-license&#39;],
@@ -1421,7 +1035,7 @@ class sensu::backend (
       path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
       command     =&gt; &quot;sensuctl create --file ${etc_dir}/license.json&quot;,
       refreshonly =&gt; true,
-      require     =&gt; Sensu_configure[&#39;puppet&#39;],
+      require     =&gt; Sensuctl_configure[&#39;puppet&#39;],
     }
   }
 
@@ -1429,9 +1043,10 @@ class sensu::backend (
     file { &#39;sensu_ssl_cert&#39;:
       ensure    =&gt; &#39;file&#39;,
       path      =&gt; &quot;${ssl_dir}/cert.pem&quot;,
-      source    =&gt; $ssl_cert_source,
-      owner     =&gt; $::sensu::user,
-      group     =&gt; $::sensu::group,
+      source    =&gt; $_ssl_cert_source,
+      content   =&gt; $ssl_cert_content,
+      owner     =&gt; $sensu::user,
+      group     =&gt; $sensu::group,
       mode      =&gt; &#39;0644&#39;,
       show_diff =&gt; false,
       notify    =&gt; Service[&#39;sensu-backend&#39;],
@@ -1439,9 +1054,10 @@ class sensu::backend (
     file { &#39;sensu_ssl_key&#39;:
       ensure    =&gt; &#39;file&#39;,
       path      =&gt; &quot;${ssl_dir}/key.pem&quot;,
-      source    =&gt; $ssl_key_source,
-      owner     =&gt; $::sensu::user,
-      group     =&gt; $::sensu::group,
+      source    =&gt; $_ssl_key_source,
+      content   =&gt; $ssl_key_content,
+      owner     =&gt; $sensu::user,
+      group     =&gt; $sensu::group,
       mode      =&gt; &#39;0600&#39;,
       show_diff =&gt; false,
       notify    =&gt; Service[&#39;sensu-backend&#39;],
@@ -1452,14 +1068,15 @@ class sensu::backend (
     ensure  =&gt; $_version,
     name    =&gt; $package_name,
     before  =&gt; File[&#39;sensu_etc_dir&#39;],
-    require =&gt; $::sensu::package_require,
+    require =&gt; $sensu::package_require,
+    notify  =&gt; Service[&#39;sensu-backend&#39;],
   }
 
   file { &#39;sensu_backend_state_dir&#39;:
     ensure  =&gt; &#39;directory&#39;,
     path    =&gt; $state_dir,
-    owner   =&gt; $::sensu::user,
-    group   =&gt; $::sensu::group,
+    owner   =&gt; $sensu::user,
+    group   =&gt; $sensu::group,
     mode    =&gt; &#39;0750&#39;,
     require =&gt; Package[&#39;sensu-go-backend&#39;],
     before  =&gt; Service[&#39;sensu-backend&#39;],
@@ -1469,12 +1086,27 @@ class sensu::backend (
     ensure    =&gt; &#39;file&#39;,
     path      =&gt; &quot;${etc_dir}/backend.yml&quot;,
     content   =&gt; to_yaml($config),
-    owner     =&gt; $::sensu::user,
-    group     =&gt; $::sensu::group,
+    owner     =&gt; $sensu::user,
+    group     =&gt; $sensu::group,
     mode      =&gt; &#39;0640&#39;,
     show_diff =&gt; $show_diff,
     require   =&gt; Package[&#39;sensu-go-backend&#39;],
     notify    =&gt; Service[&#39;sensu-backend&#39;],
+  }
+
+  if $service_env_vars_file {
+    $_service_env_vars_content = join($_service_env_vars_lines, &quot;\n&quot;)
+    file { &#39;sensu-backend_env_vars&#39;:
+      ensure    =&gt; &#39;file&#39;,
+      path      =&gt; $service_env_vars_file,
+      content   =&gt; &quot;${_service_env_vars_content}\n&quot;,
+      owner     =&gt; $sensu::sensu_user,
+      group     =&gt; $sensu::sensu_group,
+      mode      =&gt; &#39;0640&#39;,
+      show_diff =&gt; $show_diff,
+      require   =&gt; Package[&#39;sensu-go-backend&#39;],
+      notify    =&gt; Service[&#39;sensu-backend&#39;],
+    }
   }
 
   service { &#39;sensu-backend&#39;:

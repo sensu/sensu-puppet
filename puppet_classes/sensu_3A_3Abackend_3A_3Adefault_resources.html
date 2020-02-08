@@ -228,36 +228,16 @@
 137
 138
 139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152</pre>
+140</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/backend/default_resources.pp', line 4</span>
 
 class sensu::backend::default_resources {
-  include ::sensu::backend
+  include sensu::backend
 
   sensu_namespace { &#39;default&#39;:
     ensure =&gt; &#39;present&#39;,
-  }
-
-  sensu_user { &#39;agent&#39;:
-    ensure       =&gt; &#39;present&#39;,
-    disabled     =&gt; false,
-    password     =&gt; $::sensu::backend::agent_password,
-    old_password =&gt; $::sensu::backend::agent_old_password,
-    groups       =&gt; [&#39;system:agents&#39;],
   }
 
   sensu_cluster_role { &#39;admin&#39;:
@@ -334,10 +314,6 @@ class sensu::backend::default_resources {
       {
         &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;update&#39;],
         &#39;resources&#39; =&gt; [&#39;localselfuser&#39;],
-      },
-      {
-        &#39;verbs&#39;     =&gt; [&#39;get&#39;, &#39;list&#39;],
-        &#39;resources&#39; =&gt; [&#39;namespaces&#39;],
       },
     ],
   }

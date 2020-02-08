@@ -74,6 +74,8 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_entity/sensuctl.html" title="puppet_providers_sensu_entity::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_entity/sensu_api.html" title="puppet_providers_sensu_entity::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
@@ -90,10 +92,10 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
-<li><code>sensu_handler</code> - Puppet will autorequie <code>sensu_handler</code> resource defined in <code>deregistration_handler</code> property.</li>
+<li><code>sensu_handler</code> - Puppet will autorequie <code>sensu_handler</code> resource defined in <code>deregistration.handler</code> property.</li>
 </ul>
 
   </div>
@@ -179,12 +181,18 @@
     </li>
     
     <li>
-      <span class="name">deregistration_handler</span>
+      <span class="name">deregistration</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The name of the handler to be called when an entity is deregistered.</p>
+          <p>A map containing a handler name, for use when an entity is deregistered.</p>
+
+<p>Valid keys:</p>
+
+<ul>
+<li>handler - Opional - The name of the handler to be called when an entity is deregistered.</li>
+</ul>
 
         </div>
       </div>

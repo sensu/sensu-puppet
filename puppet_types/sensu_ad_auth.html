@@ -74,13 +74,15 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_ad_auth/sensuctl.html" title="puppet_providers_sensu_ad_auth::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_ad_auth/sensu_api.html" title="puppet_providers_sensu_ad_auth::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
 </div>
 
   <h2>Summary</h2>
-  Manages Sensu Active Directory auth. Requires valid enterprise license.
+  Manages Sensu AD auth.
 
 <h2>Overview</h2>
 <div class="docstring">
@@ -90,9 +92,8 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
-<li><code>Exec[sensu-add-license]</code></li>
 </ul>
 
   </div>
@@ -105,33 +106,27 @@
     <p class="tag_title">Examples:</p>
     
       
-        <p class="example_title"><div class='inline'><p>Add an Active Directory auth</p>
+        <p class="example_title"><div class='inline'><p>Add a AD auth</p>
 </div></p>
       
-      <pre class="example code"><code>sensu_ad_auth { &#39;ad&#39;:
+      <pre class="example code"><code>sensu_ldap_auth { &#39;ad&#39;:
   ensure              =&gt; &#39;present&#39;,
   servers             =&gt; [
     {
       &#39;host&#39; =&gt; &#39;127.0.0.1&#39;,
-      &#39;port&#39; =&gt; 636,
+      &#39;port&#39; =&gt; 389,
+      &#39;binding&#39; =&gt; {
+        &#39;user_dn&#39; =&gt; &#39;cn=binder,dc=acme,dc=org&#39;,
+        &#39;password&#39; =&gt; &#39;P@ssw0rd!&#39;
+      },
+      &#39;group_search&#39; =&gt; {
+        &#39;base_dn&#39; =&gt; &#39;dc=acme,dc=org&#39;,
+      },
+      &#39;user_search&#39;  =&gt; {
+        &#39;base_dn&#39; =&gt; &#39;dc=acme,dc=org&#39;,
+      },
     },
   ],
-  server_binding      =&gt; {
-    &#39;127.0.0.1&#39; =&gt; {
-      &#39;user_dn&#39; =&gt; &#39;cn=binder,dc=acme,dc=org&#39;,
-      &#39;password&#39; =&gt; &#39;P@ssw0rd!&#39;
-    }
-  },
-  server_group_search =&gt; {
-    &#39;127.0.0.1&#39; =&gt; {
-      &#39;base_dn&#39; =&gt; &#39;dc=acme,dc=org&#39;,
-    }
-  },
-  server_user_search  =&gt; {
-    &#39;127.0.0.1&#39; =&gt; {
-      &#39;base_dn&#39; =&gt; &#39;dc=acme,dc=org&#39;,
-    }
-  },
 }</code></pre>
     
   </div>
@@ -181,65 +176,7 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>The prefix added to all AD groups.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">server_binding</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>AD server bindings</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">server_group_search</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Search configuration for groups.
-Keys:</p>
-
-<ul>
-<li>base_dn: required</li>
-<li>attribute: default is <code>member</code></li>
-<li>name_attribute: default is <code>cn</code></li>
-<li>object_class: default is <code>group</code></li>
-</ul>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">server_user_search</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Search configuration for users.
-Keys:</p>
-
-<ul>
-<li>base_dn: required</li>
-<li>attribute: default is <code>sAMAccountName</code></li>
-<li>name_attribute: default is <code>displayName</code></li>
-<li>object_class: default is <code>person</code></li>
-</ul>
+          <p>The prefix added to all LDAP groups.</p>
 
         </div>
       </div>
@@ -260,13 +197,29 @@ Keys:</p>
 <ul>
 <li>host: required</li>
 <li>port: required</li>
+<li>group_search: required</li>
+<li>user_search: required</li>
+<li>binding: optional Hash</li>
 <li>insecure: default is <code>false</code></li>
 <li>security: default is <code>tls</code></li>
 <li>trusted_ca_file: default is <code>&quot;&quot;</code></li>
 <li>client_cert_file: default is <code>&quot;&quot;</code></li>
 <li>client_key_file: default is <code>&quot;&quot;</code></li>
 <li>default_upn_domain: default is <code>&quot;&quot;</code></li>
-<li>include_nested_groups: Boolean</li>
+<li>include_nested_groups: Boolean
+group_search keys:</li>
+<li>base_dn: required</li>
+<li>attribute: default is <code>member</code></li>
+<li>name_attribute: default is <code>cn</code></li>
+<li>object_class: default is <code>group</code>
+user_search Keys:</li>
+<li>base_dn: required</li>
+<li>attribute: default is <code>sAMAccountName</code></li>
+<li>name_attribute: default is <code>displayName</code></li>
+<li>object_class: default is <code>person</code>
+binding keys:</li>
+<li>user_dn: required</li>
+<li>password: required</li>
 </ul>
 
         </div>
@@ -281,7 +234,7 @@ Keys:</p>
       
       <div class="docstring">
         <div class="discussion">
-          <p>The prefix added to all AD usernames.</p>
+          <p>The prefix added to all LDAP usernames.</p>
 
         </div>
       </div>

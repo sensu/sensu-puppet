@@ -123,13 +123,14 @@
 32
 33
 34
-35</pre>
+35
+36</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/ssl.pp', line 4</span>
 
 class sensu::ssl {
-  include ::sensu
+  include sensu
 
   if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
     $directory_mode = undef
@@ -141,23 +142,24 @@ class sensu::ssl {
 
   file { &#39;sensu_ssl_dir&#39;:
     ensure  =&gt; &#39;directory&#39;,
-    path    =&gt; $::sensu::ssl_dir,
-    purge   =&gt; $::sensu::ssl_dir_purge,
-    recurse =&gt; $::sensu::ssl_dir_purge,
-    force   =&gt; $::sensu::ssl_dir_purge,
-    owner   =&gt; $::sensu::sensu_user,
-    group   =&gt; $::sensu::sensu_group,
+    path    =&gt; $sensu::ssl_dir,
+    purge   =&gt; $sensu::ssl_dir_purge,
+    recurse =&gt; $sensu::ssl_dir_purge,
+    force   =&gt; $sensu::ssl_dir_purge,
+    owner   =&gt; $sensu::sensu_user,
+    group   =&gt; $sensu::sensu_group,
     mode    =&gt; $directory_mode,
   }
 
   file { &#39;sensu_ssl_ca&#39;:
     ensure    =&gt; &#39;file&#39;,
-    path      =&gt; $::sensu::trusted_ca_file_path,
-    owner     =&gt; $::sensu::sensu_user,
-    group     =&gt; $::sensu::sensu_group,
+    path      =&gt; $sensu::trusted_ca_file_path,
+    owner     =&gt; $sensu::sensu_user,
+    group     =&gt; $sensu::sensu_group,
     mode      =&gt; $file_mode,
     show_diff =&gt; false,
-    source    =&gt; $::sensu::ssl_ca_source,
+    source    =&gt; $sensu::_ssl_ca_source,
+    content   =&gt; $sensu::ssl_ca_content,
   }
 }</pre>
       </td>

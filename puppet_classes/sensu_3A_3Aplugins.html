@@ -307,7 +307,8 @@ Default is OS dependent.</p>
 103
 104
 105
-106</pre>
+106
+107</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/plugins.pp', line 38</span>
@@ -326,13 +327,14 @@ class sensu::plugins (
     fail(&#39;sensu::plugins is not supported on Windows&#39;)
   }
 
-  include ::sensu
+  include sensu
+  include sensu::common
 
-  $_manage_repo = pick($manage_repo, $::sensu::manage_repo)
+  $_manage_repo = pick($manage_repo, $sensu::manage_repo)
 
   if $_manage_repo {
-    include ::sensu::repo::community
-    $package_require = [Class[&#39;::sensu::repo::community&#39;]] + $::sensu::os_package_require
+    include sensu::repo::community
+    $package_require = [Class[&#39;sensu::repo::community&#39;]] + $sensu::os_package_require
   } else {
     $package_require = undef
   }

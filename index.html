@@ -62,23 +62,31 @@
 <h4>Table of Contents</h4>
 
 <ol>
-<li><a href="#label-Module+description">Module Description</a></li>
-<li><a href="#label-Setup">Setup - The basics of getting started with sensu</a>
+<li><a href="#label-Module+description">Module Description</a>
+
+<ul>
+<li><a href="#label-Deprecations">Deprecations</a></li>
+<li><a href="#label-Updating+this+module+from+3x+to+4x">Updating this module from 3.x to 4.x</a></li>
+</ul></li>
+<li><a href="#label-Setup">Setup - The basics of getting started with Sensu</a>
 
 <ul>
 <li><a href="#label-What+sensu+affects">What sensu affects</a></li>
 <li><a href="#label-Setup+requirements">Setup requirements</a></li>
-<li><a href="#label-Beginning+with+sensu">Beginning with sensu</a></li>
+<li><a href="#label-Beginning+with+sensu">Beginning with Sensu</a></li>
 </ul></li>
 <li><a href="#label-Usage">Usage - Configuration options and additional functionality</a>
 
 <ul>
 <li><a href="#label-Basic+sensu+backend">Basic Sensu backend</a></li>
 <li><a href="#label-Basic+sensu+agent">Basic Sensu agent</a></li>
+<li><a href="#label-Basic+sensu+cli">Basic Sensu CLI</a></li>
+<li><a href="#label-Api+providers">API Providers</a></li>
 <li><a href="#label-Manage+windows+agent">Manage Windows Agent</a></li>
 <li><a href="#label-Advanced+agent">Advanced agent</a></li>
 <li><a href="#label-Advanced+ssl">Advanced SSL</a></li>
 <li><a href="#label-Enterprise+support">Enterprise support</a></li>
+<li><a href="#label-Contact+routing">Contact routing</a></li>
 <li><a href="#label-Postgresql+datastore+support">PostgreSQL datastore support</a></li>
 <li><a href="#label-Installing+plugins">Installing Plugins</a></li>
 <li><a href="#label-Installing+extensions">Installing Extensions</a></li>
@@ -90,9 +98,11 @@
 <ul>
 <li><a href="#label-Adding+backend+members+to+an+existing+cluster">Adding backend members to an existing cluster</a></li>
 </ul></li>
+<li><a href="#label-Sensu+backend+federation">Sensu backend federation</a></li>
 <li><a href="#label-Large+environment+considerations">Large Environment Considerations</a></li>
 <li><a href="#label-Composite+names+for+namespaces">Composite Names for Namespaces</a></li>
 <li><a href="#label-Installing+bonsai+assets">Installing Bonsai Assets</a></li>
+<li><a href="#label-Bolt+tasks">Bolt Tasks</a></li>
 </ul></li>
 <li><a href="#label-Reference">Reference</a>
 
@@ -114,9 +124,10 @@
 
 <p><a href="http://sensu.github.io/sensu-puppet/">Puppet Strings documentation</a></p>
 
-<h3>Compatibility - supported sensu versions</h3>
+<h3>Compatibility - supported Sensu versions</h3>
 
 <p>If not explicitly stated it should always support the latest Sensu release.
+Beginning with v4.0.0 this module will only support Sensu Go 5.16+.
 Please log an issue if you identify any incompatibilities.</p>
 
 <table><thead>
@@ -126,16 +137,113 @@ Please log an issue if you identify any incompatibilities.</p>
 </tr>
 </thead><tbody>
 <tr>
-<td>5.x</td>
+<td>5.0 - 5.15</td>
 <td>latest v3</td>
+</tr>
+<tr>
+<td>5.16+</td>
+<td>latest v4</td>
 </tr>
 </tbody></table>
 
 <h3>Upgrade note</h3>
 
-<p>Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq. Version 3 of this module supports Sensu Go 5.x.</p>
+<p>Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq.
+Version 3 of this module supports Sensu Go 5.0.0 to 5.15.x.
+Version 4 of this module supports Sensu Go 5.16+.</p>
 
-<p>Users wishing to use the old v2 Puppet module to support previous Ruby based Sensu should use <a href="https://forge.puppet.com/sensu/sensuclassic">sensu/sensuclassic</a>.</p>
+<p>Users wishing to use the previous Ruby based Sensu should use the <a href="https://forge.puppet.com/sensu/sensuclassic">sensu/sensuclassic</a> module.</p>
+
+<h3>Deprecations</h3>
+
+<h4>sensu_asset</h4>
+
+<p>The <code>url</code>, <code>sha512</code>, <code>filters</code> and <code>headers</code> properties for <code>sensu_asset</code> are deprecated in favor of passing these values as part of <code>builds</code> property.
+Using these deprecated properties will still work but issue a warning when the Puppet catalog is applied.</p>
+
+<p>Before:</p>
+
+<pre class="code puppet"><code class="puppet">sensu_asset { &#39;test&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  url     =&gt; &#39;http://example.com/asset/example.tar&#39;,
+  sha512  =&gt; &#39;4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b&#39;,
+  filters  =&gt; [&quot;entity.system.os == &#39;linux&#39;&quot;],
+}
+</code></pre>
+
+<p>After:</p>
+
+<pre class="code puppet"><code class="puppet">sensu_asset { &#39;test&#39;:
+  ensure =&gt; &#39;present&#39;,
+  builds =&gt; [
+    {
+      &#39;url&#39;     =&gt; &#39;http://example.com/asset/example.tar&#39;,
+      &#39;sha512&#39;  =&gt; &#39;4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b&#39;,
+      &#39;filters&#39; =&gt; [&quot;entity.system.os == &#39;linux&#39;&quot;],
+    },
+  ],
+}
+</code></pre>
+
+<h3>Updating this module from 3.x to 4.x</h3>
+
+<p>Class parameter changes:</p>
+
+<ul>
+<li>Move <code>sensu::backend::cli_package_name</code> to <code>sensu::cli::package_name</code></li>
+<li>Move <code>sensu::backend::sensuctl_chunk_size</code> to <code>sensu::cli::sensuctl_chunk_size</code></li>
+<li>Move <code>sensu::backend::url_host</code> to <code>sensu::api_host</code></li>
+<li>Move <code>sensu::backend::url_port</code> to <code>sensu::api_port</code></li>
+<li>Move <code>sensu::backend::password</code> to <code>sensu::password</code></li>
+<li>Move <code>sensu::backend::old_password</code> to <code>sensu::old_password</code></li>
+<li>Move <code>sensu::backend::agent_password</code> to <code>sensu::agent_password</code></li>
+<li>Move <code>sensu::backend::agent_old_password</code> to <code>sensu::agent_old_password</code></li>
+<li>The following parameters were moved from <code>sensu::backend</code> class to <code>sensu::resources</code> class. (<strong>Example:</strong> <code>sensu::backend::checks</code> becomes <code>sensu::resources::checks</code>)
+
+<ul>
+<li><code>ad_auths</code></li>
+<li><code>assets</code></li>
+<li><code>bonsai_assets</code></li>
+<li><code>checks</code></li>
+<li><code>cluster_members</code></li>
+<li><code>cluster_role_bindings</code></li>
+<li><code>cluster_roles</code></li>
+<li><code>configs</code> (removed)</li>
+<li><code>entities</code></li>
+<li><code>etcd_replicators</code></li>
+<li><code>filters</code></li>
+<li><code>handlers</code></li>
+<li><code>hooks</code></li>
+<li><code>ldap_auths</code></li>
+<li><code>mutators</code></li>
+<li><code>namespaces</code></li>
+<li><code>oidc_auths</code></li>
+<li><code>role_bindings</code></li>
+<li><code>roles</code></li>
+<li><code>users</code></li>
+</ul></li>
+</ul>
+
+<p>Type property changes:</p>
+
+<ul>
+<li>Replace <code>sensu_check</code> <code>proxy_requests*</code> properties with <code>proxy_requests</code> Hash</li>
+<li>Replace <code>sensu_entity</code> <code>deregistration_handler</code> with <code>deregistration</code> Hash</li>
+<li>Replace <code>sensu_handler</code> <code>socket_*</code> properties with <code>socket</code> Hash</li>
+<li>Refactor <code>sensu_ldap_auth</code> and <code>sensu_ad_auth</code> on how properties are defined.
+
+<ul>
+<li>Move <code>server_binding</code>, <code>server_group_search</code> and <code>server_user_search</code> into <code>servers</code> property</li>
+</ul></li>
+</ul>
+
+<p>Breaking changes:</p>
+
+<ul>
+<li>Remove <code>sensu_event</code> type, replaced with <code>sensu::event</code> Bolt task</li>
+<li>Remove <code>sensu_silenced</code> type, replaced with <code>sensu::silenced</code> Bolt task</li>
+<li>Remove <code>sensu_config</code> type, replaced with <code>sensu::cli::config_format</code> and <code>sensu::cli::config_namespace</code> parameters</li>
+</ul>
 
 <h2>Setup</h2>
 
@@ -147,17 +255,35 @@ Please log an issue if you identify any incompatibilities.</p>
 
 <p>Plugin sync is required if the custom sensu types and providers are used.</p>
 
-<p>This module has a soft dependency on the <a href="https://forge.puppet.com/puppetlabs/apt">puppetlabs/apt</a> module (<code>&gt;= 5.0.1 &lt; 8.0.0</code>) for systems using <code>apt</code>.</p>
+<h4>Soft module dependencies</h4>
 
-<p>If using Puppet &gt;= 6.0.0 there is a soft dependency on the <a href="https://forge.puppet.com/puppetlabs/yumrepo_core">puppetlabs/yumrepo_core</a> module (<code>&gt;= 1.0.1 &lt; 2.0.0</code>) for systems using <code>yum</code>.</p>
+<p>For systems using <code>apt</code>:</p>
 
-<p>If managing Windows there is a soft dependency on the <a href="https://forge.puppet.com/puppetlabs/chocolatey">puppetlabs/chocolatey</a> module (<code>&gt;= 3.0.0 &lt; 5.0.0</code>).</p>
+<ul>
+<li><a href="https://forge.puppet.com/puppetlabs/apt">puppetlabs/apt</a> module (<code>&gt;= 5.0.1 &lt; 8.0.0</code>)</li>
+</ul>
 
-<p>If managing Windows and defining <code>package_source</code>, there is a soft dependency on the <a href="https://forge.puppet.com/puppet/archive">puppet/archive</a> module (<code>&gt;= 3.0.0 &lt; 5.0.0</code>).</p>
+<p>For systems using <code>yum</code> and Puppet &gt;= 6.0.0:</p>
 
-<p>For PostgreSQL datastore support there is a soft dependency on <a href="https://forge.puppet.com/puppetlabs/postgresql">puppetlabs/postgresql</a> module (<code>&gt;= 6.0.0 &lt; 7.0.0</code>).</p>
+<ul>
+<li><a href="https://forge.puppet.com/puppetlabs/yumrepo_core">puppetlabs/yumrepo_core</a> module (<code>&gt;= 1.0.1 &lt; 2.0.0</code>)</li>
+</ul>
 
-<h3>Beginning with sensu</h3>
+<p>For Windows:</p>
+
+<ul>
+<li><a href="https://forge.puppet.com/puppetlabs/chocolatey">puppetlabs/chocolatey</a> module (<code>&gt;= 3.0.0 &lt; 5.0.0</code>)</li>
+<li><a href="https://forge.puppet.com/puppet/windows_env">puppet/windows_env</a> module (<code>&gt;= 3.0.0 &lt; 4.0.0</code>)</li>
+<li><a href="https://forge.puppet.com/puppet/archive">puppet/archive</a> module (<code>&gt;= 3.0.    0 &lt; 5.0.0</code>)</li>
+</ul>
+
+<p>For PostgreSQL datastore support:</p>
+
+<ul>
+<li><a href="https://forge.puppet.com/puppetlabs/postgresql">puppetlabs/postgresql</a> module (<code>&gt;= 6.0.0 &lt; 7.0.0</code>)</li>
+</ul>
+
+<h3>Beginning with Sensu</h3>
 
 <p>This module provides Vagrant definitions that can be used to get started with Sensu.</p>
 
@@ -173,6 +299,23 @@ vagrant ssh sensu-backend
 vagrant provision sensu-backend-peer1 sensu-backend-peer2
 </code></pre>
 
+<h4>Beginning with a Sensu federated cluster</h4>
+
+<p>Multiple Vagrant boxes are available for testing a Sensu Go federated cluster.
+First build and provision both then provision the first a second time to view that the custom role was replicated.</p>
+
+<pre class="code base"><code class="base">vagrant up sensu-backend-federated1 sensu-backend-federated2
+vagrant provision sensu-backend-federated1
+</code></pre>
+
+<p>The <code>provision</code> command should output from <code>sensuctl</code> the <code>test</code> Sensu Go Role that was created on the other backend.
+The output should look like the following:</p>
+
+<pre class="code ruby"><code class="ruby">    sensu-backend-federated1:   Name   Namespace   Rules  
+    sensu-backend-federated1:  ────── ─────────── ─────── 
+    sensu-backend-federated1:   test   default         1  
+</code></pre>
+
 <h2>Usage</h2>
 
 <h3>Basic Sensu backend</h3>
@@ -181,10 +324,11 @@ vagrant provision sensu-backend-peer1 sensu-backend-peer2
 By default this module will configure the backend to use Puppet&#39;s SSL certificate and CA.
 It&#39;s advisable to not rely on the default password. Changing the password requires providing the previous password via <code>old_password</code>.</p>
 
-<pre class="code puppet"><code class="puppet">  class { &#39;sensu::backend&#39;:
+<pre class="code puppet"><code class="puppet">  class { &#39;sensu&#39;:
     password     =&gt; &#39;supersecret&#39;,
     old_password =&gt; &#39;P@ssw0rd!&#39;,
   }
+  include sensu::backend
   include sensu::agent
   sensu_check { &#39;check-cpu&#39;:
     ensure        =&gt; &#39;present&#39;,
@@ -200,11 +344,61 @@ It&#39;s advisable to not rely on the default password. Changing the password re
 associated to <code>linux</code> and <code>apache-servers</code> subscriptions.</p>
 
 <pre class="code puppet"><code class="puppet">  class { &#39;sensu::agent&#39;:
-    backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-    config_hash =&gt; {
-      &#39;subscriptions&#39; =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
-    },
+    backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+    subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
   }
+</code></pre>
+
+<h3>Basic Sensu CLI</h3>
+
+<p>The following example will manage the resources necessary to use <code>sensuctl</code>.</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;::sensu&#39;:
+  api_host =&gt; &#39;sensu-backend.example.com&#39;,
+  password =&gt; &#39;supersecret&#39;,
+}
+include sensu::cli
+</code></pre>
+
+<p><strong>NOTE</strong>: The <code>sensu::backend</code> class calls the <code>sensu::cli</code> class so it is only necessary to directly call the <code>sensu::cli</code> class on hosts not using the <code>sensu::backend</code> class.</p>
+
+<p>For Windows the <code>install_source</code> parameter must be provided:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;::sensu&#39;:
+  api_host =&gt; &#39;sensu-backend.example.com&#39;,
+  password =&gt; &#39;supersecret&#39;,
+}
+class { &#39;sensu::cli&#39;:
+  install_source =&gt; &#39;https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip&#39;,
+}
+</code></pre>
+
+<h3>API Providers</h3>
+
+<p>All the core resources have a provider that manages resources using the Sensu Go API.
+The new provider can be used by setting <code>provider</code> parameter on a resource to <code>sensu_api</code>.
+The default provider is still <code>sensuctl</code> but it&#39;s possible to change the provider when defining a resource.
+For example the following will create a check which can be defined on an host that&#39;s not the <code>sensu-backend</code>.</p>
+
+<pre class="code ruby"><code class="ruby">include ::sensu::api
+sensu_check { &quot;check-cpu-${facts[&#39;hostname&#39;]}&quot;:
+  ensure        =&gt; &#39;present&#39;,
+  command       =&gt; &#39;check-cpu.sh -w 75 -c 90&#39;,
+  interval      =&gt; 60,
+  subscriptions =&gt; [&quot;entity:${facts[&#39;hostname&#39;]}&quot;],
+  provider      =&gt; &#39;sensu_api&#39;,
+}
+</code></pre>
+
+<p>The <code>sensu::api</code> class is required in order to configure the credentials and URL used to communicate with the Sensu backend API.</p>
+
+<p>The API URL, username and password used for the API are set in the <code>sensu</code> class and can be set easily with Hiera:</p>
+
+<pre class="code yaml"><code class="yaml">sensu::api_host: sensu-backend.example.com
+sensu::api_port: 8080
+sensu::username: admin
+sensu::password: supersecret
+sensu::old_password: &#39;P@ssw0rd!&#39;
 </code></pre>
 
 <h3>Manage Windows Agent</h3>
@@ -212,10 +406,8 @@ associated to <code>linux</code> and <code>apache-servers</code> subscriptions.<
 <p>This module supports Windows Sensu Go agent via chocolatey beginning with version 5.12.0.</p>
 
 <pre class="code puppet"><code class="puppet">class { &#39;sensu::agent&#39;:
-  backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-  config_hash =&gt; {
-    &#39;subscriptions&#39; =&gt; [&#39;windows&#39;],
-  },
+  backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+  subscriptions =&gt; [&#39;windows&#39;],
 }
 </code></pre>
 
@@ -266,14 +458,14 @@ class { &#39;sensu::agent&#39;:
 
 <p>By default this module uses Puppet&#39;s SSL certificates and CA.
 If you would prefer to use different certificates override the <code>ssl_ca_source</code>, <code>ssl_cert_source</code> and <code>ssl_key_source</code> parameters.
-The value for <code>url_host</code> must be valid for the provided certificate and the value used for agent&#39;s <code>backends</code> must also match the certificate used by the specified backend.
+The value for <code>api_host</code> must be valid for the provided certificate and the value used for agent&#39;s <code>backends</code> must also match the certificate used by the specified backend.
 If the certificates and keys are already installed then define the source parameters as filesystem paths.</p>
 
 <pre class="code puppet"><code class="puppet">class { &#39;sensu&#39;:
   ssl_ca_source =&gt; &#39;puppet:///modules/profile/sensu/ca.pem&#39;,
+  api_host      =&gt; &#39;sensu-backend.example.com&#39;,
 }
 class { &#39;sensu::backend&#39;:
-  url_host        =&gt; &#39;sensu-backend.example.com&#39;,
   ssl_cert_source =&gt; &#39;puppet:///modules/profile/sensu/cert.pem&#39;,
   ssl_key_source  =&gt; &#39;puppet:///modules/profile/sensu/key.pem&#39;,
 }
@@ -283,10 +475,8 @@ class { &#39;sensu::backend&#39;:
   ssl_ca_source =&gt; &#39;puppet:///modules/profile/sensu/ca.pem&#39;,
 }
 class { &#39;sensu::agent&#39;:
-  backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-  config_hash =&gt; {
-    &#39;subscriptions&#39; =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
-  },
+  backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+  subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
 }
 </code></pre>
 
@@ -308,6 +498,92 @@ class { &#39;sensu::agent&#39;:
 
 <p>The types <code>sensu_ad_auth</code> and <code>sensu_ldap_auth</code> require a valid enterprise license.</p>
 
+<h3>Contact routing</h3>
+
+<p>See <a href="https://docs.sensu.io/sensu-go/latest/guides/contact-routing/">Sensu Go - Contact Routing</a> for details. The following is one way to configure contact routing in Puppet.</p>
+
+<p>Add the sensu-go-has-contact-filter bonsai asset:</p>
+
+<pre class="code puppet"><code class="puppet">sensu_bonsai_asset { &#39;sensu/sensu-go-has-contact-filter&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  version =&gt; &#39;0.2.0&#39;,
+}
+</code></pre>
+
+<p>Add the filters for the defined contacts</p>
+
+<pre class="code puppet"><code class="puppet">sensu_filter { &#39;contact_dev&#39;:
+  ensure         =&gt; &#39;present&#39;,
+  action         =&gt; &#39;allow&#39;,
+  runtime_assets =&gt; [&#39;sensu/sensu-go-has-contact-filter&#39;],
+  expressions    =&gt; [&#39;has_contact(event, &quot;dev&quot;)&#39;],
+}
+sensu_filter { &#39;contact_ops&#39;:
+  ensure         =&gt; &#39;present&#39;,
+  action         =&gt; &#39;allow&#39;,
+  runtime_assets =&gt; [&#39;sensu/sensu-go-has-contact-filter&#39;],
+  expressions    =&gt; [&#39;has_contact(event, &quot;ops&quot;)&#39;],
+}
+</code></pre>
+
+<p>Add the handlers asset and  handlers for each contact</p>
+
+<pre class="code puppet"><code class="puppet">sensu_bonsai_asset { &#39;sensu/sensu-email-handler&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  version =&gt; &#39;0.2.0&#39;,
+}
+sensu_handler { &#39;email_dev&#39;:
+  ensure          =&gt; &#39;present&#39;,
+  type            =&gt; &#39;pipe&#39;,
+  command         =&gt; &#39;sensu-email-handler -f root@localhost -t dev@example.com -s localhost -i&#39;,
+  timeout         =&gt; 10,
+  runtime_assets  =&gt; [&#39;sensu/sensu-email-handler&#39;],
+  filters         =&gt; [&#39;is_incident&#39;,&#39;not_silenced&#39;,&#39;contact_dev&#39;],
+}
+sensu_handler { &#39;email_ops&#39;:
+  ensure          =&gt; &#39;present&#39;,
+  type            =&gt; &#39;pipe&#39;,
+  command         =&gt; &#39;sensu-email-handler -f root@localhost -t ops@example.com -s localhost -i&#39;,
+  timeout         =&gt; 10,
+  runtime_assets  =&gt; [&#39;sensu/sensu-email-handler&#39;],
+  filters         =&gt; [&#39;is_incident&#39;,&#39;not_silenced&#39;,&#39;contact_ops&#39;],
+}
+</code></pre>
+
+<p>Create a handler set to centralize handler management for emails</p>
+
+<pre class="code puppet"><code class="puppet">sensu_handler { &#39;email&#39;:
+  ensure    =&gt; &#39;present&#39;,
+  type      =&gt; &#39;set&#39;,
+  handlers  =&gt; [&#39;email_dev&#39;,&#39;email_ops&#39;],
+}
+</code></pre>
+
+<p>Lastly define a service that use the contact and the email handler:</p>
+
+<pre class="code puppet"><code class="puppet">sensu_check { &#39;check_cpu&#39;:
+  ensure         =&gt; &#39;present&#39;,
+  labels         =&gt; {
+    &#39;contacts&#39; =&gt; &#39;dev, ops&#39;,
+  },
+  command        =&gt; &#39;check-cpu.rb -w 75 -c 90&#39;,
+  handlers       =&gt; [&#39;email&#39;],
+  interval       =&gt; 30,
+  publish        =&gt; true,
+  subscriptions  =&gt; [&#39;linux&#39;],
+  runtime_assets =&gt; [&#39;sensu-plugins-cpu-checks&#39;,&#39;sensu-ruby-runtime&#39;],
+}
+</code></pre>
+
+<p>Agents can also have contacts defined:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;sensu::agent&#39;:
+  labels =&gt; {
+    &#39;contacts&#39; =&gt; &#39;dev, ops&#39;,
+  },
+}
+</code></pre>
+
 <h3>PostgreSQL datastore support</h3>
 
 <p><strong>NOTE</strong>: This features require a valid Sensu Go enterprise license.</p>
@@ -319,7 +595,7 @@ class { &#39;sensu::agent&#39;:
   version             =&gt; &#39;9.6&#39;,
 }
 class { &#39;postgresql::server&#39;: }
-class { &#39;::sensu::backend&#39;:
+class { &#39;sensu::backend&#39;:
   license_source      =&gt; &#39;puppet:///modules/profile/sensu/license.json&#39;,
   datastore           =&gt; &#39;postgresql&#39;,
   postgresql_password =&gt; &#39;secret&#39;,
@@ -330,7 +606,7 @@ class { &#39;::sensu::backend&#39;:
 
 <p>The following example uses an external PostgreSQL server.</p>
 
-<pre class="code puppet"><code class="puppet">class { &#39;::sensu::backend&#39;:
+<pre class="code puppet"><code class="puppet">class { &#39;sensu::backend&#39;:
   license_source       =&gt; &#39;puppet:///modules/profile/sensu/license.json&#39;,
   datastore            =&gt; &#39;postgresql&#39;,
   postgresql_password  =&gt; &#39;secret&#39;,
@@ -346,10 +622,8 @@ class { &#39;::sensu::backend&#39;:
 <p>Example installing plugins on agent:</p>
 
 <pre class="code puppet"><code class="puppet">  class { &#39;sensu::agent&#39;:
-    backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-    config_hash =&gt; {
-      &#39;subscriptions&#39; =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
-    },
+    backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+    subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
   }
   class { &#39;sensu::plugins&#39;:
     plugins =&gt; [&#39;disk-checks&#39;],
@@ -359,10 +633,8 @@ class { &#39;::sensu::backend&#39;:
 <p>The <code>plugins</code> parameter can also be a Hash that sets the version:</p>
 
 <pre class="code puppet"><code class="puppet">  class { &#39;sensu::agent&#39;:
-    backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-    config_hash =&gt; {
-      &#39;subscriptions&#39; =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
-    },
+    backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+    subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
   }
   class { &#39;sensu::plugins&#39;:
     plugins =&gt; {
@@ -389,10 +661,8 @@ class { &#39;::sensu::backend&#39;:
 <p>You can uninstall plugins by passing <code>ensure</code> as <code>absent</code>.</p>
 
 <pre class="code puppet"><code class="puppet">  class { &#39;sensu::agent&#39;:
-    backends    =&gt; [&#39;sensu-backend.example.com:8081&#39;],
-    config_hash =&gt; {
-      &#39;subscriptions&#39; =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
-    },
+    backends      =&gt; [&#39;sensu-backend.example.com:8081&#39;],
+    subscriptions =&gt; [&#39;linux&#39;, &#39;apache-servers&#39;],
   }
   class { &#39;sensu::plugins&#39;:
     plugins =&gt; {
@@ -407,10 +677,11 @@ class { &#39;::sensu::backend&#39;:
 
 <p>Example installing extension on backend:</p>
 
-<pre class="code puppet"><code class="puppet">  class { &#39;sensu::backend&#39;:
+<pre class="code puppet"><code class="puppet">  class { &#39;sensu&#39;:
     password     =&gt; &#39;supersecret&#39;,
     old_password =&gt; &#39;P@ssw0rd!&#39;,
   }
+  include sensu::backend
   class { &#39;sensu::plugins&#39;:
     extensions =&gt; [&#39;graphite&#39;],
   }
@@ -418,10 +689,11 @@ class { &#39;::sensu::backend&#39;:
 
 <p>The <code>extensions</code> parameter can also be a Hash that sets the version:</p>
 
-<pre class="code puppet"><code class="puppet">  class { &#39;sensu::backend&#39;:
+<pre class="code puppet"><code class="puppet">  class { &#39;sensu&#39;:
     password     =&gt; &#39;supersecret&#39;,
     old_password =&gt; &#39;P@ssw0rd!&#39;,
   }
+  include sensu::backend
   class { &#39;sensu::plugins&#39;:
     extensions =&gt; {
       &#39;graphite&#39; =&gt; { &#39;version&#39; =&gt; &#39;latest&#39; },
@@ -431,10 +703,11 @@ class { &#39;::sensu::backend&#39;:
 
 <p>You can uninstall extensions by passing <code>ensure</code> as <code>absent</code>.</p>
 
-<pre class="code puppet"><code class="puppet">  class { &#39;sensu::backend&#39;:
+<pre class="code puppet"><code class="puppet">  class { &#39;sensu&#39;:
     password     =&gt; &#39;supersecret&#39;,
     old_password =&gt; &#39;P@ssw0rd!&#39;,
   }
+  include sensu::backend
   class { &#39;sensu::plugins&#39;:
     extensions =&gt; {
       &#39;graphite&#39; =&gt; { &#39;ensure&#39; =&gt; &#39;absent&#39; },
@@ -463,11 +736,13 @@ class { &#39;::sensu::backend&#39;:
 
 <h3>Hiera resources</h3>
 
-<p>All the types provided by this module can have their resources defined via Hiera. A type such as <code>sensu_check</code> would be defined via <code>sensu::backend::checks</code>.</p>
+<p>All the types provided by this module can have their resources defined via Hiera. A type such as <code>sensu_check</code> would be defined via <code>sensu::resources::checks</code>.</p>
+
+<p>The <code>sensu</code> class must be included either directly or via <code>sensu::agent</code> or <code>sensu::backend</code>.</p>
 
 <p>The following example adds an asset, filter, handler and checks via Hiera:</p>
 
-<pre class="code yaml"><code class="yaml">sensu::backend::assets:
+<pre class="code yaml"><code class="yaml">sensu::resources::assets:
   sensu-email-handler:
     ensure: present
     url: &#39;https://github.com/sensu/sensu-email-handler/releases/download/0.1.0/sensu-email-handler_0.1.0_linux_amd64.tar.gz&#39;
@@ -475,13 +750,13 @@ class { &#39;::sensu::backend&#39;:
     filters:
       - &quot;entity.system.os == &#39;linux&#39;&quot;
       - &quot;entity.system.arch == &#39;amd64&#39;&quot;
-sensu::backend::filters:
+sensu::resources::filters:
   hourly:
     ensure: present
     action: allow
     expressions:
       - &#39;event.check.occurrences == 1 || event.check.occurrences % (3600 / event.check.interval) == 0&#39;
-sensu::backend::handlers:
+sensu::resources::handlers:
   email:
     ensure: present
     type: pipe
@@ -493,7 +768,7 @@ sensu::backend::handlers:
       - is_incident
       - not_silenced
       - hourly
-sensu::backend::checks:
+sensu::resources::checks:
   check-cpu:
     ensure: present
     command: check-cpu.sh -w 75 -c 90
@@ -593,11 +868,73 @@ sensu::backend::config_hash:
 
 <p>The first step will not fully add the node to the cluster until the second step is performed.</p>
 
+<h3>Sensu backend federation</h3>
+
+<p>This module supports defining Etcd replicators which allows resources to be sent from one Sensu cluster to another cluster.
+It&#39;s necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
+First configure backend Etcd to listen on an interface besides localhost and also use SSL:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;sensu::backend&#39;:
+  config_hash =&gt; {
+    &#39;etcd-listen-client-urls&#39;    =&gt; &quot;https://0.0.0.0:2379&quot;,
+    &#39;etcd-advertise-client-urls&#39; =&gt; &quot;https://0.0.0.0:2379&quot;,
+    &#39;etcd-cert-file&#39;             =&gt; &quot;/etc/sensu/etcd-ssl/${facts[&#39;fqdn&#39;].pem&quot;,
+    &#39;etcd-key-file&#39;              =&gt; &quot;/etc/sensu/etcd-ssl/${facts[&#39;fqdn&#39;]}-key.pem&quot;,
+    &#39;etcd-trusted-ca-file&#39;       =&gt; &quot;/etc/sensu/etcd-ssl/ca.pem&quot;,
+    &#39;etcd-client-cert-auth&#39;      =&gt; true,
+  },
+}
+</code></pre>
+
+<p>Next configure the Etcd replicator on the backend you wish to push resources from.
+In the following example all defined <code>Role</code> resources will be replicated to the backend at the IP address 192.168.52.30.</p>
+
+<pre class="code puppet"><code class="puppet">sensu_etcd_replicator { &#39;role_replicator&#39;:
+  ensure        =&gt; &#39;present&#39;,
+  ca_cert       =&gt; &#39;/etc/sensu/etcd-ssl/ca.pem&#39;,
+  cert          =&gt; &#39;/etc/sensu/etcd-ssl/client.pem&#39;,
+  key           =&gt; &#39;/etc/sensu/etcd-ssl/client-key.pem&#39;,
+  url           =&gt; &#39;https://192.168.52.30:2379&#39;,
+  resource_name =&gt; &#39;Role&#39;,
+}
+sensu_role { &#39;test&#39;:
+  ensure =&gt; &#39;present&#39;,
+  rules  =&gt; [{&#39;verbs&#39; =&gt; [&#39;get&#39;,&#39;list&#39;], &#39;resources&#39; =&gt; [&#39;checks&#39;], &#39;resource_names&#39; =&gt; [&#39;&#39;]}],
+}
+</code></pre>
+
+<p>This module also supports defining a federated cluster:</p>
+
+<pre class="code puppet"><code class="puppet">sensu_cluster_federation { &#39;us-west-2a&#39;:
+  ensure   =&gt; &#39;present&#39;,
+  api_urls =&gt; [
+    &#39;https://sensu-backend-site1.example.com:8080&#39;,
+    &#39;https://sensu-backend-site2.example.com:8080&#39;,
+  ],
+}
+</code></pre>
+
+<p>It&#39;s also possible to add a backend to an existing Sensu federated cluster.
+The following example adds the API URL <a href="https://sensu-backend-site3.example.com:8080">https://sensu-backend-site3.example.com:8080</a> to the federated cluster named us-west-2a.</p>
+
+<pre class="code puppet"><code class="puppet">sensu_cluster_federation_member { &#39;https://sensu-backend-site3.example.com:8080 in us-west-2a&#39;:
+  ensure =&gt; &#39;present&#39;,
+}
+</code></pre>
+
+<p>The above can also be defined using the following example:</p>
+
+<pre class="code puppet"><code class="puppet">sensu_cluster_federation_member { &#39;https://sensu-backend-site3.example.com:8080&#39;:
+  ensure  =&gt; &#39;present&#39;,
+  cluster =&gt; &#39;us-west-2a&#39;,
+}
+</code></pre>
+
 <h3>Large Environment Considerations</h3>
 
 <p>If the backend system has a large number of resources it may be necessary to query resources using chunk size added in Sensu Go 5.8.</p>
 
-<pre class="code ruby"><code class="ruby">class { &#39;::sensu::backend&#39;:
+<pre class="code ruby"><code class="ruby">class { &#39;sensu::backend&#39;:
   sensuctl_chunk_size =&gt; 100,
 }
 </code></pre>
@@ -655,6 +992,90 @@ sensu_check { &#39;check-cpu in team1&#39;:
 }
 </code></pre>
 
+<h3>Bolt Tasks</h3>
+
+<p>The following Bolt tasks are provided by this Module:</p>
+
+<p><strong>sensu::agent_event</strong>: Create a Sensu Go agent event via the agent API</p>
+
+<p>Example: <code>bolt task run sensu::agent_event name=bolttest status=1 output=test --nodes sensu_agent</code></p>
+
+<p><strong>sensu::apikey</strong>: Manage Sensu Go API keys</p>
+
+<p>Example: <code>bolt task run sensu::apikey action=create username=foobar --nodes sensu_backend</code>
+Example: <code>bolt task run sensu::apikey action=list --nodes sensu_backend</code>
+Example: <code>bolt task run sensu::apikey action=delete key=replace-with-uuid-key --nodes sensu_backend</code></p>
+
+<p><strong>sensu::assets_outdated</strong>: Retreive outdated Sensu Go assets</p>
+
+<p>Example: <code>bolt task run sensu::assets_outdated --nodes sensu_backend</code></p>
+
+<p><strong>sensu::check_execute</strong>: Execute a Sensu Go check</p>
+
+<p>Example: <code>bolt task run sensu::check_execute check=test subscription=entity:sensu_agent --nodes sensu_backend</code></p>
+
+<p><strong>sensu::event.json</strong>: Manage Sensu Go events</p>
+
+<p>Example: <code>bolt task run sensu::event action=resolve entity=sensu_agent check=test --nodes sensu_backend</code></p>
+
+<p>Example: <code>bolt task run sensu::event action=delete entity=sensu_agent check=test --nodes sensu_backend</code></p>
+
+<p><strong>sensu::silenced</strong>: Manage Sensu Go silencings</p>
+
+<p>Example: <code>bolt task run sensu::silenced action=create subscription=entity:sensu_agent expire_on_resolve=true --nodes sensu_backend</code></p>
+
+<p>Example: <code>bolt task run sensu::silenced action=delete subscription=entity:sensu_agent --nodes sensu_backend</code></p>
+
+<p><strong>sensu::install_agent</strong>: Install Sensu Go agent (Windows and Linux)</p>
+
+<p>Example: <code>bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux output=true --nodes linux</code></p>
+
+<p>Example: <code>bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --nodes windows</code></p>
+
+<h3>Bolt Inventory</h3>
+
+<p>This module provides a plugin to populate Bolt v2 inventory targets.</p>
+
+<p>In order to use the <code>sensu</code> inventory plugin the host executing Bolt must have <code>sensuctl</code> configured, see <a href="#label-Basic+sensu+cli">Basic Sensu CLI</a>.</p>
+
+<p>Example of configuring the Bolt inventory with two groups. The <code>linux</code> group pulls Sensu Go entities in the <code>default</code> namespace with the <code>linux</code> subscription. The <code>linux-qa</code> group is the same as <code>linux</code> group but instead pulling entities from the <code>qa</code> namespace.</p>
+
+<pre class="code yaml"><code class="yaml">version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+        namespace: default
+        subscription: linux
+  - name: linux-qa
+    targets:
+      - _plugin: sensu
+        namespace: qa
+        subscription: linux
+</code></pre>
+
+<p>If your entities have more than one network interface it may be necessary to specify the order of interfaces to search when looking for the IP address:</p>
+
+<pre class="code yaml"><code class="yaml">version: 2
+groups:
+  - name: linux
+    targets:
+      - _plugin: sensu
+        namespace: default
+        subscription: linux
+        interface_list:
+          - eth0
+          - eth1
+</code></pre>
+
+<p>The following rules for interface matching determine the value used for <code>uri</code>.</p>
+
+<ol>
+<li>If <code>interface_list</code> was defined then find first match</li>
+<li>If <code>interface_list</code> not defined and only one interface, use that as ipaddress</li>
+<li>If <code>interface_list</code> is not defined and more than one interface, use name</li>
+</ol>
+
 <h2>Reference</h2>
 
 <h3>Facts</h3>
@@ -697,9 +1118,6 @@ sensu_check { &#39;check-cpu in team1&#39;:
 
 <h2>Limitations</h2>
 
-<p>The Sensu v2 support is designed so that all resources managed by <code>sensuctl</code> are defined on the <code>sensu-backend</code> host.
-This module does not support adding <code>sensuctl</code> resources on a host other than the <code>sensu-backend</code> host.</p>
-
 <p>The type <code>sensu_user</code> does not at this time support <code>ensure =&gt; absent</code> due to a limitation with sensuctl, see <a href="https://github.com/sensu/sensu-go/issues/2540">sensu-go#2540</a>.</p>
 
 <h3>Notes regarding support</h3>
@@ -725,13 +1143,18 @@ Linux.</p>
 <ul>
 <li>EL 6</li>
 <li>EL 7</li>
+<li>EL 8</li>
 <li>Debian 8</li>
 <li>Debian 9</li>
-<li>Debian 10 (Puppet 6 only)</li>
+<li>Debian 10</li>
 <li>Ubuntu 16.04 LTS</li>
 <li>Ubuntu 18.04 LTS</li>
 <li>Amazon 2018.03</li>
 <li>Amazon 2</li>
+<li>Windows Server 2008 R2</li>
+<li>Windows Server 2012 R2</li>
+<li>Windows Server 2016</li>
+<li>Windows Server 2019</li>
 </ul>
 
 <h2>Development</h2>

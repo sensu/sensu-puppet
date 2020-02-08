@@ -74,13 +74,15 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_oidc_auth/sensuctl.html" title="puppet_providers_sensu_oidc_auth::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_oidc_auth/sensu_api.html" title="puppet_providers_sensu_oidc_auth::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
 </div>
 
   <h2>Summary</h2>
-  Manages Sensu OIDC auth. Requires valid enterprise license.
+  Manages Sensu OIDC auth.
 
 <h2>Overview</h2>
 <div class="docstring">
@@ -90,9 +92,8 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
-<li><code>Exec[sensu-add-license]</code></li>
 </ul>
 
   </div>

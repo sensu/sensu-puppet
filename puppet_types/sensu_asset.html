@@ -74,6 +74,8 @@
       
         <span class='object_link'><a href="../puppet_providers_sensu_asset/sensuctl.html" title="puppet_providers_sensu_asset::sensuctl (puppet_provider)">sensuctl</a></span><br/>
       
+        <span class='object_link'><a href="../puppet_providers_sensu_asset/sensu_api.html" title="puppet_providers_sensu_asset::sensu_api (puppet_provider)">sensu_api</a></span><br/>
+      
     </dd>
   </dl>
   
@@ -90,7 +92,7 @@
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
-<li><code>Sensu_configure[puppet]</code></li>
+<li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 </ul>
@@ -149,6 +151,15 @@
       }
     }
   ],
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Create an asset with composite name in <code>dev</code> namespace</p>
+</div></p>
+      
+      <pre class="example code"><code>sensu_asset { &#39;test in dev&#39;:
+  ensure =&gt; &#39;present&#39;,
+  builds =&gt; ...
 }</code></pre>
     
   </div>
