@@ -1,3 +1,5 @@
+# Sensu Go docs: https://docs.sensu.io/sensu-go/latest/guides/influx-db-metric-handler/
+
 $addr = 'http://influxdb.default.svc.cluster.local:8086'
 $db_name = 'sensu'
 $user = 'sensu'
