@@ -128,14 +128,7 @@ class sensu::backend (
     include sensu::backend::datastore::postgresql
   }
 
-  $etc_dir = $sensu::etc_dir
-  $ssl_dir = $sensu::ssl_dir
-  $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
-  $api_host = $sensu::api_host
-  $api_port = $sensu::api_port
-  $api_protocol = $sensu::api_protocol
-  $password = $sensu::password
 
   if $ssl_cert_content {
     $_ssl_cert_source = undef
@@ -148,31 +141,28 @@ class sensu::backend (
     $_ssl_key_source = $ssl_key_source
   }
 
-  if $use_ssl {
+  if $sensu::use_ssl {
     if !($_ssl_cert_source or $ssl_cert_content) {
       fail('sensu::backend: ssl_cert_source or ssl_cert_content must be defined when sensu::use_ssl is true')
     }
     if !($_ssl_key_source or $ssl_key_content) {
       fail('sensu::backend: ssl_key_source or ssl_key_content must be defined when sensu::use_ssl is true')
     }
-    $trusted_ca_file = "${ssl_dir}/ca.crt"
     $ssl_config = {
-      'cert-file'       => "${ssl_dir}/cert.pem",
-      'key-file'        => "${ssl_dir}/key.pem",
-      'trusted-ca-file' => $trusted_ca_file,
+      'cert-file'       => "${sensu::ssl_dir}/cert.pem",
+      'key-file'        => "${sensu::ssl_dir}/key.pem",
+      'trusted-ca-file' => $sensu::trusted_ca_file_path,
     }
     $service_subscribe = Class['sensu::ssl']
     Class['sensu::ssl'] -> Sensuctl_configure['puppet']
   } else {
-    $trusted_ca_file = 'absent'
     $ssl_config = {}
     $service_subscribe = undef
   }
 
-  $api_url = "${api_protocol}://${api_host}:${api_port}"
   $default_config = {
     'state-dir' => $state_dir,
-    'api-url'   => $api_url,
+    'api-url'   => $sensu::api_url,
   }
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
@@ -194,13 +184,13 @@ class sensu::backend (
 
   sensu_user { 'admin':
     ensure                    => 'present',
-    password                  => $password,
+    password                  => $sensu::password,
     old_password              => $sensu::old_password,
     groups                    => ['cluster-admins'],
     disabled                  => false,
     configure                 => true,
-    configure_url             => $api_url,
-    configure_trusted_ca_file => $trusted_ca_file,
+    configure_url             => $sensu::api_url,
+    configure_trusted_ca_file => $sensu::trusted_ca_file,
   }
 
   if $manage_agent_user {
@@ -220,7 +210,7 @@ class sensu::backend (
   if $license_source or $license_content {
     file { 'sensu_license':
       ensure    => 'file',
-      path      => "${etc_dir}/license.json",
+      path      => "${sensu::etc_dir}/license.json",
       source    => $license_source,
       content   => $license_content,
       owner     => $sensu::user,
@@ -232,16 +222,16 @@ class sensu::backend (
 
     exec { 'sensu-add-license':
       path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-      command     => "sensuctl create --file ${etc_dir}/license.json",
+      command     => "sensuctl create --file ${sensu::etc_dir}/license.json",
       refreshonly => true,
       require     => Sensuctl_configure['puppet'],
     }
   }
 
-  if $use_ssl {
+  if $sensu::use_ssl {
     file { 'sensu_ssl_cert':
       ensure    => 'file',
-      path      => "${ssl_dir}/cert.pem",
+      path      => "${sensu::ssl_dir}/cert.pem",
       source    => $_ssl_cert_source,
       content   => $ssl_cert_content,
       owner     => $sensu::user,
@@ -252,7 +242,7 @@ class sensu::backend (
     }
     file { 'sensu_ssl_key':
       ensure    => 'file',
-      path      => "${ssl_dir}/key.pem",
+      path      => "${sensu::ssl_dir}/key.pem",
       source    => $_ssl_key_source,
       content   => $ssl_key_content,
       owner     => $sensu::user,
@@ -283,7 +273,7 @@ class sensu::backend (
 
   file { 'sensu_backend_config':
     ensure    => 'file',
-    path      => "${etc_dir}/backend.yml",
+    path      => "${sensu::etc_dir}/backend.yml",
     content   => to_yaml($config),
     owner     => $sensu::user,
     group     => $sensu::group,

@@ -41,19 +41,10 @@ class sensu::cli (
   include sensu
   include sensu::common
 
-  $ssl_dir = $sensu::ssl_dir
-  $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
-  $api_url = $sensu::api_url
-  $password = $sensu::password
 
-  if $use_ssl {
-    $trusted_ca_file = $sensu::trusted_ca_file_path
-    if $configure {
-      Class['sensu::ssl'] -> Sensuctl_configure['puppet']
-    }
-  } else {
-    $trusted_ca_file = 'absent'
+  if $sensu::use_ssl and $configure {
+    Class['sensu::ssl'] -> Sensuctl_configure['puppet']
   }
 
   if $facts['os']['family'] == 'windows' {
@@ -96,11 +87,11 @@ class sensu::cli (
     }
 
     sensuctl_configure { 'puppet':
-      url              => $api_url,
+      url              => $sensu::api_url,
       username         => 'admin',
-      password         => $password,
+      password         => $sensu::password,
       old_password     => $sensu::old_password,
-      trusted_ca_file  => $trusted_ca_file,
+      trusted_ca_file  => $sensu::trusted_ca_file,
       config_format    => $config_format,
       config_namespace => $config_namespace,
     }

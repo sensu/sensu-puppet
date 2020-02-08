@@ -114,8 +114,10 @@ class sensu (
 
   if $use_ssl {
     $api_protocol = 'https'
+    $trusted_ca_file = $trusted_ca_file_path
   } else {
     $api_protocol = 'http'
+    $trusted_ca_file = 'absent'
   }
   $api_url = "${api_protocol}://${api_host}:${api_port}"
 

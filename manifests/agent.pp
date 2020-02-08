@@ -88,13 +88,10 @@ class sensu::agent (
   include sensu
   include sensu::common
 
-  $etc_dir = $sensu::etc_dir
-  $ssl_dir = $sensu::ssl_dir
-  $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
   $_backends = pick($backends, ["${sensu::api_host}:8081"])
 
-  if $use_ssl {
+  if $sensu::use_ssl {
     $backend_protocol = 'wss'
     $ssl_config = {
       'trusted-ca-file' => $sensu::trusted_ca_file_path,
