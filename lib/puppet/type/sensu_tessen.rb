@@ -5,8 +5,8 @@ require_relative '../../puppet_x/sensu/integer_property'
 
 Puppet::Type.newtype(:sensu_tessen) do
   desc <<-DESC
-@summary Manages Sensu Tessen - This is a private type
-@api private
+@summary Manages Sensu Tessen
+**NOTE** This is a private type not intended to be used directly.
 
 **Autorequires**:
 * `Package[sensu-go-cli]`

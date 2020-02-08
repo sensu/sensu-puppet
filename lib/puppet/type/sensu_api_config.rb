@@ -6,7 +6,7 @@ require_relative '../../puppet_x/sensu/integer_property'
 Puppet::Type.newtype(:sensu_api_config) do
   desc <<-DESC
 @summary Abstract type to configure other types
-@api private
+**NOTE** This is a private type not intended to be used directly.
 DESC
 
   newparam(:name, :namevar => true) do

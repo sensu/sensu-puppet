@@ -1,5 +1,7 @@
 Puppet::Type.newtype(:sensu_api_validator) do
   desc <<-DESC
+**NOTE** This is a private type not intended to be used directly.
+
 Verify that a connection can be successfully established between a node
 and the sensu-backend server.  Its primary use is as a precondition to
 prevent configuration changes from being applied if the sensu_backend
