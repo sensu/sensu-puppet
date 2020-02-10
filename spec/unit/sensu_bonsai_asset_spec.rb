@@ -31,6 +31,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset) do
     expect(asset[:bonsai_namespace]).to eq('sensu')
     expect(asset[:bonsai_name]).to eq('sensu-pagerduty-handler')
     expect(asset[:namespace]).to eq('default')
+    expect(asset[:rename]).to eq('sensu/sensu-pagerduty-handler')
   end
 
   it 'should handle title pattern with namespace' do
@@ -38,6 +39,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset) do
     expect(asset[:bonsai_namespace]).to eq('sensu')
     expect(asset[:bonsai_name]).to eq('sensu-pagerduty-handler')
     expect(asset[:namespace]).to eq('dev')
+    expect(asset[:rename]).to eq('sensu/sensu-pagerduty-handler')
   end
 
   it 'should have bonsai_namespace over composite name' do
@@ -46,6 +48,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset) do
     expect(asset[:bonsai_namespace]).to eq('sensu')
     expect(asset[:bonsai_name]).to eq('bar')
     expect(asset[:name]).to eq('foo/bar')
+    expect(asset[:rename]).to eq('sensu/bar')
   end
 
   it 'should have bonsai_name over composite name' do
@@ -54,6 +57,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset) do
     expect(asset[:bonsai_namespace]).to eq('foo')
     expect(asset[:bonsai_name]).to eq('baz')
     expect(asset[:name]).to eq('foo/bar')
+    expect(asset[:rename]).to eq('foo/baz')
   end
 
   it 'should have namespace over composite name' do
@@ -61,6 +65,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset) do
     config[:namespace] = 'test'
     expect(asset[:name]).to eq('sensu/sensu-pagerduty-handler in dev')
     expect(asset[:namespace]).to eq('test')
+    expect(asset[:rename]).to eq('sensu/sensu-pagerduty-handler')
   end
 
   defaults = {}

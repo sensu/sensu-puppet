@@ -15,6 +15,10 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
         version  => '0.1.0',
         provider => 'sensu_api',
       }
+      sensu_bonsai_asset { 'sensu/sensu-ruby-runtime in default':
+        ensure  => 'present',
+        version => 'latest',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -43,6 +47,14 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('0.1.0')
+      end
+    end
+
+    it 'should have bonsai asset' do
+      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json' do
+        data = JSON.parse(stdout)
+        name = data['metadata']['name']
+        expect(name).to eq('sensu/sensu-ruby-runtime')
       end
     end
   end
