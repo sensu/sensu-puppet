@@ -25,11 +25,12 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Pro
         next
       end
       asset[:rename] = d['metadata']['name']
-      if found_assets.include?(asset[:rename])
+      asset[:namespace] = d['metadata']['namespace']
+      asset_name = "#{asset[:rename]} in #{asset[:namespace]}"
+      if found_assets.include?(asset_name)
         next
       end
-      found_assets << asset[:rename]
-      asset[:namespace] = d['metadata']['namespace']
+      found_assets << asset_name
       asset[:name] = "#{asset[:bonsai_namespace]}/#{asset[:bonsai_name]} in #{asset[:namespace]}"
       assets << new(asset)
     end

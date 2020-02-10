@@ -19,6 +19,11 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
         ensure  => 'present',
         version => 'latest',
       }
+      sensu_namespace { 'dev': ensure => 'present' }
+      sensu_bonsai_asset { 'sensu/sensu-ruby-runtime in dev':
+        ensure  => 'present',
+        version => 'latest',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -50,11 +55,19 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
       end
     end
 
-    it 'should have bonsai asset' do
-      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json' do
+    it 'should have bonsai asset in default namespace' do
+      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json --namespace=default' do
         data = JSON.parse(stdout)
-        name = data['metadata']['name']
-        expect(name).to eq('sensu/sensu-ruby-runtime')
+        expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
+        expect(data['metadata']['namespace']).to eq('default')
+      end
+    end
+
+    it 'should have bonsai asset in dev namespace' do
+      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json --namespace=dev' do
+        data = JSON.parse(stdout)
+        expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
+        expect(data['metadata']['namespace']).to eq('dev')
       end
     end
   end
