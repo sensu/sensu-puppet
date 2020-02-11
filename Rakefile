@@ -105,4 +105,4 @@ namespace :release do
 end
 
 desc "Release new module version"
-task :release => [:changelog, :reference, "release:commit", "strings:gh_pages:update"]
+task :release => [:changelog, :reference, "release:commit"]
