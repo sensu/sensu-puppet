@@ -1,3 +1,5 @@
+# Sensu Go docs: https://docs.sensu.io/sensu-go/latest/guides/send-slack-alerts/
+
 $webhook_url = 'https://hooks.slack.com/services/T0000/B000/XXXXXXXX'
 $channel     = '#monitor'
 

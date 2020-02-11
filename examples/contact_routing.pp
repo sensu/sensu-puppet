@@ -1,3 +1,5 @@
+# Sensu Go docs: https://docs.sensu.io/sensu-go/latest/guides/contact-routing/
+
 include sensu::backend
 
 sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':

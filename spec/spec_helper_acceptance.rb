@@ -69,8 +69,17 @@ RSpec.configure do |c|
     if RSpec.configuration.sensu_test_enterprise
       on setup_nodes, puppet('module', 'install', 'puppetlabs-postgresql', '--version', '">= 6.0.0 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
+    # Dependencies only needed to test some examples
+    if RSpec.configuration.sensu_full
+      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '4.0.0')
+      on setup_nodes, puppet('module', 'install', 'camptocamp-systemd', '--version', '2.8.0')
+      on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
+      # rsyslog template relies on rsyslog_version fact so pre-install rsyslog
+      # to keep things idempotent within minimal docker containers
+      on hosts, puppet('resource', 'package', 'rsyslog', 'ensure=present')
+    end
     ssldir = File.join(project_dir, 'tests/ssl')
-    scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/ssl')
+    scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
     hosts.each do |host|
       on host, "puppet config set --section main certname #{host.name}"
     end
