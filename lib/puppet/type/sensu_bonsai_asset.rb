@@ -91,7 +91,7 @@ DESC
   newparam(:rename) do
     desc "Name for Sensu Go asset"
     defaultto do
-      @resource[:name]
+      "#{@resource[:bonsai_namespace]}/#{@resource[:bonsai_name]}"
     end
   end
 
