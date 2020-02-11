@@ -76,7 +76,7 @@ if Bundler.rubygems.find_name('github_changelog_generator').any?
     config.max_issues = 100
     config.exclude_labels = ["sensu v2","sensu v1"]
     config.add_pr_wo_labels = true
-    config.merge_prefix = "### UNCATEGORIZED PRS; GO LABEL THEM"
+    config.merge_prefix = "### Merged Pull Requests"
     config.configure_sections = {
       "Changed" => {
         "prefix" => "### Changed",
