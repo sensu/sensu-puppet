@@ -26,10 +26,9 @@ _Private Classes_
 
 **Resource types**
 
-_Public Resource types_
-
 * [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu AD auth.
-* [`sensu_api_validator`](#sensu_api_validator): Verify that a connection can be successfully established between a node and the sensu-backend server.  Its primary use is as a precondition t
+* [`sensu_api_config`](#sensu_api_config): Abstract type to configure other types
+* [`sensu_api_validator`](#sensu_api_validator): **NOTE** This is a private type not intended to be used directly.  Verify that a connection can be successfully established between a node an
 * [`sensu_asset`](#sensu_asset): Manages Sensu assets
 * [`sensu_bonsai_asset`](#sensu_bonsai_asset): Manages Sensu Bonsai assets
 * [`sensu_check`](#sensu_check): Manages Sensu checks
@@ -55,14 +54,10 @@ _Public Resource types_
 * [`sensu_role_binding`](#sensu_role_binding): Manages Sensu role bindings
 * [`sensu_secret`](#sensu_secret): Manages Sensu Secrets
 * [`sensu_secrets_vault_provider`](#sensu_secrets_vault_provider): Manages Sensu Secrets provider
+* [`sensu_tessen`](#sensu_tessen): Manages Sensu Tessen
 * [`sensu_user`](#sensu_user): Manages Sensu users
-
-_Private Resource types_
-
-* `sensu_api_config`: Abstract type to configure other types
-* `sensu_tessen`: Manages Sensu Tessen - This is a private type
-* `sensuctl_config`: Abstract type to configure other types
-* `sensuctl_configure`: Manages `sensuctl configure`. This is a private type not intended to be used directly.
+* [`sensuctl_config`](#sensuctl_config): Abstract type to configure other types
+* [`sensuctl_configure`](#sensuctl_configure): Manages 'sensuctl configure'
 
 **Data types**
 
@@ -1193,7 +1188,39 @@ namevar
 
 The name of the AD auth.
 
+### sensu_api_config
+
+**NOTE** This is a private type not intended to be used directly.
+
+#### Parameters
+
+The following parameters are available in the `sensu_api_config` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `url`
+
+Sensu API URL
+
+##### `username`
+
+Sensu API username
+
+##### `password`
+
+Sensu API password
+
+##### `old_password`
+
+Sensu API old password
+
 ### sensu_api_validator
+
+**NOTE** This is a private type not intended to be used directly.
 
 Verify that a connection can be successfully established between a node
 and the sensu-backend server.  Its primary use is as a precondition to
@@ -3392,6 +3419,36 @@ namevar
 
 The name of the secrets provider.
 
+### sensu_tessen
+
+**NOTE** This is a private type not intended to be used directly.
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+
+#### Properties
+
+The following properties are available in the `sensu_tessen` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+State of tessen
+
+#### Parameters
+
+The following parameters are available in the `sensu_tessen` type.
+
+##### `name`
+
+namevar
+
+Resource name
+
 ### sensu_user
 
 **Autorequires**:
@@ -3484,6 +3541,92 @@ Default value: http://127.0.0.1:8080
 Path to trusted CA to use with 'sensuctl configure'
 
 Default value: /etc/sensu/ssl/ca.crt
+
+### sensuctl_config
+
+**NOTE** This is a private type not intended to be used directly.
+
+#### Parameters
+
+The following parameters are available in the `sensuctl_config` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `chunk_size`
+
+sensuctl chunk-size
+
+##### `path`
+
+path to sensuctl
+
+### sensuctl_configure
+
+**NOTE** This is a private type not intended to be used directly.
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_api_validator[sensu]`
+* `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
+
+#### Properties
+
+The following properties are available in the `sensuctl_configure` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+##### `url`
+
+sensu-backend URL
+
+##### `trusted_ca_file`
+
+Path to trusted CA
+
+Default value: /etc/sensu/ssl/ca.crt
+
+##### `config_format`
+
+Valid values: tabular, json, wrapped-json, yaml
+
+Set configured format for sensuctl
+
+##### `config_namespace`
+
+Set configured namespace for sensuctl
+
+#### Parameters
+
+The following parameters are available in the `sensuctl_configure` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `username`
+
+Username to use with sensuctl configure
+
+##### `password`
+
+Password to use with sensuctl configure
+
+##### `old_password`
+
+The previous sensuctl password, needed in order to change passwords
 
 ## Data types
 
