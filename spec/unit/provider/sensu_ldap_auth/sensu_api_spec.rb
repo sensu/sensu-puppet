@@ -91,7 +91,7 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensu_api) do
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
-    end 
+    end
   end
 
   describe 'flush' do
