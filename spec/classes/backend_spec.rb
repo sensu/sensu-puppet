@@ -55,7 +55,7 @@ describe 'sensu::backend', :type => :class do
         it { should contain_sensu_tessen('puppet').with_ensure('present') }
 
         it { should_not contain_file('sensu_license') }
-        it { should_not contain_exec('sensu-add-license') }
+        it { should_not contain_sensu_license('puppet') }
 
         it {
           should contain_file('sensu_ssl_cert').with({
@@ -278,15 +278,13 @@ describe 'sensu::backend', :type => :class do
             'group'     => 'sensu',
             'mode'      => '0600',
             'show_diff' => 'false',
-            'notify'    => 'Exec[sensu-add-license]',
+            'notify'    => 'Sensu_license[puppet]',
           })
         }
         it {
-          should contain_exec('sensu-add-license').with({
-            'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
-            'command'     => 'sensuctl create --file /etc/sensu/license.json',
-            'refreshonly' => 'true',
-            'require'     => 'Sensuctl_configure[puppet]',
+          should contain_sensu_license('puppet').with({
+            'ensure' => 'present',
+            'file'   => '/etc/sensu/license.json',
           })
         }
       end
@@ -304,15 +302,13 @@ describe 'sensu::backend', :type => :class do
             'group'     => 'sensu',
             'mode'      => '0600',
             'show_diff' => 'false',
-            'notify'    => 'Exec[sensu-add-license]',
+            'notify'    => 'Sensu_license[puppet]',
           })
         }
         it {
-          should contain_exec('sensu-add-license').with({
-            'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
-            'command'     => 'sensuctl create --file /etc/sensu/license.json',
-            'refreshonly' => 'true',
-            'require'     => 'Sensuctl_configure[puppet]',
+          should contain_sensu_license('puppet').with({
+            'ensure' => 'present',
+            'file'   => '/etc/sensu/license.json',
           })
         }
       end

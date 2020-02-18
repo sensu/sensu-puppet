@@ -217,14 +217,12 @@ class sensu::backend (
       group     => $sensu::group,
       mode      => '0600',
       show_diff => false,
-      notify    => Exec['sensu-add-license'],
+      notify    => Sensu_license['puppet'],
     }
 
-    exec { 'sensu-add-license':
-      path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-      command     => "sensuctl create --file ${sensu::etc_dir}/license.json",
-      refreshonly => true,
-      require     => Sensuctl_configure['puppet'],
+    sensu_license { 'puppet':
+      ensure => 'present',
+      file   => "${sensu::etc_dir}/license.json",
     }
   }
 
