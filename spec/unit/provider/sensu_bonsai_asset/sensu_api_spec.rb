@@ -32,7 +32,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensu_api) do
 
   describe 'self.latest_version' do
     it 'should return latest version' do
-      allow(provider).to receive(:get_bonsai_asset).with('sensu/sensu-pagerduty-handler').and_return(JSON.parse(my_fixture_read('bonsai_asset.json')))
+      allow(Puppet::Provider::SensuAPI).to receive(:get_bonsai_asset).with('sensu/sensu-pagerduty-handler').and_return(JSON.parse(my_fixture_read('bonsai_asset.json')))
       latest_version = provider.latest_version('sensu', 'sensu-pagerduty-handler')
       expect(latest_version).to eq('1.2.0')
     end
