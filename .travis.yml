@@ -25,16 +25,16 @@ script: 'bundle exec rake $CHECK'
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     env: CHECK="validate lint strings:generate reference" PUPPET_GEM_VERSION="~> 5"
     stage: unit
   - rvm: 2.5.7
     env: CHECK="validate lint strings:generate reference" PUPPET_GEM_VERSION="~> 6"
     stage: unit
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5"
     stage: unit
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
     stage: unit
   - rvm: 2.5.7
@@ -43,7 +43,7 @@ matrix:
   - rvm: 2.5.7
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
     stage: unit
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -61,7 +61,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes
     bundler_args:
@@ -79,7 +79,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
     bundler_args:
@@ -91,7 +91,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes
     bundler_args:
@@ -103,7 +103,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes
     bundler_args:
@@ -121,7 +121,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="centos-8" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -139,7 +139,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -153,11 +153,11 @@ matrix:
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6 
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="debian-9" BEAKER_PUPPET_COLLECTION=puppet6
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="debian-10" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -175,7 +175,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="ubuntu-1604" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -193,7 +193,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="debian-8" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -211,7 +211,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="ubuntu-1804" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -229,7 +229,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="amazonlinux-2" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -247,7 +247,7 @@ matrix:
     bundler_args:
     script: bundle exec rake beaker
     stage: acceptance
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     services: docker
     env: BEAKER_set="amazonlinux-201803" BEAKER_PUPPET_COLLECTION=puppet5
     bundler_args:
@@ -268,7 +268,7 @@ matrix:
   - env: DEPLOY_TO_FORGE=yes
     stage: deploy
   allow_failures:
-  - rvm: 2.4.5
+  - rvm: 2.4.9
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.7
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
