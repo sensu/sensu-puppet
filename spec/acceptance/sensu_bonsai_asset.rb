@@ -24,6 +24,10 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
         ensure  => 'present',
         version => 'latest',
       }
+      sensu_bonsai_asset { 'nixwiz/sensu-go-fatigue-check-filter':
+        ensure  => 'present',
+        version => 'v0.2.2',
+      }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -68,6 +72,14 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_full do
         data = JSON.parse(stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
         expect(data['metadata']['namespace']).to eq('dev')
+      end
+    end
+
+    it 'should have bonsai asset' do
+      on node, 'sensuctl asset info nixwiz/sensu-go-fatigue-check-filter --format json' do
+        data = JSON.parse(stdout)
+        version = data['metadata']['annotations']['io.sensu.bonsai.version']
+        expect(version).to eq('v0.2.2')
       end
     end
   end
