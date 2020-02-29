@@ -31,7 +31,7 @@ describe 'sensu event task', if: RSpec.configuration.sensu_full do
       apply_manifest_on(backend, check_pp, :catch_failures => true)
       on backend, 'sensuctl check execute test'
       sleep 20
-      on backend, 'bolt task run sensu::event action=resolve entity=sensu_agent check=test --nodes sensu_backend'
+      on backend, 'bolt task run sensu::event action=resolve entity=sensu_agent check=test --targets sensu_backend'
     end
 
     it 'should have resolved check' do
@@ -48,7 +48,7 @@ describe 'sensu event task', if: RSpec.configuration.sensu_full do
       apply_manifest_on(agent,
         "service { 'sensu-agent': ensure => 'stopped' }")
       sleep 20
-      on backend, 'bolt task run sensu::event action=delete entity=sensu_agent check=test --nodes sensu_backend'
+      on backend, 'bolt task run sensu::event action=delete entity=sensu_agent check=test --targets sensu_backend'
     end
 
     describe command('sensuctl event info sensu_agent test'), :node => backend do
@@ -67,7 +67,7 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
 
   context 'create' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::silenced action=create subscription=entity:sensu_agent --nodes localhost'
+      on backend, 'bolt task run sensu::silenced action=create subscription=entity:sensu_agent --targets localhost'
     end
 
     it 'should have a valid silenced' do
@@ -82,7 +82,7 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
 
   context 'update' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::silenced action=create subscription=entity:sensu_agent expire_on_resolve=true --nodes localhost'
+      on backend, 'bolt task run sensu::silenced action=create subscription=entity:sensu_agent expire_on_resolve=true --targets localhost'
     end
 
     it 'should have a valid silenced with updated propery' do
@@ -95,7 +95,7 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
 
   context 'delete' do
     it 'should remove without errors' do
-      on backend, 'bolt task run sensu::silenced action=delete subscription=entity:sensu_agent --nodes localhost'
+      on backend, 'bolt task run sensu::silenced action=delete subscription=entity:sensu_agent --targets localhost'
     end
 
     describe command('sensuctl silenced info entity:sensu_agent:*'), :node => backend do
@@ -134,7 +134,7 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
   end
   context 'install_agent' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux output=true --nodes sensu_agent'
+      on backend, 'bolt task run sensu::install_agent backend=sensu_backend:8081 subscription=linux output=true --targets sensu_agent'
       sleep 5
     end
 
@@ -173,7 +173,7 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
   end
   context 'check_execute' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::check_execute check=test subscription=entity:sensu_agent --nodes localhost'
+      on backend, 'bolt task run sensu::check_execute check=test subscription=entity:sensu_agent --targets localhost'
       sleep 30
     end
 
@@ -200,9 +200,9 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_full do
 
   context 'assets_outdated' do
     it 'should return outdated assets' do
-      on backend, 'bolt task run sensu::assets_outdated --nodes localhost --format json' do
+      on backend, 'bolt task run sensu::assets_outdated --targets localhost --format json' do
         data = JSON.parse(stdout)
-        d = data['items'][0]['result']['data']
+        d = data['items'][0]['value']['data']
         expect(d[0]['asset_name']).to eq('sensu/sensu-pagerduty-handler')
       end
     end
@@ -219,7 +219,7 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
 
   context 'create' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::apikey action=create username=admin --nodes sensu_backend'
+      on backend, 'bolt task run sensu::apikey action=create username=admin --targets sensu_backend'
     end
 
     it 'should have created api key' do
@@ -232,7 +232,7 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
   end
 
   context 'list' do
-    describe command('bolt task run sensu::apikey action=list --nodes sensu_backend'), :node => backend do
+    describe command('bolt task run sensu::apikey action=list --targets sensu_backend'), :node => backend do
       its(:exit_status) { should eq 0 }
     end
   end
@@ -246,7 +246,7 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
         apikey = data.select { |k| k["username"] == "admin" }[0]
         key = apikey["metadata"]["name"]
       end
-      on backend, "bolt task run sensu::apikey action=delete key=#{key} --nodes sensu_backend"
+      on backend, "bolt task run sensu::apikey action=delete key=#{key} --targets sensu_backend"
     end
   end
 end
@@ -271,7 +271,7 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
   end
   context 'agent_event' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::agent_event name=bolttest status=1 output=test --nodes sensu_agent'
+      on backend, 'bolt task run sensu::agent_event name=bolttest status=1 output=test --targets sensu_agent'
       sleep 5
     end
 
