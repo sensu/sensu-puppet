@@ -7,13 +7,21 @@ describe Puppet::Provider::Sensuctl do
 
   context 'config_path' do
     it 'should return path' do
-      allow(Dir).to receive(:respond_to?).with(:home).and_return(true)
       allow(Dir).to receive(:home).and_return('/root')
       expect(subject.config_path).to eq('/root/.config/sensu/sensuctl/cluster')
     end
 
     it 'should return path without Dir.home' do
-      allow(Dir).to receive(:respond_to?).with(:home).and_return(false)
+      allow(Dir).to receive(:home).and_raise(NoMethodError)
+      allow(Process).to receive(:uid).and_return(0)
+      user = OpenStruct.new
+      user.dir = '/root'
+      allow(Etc).to receive(:getpwuid).with(0).and_return(user)
+      expect(subject.config_path).to eq('/root/.config/sensu/sensuctl/cluster')
+    end
+
+    it 'should return path without HOME set' do
+      allow(Dir).to receive(:home).and_raise(ArgumentError)
       allow(Process).to receive(:uid).and_return(0)
       user = OpenStruct.new
       user.dir = '/root'

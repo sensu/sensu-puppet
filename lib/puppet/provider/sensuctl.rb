@@ -13,9 +13,9 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   end
 
   def self.config_path
-    if Dir.respond_to?(:home)
+    begin
       home = Dir.home
-    else
+    rescue ArgumentError, NoMethodError
       # https://github.com/sensu/sensu-puppet/issues/1072
       # since $HOME is not set in systemd service File.expand_path('~') won't work
       home = Etc.getpwuid(Process.uid).dir
