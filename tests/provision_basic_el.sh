@@ -31,7 +31,7 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 
 # setup module dependencies
 puppet module install puppetlabs/stdlib --version 4.25.1
-puppet module install puppet/trusted_ca --version 2.0.0
+puppet module install richardc-datacat --version 0.6.2
 
 puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10
 

@@ -43,6 +43,7 @@ iex "puppet module install puppetlabs-stdlib"
 iex "puppet module install puppetlabs-chocolatey"
 iex "puppet module install puppet-archive"
 iex "puppet module install puppet-windows_env"
+iex "puppet module install richardc-datacat"
 New-Item -Path "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -ItemType directory -Force | Out-Null
 Copy-Item -Path "C:\vagrant\tests\ssl\*" -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl\" -Recurse -Force
 

@@ -32,6 +32,7 @@ install:
 - puppet module install puppetlabs-chocolatey
 - puppet module install puppet-archive
 - puppet module install puppet-windows_env
+- puppet module install richardc-datacat
 - puppet config set --section main certname sensu_agent
 - facter -p --debug
 - ruby -v

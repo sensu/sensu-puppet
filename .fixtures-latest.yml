@@ -4,6 +4,8 @@ fixtures:
       repo: git://github.com/puppetlabs/puppetlabs-apt.git
     stdlib:
       repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
+    datacat:
+      repo: git://github.com/richardc/puppet-datacat.git
     yumrepo_core:
       repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
       puppet_version: ">= 6.0.0"
