@@ -206,6 +206,10 @@ describe Puppet::Type.type(:sensu_bonsai_asset) do
       config[:version] = '1.0.0'
       expect(asset[:version]).to eq('1.0.0')
     end
+    it 'should allow a version with v prefix' do
+      config[:version] = 'v1.0.0'
+      expect(asset[:version]).to eq('v1.0.0')
+    end
     it 'should raise error if not latest or version' do
       config[:version] = 'foo'
       expect { asset }.to raise_error(Puppet::Error, /Invalid value/)

@@ -59,7 +59,8 @@ DESC
 
   newproperty(:version) do
     desc "Specific version to install, or latest"
-    newvalues(:latest, /[0-9\.]+/)
+    # Matches versions like v0.1.0 and 0.1.0
+    newvalues(:latest, /^(v)?[0-9\.]+$/)
     def insync?(is)
       if @should.is_a?(Array) && @should.size == 1
         should = @should[0]
