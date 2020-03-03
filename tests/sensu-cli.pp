@@ -4,7 +4,7 @@ if $facts['os']['family'] == 'windows' {
   $install_source = undef
 }
 
-class { '::sensu':
+class { 'sensu':
   api_host => 'sensu-backend.example.com',
 }
 class { 'sensu::cli':

@@ -1,4 +1,4 @@
-case $facts['hostname'] {
+case $facts['networking']['hostname'] {
   /peer1/: {
     $backend_name = 'backend1'
   }
@@ -20,4 +20,3 @@ class { 'sensu::backend':
     'etcd-name'                        => $backend_name,
   },
 }
-

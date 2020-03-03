@@ -7,7 +7,8 @@ file { '/etc/sensu/etcd-ssl':
   before  => Service['sensu-backend'],
 }
 
-case $facts['hostname'] {
+case $facts['networking']['hostname'] {
+  default: { fail('hostname must contain peer1 or peer2') }
   /peer1/: {
     $cert_name = 'sensu-backend1'
   }
@@ -18,21 +19,21 @@ case $facts['hostname'] {
 
 class { 'sensu::backend':
   config_hash => {
-    'etcd-listen-client-urls' => "https://0.0.0.0:2379",
+    'etcd-listen-client-urls'    => 'https://0.0.0.0:2379',
     'etcd-advertise-client-urls' => "https://${facts['networking']['interfaces']['eth1']['ip']}:2379",
-    'etcd-cert-file' => "/etc/sensu/etcd-ssl/${cert_name}.pem",
-    'etcd-key-file' => "/etc/sensu/etcd-ssl/${cert_name}-key.pem",
-    'etcd-trusted-ca-file' => "/etc/sensu/etcd-ssl/ca.pem",
-    'etcd-client-cert-auth' => true,
-  }
+    'etcd-cert-file'             => "/etc/sensu/etcd-ssl/${cert_name}.pem",
+    'etcd-key-file'              => "/etc/sensu/etcd-ssl/${cert_name}-key.pem",
+    'etcd-trusted-ca-file'       => '/etc/sensu/etcd-ssl/ca.pem',
+    'etcd-client-cert-auth'      => true,
+  },
 }
 
-if $facts['hostname'] =~ /peer2/ {
+if $facts['networking']['hostname'] =~ /peer2/ {
   sensu_etcd_replicator { 'role_replicator':
     ensure        => 'present',
-    ca_cert       => "/etc/sensu/etcd-ssl/ca.pem",
-    cert          => "/etc/sensu/etcd-ssl/client.pem",
-    key           => "/etc/sensu/etcd-ssl/client-key.pem",
+    ca_cert       => '/etc/sensu/etcd-ssl/ca.pem',
+    cert          => '/etc/sensu/etcd-ssl/client.pem',
+    key           => '/etc/sensu/etcd-ssl/client-key.pem',
     url           => 'https://192.168.52.30:2379',
     resource_name => 'Role',
   }

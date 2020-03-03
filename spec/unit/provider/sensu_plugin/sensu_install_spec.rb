@@ -52,7 +52,7 @@ sensu-plugins-nvidia (1.0.0, 0.0.2, 0.0.1)
     it 'should install a plugin' do
       expected_args = [
         '--plugin', 'test',
-        '--clean', 
+        '--clean',
       ]
       expect(resource.provider).to receive(:sensu_install).with(expected_args)
       resource.provider.create
@@ -63,7 +63,7 @@ sensu-plugins-nvidia (1.0.0, 0.0.2, 0.0.1)
       resource[:extension] = :true
       expected_args = [
         '--extension', 'test',
-        '--clean', 
+        '--clean',
       ]
       expect(resource.provider).to receive(:sensu_install).with(expected_args)
       resource.provider.create
@@ -74,7 +74,7 @@ sensu-plugins-nvidia (1.0.0, 0.0.2, 0.0.1)
       resource[:version] = '1.0.0'
       expected_args = [
         '--plugin', 'sensu-plugins-test:1.0.0',
-        '--clean', 
+        '--clean',
       ]
       expect(resource.provider).to receive(:sensu_install).with(expected_args)
       resource.provider.create
@@ -87,7 +87,7 @@ sensu-plugins-nvidia (1.0.0, 0.0.2, 0.0.1)
       allow(provider).to receive(:gem).with('search', '--remote', '--all', "^sensu-(plugins|extensions)-").and_return(list_remote_output)
       expected_args = [
         '--plugin', 'sensu-plugins-nvidia:1.0.0',
-        '--clean', 
+        '--clean',
       ]
       expect(resource.provider).to receive(:sensu_install).with(expected_args)
       resource.provider.create
@@ -134,7 +134,7 @@ sensu-plugins-nvidia (1.0.0, 0.0.2, 0.0.1)
     it 'should install specific version' do
       expected_args = [
         '--plugin', 'sensu-plugins-test:1.0.0',
-        '--clean', 
+        '--clean',
       ]
       expect(resource.provider).to receive(:sensu_install).with(expected_args)
       resource.provider.version = '1.0.0'

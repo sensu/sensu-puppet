@@ -81,7 +81,7 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
-    end 
+    end
   end
 
   describe 'flush' do
@@ -122,4 +122,3 @@ describe Puppet::Type.type(:sensu_ad_auth).provider(:sensuctl) do
     end
   end
 end
-
