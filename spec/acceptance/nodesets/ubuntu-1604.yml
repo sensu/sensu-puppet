@@ -11,7 +11,7 @@ HOSTS:
     docker_image_commands:
       - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
       - 'apt-get update'
-      - 'apt-get install -y -q net-tools wget curl locales'
+      - 'apt-get install -y -q net-tools wget curl locales apt-transport-https ca-certificates'
       - 'locale-gen en_US.UTF-8'
     docker_container_name: 'sensu-agent-ubuntu1604'
   sensu_backend:
@@ -26,7 +26,7 @@ HOSTS:
     docker_cmd: '["/sbin/init"]'
     docker_image_commands:
       - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
-      - 'apt-get install -y -q net-tools wget locales'
+      - 'apt-get install -y -q net-tools wget locales apt-transport-https ca-certificates'
       - 'locale-gen en_US.UTF-8'
     docker_container_name: 'sensu-backend-ubuntu1604'
 CONFIG:
