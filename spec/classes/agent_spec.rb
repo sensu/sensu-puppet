@@ -55,19 +55,30 @@ describe 'sensu::agent', :type => :class do
           })
         }
 
-        agent_content = <<-END.gsub(/^\s+\|/, '')
-          |---
-          |backend-url:
-          |- wss://localhost:8081
-          |password: P@ssw0rd!
-          |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
-        END
+        it {
+          should contain_datacat_collector('sensu_agent_config').with({
+            'template_body'   => '<%= @data.to_yaml %>',
+            'target_resource' => 'File[sensu_agent_config]',
+            'target_field'    => 'content',
+          })
+        }
+
+        it {
+          should contain_datacat_fragment('sensu_agent_config-main').with({
+            'target' => 'sensu_agent_config',
+            'data'   => {
+              'backend-url'     => ['wss://localhost:8081'],
+              'password'        => 'P@ssw0rd!',
+              'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+            },
+            'order'  => '01',
+          })
+        }
 
         it {
           should contain_file('sensu_agent_config').with({
             'ensure'  => 'file',
             'path'    => platforms[facts[:osfamily]][:agent_config_path],
-            'content' => agent_content,
             'owner'   => platforms[facts[:osfamily]][:user],
             'group'   => platforms[facts[:osfamily]][:group],
             'mode'    => platforms[facts[:osfamily]][:agent_config_mode],
@@ -165,24 +176,13 @@ describe 'sensu::agent', :type => :class do
           "class { 'sensu': use_ssl => false }"
         end
 
-        agent_content = <<-END.gsub(/^\s+\|/, '')
-          |---
-          |backend-url:
-          |- ws://localhost:8081
-          |password: P@ssw0rd!
-        END
-
         it {
-          should contain_file('sensu_agent_config').with({
-            'ensure'    => 'file',
-            'path'      => platforms[facts[:osfamily]][:agent_config_path],
-            'content'   => agent_content,
-            'owner'     => platforms[facts[:osfamily]][:user],
-            'group'     => platforms[facts[:osfamily]][:group],
-            'mode'      => platforms[facts[:osfamily]][:agent_config_mode],
-            'show_diff' => 'true',
-            'require'   => 'Package[sensu-go-agent]',
-            'notify'    => 'Service[sensu-agent]',
+          should contain_datacat_fragment('sensu_agent_config-main').with({
+            'target' => 'sensu_agent_config',
+            'data'   => {
+              'backend-url' => ['ws://localhost:8081'],
+              'password'    => 'P@ssw0rd!',
+            },
           })
         }
 
@@ -200,23 +200,21 @@ describe 'sensu::agent', :type => :class do
           }
         end
 
-        agent_content = <<-END.gsub(/^\s+\|/, '')
-          |---
-          |backend-url:
-          |- wss://localhost:8081
-          |name: hostname
-          |subscriptions:
-          |- linux
-          |- base
-          |annotations:
-          |  foo: bar
-          |labels:
-          |  bar: baz
-          |namespace: qa
-          |password: P@ssw0rd!
-          |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
-        END
-        it { should contain_file('sensu_agent_config').with_content(agent_content) }
+        it {
+          should contain_datacat_fragment('sensu_agent_config-main').with({
+            'target' => 'sensu_agent_config',
+            'data'   => {
+              'backend-url'     => ['wss://localhost:8081'],
+              'name'            => 'hostname',
+              'subscriptions'   => ['linux','base'],
+              'annotations'     => {'foo' => 'bar'},
+              'labels'          => {'bar' => 'baz'},
+              'namespace'       => 'qa',
+              'password'        => 'P@ssw0rd!',
+              'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+            },
+          })
+        }
       end
 
       context 'with agent configs defined and config_hash' do
@@ -234,22 +232,21 @@ describe 'sensu::agent', :type => :class do
           }
         end
 
-        agent_content = <<-END.gsub(/^\s+\|/, '')
-          |---
-          |backend-url:
-          |- wss://localhost:8081
-          |name: hostname
-          |subscriptions:
-          |- windows
-          |annotations:
-          |  foo: bar
-          |labels:
-          |  bar: baz
-          |namespace: default
-          |password: P@ssw0rd!
-          |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
-        END
-        it { should contain_file('sensu_agent_config').with_content(agent_content) }
+        it {
+          should contain_datacat_fragment('sensu_agent_config-main').with({
+            'target' => 'sensu_agent_config',
+            'data'   => {
+              'backend-url'     => ['wss://localhost:8081'],
+              'name'            => 'hostname',
+              'subscriptions'   => ['windows'],
+              'annotations'     => {'foo' => 'bar'},
+              'labels'          => {'bar' => 'baz'},
+              'namespace'       => 'default',
+              'password'        => 'P@ssw0rd!',
+              'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+            },
+          })
+        }
       end
 
       context 'with show_diff => false' do
@@ -325,21 +322,14 @@ describe 'sensu::agent', :type => :class do
             backend = "wss://#{backends[0]}"
           end
 
-          agent_content = <<-END.gsub(/^\s+\|/, '')
-            |---
-            |backend-url:
-            |- #{backend}
-            |password: P@ssw0rd!
-            |trusted-ca-file: #{platforms[facts[:osfamily]][:ca_path_yaml]}
-          END
-
           it {
-            should contain_file('sensu_agent_config').with({
-              'ensure'  => 'file',
-              'path'    => platforms[facts[:osfamily]][:agent_config_path],
-              'content' => agent_content,
-              'require' => 'Package[sensu-go-agent]',
-              'notify'  => 'Service[sensu-agent]',
+            should contain_datacat_fragment('sensu_agent_config-main').with({
+              'target' => 'sensu_agent_config',
+              'data'   => {
+                'backend-url'     => [backend],
+                'password'        => 'P@ssw0rd!',
+                'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+              },
             })
           }
         end

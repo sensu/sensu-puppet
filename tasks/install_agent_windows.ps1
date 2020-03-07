@@ -14,6 +14,7 @@ $return_output = @{}
 
 # Install modules
 $module_output1 = iex "puppet module install sensu-sensu --color false"
+$module_output2 = iex "puppet module install richardc-datacat --color false"
 $module_output2 = iex "puppet module install puppet-archive --color false"
 $module_install_output = $module_output1 + $module_output2
 $return_output.Add("module-install", $($module_install_output -Split "`n").TrimEnd("`r"))

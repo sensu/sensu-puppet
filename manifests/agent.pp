@@ -109,7 +109,7 @@ class sensu::agent (
       "${backend_protocol}://${backend}"
     }
   }
-  $default_config = delete_undef_values({
+  $default_config = {
     'backend-url'   => $backend_urls,
     'name'          => $entity_name,
     'subscriptions' => $subscriptions,
@@ -117,8 +117,8 @@ class sensu::agent (
     'labels'        => $labels,
     'namespace'     => $namespace,
     'password'      => $sensu::agent_password,
-  })
-  $config = $default_config + $ssl_config + $config_hash
+  }
+  $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
   }
@@ -187,10 +187,21 @@ class sensu::agent (
     notify   => Service['sensu-agent'],
   }
 
+  datacat_collector { 'sensu_agent_config':
+    template_body   => '<%= @data.to_yaml %>',
+    target_resource => File['sensu_agent_config'],
+    target_field    => 'content',
+  }
+
+  datacat_fragment { 'sensu_agent_config-main':
+    target => 'sensu_agent_config',
+    data   => $config,
+    order  => '01',
+  }
+
   file { 'sensu_agent_config':
     ensure    => 'file',
     path      => $sensu::agent_config_path,
-    content   => to_yaml($config),
     owner     => $sensu::sensu_user,
     group     => $sensu::sensu_group,
     mode      => $sensu::file_mode,

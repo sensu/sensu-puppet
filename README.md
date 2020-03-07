@@ -16,6 +16,7 @@
     * [API Providers](#api-providers)
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
+    * [Advanced agent - Subscriptions](#advanced-agent---subscriptions)
     * [Advanced SSL](#advanced-ssl)
     * [Enterprise support](#enterprise-support)
     * [Contact routing](#contact-routing)
@@ -358,6 +359,24 @@ class { 'sensu::agent':
   show_diff   => false,
 }
 ```
+
+### Advanced agent - Subscriptions
+
+It's possible to define subscriptions in many locations and the values merged into `agent.yml`:
+
+```
+class { 'sensu::agent':
+  subscriptions => ['base'],
+}
+```
+
+Then in a profile class for Apache you could define the following:
+
+```
+sensu::agent::subscription { 'apache': }
+```
+
+The resulting `agent.yml` would contain subscriptions for both `base` and `apache`.
 
 ### Advanced SSL
 
