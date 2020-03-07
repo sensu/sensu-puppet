@@ -24,6 +24,10 @@ _Private Classes_
 * `sensu::repo::community`: Private class to manage sensu community repository resources
 * `sensu::ssl`: Private class to manage sensu SSL resources
 
+**Defined types**
+
+* [`sensu::agent::subscription`](#sensuagentsubscription): Add agent subscription
+
 **Resource types**
 
 * [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu AD auth.
@@ -44,6 +48,7 @@ _Private Classes_
 * [`sensu_handler`](#sensu_handler): Manages Sensu handlers
 * [`sensu_hook`](#sensu_hook): Manages Sensu hooks
 * [`sensu_ldap_auth`](#sensu_ldap_auth): Manages Sensu LDAP auth.
+* [`sensu_license`](#sensu_license): Manage a sensu license
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
 * [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth.
@@ -1091,6 +1096,40 @@ Hash of sensu_user resources
 
 Default value: {}
 
+## Defined types
+
+### sensu::agent::subscription
+
+Add agent subscription
+
+#### Examples
+
+##### 
+
+```puppet
+sensu::agent::subscription { 'mysql': }
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::agent::subscription` defined type.
+
+##### `subscription`
+
+Data type: `String[1]`
+
+Name of the subscription to add to agent.yml, defaults to `$name`.
+
+Default value: $name
+
+##### `order`
+
+Data type: `String[1]`
+
+Order of the datacat fragment
+
+Default value: '50'
+
 ## Resource types
 
 ### sensu_ad_auth
@@ -1493,7 +1532,7 @@ Default value: present
 
 ##### `version`
 
-Valid values: latest, /[0-9\.]+/
+Valid values: latest, /^(v)?[0-9\.]+$/
 
 Specific version to install, or latest
 
@@ -2711,6 +2750,42 @@ The following parameters are available in the `sensu_ldap_auth` type.
 namevar
 
 The name of the LDAP auth.
+
+### sensu_license
+
+**NOTE** This is a private type not intended to be used directly.
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensu_api_validator[sensu]`
+* `file` - Puppet will autorequire `file` resources defined in `file` property.
+
+#### Properties
+
+The following properties are available in the `sensu_license` type.
+
+##### `ensure`
+
+Valid values: present, absent
+
+The basic property that the resource should be in.
+
+Default value: present
+
+#### Parameters
+
+The following parameters are available in the `sensu_license` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `file`
+
+Path to license file
 
 ### sensu_mutator
 
