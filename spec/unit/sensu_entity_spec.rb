@@ -257,4 +257,7 @@ describe Puppet::Type.type(:sensu_entity) do
   include_examples 'namespace' do
     let(:res) { entity }
   end
+  include_examples 'labels' do
+    let(:res) { entity }
+  end
 end

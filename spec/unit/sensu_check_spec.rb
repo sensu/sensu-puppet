@@ -418,4 +418,7 @@ describe Puppet::Type.type(:sensu_check) do
   include_examples 'namespace' do
     let(:res) { check }
   end
+  include_examples 'labels' do
+    let(:res) { check }
+  end
 end

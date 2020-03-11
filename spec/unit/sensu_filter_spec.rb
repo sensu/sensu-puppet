@@ -242,4 +242,7 @@ describe Puppet::Type.type(:sensu_filter) do
   include_examples 'namespace' do
     let(:res) { filter }
   end
+  include_examples 'labels' do
+    let(:res) { filter }
+  end
 end

@@ -321,4 +321,7 @@ describe Puppet::Type.type(:sensu_asset) do
   include_examples 'namespace' do
     let(:res) { asset }
   end
+  include_examples 'labels' do
+    let(:res) { asset }
+  end
 end

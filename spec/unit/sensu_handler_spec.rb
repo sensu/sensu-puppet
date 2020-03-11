@@ -338,4 +338,7 @@ describe Puppet::Type.type(:sensu_handler) do
   include_examples 'namespace' do
     let(:res) { handler }
   end
+  include_examples 'labels' do
+    let(:res) { handler }
+  end
 end
