@@ -1,8 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
-  agent = hosts_as('sensu_agent')[0]
-  backend = hosts_as('sensu_backend')[0]
+  agent = hosts_as('sensu-agent')[0]
+  backend = hosts_as('sensu-backend')[0]
   context 'setup' do
     it 'cleans environment' do
       on agent, 'puppet resource package sensu-go-cli ensure=absent'
@@ -19,7 +19,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
       }
       include ::sensu::api
       sensu_check { 'test-api':
@@ -40,7 +40,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -76,7 +76,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
       }
       include ::sensu::api
       sensu_check { 'test-api':
@@ -96,7 +96,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -132,7 +132,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
     it 'should produce error' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
       }
       include ::sensu::api
       sensu_check { 'test-no-namespace':
@@ -146,7 +146,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [1,4,6]
@@ -164,7 +164,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
     it 'should remove without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
       }
       include ::sensu::api
       sensu_check { 'test-api':
@@ -178,7 +178,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]

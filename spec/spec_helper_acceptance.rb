@@ -28,7 +28,7 @@ RSpec.configure do |c|
     enterprise_file = File.join(project_dir, 'tests/sensu_license.json')
   end
   if File.exists?(enterprise_file)
-    scp_to(hosts_as('sensu_backend'), enterprise_file, '/root/sensu_license.json')
+    scp_to(hosts_as('sensu-backend'), enterprise_file, '/root/sensu_license.json')
     c.sensu_test_enterprise = true
   else
     c.sensu_test_enterprise = false
@@ -111,9 +111,9 @@ EOS
     if RSpec.configuration.sensu_use_agent
       puppetserver = hosts_as('puppetserver')[0]
       if RSpec.configuration.sensu_cluster
-        server = 'sensu_backend1'
+        server = 'sensu-backend1'
       else
-        server = 'sensu_backend'
+        server = 'sensu-backend'
       end
       on hosts, puppet("config set --section main server #{server}")
       on puppetserver, puppet("resource package puppetserver ensure=installed")

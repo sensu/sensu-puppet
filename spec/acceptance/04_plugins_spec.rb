@@ -1,8 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
-  agent = hosts_as('sensu_agent')[0]
-  backend = hosts_as('sensu_backend')[0]
+  agent = hosts_as('sensu-agent')[0]
+  backend = hosts_as('sensu-backend')[0]
   before do
     if fact_on(agent, 'operatingsystem') == 'Debian'
       skip("TODO: package is missing on Debian - See https://github.com/sensu/sensu-plugins-omnibus/issues/3")
@@ -16,8 +16,8 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
       pp = <<-EOS
       class { '::sensu': }
       class { 'sensu::agent':
-        backends    => ['sensu_backend:8081'],
-        entity_name => 'sensu_agent',
+        backends    => ['sensu-backend:8081'],
+        entity_name => 'sensu-agent',
       }
       class { 'sensu::plugins':
         plugins => ['disk-checks'],
@@ -26,7 +26,7 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -69,7 +69,7 @@ describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_backend' { #{pp} }"
+        site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]

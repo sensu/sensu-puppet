@@ -1,8 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::backend class', if: !(RSpec.configuration.sensu_cluster || RSpec.configuration.sensu_full) do
-  backend = hosts_as('sensu_backend')[0]
-  agent = hosts_as('sensu_agent')[0]
+  backend = hosts_as('sensu-backend')[0]
+  agent = hosts_as('sensu-agent')[0]
   context 'backend facts' do
     it 'should work without errors' do
       pp = <<-EOS
@@ -10,7 +10,7 @@ describe 'sensu::backend class', if: !(RSpec.configuration.sensu_cluster || RSpe
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_backend' { #{pp} }"
+        site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -40,7 +40,7 @@ describe 'sensu::backend class', if: !(RSpec.configuration.sensu_cluster || RSpe
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_backend' { #{pp} }"
+        site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]

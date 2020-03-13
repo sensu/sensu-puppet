@@ -1,13 +1,13 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
-  node = hosts_as('sensu_agent')[0]
-  backend = hosts_as('sensu_backend')[0]
+  node = hosts_as('sensu-agent')[0]
+  backend = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
         password => 'P@ssw0rd!',
       }
       class { 'sensu::cli': }
@@ -22,8 +22,8 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-          node 'sensu_agent' { #{pp} }
-          node 'sensu_backend' { #{backend_pp} }
+          node 'sensu-agent' { #{pp} }
+          node 'sensu-backend' { #{backend_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -51,7 +51,7 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
         password => 'supersecret',
       }
       class { 'sensu::cli': }
@@ -66,8 +66,8 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-          node 'sensu_agent' { #{pp} }
-          node 'sensu_backend' { #{backend_pp} }
+          node 'sensu-agent' { #{pp} }
+          node 'sensu-backend' { #{backend_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -92,7 +92,7 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
       pp = <<-EOS
       class { '::sensu':
         use_ssl  => false,
-        api_host => 'sensu_backend',
+        api_host => 'sensu-backend',
         password => 'P@ssw0rd!',
       }
       class { 'sensu::cli': }
@@ -108,8 +108,8 @@ describe 'sensu::cli class', unless: RSpec.configuration.sensu_cluster do
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-          node 'sensu_agent' { #{pp} }
-          node 'sensu_backend' { #{backend_pp} }
+          node 'sensu-agent' { #{pp} }
+          node 'sensu-backend' { #{backend_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
