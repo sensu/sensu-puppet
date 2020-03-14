@@ -1,9 +1,9 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster do
-  node1 = hosts_with_name(hosts, 'sensu_backend1')[0]
-  node2 = hosts_with_name(hosts, 'sensu_backend2')[0]
-  node3 = hosts_with_name(hosts, 'sensu_backend3')[0]
+  node1 = hosts_with_name(hosts, 'sensu-backend1')[0]
+  node2 = hosts_with_name(hosts, 'sensu-backend2')[0]
+  node3 = hosts_with_name(hosts, 'sensu-backend3')[0]
   context 'new cluster' do
     it 'should work without errors' do
       node1_pp = <<-EOS
@@ -37,8 +37,8 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-        node 'sensu_backend1' { #{node1_pp} }
-        node 'sensu_backend2' { #{node2_pp} }
+        node 'sensu-backend1' { #{node1_pp} }
+        node 'sensu-backend2' { #{node2_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -109,8 +109,8 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-        node 'sensu_backend1' { #{pp} }
-        node 'sensu_backend3' { #{node3_pp} }
+        node 'sensu-backend1' { #{pp} }
+        node 'sensu-backend3' { #{node3_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -186,8 +186,8 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-        node 'sensu_backend1' { #{node1_pp} }
-        node 'sensu_backend2' { #{node2_pp} }
+        node 'sensu-backend1' { #{node1_pp} }
+        node 'sensu-backend2' { #{node2_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -259,8 +259,8 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster d
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
-        node 'sensu_backend1' { #{pp} }
-        node 'sensu_backend3' { #{node3_pp} }
+        node 'sensu-backend1' { #{pp} }
+        node 'sensu-backend3' { #{node3_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)

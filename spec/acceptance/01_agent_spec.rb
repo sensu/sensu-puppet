@@ -1,14 +1,14 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
-  node = hosts_as('sensu_agent')[0]
+  node = hosts_as('sensu-agent')[0]
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu': }
       class { 'sensu::agent':
-        backends         => ['sensu_backend:8081'],
-        entity_name      => 'sensu_agent',
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
         subscriptions    => ['base'],
         service_env_vars => { 'SENSU_API_PORT' => '4041' },
         config_hash      => {
@@ -19,7 +19,7 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -33,9 +33,9 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
 
     describe file('/etc/sensu/agent.yml'), :node => node do
       expected_content = {
-        'backend-url'     => ['wss://sensu_backend:8081'],
+        'backend-url'     => ['wss://sensu-backend:8081'],
         'password'        => 'P@ssw0rd!',
-        'name'            => 'sensu_agent',
+        'name'            => 'sensu-agent',
         'subscriptions'   => ['base','linux'],
         'log-level'       => 'info',
         'trusted-ca-file' => '/etc/sensu/ssl/ca.crt',

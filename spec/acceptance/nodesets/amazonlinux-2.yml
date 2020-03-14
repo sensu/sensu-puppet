@@ -1,8 +1,8 @@
 HOSTS:
-  sensu_agent:
+  sensu-agent:
     roles:
       - agent
-      - sensu_agent
+      - sensu-agent
     platform: el-7-x86_64
     hypervisor: docker
     image: amazonlinux:2
@@ -12,10 +12,10 @@ HOSTS:
     docker_image_commands:
       - 'yum install -y wget initscripts which'
     docker_container_name: 'sensu-agent-amazonlinux-2'
-  sensu_backend:
+  sensu-backend:
     roles:
       - agent
-      - sensu_backend
+      - sensu-backend
       - default
     platform: el-7-x86_64
     hypervisor: docker

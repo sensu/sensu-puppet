@@ -1,7 +1,7 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
-  agent = hosts_as('sensu_agent')[0]
+  agent = hosts_as('sensu-agent')[0]
   before do
     if fact_on(agent, 'operatingsystem') == 'Debian'
       skip("TODO: package is missing on Debian - See https://github.com/sensu/sensu-plugins-omnibus/issues/3")
@@ -21,7 +21,7 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -58,7 +58,7 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -90,7 +90,7 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -121,7 +121,7 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -151,7 +151,7 @@ describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu_agent' { #{pp} }"
+        site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]

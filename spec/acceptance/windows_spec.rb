@@ -44,8 +44,8 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     pp = <<-EOS
     class { '::sensu': }
     class { 'sensu::agent':
-      backends         => ['sensu_backend:8081'],
-      entity_name      => 'sensu_agent',
+      backends         => ['sensu-backend:8081'],
+      entity_name      => 'sensu-agent',
       subscriptions    => ['base'],
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
       config_hash      => {
@@ -68,9 +68,9 @@ describe 'sensu::agent class', if: Gem.win_platform? do
 
       describe file('C:\ProgramData\Sensu\config\agent.yml') do
         expected_content = {
-          'backend-url'     => ['wss://sensu_backend:8081'],
+          'backend-url'     => ['wss://sensu-backend:8081'],
           'password'        => 'P@ssw0rd!',
-          'name'            => 'sensu_agent',
+          'name'            => 'sensu-agent',
           'subscriptions'   => ['base','windows'],
           'log-level'       => 'info',
           'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
@@ -97,8 +97,8 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     class { 'sensu::agent':
       package_name   => 'Sensu Agent',
       package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.13.1/sensu-go-agent_5.13.1.5957_en-US.x64.msi',
-      backends       => ['sensu_backend:8081'],
-      entity_name    => 'sensu_agent',
+      backends       => ['sensu-backend:8081'],
+      entity_name    => 'sensu-agent',
       config_hash    => {
         'log-level' => 'info',
       }

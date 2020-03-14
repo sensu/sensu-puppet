@@ -1,8 +1,8 @@
 HOSTS:
-  sensu_agent:
+  sensu-agent:
     roles:
       - agent
-      - sensu_agent
+      - sensu-agent
     platform: el-6-x86_64
     hypervisor: docker
     image: centos:6
@@ -13,10 +13,10 @@ HOSTS:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which'
     docker_container_name: 'sensu-agent-el6'
-  sensu_backend:
+  sensu-backend:
     roles:
       - agent
-      - sensu_backend
+      - sensu-backend
       - default
     platform: el-6-x86_64
     hypervisor: docker

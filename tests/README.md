@@ -11,11 +11,11 @@ sudo su -
 Generate certs
 
 ```
-puppet cert generate sensu_backend --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
-puppet cert generate sensu_backend1 --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
-puppet cert generate sensu_backend2 --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
-puppet cert generate sensu_backend3 --dns_alt_names=localhost,127.0.0.1,sensu_backend,sensu_backend1,sensu_backend2,sensu_backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
-puppet cert generate sensu_agent
+puppet cert generate sensu-backend --dns_alt_names=localhost,127.0.0.1,sensu-backend,sensu-backend1,sensu-backend2,sensu-backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu-backend1 --dns_alt_names=localhost,127.0.0.1,sensu-backend,sensu-backend1,sensu-backend2,sensu-backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu-backend2 --dns_alt_names=localhost,127.0.0.1,sensu-backend,sensu-backend1,sensu-backend2,sensu-backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu-backend3 --dns_alt_names=localhost,127.0.0.1,sensu-backend,sensu-backend1,sensu-backend2,sensu-backend3,sensu-backend.example.com,sensu-backend-peer1.example.com,sensu-backend-peer2.example.com
+puppet cert generate sensu-agent
 ```
 
 Copy certs from vagrant instance to this repo

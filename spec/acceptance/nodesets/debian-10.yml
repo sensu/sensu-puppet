@@ -1,8 +1,8 @@
 HOSTS:
-  sensu_agent:
+  sensu-agent:
     roles:
       - agent
-      - sensu_agent
+      - sensu-agent
     platform: debian-10-amd64
     hypervisor: docker
     image: debian:10
@@ -17,10 +17,10 @@ HOSTS:
       - 'echo "LANG=en_US.UTF-8" > /etc/locale.conf'
       - 'locale-gen en_US.UTF-8'
     docker_container_name: 'sensu-agent-debian10'
-  sensu_backend:
+  sensu-backend:
     roles:
       - agent
-      - sensu_backend
+      - sensu-backend
       - default
     platform: debian-10-amd64
     hypervisor: docker
