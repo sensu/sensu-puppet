@@ -230,4 +230,7 @@ describe Puppet::Type.type(:sensu_mutator) do
   include_examples 'namespace' do
     let(:res) { mutator }
   end
+  include_examples 'labels' do
+    let(:res) { mutator }
+  end
 end

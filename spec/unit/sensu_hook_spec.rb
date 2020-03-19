@@ -228,4 +228,7 @@ describe Puppet::Type.type(:sensu_hook) do
   include_examples 'namespace' do
     let(:res) { hook }
   end
+  include_examples 'labels' do
+    let(:res) { hook }
+  end
 end
