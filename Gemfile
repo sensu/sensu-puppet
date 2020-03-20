@@ -5,6 +5,7 @@ if puppetversion = ENV['PUPPET_GEM_VERSION']
 else
   gem 'puppet', :require => false
 end
+gem 'facter', '< 4.0', :require => false
 
 group :development, :unit_tests do
   gem 'rake'

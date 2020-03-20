@@ -66,16 +66,19 @@ DESC
     * client_key_file: default is `""`
     * default_upn_domain: default is `""`
     * include_nested_groups: Boolean
+
     group_search keys:
     * base_dn: required
     * attribute: default is `member`
     * name_attribute: default is `cn`
     * object_class: default is `group`
+
     user_search Keys:
     * base_dn: required
     * attribute: default is `sAMAccountName`
     * name_attribute: default is `displayName`
     * object_class: default is `person`
+
     binding keys:
     * user_dn: required
     * password: required
