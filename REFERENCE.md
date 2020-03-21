@@ -1195,16 +1195,19 @@ Keys:
 * client_key_file: default is `""`
 * default_upn_domain: default is `""`
 * include_nested_groups: Boolean
+
 group_search keys:
 * base_dn: required
 * attribute: default is `member`
 * name_attribute: default is `cn`
 * object_class: default is `group`
+
 user_search Keys:
 * base_dn: required
 * attribute: default is `sAMAccountName`
 * name_attribute: default is `displayName`
 * object_class: default is `person`
+
 binding keys:
 * user_dn: required
 * password: required
@@ -2719,16 +2722,19 @@ Keys:
 * client_cert_file: default is `""`
 * client_key_file: default is `""`
 * default_upn_domain: default is `""`
+
 group_search keys:
 * base_dn: required
 * attribute: default is `member`
 * name_attribute: default is `cn`
 * object_class: default is `groupOfNames`
+
 user_search Keys:
 * base_dn: required
 * attribute: default is `uid`
 * name_attribute: default is `cn`
 * object_class: default is `person`
+
 binding keys:
 * user_dn: required
 * password: required
