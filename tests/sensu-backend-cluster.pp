@@ -9,7 +9,9 @@ case $facts['networking']['hostname'] {
 }
 
 class { 'sensu::backend':
-  config_hash => {
+  ssl_cert_source => "/vagrant/tests/ssl/certs/sensu-${backend_name}.pem",
+  ssl_key_source  => "/vagrant/tests/ssl/private_keys/sensu-${backend_name}.pem",
+  config_hash     => {
     'etcd-advertise-client-urls'       => "http://${facts['networking']['interfaces']['eth1']['ip']}:2379",
     'etcd-listen-client-urls'          => "http://${facts['networking']['interfaces']['eth1']['ip']}:2379",
     'etcd-listen-peer-urls'            => 'http://0.0.0.0:2380',
