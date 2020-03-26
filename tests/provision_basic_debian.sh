@@ -52,7 +52,7 @@ EOF
 puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu ensure=link target=/vagrant
 
 # setup module dependencies
-puppet module install puppetlabs/stdlib --version 4.25.1
+puppet module install puppetlabs/stdlib --version 5.1.0
 puppet module install puppetlabs/apt --version 4.1.0
 puppet module install richardc-datacat --version 0.6.2
 
