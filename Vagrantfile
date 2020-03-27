@@ -166,6 +166,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "debian8-agent", autostart: false do |agent|
     agent.vm.box = "debian/jessie64"
+    agent.vm.box_version = '8.11.0'
     agent.vm.hostname = 'debian8-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.17"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
