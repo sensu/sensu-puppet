@@ -1,14 +1,11 @@
 # Variables
-$log = "C:/vagrant/puppet-agent.log"
-$agent_url = "https://downloads.puppetlabs.com/windows/puppet5/puppet-agent-x64-latest.msi"
 if ( Get-Command "puppet" -ErrorAction SilentlyContinue ) {
-  Write-Output "Puppet is already installed.  Skipping install of $agent_url"
+  Write-Output "Puppet is already installed."
 } else {
-  Write-Output "Installing Puppet from $agent_url"
-  Write-Output "Log will be written to $log"
-  if ( Test-Path $log ) { Remove-Item $log }
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+  Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
   # Install puppet
-  Start-Process msiexec.exe -Wait -NoNewWindow -ArgumentList @("/i", "$agent_url", "/qn", "/l*", "$log")
+  iex "choco install puppet-agent --yes --version=5.5.19"
 }
 
 $hiera_file = "C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml"

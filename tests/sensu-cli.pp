@@ -9,4 +9,5 @@ class { 'sensu':
 }
 class { 'sensu::cli':
   install_source => $install_source,
+  configure      => false,
 }
