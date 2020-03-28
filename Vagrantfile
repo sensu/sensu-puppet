@@ -166,6 +166,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "debian8-agent", autostart: false do |agent|
     agent.vm.box = "debian/jessie64"
+    # TODO: Use specific version as something broken with 8.11.1
+    # See https://github.com/sensu/sensu-puppet/pull/1234#issuecomment-605355385
     agent.vm.box_version = '8.11.0'
     agent.vm.hostname = 'debian8-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.17"
