@@ -44,4 +44,5 @@ iex "puppet module install richardc-datacat"
 New-Item -Path "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -ItemType directory -Force | Out-Null
 Copy-Item -Path "C:\vagrant\tests\ssl\*" -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl\" -Recurse -Force
 
-iex "puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10"
+iex "puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10 host_aliases=sensu-backend"
+iex "puppet config set --section main certname sensu-agent"

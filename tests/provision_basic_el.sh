@@ -33,7 +33,18 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 puppet module install puppetlabs/stdlib --version ">= 5.1.0 < 7.0.0"
 puppet module install richardc-datacat --version ">= 0.6.2 < 2.0.0"
 
-puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10
+puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10 host_aliases=sensu-backend
+
+name=$(hostname -s)
+if [[ "${name}" == *"agent" ]]; then
+  puppet config set --section main certname sensu-agent
+elif [[ "${name}" == "sensu-backend" ]]; then
+  puppet config set --section main certname sensu-backend
+elif [[ "${name}" == *"peer1" ]]; then
+  puppet config set --section main certname sensu-backend1
+elif [[ "${name}" == *"peer2" ]]; then
+  puppet config set --section main certname sensu-backend2
+fi
 
 [ ! -d /etc/puppetlabs/puppet/ssl ] && mkdir /etc/puppetlabs/puppet/ssl
 cp -r /vagrant/tests/ssl/* /etc/puppetlabs/puppet/ssl/

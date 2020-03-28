@@ -56,7 +56,8 @@ puppet module install puppetlabs/stdlib --version ">= 5.1.0 < 7.0.0"
 puppet module install puppetlabs/apt --version ">= 5.0.1 < 8.0.0"
 puppet module install richardc-datacat --version ">= 0.6.2 < 2.0.0"
 
-puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10
+puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10 host_aliases=sensu-backend
+puppet config set --section main certname sensu-agent
 
 [ ! -d /etc/puppetlabs/puppet/ssl ] && mkdir /etc/puppetlabs/puppet/ssl
 cp -r /vagrant/tests/ssl/* /etc/puppetlabs/puppet/ssl/
