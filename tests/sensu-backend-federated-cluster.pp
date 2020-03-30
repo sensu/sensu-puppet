@@ -7,22 +7,15 @@ file { '/etc/sensu/etcd-ssl':
   before  => Service['sensu-backend'],
 }
 
-case $facts['networking']['hostname'] {
-  default: { fail('hostname must contain peer1 or peer2') }
-  /peer1/: {
-    $cert_name = 'sensu-backend1'
-  }
-  /peer2/: {
-    $cert_name = 'sensu-backend2'
-  }
+class { 'sensu':
+  api_host => $facts['networking']['fqdn'],
 }
-
 class { 'sensu::backend':
   config_hash => {
     'etcd-listen-client-urls'    => 'https://0.0.0.0:2379',
     'etcd-advertise-client-urls' => "https://${facts['networking']['interfaces']['eth1']['ip']}:2379",
-    'etcd-cert-file'             => "/etc/sensu/etcd-ssl/${cert_name}.pem",
-    'etcd-key-file'              => "/etc/sensu/etcd-ssl/${cert_name}-key.pem",
+    'etcd-cert-file'             => "/etc/sensu/etcd-ssl/${trusted['certname']}.pem",
+    'etcd-key-file'              => "/etc/sensu/etcd-ssl/${trusted['certname']}-key.pem",
     'etcd-trusted-ca-file'       => '/etc/sensu/etcd-ssl/ca.pem',
     'etcd-client-cert-auth'      => true,
   },

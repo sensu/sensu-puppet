@@ -166,26 +166,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "debian8-agent", autostart: false do |agent|
     agent.vm.box = "debian/jessie64"
+    # TODO: Use specific version as something broken with 8.11.1
+    # See https://github.com/sensu/sensu-puppet/pull/1234#issuecomment-605355385
+    agent.vm.box_version = '8.11.0'
     agent.vm.hostname = 'debian8-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.17"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
-  end
-
-  config.vm.define "win2008r2-agent", autostart: false do |agent|
-    agent.vm.box = "opentable/win-2008r2-standard-amd64-nocm"
-    agent.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
-    end
-    agent.vm.hostname = 'win2008r2-agent'
-    agent.vm.network  :private_network, ip: "192.168.52.25"
-    agent.vm.network "forwarded_port", host: 3390, guest: 3389, auto_correct: true
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
-    agent.vm.provision :shell, :inline => '$env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" ; iex "puppet apply -v C:/vagrant/tests/sensu-agent.pp"'
-    agent.vm.provision :shell, :inline => '$env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" ; iex "puppet apply -v C:/vagrant/tests/sensu-cli.pp"'
-    agent.vm.provision :shell, :inline => '$env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" ; iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
   end
 
   config.vm.define "win2012r2-agent", autostart: false do |agent|
