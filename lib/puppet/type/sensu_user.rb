@@ -86,7 +86,7 @@ DESC
   end
 
   newproperty(:disabled, :boolean => true) do
-    desc "The state of the user’s account."
+    desc "The state of the user's account."
     newvalues(:true, :false)
     defaultto :false
   end

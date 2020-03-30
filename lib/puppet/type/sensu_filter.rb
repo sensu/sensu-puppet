@@ -64,7 +64,7 @@ DESC
   end
 
   newproperty(:runtime_assets, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "Assets to be applied to the filter’s execution context."
+    desc "Assets to be applied to the filter's execution context."
     newvalues(/.*/, :absent)
   end
 
