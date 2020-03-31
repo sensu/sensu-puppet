@@ -35,9 +35,10 @@
     * [Bolt Tasks](#bolt-tasks)
 4. [Reference](#reference)
     * [Facts](#facts)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
-7. [License](#license)
+5. [Examples](#examples)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
+8. [License](#license)
 
 ## Module description
 
@@ -1077,6 +1078,21 @@ facter -p sensuctl
   built => "2018-12-18T21:31:11+0000"
 }
 ```
+
+## Examples
+
+Examples can be found in the [examples](https://github.com/sensu/sensu-puppet/tree/master/examples) directory.
+
+* [Contact Routing](https://github.com/sensu/sensu-puppet/blob/master/examples/contact_routing.pp) - Example of contact routing
+* [Email Alerts](https://github.com/sensu/sensu-puppet/blob/master/examples/email_alerts.pp) - Example of setting up e-mail alerts
+* [InfluxDB Handler](https://github.com/sensu/sensu-puppet/blob/master/examples/influxdb_handler.pp) - Example of setting up InfluxDB handler
+* [LDAP](https://github.com/sensu/sensu-puppet/blob/master/examples/ldap.pp) - Example of setting up LDAP authentication
+* [Logging](https://github.com/sensu/sensu-puppet/blob/master/examples/logging.pp) - Example of setting up improved logging
+* [Pagerduty with Secrets Env Vars](https://github.com/sensu/sensu-puppet/blob/master/examples/pagerduty-with-secrets-env.pp) - Setting up Pagerduty using environment variable secrets
+* [Pagerduty with Secrets vault](https://github.com/sensu/sensu-puppet/blob/master/examples/pagerduty-with-secrets-vault.pp) - Setting up Pagerduty using secrets vault
+* [PostgreSQL with Replication](https://github.com/sensu/sensu-puppet/tree/master/examples/postgresql-replication) - Contains example manifests of setting up Sensu backend and PostgreSQL with PostgreSQL replication.
+* [PostgreSQL with SSL](https://github.com/sensu/sensu-puppet/tree/master/examples/postgresql-ssl) - Contains example manifests of setting up Sensu backend and PostgreSQL to communicate using SSL.
+* [Slack Alerts](https://github.com/sensu/sensu-puppet/blob/master/examples/slack_alerts.pp) - Example of setting up Slack alerts
 
 ## Limitations
 
