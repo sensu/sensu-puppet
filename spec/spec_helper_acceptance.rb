@@ -16,6 +16,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
   c.add_setting :sensu_use_agent, default: false
+  c.add_setting :examples_dir, default: nil
   c.add_setting :sensu_examples, default: []
   # Necessary to be present even though only used by Windows tests
   c.add_setting :skip_apply, default: false
@@ -44,8 +45,8 @@ RSpec.configure do |c|
     add_ci_repo = false
   end
 
-  examples_dir = File.join(project_dir, 'examples')
-  c.sensu_examples = Dir["#{examples_dir}/*.pp"]
+  c.examples_dir = File.join(project_dir, 'examples')
+  c.sensu_examples = Dir["#{c.examples_dir}/*.pp"]
 
   if RSpec.configuration.sensu_use_agent
     puppetserver = hosts_as('puppetserver')[0]
