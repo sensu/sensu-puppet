@@ -2395,7 +2395,7 @@ Filter expressions to be compared with event data.
 
 Valid values: /.*/, absent
 
-Assets to be applied to the filter’s execution context.
+Assets to be applied to the filter's execution context.
 
 ##### `namespace`
 
@@ -2620,7 +2620,7 @@ Default value: 60
 
 Valid values: `true`, `false`
 
-If the Sensu agent writes JSON serialized Sensu entity and check data to the command process’ STDIN.
+If the Sensu agent writes JSON serialized Sensu entity and check data to the command process' STDIN.
 
 Default value: false
 
@@ -3585,7 +3585,7 @@ Groups to which the user belongs.
 
 Valid values: `true`, `false`
 
-The state of the user’s account.
+The state of the user's account.
 
 Default value: false
 
