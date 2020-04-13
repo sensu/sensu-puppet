@@ -18,6 +18,18 @@ describe 'sensu::agent::label' do
         })
       }
 
+      it { is_expected.not_to contain_sensu__agent__config_entry('redact-label-cpu.warning') }
+
+      context 'redact' do
+        let(:params) { { :redact => true, :value => '90' } }
+        it {
+          is_expected.to contain_sensu__agent__config_entry('redact-label-cpu.warning').with({
+            'key'   => 'redact',
+            'value' => ['cpu.warning'],
+          })
+        }
+      end
+
       context 'all params' do
         let(:params) do
           {

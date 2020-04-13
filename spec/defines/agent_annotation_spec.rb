@@ -18,6 +18,18 @@ describe 'sensu::agent::annotation' do
         })
       }
 
+      it { is_expected.not_to contain_sensu__agent__config_entry('redact-annotation-cpu.title') }
+
+      context 'redact' do
+        let(:params) { { :redact => true, :value => 'foo' } }
+        it {
+          is_expected.to contain_sensu__agent__config_entry('redact-annotation-cpu.title').with({
+            'key'   => 'redact',
+            'value' => ['cpu.title'],
+          })
+        }
+      end
+
       context 'all params' do
         let(:params) do
           {
