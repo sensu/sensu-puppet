@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.8.0](https://github.com/sensu/sensu-puppet/tree/v4.8.0) (2020-04-13)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.7.1...v4.8.0)
+
+### Added
+
+- Support defining agent annotations, labels and config entrys via defined type [\#1240](https://github.com/sensu/sensu-puppet/pull/1240) ([treydock](https://github.com/treydock))
+
 ## [v4.7.1](https://github.com/sensu/sensu-puppet/tree/v4.7.1) (2020-04-07)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.7.0...v4.7.1)
@@ -36,6 +44,7 @@
 - Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 - Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
 - Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
+- Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -52,7 +61,6 @@
 
 ### Added
 
-- Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
 
@@ -157,6 +165,10 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.13.0...v3.14.0)
 
+### Added
+
+- Support defining agent and backend service environment variables [\#1160](https://github.com/sensu/sensu-puppet/pull/1160) ([treydock](https://github.com/treydock))
+
 ## [v3.13.0](https://github.com/sensu/sensu-puppet/tree/v3.13.0) (2019-11-26)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.12.0...v3.13.0)
@@ -208,8 +220,8 @@
 
 ### Added
 
-- Support defining agent and backend service environment variables [\#1160](https://github.com/sensu/sensu-puppet/pull/1160) ([treydock](https://github.com/treydock))
-- Deprecate defining single asset builds [\#1140](https://github.com/sensu/sensu-puppet/pull/1140) ([treydock](https://github.com/treydock))
+- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
+- Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
 
 ## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
 
@@ -217,10 +229,8 @@
 
 ### Added
 
-- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
 - Add sensu\_resources type that will handle resource purging [\#1158](https://github.com/sensu/sensu-puppet/pull/1158) ([treydock](https://github.com/treydock))
 - Add sensu\_gem package provider [\#1156](https://github.com/sensu/sensu-puppet/pull/1156) ([treydock](https://github.com/treydock))
-- Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
 - Install Windows agent via chocolatey [\#1152](https://github.com/sensu/sensu-puppet/pull/1152) ([treydock](https://github.com/treydock))
 - Add sensu\_bonsai\_asset type [\#1149](https://github.com/sensu/sensu-puppet/pull/1149) ([treydock](https://github.com/treydock))
 - Replace unit test instance variables with let [\#1143](https://github.com/sensu/sensu-puppet/pull/1143) ([treydock](https://github.com/treydock))
@@ -233,10 +243,6 @@
 ## [v3.8.0](https://github.com/sensu/sensu-puppet/tree/v3.8.0) (2019-09-02)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.7.0...v3.8.0)
-
-### Added
-
-- Testing improvements [\#1139](https://github.com/sensu/sensu-puppet/pull/1139) ([treydock](https://github.com/treydock))
 
 ## [v3.7.0](https://github.com/sensu/sensu-puppet/tree/v3.7.0) (2019-08-26)
 

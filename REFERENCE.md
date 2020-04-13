@@ -26,6 +26,9 @@ _Private Classes_
 
 **Defined types**
 
+* [`sensu::agent::annotation`](#sensuagentannotation): Add agent annotation
+* [`sensu::agent::config_entry`](#sensuagentconfig_entry): Add custom agent config entry
+* [`sensu::agent::label`](#sensuagentlabel): Add agent label
 * [`sensu::agent::subscription`](#sensuagentsubscription): Add agent subscription
 
 **Resource types**
@@ -1097,6 +1100,120 @@ Hash of sensu_user resources
 Default value: {}
 
 ## Defined types
+
+### sensu::agent::annotation
+
+Add agent annotation
+
+#### Examples
+
+##### 
+
+```puppet
+sensu::agent::annotation { 'fatigue_check/occurrences:': value => '2' }
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::agent::annotation` defined type.
+
+##### `key`
+
+Data type: `String[1]`
+
+Key of the annotation to add to agent.yml, defaults to `$name`.
+
+Default value: $name
+
+##### `value`
+
+Data type: `String[1]`
+
+Label value to add to agent.yml
+
+##### `order`
+
+Data type: `String[1]`
+
+Order of the datacat fragment
+
+Default value: '50'
+
+### sensu::agent::config_entry
+
+Add custom agent config entry
+
+#### Examples
+
+##### 
+
+```puppet
+sensu::agent::config_entry { 'disable-api'': value => true }
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::agent::config_entry` defined type.
+
+##### `key`
+
+Data type: `String[1]`
+
+Key of the config entry to add to agent.yml, defaults to `$name`.
+
+Default value: $name
+
+##### `value`
+
+Data type: `Any`
+
+Config entry value to add to agent.yml
+
+##### `order`
+
+Data type: `String[1]`
+
+Order of the datacat fragment
+
+Default value: '50'
+
+### sensu::agent::label
+
+Add agent label
+
+#### Examples
+
+##### 
+
+```puppet
+sensu::agent::label { 'contacts': value => 'ops@example.com' }
+```
+
+#### Parameters
+
+The following parameters are available in the `sensu::agent::label` defined type.
+
+##### `key`
+
+Data type: `String[1]`
+
+Key of the label to add to agent.yml, defaults to `$name`.
+
+Default value: $name
+
+##### `value`
+
+Data type: `String[1]`
+
+Label value to add to agent.yml
+
+##### `order`
+
+Data type: `String[1]`
+
+Order of the datacat fragment
+
+Default value: '50'
 
 ### sensu::agent::subscription
 
