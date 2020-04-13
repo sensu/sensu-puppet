@@ -1,17 +1,18 @@
 require 'spec_helper'
 
-describe 'sensu::agent::subscription' do
+describe 'sensu::agent::config_entry' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
       let(:node) { 'localhost' }
-      let(:title) { 'apache' }
+      let(:title) { 'keepalive-interval' }
+      let(:params) { { :value => 20 } }
 
       it {
-        is_expected.to contain_datacat_fragment('sensu_agent_config-subscription-apache').with({
+        is_expected.to contain_datacat_fragment('sensu_agent_config-entry-keepalive-interval').with({
           'target' => 'sensu_agent_config',
           'data'   => {
-            'subscriptions' => ['apache'],
+            'keepalive-interval' => 20,
           },
           'order'  => '50',
         })
@@ -20,15 +21,16 @@ describe 'sensu::agent::subscription' do
       context 'all params' do
         let(:params) do
           {
-            :subscription => 'foo',
-            :order        => '01',
+            :value  => '90',
+            :key    => 'foo',
+            :order  => '01',
           }
         end
         it {
-          is_expected.to contain_datacat_fragment('sensu_agent_config-subscription-apache').with({
+          is_expected.to contain_datacat_fragment('sensu_agent_config-entry-keepalive-interval').with({
             'target' => 'sensu_agent_config',
             'data'   => {
-              'subscriptions' => ['foo'],
+              'foo' => '90',
             },
             'order'  => '01',
           })

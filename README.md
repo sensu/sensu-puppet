@@ -17,6 +17,8 @@
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
     * [Advanced agent - Subscriptions](#advanced-agent---subscriptions)
+    * [Advanced agent - Annotations and Labels](#advanced-agent---annotations-and-labels)
+    * [Advanced agent - Custom config entries](#advanced-agent---custom-config-entries)
     * [Advanced SSL](#advanced-ssl)
     * [Enterprise support](#enterprise-support)
     * [Contact routing](#contact-routing)
@@ -218,7 +220,7 @@ The output should look like the following:
 
 The following example will configure sensu-backend, sensu-agent on backend and add a check.
 By default this module will configure the backend to use Puppet's SSL certificate and CA.
-It's advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
+It is advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
 
 ```puppet
   class { 'sensu':
@@ -346,7 +348,7 @@ class { 'sensu::agent':
 ### Advanced agent
 
 If you wish to change the `agent` password you must provide the new and old password.
-It's advisable to set `show_diff` to `false` to avoid exposing the agent password.
+It is advisable to set `show_diff` to `false` to avoid exposing the agent password.
 
 ```puppet
 class { 'sensu::backend':
@@ -363,7 +365,7 @@ class { 'sensu::agent':
 
 ### Advanced agent - Subscriptions
 
-It's possible to define subscriptions in many locations and the values merged into `agent.yml`:
+It is possible to define subscriptions in many locations and the values merged into `agent.yml`:
 
 ```
 class { 'sensu::agent':
@@ -378,6 +380,59 @@ sensu::agent::subscription { 'apache': }
 ```
 
 The resulting `agent.yml` would contain subscriptions for both `base` and `apache`.
+
+**NOTE**: Subscriptions defined using the `sensu::agent` class and `sensu::agent::subscription` are merged to produce the final subscription array.
+
+### Advanced agent - Annotations and Labels
+
+It is possible to define annotations and labels in many locations and the values merged into `agent.yml`:
+
+```puppet
+class { 'sensu::agent':
+  labels      => { 'location' => 'uswest', 'contacts' => 'ops@example.com' },
+  annotations => { 'cpu.warning' => '90', 'cpu.critical' => '100' },
+}
+```
+
+Then in a profile class you can define the following:
+
+```puppet
+sensu::agent::label { 'contacts': value => 'devs@example.com' }
+sensu::agent::label { 'environment': value => 'dev' }
+sensu::agent::annotation { 'cpu.warning': value => '75' }
+sensu::agent::annotation { 'fatigue_check/occurrences': value => '2' }
+```
+
+The resulting `agent.yml` will contain the following:
+
+```yaml
+labels:
+  location: uswest
+  contacts: devs@example.com
+  environment: dev
+annotations:
+  cpu.warning: '75'
+  cpu.critical: '100'
+  fatigue_check/occurrences: '2'
+```
+
+**NOTE** `sensu::agent::annotation` and `sensu::agent::label` take precedence over values set by the class `sensu::agent`
+
+### Advanced agent - Custom config entries
+
+It is possible to define config entries for `agent.yml` in many locations in Puppet:
+
+```puppet
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+```
+
+This would add the following to `agent.yml`:
+
+```yaml
+keepalive-interval: 20
+```
+
+**NOTE** `sensu::agent::config_entry` takes precendence over values defined in `sensu::agent` class.
 
 ### Advanced SSL
 
@@ -823,7 +878,7 @@ The first step will not fully add the node to the cluster until the second step 
 ### Sensu backend federation
 
 This module supports defining Etcd replicators which allows resources to be sent from one Sensu cluster to another cluster.
-It's necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
+It is necessary that Etcd be listening on an interface that can be accessed by other Sensu backends.
 First configure backend Etcd to listen on an interface besides localhost and also use SSL:
 
 ```puppet
@@ -869,7 +924,7 @@ sensu_cluster_federation { 'us-west-2a':
 }
 ```
 
-It's also possible to add a backend to an existing Sensu federated cluster.
+It is also possible to add a backend to an existing Sensu federated cluster.
 The following example adds the API URL https://sensu-backend-site3.example.com:8080 to the federated cluster named us-west-2a.
 
 ```puppet
