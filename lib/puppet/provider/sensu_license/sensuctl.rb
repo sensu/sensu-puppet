@@ -17,7 +17,7 @@ Puppet::Type.type(:sensu_license).provide(:sensuctl, :parent => Puppet::Provider
 
   def create
     begin
-      sensuctl(['create','-f',resource[:file]])
+      output = sensuctl(['create','-f',resource[:file]])
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "sensuctl create failed\nOutput: #{output}\nError message: #{e.message}"
     end
@@ -25,7 +25,7 @@ Puppet::Type.type(:sensu_license).provide(:sensuctl, :parent => Puppet::Provider
 
   def destroy
     begin
-      sensuctl(['delete','-f',resource[:file]])
+      output = sensuctl(['delete','-f',resource[:file]])
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "sensuctl create failed\nOutput: #{output}\nError message: #{e.message}"
     end
