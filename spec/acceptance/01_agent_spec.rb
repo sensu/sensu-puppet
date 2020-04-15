@@ -21,8 +21,8 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
       sensu::agent::subscription { 'linux': }
       sensu::agent::label { 'cpu.warning': value => '90' }
       sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz2' }
-      sensu::agent::annotation { 'foo': value => 'bar' }
+      sensu::agent::label { 'bar': value => 'baz2', redact => true }
+      sensu::agent::annotation { 'foo': value => 'bar', redact => true }
       sensu::agent::annotation { 'cpu.message': value => 'bar' }
       sensu::agent::config_entry { 'keepalive-interval': value => 20 }
       EOS
@@ -56,6 +56,7 @@ describe 'sensu::agent class', unless: RSpec.configuration.sensu_cluster do
           'cpu.message' => 'bar',
           'foo'         => 'bar',
         },
+        'redact'             => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','bar','foo'],
         'log-level'          => 'info',
         'trusted-ca-file'    => '/etc/sensu/ssl/ca.crt',
         'keepalive-interval' => 20,

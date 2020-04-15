@@ -351,17 +351,35 @@ If you wish to change the `agent` password you must provide the new and old pass
 It is advisable to set `show_diff` to `false` to avoid exposing the agent password.
 
 ```puppet
-class { 'sensu::backend':
+class { 'sensu':
   agent_password     => 'supersecret',
   agent_old_password => 'P@ssw0rd!',
 }
 class { 'sensu::agent':
-  config_hash => {
-    'password' => 'supersecret',
-  },
-  show_diff   => false,
+  show_diff => false,
 }
 ```
+
+The `config_hash` parameter allows custom configuration for `agent.yml` outside the `sensu::agent` class parameters.
+
+```puppet
+class { 'sensu::agent':
+  config_hash => {
+    'log-level' => 'debug',
+  },
+}
+```
+
+The following parameters in `sensu::agent` class are used to populate `agent.yml`:
+
+* entity_name - Passed to `name` key in `agent.yml`
+* subscriptions
+* annotations
+* labels
+* namespace
+* redact
+
+Agent configurations can also be set via `sensu::agent::config_entry`. See [Advanced agent - Custom config entries](#advanced-agent---custom-config-entries).
 
 ### Advanced agent - Subscriptions
 
@@ -417,6 +435,19 @@ annotations:
 ```
 
 **NOTE** `sensu::agent::annotation` and `sensu::agent::label` take precedence over values set by the class `sensu::agent`
+
+If you wish to redact a label or annotation you can use the `redact` parameter and the key will be added to the `redact` list in `agent.yml`:
+
+```puppet
+sensu::agent::label { 'secret':
+  value  => 'mysecret',
+  redact => true,
+}
+sensu::agent::annotation { 'ec2_access_key':
+  value  => 'some-key',
+  redact => true,
+}
+```
 
 ### Advanced agent - Custom config entries
 

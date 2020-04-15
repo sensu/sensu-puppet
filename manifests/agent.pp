@@ -58,6 +58,11 @@
 # @param namespace
 #   The agent namespace
 #   Passing `namespace` as part of `config_hash` takes precedence
+# @param redact
+#   The agent entity redact list
+#   Passing `redact` as part of `config_hash` takes precedence
+#   Defaults come from Sensu documentation:
+#   https://docs.sensu.io/sensu-go/latest/reference/agent/#security-configuration-flags
 # @param show_diff
 #   Sets show_diff parameter for agent.yml configuration file
 # @param log_file
@@ -81,6 +86,7 @@ class sensu::agent (
   Optional[Hash] $annotations = undef,
   Optional[Hash] $labels = undef,
   Optional[String] $namespace = undef,
+  Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
 ) {
@@ -116,6 +122,7 @@ class sensu::agent (
     'annotations'   => $annotations,
     'labels'        => $labels,
     'namespace'     => $namespace,
+    'redact'        => $redact,
     'password'      => $sensu::agent_password,
   }
   $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
