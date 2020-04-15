@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_plugin', if: RSpec.configuration.sensu_full do
+describe 'sensu_plugin', if: RSpec.configuration.sensu_mode == 'types' do
   agent = hosts_as('sensu-agent')[0]
   before do
     if fact_on(agent, 'operatingsystem') == 'Debian'

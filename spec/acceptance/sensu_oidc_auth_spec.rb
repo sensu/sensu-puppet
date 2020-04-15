@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_full do
+describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   before do
     if ! RSpec.configuration.sensu_test_enterprise

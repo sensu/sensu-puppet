@@ -82,6 +82,15 @@ The class tests are ordered with numeric prefixes to control the order they run.
 
 The type of `sensu_check` will have its tests in `sensu_check_spec.rb`. The tests to run are adding resources, updating resources, and deleting resources. Some extra test cases should be added based on any complexities of a given type.
 
+The resources `sensu_cluster_role`, `sensu_cluster_role_binding`, `sensu_role`, and `sensu_role_binding` are grouped into `sensu_rbac_resources_spec.rb` with the goal of speeding up testing times.
+
+By default only tests for class resources run which is the same as setting the enviornment variable `BEAKER_sensu_mode=base`.  The other possible modes are the following:
+
+* `BEAKER_sensu_mode=types` - Run tests for all types
+* `BEAKER_sensu_mode=full` - Run same tests as base but also runs more complex tests like PostgreSQL and Bolt integrations
+* `BEAKER_sensu_mode=cluster` - Run cluster tests
+* `BEAKER_sensu_mode=examples` - Run the test around examples in the `examples` directory
+
 Technologies for acceptance testing:
 
 * Docker - provides running system where configurations can be made and tests can be executed

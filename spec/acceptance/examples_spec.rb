@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'examples', if: RSpec.configuration.sensu_full do
+describe 'examples', if: RSpec.configuration.sensu_mode == 'examples' do
   agent = hosts_as('sensu-agent')[0]
   backend = hosts_as('sensu-backend')[0]
 
@@ -42,7 +42,7 @@ describe 'examples', if: RSpec.configuration.sensu_full do
       sleep 5
     end
 
-    describe command("PGPASSWORD='sensu' psql -U sensu -h sensu-agent -c \"select * from events WHERE sensu_check = 'keepalive' LIMIT 1;\""), :node => backend do
+    describe command("PGPASSWORD='sensu' psql -U sensu -h sensu-agent -c \"select * from events WHERE sensu_check = 'keepalive' LIMIT 1;\""), :node => agent do
       its(:stdout) { should contain('keepalive') }
     end
   end

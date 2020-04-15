@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_api providers', if: RSpec.configuration.sensu_full do
+describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
   agent = hosts_as('sensu-agent')[0]
   backend = hosts_as('sensu-backend')[0]
   context 'setup' do

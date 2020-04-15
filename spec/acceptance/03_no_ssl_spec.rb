@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu without SSL', unless: RSpec.configuration.sensu_cluster do
+describe 'sensu without SSL', if: ['base','full'].include?(RSpec.configuration.sensu_mode) do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
   context 'backend' do
