@@ -64,52 +64,82 @@ matrix:
     stage: acceptance
   - rvm: 2.4.9
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=full
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=full
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=full
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.4.9
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=examples
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes BEAKER_sensu_use_agent=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=examples
+    script: bundle exec rake beaker
+    stage: acceptance
+  - rvm: 2.5.7
+    services: docker
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=examples
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.4.9
     services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=types
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=types
+    script: bundle exec rake beaker
+    stage: acceptance
+  - rvm: 2.5.7
+    services: docker
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=types
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.4.9
     services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=types BEAKER_sensu_use_agent=yes
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes BEAKER_sensu_use_agent=yes
+    env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=types BEAKER_sensu_use_agent=yes
+    script: bundle exec rake beaker
+    stage: acceptance
+  - rvm: 2.4.9
+    services: docker
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=cluster
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.5.7
     services: docker
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=cluster
+    script: bundle exec rake beaker
+    stage: acceptance
+  - rvm: 2.4.9
+    services: docker
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=cluster BEAKER_sensu_use_agent=yes
+    script: bundle exec rake beaker
+    stage: acceptance
+  - rvm: 2.5.7
+    services: docker
+    env: BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=cluster BEAKER_sensu_use_agent=yes
+    script: bundle exec rake beaker
+    stage: acceptance
+  - rvm: 2.5.7
+    services: docker
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=cluster
     script: bundle exec rake beaker
     stage: acceptance
   - rvm: 2.4.9
@@ -242,9 +272,13 @@ matrix:
   - rvm: 2.5.7
     env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_full=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=full
   - rvm: 2.5.7
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_cluster=yes
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=examples
+  - rvm: 2.5.7
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=types
+  - rvm: 2.5.7
+    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7-cluster" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=cluster
   - rvm: 2.5.7
     env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-8" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7

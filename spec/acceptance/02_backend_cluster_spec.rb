@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_cluster do
+describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == 'cluster' do
   node1 = hosts_with_name(hosts, 'sensu-backend1')[0]
   node2 = hosts_with_name(hosts, 'sensu-backend2')[0]
   node3 = hosts_with_name(hosts, 'sensu-backend3')[0]

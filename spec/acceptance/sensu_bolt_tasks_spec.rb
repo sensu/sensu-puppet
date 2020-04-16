@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu event task', if: RSpec.configuration.sensu_full do
+describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
   context 'setup agent' do
@@ -57,7 +57,7 @@ describe 'sensu event task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
+describe 'sensu silenced task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   context 'setup agent' do
     it 'should work without errors' do
@@ -104,7 +104,7 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
+describe 'sensu install_agent task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
@@ -148,7 +148,7 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
+describe 'sensu check_execute task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
@@ -186,7 +186,7 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_full do
+describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   context 'setup' do
     it 'should work without errors' do
@@ -209,7 +209,7 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
+describe 'sensu apikey task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   context 'setup' do
     it 'should work without errors' do
@@ -251,7 +251,7 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
+describe 'sensu agent_event task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
@@ -285,7 +285,7 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_full do
   end
 end
 
-describe 'sensu bolt inventory', if: RSpec.configuration.sensu_full do
+describe 'sensu bolt inventory', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do

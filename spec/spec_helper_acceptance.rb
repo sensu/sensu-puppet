@@ -10,8 +10,7 @@ collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet5'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 
 RSpec.configure do |c|
-  c.add_setting :sensu_full, default: false
-  c.add_setting :sensu_cluster, default: false
+  c.add_setting :sensu_mode, default: 'base'
   c.add_setting :sensu_enterprise_file, default: nil
   c.add_setting :sensu_test_enterprise, default: false
   c.add_setting :sensu_manage_repo, default: true
@@ -20,8 +19,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_examples, default: []
   # Necessary to be present even though only used by Windows tests
   c.add_setting :skip_apply, default: false
-  c.sensu_full = (ENV['BEAKER_sensu_full'] == 'yes' || ENV['BEAKER_sensu_full'] == 'true')
-  c.sensu_cluster = (ENV['BEAKER_sensu_cluster'] == 'yes' || ENV['BEAKER_sensu_cluster'] == 'true')
+  c.sensu_mode = ENV['BEAKER_sensu_mode'] unless ENV['BEAKER_sensu_mode'].nil?
   c.sensu_use_agent = (ENV['BEAKER_sensu_use_agent'] == 'yes' || ENV['BEAKER_sensu_use_agent'] == 'true')
   if ENV['SENSU_ENTERPRISE_FILE']
     enterprise_file = File.absolute_path(ENV['SENSU_ENTERPRISE_FILE'])
@@ -71,7 +69,7 @@ RSpec.configure do |c|
       on setup_nodes, puppet('module', 'install', 'puppetlabs-postgresql', '--version', '">= 6.0.0 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
     # Dependencies only needed to test some examples
-    if RSpec.configuration.sensu_full
+    if RSpec.configuration.sensu_mode == 'examples'
       on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '4.0.0')
       on setup_nodes, puppet('module', 'install', 'camptocamp-systemd', '--version', '2.8.0')
       on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
@@ -111,7 +109,7 @@ EOS
 
     if RSpec.configuration.sensu_use_agent
       puppetserver = hosts_as('puppetserver')[0]
-      if RSpec.configuration.sensu_cluster
+      if RSpec.configuration.sensu_mode == 'cluster'
         server = 'sensu-backend1'
       else
         server = 'sensu-backend'
@@ -126,15 +124,17 @@ EOS
     end
 
     # Setup Puppet Bolt
-    on setup_nodes, puppet("resource package puppet-bolt ensure=installed")
-    bolt_cfg = <<-EOS
+    if RSpec.configuration.sensu_mode == 'full'
+      on setup_nodes, puppet("resource package puppet-bolt ensure=installed")
+      bolt_cfg = <<-EOS
 modulepath: "/etc/puppetlabs/code/modules:/etc/puppetlabs/code/environments/production/modules"
 ssh:
   host-key-check: false
   user: root
   password: root
 EOS
-    on setup_nodes, 'mkdir -p -m 0755 /root/.puppetlabs/bolt'
-    create_remote_file(setup_nodes, '/root/.puppetlabs/bolt/bolt.yaml', bolt_cfg)
+      on setup_nodes, 'mkdir -p -m 0755 /root/.puppetlabs/bolt'
+      create_remote_file(setup_nodes, '/root/.puppetlabs/bolt/bolt.yaml', bolt_cfg)
+    end
   end
 end

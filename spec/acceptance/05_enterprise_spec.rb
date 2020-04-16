@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::backend class', unless: RSpec.configuration.sensu_cluster do
+describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuration.sensu_mode) do
   node = hosts_as('sensu-backend')[0]
   before do
     if ! RSpec.configuration.sensu_test_enterprise

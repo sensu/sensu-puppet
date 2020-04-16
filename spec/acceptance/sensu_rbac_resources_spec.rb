@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu RBAC resources', if: RSpec.configuration.sensu_full do
+describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do

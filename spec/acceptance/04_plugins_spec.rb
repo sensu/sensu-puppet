@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::plugins class', unless: RSpec.configuration.sensu_cluster do
+describe 'sensu::plugins class', if: ['base','full'].include?(RSpec.configuration.sensu_mode) do
   agent = hosts_as('sensu-agent')[0]
   backend = hosts_as('sensu-backend')[0]
   before do

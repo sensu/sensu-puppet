@@ -10,7 +10,7 @@ describe 'sensu::repo::community', :type => :class do
       let(:facts) { facts }
       makecache = false
       case os
-      when /(redhat-6|centos-6|amazon-2017|amazon-2018)-x86_64/
+      when /(redhat-6|centos-6|amazon-201\d)-x86_64/
         baseurl = "https://packagecloud.io/sensu/community/el/6/$basearch"
       when /(redhat-7|centos-7|amazon-2)-x86_64/
         baseurl = "https://packagecloud.io/sensu/community/el/7/$basearch"
