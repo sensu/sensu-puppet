@@ -1,5 +1,22 @@
 # Changelog
 
+## [v4.9.0](https://github.com/sensu/sensu-puppet/tree/v4.9.0) (2020-04-16)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.8.0...v4.9.0)
+
+### Added
+
+- Better support for agent redact [\#1241](https://github.com/sensu/sensu-puppet/pull/1241) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Fix sensu\_license error handling [\#1244](https://github.com/sensu/sensu-puppet/pull/1244) ([treydock](https://github.com/treydock))
+
+### Merged Pull Requests
+
+- Change how it's determined when to run specific acceptance tests [\#1243](https://github.com/sensu/sensu-puppet/pull/1243) ([treydock](https://github.com/treydock))
+- Attempt to speed up acceptance tests [\#1242](https://github.com/sensu/sensu-puppet/pull/1242) ([treydock](https://github.com/treydock))
+
 ## [v4.8.0](https://github.com/sensu/sensu-puppet/tree/v4.8.0) (2020-04-13)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.7.1...v4.8.0)
@@ -44,7 +61,6 @@
 - Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 - Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
 - Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
-- Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -61,6 +77,7 @@
 
 ### Added
 
+- Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
 
@@ -147,8 +164,6 @@
 - Document upcoming breaking changes [\#1167](https://github.com/sensu/sensu-puppet/pull/1167) ([treydock](https://github.com/treydock))
 - BREAKING: Move cli resources to sensu::cli class [\#1164](https://github.com/sensu/sensu-puppet/pull/1164) ([treydock](https://github.com/treydock))
 - BREAKING: Update type properties to map to Sensu Go specifications [\#1154](https://github.com/sensu/sensu-puppet/pull/1154) ([treydock](https://github.com/treydock))
-- BREAKING: Refactor how sensu\_ldap\_auth and sensu\_ad\_auth define servers [\#1142](https://github.com/sensu/sensu-puppet/pull/1142) ([treydock](https://github.com/treydock))
-- BREAKING: Remove sensu\_event and sensu\_silenced types [\#1141](https://github.com/sensu/sensu-puppet/pull/1141) ([treydock](https://github.com/treydock))
 
 ### Added
 
@@ -233,7 +248,6 @@
 - Add sensu\_gem package provider [\#1156](https://github.com/sensu/sensu-puppet/pull/1156) ([treydock](https://github.com/treydock))
 - Install Windows agent via chocolatey [\#1152](https://github.com/sensu/sensu-puppet/pull/1152) ([treydock](https://github.com/treydock))
 - Add sensu\_bonsai\_asset type [\#1149](https://github.com/sensu/sensu-puppet/pull/1149) ([treydock](https://github.com/treydock))
-- Replace unit test instance variables with let [\#1143](https://github.com/sensu/sensu-puppet/pull/1143) ([treydock](https://github.com/treydock))
 
 ### Fixed
 

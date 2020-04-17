@@ -417,6 +417,17 @@ Passing `namespace` as part of `config_hash` takes precedence
 
 Default value: `undef`
 
+##### `redact`
+
+Data type: `Array[String[1]]`
+
+The agent entity redact list
+Passing `redact` as part of `config_hash` takes precedence
+Defaults come from Sensu documentation:
+https://docs.sensu.io/sensu-go/latest/reference/agent/#security-configuration-flags
+
+Default value: ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret']
+
 ##### `show_diff`
 
 Data type: `Boolean`
@@ -1131,6 +1142,14 @@ Data type: `String[1]`
 
 Label value to add to agent.yml
 
+##### `redact`
+
+Data type: `Boolean`
+
+Boolean that sets if this entry should be added to redact list
+
+Default value: `false`
+
 ##### `order`
 
 Data type: `String[1]`
@@ -1206,6 +1225,14 @@ Default value: $name
 Data type: `String[1]`
 
 Label value to add to agent.yml
+
+##### `redact`
+
+Data type: `Boolean`
+
+Boolean that sets if this entry should be added to redact list
+
+Default value: `false`
 
 ##### `order`
 
