@@ -188,8 +188,6 @@ describe Puppet::Type.type(:sensu_entity) do
 
   # Hash properties
   [
-    :labels,
-    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
@@ -258,6 +256,9 @@ describe Puppet::Type.type(:sensu_entity) do
     let(:res) { entity }
   end
   include_examples 'labels' do
+    let(:res) { entity }
+  end
+  include_examples 'annotations' do
     let(:res) { entity }
   end
 end

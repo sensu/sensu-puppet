@@ -209,8 +209,6 @@ describe Puppet::Type.type(:sensu_asset) do
   # Hash properties
   [
     :headers,
-    :labels,
-    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
@@ -322,6 +320,9 @@ describe Puppet::Type.type(:sensu_asset) do
     let(:res) { asset }
   end
   include_examples 'labels' do
+    let(:res) { asset }
+  end
+  include_examples 'annotations' do
     let(:res) { asset }
   end
 end

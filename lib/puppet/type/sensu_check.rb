@@ -2,6 +2,7 @@ require_relative '../../puppet_x/sensu/type'
 require_relative '../../puppet_x/sensu/array_property'
 require_relative '../../puppet_x/sensu/array_of_hashes_property'
 require_relative '../../puppet_x/sensu/hash_property'
+require_relative '../../puppet_x/sensu/hash_of_strings_property'
 require_relative '../../puppet_x/sensu/integer_property'
 require_relative '../../puppet_x/sensu/secrets_property'
 
@@ -255,11 +256,11 @@ DESC
     defaultto 'default'
   end
 
-  newproperty(:labels, :parent => PuppetX::Sensu::HashProperty) do
+  newproperty(:labels, :parent => PuppetX::Sensu::HashOfStringsProperty) do
     desc "Custom attributes to include with event data, which can be queried like regular attributes."
   end
 
-  newproperty(:annotations, :parent => PuppetX::Sensu::HashProperty) do
+  newproperty(:annotations, :parent => PuppetX::Sensu::HashOfStringsProperty) do
     desc "Arbitrary, non-identifying metadata to include with event data."
   end
 
