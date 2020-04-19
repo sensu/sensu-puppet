@@ -374,7 +374,7 @@ Default value: `undef`
 
 ##### `entity_name`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 The value for agent.yml `name`.
 Passing `name` as part of `config_hash` takes precedence
@@ -383,7 +383,7 @@ Default value: `undef`
 
 ##### `subscriptions`
 
-Data type: `Optional[Array]`
+Data type: `Optional[Array[String[1]]]`
 
 The agent subscriptions to define in agent.yml
 Passing `subscriptions` as part of `config_hash` takes precedence
@@ -392,7 +392,7 @@ Default value: `undef`
 
 ##### `annotations`
 
-Data type: `Optional[Hash]`
+Data type: `Optional[Hash[String[1],String]]`
 
 The agent annotations value for agent.yml
 Passing `annotations` as part of `config_hash` takes precedence
@@ -401,7 +401,7 @@ Default value: `undef`
 
 ##### `labels`
 
-Data type: `Optional[Hash]`
+Data type: `Optional[Hash[String[1],String]]`
 
 The agent labels value for agent.yml
 Passing `labels` as part of `config_hash` takes precedence
@@ -410,7 +410,7 @@ Default value: `undef`
 
 ##### `namespace`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 The agent namespace
 Passing `namespace` as part of `config_hash` takes precedence
@@ -1138,7 +1138,7 @@ Default value: $name
 
 ##### `value`
 
-Data type: `String[1]`
+Data type: `String`
 
 Label value to add to agent.yml
 
@@ -1222,7 +1222,7 @@ Default value: $name
 
 ##### `value`
 
-Data type: `String[1]`
+Data type: `String`
 
 Label value to add to agent.yml
 

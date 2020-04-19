@@ -1,11 +1,12 @@
 # Changelog
 
-## [v4.9.0](https://github.com/sensu/sensu-puppet/tree/v4.9.0) (2020-04-16)
+## [v4.10.0](https://github.com/sensu/sensu-puppet/tree/v4.10.0) (2020-04-19)
 
-[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.8.0...v4.9.0)
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.8.0...v4.10.0)
 
 ### Added
 
+- Improved validations around labels and annotations [\#1245](https://github.com/sensu/sensu-puppet/pull/1245) ([treydock](https://github.com/treydock))
 - Better support for agent redact [\#1241](https://github.com/sensu/sensu-puppet/pull/1241) ([treydock](https://github.com/treydock))
 
 ### Fixed
