@@ -192,8 +192,6 @@ describe Puppet::Type.type(:sensu_handler) do
 
   # Hash properties
   [
-    :labels,
-    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
@@ -339,6 +337,9 @@ describe Puppet::Type.type(:sensu_handler) do
     let(:res) { handler }
   end
   include_examples 'labels' do
+    let(:res) { handler }
+  end
+  include_examples 'annotations' do
     let(:res) { handler }
   end
 end

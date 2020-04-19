@@ -299,6 +299,21 @@ describe 'sensu::agent', :type => :class do
         end
       end
 
+      context 'labels and annotations validations' do
+        invalid_combinations = {
+          'labels'      => [1, true, ['foo'], {'foo' => 'bar'}],
+          'annotations' => [1, true, ['foo'], {'foo' => 'bar'}],
+        }
+        invalid_combinations.each_pair do |param, values|
+          values.each do |value|
+            context "#{param} invalid for #{value.class}" do
+              let(:params) { { param => { 'key' => value } } }
+              it { is_expected.to compile.and_raise_error(/expects a String value/) }
+            end
+          end
+        end
+      end
+
       # Test various backend values
       [
         ['ws://localhost:8081'],

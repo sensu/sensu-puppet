@@ -191,8 +191,6 @@ describe Puppet::Type.type(:sensu_filter) do
 
   # Hash properties
   [
-    :labels,
-    :annotations,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
@@ -243,6 +241,9 @@ describe Puppet::Type.type(:sensu_filter) do
     let(:res) { filter }
   end
   include_examples 'labels' do
+    let(:res) { filter }
+  end
+  include_examples 'annotations' do
     let(:res) { filter }
   end
 end
