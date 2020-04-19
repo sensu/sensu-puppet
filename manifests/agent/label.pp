@@ -13,7 +13,7 @@
 #   Order of the datacat fragment
 #
 define sensu::agent::label (
-  String[1] $value,
+  String $value,
   String[1] $key   = $name,
   Boolean $redact = false,
   String[1] $order = '50',
