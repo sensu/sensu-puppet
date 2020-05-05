@@ -67,7 +67,7 @@ DESC
     desc "The name of the check."
     validate do |value|
       unless value =~ PuppetX::Sensu::Type.name_regex
-        raise ArgumentError, "sensu_check name invalid"
+        raise ArgumentError, "sensu_check name invalid - check name #{value}"
       end
     end
     defaultto do
