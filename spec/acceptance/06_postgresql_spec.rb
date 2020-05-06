@@ -2,11 +2,6 @@ require 'spec_helper_acceptance'
 
 describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
   node = hosts_as('sensu-backend')[0]
-  before do
-    if ! RSpec.configuration.sensu_test_enterprise
-      skip("Skipping postgresql tests")
-    end
-  end
   context 'adds postgresql datastore' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
