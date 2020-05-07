@@ -24,12 +24,12 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
 
     it "should have backend facts" do
       version = on(backend, 'facter -p sensu_backend.version').stdout
-      expect(version).to match(/^[0-9\.]+$/)
+      expect(version).to match(/^[0-9\.]+/)
     end
 
     it "should have sensuctl facts" do
       version = on(backend, 'facter -p sensuctl.version').stdout
-      expect(version).to match(/^[0-9\.]+$/)
+      expect(version).to match(/^[0-9\.]+/)
     end
   end
 
@@ -54,7 +54,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
 
     it "should have agent facts" do
       version = on(agent, 'facter -p sensu_agent.version').stdout
-      expect(version).to match(/^[0-9\.]+$/)
+      expect(version).to match(/^[0-9\.]+/)
     end
   end
 end
