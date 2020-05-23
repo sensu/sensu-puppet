@@ -33,6 +33,7 @@ Puppet::Type.newtype(:sensu_bonsai_asset) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 DESC
 

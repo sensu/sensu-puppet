@@ -27,6 +27,7 @@ Puppet::Type.newtype(:sensu_handler) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_filter` - Puppet will autorequire `sensu_filter` resources defined in `filters` property.
 * `sensu_mutator` - Puppet will autorequire `sensu_mutator` resource defined for `mutator` property.

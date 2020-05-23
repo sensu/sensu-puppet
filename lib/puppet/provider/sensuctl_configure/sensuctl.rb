@@ -64,7 +64,6 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     backend = which('sensu-backend')
     return if backend.nil?
     return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:password])
-    return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:old_password])
     return if Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], bootstrap_password)
     custom_environment = {
       'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME' => resource[:username],
@@ -88,11 +87,7 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
     cmd << resource[:username]
     cmd << '--password'
     if exists?
-      if resource[:old_password] && Puppet::Provider::SensuAPI.auth_test(resource[:url], resource[:username], resource[:old_password])
-        cmd << resource[:old_password]
-      else
-        cmd << resource[:password]
-      end
+      cmd << resource[:password]
     else
       # Test if default password works and use that password first
       # This supports bootstrapping sensuctl on fresh installs of sensu backend

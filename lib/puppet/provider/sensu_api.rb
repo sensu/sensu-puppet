@@ -9,7 +9,6 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     attr_accessor :url
     attr_accessor :username
     attr_accessor :password
-    attr_accessor :old_password
     attr_accessor :access_token
     attr_accessor :refresh_token
   end
@@ -17,8 +16,6 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
   def self.update_access_token
     auth_success = self.auth(@username, @password)
     return if auth_success
-    auth_old_success = self.auth(@username, @old_password)
-    return if auth_old_success
     auth_token_success = self.auth_token()
     return if auth_token_success
   end

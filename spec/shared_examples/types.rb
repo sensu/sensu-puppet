@@ -29,9 +29,10 @@ RSpec.shared_examples 'name_regex' do
   end
 end
 
-RSpec.shared_examples 'autorequires' do |namespace, configure|
+RSpec.shared_examples 'autorequires' do |namespace, configure, user|
   namespace = true if namespace.nil?
   configure = true if configure.nil?
+  user = true if user.nil?
 
   it 'should autorequire Package[sensu-go-cli]' do
     package = Puppet::Type.type(:package).new(:name => 'sensu-go-cli')
@@ -84,6 +85,18 @@ RSpec.shared_examples 'autorequires' do |namespace, configure|
       catalog.add_resource namespace
       rel = res.autorequire[0]
       expect(rel.source.ref).to eq(namespace.ref)
+      expect(rel.target.ref).to eq(res.ref)
+    end
+  end
+
+  if user
+    it 'should autorequire sensu_user' do
+      validator = Puppet::Type.type(:sensu_user).new(:name => 'admin', :password => 'password')
+      catalog = Puppet::Resource::Catalog.new
+      catalog.add_resource res
+      catalog.add_resource validator
+      rel = res.autorequire[0]
+      expect(rel.source.ref).to eq(validator.ref)
       expect(rel.target.ref).to eq(res.ref)
     end
   end

@@ -34,7 +34,6 @@ describe 'sensu::backend', :type => :class do
           should contain_sensu_user('admin').with({
             'ensure'                    => 'present',
             'password'                  => 'P@ssw0rd!',
-            'old_password'              => nil,
             'groups'                    => ['cluster-admins'],
             'disabled'                  => 'false',
             'configure'                 => 'true',
@@ -47,7 +46,6 @@ describe 'sensu::backend', :type => :class do
             'ensure'       => 'present',
             'disabled'     => 'false',
             'password'     => 'P@ssw0rd!',
-            'old_password' => nil,
             'groups'       => ['system:agents'],
           })
         }
@@ -196,7 +194,6 @@ describe 'sensu::backend', :type => :class do
           should contain_sensu_user('admin').with({
             'ensure'                    => 'present',
             'password'                  => 'P@ssw0rd!',
-            'old_password'              => nil,
             'groups'                    => ['cluster-admins'],
             'disabled'                  => 'false',
             'configure'                 => 'true',

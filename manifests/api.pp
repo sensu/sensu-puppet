@@ -9,10 +9,9 @@ class sensu::api {
   include sensu
 
   sensu_api_config { 'sensu':
-    url          => $sensu::api_url,
-    username     => 'admin',
-    password     => $sensu::password,
-    old_password => $sensu::old_password,
+    url      => $sensu::api_url,
+    username => 'admin',
+    password => $sensu::password,
   }
 
   sensu_api_validator { 'sensu':

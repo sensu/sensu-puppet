@@ -185,7 +185,6 @@ class sensu::backend (
   sensu_user { 'admin':
     ensure                    => 'present',
     password                  => $sensu::password,
-    old_password              => $sensu::old_password,
     groups                    => ['cluster-admins'],
     disabled                  => false,
     configure                 => true,
@@ -195,11 +194,10 @@ class sensu::backend (
 
   if $manage_agent_user {
     sensu_user { 'agent':
-      ensure       => 'present',
-      disabled     => $agent_user_disabled,
-      password     => $sensu::agent_password,
-      old_password => $sensu::agent_old_password,
-      groups       => ['system:agents'],
+      ensure   => 'present',
+      disabled => $agent_user_disabled,
+      password => $sensu::agent_password,
+      groups   => ['system:agents'],
     }
   }
 

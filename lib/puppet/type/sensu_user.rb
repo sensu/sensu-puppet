@@ -15,10 +15,9 @@ Puppet::Type.newtype(:sensu_user) do
 
 @example Change a user's password
   sensu_user { 'test'
-    ensure       => 'present',
-    password     => 'newpassword',
-    old_password => 'supersecret',
-    groups       => ['users'],
+    ensure   => 'present',
+    password => 'newpassword',
+    groups   => ['users'],
   }
 
 **Autorequires**:
@@ -29,7 +28,7 @@ Puppet::Type.newtype(:sensu_user) do
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires(false)
+  add_autorequires(false, true, false)
 
   ensurable do
     desc "The basic property that the resource should be in."
@@ -53,6 +52,10 @@ DESC
 
   newproperty(:password) do
     desc "The user's password."
+
+    validate do |value|
+      raise ArgumentError, "password must be at least 8 characters long" unless value.size >= 8
+    end
 
     def insync?(is)
       if @resource[:disabled].to_sym == :true
@@ -78,7 +81,10 @@ DESC
   end
 
   newparam(:old_password) do
-    desc "The user's old password, needed in order to change a user's password"
+    desc "DEPRECATED - The user's old password, needed in order to change a user's password"
+    validate do |value|
+      Puppet.warning("Sensu_user[#{@resource[:name]}]: The old_password parameter is unnecessary and will be removed in a future release")
+    end
   end
 
   newproperty(:groups, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do

@@ -6,7 +6,7 @@ module PuppetX
         %r{^[\w.\-:]+$}
       end
 
-      def add_autorequires(namespace=true, require_configure=true)
+      def add_autorequires(namespace=true, require_configure=true, require_admin=true)
         autorequire(:package) do
           ['sensu-go-cli']
         end
@@ -28,6 +28,12 @@ module PuppetX
         if namespace
           autorequire(:sensu_namespace) do
             [ self[:namespace] ]
+          end
+        end
+
+        if require_admin
+          autorequire(:sensu_user) do
+            ['admin']
           end
         end
       end

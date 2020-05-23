@@ -16,7 +16,7 @@ Puppet::Type.newtype(:sensuctl_configure) do
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires(false, false)
+  add_autorequires(false, false, false)
 
   ensurable
 
@@ -35,11 +35,6 @@ DESC
   newparam(:password) do
     desc "Password to use with sensuctl configure"
   end
-
-  newparam(:old_password) do
-    desc "The previous sensuctl password, needed in order to change passwords"
-  end
-
 
   newproperty(:trusted_ca_file) do
     desc "Path to trusted CA"

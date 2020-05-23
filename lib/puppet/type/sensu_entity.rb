@@ -24,6 +24,7 @@ Puppet::Type.newtype(:sensu_entity) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration.handler` property.
 DESC

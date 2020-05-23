@@ -5,7 +5,7 @@ describe Puppet::Type.type(:sensu_user) do
   let(:default_config) do
     {
       name: 'test',
-      password: 'foobar',
+      password: 'password',
     }
   end
   let(:config) do
@@ -67,8 +67,6 @@ describe Puppet::Type.type(:sensu_user) do
 
   # String properties
   [
-    :password,
-    :old_password,
     :configure_url,
     :configure_trusted_ca_file,
   ].each do |property|
@@ -199,7 +197,17 @@ describe Puppet::Type.type(:sensu_user) do
     end
   end
 
-  include_examples 'autorequires', false do
+  describe 'password' do
+    it 'accepts value' do
+      expect(user[:password]).to eq('password')
+    end
+    it 'has minimum length' do
+      config[:password] = 'foo'
+      expect { user }.to raise_error(Puppet::Error, /8 characters long/)
+    end
+  end
+
+  include_examples 'autorequires', false, true, false do
     let(:res) { user }
   end
 

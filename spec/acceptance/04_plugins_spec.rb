@@ -58,8 +58,7 @@ describe 'sensu::plugins class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'P@ssw0rd!',
-        old_password => 'supersecret',
+        password => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       class { 'sensu::plugins':

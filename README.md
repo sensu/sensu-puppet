@@ -217,12 +217,12 @@ The output should look like the following:
 
 The following example will configure sensu-backend, sensu-agent on backend and add a check.
 By default this module will configure the backend to use Puppet's SSL certificate and CA.
-It is advisable to not rely on the default password. Changing the password requires providing the previous password via `old_password`.
+It is advisable to not rely on the default password.
+**NOTE** When changing the password value, it's necessary to run Puppet on the backend first to update the `admin` password.
 
 ```puppet
   class { 'sensu':
-    password     => 'supersecret',
-    old_password => 'P@ssw0rd!',
+    password => 'supersecret',
   }
   include sensu::backend
   include sensu::agent
@@ -299,7 +299,6 @@ sensu::api_host: sensu-backend.example.com
 sensu::api_port: 8080
 sensu::username: admin
 sensu::password: supersecret
-sensu::old_password: 'P@ssw0rd!'
 ```
 
 ### Manage Windows Agent
@@ -349,8 +348,7 @@ It is advisable to set `show_diff` to `false` to avoid exposing the agent passwo
 
 ```puppet
 class { 'sensu':
-  agent_password     => 'supersecret',
-  agent_old_password => 'P@ssw0rd!',
+  agent_password => 'supersecret',
 }
 class { 'sensu::agent':
   show_diff => false,
@@ -703,8 +701,7 @@ Example installing extension on backend:
 
 ```puppet
   class { 'sensu':
-    password     => 'supersecret',
-    old_password => 'P@ssw0rd!',
+    password => 'supersecret',
   }
   include sensu::backend
   class { 'sensu::plugins':
@@ -716,8 +713,7 @@ The `extensions` parameter can also be a Hash that sets the version:
 
 ```puppet
   class { 'sensu':
-    password     => 'supersecret',
-    old_password => 'P@ssw0rd!',
+    password => 'supersecret',
   }
   include sensu::backend
   class { 'sensu::plugins':
@@ -731,8 +727,7 @@ You can uninstall extensions by passing `ensure` as `absent`.
 
 ```puppet
   class { 'sensu':
-    password     => 'supersecret',
-    old_password => 'P@ssw0rd!',
+    password => 'supersecret',
   }
   include sensu::backend
   class { 'sensu::plugins':

@@ -27,14 +27,28 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
 
   describe 'create' do
     it 'should create a user' do
-      expect(resource.provider).to receive(:sensuctl).with(['user', 'create', 'test', '--password', 'P@ssw0rd!', '--groups', 'test'])
+      allow(resource.provider).to receive(:password_hash).with('P@ssw0rd!').and_return('$2a$10$GbFbz24mWIOiUqYhoG6gj.Q1rsNJF0F82H9r6rhij7UutFn1Xq/fq')
+      expected_spec = {
+        :username => 'test',
+        :groups   => ['test'],
+        :password_hash => '$2a$10$GbFbz24mWIOiUqYhoG6gj.Q1rsNJF0F82H9r6rhij7UutFn1Xq/fq',
+        :disabled => false,
+      }
+      expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
     end
     it 'should create user and reconfigure sensuctl' do
       resource[:configure] = true
-      expect(resource.provider).to receive(:sensuctl).with(['user', 'create', 'test', '--password', 'P@ssw0rd!', '--groups', 'test'])
+      allow(resource.provider).to receive(:password_hash).with('P@ssw0rd!').and_return('$2a$10$GbFbz24mWIOiUqYhoG6gj.Q1rsNJF0F82H9r6rhij7UutFn1Xq/fq')
+      expected_spec = {
+        :username => 'test',
+        :groups   => ['test'],
+        :password_hash => '$2a$10$GbFbz24mWIOiUqYhoG6gj.Q1rsNJF0F82H9r6rhij7UutFn1Xq/fq',
+        :disabled => false,
+      }
+      expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
       expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','P@ssw0rd!','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
@@ -43,58 +57,43 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
   end
 
   describe 'flush' do
-    before(:each) do
-      hash = resource.provider.instance_variable_get(:@property_hash)
-      hash[:groups] = ['admin']
-      resource.provider.instance_variable_set(:@property_hash, hash)
-    end
-
     it 'should update a user password' do
-      resource[:old_password] = 'foo'
-      expect(resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(true)
-      expect(resource.provider).to receive(:sensuctl).with(['user', 'change-password', 'test', '--current-password', 'foo', '--new-password', 'foobar'])
-      resource.provider.password = 'foobar'
+      allow(resource.provider).to receive(:password_hash).with('password').and_return('$2a$10$QByqGyx1jXOnfzKT5dKcYuMlwo4oJc4dujGO4CecXXODaLlHlOzl6')
+      expected_spec = {
+        :username => 'test',
+        :groups   => ['test'],
+        :password_hash => '$2a$10$QByqGyx1jXOnfzKT5dKcYuMlwo4oJc4dujGO4CecXXODaLlHlOzl6',
+        :disabled => false,
+      }
+      expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
+      resource.provider.password = 'password'
       resource.provider.flush
     end
     it 'should update a user password and reconfigure' do
       resource[:configure] = true
-      resource[:old_password] = 'foo'
-      expect(resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(true)
-      expect(resource.provider).to receive(:sensuctl).with(['user', 'change-password', 'test', '--current-password', 'foo', '--new-password', 'foobar'])
-      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','foobar','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
-      resource.provider.password = 'foobar'
-      resource.provider.flush
-    end
-    it 'should require old_password to update a user password' do
-      resource.provider.password = 'foobar'
-      expect { resource.provider.flush }.to raise_error(Puppet::Error, /old_password is manditory when changing a password/)
-    end
-    it 'should fail if old_password is invalid' do
-      resource[:old_password] = 'foo'
-      resource.provider.password = 'foobar'
-      expect(resource.provider).to receive(:password_insync?).with('test', 'foo').and_return(false)
-      expect { resource.provider.flush }.to raise_error(Puppet::Error, /old_password given for test is incorrect/)
-    end
-    it 'should add missing groups' do
-      expect(resource.provider).to receive(:sensuctl).with(['user','add-group','test','test'])
-      resource.provider.groups = ['admin','test']
-      resource.provider.flush
-    end
-    it 'should remove groups' do
-      expect(resource.provider).to receive(:sensuctl).with(['user','remove-group','test','admin'])
-      resource.provider.groups = []
-      resource.provider.flush
-    end
-    it 'should disable a user' do
-      resource[:disabled] = false
-      expect(resource.provider).to receive(:sensuctl).with(['user','disable','test','--skip-confirm'])
-      resource.provider.disabled = true
+      allow(resource.provider).to receive(:password_hash).with('password').and_return('$2a$10$QByqGyx1jXOnfzKT5dKcYuMlwo4oJc4dujGO4CecXXODaLlHlOzl6')
+      expected_spec = {
+        :username => 'test',
+        :groups   => ['test'],
+        :password_hash => '$2a$10$QByqGyx1jXOnfzKT5dKcYuMlwo4oJc4dujGO4CecXXODaLlHlOzl6',
+        :disabled => false,
+      }
+      expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
+      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','password','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
+      resource.provider.password = 'password'
       resource.provider.flush
     end
     it 'should disable a user' do
       resource[:disabled] = true
-      expect(resource.provider).to receive(:sensuctl).with(['user','reinstate','test'])
-      resource.provider.disabled = false
+      allow(resource.provider).to receive(:password_hash).with('P@ssw0rd!').and_return('$2a$10$GbFbz24mWIOiUqYhoG6gj.Q1rsNJF0F82H9r6rhij7UutFn1Xq/fq')
+      expected_spec = {
+        :username => 'test',
+        :groups   => ['test'],
+        :password_hash => '$2a$10$GbFbz24mWIOiUqYhoG6gj.Q1rsNJF0F82H9r6rhij7UutFn1Xq/fq',
+        :disabled => true,
+      }
+      expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
+      resource.provider.disabled = true
       resource.provider.flush
     end
   end

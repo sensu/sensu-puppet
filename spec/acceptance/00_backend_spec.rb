@@ -6,8 +6,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         include_default_resources => false,
@@ -40,8 +39,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         include_default_resources => true,
@@ -65,8 +63,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
@@ -99,8 +96,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend': }
       class { 'sensu::agent':
@@ -135,8 +131,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         agent_user_disabled => true,
@@ -161,8 +156,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password      => 'P@ssw0rd!',
-        old_password  => 'supersecret',
+        password => 'P@ssw0rd!',
       }
       class { 'sensu::backend':
         tessen_ensure => 'absent',

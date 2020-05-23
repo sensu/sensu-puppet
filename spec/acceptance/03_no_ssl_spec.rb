@@ -7,9 +7,8 @@ describe 'sensu without SSL', if: ['base','full'].include?(RSpec.configuration.s
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        use_ssl      => false,
-        password     => 'P@ssw0rd!',
-        old_password => 'supersecret',
+        use_ssl  => false,
+        password => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       sensu_entity { 'sensu-agent':
