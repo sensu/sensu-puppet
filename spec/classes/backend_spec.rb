@@ -39,6 +39,8 @@ describe 'sensu::backend', :type => :class do
             'configure'                 => 'true',
             'configure_url'             => 'https://test.example.com:8080',
             'configure_trusted_ca_file' => '/etc/sensu/ssl/ca.crt',
+            'provider'                  => 'sensu_api',
+            'before'                    => 'Sensuctl_configure[puppet]',
           })
         }
         it {
@@ -199,6 +201,8 @@ describe 'sensu::backend', :type => :class do
             'configure'                 => 'true',
             'configure_url'             => 'http://test.example.com:8080',
             'configure_trusted_ca_file' => 'absent',
+            'provider'                  => 'sensu_api',
+            'before'                    => 'Sensuctl_configure[puppet]',
           })
         }
 
@@ -219,6 +223,24 @@ describe 'sensu::backend', :type => :class do
         }
 
         it { should contain_service('sensu-backend').without_notify }
+
+        it {
+          should contain_exec('sensu-backend init').with({
+            'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
+            'refreshonly' => 'true',
+            'environment' => [
+              'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
+              'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=P@ssw0rd!',
+            ],
+            'returns'     => [0, 3],
+            'subscribe'   => 'Package[sensu-go-backend]',
+            'require'     => 'Sensu_api_validator[sensu]',
+            'before'      => [
+              'Sensu_user[admin]',
+              'Sensuctl_configure[puppet]',
+            ],
+          })
+        }
 
         context 'when puppet_hostcert undefined' do
           let(:facts) { facts.merge(puppet_hostcert: nil) }

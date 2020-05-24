@@ -183,6 +183,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       on hosts, 'systemctl stop sensu-backend'
       on hosts, 'rm -rf /var/lib/sensu/sensu-backend/etcd/*'
       on hosts, 'rm -rf /root/.config'
+      on hosts, 'puppet resource package sensu-go-backend ensure=absent'
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS

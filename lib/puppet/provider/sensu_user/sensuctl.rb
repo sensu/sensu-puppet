@@ -102,6 +102,7 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         configure_cmd << '--trusted-ca-file'
         configure_cmd << resource[:configure_trusted_ca_file]
       end
+      Puppet.notice('Executing sensuctl configure')
       sensuctl(configure_cmd)
     end
     @property_hash[:ensure] = :present
@@ -134,6 +135,7 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
           configure_cmd << '--trusted-ca-file'
           configure_cmd << resource[:configure_trusted_ca_file]
         end
+        Puppet.notice('Executing sensuctl configure')
         sensuctl(configure_cmd)
       end
     end

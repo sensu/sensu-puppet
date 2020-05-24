@@ -155,7 +155,7 @@ describe Puppet::Type.type(:sensuctl_configure) do
     expect(rel.target.ref).to eq(configure.ref)
   end
 
-  include_examples 'autorequires', false, false, false do
+  include_examples 'autorequires', false, false do
     let(:res) { configure }
   end
 

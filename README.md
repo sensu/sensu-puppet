@@ -1176,6 +1176,8 @@ Examples can be found in the [examples](https://github.com/sensu/sensu-puppet/tr
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 
+When changing the `sensu::password` value, it's necessary to run Puppet on the backend first to update the `admin` password.
+
 ### Notes regarding support
 
 This module is built for use with Puppet versions 5 and 6 and the ruby

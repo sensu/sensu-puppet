@@ -12,11 +12,12 @@ Puppet::Type.newtype(:sensuctl_configure) do
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
 DESC
 
   extend PuppetX::Sensu::Type
-  add_autorequires(false, false, false)
+  add_autorequires(false, false)
 
   ensurable
 
