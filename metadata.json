@@ -15,6 +15,10 @@
     {
       "name": "richardc/datacat",
       "version_requirement": ">= 0.6.0 < 2.0.0"
+    },
+    {
+      "name": "puppetlabs/postgresql",
+      "version_requirement": ">= 6.4.0 < 7.0.0"
     }
   ],
   "operatingsystem_support": [
