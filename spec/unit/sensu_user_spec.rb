@@ -207,6 +207,16 @@ describe Puppet::Type.type(:sensu_user) do
     end
   end
 
+  it 'should autorequire sensu_user' do
+    validator = Puppet::Type.type(:sensu_user).new(:name => 'admin', :password => 'password')
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource user
+    catalog.add_resource validator
+    rel = user.autorequire[0]
+    expect(rel.source.ref).to eq(validator.ref)
+    expect(rel.target.ref).to eq(user.ref)
+  end
+
   include_examples 'autorequires', false, true, false do
     let(:res) { user }
   end

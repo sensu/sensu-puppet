@@ -25,6 +25,7 @@ Puppet::Type.newtype(:sensu_user) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 DESC
 
   extend PuppetX::Sensu::Type
@@ -111,6 +112,14 @@ DESC
   newparam(:configure_trusted_ca_file) do
     desc "Path to trusted CA to use with 'sensuctl configure'"
     defaultto('/etc/sensu/ssl/ca.crt')
+  end
+
+  autorequire(:sensu_user) do
+    if self[:name] == 'admin'
+      []
+    else
+      ['admin']
+    end
   end
 
   validate do
