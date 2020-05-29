@@ -172,10 +172,7 @@ For systems using `yum` and Puppet >= 6.0.0:
 For Windows:
   * [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey) module (`>= 3.0.0 < 5.0.0`)
   * [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
-  * [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.    0 < 5.0.0`)
-
-For PostgreSQL datastore support:
-* [puppetlabs/postgresql](https://forge.puppet.com/puppetlabs/postgresql) module (`>= 6.0.0 < 7.0.0`)
+  * [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`)
 
 ### Beginning with Sensu
 
