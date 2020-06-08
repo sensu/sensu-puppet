@@ -152,6 +152,35 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     end
   end
 
+  context 'handles removal of sensuctl config' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+      }
+      include sensu::backend
+      EOS
+
+      on node, 'rm -rf /root/.config'
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    describe service('sensu-backend'), :node => node do
+      it { should be_enabled }
+      it { should be_running }
+    end
+  end
+
   context 'reset admin password and opt-out tessen' do
     it 'should work without errors' do
       pp = <<-EOS

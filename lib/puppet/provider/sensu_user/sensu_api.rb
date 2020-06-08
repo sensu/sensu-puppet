@@ -9,7 +9,7 @@ Puppet::Type.type(:sensu_user).provide(:sensu_api, :parent => Puppet::Provider::
   def self.instances
     users = []
 
-    data = api_request('users')
+    data = api_request('users', nil, {:failonfail => false})
 
     data.each do |d|
       user = {}
