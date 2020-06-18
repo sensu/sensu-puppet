@@ -66,6 +66,7 @@ describe 'sensu::cli', :type => :class do
         end
 
         it { should contain_sensuctl_config('sensu').without_chunk_size }
+        it { should contain_sensuctl_config('sensu').with_validate_namespaces('true') }
 
         it {
           should contain_sensuctl_configure('puppet').with({
@@ -97,6 +98,13 @@ describe 'sensu::cli', :type => :class do
         else
           it { should compile.with_all_deps }
         end
+      end
+
+      context 'with validate_namespaces => false' do
+        let(:pre_condition) do
+          "class { 'sensu': validate_namespaces => false }"
+        end
+        it { should contain_sensuctl_config('sensu').with_validate_namespaces('false') }
       end
 
       context 'with use_ssl => false' do

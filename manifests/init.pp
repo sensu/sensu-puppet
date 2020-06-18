@@ -59,6 +59,8 @@
 #   The sensu agent password
 # @param agent_old_password
 #   DEPRECATED - The sensu agent old password needed when changing agent_password
+# @param validate_namespaces
+#   Determines if sensuctl and sensu_api types will validate their namespace exists
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
@@ -79,6 +81,7 @@ class sensu (
   Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
   Optional[String] $agent_old_password = undef,
+  Boolean $validate_namespaces = true,
 ) {
 
   if $old_password {

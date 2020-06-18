@@ -10,6 +10,11 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   class << self
     attr_accessor :chunk_size
     attr_accessor :path
+    attr_accessor :validate_namespaces
+  end
+
+  def validate_namespaces
+    self.class.validate_namespaces
   end
 
   def self.config_path
