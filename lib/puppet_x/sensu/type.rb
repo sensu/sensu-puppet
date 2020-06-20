@@ -50,12 +50,17 @@ module PuppetX
           end
           @catalog_namespaces = catalog_namespaces
         end
+        # Check if namespace is in catalog
+        if (resource[:ensure] && resource[:ensure].to_sym != :absent) && catalog_namespaces.include?(resource[:namespace])
+          return true
+        end
         if ! resource.provider.validate_namespaces.nil? && resource.provider.validate_namespaces.to_s.to_sym == :false
           namespaces = catalog_namespaces
         else
           namespaces = resource.provider.namespaces()
         end
-        if (resource[:ensure] && resource[:ensure].to_sym != :absent) && !( catalog_namespaces.include?(resource[:namespace]) || namespaces.include?(resource[:namespace]) )
+        # Check if namespace exists on system (not defined in catalog)
+        if (resource[:ensure] && resource[:ensure].to_sym != :absent) && ! namespaces.include?(resource[:namespace])
           raise Puppet::Error, "Sensu namespace '#{resource[:namespace]}' must be defined or exist"
         end
       end
