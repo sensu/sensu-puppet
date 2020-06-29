@@ -9,7 +9,7 @@ Puppet::Type.type(:sensu_user).provide(:sensu_api, :parent => Puppet::Provider::
   def self.instances
     users = []
 
-    data = api_request('users')
+    data = api_request('users', nil, {:failonfail => false})
 
     data.each do |d|
       user = {}
@@ -74,6 +74,7 @@ Puppet::Type.type(:sensu_user).provide(:sensu_api, :parent => Puppet::Provider::
         configure_cmd << '--trusted-ca-file'
         configure_cmd << resource[:configure_trusted_ca_file]
       end
+      Puppet.notice('Executing sensuctl configure')
       Puppet::Provider::Sensuctl.sensuctl(configure_cmd)
     end
     @property_hash[:ensure] = :present
@@ -97,6 +98,7 @@ Puppet::Type.type(:sensu_user).provide(:sensu_api, :parent => Puppet::Provider::
           configure_cmd << '--trusted-ca-file'
           configure_cmd << resource[:configure_trusted_ca_file]
         end
+        Puppet.notice('Executing sensuctl configure')
         Puppet::Provider::Sensuctl.sensuctl(configure_cmd)
       end
     end

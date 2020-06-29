@@ -185,21 +185,21 @@ class sensu::backend (
   sensu_user { 'admin':
     ensure                    => 'present',
     password                  => $sensu::password,
-    old_password              => $sensu::old_password,
     groups                    => ['cluster-admins'],
     disabled                  => false,
     configure                 => true,
     configure_url             => $sensu::api_url,
     configure_trusted_ca_file => $sensu::trusted_ca_file,
+    provider                  => 'sensu_api',
+    before                    => Sensuctl_configure['puppet'],
   }
 
   if $manage_agent_user {
     sensu_user { 'agent':
-      ensure       => 'present',
-      disabled     => $agent_user_disabled,
-      password     => $sensu::agent_password,
-      old_password => $sensu::agent_old_password,
-      groups       => ['system:agents'],
+      ensure   => 'present',
+      disabled => $agent_user_disabled,
+      password => $sensu::agent_password,
+      groups   => ['system:agents'],
     }
   }
 
@@ -301,5 +301,21 @@ class sensu::backend (
     enable    => $service_enable,
     name      => $service_name,
     subscribe => $service_subscribe,
+  }
+
+  exec { 'sensu-backend init':
+    path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+    refreshonly => true,
+    environment => [
+      'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
+      "SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=${sensu::password}",
+    ],
+    returns     => [0, 3],
+    subscribe   => Package['sensu-go-backend'],
+    require     => Sensu_api_validator['sensu'],
+    before      => [
+      Sensu_user['admin'],
+      Sensuctl_configure['puppet'],
+    ],
   }
 }

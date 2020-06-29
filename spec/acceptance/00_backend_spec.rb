@@ -6,8 +6,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         include_default_resources => false,
@@ -40,8 +39,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         include_default_resources => true,
@@ -65,8 +63,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
@@ -99,8 +96,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend': }
       class { 'sensu::agent':
@@ -135,8 +131,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password     => 'supersecret',
-        old_password => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend':
         agent_user_disabled => true,
@@ -157,12 +152,40 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     end
   end
 
+  context 'handles removal of sensuctl config' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+      }
+      include sensu::backend
+      EOS
+
+      on node, 'rm -rf /root/.config'
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    describe service('sensu-backend'), :node => node do
+      it { should be_enabled }
+      it { should be_running }
+    end
+  end
+
   context 'reset admin password and opt-out tessen' do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        password      => 'P@ssw0rd!',
-        old_password  => 'supersecret',
+        password => 'P@ssw0rd!',
       }
       class { 'sensu::backend':
         tessen_ensure => 'absent',

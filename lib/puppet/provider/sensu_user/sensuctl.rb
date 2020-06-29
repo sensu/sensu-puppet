@@ -52,6 +52,22 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
     exitstatus == 0
   end
 
+  def password_hash(password)
+    begin
+      hash = sensuctl(['user', 'hash-password', password])
+      # TODO: Remove once no longer need to support Sensu Go before 5.21
+      # Returns nil if output does not start with $, which means a hash was not provided
+      # If the hash-password command is not present, sensuctl will exit 0 and print help
+      if hash !~ /\$/
+        return nil
+      end
+      return hash.strip
+    rescue Exception => e
+      Puppet.warning("Unable to generate password hash for user #{resource[:name]}: #{e.to_s}")
+      return nil
+    end
+  end
+
   def initialize(value = {})
     super(value)
     @property_flush = {}
@@ -64,21 +80,21 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
   end
 
   def create
-    cmd = ['user', 'create']
-    cmd << resource[:name]
-    cmd << '--password'
-    cmd << resource[:password]
-    if resource[:groups]
-      cmd << '--groups'
-      cmd << resource[:groups].join(',')
+    spec = {}
+    metadata = {}
+    spec[:username] = resource[:name]
+    spec[:groups] = resource[:groups] unless resource[:groups].nil?
+    spec[:disabled] = convert_boolean_property_value(resource[:disabled]) unless resource[:disabled].nil?
+    hash = password_hash(resource[:password])
+    if hash
+      spec[:password_hash] = hash
+    else
+      spec[:password] = resource[:password]
     end
     begin
-      sensuctl(cmd)
+      sensuctl_create('User', metadata, spec)
     rescue Exception => e
-      raise Puppet::Error, "sensuctl user create #{resource[:name]} failed\nError message: #{e.message}"
-    end
-    if ! resource[:disabled].nil? && resource[:disabled].to_s == 'true'
-      sensuctl(['user', 'disable', resource[:name], '--skip-confirm'])
+      raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
     end
     if resource[:configure] == :true
       configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', resource[:password]]
@@ -86,6 +102,7 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
         configure_cmd << '--trusted-ca-file'
         configure_cmd << resource[:configure_trusted_ca_file]
       end
+      Puppet.notice('Executing sensuctl configure')
       sensuctl(configure_cmd)
     end
     @property_hash[:ensure] = :present
@@ -93,45 +110,33 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
 
   def flush
     if !@property_flush.empty?
-      if @property_flush[:password]
-        if ! resource[:old_password]
-          fail("old_password is manditory when changing a password")
-        end
-        if ! password_insync?(resource[:name], resource[:old_password])
-          fail("old_password given for #{resource[:name]} is incorrect")
-        end
-        sensuctl(['user', 'change-password', resource[:name], '--current-password', resource[:old_password], '--new-password', @property_flush[:password]])
-        if resource[:configure] == :true
-          configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]]
-          if resource[:configure_trusted_ca_file] != "absent"
-            configure_cmd << '--trusted-ca-file'
-            configure_cmd << resource[:configure_trusted_ca_file]
-          end
-          sensuctl(configure_cmd)
-        end
+      spec = {}
+      metadata = {}
+      spec[:username] = resource[:name]
+      groups = @property_flush[:groups] || resource[:groups]
+      spec[:groups] = groups unless groups.nil?
+      disabled = @property_flush[:disabled] || resource[:disabled]
+      spec[:disabled] = convert_boolean_property_value(disabled) unless disabled.nil?
+      password = @property_flush[:password] || resource[:password]
+      hash = password_hash(password)
+      if hash
+        spec[:password_hash] = hash
+      else
+        spec[:password] = password
       end
-      if @property_flush[:groups]
-        current_groups = @property_hash[:groups] || []
-        # Add groups not currently set
-        @property_flush[:groups].each do |group|
-          if ! current_groups.include?(group)
-            sensuctl(['user', 'add-group', resource[:name], group])
-          end
-        end
-        # Remove current groups not set by Puppet
-        current_groups.each do |group|
-          if ! @property_flush[:groups].include?(group)
-            sensuctl(['user', 'remove-group', resource[:name], group])
-          end
-        end
+      begin
+        sensuctl_create('User', metadata, spec)
+      rescue Exception => e
+        raise Puppet::Error, "sensuctl create #{resource[:name]} failed\nError message: #{e.message}"
       end
-      if ! @property_flush[:disabled].nil?
-        if @property_flush[:disabled].to_s == 'true'
-          sensuctl(['user', 'disable', resource[:name], '--skip-confirm'])
+      if @property_flush[:password] && resource[:configure] == :true
+        configure_cmd = ['configure', '-n', '--url', resource[:configure_url], '--username', resource[:name], '--password', @property_flush[:password]]
+        if resource[:configure_trusted_ca_file] != "absent"
+          configure_cmd << '--trusted-ca-file'
+          configure_cmd << resource[:configure_trusted_ca_file]
         end
-        if @property_flush[:disabled].to_s == 'false'
-          sensuctl(['user', 'reinstate', resource[:name]])
-        end
+        Puppet.notice('Executing sensuctl configure')
+        sensuctl(configure_cmd)
       end
     end
     @property_hash = resource.to_hash

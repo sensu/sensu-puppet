@@ -358,7 +358,7 @@ describe 'sensu::resources', :type => :class do
           <<-EOS
           class { 'sensu::resources':
             users => {
-              'test' => { 'password' => 'foobar' },
+              'test' => { 'password' => 'password' },
             }
           }
           EOS

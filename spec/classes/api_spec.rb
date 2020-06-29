@@ -19,10 +19,9 @@ describe 'sensu::api', :type => :class do
 
         it {
           should contain_sensu_api_config('sensu').with({
-            'url'          => 'https://test.example.com:8080',
-            'username'     => 'admin',
-            'password'     => 'P@ssw0rd!',
-            'old_password' => nil,
+            'url'      => 'https://test.example.com:8080',
+            'username' => 'admin',
+            'password' => 'P@ssw0rd!',
           })
         }
 

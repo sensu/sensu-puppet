@@ -9,7 +9,6 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     attr_accessor :url
     attr_accessor :username
     attr_accessor :password
-    attr_accessor :old_password
     attr_accessor :access_token
     attr_accessor :refresh_token
   end
@@ -17,8 +16,6 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
   def self.update_access_token
     auth_success = self.auth(@username, @password)
     return if auth_success
-    auth_old_success = self.auth(@username, @old_password)
-    return if auth_old_success
     auth_token_success = self.auth_token()
     return if auth_token_success
   end
@@ -102,7 +99,7 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     request.add_field("Accept", "application/json") if defined?(request) && !request.nil?
     request.add_field("Content-Type", "application/json") if defined?(request) && !request.nil?
     # Add either token or basic auth
-    if token.nil? && username && password
+    if token.nil? && username && password && opts[:auth] != false
       Puppet.debug("Sensu API: Using basic auth of #{username}:#{password}")
       request.basic_auth(username, password) if defined?(request) && !request.nil?
     else
@@ -177,13 +174,17 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     end
   end
 
-  def self.auth_token(username = nil, password = nil)
+  def self.auth_token()
     opts = {
-      username: username,
-      password: password,
+      auth: false,
       return_response: true,
       method: 'post',
     }
+    if @refresh_token.nil?
+      config = Puppet::Provider::Sensuctl.sensuctl_config
+      @access_token = config['access_token']
+      @refresh_token = config['refresh_token']
+    end
     response = api_request('/auth/token', {'refresh_token' => @refresh_token}, opts)
     if response.kind_of?(Net::HTTPSuccess)
       data = JSON.parse(response.body)

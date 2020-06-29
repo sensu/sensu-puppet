@@ -30,6 +30,7 @@ Puppet::Type.newtype(:sensu_cluster_role_binding) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_cluster_role` - Puppet will autorequire `sensu_cluster_role` resource defined in `role_ref` property.
 * `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
 DESC
@@ -116,7 +117,7 @@ DESC
   end
 
   autorequire(:sensu_user) do
-    users = []
+    users = ['admin']
     groups = []
     (self[:subjects] || []).each do |subject|
       if subject['type'] == 'User'

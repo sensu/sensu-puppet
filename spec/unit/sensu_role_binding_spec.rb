@@ -219,7 +219,7 @@ describe Puppet::Type.type(:sensu_role_binding) do
 
   it 'should autorequire sensu_user by user' do
     config[:subjects] = [{'type' => 'User', 'name' => 'test'}]
-    user = Puppet::Type.type(:sensu_user).new(:name => 'test', :groups => ['group'], :password => 'foobar')
+    user = Puppet::Type.type(:sensu_user).new(:name => 'test', :groups => ['group'], :password => 'password')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource binding
     catalog.add_resource user
@@ -230,7 +230,7 @@ describe Puppet::Type.type(:sensu_role_binding) do
 
   it 'should autorequire sensu_user by group' do
     config[:subjects] = [{'type' => 'Group', 'name' => 'group'}]
-    user = Puppet::Type.type(:sensu_user).new(:name => 'test', :groups => ['group'], :password => 'foobar')
+    user = Puppet::Type.type(:sensu_user).new(:name => 'test', :groups => ['group'], :password => 'password')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource binding
     catalog.add_resource user

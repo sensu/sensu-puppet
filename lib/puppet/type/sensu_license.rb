@@ -12,6 +12,7 @@ Puppet::Type.newtype(:sensu_license) do
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `file` - Puppet will autorequire `file` resources defined in `file` property.
 DESC
 

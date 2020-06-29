@@ -12,6 +12,7 @@ Puppet::Type.newtype(:sensuctl_configure) do
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
 DESC
 
@@ -35,11 +36,6 @@ DESC
   newparam(:password) do
     desc "Password to use with sensuctl configure"
   end
-
-  newparam(:old_password) do
-    desc "The previous sensuctl password, needed in order to change passwords"
-  end
-
 
   newproperty(:trusted_ca_file) do
     desc "Path to trusted CA"

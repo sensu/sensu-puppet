@@ -14,8 +14,7 @@ describe 'sensu::cli class', if: ['base','full'].include?(RSpec.configuration.se
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
-        password      => 'P@ssw0rd!',
-        old_password  => 'supersecret',
+        password => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       EOS
@@ -58,8 +57,7 @@ describe 'sensu::cli class', if: ['base','full'].include?(RSpec.configuration.se
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
-        password      => 'supersecret',
-        old_password  => 'P@ssw0rd!',
+        password => 'supersecret',
       }
       class { 'sensu::backend': }
       EOS
@@ -99,9 +97,8 @@ describe 'sensu::cli class', if: ['base','full'].include?(RSpec.configuration.se
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
-        use_ssl       => false,
-        password      => 'P@ssw0rd!',
-        old_password  => 'supersecret',
+        use_ssl  => false,
+        password => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       EOS

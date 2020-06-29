@@ -16,6 +16,7 @@ Puppet::Type.newtype(:sensu_namespace) do
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 DESC
 
   extend PuppetX::Sensu::Type

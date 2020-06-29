@@ -68,9 +68,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       include sensu::backend
       sensu_user { 'test':
-        password     => 'password2',
-        old_password => 'password',
-        groups       => ['read-only'],
+        password => 'password2',
+        groups   => ['read-only'],
       }
       sensu_user { 'test2':
         password => 'password',
@@ -129,9 +128,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       include sensu::backend
       sensu_user { 'test':
-        password     => 'password3',
-        old_password => 'password2',
-        groups       => ['read-only'],
+        password => 'password3',
+        groups   => ['read-only'],
       }
       sensu_user { 'test-api':
         password => 'password3',
@@ -161,28 +159,6 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     it 'should have valid password using API' do
       exit_code = on(node, 'sensuctl user test-creds test-api --password password3').exit_code
       expect(exit_code).to eq(0)
-    end
-  end
-
-  context 'invalid old_password' do
-    it 'should result in an error' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_user { 'test':
-        password     => 'password2',
-        old_password => 'password4',
-        groups       => ['read-only'],
-      }
-      EOS
-
-      if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu-backend' { #{pp} }"
-        puppetserver = hosts_as('puppetserver')[0]
-        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [1,4,6]
-      else
-        apply_manifest_on(node, pp, :expect_failures => true)
-      end
     end
   end
 
