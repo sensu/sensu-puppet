@@ -232,7 +232,7 @@ Default value: 'P@ssw0rd!'
 
 Data type: `Optional[String]`
 
-Sensu backend admin old password needed when changing password.
+DEPRECATED - Sensu backend admin old password needed when changing password.
 
 Default value: `undef`
 
@@ -248,7 +248,7 @@ Default value: 'P@ssw0rd!'
 
 Data type: `Optional[String]`
 
-The sensu agent old password needed when changing agent_password
+DEPRECATED - The sensu agent old password needed when changing agent_password
 
 Default value: `undef`
 
@@ -1283,6 +1283,7 @@ Default value: '50'
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -1400,10 +1401,6 @@ Sensu API username
 
 Sensu API password
 
-##### `old_password`
-
-Sensu API old password
-
 ### sensu_api_validator
 
 **NOTE** This is a private type not intended to be used directly.
@@ -1484,6 +1481,7 @@ Default value: 30
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
@@ -1627,6 +1625,7 @@ Private property used by sensu_bonsai_asset type
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
@@ -1718,6 +1717,7 @@ Name for Sensu Go asset
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_handler` - Puppet will autorequie `sensu_handler` resources defined in `handlers` property.
 * `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
@@ -1946,6 +1946,7 @@ The name of the check.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -1991,6 +1992,7 @@ The name of the federated cluster
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -2048,6 +2050,7 @@ API URL to add to the federated cluster, defaults to name
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -2097,6 +2100,7 @@ Cluster member ID - read-only
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -2142,6 +2146,7 @@ The name of the role.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_cluster_role` - Puppet will autorequire `sensu_cluster_role` resource defined in `role_ref` property.
 * `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
 
@@ -2208,6 +2213,7 @@ The name of the role binding.
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -2287,6 +2293,7 @@ Bonsai asset name
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_handler` - Puppet will autorequie `sensu_handler` resource defined in `deregistration.handler` property.
 
@@ -2394,6 +2401,7 @@ The name of the entity.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -2488,6 +2496,7 @@ The name of the Etcd Replicator.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
@@ -2578,6 +2587,7 @@ The name of the filter.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_filter` - Puppet will autorequire `sensu_filter` resources defined in `filters` property.
 * `sensu_mutator` - Puppet will autorequire `sensu_mutator` resource defined for `mutator` property.
@@ -2715,6 +2725,7 @@ The name of the handler.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
@@ -2811,6 +2822,7 @@ The name of the hook.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -2909,6 +2921,7 @@ The name of the LDAP auth.
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `file` - Puppet will autorequire `file` resources defined in `file` property.
 
 #### Properties
@@ -2944,6 +2957,7 @@ Path to license file
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_asset` - Puppet will autorequire `sensu_asset` resources defined in `runtime_assets` property.
 
@@ -3042,6 +3056,7 @@ The name of the mutator.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -3082,6 +3097,7 @@ The name of the namespace.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -3252,6 +3268,7 @@ Install Sensu plugins and extensions via a PROXY URL
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -3338,6 +3355,7 @@ Default value: `false`
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
@@ -3405,6 +3423,7 @@ The name of the role.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_role` - Puppet will autorequire `sensu_role` resource defined in `role_ref` property.
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 * `sensu_user` - Puppet will autorequire `sensu_user` resources based on users and groups defined for the `subjects` property.
@@ -3496,6 +3515,7 @@ The name of the role binding.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
 
 #### Examples
@@ -3561,6 +3581,7 @@ The name of the secret.
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -3653,6 +3674,7 @@ The name of the secrets provider.
 * `Service[sensu-backend]`
 * `Sensu_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Properties
 
@@ -3681,6 +3703,7 @@ Resource name
 * `Service[sensu-backend]`
 * `Sensuctl_configure[puppet]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 
 #### Examples
 
@@ -3698,10 +3721,9 @@ sensu_user { 'test':
 
 ```puppet
 sensu_user { 'test'
-  ensure       => 'present',
-  password     => 'newpassword',
-  old_password => 'supersecret',
-  groups       => ['users'],
+  ensure   => 'present',
+  password => 'newpassword',
+  groups   => ['users'],
 }
 ```
 
@@ -3745,7 +3767,7 @@ The name of the user.
 
 ##### `old_password`
 
-The user's old password, needed in order to change a user's password
+DEPRECATED - The user's old password, needed in order to change a user's password
 
 ##### `configure`
 
@@ -3797,6 +3819,7 @@ path to sensuctl
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
 * `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
 * `file` - Puppet will autorequire `file` resources defined in `trusted_ca_file` property.
 
 #### Properties
@@ -3848,10 +3871,6 @@ Username to use with sensuctl configure
 ##### `password`
 
 Password to use with sensuctl configure
-
-##### `old_password`
-
-The previous sensuctl password, needed in order to change passwords
 
 ## Data types
 

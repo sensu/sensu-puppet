@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.11.0](https://github.com/sensu/sensu-puppet/tree/v4.11.0) (2020-06-29)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.10.0...v4.11.0)
+
+### Added
+
+- READ DESCRIPTION: Improved handling of passwords for sensu\_user [\#1251](https://github.com/sensu/sensu-puppet/pull/1251) ([treydock](https://github.com/treydock))
+- Add check name to ArgumentError [\#1249](https://github.com/sensu/sensu-puppet/pull/1249) ([amccrea](https://github.com/amccrea))
+
+### Merged Pull Requests
+
+- Fix Windows acceptance tests and update Postgresql dependency range [\#1252](https://github.com/sensu/sensu-puppet/pull/1252) ([treydock](https://github.com/treydock))
+- Fix acceptance tests [\#1250](https://github.com/sensu/sensu-puppet/pull/1250) ([treydock](https://github.com/treydock))
+
 ## [v4.10.0](https://github.com/sensu/sensu-puppet/tree/v4.10.0) (2020-04-19)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.8.0...v4.10.0)
@@ -247,13 +261,6 @@
 
 - Add sensu\_resources type that will handle resource purging [\#1158](https://github.com/sensu/sensu-puppet/pull/1158) ([treydock](https://github.com/treydock))
 - Add sensu\_gem package provider [\#1156](https://github.com/sensu/sensu-puppet/pull/1156) ([treydock](https://github.com/treydock))
-- Install Windows agent via chocolatey [\#1152](https://github.com/sensu/sensu-puppet/pull/1152) ([treydock](https://github.com/treydock))
-- Add sensu\_bonsai\_asset type [\#1149](https://github.com/sensu/sensu-puppet/pull/1149) ([treydock](https://github.com/treydock))
-
-### Fixed
-
-- Fix Puppet strings warnings [\#1150](https://github.com/sensu/sensu-puppet/pull/1150) ([treydock](https://github.com/treydock))
-- Fix sensu\_plugin version insync? check [\#1148](https://github.com/sensu/sensu-puppet/pull/1148) ([treydock](https://github.com/treydock))
 
 ## [v3.8.0](https://github.com/sensu/sensu-puppet/tree/v3.8.0) (2019-09-02)
 
