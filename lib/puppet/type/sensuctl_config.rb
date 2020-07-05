@@ -17,6 +17,12 @@ DESC
     desc "sensuctl chunk-size"
   end
 
+  newparam(:validate_namespaces, :boolean => true) do
+    desc "Determines of namespaces should be validated with sensuctl"
+    newvalues(:true, :false)
+    defaultto(:true)
+  end
+
   newparam(:path) do
     desc "path to sensuctl"
   end
@@ -34,6 +40,7 @@ DESC
     sensuctl_types.each do |type|
       provider_class = Puppet::Type.type(type).provider(:sensuctl)
       provider_class.chunk_size = self[:chunk_size]
+      provider_class.validate_namespaces = self[:validate_namespaces]
       provider_class.path = self[:path]
     end
     []

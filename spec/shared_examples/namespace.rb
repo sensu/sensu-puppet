@@ -2,8 +2,8 @@ require 'spec_helper'
 
 RSpec.shared_examples 'namespace' do
   it 'should not fail if namespace defined' do
-    config[:namespace] = 'devs'
-    namespace = Puppet::Type.type(:sensu_namespace).new(:name => 'devs')
+    config[:namespace] = 'default'
+    namespace = Puppet::Type.type(:sensu_namespace).new(:name => 'default')
     catalog = Puppet::Resource::Catalog.new
     catalog.add_resource res
     catalog.add_resource namespace
@@ -11,6 +11,7 @@ RSpec.shared_examples 'namespace' do
   end
 
   it 'should not fail if namespace exists' do
+    allow(res.provider).to receive(:validate_namespaces).and_return(true)
     allow(res.provider).to receive(:namespaces).and_return(['devs','default'])
     config[:namespace] = 'devs'
     catalog = Puppet::Resource::Catalog.new

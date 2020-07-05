@@ -975,6 +975,19 @@ class { 'sensu::backend':
 }
 ```
 
+If many thousands of resources such as `sensu_check` are defined there will be an execution of `sensuctl namespace list` for each check to validate
+the namespace exists if the namespace is not defined in Puppet.
+A similar validation is performed with `sensu_api` provider.  To avoid this extra overhead it may be necessary to disable this validation if you
+are defining namespaces outside of Puppet.
+
+**NOTE**: If namespace validation is disabled it's necessary to ensure a namespace is defined in Puppet in order to assign resources to that namespace.
+
+```puppet
+class { 'sensu':
+  validate_namespaces => false,
+}
+```
+
 ### Composite Names for Namespaces
 
 All resources that support having a `namespace` also support a composite name to define the namespace.

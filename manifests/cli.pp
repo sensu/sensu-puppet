@@ -82,8 +82,9 @@ class sensu::cli (
 
   if $configure {
     sensuctl_config { 'sensu':
-      chunk_size => $sensuctl_chunk_size,
-      path       => $sensuctl_path,
+      chunk_size          => $sensuctl_chunk_size,
+      path                => $sensuctl_path,
+      validate_namespaces => $sensu::validate_namespaces,
     }
 
     sensuctl_configure { 'puppet':

@@ -25,6 +25,12 @@ DESC
     desc "Sensu API password"
   end
 
+  newparam(:validate_namespaces, :boolean => true) do
+    desc "Determines of namespaces should be validated with Sensu API"
+    newvalues(:true, :false)
+    defaultto(:true)
+  end
+
   # First collect all types with sensu_api provider that come from this module
   # For each sensu_api type, set the class variable 'chunk_size' used by
   # each provider to list resources
@@ -40,6 +46,7 @@ DESC
       provider_class.url = self[:url]
       provider_class.username = self[:username]
       provider_class.password = self[:password]
+      provider_class.validate_namespaces = self[:validate_namespaces]
     end
     []
   end
