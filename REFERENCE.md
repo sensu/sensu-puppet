@@ -252,6 +252,14 @@ DEPRECATED - The sensu agent old password needed when changing agent_password
 
 Default value: `undef`
 
+##### `validate_namespaces`
+
+Data type: `Boolean`
+
+Determines if sensuctl and sensu_api types will validate their namespace exists
+
+Default value: `true`
+
 ### sensu::agent
 
 Class to manage the Sensu agent.
@@ -1400,6 +1408,14 @@ Sensu API username
 ##### `password`
 
 Sensu API password
+
+##### `validate_namespaces`
+
+Valid values: `true`, `false`
+
+Determines of namespaces should be validated with Sensu API
+
+Default value: `true`
 
 ### sensu_api_validator
 
@@ -3806,6 +3822,14 @@ The name of the resource.
 ##### `chunk_size`
 
 sensuctl chunk-size
+
+##### `validate_namespaces`
+
+Valid values: `true`, `false`
+
+Determines of namespaces should be validated with sensuctl
+
+Default value: `true`
 
 ##### `path`
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.12.0](https://github.com/sensu/sensu-puppet/tree/v4.12.0) (2020-07-05)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.11.0...v4.12.0)
+
+### Added
+
+- Allow disabling namespace validation for large environments [\#1254](https://github.com/sensu/sensu-puppet/pull/1254) ([treydock](https://github.com/treydock))
+
 ## [v4.11.0](https://github.com/sensu/sensu-puppet/tree/v4.11.0) (2020-06-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.10.0...v4.11.0)
@@ -178,13 +186,13 @@
 - Add several parameters to sensu::agent class [\#1185](https://github.com/sensu/sensu-puppet/pull/1185) ([treydock](https://github.com/treydock))
 - Document upcoming breaking changes [\#1167](https://github.com/sensu/sensu-puppet/pull/1167) ([treydock](https://github.com/treydock))
 - BREAKING: Move cli resources to sensu::cli class [\#1164](https://github.com/sensu/sensu-puppet/pull/1164) ([treydock](https://github.com/treydock))
-- BREAKING: Update type properties to map to Sensu Go specifications [\#1154](https://github.com/sensu/sensu-puppet/pull/1154) ([treydock](https://github.com/treydock))
 
 ### Added
 
 - Document contact routing and bonsai asset bugfix [\#1194](https://github.com/sensu/sensu-puppet/pull/1194) ([treydock](https://github.com/treydock))
 - Support 'sensu-backend init' added in Sensu Go 5.16 [\#1192](https://github.com/sensu/sensu-puppet/pull/1192) ([treydock](https://github.com/treydock))
 - Misc test fixes [\#1189](https://github.com/sensu/sensu-puppet/pull/1189) ([treydock](https://github.com/treydock))
+- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
 
 ### Merged Pull Requests
 
@@ -247,11 +255,6 @@
 ## [v3.10.0](https://github.com/sensu/sensu-puppet/tree/v3.10.0) (2019-10-31)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.9.0...v3.10.0)
-
-### Added
-
-- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
-- Add bolt tasks [\#1153](https://github.com/sensu/sensu-puppet/pull/1153) ([treydock](https://github.com/treydock))
 
 ## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
 
