@@ -1,0 +1,66 @@
+[
+  {
+    "id": "sensu-backend.example.com",
+    "class": "agent",
+    "system": {
+      "hostname": "sensu-backend.example.com",
+      "os": "linux",
+      "platform": "centos",
+      "platform_family": "rhel",
+      "platform_version": "7.4.1708",
+      "network": {
+        "interfaces": [
+          {
+            "name": "lo",
+            "addresses": [
+              "127.0.0.1/8",
+              "::1/128"
+            ]
+          },
+          {
+            "name": "eth0",
+            "mac": "52:54:00:da:a7:10",
+            "addresses": [
+              "10.0.2.15/24",
+              "fe80::5054:ff:feda:a710/64"
+            ]
+          },
+          {
+            "name": "eth1",
+            "mac": "08:00:27:7a:3f:38",
+            "addresses": [
+              "192.168.52.10/24",
+              "fe80::a00:27ff:fe7a:3f38/64"
+            ]
+          }
+        ]
+      },
+      "arch": "amd64"
+    },
+    "subscriptions": [
+      "entity:sensu-backend.example.com",
+      "linux"
+    ],
+    "last_seen": 1541632956,
+    "deregister": false,
+    "deregistration": {},
+    "user": "agent",
+    "redact": [
+      "password",
+      "passwd",
+      "pass",
+      "api_key",
+      "api_token",
+      "access_key",
+      "secret_key",
+      "private_key",
+      "secret"
+    ],
+    "metadata": {
+      "name": "sensu-backend.example.com",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    }
+  }
+]

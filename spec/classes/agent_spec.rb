@@ -68,6 +68,8 @@ describe 'sensu::agent', :type => :class do
             'target' => 'sensu_agent_config',
             'data'   => {
               'backend-url'     => ['wss://localhost:8081'],
+              'name'            => 'localhost',
+              'namespace'       => 'default',
               'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
@@ -182,6 +184,8 @@ describe 'sensu::agent', :type => :class do
             'target' => 'sensu_agent_config',
             'data'   => {
               'backend-url' => ['ws://localhost:8081'],
+              'name'        => 'localhost',
+              'namespace'   => 'default',
               'redact'      => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'    => 'P@ssw0rd!',
             },
@@ -219,6 +223,8 @@ describe 'sensu::agent', :type => :class do
             },
           })
         }
+        it { is_expected.to contain_sensu__agent__subscription('linux') }
+        it { is_expected.to contain_sensu__agent__subscription('base') }
       end
 
       context 'with agent configs defined and config_hash' do
@@ -252,6 +258,7 @@ describe 'sensu::agent', :type => :class do
             },
           })
         }
+        it { is_expected.to contain_sensu__agent__subscription('windows') }
       end
 
       context 'with show_diff => false' do
@@ -347,6 +354,8 @@ describe 'sensu::agent', :type => :class do
               'target' => 'sensu_agent_config',
               'data'   => {
                 'backend-url'     => [backend],
+                'name'            => 'localhost',
+                'namespace'       => 'default',
                 'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
                 'password'        => 'P@ssw0rd!',
                 'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],

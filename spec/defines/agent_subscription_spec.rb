@@ -17,6 +17,14 @@ describe 'sensu::agent::subscription' do
         })
       }
 
+      it {
+        is_expected.to contain_sensu_agent_subscription('apache').with({
+          'subscription' => 'apache',
+          'entity'       => 'localhost',
+          'namespace'    => 'default',
+        })
+      }
+
       context 'all params' do
         let(:params) do
           {
@@ -31,6 +39,13 @@ describe 'sensu::agent::subscription' do
               'subscriptions' => ['foo'],
             },
             'order'  => '01',
+          })
+        }
+        it {
+          is_expected.to contain_sensu_agent_subscription('apache').with({
+            'subscription' => 'foo',
+            'entity'       => 'localhost',
+            'namespace'    => 'default',
           })
         }
       end

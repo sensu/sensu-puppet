@@ -81,11 +81,11 @@ class sensu::agent (
   Boolean $service_enable = true,
   Hash $config_hash = {},
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
-  Optional[String[1]] $entity_name = undef,
+  String[1] $entity_name = $facts['networking']['fqdn'],
   Optional[Array[String[1]]] $subscriptions = undef,
   Optional[Hash[String[1],String]] $annotations = undef,
   Optional[Hash[String[1],String]] $labels = undef,
-  Optional[String[1]] $namespace = undef,
+  String[1] $namespace = 'default',
   Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
@@ -126,6 +126,12 @@ class sensu::agent (
     'password'      => $sensu::agent_password,
   }
   $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
+  if $config['subscriptions'] {
+    $config['subscriptions'].each |$s| {
+      sensu::agent::subscription { $s: }
+    }
+  }
+
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
   }

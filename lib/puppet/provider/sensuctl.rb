@@ -190,6 +190,14 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.namespaces()
   end
 
+  def get_entity(entity, namespace)
+    output = sensuctl(['entity', 'info', entity, '--namespace', namespace, '--format', 'json'])
+    data = JSON.parse(output)
+    return data
+  rescue Exception => e
+    raise Puppet::Error "Failed to get entity #{entity}: #{e}"
+  end
+
   def self.config
     output = sensuctl(['config','view'])
     data = JSON.parse(output)

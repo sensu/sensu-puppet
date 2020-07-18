@@ -58,6 +58,17 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     self.class.namespaces
   end
 
+  def get_entity(entity, namespace)
+    opts = {
+      :namespace => namespace,
+    }
+    Puppet.debug("Fetching entity #{entity} via Sensu API")
+    data = api_request("entities/#{entity}", nil, opts)
+    return data
+  rescue Exception => e
+    raise Puppet::Error, "Unable to query entity data for entity #{entity}: #{e}"
+  end
+
   def self.api_request(path, data = nil, opts = {})
     api_group = opts[:api_group] || 'core'
     api_version = opts[:api_version] || 'v2'
@@ -130,6 +141,9 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       update_access_token
       opts[:retry] = false
       return api_request(path, data, opts)
+    end
+    if response.kind_of?(Net::HTTPNotFound)
+      raise Puppet::Error, "Resource not found at URL #{uri.to_s}: #{response.class}"
     end
     unless response.kind_of?(Net::HTTPSuccess)
       raise Puppet::Error, "Unable to make API request at #{uri.to_s}: #{response.class}"
