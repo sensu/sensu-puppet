@@ -124,6 +124,13 @@ describe 'sensu::agent', :type => :class do
             'subscribe' => 'Class[Sensu::Ssl]',
           })
         }
+
+        it {
+          should contain_sensu_agent_entity_validator('localhost').with({
+            'namespace' => 'default',
+            'provider'  => 'sensu_api',
+          })
+        }
       end
 
       context 'when package_source defined as URL' do

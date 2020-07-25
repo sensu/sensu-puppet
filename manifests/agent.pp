@@ -278,4 +278,9 @@ class sensu::agent (
     name      => $service_name,
     subscribe => $service_subscribe,
   }
+
+  sensu_agent_entity_validator { $config['name']:
+    namespace => $config['namespace'],
+    provider  => $agent_entity_config_provider,
+  }
 }

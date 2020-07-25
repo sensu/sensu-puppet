@@ -217,6 +217,16 @@ describe Puppet::Type.type(:sensu_agent_entity_config) do
     expect(rel.target.ref).to eq(resource.ref)
   end
 
+  it 'should autorequire sensu_agent_entity_validator' do
+    validator = Puppet::Type.type(:sensu_agent_entity_validator).new(:name => 'agent')
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource resource
+    catalog.add_resource validator
+    rel = resource.autorequire[0]
+    expect(rel.source.ref).to eq(validator.ref)
+    expect(rel.target.ref).to eq(resource.ref)
+  end
+
   context 'validations' do
     describe 'entity' do
       it 'requires entity when present' do

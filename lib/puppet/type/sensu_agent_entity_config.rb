@@ -145,6 +145,18 @@ DESC
     ['sensu-backend', 'sensu-agent']
   end
 
+  autorequire(:sensu_agent_entity_validator) do
+    validator = []
+    catalog.resources.each do |resource|
+      next unless resource.class.to_s == "Puppet::Type::Sensu_agent_entity_validator"
+      if resource.name == self[:entity] && resource[:namespace] == self[:namespace]
+        validator << resource.name
+        break
+      end
+    end
+    validator
+  end
+
   def pre_run_check
     if self[:entity].nil?
       fail "You must provide a value for entity"
