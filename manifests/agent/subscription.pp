@@ -38,9 +38,11 @@ define sensu::agent::subscription (
     order  => $order,
   }
 
-  sensu_agent_subscription { $name:
-    subscription => $subscription,
-    entity       => $_entity,
-    namespace    => $_namespace,
+  sensu_agent_entity_config { "sensu::agent::subscription ${name}":
+    config    => 'subscriptions',
+    value     => $subscription,
+    entity    => $_entity,
+    namespace => $_namespace,
+    provider  => $sensu::agent::agent_entity_config_provider,
   }
 }

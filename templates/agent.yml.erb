@@ -1,0 +1,11 @@
+<%-
+data = {}
+@data.each_pair do |key, value|
+  if value.is_a?(Array)
+    data[key] = value.uniq
+  else
+    data[key] = value
+  end
+end
+-%>
+<%= data.to_yaml%>

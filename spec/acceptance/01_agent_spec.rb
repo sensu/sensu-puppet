@@ -11,8 +11,8 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         backends         => ['sensu-backend:8081'],
         entity_name      => 'sensu-agent',
         subscriptions    => ['base'],
-        labels           => { 'foo' => 'bar', 'bar' => 'baz' },
-        annotations      => { 'cpu.message' => 'foo' },
+        labels           => { 'foo' => 'bar' },
+        annotations      => { 'contacts' => 'dev@example.com' },
         service_env_vars => { 'SENSU_API_PORT' => '4041' },
         config_hash      => {
           'log-level' => 'info',
@@ -46,6 +46,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         'backend-url'        => ['wss://sensu-backend:8081'],
         'password'           => 'P@ssw0rd!',
         'name'               => 'sensu-agent',
+        'namespace'          => 'default',
         'subscriptions'      => ['base','linux'],
         'labels'             => {
           'foo'          => 'bar',
@@ -54,6 +55,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
           'cpu.critical' => '95',
         },
         'annotations'        => {
+          'contacts'    => 'dev@example.com',
           'cpu.message' => 'bar',
           'foo'         => 'bar',
         },
@@ -79,6 +81,15 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         data = JSON.parse(stdout)
         expect(data['subscriptions']).to include('base')
         expect(data['subscriptions']).to include('linux')
+        expect(data['redact']).to include('foo')
+        expect(data['redact']).to include('bar')
+        expect(data['metadata']['labels']).to include({'foo' => 'bar'})
+        expect(data['metadata']['labels']).to include({'bar' => 'baz2'})
+        expect(data['metadata']['labels']).to include({'cpu.warning' => '90'})
+        expect(data['metadata']['labels']).to include({'cpu.critical' => '95'})
+        expect(data['metadata']['annotations']).to include({'contacts' => 'dev@example.com'})
+        expect(data['metadata']['annotations']).to include({'foo' => 'bar'})
+        expect(data['metadata']['annotations']).to include({'cpu.message' => 'bar'})
       end
     end
   end
@@ -91,7 +102,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         entity_name      => 'sensu-agent',
         subscriptions    => ['foo'],
         labels           => { 'foo' => 'bar', 'bar' => 'baz' },
-        annotations      => { 'cpu.message' => 'foo' },
+        annotations      => { 'contacts' => 'ops@example.com' },
         service_env_vars => { 'SENSU_API_PORT' => '4041' },
         config_hash      => {
           'log-level' => 'info',
@@ -101,9 +112,9 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
       sensu::agent::subscription { 'bar': }
       sensu::agent::label { 'cpu.warning': value => '90' }
       sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz2', redact => true }
+      sensu::agent::label { 'baz': value => 'baz', redact => true }
       sensu::agent::annotation { 'foo': value => 'bar', redact => true }
-      sensu::agent::annotation { 'cpu.message': value => 'bar' }
+      sensu::agent::annotation { 'cpu.message': value => 'baz' }
       sensu::agent::config_entry { 'keepalive-interval': value => 20 }
       EOS
 
@@ -125,18 +136,21 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         'backend-url'        => ['wss://sensu-backend:8081'],
         'password'           => 'P@ssw0rd!',
         'name'               => 'sensu-agent',
+        'namespace'          => 'default',
         'subscriptions'      => ['foo','bar'],
         'labels'             => {
           'foo'          => 'bar',
-          'bar'          => 'baz2',
+          'bar'          => 'baz',
+          'baz'          => 'baz',
           'cpu.warning'  => '90',
           'cpu.critical' => '95',
         },
         'annotations'        => {
-          'cpu.message' => 'bar',
+          'contacts'    => 'ops@example.com',
+          'cpu.message' => 'baz',
           'foo'         => 'bar',
         },
-        'redact'             => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','bar','foo'],
+        'redact'             => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','baz','foo'],
         'log-level'          => 'info',
         'trusted-ca-file'    => '/etc/sensu/ssl/ca.crt',
         'keepalive-interval' => 20,
@@ -160,6 +174,16 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         expect(data['subscriptions']).to include('linux')
         expect(data['subscriptions']).to include('foo')
         expect(data['subscriptions']).to include('bar')
+        expect(data['redact']).to include('foo')
+        expect(data['redact']).to include('bar')
+        expect(data['redact']).to include('baz')
+        expect(data['metadata']['labels']).to include({'foo' => 'bar'})
+        expect(data['metadata']['labels']).to include({'bar' => 'baz'})
+        expect(data['metadata']['labels']).to include({'cpu.warning' => '90'})
+        expect(data['metadata']['labels']).to include({'cpu.critical' => '95'})
+        expect(data['metadata']['annotations']).to include({'contacts' => 'ops@example.com'})
+        expect(data['metadata']['annotations']).to include({'foo' => 'bar'})
+        expect(data['metadata']['annotations']).to include({'cpu.message' => 'baz'})
       end
     end
   end

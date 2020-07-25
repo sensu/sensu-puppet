@@ -1,11 +1,12 @@
 require 'spec_helper'
-require 'puppet/type/sensu_agent_subscription'
+require 'puppet/type/sensu_agent_entity_config'
 
-describe Puppet::Type.type(:sensu_agent_subscription) do
+describe Puppet::Type.type(:sensu_agent_entity_config) do
   let(:default_config) do
     {
-      name: 'test',
+      name: 'subscriptions',
       entity: 'agent',
+      value: 'linux',
     }
   end
   let(:config) do
@@ -29,28 +30,44 @@ describe Puppet::Type.type(:sensu_agent_subscription) do
   end
 
   it 'should handle composite title' do
+    config.delete(:config)
     config.delete(:namespace)
     config.delete(:entity)
-    config[:name] = 'test on agent in dev'
-    expect(resource[:name]).to eq('test on agent in dev')
-    expect(resource[:subscription]).to eq('test')
+    config.delete(:value)
+    config[:name] = 'subscriptions value linux on agent in dev'
+    expect(resource[:name]).to eq('subscriptions value linux on agent in dev')
+    expect(resource[:config]).to eq('subscriptions')
+    expect(resource[:entity]).to eq('agent')
+    expect(resource[:namespace]).to eq('dev')
+    expect(resource[:value]).to eq('linux')
+  end
+
+  it 'should handle composite title with key' do
+    config.delete(:config)
+    config.delete(:key)
+    config.delete(:namespace)
+    config.delete(:entity)
+    config[:name] = 'annotations key contacts on agent in dev'
+    expect(resource[:name]).to eq('annotations key contacts on agent in dev')
+    expect(resource[:config]).to eq('annotations')
+    expect(resource[:key]).to eq('contacts')
     expect(resource[:entity]).to eq('agent')
     expect(resource[:namespace]).to eq('dev')
   end
 
   it 'should handle non-composite title' do
-    config[:name] = 'test'
+    config[:name] = 'subscriptions'
     config[:entity] = 'agent'
-    expect(resource[:name]).to eq('test')
-    expect(resource[:subscription]).to eq('test')
+    expect(resource[:name]).to eq('subscriptions')
+    expect(resource[:config]).to eq('subscriptions')
     expect(resource[:entity]).to eq('agent')
     expect(resource[:namespace]).to eq('default')
   end
 
   it 'should handle composite title and namespace' do
     config[:namespace] = 'test'
-    config[:name] = 'test on agent in qa'
-    expect(resource[:subscription]).to eq('test')
+    config[:name] = 'subscriptions value test on agent in qa'
+    expect(resource[:config]).to eq('subscriptions')
     expect(resource[:namespace]).to eq('test')
   end
 
@@ -200,18 +217,44 @@ describe Puppet::Type.type(:sensu_agent_subscription) do
     expect(rel.target.ref).to eq(resource.ref)
   end
 
-  [
-    :entity,
-  ].each do |property|
-    it "should require property when ensure => present" do
-      config.delete(property)
-      config[:ensure] = :present
-      expect { resource.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+  context 'validations' do
+    describe 'entity' do
+      it 'requires entity when present' do
+        config.delete(:entity)
+        config[:ensure] = :present
+        expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{entity})
+      end
+      it 'requires entity when absent' do
+        config.delete(:entity)
+        config[:ensure] = :absent
+        expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{entity})
+      end
     end
-    it "should require property when ensure => absent" do
-      config.delete(property)
-      config[:ensure] = :absent
-      expect { resource.pre_run_check }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+    describe 'value' do
+      it 'requires value when present' do
+        config.delete(:value)
+        config[:ensure] = :present
+        expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{value property})
+      end
+      it 'requires value when absent' do
+        config.delete(:value)
+        config[:ensure] = :absent
+        expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{value property})
+      end
+    end
+    describe 'key' do
+      it 'requires key when present' do
+        config.delete(:key)
+        config[:ensure] = :present
+        config[:config] = 'labels'
+        expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{key})
+      end
+      it 'requires key when absent' do
+        config.delete(:key)
+        config[:ensure] = :absent
+        config[:config] = 'labels'
+        expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{key})
+      end
     end
   end
 

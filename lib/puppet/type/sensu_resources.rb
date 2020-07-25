@@ -1,5 +1,6 @@
 require 'puppet'
 require 'puppet/parameter/boolean'
+require_relative '../../puppet_x/sensu/agent_entity_config'
 
 Puppet::Type.newtype(:sensu_resources) do
   desc <<-DESC
@@ -40,6 +41,27 @@ Puppet::Type.newtype(:sensu_resources) do
     end
   end
 
+  newparam(:agent_entity_configs, :array_matching => :all) do
+    desc "Types of configs to purge for sensu_agent_entity_configs, eg ['subscriptions','labels']"
+
+    munge do |value|
+      if value.is_a?(String)
+        value = [value]
+      end
+      value
+    end
+    validate do |values|
+      if values.is_a?(String)
+        values = [values]
+      end
+      values.each do |v|
+        if ! PuppetX::Sensu::AgentEntityConfig.config_classes.keys.include?(v)
+          raise ArgumentError, "#{v} is not a valid sensu_agent_entity_config type of config to purge."
+        end
+      end
+    end
+  end
+
   def able_to_ensure_absent?(resource)
       resource[:ensure] = :absent
   rescue ArgumentError, Puppet::Error
@@ -54,6 +76,7 @@ Puppet::Type.newtype(:sensu_resources) do
     resource_type.instances.
       reject { |r| catalog.resource_refs.include? r.ref }.
       select { |r| check(r) }.
+      select { |r| check_agent_entity_config(r) }.
       select { |r| r.class.validproperty?(:ensure) }.
       select { |r| able_to_ensure_absent?(r) }.
       each { |resource|
@@ -80,6 +103,9 @@ Puppet::Type.newtype(:sensu_resources) do
 
   # Check if name + namespace combination exists in catalog
   def check(resource)
+    if resource.class.to_s == 'Puppet::Type::Sensu_agent_entity_config'
+      return true
+    end
     if ! resource.class.validproperty?(:namespace)
       return true
     end
@@ -94,6 +120,19 @@ Puppet::Type.newtype(:sensu_resources) do
           return false
         end
       end
+    end
+    return true
+  end
+
+  def check_agent_entity_config(resource)
+    if resource.class.to_s != 'Puppet::Type::Sensu_agent_entity_config'
+      return true
+    end
+    if self[:agent_entity_configs].nil?
+      return true
+    end
+    if ! self[:agent_entity_configs].include?(resource[:config])
+      return false
     end
     return true
   end

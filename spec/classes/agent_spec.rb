@@ -15,6 +15,7 @@ describe 'sensu::agent', :type => :class do
 
         it { should contain_class('sensu')}
         it { should contain_class('sensu::common')}
+        it { should contain_class('sensu::api')}
         it { should contain_class('sensu::agent')}
 
         if facts[:os]['family'] == 'windows'
@@ -57,7 +58,8 @@ describe 'sensu::agent', :type => :class do
 
         it {
           should contain_datacat_collector('sensu_agent_config').with({
-            'template_body'   => '<%= @data.to_yaml %>',
+            'template'        => 'sensu/agent.yml.erb',
+            'template_body'   => %r{data.to_yaml},
             'target_resource' => 'File[sensu_agent_config]',
             'target_field'    => 'content',
           })

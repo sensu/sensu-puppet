@@ -38,7 +38,8 @@
       "arch": "amd64"
     },
     "subscriptions": [
-      "entity:sensu-backend.example.com"
+      "entity:sensu-backend.example.com",
+      "linux"
     ],
     "last_seen": 1541632956,
     "deregister": false,

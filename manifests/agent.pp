@@ -68,6 +68,8 @@
 # @param log_file
 #   Path to agent log file, only for Windows.
 #   Defaults to `C:\ProgramData\sensu\log\sensu-agent.log`
+# @param agent_entity_config_provider
+#   The provider to use when managing sensu_agent_entity_config resources
 #
 class sensu::agent (
   Optional[String] $version = undef,
@@ -89,10 +91,16 @@ class sensu::agent (
   Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
+  Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
 ) {
 
   include sensu
   include sensu::common
+  if $agent_entity_config_provider == 'sensuctl' {
+    include sensu::cli
+  } else {
+    include sensu::api
+  }
 
   $_version = pick($version, $sensu::version)
   $_backends = pick($backends, ["${sensu::api_host}:8081"])
@@ -129,6 +137,20 @@ class sensu::agent (
   if $config['subscriptions'] {
     $config['subscriptions'].each |$s| {
       sensu::agent::subscription { $s: }
+    }
+  }
+  if $config['labels'] {
+    $config['labels'].each |$key, $value| {
+      sensu::agent::label { $key:
+        value => $value,
+      }
+    }
+  }
+  if $config['annotations'] {
+    $config['annotations'].each |$key, $value| {
+      sensu::agent::annotation { $key:
+        value => $value,
+      }
     }
   }
 
@@ -201,7 +223,8 @@ class sensu::agent (
   }
 
   datacat_collector { 'sensu_agent_config':
-    template_body   => '<%= @data.to_yaml %>',
+    template        => 'sensu/agent.yml.erb',
+    template_body   => template_body('sensu/agent.yml.erb'),
     target_resource => File['sensu_agent_config'],
     target_field    => 'content',
   }

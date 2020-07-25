@@ -18,10 +18,11 @@ describe 'sensu::agent::subscription' do
       }
 
       it {
-        is_expected.to contain_sensu_agent_subscription('apache').with({
-          'subscription' => 'apache',
-          'entity'       => 'localhost',
-          'namespace'    => 'default',
+        is_expected.to contain_sensu_agent_entity_config('sensu::agent::subscription apache').with({
+          'config'    => 'subscriptions',
+          'value'     => 'apache',
+          'entity'    => 'localhost',
+          'namespace' => 'default',
         })
       }
 
@@ -42,10 +43,11 @@ describe 'sensu::agent::subscription' do
           })
         }
         it {
-          is_expected.to contain_sensu_agent_subscription('apache').with({
-            'subscription' => 'foo',
-            'entity'       => 'localhost',
-            'namespace'    => 'default',
+          is_expected.to contain_sensu_agent_entity_config('sensu::agent::subscription apache').with({
+            'config'    => 'subscriptions',
+            'value'     => 'foo',
+            'entity'    => 'localhost',
+            'namespace' => 'default',
           })
         }
       end
