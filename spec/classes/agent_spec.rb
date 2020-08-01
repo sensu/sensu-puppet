@@ -45,6 +45,14 @@ describe 'sensu::agent', :type => :class do
         it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
 
         it {
+          should contain_sensu_agent_entity_setup('puppet').with({
+            'url'       => 'https://localhost:8080',
+            'username'  => 'puppet-agent_entity_config',
+            'password'  => 'P@ssw0rd!',
+          })
+        }
+
+        it {
           should contain_package('sensu-go-agent').with({
             'ensure'   => 'installed',
             'name'     => platforms[facts[:osfamily]][:agent_package_name],
@@ -183,11 +191,33 @@ describe 'sensu::agent', :type => :class do
         end
       end
 
+
+      context 'when agent_entity_config_password is defined' do
+        let(:pre_condition) do
+          "class { 'sensu': agent_entity_config_password => 'password' }"
+        end
+
+        it {
+          should contain_sensu_agent_entity_setup('puppet').with({
+            'url'       => 'https://localhost:8080',
+            'username'  => 'puppet-agent_entity_config',
+            'password'  => 'password',
+          })
+        }
+      end
+
       context 'with use_ssl => false' do
         let(:pre_condition) do
           "class { 'sensu': use_ssl => false }"
         end
 
+        it {
+          should contain_sensu_agent_entity_setup('puppet').with({
+            'url'       => 'http://localhost:8080',
+            'username'  => 'puppet-agent_entity_config',
+            'password'  => 'P@ssw0rd!',
+          })
+        }
         it {
           should contain_datacat_fragment('sensu_agent_config-main').with({
             'target' => 'sensu_agent_config',

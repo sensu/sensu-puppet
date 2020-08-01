@@ -161,12 +161,12 @@ DESC
     if self[:entity].nil?
       fail "You must provide a value for entity"
     end
-    if self[:value].nil?
-      fail "You must provide a value for the value property"
-    end
     config = PuppetX::Sensu::AgentEntityConfig.config_classes[self[:config]]
     if config.is_a?(Hash) && self[:key].nil?
       fail "You must provide a value for key"
+    end
+    if !config.is_a?(Hash) && self[:ensure] != :absent && self[:value].nil?
+      fail "You must provide a value for the value property"
     end
     PuppetX::Sensu::Type.validate_namespace(self)
   end

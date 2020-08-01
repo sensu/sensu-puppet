@@ -57,6 +57,9 @@
 #   DEPRECATED - Sensu backend admin old password needed when changing password.
 # @param agent_password
 #   The sensu agent password
+# @param agent_entity_config_password
+#   The password used when configuring Sensu Agent entity config items
+#   Defaults to value used for `agent_password`.
 # @param agent_old_password
 #   DEPRECATED - The sensu agent old password needed when changing agent_password
 # @param validate_namespaces
@@ -80,6 +83,7 @@ class sensu (
   String $password = 'P@ssw0rd!',
   Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
+  Optional[String] $agent_entity_config_password = undef,
   Optional[String] $agent_old_password = undef,
   Boolean $validate_namespaces = true,
 ) {
@@ -130,6 +134,8 @@ class sensu (
     $trusted_ca_file = 'absent'
   }
   $api_url = "${api_protocol}://${api_host}:${api_port}"
+
+  $_agent_entity_config_password = pick($agent_entity_config_password, $agent_password)
 
   case $facts['os']['family'] {
     'RedHat': {

@@ -39,12 +39,10 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     Puppet::Provider::Sensuctl.convert_boolean_property_value(value)
   end
 
-  def self.namespaces
-    opts = {
-      :namespace => nil,
-    }
+  def self.namespaces(opts = {})
+    opts[:namespace] = nil
     Puppet.debug("Fetching namespaces via Sensu API")
-    data = api_request('namespaces')
+    data = api_request('namespaces', nil, opts)
     names = []
     data.each do |d|
       names << d['name']
@@ -58,10 +56,8 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     self.class.namespaces
   end
 
-  def get_entity(entity, namespace)
-    opts = {
-      :namespace => namespace,
-    }
+  def get_entity(entity, namespace, opts = {})
+    opts[:namespace] = namespace
     Puppet.debug("Fetching entity #{entity} via Sensu API")
     data = api_request("entities/#{entity}", nil, opts)
     return data
@@ -93,7 +89,7 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     if method == 'get' && !data.nil?
       uri.query = URI.encode_www_form(data)
     end
-    Puppet.debug("method=#{method}: #{uri.to_s}")
+    Puppet.debug("method=#{method} url=#{uri.to_s} path=#{path}")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = (uri.scheme == 'https')
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl?

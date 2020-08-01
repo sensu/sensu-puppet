@@ -128,6 +128,9 @@ Puppet::Type.newtype(:sensu_resources) do
     if resource.class.to_s != 'Puppet::Type::Sensu_agent_entity_config'
       return true
     end
+    if resource[:key] == 'sensu.io/managed_by'
+      return false
+    end
     if self[:agent_entity_configs].nil?
       return true
     end

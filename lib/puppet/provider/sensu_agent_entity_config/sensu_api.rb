@@ -1,5 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
 require File.expand_path(File.join(File.dirname(__FILE__), '../../..', 'puppet_x/sensu/agent_entity_config'))
+require 'yaml'
 
 Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Puppet::Provider::SensuAPI) do
   desc "Provider sensu_agent_entity_config using sensu API"
@@ -8,11 +9,44 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Pup
 
   defaultfor :kernel => ['Linux','windows']
 
+  class << self
+    attr_accessor :url
+    attr_accessor :username
+    attr_accessor :password
+  end
+
+  def self.api_opts
+    if (@url.nil? || @password.nil?) && File.exist?('/etc/sensu/agent.yml')
+      agent_yaml = YAML.load(File.read('/etc/sensu/agent.yml'))
+      backend = agent_yaml['backend-url'][0]
+      if backend =~ /^wss:/
+        proto = 'https://'
+      else
+        proto = 'http://'
+      end
+      backend.gsub!(%r{^(wss|ws)://}, '')
+      backend_host = backend.split(':')[0]
+      @url = "#{proto}#{backend_host}:8080" if @url.nil?
+      @password = agent_yaml['password'] if @password.nil?
+    end
+    if @username.nil?
+      @username = 'puppet-agent_entity_config'
+    end
+    {
+      :url      => @url,
+      :username => @username,
+      :password => @password,
+    }
+  end
+  def api_opts
+    self.class.api_opts
+  end
+
   def self.instances
     configs = []
 
-    namespaces.each do |namespace|
-      data = api_request('entities', nil, {:namespace => namespace})
+    namespaces(api_opts).each do |namespace|
+      data = api_request('entities', nil, api_opts.merge({:namespace => namespace}))
       next if (data.nil? || data.empty?)
       data.each do |d|
         entity = d['metadata']['name']
@@ -41,7 +75,7 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Pup
               config[:config] = c
               config[:key] = key
               config[:value] = v
-              config[:name] = "#{config[:config]}:#{config[:key]} on #{entity} in #{namespace}"
+              config[:name] = "#{config[:config]} key #{config[:key]} on #{entity} in #{namespace}"
               configs << new(config)
             end
           else
@@ -94,7 +128,7 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Pup
   end
 
   def update(add = true)
-    entity = get_entity(resource[:entity], resource[:namespace])
+    entity = get_entity(resource[:entity], resource[:namespace], api_opts)
     config = resource[:config]
     if PuppetX::Sensu::AgentEntityConfig.metadata_configs.include?(config)
       obj = entity['metadata'][config]
@@ -136,7 +170,7 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Pup
       :namespace => resource[:namespace],
       :method => 'put',
     }
-    api_request("entities/#{resource[:entity]}", entity, opts)
+    api_request("entities/#{resource[:entity]}", entity, api_opts.merge(opts))
   end
 
   def create

@@ -64,14 +64,14 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.convert_boolean_property_value(value)
   end
 
-  def self.sensuctl(args)
+  def self.sensuctl(args, opts = {})
     sensuctl_cmd = which('sensuctl')
     if ! path.nil?
       cmd = [path] + args
     else
       cmd = [sensuctl_cmd] + args
     end
-    execute(cmd)
+    execute(cmd, opts)
   end
   def sensuctl(*args)
     self.class.sensuctl(*args)
@@ -90,8 +90,13 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
       args << chunk_size.to_s
     end
     data = []
-    output = sensuctl(args)
-    Puppet.debug("sensuctl #{args.join(' ')}: #{output}")
+    begin
+      output = sensuctl(args, {:failonfail => false})
+      Puppet.debug("sensuctl #{args.join(' ')}: #{output}")
+    rescue Exception => e
+      Puppet.notice("Failed to list resources with sensuctl: #{e}")
+      return []
+    end
     begin
       data = JSON.parse(output)
     rescue JSON::ParserError => e

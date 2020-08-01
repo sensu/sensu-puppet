@@ -40,6 +40,8 @@
 #   This parameter is mutually exclusive with ssl_key_source
 # @param include_default_resources
 #   Sets if default sensu resources should be included
+# @param include_agent_resources
+#   Sets if agent RBAC resources should be included
 # @param manage_agent_user
 #   Sets if the Sensu agent user should be managed
 # @param agent_user_disabled
@@ -125,6 +127,7 @@ class sensu::backend (
   Optional[String] $ssl_key_source = $facts['puppet_hostprivkey'],
   Optional[String] $ssl_key_content = undef,
   Boolean $include_default_resources = true,
+  Boolean $include_agent_resources = true,
   Boolean $manage_agent_user = true,
   Boolean $agent_user_disabled = false,
   Boolean $show_diff = true,
@@ -210,6 +213,9 @@ class sensu::backend (
 
   if $include_default_resources {
     include sensu::backend::default_resources
+  }
+  if $include_agent_resources {
+    include sensu::backend::agent_resources
   }
 
   # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
