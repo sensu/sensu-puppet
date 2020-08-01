@@ -114,7 +114,7 @@ Puppet::Type.newtype(:sensu_resources) do
     Puppet.debug("sensu_resources check: #{name} in #{namespace}")
     catalog.resources.each do |res|
       if res.class == resource.class
-        res_name = res[:resource_name] || resource[:name]
+        res_name = res[:resource_name] || res[:name]
         res_namespace = res[:namespace]
         if res_name == name && res_namespace == namespace
           return false
@@ -131,11 +131,21 @@ Puppet::Type.newtype(:sensu_resources) do
     if resource[:key] == 'sensu.io/managed_by'
       return false
     end
-    if self[:agent_entity_configs].nil?
-      return true
-    end
-    if ! self[:agent_entity_configs].include?(resource[:config])
+    if ! self[:agent_entity_configs].nil? && ! self[:agent_entity_configs].include?(resource[:config])
       return false
+    end
+    catalog.resources.each do |res|
+      if res.class != resource.class
+        next
+      end
+      case PuppetX::Sensu::AgentEntityConfig.config_classes[res[:config]]
+      when Array
+        return false if res[:config] == resource[:config] && res[:value] == resource[:value] && res[:entity] == resource[:entity] && res[:namespace] == resource[:namespace]
+      when Hash
+        return false if res[:config] == resource[:config] && res[:key] == resource[:key] && res[:entity] == resource[:entity] && res[:namespace] == resource[:namespace]
+      else
+        return false if res[:config] == resource[:config] && res[:entity] == resource[:entity] && res[:namespace] == resource[:namespace]
+      end
     end
     return true
   end
