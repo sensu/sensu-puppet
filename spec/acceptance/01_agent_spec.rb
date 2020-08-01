@@ -179,6 +179,70 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         expect(data['redact']).to include('baz')
         expect(data['metadata']['labels']).to include({'foo' => 'bar'})
         expect(data['metadata']['labels']).to include({'bar' => 'baz'})
+        expect(data['metadata']['labels']).to include({'baz' => 'baz'})
+        expect(data['metadata']['labels']).to include({'cpu.warning' => '90'})
+        expect(data['metadata']['labels']).to include({'cpu.critical' => '95'})
+        expect(data['metadata']['annotations']).to include({'contacts' => 'ops@example.com'})
+        expect(data['metadata']['annotations']).to include({'foo' => 'bar'})
+        expect(data['metadata']['annotations']).to include({'cpu.message' => 'baz'})
+      end
+    end
+  end
+
+  context 'purging' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu': }
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        subscriptions    => ['foo'],
+        labels           => { 'foo' => 'bar', 'bar' => 'baz' },
+        annotations      => { 'contacts' => 'ops@example.com' },
+        service_env_vars => { 'SENSU_API_PORT' => '4041' },
+        config_hash      => {
+          'log-level' => 'info',
+          'keepalive-interval' => 30,
+        }
+      }
+      sensu::agent::subscription { 'base': }
+      sensu::agent::label { 'cpu.warning': value => '90' }
+      sensu::agent::label { 'cpu.critical': value => '95' }
+      sensu::agent::annotation { 'cpu.message': value => 'baz' }
+      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+
+      sensu_resources { 'sensu_agent_entity_config':
+        purge                => true,
+        agent_entity_configs => ['subscriptions','labels'],
+      }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-agent' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    it 'should update an entity' do
+      on backend, "sensuctl entity info sensu-agent --format json" do
+        data = JSON.parse(stdout)
+        expect(data['subscriptions']).to include('base')
+        expect(data['subscriptions']).not_to include('linux')
+        expect(data['subscriptions']).to include('foo')
+        expect(data['subscriptions']).not_to include('bar')
+        expect(data['redact']).to include('foo')
+        expect(data['redact']).to include('bar')
+        expect(data['redact']).to include('baz')
+        expect(data['metadata']['labels']).to include({'foo' => 'bar'})
+        expect(data['metadata']['labels']).to include({'bar' => 'baz'})
+        expect(data['metadata']['labels']).not_to include({'baz' => 'baz'})
         expect(data['metadata']['labels']).to include({'cpu.warning' => '90'})
         expect(data['metadata']['labels']).to include({'cpu.critical' => '95'})
         expect(data['metadata']['annotations']).to include({'contacts' => 'ops@example.com'})
