@@ -33,6 +33,16 @@ DESC
 
   newproperty(:dsn) do
     desc "Use the dsn attribute to specify the data source names as a URL or PostgreSQL connection string"
+
+    def change_to_s(currentvalue, newvalue)
+      return "changed dsn"
+    end
+    def is_to_s(currentvalue)
+      return '[old dsn redacted]'
+    end
+    def should_to_s(newvalue)
+      return '[new dsn redacted]'
+    end
   end
 
   newproperty(:pool_size, :parent => PuppetX::Sensu::IntegerProperty) do
