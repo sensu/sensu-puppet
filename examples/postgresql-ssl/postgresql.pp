@@ -24,7 +24,7 @@ file { 'postgresql_ssl_key_file':
 
 postgresql::server::db { 'sensu':
   user     => 'sensu',
-  password => postgresql_password('sensu', $password),
+  password => postgresql::postgresql_password('sensu', $password),
 }
 
 postgresql::server::pg_hba_rule { 'allow access to sensu database':

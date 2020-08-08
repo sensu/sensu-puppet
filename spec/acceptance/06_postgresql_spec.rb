@@ -42,7 +42,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
       # https://github.com/sensu/sensu-go/issues/3424
       on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
         data = YAML.load(stdout)
-        expect(data['spec']['dsn']).to eq('postgresql://sensu:changeme@localhost:5432/sensu')
+        expect(data['spec']['dsn']).to eq('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require')
         expect(data['spec']['pool_size']).to eq(20)
       end
     end
