@@ -55,6 +55,31 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
     end
   end
 
+  context 'updates postgresql datastore' do
+    it 'should not expose dsn changes to logs' do
+      setup_pp = <<-EOS
+      class { 'sensu::backend':
+        datastore            => 'postgresql',
+        manage_postgresql_db => false,
+        postgresql_password  => 'supersecret',
+      }
+      EOS
+      pp = <<-EOS
+      class { 'sensu::backend':
+        datastore            => 'postgresql',
+        manage_postgresql_db => false,
+        postgresql_password  => 'foobar',
+      }
+      EOS
+      apply_manifest_on(node, setup_pp, :catch_failures => true)
+      result = apply_manifest_on(node, pp, :catch_failures => true)
+      expect(result.stdout).not_to include('supersecret')
+      expect(result.stderr).not_to include('supersecret')
+      expect(result.stdout).not_to include('foobar')
+      expect(result.stderr).not_to include('foobar')
+    end
+  end
+
   context 'removes postgresql datastore' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS

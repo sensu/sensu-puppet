@@ -7,15 +7,15 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       include sensu::backend
       sensu_user { 'test':
-        password => 'password',
+        password => 'supersecret',
         groups   => ['read-only'],
       }
       sensu_user { 'test2':
-        password => 'password',
+        password => 'supersecret',
         groups   => ['read-only'],
       }
       sensu_user { 'test-api':
-        password => 'password',
+        password => 'supersecret',
         groups   => ['read-only'],
         provider => 'sensu_api',
       }
@@ -44,7 +44,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid password' do
-      exit_code = on(node, 'sensuctl user test-creds test --password password').exit_code
+      exit_code = on(node, 'sensuctl user test-creds test --password supersecret').exit_code
       expect(exit_code).to eq(0)
     end
 
@@ -58,7 +58,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid password using API' do
-      exit_code = on(node, 'sensuctl user test-creds test-api --password password').exit_code
+      exit_code = on(node, 'sensuctl user test-creds test-api --password supersecret').exit_code
       expect(exit_code).to eq(0)
     end
   end
@@ -68,16 +68,16 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       include sensu::backend
       sensu_user { 'test':
-        password => 'password2',
+        password => 'supersecret2',
         groups   => ['read-only'],
       }
       sensu_user { 'test2':
-        password => 'password',
+        password => 'supersecret',
         groups   => ['read-only','admin'],
         disabled => true,
       }
       sensu_user { 'test-api':
-        password => 'password2',
+        password => 'supersecret2',
         groups   => ['read-only','admin'],
         provider => 'sensu_api',
       }
@@ -87,13 +87,15 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        result = on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
         # Run it twice and test for idempotency
-        apply_manifest_on(node, pp, :catch_failures => true)
+        result = apply_manifest_on(node, pp, :catch_failures => true)
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
+      expect(result.stdout).not_to include('supersecret')
+      expect(result.stderr).not_to include('supersecret')
     end
 
     it 'should have an updated user' do
@@ -105,7 +107,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
       end
     end
     it 'should have valid password' do
-      exit_code = on(node, 'sensuctl user test-creds test --password password2').exit_code
+      exit_code = on(node, 'sensuctl user test-creds test --password supersecret2').exit_code
       expect(exit_code).to eq(0)
     end
 
@@ -118,7 +120,7 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
       end
     end
     it 'should have valid password using API' do
-      exit_code = on(node, 'sensuctl user test-creds test-api --password password2').exit_code
+      exit_code = on(node, 'sensuctl user test-creds test-api --password supersecret2').exit_code
       expect(exit_code).to eq(0)
     end
   end

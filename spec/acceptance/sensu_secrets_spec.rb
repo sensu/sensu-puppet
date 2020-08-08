@@ -165,13 +165,15 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        result = on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
         # Run it twice and test for idempotency
-        apply_manifest_on(node, pp, :catch_failures => true)
+        result = apply_manifest_on(node, pp, :catch_failures => true)
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
+      expect(result.stdout).not_to include('VAULT_TOKEN')
+      expect(result.stderr).not_to include('VAULT_TOKEN')
     end
 
     it 'should have a valid VaultProvider' do
