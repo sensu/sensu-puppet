@@ -79,6 +79,34 @@
 #   The PostgreSQL port
 # @param postgresql_dbname
 #   The name of the PostgreSQL database
+# @param postgresql_sslmode
+#   The PostgreSQL sslmode value
+# @param postgresql_ssl_dir
+#   The path to store SSL related files for PostgreSQL connections
+# @param postgresql_ssl_ca_source
+#   The source of PostgreSQL SSL CA
+#   Do not define with postgresql_ssl_ca_content
+# @param postgresql_ssl_ca_content
+#   The content of PostgreSQL SSL CA
+#   Do not define with postgresql_ssl_ca_source
+# @param postgresql_ssl_crl_source
+#   The source of PostgreSQL SSL CRL
+#   Do not define with postgresql_ssl_crl_content
+# @param postgresql_ssl_crl_content
+#   The content of PostgreSQL SSL CRL
+#   Do not define with postgresql_ssl_crl_source
+# @param postgresql_ssl_cert_source
+#   The source of PostgreSQL SSL certificate
+#   Do not define with postgresql_ssl_cert_content
+# @param postgresql_ssl_cert_content
+#   The content of PostgreSQL SSL certificate
+#   Do not define with postgresql_ssl_cert_source
+# @param postgresql_ssl_key_source
+#   The source of PostgreSQL SSL private key
+#   Do not define with postgresql_ssl_key_content
+# @param postgresql_ssl_key_content
+#   The content of PostgreSQL SSL private key
+#   Do not define with postgresql_ssl_key_source
 # @param postgresql_pool_size
 #   The PostgreSQL pool size
 #
@@ -113,6 +141,16 @@ class sensu::backend (
   Stdlib::Host $postgresql_host = 'localhost',
   Stdlib::Port $postgresql_port = 5432,
   String $postgresql_dbname = 'sensu',
+  Enum['disable','require','verify-ca','verify-full'] $postgresql_sslmode = 'require',
+  Stdlib::Absolutepath $postgresql_ssl_dir = '/var/lib/sensu/.postgresql',
+  Optional[String] $postgresql_ssl_ca_source = undef,
+  Optional[String] $postgresql_ssl_ca_content = undef,
+  Optional[String] $postgresql_ssl_crl_source = undef,
+  Optional[String] $postgresql_ssl_crl_content = undef,
+  Optional[String] $postgresql_ssl_cert_source = undef,
+  Optional[String] $postgresql_ssl_cert_content = undef,
+  Optional[String] $postgresql_ssl_key_source = undef,
+  Optional[String] $postgresql_ssl_key_content = undef,
   Integer $postgresql_pool_size = 20,
 ) {
 

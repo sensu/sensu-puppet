@@ -20,7 +20,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
       it do
         should contain_sensu_postgres_config('postgresql').with({
           :ensure    => 'present',
-          :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu',
+          :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require',
           :pool_size => '20',
         })
       end
@@ -30,6 +30,224 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
           :user     => 'sensu',
           :password => /md5/,
         })
+      end
+
+      it do
+        should contain_file('sensu-backend postgresql_ssl_dir').with({
+          'ensure'  => 'directory',
+          'path'    => '/var/lib/sensu/.postgresql',
+          'owner'   => 'sensu',
+          'group'   => 'sensu',
+          'mode'    => '0755',
+          'require' => 'Package[sensu-go-backend]',
+          'notify'  => 'Service[sensu-backend]',
+        })
+      end
+      it { should_not contain_file('sensu-backend postgresql_ca') }
+      it { should_not contain_file('sensu-backend postgresql_crl') }
+      it { should_not contain_file('sensu-backend postgresql_cert') }
+      it { should_not contain_file('sensu-backend postgresql_key') }
+      
+      context 'sslmode defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_sslmode => 'disable' }
+          EOS
+        end
+
+        it do
+          should contain_sensu_postgres_config('postgresql').with({
+            :ensure    => 'present',
+            :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu?sslmode=disable',
+            :pool_size => '20',
+          })
+        end
+      end
+
+      context 'ssl ca source defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_ca_source => 'foo' }
+          EOS
+        end
+        
+        it do
+          should contain_file('sensu-backend postgresql_ca').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/root.crt',
+            'source'  => 'foo',
+            'content' => nil,
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0644',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl ca content defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_ca_content => 'foo' }
+          EOS
+        end
+        
+        it do
+          should contain_file('sensu-backend postgresql_ca').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/root.crt',
+            'source'  => nil,
+            'content' => 'foo',
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0644',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl crl source defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_crl_source => 'foo' }
+          EOS
+        end
+
+        it do
+          should contain_file('sensu-backend postgresql_crl').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/root.crl',
+            'source'  => 'foo',
+            'content' => nil,
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0644',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl crl content defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_crl_content => 'foo' }
+          EOS
+        end
+
+        it do
+          should contain_file('sensu-backend postgresql_crl').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/root.crl',
+            'source'  => nil,
+            'content' => 'foo',
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0644',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl cert source defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_cert_source => 'foo' }
+          EOS
+        end
+        
+        it do
+          should contain_file('sensu-backend postgresql_cert').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/postgresql.crt',
+            'source'  => 'foo',
+            'content' => nil,
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0644',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl cert content defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_cert_content => 'foo' }
+          EOS
+        end
+        
+        it do
+          should contain_file('sensu-backend postgresql_cert').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/postgresql.crt',
+            'source'  => nil,
+            'content' => 'foo',
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0644',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl key source defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_key_source => 'foo' }
+          EOS
+        end
+        
+        it do
+          should contain_file('sensu-backend postgresql_key').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/postgresql.key',
+            'source'  => 'foo',
+            'content' => nil,
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0600',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
+      end
+
+      context 'ssl key content defined' do
+        let(:pre_condition) do
+          <<-EOS
+          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::server': }
+          class { 'sensu::backend': postgresql_ssl_key_content => 'foo' }
+          EOS
+        end
+        
+        it do
+          should contain_file('sensu-backend postgresql_key').with({
+            'ensure'  => 'file',
+            'path'    => '/var/lib/sensu/.postgresql/postgresql.key',
+            'source'  => nil,
+            'content' => 'foo',
+            'owner'   => 'sensu',
+            'group'   => 'sensu',
+            'mode'    => '0600',
+            'notify'  => 'Service[sensu-backend]',
+          })
+        end
       end
 
       context 'datastore_ensure => absent' do
@@ -45,7 +263,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
         it do
           should contain_sensu_postgres_config('postgresql').with({
            :ensure    => 'absent',
-           :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu',
+           :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require',
            :pool_size => '20',
          })
         end
