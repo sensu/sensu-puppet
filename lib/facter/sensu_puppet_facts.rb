@@ -20,6 +20,12 @@ module SensuPuppetFacts
         ::Puppet[:localcacert].to_s
       end
     end
+
+    Facter.add(:puppet_hostcrl) do
+      setcode do
+        ::Puppet[:hostcrl].to_s
+      end
+    end
   end
 
   def self.init_settings

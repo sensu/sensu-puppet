@@ -29,4 +29,9 @@ describe SensuPuppetFacts do
     Puppet[:localcacert] = '/dne/ca.pem'
     expect(Facter.value(:puppet_localcacert)).to eq('/dne/ca.pem')
   end
+
+  it 'should have puppet_hostcrl defined' do
+    Puppet[:hostcrl] = '/dne/crl.pem'
+    expect(Facter.value(:puppet_hostcrl)).to eq('/dne/crl.pem')
+  end
 end
