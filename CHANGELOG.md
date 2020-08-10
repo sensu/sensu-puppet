@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.13.0](https://github.com/sensu/sensu-puppet/tree/v4.13.0) (2020-08-10)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.12.0...v4.13.0)
+
+### Added
+
+- Improved PostgreSQL SSL support [\#1259](https://github.com/sensu/sensu-puppet/pull/1259) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Do not expose PostgreSQL DSN [\#1257](https://github.com/sensu/sensu-puppet/pull/1257) ([treydock](https://github.com/treydock))
+
 ## [v4.12.0](https://github.com/sensu/sensu-puppet/tree/v4.12.0) (2020-07-05)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.11.0...v4.12.0)
@@ -192,7 +204,6 @@
 - Document contact routing and bonsai asset bugfix [\#1194](https://github.com/sensu/sensu-puppet/pull/1194) ([treydock](https://github.com/treydock))
 - Support 'sensu-backend init' added in Sensu Go 5.16 [\#1192](https://github.com/sensu/sensu-puppet/pull/1192) ([treydock](https://github.com/treydock))
 - Misc test fixes [\#1189](https://github.com/sensu/sensu-puppet/pull/1189) ([treydock](https://github.com/treydock))
-- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
 
 ### Merged Pull Requests
 
@@ -256,14 +267,13 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.9.0...v3.10.0)
 
+### Added
+
+- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
+
 ## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.8.0...v3.9.0)
-
-### Added
-
-- Add sensu\_resources type that will handle resource purging [\#1158](https://github.com/sensu/sensu-puppet/pull/1158) ([treydock](https://github.com/treydock))
-- Add sensu\_gem package provider [\#1156](https://github.com/sensu/sensu-puppet/pull/1156) ([treydock](https://github.com/treydock))
 
 ## [v3.8.0](https://github.com/sensu/sensu-puppet/tree/v3.8.0) (2019-09-02)
 
