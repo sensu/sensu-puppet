@@ -107,7 +107,7 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
             'include_nested_groups' => true,
             'binding'      => {
               'user_dn' => 'cn=test,dc=acme,dc=org',
-              'password' => 'password'
+              'password' => 'supersecret'
             },
             'group_search' => {
               'base_dn' => 'dc=acme,dc=org',
@@ -128,7 +128,7 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
             'include_nested_groups' => true,
             'binding'      => {
               'user_dn' => 'cn=test,dc=acme,dc=org',
-              'password' => 'password'
+              'password' => 'supersecret'
             },
             'group_search' => {
               'base_dn' => 'dc=acme,dc=org',
@@ -146,13 +146,17 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        result = on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
         # Run it twice and test for idempotency
-        apply_manifest_on(node, pp, :catch_failures => true)
+        result = apply_manifest_on(node, pp, :catch_failures => true)
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
+      expect(result.stdout).not_to include('P@ssw0rd!')
+      expect(result.stderr).not_to include('P@ssw0rd!')
+      expect(result.stdout).not_to include('supersecret')
+      expect(result.stderr).not_to include('supersecret')
     end
 
     it 'should have a valid ad auth' do
@@ -165,7 +169,7 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['servers'][0]['security']).to eq('tls')
         expect(data['servers'][0]['default_upn_domain']).to eq('example.com')
         expect(data['servers'][0]['include_nested_groups']).to eq(true)
-        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=test,dc=acme,dc=org', 'password' => 'password'})
+        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=test,dc=acme,dc=org', 'password' => 'supersecret'})
         expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'})
       end
@@ -181,7 +185,7 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['servers'][0]['security']).to eq('tls')
         expect(data['servers'][0]['default_upn_domain']).to eq('example.com')
         expect(data['servers'][0]['include_nested_groups']).to eq(true)
-        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=test,dc=acme,dc=org', 'password' => 'password'})
+        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=test,dc=acme,dc=org', 'password' => 'supersecret'})
         expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'})
       end
