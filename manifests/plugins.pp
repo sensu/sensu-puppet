@@ -39,6 +39,7 @@ class sensu::plugins (
   Optional[Boolean] $manage_repo = undef,
   String $package_ensure = 'installed',
   String $package_name = 'sensu-plugins-ruby',
+  String $package_url = "https://packagecloud.io/sensu/community/packages/el/7/sensu-plugins-ruby-0.2.0-1.el7.x86_64.rpm/download.rpm",
   Array $dependencies = [],
   Array $gem_dependencies = [],
   Variant[Array, Hash] $plugins = [],
@@ -61,10 +62,25 @@ class sensu::plugins (
     $package_require = undef
   }
 
-  package { 'sensu-plugins-ruby':
-    ensure  => $package_ensure,
-    name    => $package_name,
-    require => $package_require,
+  if "${facts['os']['family']}${facts['os']['release']['major']}" == "RedHat8" {
+    exec { 'fetch sensu-plugins-ruby rpm':
+      command => "/usr/bin/curl -L ${package_url} --output /opt/${package_name}.rpm",
+      creates => "/opt/${package_name}.rpm",
+      user    => 'root',
+    }
+    package { 'sensu-plugins-ruby':
+      ensure  => $package_ensure,
+      name    => $package_name,
+      require => Exec['fetch sensu-plugins-ruby rpm'],
+      source => "/opt/${package_name}.rpm",
+    }
+  }
+  else {
+    package { 'sensu-plugins-ruby':
+      ensure  => $package_ensure,
+      name    => $package_name,
+      require => $package_require,
+    }
   }
 
   ensure_packages($dependencies)
