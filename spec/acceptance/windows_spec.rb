@@ -5,12 +5,11 @@ describe 'sensu::cli class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS
     class { '::sensu':
+      use_ssl  => false,
       api_host => 'localhost',
     }
     class { 'sensu::cli':
       install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip',
-      # Not yet able to run backend in appveyor so configure will not work
-      configure      => false,
     }
     EOS
 
@@ -45,9 +44,12 @@ end
 describe 'sensu::agent class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS
-    class { '::sensu': }
+    class { '::sensu':
+      use_ssl  => false,
+      api_host => 'localhost',
+    }
     class { 'sensu::agent':
-      backends         => ['sensu-backend:8081'],
+      backends         => ['localhost:8081'],
       entity_name      => 'sensu-agent',
       subscriptions    => ['base'],
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
@@ -74,13 +76,12 @@ describe 'sensu::agent class', if: Gem.win_platform? do
 
       describe file('C:\ProgramData\Sensu\config\agent.yml') do
         expected_content = {
-          'backend-url'     => ['wss://sensu-backend:8081'],
+          'backend-url'     => ['ws://localhost:8081'],
           'password'        => 'P@ssw0rd!',
           'name'            => 'sensu-agent',
           'subscriptions'   => ['base','windows'],
           'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
           'log-level'       => 'info',
-          'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
         }
         its(:content_as_yaml) { is_expected.to eq(expected_content) }
       end
@@ -100,11 +101,14 @@ describe 'sensu::agent class', if: Gem.win_platform? do
 
   context 'using package_source' do
     pp = <<-EOS
-    class { '::sensu': }
+    class { '::sensu':
+      use_ssl  => false,
+      api_host => 'localhost',
+    }
     class { 'sensu::agent':
       package_name   => 'Sensu Agent',
       package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go-agent_5.20.1.12427_en-US.x64.msi',
-      backends       => ['sensu-backend:8081'],
+      backends       => ['localhost:8081'],
       entity_name    => 'sensu-agent',
       config_hash    => {
         'log-level' => 'info',

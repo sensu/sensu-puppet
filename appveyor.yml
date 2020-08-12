@@ -38,6 +38,7 @@ install:
 - ruby -v
 - bundle -v
 - bundle install --jobs 4 --retry 2 --path C:\vendor\bundle --without documentation
+- docker run -d --name sensu-backend -p 3000:3000 -p 8080:8080 -p 8081:8081 -e SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin -e SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD='P@ssw0rd!' sensu/sensu:latest sensu-backend start --state-dir /var/lib/sensu/sensu-backend --log-level debug
 test_script:
 - bundle exec rake acceptance:windows
 - '"C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe" service uninstall'
@@ -65,3 +66,5 @@ environment:
       RUBY_VERSION: 25-x64
 matrix:
   fast_finish: false
+  allow_failures:
+    - image: Visual Studio 2015
