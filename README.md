@@ -13,6 +13,7 @@
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
     * [Basic Sensu CLI](#basic-sensu-cli)
+    * [Sensu Go Web](#sensu-go-web)
     * [API Providers](#api-providers)
     * [Manage Windows Agent](#manage-windows-agent)
     * [Advanced agent](#advanced-agent)
@@ -174,6 +175,13 @@ For Windows:
   * [puppet/windows_env](https://forge.puppet.com/puppet/windows_env) module (`>= 3.0.0 < 4.0.0`)
   * [puppet/archive](https://forge.puppet.com/puppet/archive) module (`>= 3.0.0 < 5.0.0`)
 
+For sensu::web class:
+  * [rehan/git](https://forge.puppet.com/rehan/git) module (`>= 1.4.1 <2.0.0`) **NOTE** Or any other git module with `git` class.
+  * [puppetlabs/vcsrepo](https://forge.puppet.com/puppetlabs/vcsrepo) module (`>= 3.1.1 <4.0.0`)
+  * [puppet/nodejs](https://forge.puppet.com/puppet/nodejs) module (`>= 8.0.0 <9.0.0`)
+  * [initforthe/yarn](https;//forge.puppet.com/initforthe/yarn) module (`>= 1.1.0 <2.0.0`)
+  * [camptocamp/systemd](https://forge.puppet.com/camptocamp/systemd) module (`>= 2.8.0 <3.0.0`)
+
 ### Beginning with Sensu
 
 This module provides Vagrant definitions that can be used to get started with Sensu.
@@ -269,6 +277,34 @@ class { '::sensu':
 }
 class { 'sensu::cli':
   install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip',
+}
+```
+
+### Sensu Go Web
+
+Be sure all necessary soft dependencies are installed, see [Soft module dependencies](#soft-module-dependencies).
+
+To install Sensu Go Web include the necessary class and ensure the API host is defined.
+The example below uses defaults for both version and port.
+
+```puppet
+class { 'sensu':
+  use_ssl  => true,
+  api_host => 'backend.example.com',
+}
+class { 'sensu::web':
+  version => '1.0.1',
+  port    => '9080',
+}
+```
+
+If you wish to run a port below 1024 you must run sensu-web service as root:
+
+```
+class { 'sensu::web':
+  port          => 80,
+  service_user  => 'root',
+  service_group => 'root',
 }
 ```
 

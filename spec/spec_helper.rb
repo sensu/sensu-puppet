@@ -67,6 +67,19 @@ add_custom_fact :puppet_localcacert, ->(os, facts) {
   end
 }
 
+add_custom_fact :service_provider, ->(os, facts) {
+  case facts[:osfamily]
+  when 'RedHat'
+    if facts[:os]['release']['major'].to_i < 7
+      'init'
+    else
+      'systemd'
+    end
+  else
+    'systemd'
+  end
+}
+
 # Gets an array of types that have sensuctl provider
 # This logic is similar to that used by sensuctl_config type
 # Used in sensuctl_config tests

@@ -18,6 +18,7 @@ describe 'sensu::common', :type => :class do
         else
           it { should contain_class('sensu::repo')}
         end
+        it { should contain_class('sensu::common::user') }
         it { should contain_class('sensu::ssl') }
 
         if facts[:osfamily] == 'windows'

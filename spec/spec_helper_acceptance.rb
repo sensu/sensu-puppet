@@ -60,13 +60,17 @@ RSpec.configure do |c|
     on setup_nodes, puppet('module', 'install', 'sensu-sensuclassic'), { :acceptable_exit_codes => [0,1] }
     # Install soft module dependencies
     on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 8.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-vcsrepo', '--version', '">= 3.1.1 <4.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'rehan-git', '--version', '">= 1.4.1 <2.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppet-nodejs', '--version', '">= 8.0.0 <9.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'initforthe-yarn', '--version', '">= 1.1.0 <2.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'camptocamp-systemd', '--version', '2.8.0'), { :acceptable_exit_codes => [0,1] }
     if collection == 'puppet6'
       on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     end
     # Dependencies only needed to test some examples
     if RSpec.configuration.sensu_mode == 'examples'
       on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '4.0.0')
-      on setup_nodes, puppet('module', 'install', 'camptocamp-systemd', '--version', '2.8.0')
       on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
       # rsyslog template relies on rsyslog_version fact so pre-install rsyslog
       # to keep things idempotent within minimal docker containers

@@ -3,6 +3,7 @@
 #
 class sensu::common {
   include sensu
+  contain sensu::common::user
 
   if $sensu::etc_parent_dir {
     file { 'sensu_dir':
@@ -27,29 +28,6 @@ class sensu::common {
 
   if $sensu::use_ssl {
     contain sensu::ssl
-  }
-
-  if $sensu::manage_user and $sensu::sensu_user {
-    user { 'sensu':
-      ensure     => 'present',
-      name       => $sensu::sensu_user,
-      forcelocal => true,
-      shell      => '/bin/false',
-      gid        => $sensu::sensu_group,
-      uid        => undef,
-      home       => '/var/lib/sensu',
-      managehome => false,
-      system     => true,
-    }
-  }
-  if $sensu::manage_group and $sensu::sensu_group {
-    group { 'sensu':
-      ensure     => 'present',
-      name       => $sensu::sensu_group,
-      forcelocal => true,
-      gid        => undef,
-      system     => true,
-    }
   }
 
   if $sensu::manage_repo {
