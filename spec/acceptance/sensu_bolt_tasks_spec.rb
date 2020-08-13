@@ -321,3 +321,36 @@ groups:
     end
   end
 end
+
+describe 'sensu backend_upgrade task', if: RSpec.configuration.sensu_mode == 'full' do
+  backend = hosts_as('sensu-backend')[0]
+  context 'setup' do
+    it 'is successful' do
+      on backend, 'yum remove -y sensu-go\*'
+      on backend, 'rm -rf /var/lib/sensu/sensu-backend/etcd /root/.config'
+      pp = <<-EOS
+        class { 'sensu':
+          version => '5.21.0-14262',
+        }
+        include sensu::backend
+      EOS
+      apply_manifest_on(backend, pp, :catch_failures => true)
+      upgrade_pp = <<-EOS
+        class { 'sensu':
+          version => 'latest',
+        }
+        include sensu::backend
+      EOS
+      apply_manifest_on(backend, upgrade_pp, :catch_failures => true)
+    end
+  end
+
+  context 'peforms upgrade' do
+    describe command('bolt task run sensu::backend_upgrade --targets sensu-backend'), :node => backend do
+      its(:exit_status) { should eq 0 }
+    end
+    describe command('sensu-backend upgrade --skip-confirm 2>&1'), :node => backend do
+      its(:stdout) { should match /up to date/ }
+    end
+  end
+end

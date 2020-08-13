@@ -1047,6 +1047,10 @@ sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
 
 The following Bolt tasks are provided by this Module:
 
+**sensu::backend\_upgrade**: Perform backend upgrade via `sensu-backend upgrade` command.
+
+Example: `bolt task run sensu::backend_upgrade --targets sensu_backend`
+
 **sensu::agent\_event**: Create a Sensu Go agent event via the agent API
 
 Example: `bolt task run sensu::agent_event name=bolttest status=1 output=test --targets sensu_agent`

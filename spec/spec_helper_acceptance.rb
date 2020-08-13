@@ -13,6 +13,7 @@ RSpec.configure do |c|
   c.add_setting :sensu_mode, default: 'base'
   c.add_setting :sensu_enterprise_file, default: nil
   c.add_setting :sensu_test_enterprise, default: false
+  c.add_setting :add_ci_repo, default: false
   c.add_setting :sensu_manage_repo, default: true
   c.add_setting :sensu_use_agent, default: false
   c.add_setting :examples_dir, default: nil
@@ -37,10 +38,7 @@ RSpec.configure do |c|
   secrets = File.join(project_dir, 'tests/secrets')
   if File.exists?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
     c.sensu_manage_repo = false
-    add_ci_repo = true
-  else
-    c.sensu_manage_repo = true
-    add_ci_repo = false
+    c.add_ci_repo = true
   end
 
   c.examples_dir = File.join(project_dir, 'examples')
@@ -80,7 +78,7 @@ RSpec.configure do |c|
       on host, "puppet config set --section main certname #{host.name}"
     end
 
-    if add_ci_repo
+    if c.add_ci_repo
       scp_to(hosts, ci_build, '/tmp/ci_build.sh')
       scp_to(hosts, secrets, '/tmp/secrets')
       on hosts, '/tmp/ci_build.sh'

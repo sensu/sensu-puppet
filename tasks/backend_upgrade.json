@@ -1,0 +1,46 @@
+{
+  "description": "Execute Sensu Go backend upgrade",
+  "input_method": "stdin",
+  "parameters": {
+    "config_file": {
+      "description": "Path to backend.yml",
+      "type": "Optional[String[1]]"
+    },
+    "timeout": {
+      "description": "Timeout for connecting to etcd",
+      "type": "Optional[Integer]"
+    },
+    "etcd_advertise_client_urls": {
+      "description": "list of this member's client URLs to advertise to clients",
+      "type": "Optional[Array]"
+    },
+    "etcd_cert_file": {
+      "description": "path to the client server TLS cert file",
+      "type": "Optional[String[1]]"
+    },
+    "etcd_cipher_suites": {
+      "description": "list of ciphers to use for etcd TLS configuration",
+      "type": "Optional[Array]"
+    },
+    "etcd_client_cert_auth": {
+      "description": "enable client cert authentication",
+      "type": "Optional[Boolean]"
+    },
+    "etcd_client_urls": {
+      "description": "client URLs to use when operating as an etcd client",
+      "type": "Optional[Array]"
+    },
+    "etcd_key_file": {
+      "description": "path to the client server TLS key file",
+      "type": "Optional[String[1]]"
+    },
+    "etcd_max_request_bytes": {
+      "description": "maximum etcd request size in bytes (use with caution)",
+      "type": "Optional[Integer]"
+    },
+    "etcd_trusted_ca_file": {
+      "description": "path to the client server TLS trusted CA cert file",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
