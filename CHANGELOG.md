@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.13.1](https://github.com/sensu/sensu-puppet/tree/v4.13.1) (2020-08-13)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.13.0...v4.13.1)
+
+### Fixed
+
+- Improve sensu-backend init [\#1264](https://github.com/sensu/sensu-puppet/pull/1264) ([treydock](https://github.com/treydock))
+
 ## [v4.13.0](https://github.com/sensu/sensu-puppet/tree/v4.13.0) (2020-08-10)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.12.0...v4.13.0)
@@ -214,10 +222,6 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.13.0...v3.14.0)
 
-### Added
-
-- Support defining agent and backend service environment variables [\#1160](https://github.com/sensu/sensu-puppet/pull/1160) ([treydock](https://github.com/treydock))
-
 ## [v3.13.0](https://github.com/sensu/sensu-puppet/tree/v3.13.0) (2019-11-26)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.12.0...v3.13.0)
@@ -257,7 +261,6 @@
 - Support Windows 2019 [\#1168](https://github.com/sensu/sensu-puppet/pull/1168) ([treydock](https://github.com/treydock))
 - Improve release process [\#1166](https://github.com/sensu/sensu-puppet/pull/1166) ([treydock](https://github.com/treydock))
 - \(ci\) Use correct Ruby version 2.5.7 for latest Puppet 6 tests [\#1165](https://github.com/sensu/sensu-puppet/pull/1165) ([ghoneycutt](https://github.com/ghoneycutt))
-- Additional bolt tasks [\#1162](https://github.com/sensu/sensu-puppet/pull/1162) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -266,10 +269,6 @@
 ## [v3.10.0](https://github.com/sensu/sensu-puppet/tree/v3.10.0) (2019-10-31)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.9.0...v3.10.0)
-
-### Added
-
-- Initial work at design document [\#1161](https://github.com/sensu/sensu-puppet/pull/1161) ([treydock](https://github.com/treydock))
 
 ## [v3.9.0](https://github.com/sensu/sensu-puppet/tree/v3.9.0) (2019-10-10)
 
