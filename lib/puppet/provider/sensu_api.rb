@@ -139,7 +139,11 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       return api_request(path, data, opts)
     end
     if response.kind_of?(Net::HTTPNotFound)
-      raise Puppet::Error, "Resource not found at URL #{uri.to_s}: #{response.class}"
+      if failonfail
+        raise Puppet::Error, "Resource not found at URL #{uri.to_s}: #{response.class}"
+      else
+        return {}
+      end
     end
     unless response.kind_of?(Net::HTTPSuccess)
       raise Puppet::Error, "Unable to make API request at #{uri.to_s}: #{response.class}"

@@ -51,6 +51,7 @@ define sensu::agent::label (
     entity    => $_entity,
     namespace => $_namespace,
     provider  => $sensu::agent::agent_entity_config_provider,
+    subscribe => File['sensu_agent_config'],
   }
 
   if $redact {
