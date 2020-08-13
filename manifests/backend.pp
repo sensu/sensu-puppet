@@ -343,13 +343,15 @@ class sensu::backend (
 
   exec { 'sensu-backend init':
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-    refreshonly => true,
     environment => [
       'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
       "SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=${sensu::password}",
     ],
     returns     => [0, 3],
-    subscribe   => Package['sensu-go-backend'],
+    # sensu-backend init will exit with code 3 if already run
+    # If exit code is 3, do not need to run sensu-backend init again
+    # If exit is not 3, run sensu-backend init
+    unless      => 'sensu-backend init ; [ $? -eq 3 ] && exit 0 || exit 1',
     require     => Sensu_api_validator['sensu'],
     before      => [
       Sensu_user['admin'],

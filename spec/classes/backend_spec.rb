@@ -227,13 +227,12 @@ describe 'sensu::backend', :type => :class do
         it {
           should contain_exec('sensu-backend init').with({
             'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
-            'refreshonly' => 'true',
             'environment' => [
               'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
               'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=P@ssw0rd!',
             ],
             'returns'     => [0, 3],
-            'subscribe'   => 'Package[sensu-go-backend]',
+            'unless'      => 'sensu-backend init ; [ $? -eq 3 ] && exit 0 || exit 1',
             'require'     => 'Sensu_api_validator[sensu]',
             'before'      => [
               'Sensu_user[admin]',
