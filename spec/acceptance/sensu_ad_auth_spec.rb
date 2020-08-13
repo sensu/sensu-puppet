@@ -16,9 +16,6 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
               'user_dn' => 'cn=binder,dc=acme,dc=org',
               'password' => 'P@ssw0rd!'
             },
-            'group_search' => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
             'user_search'  => {
               'base_dn' => 'dc=acme,dc=org',
             },
@@ -34,9 +31,6 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
             'binding'      => {
               'user_dn' => 'cn=binder,dc=acme,dc=org',
               'password' => 'P@ssw0rd!'
-            },
-            'group_search' => {
-              'base_dn' => 'dc=acme,dc=org',
             },
             'user_search'  => {
               'base_dn' => 'dc=acme,dc=org',
@@ -71,7 +65,7 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['servers'][0]['default_upn_domain']).to eq('')
         expect(data['servers'][0]['include_nested_groups']).to be_nil
         expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=binder,dc=acme,dc=org', 'password' => 'P@ssw0rd!'})
-        expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'})
+        expect(data['servers'][0]['group_search']).to eq({'base_dn' => '','attribute' => '','name_attribute' => '','object_class' => ''})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'})
       end
     end
@@ -87,7 +81,7 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['servers'][0]['default_upn_domain']).to eq('')
         expect(data['servers'][0]['include_nested_groups']).to be_nil
         expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=binder,dc=acme,dc=org', 'password' => 'P@ssw0rd!'})
-        expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'group'})
+        expect(data['servers'][0]['group_search']).to eq({'base_dn' => '','attribute' => '','name_attribute' => '','object_class' => ''})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'sAMAccountName','name_attribute' => 'displayName','object_class' => 'person'})
       end
     end
