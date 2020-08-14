@@ -75,6 +75,8 @@ add_custom_fact :service_provider, ->(os, facts) {
     else
       'systemd'
     end
+  when 'windows'
+    'windows'
   else
     'systemd'
   end

@@ -35,13 +35,14 @@ describe 'sensu::agent', :type => :class do
         end
         it { should_not contain_archive('sensu-go-agent.msi') }
 
-        context 'on systemd host', if: (facts[:kernel] == 'Linux' && Puppet.version.to_s =~ %r{^5}) do
-          let(:facts) { facts.merge({:service_provider => 'systemd'}) }
+        if Gem::Version.new(facts[:puppetversion]) < Gem::Version.new('6.1.0') && facts['service_provider'] == 'systemd'
           it { should contain_package('sensu-go-agent').that_notifies('Exec[sensu systemctl daemon-reload]') }
           it { should contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
+        else
+          it { should_not contain_package('sensu-go-agent').that_notifies('Exec[sensu systemctl daemon-reload]') }
+          it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
         end
-        it { should_not contain_package('sensu-go-agent').that_notifies('Exec[sensu systemctl daemon-reload]') }
-        it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
+
 
         it {
           should contain_package('sensu-go-agent').with({
@@ -51,9 +52,9 @@ describe 'sensu::agent', :type => :class do
             'provider' => platforms[facts[:osfamily]][:package_provider],
             'before'   => 'File[sensu_etc_dir]',
             'require'  => platforms[facts[:osfamily]][:package_require],
-            'notify'   => 'Service[sensu-agent]',
           })
         }
+        it { should contain_package('sensu-go-agent').that_notifies('Service[sensu-agent]') }
 
         it {
           should contain_datacat_collector('sensu_agent_config').with({
