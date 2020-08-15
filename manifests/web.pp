@@ -42,6 +42,8 @@ class sensu::web (
   include nodejs
   include yarn
 
+  Package['nodejs'] -> Package['yarn']
+
   $user = $sensu::sensu_user
   $group = $sensu::sensu_group
   $_service_user = pick($service_user, $user)
@@ -81,6 +83,7 @@ class sensu::web (
     onlyif  => "test -f ${install_dir}/.install",
     timeout => 0,
     user    => $user,
+    require => Package['yarn'],
   }
 
   systemd::unit_file { 'sensu-web.service':

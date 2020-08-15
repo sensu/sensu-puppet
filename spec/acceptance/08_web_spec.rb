@@ -3,6 +3,11 @@ require 'spec_helper_acceptance'
 describe 'sensu::web class', if: ['base','full'].include?(RSpec.configuration.sensu_mode) do
   node = hosts_as('sensu-agent')[0]
   backend = hosts_as('sensu-backend')[0]
+  before do
+    if fact_on(node, 'service_provider') != 'systemd'
+      skip("sensu::web is only supported on systemd systems")
+    end
+  end
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
@@ -42,12 +47,6 @@ describe 'sensu::web class', if: ['base','full'].include?(RSpec.configuration.se
     end
     describe port(9080), :node => node do
       it { should be_listening }
-    end
-
-    it 'should have working web interface' do
-      on node, 'curl -I http://127.0.0.1:9080' do
-        expect(stdout).to include('HTTP/1.1 200 OK')
-      end
     end
   end
 end

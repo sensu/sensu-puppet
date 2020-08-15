@@ -23,7 +23,9 @@ describe 'sensu::web', :type => :class do
         it { should create_class('sensu::web') }
         it { should contain_class('sensu') }
         it { should contain_class('sensu::common::user')}
+        it { should contain_class('nodejs') }
         it { should contain_class('yarn') }
+        it { should contain_package('nodejs').that_comes_before('Package[yarn]') }
 
         it do
           is_expected.to contain_file('sensu-web-dir').with({
@@ -66,6 +68,7 @@ describe 'sensu::web', :type => :class do
             onlyif: 'test -f /opt/sensu-web/.install',
             timeout: '0',
             user: 'sensu',
+            require: 'Package[yarn]',
           })
         end
 
