@@ -2,11 +2,6 @@ require 'spec_helper_acceptance'
 
 describe 'sensu_plugin', if: RSpec.configuration.sensu_mode == 'types' do
   agent = hosts_as('sensu-agent')[0]
-  before do
-    if fact_on(agent, 'operatingsystem') == 'Debian'
-      skip("TODO: package is missing on Debian - See https://github.com/sensu/sensu-plugins-omnibus/issues/3")
-    end
-  end
   context 'install plugin' do
     it 'should work without errors' do
       pp = <<-EOS
