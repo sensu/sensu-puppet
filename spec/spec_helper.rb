@@ -67,6 +67,8 @@ add_custom_fact :puppet_localcacert, ->(os, facts) {
   end
 }
 
+# Must add this fact from stdlib because
+# rspec-puppet-facts and facterdb only mock core Facter facts
 add_custom_fact :service_provider, ->(os, facts) {
   case facts[:osfamily]
   when 'RedHat'
