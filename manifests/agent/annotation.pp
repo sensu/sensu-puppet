@@ -3,6 +3,8 @@
 # @example
 #   sensu::agent::annotation { 'fatigue_check/occurrences:': value => '2' }
 #
+# @param ensure
+#   Ensure property of the annotation
 # @param key
 #   Key of the annotation to add to agent.yml, defaults to `$name`.
 # @param value
@@ -18,6 +20,7 @@
 #
 define sensu::agent::annotation (
   String $value,
+  Enum['present','absent'] $ensure = 'present',
   String[1] $key   = $name,
   Boolean $redact = false,
   String[1] $order = '50',
@@ -36,15 +39,18 @@ define sensu::agent::annotation (
     $_namespace = $namespace
   }
 
-  datacat_fragment { "sensu_agent_config-annotation-${name}":
-    target => 'sensu_agent_config',
-    data   => {
-      'annotations' => { $key => $value },
-    },
-    order  => $order,
+  if $ensure == 'present' {
+    datacat_fragment { "sensu_agent_config-annotation-${name}":
+      target => 'sensu_agent_config',
+      data   => {
+        'annotations' => { $key => $value },
+      },
+      order  => $order,
+    }
   }
 
   sensu_agent_entity_config { "sensu::agent::annotation ${name}":
+    ensure    => $ensure,
     config    => 'annotations',
     key       => $key,
     value     => $value,
@@ -55,11 +61,14 @@ define sensu::agent::annotation (
   }
 
   if $redact {
-    sensu::agent::config_entry { "redact-annotation-${name}":
-      key   => 'redact',
-      value => [$key],
+    if $ensure == 'present' {
+      sensu::agent::config_entry { "redact-annotation-${name}":
+        key   => 'redact',
+        value => [$key],
+      }
     }
     sensu_agent_entity_config { "sensu::agent::annotation redact ${name}":
+      ensure    => $ensure,
       config    => 'redact',
       value     => $key,
       entity    => $_entity,

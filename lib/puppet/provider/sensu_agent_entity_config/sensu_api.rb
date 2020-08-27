@@ -129,6 +129,10 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Pup
 
   def update(add = true)
     entity = get_entity(resource[:entity], resource[:namespace], api_opts)
+    redacted = PuppetX::Sensu::AgentEntityConfig.check_redacted(entity)
+    if redacted
+      raise Puppet::Error, "Sensu_agent_entity_config[#{resource[:name]}]: Unable to manage resource, REDACTED values detected"
+    end
     config = resource[:config]
     if PuppetX::Sensu::AgentEntityConfig.metadata_configs.include?(config)
       obj = entity['metadata'][config]

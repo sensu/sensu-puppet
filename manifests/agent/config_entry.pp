@@ -2,7 +2,7 @@
 #
 # @example
 #   sensu::agent::config_entry { 'disable-api'': value => true }
-#
+
 # @param key
 #   Key of the config entry to add to agent.yml, defaults to `$name`.
 # @param value

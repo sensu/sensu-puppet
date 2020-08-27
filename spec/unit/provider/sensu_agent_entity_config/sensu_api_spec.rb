@@ -11,12 +11,12 @@ describe Puppet::Type.type(:sensu_agent_entity_config).provider(:sensu_api) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(provider).to receive(:api_request).with('entities', nil, {namespace: 'default'}).and_return(data)
+      allow(provider).to receive(:api_request).with('entities', nil, {namespace: 'default', password: nil, url: nil, username: "puppet-agent_entity_config"}).and_return(data)
       expect(provider.instances.length).to eq(11)
     end
 
     it 'should return the resource for a entity' do
-      allow(provider).to receive(:api_request).with('entities', nil, {namespace: 'default'}).and_return(data)
+      allow(provider).to receive(:api_request).with('entities', nil, {namespace: 'default', password: nil, url: nil, username: "puppet-agent_entity_config"}).and_return(data)
       property_hash = provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('subscriptions value entity:sensu-backend.example.com on sensu-backend.example.com in default')
     end
@@ -24,7 +24,7 @@ describe Puppet::Type.type(:sensu_agent_entity_config).provider(:sensu_api) do
 
   describe 'create' do
     it 'should create' do
-      allow(resource.provider).to receive(:get_entity).with('agent', 'default').and_return(data[0])
+      allow(resource.provider).to receive(:get_entity).with('agent', 'default', {:password=>nil, :url=>nil, :username=>"puppet-agent_entity_config"}).and_return(data[0])
       expect(resource.provider).to receive(:api_request)
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
@@ -34,7 +34,7 @@ describe Puppet::Type.type(:sensu_agent_entity_config).provider(:sensu_api) do
 
   describe 'flush' do
     it 'should update' do
-      allow(resource.provider).to receive(:get_entity).with('agent', 'default').and_return(data[0])
+      allow(resource.provider).to receive(:get_entity).with('agent', 'default', {:password=>nil, :url=>nil, :username=>"puppet-agent_entity_config"}).and_return(data[0])
       expect(resource.provider).to receive(:api_request)
       resource.provider.value = 'foo'
       resource.provider.flush
@@ -43,7 +43,7 @@ describe Puppet::Type.type(:sensu_agent_entity_config).provider(:sensu_api) do
 
   describe 'destroy' do
     it 'should delete a entity' do
-      allow(resource.provider).to receive(:get_entity).with('agent', 'default').and_return(data[0])
+      allow(resource.provider).to receive(:get_entity).with('agent', 'default', {password: nil, url: nil, username: "puppet-agent_entity_config"}).and_return(data[0])
       expect(resource.provider).to receive(:api_request)
       resource.provider.destroy
       property_hash = resource.provider.instance_variable_get("@property_hash")

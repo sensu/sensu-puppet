@@ -244,11 +244,13 @@ describe Puppet::Type.type(:sensu_agent_entity_config) do
       it 'requires value when present' do
         config.delete(:value)
         config[:ensure] = :present
+        config[:config] = 'subscriptions'
         expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{value property})
       end
       it 'requires value when absent' do
         config.delete(:value)
         config[:ensure] = :absent
+        config[:config] = 'subscriptions'
         expect { resource.pre_run_check }.to raise_error(Puppet::Error, %r{value property})
       end
     end

@@ -3,6 +3,8 @@
 # @example
 #   sensu::agent::label { 'contacts': value => 'ops@example.com' }
 #
+# @param ensure
+#   Ensure property for the label
 # @param key
 #   Key of the label to add to agent.yml, defaults to `$name`.
 # @param value
@@ -18,6 +20,7 @@
 #
 define sensu::agent::label (
   String $value,
+  Enum['present', 'absent'] $ensure = 'present',
   String[1] $key   = $name,
   Boolean $redact = false,
   String[1] $order = '50',
@@ -36,15 +39,18 @@ define sensu::agent::label (
     $_namespace = $namespace
   }
 
-  datacat_fragment { "sensu_agent_config-label-${name}":
-    target => 'sensu_agent_config',
-    data   => {
-      'labels' => { $key => $value },
-    },
-    order  => $order,
+  if $ensure == 'present' {
+    datacat_fragment { "sensu_agent_config-label-${name}":
+      target => 'sensu_agent_config',
+      data   => {
+        'labels' => { $key => $value },
+      },
+      order  => $order,
+    }
   }
 
   sensu_agent_entity_config { "sensu::agent::label ${name}":
+    ensure    => $ensure,
     config    => 'labels',
     key       => $key,
     value     => $value,
@@ -55,11 +61,14 @@ define sensu::agent::label (
   }
 
   if $redact {
-    sensu::agent::config_entry { "redact-label-${name}":
-      key   => 'redact',
-      value => [$key],
+    if $ensure == 'present' {
+      sensu::agent::config_entry { "redact-label-${name}":
+        key    => 'redact',
+        value  => [$key],
+      }
     }
     sensu_agent_entity_config { "sensu::agent::label redact ${name}":
+      ensure    => $ensure,
       config    => 'redact',
       value     => $key,
       entity    => $_entity,
