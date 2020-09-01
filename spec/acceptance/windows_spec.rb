@@ -49,13 +49,11 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     class { 'sensu::agent':
       backends         => ['sensu-backend:8081'],
       entity_name      => 'sensu-agent',
-      subscriptions    => ['base'],
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
       config_hash      => {
         'log-level' => 'info',
       }
     }
-    sensu::agent::subscription { 'windows': }
     EOS
 
     unless RSpec.configuration.skip_apply
@@ -77,7 +75,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
           'backend-url'     => ['wss://sensu-backend:8081'],
           'password'        => 'P@ssw0rd!',
           'name'            => 'sensu-agent',
-          'subscriptions'   => ['base','windows'],
+          'namespace'       => 'default',
           'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
           'log-level'       => 'info',
           'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
