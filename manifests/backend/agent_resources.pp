@@ -32,9 +32,9 @@ class sensu::backend::agent_resources {
   }
 
   sensu_user { 'puppet-agent_entity_config':
-    ensure    => 'present',
-    disabled  => false,
-    groups    => 'puppet:agent_entity_config',
-    password  => $sensu::_agent_entity_config_password,
+    ensure   => 'present',
+    disabled => false,
+    groups   => 'puppet:agent_entity_config',
+    password => $sensu::_agent_entity_config_password,
   }
 }

@@ -159,9 +159,9 @@ class sensu::agent (
   $_backend_without_prefix = $_backend.regsubst('^(ws|wss)://', '')
   $_backend_host = split($_backend_without_prefix, /:/)[0]
   sensu_agent_entity_setup { 'puppet':
-    url       => "${sensu::api_protocol}://${_backend_host}:${sensu::api_port}",
-    username  => 'puppet-agent_entity_config',
-    password  => $sensu::_agent_entity_config_password,
+    url      => "${sensu::api_protocol}://${_backend_host}:${sensu::api_port}",
+    username => 'puppet-agent_entity_config',
+    password => $sensu::_agent_entity_config_password,
   }
 
   $_service_env_vars = $service_env_vars.map |$key,$value| {

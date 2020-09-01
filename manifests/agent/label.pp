@@ -63,8 +63,8 @@ define sensu::agent::label (
   if $redact {
     if $ensure == 'present' {
       sensu::agent::config_entry { "redact-label-${name}":
-        key    => 'redact',
-        value  => [$key],
+        key   => 'redact',
+        value => [$key],
       }
     }
     sensu_agent_entity_config { "sensu::agent::label redact ${name}":
