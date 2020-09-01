@@ -57,7 +57,8 @@ define sensu::agent::label (
     entity    => $_entity,
     namespace => $_namespace,
     provider  => $sensu::agent::agent_entity_config_provider,
-    subscribe => File['sensu_agent_config'],
+    #TODO: Uncomment once able to support pushing updates for REDACTED
+    #subscribe => File['sensu_agent_config'],
   }
 
   if $redact {
