@@ -1,6 +1,10 @@
 require 'spec_helper_acceptance_windows' if Gem.win_platform?
 require 'json'
 
+# NOTE: The tests for Windows can not define or change things like subscriptions, labels or annotations
+#       because those changes will require a backend to communicate with and we are unable to run
+#       the Sensu Go backend inside the Appveyor Windows testing environment
+
 describe 'sensu::cli class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS
