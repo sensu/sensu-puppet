@@ -39,12 +39,6 @@ install:
 - bundle install --jobs 4 --retry 2 --path C:\vendor\bundle --without documentation
 test_script:
 - bundle exec rake acceptance:windows
-- '"C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe" service uninstall'
-- 'puppet resource package "Sensu Agent" ensure=absent'
-- rmdir C:\\ProgramData\\PuppetLabs\\code\\environments\\production\\modules /s /q
-- ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
-- set BEAKER_skip_apply=yes
-- bundle exec rake acceptance:windows
 image:
   # Windows 2012 R2
   - Visual Studio 2015
