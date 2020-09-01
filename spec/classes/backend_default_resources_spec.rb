@@ -10,7 +10,7 @@ describe 'sensu::backend::default_resources', :type => :class do
         it { should compile.with_all_deps }
         it { should have_sensu_namespace_resource_count(1) }
         it { should contain_sensu_namespace('default').with_ensure('present') }
-        it { should have_sensu_cluster_role_resource_count(6) }
+        it { should have_sensu_cluster_role_resource_count(7) }
         it {
           should contain_sensu_cluster_role('admin').with({
             'ensure' => 'present',
@@ -129,7 +129,7 @@ describe 'sensu::backend::default_resources', :type => :class do
             ],
           })
         }
-        it { should have_sensu_cluster_role_binding_resource_count(3) }
+        it { should have_sensu_cluster_role_binding_resource_count(4) }
         it {
           should contain_sensu_cluster_role_binding('cluster-admin').with({
             'ensure'   => 'present',

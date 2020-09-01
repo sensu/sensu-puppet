@@ -30,7 +30,7 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_package('sensu-go-backend').that_notifies('Exec[sensu systemctl daemon-reload]') }
         it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-backend]') }
 
-        it { should have_sensu_user_resource_count(2) }
+        it { should have_sensu_user_resource_count(3) }
         it {
           should contain_sensu_user('admin').with({
             'ensure'                    => 'present',
