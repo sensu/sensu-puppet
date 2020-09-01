@@ -25,7 +25,6 @@ install:
 - ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
 - ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/tests/ssl" -Destination C:/ProgramData/PuppetLabs/puppet/etc/ssl -Recurse
 - ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/lib/facter" -Destination C:/ProgramData/PuppetLabs/puppet/cache/lib/facter -Recurse
-- choco install puppet-bolt
 - set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
 - puppet --version
 - puppet module install puppetlabs-stdlib
@@ -45,8 +44,6 @@ test_script:
 - rmdir C:\\ProgramData\\PuppetLabs\\code\\environments\\production\\modules /s /q
 - ps: Copy-Item -Path $ENV:APPVEYOR_BUILD_FOLDER -Destination C:/ProgramData/PuppetLabs/code/environments/production/modules/sensu -Recurse
 - set BEAKER_skip_apply=yes
-- '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" task show'
-- '"C:\Program Files\Puppet Labs\Bolt\bin\bolt" --debug task run sensu::install_agent backend=sensu_backend:8081 subscription=windows output=true --targets localhost'
 - bundle exec rake acceptance:windows
 image:
   # Windows 2012 R2
