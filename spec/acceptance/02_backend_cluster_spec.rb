@@ -7,6 +7,9 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
   context 'new cluster' do
     it 'should work without errors' do
       node1_pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       class { 'sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node1, 'ipaddress')}:2379',
@@ -21,6 +24,9 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       }
       EOS
       node2_pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       class { 'sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node2, 'ipaddress')}:2379',
@@ -87,12 +93,18 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
   context 'Add sensu backend cluster member' do
     it 'should add member' do
       pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       include sensu::api
       sensu_cluster_member { 'backend3':
         peer_urls => ['http://#{fact_on(node3, 'ipaddress')}:2380'],
       }
       EOS
       node3_pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       class { '::sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node3, 'ipaddress')}:2379',
@@ -151,6 +163,9 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
   context 'new cluster' do
     it 'should work without errors' do
       node1_pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       class { '::sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node1, 'ipaddress')}:2379',
@@ -165,6 +180,9 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       }
       EOS
       node2_pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       class { '::sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node2, 'ipaddress')}:2379',
@@ -237,6 +255,9 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
   context 'Add sensu backend cluster member' do
     it 'should add member' do
       pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       include sensu::api
       sensu_cluster_member { 'backend3':
         peer_urls => ['http://#{fact_on(node3, 'ipaddress')}:2380'],
@@ -244,6 +265,9 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       }
       EOS
       node3_pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend1',
+      }
       class { 'sensu::backend':
         config_hash => {
           'etcd-advertise-client-urls'       => 'http://#{fact_on(node3, 'ipaddress')}:2379',

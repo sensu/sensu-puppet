@@ -265,29 +265,26 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
   context 'redacted values' do
     it 'should not update redacted values' do
       setup_pp = <<-EOS
-      sensu::agent::label { 'foo': value => 'baz', redact => true }
-      sensu::agent::label { 'bar': value => 'baz' }
+      sensu::agent::label { 'bar': value => 'bar', redact => true }
       EOS
       pp = <<-EOS
-      sensu::agent::label { 'foo': value => 'bar', redact => true }
-      sensu::agent::label { 'bar': value => 'bar' }
+      sensu::agent::label { 'bar': value => 'baz' }
       EOS
       apply_manifest_on(node, setup_pp, :catch_failures => true)
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t"), acceptable_exit_codes: [1]
+        on node, puppet("agent -t"), acceptable_exit_codes: [1,6]
       else
         apply_manifest_on(node, pp, :expect_failures => true)
       end
     end
 
-    it 'should have previously updated redacted value from refresh of agent.yml' do
-      on backend, "sensuctl entity info sensu-agent --format json" do
-        data = JSON.parse(stdout)
-        expect(data['metadata']['labels']).to include({'bar' => 'baz'})
-      end
+    it 'cleans up entity' do
+      on node, 'puppet resource service sensu-agent ensure=stopped'
+      on backend, "sensuctl entity delete sensu-agent --skip-confirm"
+      apply_manifest_on(node, "include sensu::agent", :catch_failures => true)
     end
   end
 end

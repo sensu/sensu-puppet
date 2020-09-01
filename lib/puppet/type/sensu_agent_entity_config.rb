@@ -100,16 +100,15 @@ DESC
   newproperty(:value, :namevar => true) do
     desc "The value of the config for agent entity"
 
-    # TODO: Remove once there is a way to query redacted values
-    # See https://github.com/sensu/sensu-go/issues/3955
-    def insync?(is)
-      return true if is == 'REDACTED'
-      super(is)
-    end
+    # TODO: Uncomment once able to handle redacted values
+    #def insync?(is)
+    #  return true if is == 'REDACTED'
+    #  super(is)
+    #end
   end
 
-  # TODO: Remove once there is a way to query redacted values
-  # See https://github.com/sensu/sensu-go/issues/3955
+  # This is only needed in case REDACTED values are encountered to ensure an update is performed
+  # When agent.yaml is changed
   def refresh
     if PuppetX::Sensu::AgentEntityConfig.config_classes[@parameters[:config].to_s].is_a?(Hash)
       provider.update
