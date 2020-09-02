@@ -58,23 +58,27 @@ define sensu::agent::annotation (
     namespace => $_namespace,
     provider  => $sensu::agent::agent_entity_config_provider,
     #TODO: Uncomment once able to support pushing updates for REDACTED
+    # https://github.com/sensu/sensu-go/issues/3955
     #subscribe => File['sensu_agent_config'],
   }
 
   if $redact {
-    if $ensure == 'present' {
-      sensu::agent::config_entry { "redact-annotation-${name}":
-        key   => 'redact',
-        value => [$key],
-      }
-    }
-    sensu_agent_entity_config { "sensu::agent::annotation redact ${name}":
-      ensure    => $ensure,
-      config    => 'redact',
-      value     => $key,
-      entity    => $_entity,
-      namespace => $_namespace,
-      provider  => $sensu::agent::agent_entity_config_provider,
-    }
+    warning("sensu::agent::annotation[${name}]: Setting redact is not supported at this time")
+    #TODO: Uncomment once able to support pushing updates for REDACTED
+    # https://github.com/sensu/sensu-go/issues/3955
+    #if $ensure == 'present' {
+    #  sensu::agent::config_entry { "redact-annotation-${name}":
+    #    key   => 'redact',
+    #    value => [$key],
+    #  }
+    #}
+    #sensu_agent_entity_config { "sensu::agent::annotation redact ${name}":
+    #  ensure    => $ensure,
+    #  config    => 'redact',
+    #  value     => $key,
+    #  entity    => $_entity,
+    #  namespace => $_namespace,
+    #  provider  => $sensu::agent::agent_entity_config_provider,
+    #}
   }
 }

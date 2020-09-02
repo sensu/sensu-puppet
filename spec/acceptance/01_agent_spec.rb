@@ -265,26 +265,44 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
   context 'redacted values' do
     it 'should not update redacted values' do
       setup_pp = <<-EOS
+      class { '::sensu': }
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        service_env_vars => { 'SENSU_API_PORT' => '4041' },
+        config_hash      => {
+          'log-level' => 'info',
+          'keepalive-interval' => 30,
+        }
+      }
       sensu::agent::label { 'bar': value => 'bar', redact => true }
       EOS
       pp = <<-EOS
-      sensu::agent::label { 'bar': value => 'baz' }
+      class { '::sensu': }
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        service_env_vars => { 'SENSU_API_PORT' => '4041' },
+        config_hash      => {
+          'log-level' => 'info',
+          'keepalive-interval' => 30,
+        }
+      }
+      sensu::agent::label { 'bar': value => 'bar' }
       EOS
       apply_manifest_on(node, setup_pp, :catch_failures => true)
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t"), acceptable_exit_codes: [1,6]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
-        apply_manifest_on(node, pp, :expect_failures => true)
+        apply_manifest_on(node, pp, :catch_changes => true)
       end
-    end
-
-    it 'cleans up entity' do
+      # Cleanup entity with redacted
       on node, 'puppet resource service sensu-agent ensure=stopped'
       on backend, "sensuctl entity delete sensu-agent --skip-confirm"
-      apply_manifest_on(node, "include sensu::agent", :catch_failures => true)
+      apply_manifest_on(node, pp, :catch_failures => true)
     end
   end
 end
