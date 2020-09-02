@@ -3,7 +3,7 @@ require 'spec_helper_acceptance'
 describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'full' do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
-  context 'setup agent' do
+  context 'setup' do
     it 'should work without errors' do
       pp = <<-EOS
       class { 'sensu::agent':
@@ -12,8 +12,8 @@ describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'full' do
       }
       EOS
 
-      apply_manifest_on(agent, pp, :catch_failures => true)
       apply_manifest_on(backend, 'include sensu::backend', :catch_failures => true)
+      apply_manifest_on(agent, pp, :catch_failures => true)
     end
   end
 
@@ -134,7 +134,7 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_mode == 'full
   end
   context 'install_agent' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::install_agent backend=sensu-backend:8081 subscription=linux output=true --targets sensu-agent'
+      on backend, 'bolt task run sensu::install_agent backend=sensu-backend:8081 subscription=linux entity_name=sensu-agent output=true --targets sensu-agent'
       sleep 5
     end
 
@@ -292,15 +292,19 @@ describe 'sensu bolt inventory', if: RSpec.configuration.sensu_mode == 'full' do
     it 'should work without errors' do
       agent_pp = <<-EOS
       class { 'sensu::agent':
-        backends => ['sensu-backend:8081'],
+        backends    => ['sensu-backend:8081'],
+        entity_name => 'sensu-agent',
       }
       EOS
       pp = <<-EOS
       include sensu::backend
-      #{agent_pp}
+      class { 'sensu::agent':
+        backends    => ['sensu-backend:8081'],
+        entity_name => 'sensu-backend',
+      }
       EOS
-      apply_manifest_on(agent, agent_pp, :catch_failures => true)
       apply_manifest_on(backend, pp, :catch_failures => true)
+      apply_manifest_on(agent, agent_pp, :catch_failures => true)
       inventory_cfg1 = <<-EOS
 version: 2
 groups:

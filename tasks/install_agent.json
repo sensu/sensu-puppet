@@ -10,6 +10,10 @@
       "description": "The subscription(s) for the agent",
       "type": "String[1]"
     },
+    "entity_name": {
+      "description": "The agent entity name",
+      "type": "Optional[String[1]]"
+    },
     "namespace": {
       "description": "The namespace for the agent, default is 'default'",
       "type": "Optional[String[1]]"
