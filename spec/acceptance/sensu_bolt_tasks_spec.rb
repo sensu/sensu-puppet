@@ -320,7 +320,7 @@ groups:
     it 'produces inventory' do
       on backend, 'bolt inventory show --targets linux --format json -i /root/.puppetlabs/bolt/inventory1.yaml' do
         data = JSON.parse(stdout)
-        expect(data["count"]).to eq(2)
+        expect(data["count"]).to be >= 2
       end
     end
   end

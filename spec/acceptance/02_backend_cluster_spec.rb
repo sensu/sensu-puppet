@@ -8,7 +8,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
     it 'should work without errors' do
       node1_pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       class { 'sensu::backend':
         config_hash => {
@@ -25,7 +25,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       EOS
       node2_pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       class { 'sensu::backend':
         config_hash => {
@@ -49,7 +49,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         # First run will fail to run sensuctl configure
-        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,1]
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,1,4,6]
         on node2, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         # first node has to have agent started back up
         on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -94,7 +94,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
     it 'should add member' do
       pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       include sensu::api
       sensu_cluster_member { 'backend3':
@@ -103,7 +103,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       EOS
       node3_pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       class { '::sensu::backend':
         config_hash => {
@@ -164,7 +164,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
     it 'should work without errors' do
       node1_pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       class { '::sensu::backend':
         config_hash => {
@@ -181,7 +181,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       EOS
       node2_pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       class { '::sensu::backend':
         config_hash => {
@@ -211,7 +211,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         # First run will fail to run sensuctl configure
-        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,1]
+        on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,1,4,6]
         on node2, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         # first node has to have agent started back up
         on node1, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -256,7 +256,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
     it 'should add member' do
       pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       include sensu::api
       sensu_cluster_member { 'backend3':
@@ -266,7 +266,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       EOS
       node3_pp = <<-EOS
       class { 'sensu':
-        api_host => 'sensu-backend1',
+        api_host => $facts['networking']['hostname'],
       }
       class { 'sensu::backend':
         config_hash => {
