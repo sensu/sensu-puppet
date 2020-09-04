@@ -4,6 +4,7 @@
 
 1. [Module Description](#module-description)
     * [Deprecations](#deprecations)
+    * [Updating this module from 4.x to 5.x](#updating-this-module-from-4x-to-5x)
     * [Updating this module from 3.x to 4.x](#updating-this-module-from-3x-to-4x)
 2. [Setup - The basics of getting started with Sensu](#setup)
     * [What sensu affects](#what-sensu-affects)
@@ -44,9 +45,9 @@
 
 ## Module description
 
-Installs and manages [Sensu](http://sensuapp.org), the open source monitoring framework.
+Installs and manages [Sensu Go](https://sensu.io/), the open source monitoring framework.
 
-Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at [https://sensuapp.org/support](https://sensuapp.org/support).
+Please note, that this is a **Partner Supported** module, which means that technical customer support for this module is solely provided by Sensu. Puppet does not provide support for any **Partner Supported** modules. Technical support for this module is provided by Sensu at [https://sensu.io/support](https://sensu.io/support).
 
 ### Documented with Puppet Strings
 
@@ -55,19 +56,21 @@ Please note, that this is a **Partner Supported** module, which means that techn
 ### Compatibility - supported Sensu versions
 
 If not explicitly stated it should always support the latest Sensu release.
-Beginning with v4.0.0 this module will only support Sensu Go 5.16+.
+Beginning with v5.0.0 this module will only support Sensu Go 6.0+.
 Please log an issue if you identify any incompatibilities.
 
 | Sensu Go Version| Recommended Puppet Module Version   |
 | --------------- | ----------------------------------- |
 | 5.0 - 5.15      | latest v3                           |
 | 5.16+           | latest v4                           |
+| 6.0+            | latest v5                           |
 
 ### Upgrade note
 
 Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq.
-Version 3 of this module supports Sensu Go 5.0.0 to 5.15.x.
-Version 4 of this module supports Sensu Go 5.16+.
+Version 3 of this module supports Sensu Go >= 5.0.0 to < 5.16.0.
+Version 4 of this module supports Sensu Go >= 5.16.0 < 6.0.0.
+Version 5 of this module supports Sensu Go >= 6.0.0 < 7.0.0.
 
 Users wishing to use the previous Ruby based Sensu should use the [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic) module.
 
@@ -102,6 +105,41 @@ sensu_asset { 'test':
   ],
 }
 ```
+
+### Updating this module from 4.x to 5.x
+
+This module begins supporting Sensu Go 6 with version >= 5.0.0
+
+**NOTE** Upgrading to support Sensu Go 6 requires backends have Puppet applied before agents will begin to work as there is an agent specifc Sensu user and role added to support modifying agent entities via the API.
+
+#### Changes for backend
+
+There is a manual step to perform to upgrade the sensu-backend after upgrading the backend to 6.x.
+This module provides the `sensu::backend_upgrade` bolt task as a way to execute the necessary `sensu-backend upgrade` command.
+
+#### Changes for agents
+
+Beginning with Sensu Go 6, some changes to `agent.yml` will only bootstrap an agent entity, they will not update the entity.
+If you wish to make changes to values such as `subscriptions`, `labels` or `annotations` after a host is added to Sensu this must be done
+via the Sensu Go API. To support this it's now required that agents have the ability to make API calls.
+
+In order to ensure agents can make API calls either via API or sensuctl the agent must be told about the admin password:
+
+```
+class { 'sensu':
+  agent_entity_config_password => 'supersecret',
+}
+class { 'sensu::agent':
+  ...
+}
+```
+
+See [API Providers](#api-providers) for example Hiera that can be used in a file like `common.yaml` to easily share the admin password with agents.
+
+This module will still continue to write subscriptions and other agent configurations to `agent.yml` so that if an agent entity is deleted it can be recreated
+by restarting the `sensu-agent` service.
+
+**NOTE**: At this time redaction of labels or annotations is not supported and will cause this module to produce errors. See [limitations](#limitations) for details.
 
 ### Updating this module from 3.x to 4.x
 
@@ -240,6 +278,10 @@ The following example will manage resources necessary to configure a sensu-agent
 associated to `linux` and `apache-servers` subscriptions.
 
 ```puppet
+  class { 'sensu':
+    api_host                     => 'sensu-backend.example.com',
+    agent_entity_config_password => 'supersecret',
+  }
   class { 'sensu::agent':
     backends      => ['sensu-backend.example.com:8081'],
     subscriptions => ['linux', 'apache-servers'],
@@ -299,6 +341,7 @@ sensu::api_host: sensu-backend.example.com
 sensu::api_port: 8080
 sensu::username: admin
 sensu::password: supersecret
+sensu::agent_entity_config_password: supersecret
 ```
 
 ### Manage Windows Agent
@@ -825,6 +868,17 @@ sensu_resources { 'sensu_check':
 }
 ```
 
+To selectively purge `sensu_agent_entity_config` entries, you can specify the type of config to purge.
+If `agent_entity_configs` is omitted then all unmanaged `sensu_agent_entity_config` resources will be purged.
+The following example will only purge subscriptions:
+
+```puppet
+sensu_resources { 'sensu_agent_entity_config':
+  purge                => true,
+  agent_entity_configs => ['subscriptions'],
+}
+```
+
 **NOTE**: The Puppet built-in `resources` can also be used for purging but you must ensure that resources that support namespaces are defined using composite names in the form of `$name in $namespace`. See [Composite Names for Namespaces](#composite-names-for-namespaces) for details on composite names.
 
 Using the Puppet built-in `resources` would look like this:
@@ -1190,6 +1244,10 @@ Examples can be found in the [examples](https://github.com/sensu/sensu-puppet/tr
 * [Slack Alerts](https://github.com/sensu/sensu-puppet/blob/master/examples/slack_alerts.pp) - Example of setting up Slack alerts
 
 ## Limitations
+
+Sensu Go 6 support of this module can not support redacted labels or annotations due to how agent entity API calls are made.
+At this time this module will produce errors if redacted labels or annotations are encountered.
+See [sensu-go#3955](https://github.com/sensu/sensu-go/issues/3955) for details on this issue.
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 
