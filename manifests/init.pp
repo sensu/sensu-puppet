@@ -53,15 +53,11 @@
 #   Sensu backend port used to configure sensuctl and verify API access.
 # @param password
 #   Sensu backend admin password used to confiure sensuctl.
-# @param old_password
-#   DEPRECATED - Sensu backend admin old password needed when changing password.
 # @param agent_password
 #   The sensu agent password
 # @param agent_entity_config_password
 #   The password used when configuring Sensu Agent entity config items
 #   Defaults to value used for `agent_password`.
-# @param agent_old_password
-#   DEPRECATED - The sensu agent old password needed when changing agent_password
 # @param validate_namespaces
 #   Determines if sensuctl and sensu_api types will validate their namespace exists
 class sensu (
@@ -81,19 +77,10 @@ class sensu (
   String $api_host = $trusted['certname'],
   Stdlib::Port $api_port = 8080,
   String $password = 'P@ssw0rd!',
-  Optional[String] $old_password = undef,
   String $agent_password = 'P@ssw0rd!',
   Optional[String] $agent_entity_config_password = undef,
-  Optional[String] $agent_old_password = undef,
   Boolean $validate_namespaces = true,
 ) {
-
-  if $old_password {
-    warning('Sensu: old_password parameter is unnecessary and will be removed in a future release')
-  }
-  if $agent_old_password {
-    warning('Sensu: agent_old_password parameter is unnecessary and will be removed in a future release')
-  }
 
   if $ssl_ca_content {
     $_ssl_ca_source = undef

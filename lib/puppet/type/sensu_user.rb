@@ -81,13 +81,6 @@ DESC
     end
   end
 
-  newparam(:old_password) do
-    desc "DEPRECATED - The user's old password, needed in order to change a user's password"
-    validate do |value|
-      Puppet.warning("Sensu_user[#{@resource[:name]}]: The old_password parameter is unnecessary and will be removed in a future release")
-    end
-  end
-
   newproperty(:groups, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
     desc "Groups to which the user belongs."
   end
