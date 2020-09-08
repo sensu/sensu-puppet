@@ -2,6 +2,7 @@
 Param(
   [Parameter(Mandatory = $True)] [String] $Backend,
   [Parameter(Mandatory = $True)] [String] $Subscription,
+  [Parameter(Mandatory = $False)] [String] $Entity_name = "$env:computername.$env:userdnsdomain",
   [Parameter(Mandatory = $False)] [String] $Namespace = "default",
   [Parameter(Mandatory = $False)] [Bool] $Output = $False
 )
@@ -29,6 +30,7 @@ class { 'sensu::agent':
   package_source => '$Package_source',
   backends       => ['$Backend'],
   subscriptions  => ['$Subscription'],
+  entity_name    => '$Entity_name',
   namespace      => '$Namespace',
 }
 "@

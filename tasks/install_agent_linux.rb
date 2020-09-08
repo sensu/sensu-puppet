@@ -8,6 +8,11 @@ begin
   params = JSON.parse(STDIN.read)
   backend = params['backend']
   subscription = params['subscription']
+  if params['entity_name']
+    entity_name = "'#{params['entity_name']}'"
+  else
+    entity_name = 'undef'
+  end
   namespace = params['namespace'] || 'default'
   output = params.fetch('output', false)
 
@@ -40,6 +45,7 @@ class { '::sensu':
 class { 'sensu::agent':
   backends      => ['#{backend}'],
   subscriptions => ['#{subscription}'],
+  entity_name   => #{entity_name},
   namespace     => '#{namespace}',
 }
 EOS

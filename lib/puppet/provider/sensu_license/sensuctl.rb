@@ -4,10 +4,9 @@ Puppet::Type.type(:sensu_license).provide(:sensuctl, :parent => Puppet::Provider
   desc "Provider sensu_license using sensuctl"
 
   def exists?
-    sensuctl(['license', 'info'])
-  rescue Puppet::ExecutionFailure => e
-    return false
-  true
+    ret = execute(['sensuctl', 'license', 'info'], failonfail: false)
+    exitstatus = ret.exitstatus
+    exitstatus == 0
   end
 
   def initialize(value = {})

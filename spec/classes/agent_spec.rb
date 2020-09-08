@@ -15,6 +15,7 @@ describe 'sensu::agent', :type => :class do
 
         it { should contain_class('sensu')}
         it { should contain_class('sensu::common')}
+        it { should contain_class('sensu::api')}
         it { should contain_class('sensu::agent')}
 
         if facts[:os]['family'] == 'windows'
@@ -44,6 +45,14 @@ describe 'sensu::agent', :type => :class do
         it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
 
         it {
+          should contain_sensu_agent_entity_setup('puppet').with({
+            'url'       => 'https://localhost:8080',
+            'username'  => 'puppet-agent_entity_config',
+            'password'  => 'P@ssw0rd!',
+          })
+        }
+
+        it {
           should contain_package('sensu-go-agent').with({
             'ensure'   => 'installed',
             'name'     => platforms[facts[:osfamily]][:agent_package_name],
@@ -57,7 +66,8 @@ describe 'sensu::agent', :type => :class do
 
         it {
           should contain_datacat_collector('sensu_agent_config').with({
-            'template_body'   => '<%= @data.to_yaml %>',
+            'template'        => 'sensu/agent.yml.erb',
+            'template_body'   => %r{data.to_yaml},
             'target_resource' => 'File[sensu_agent_config]',
             'target_field'    => 'content',
           })
@@ -68,7 +78,8 @@ describe 'sensu::agent', :type => :class do
             'target' => 'sensu_agent_config',
             'data'   => {
               'backend-url'     => ['wss://localhost:8081'],
-              'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+              'name'            => 'localhost',
+              'namespace'       => 'default',
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
             },
@@ -118,6 +129,13 @@ describe 'sensu::agent', :type => :class do
             'enable'    => true,
             'name'      => platforms[facts[:osfamily]][:agent_service_name],
             'subscribe' => 'Class[Sensu::Ssl]',
+          })
+        }
+
+        it {
+          should contain_sensu_agent_entity_validator('localhost').with({
+            'namespace' => 'default',
+            'provider'  => 'sensu_api',
           })
         }
       end
@@ -172,17 +190,40 @@ describe 'sensu::agent', :type => :class do
         end
       end
 
+
+      context 'when agent_entity_config_password is defined' do
+        let(:pre_condition) do
+          "class { 'sensu': agent_entity_config_password => 'password' }"
+        end
+
+        it {
+          should contain_sensu_agent_entity_setup('puppet').with({
+            'url'       => 'https://localhost:8080',
+            'username'  => 'puppet-agent_entity_config',
+            'password'  => 'password',
+          })
+        }
+      end
+
       context 'with use_ssl => false' do
         let(:pre_condition) do
           "class { 'sensu': use_ssl => false }"
         end
 
         it {
+          should contain_sensu_agent_entity_setup('puppet').with({
+            'url'       => 'http://localhost:8080',
+            'username'  => 'puppet-agent_entity_config',
+            'password'  => 'P@ssw0rd!',
+          })
+        }
+        it {
           should contain_datacat_fragment('sensu_agent_config-main').with({
             'target' => 'sensu_agent_config',
             'data'   => {
               'backend-url' => ['ws://localhost:8081'],
-              'redact'      => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+              'name'        => 'localhost',
+              'namespace'   => 'default',
               'password'    => 'P@ssw0rd!',
             },
           })
@@ -199,7 +240,6 @@ describe 'sensu::agent', :type => :class do
             annotations: { 'foo' => 'bar' },
             labels: { 'bar' => 'baz' },
             namespace: 'qa',
-            redact: ['secret'],
           }
         end
 
@@ -213,12 +253,13 @@ describe 'sensu::agent', :type => :class do
               'annotations'     => {'foo' => 'bar'},
               'labels'          => {'bar' => 'baz'},
               'namespace'       => 'qa',
-              'redact'          => ['secret'],
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
             },
           })
         }
+        it { is_expected.to contain_sensu__agent__subscription('linux') }
+        it { is_expected.to contain_sensu__agent__subscription('base') }
       end
 
       context 'with agent configs defined and config_hash' do
@@ -246,12 +287,12 @@ describe 'sensu::agent', :type => :class do
               'annotations'     => {'foo' => 'bar'},
               'labels'          => {'bar' => 'baz'},
               'namespace'       => 'default',
-              'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
             },
           })
         }
+        it { is_expected.to contain_sensu__agent__subscription('windows') }
       end
 
       context 'with show_diff => false' do
@@ -347,7 +388,8 @@ describe 'sensu::agent', :type => :class do
               'target' => 'sensu_agent_config',
               'data'   => {
                 'backend-url'     => [backend],
-                'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+                'name'            => 'localhost',
+                'namespace'       => 'default',
                 'password'        => 'P@ssw0rd!',
                 'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
               },

@@ -1,6 +1,10 @@
 require 'spec_helper_acceptance_windows' if Gem.win_platform?
 require 'json'
 
+# NOTE: The tests for Windows can not define or change things like subscriptions, labels or annotations
+#       because those changes will require a backend to communicate with and we are unable to run
+#       the Sensu Go backend inside the Appveyor Windows testing environment
+
 describe 'sensu::cli class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS
@@ -14,29 +18,27 @@ describe 'sensu::cli class', if: Gem.win_platform? do
     }
     EOS
 
-    unless RSpec.configuration.skip_apply
-      it 'creates manifest' do
-        File.open('C:\manifest-cli.pp', 'w') { |f| f.write(pp) }
-        puts "C:\manifest-cli.pp"
-        puts File.read('C:\manifest-cli.pp')
-      end
+    it 'creates manifest' do
+      File.open('C:\manifest-cli.pp', 'w') { |f| f.write(pp) }
+      puts "C:\manifest-cli.pp"
+      puts File.read('C:\manifest-cli.pp')
+    end
 
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-cli.pp ; Write-Output "EXITCODE=$LastExitCode"') do
-        its(:stdout) { is_expected.to match /EXITCODE=2/ }
-      end
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-cli.pp ; Write-Output "EXITCODE=$LastExitCode"') do
-        its(:stdout) { is_expected.to match /EXITCODE=0/ }
-      end
+    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-cli.pp ; Write-Output "EXITCODE=$LastExitCode"') do
+      its(:stdout) { is_expected.to match /EXITCODE=2/ }
+    end
+    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-cli.pp ; Write-Output "EXITCODE=$LastExitCode"') do
+      its(:stdout) { is_expected.to match /EXITCODE=0/ }
+    end
 
-      describe file('C:/Program Files/Sensu/sensuctl.exe') do
-        it { should exist }
-      end
-      describe 'sensuctl.version fact' do
-        it 'has version fact' do
-          output = `facter --json -p sensuctl`
-          data = JSON.parse(output.strip)
-          expect(data['sensuctl']['version']).to match(/^[0-9\.]+/)
-        end
+    describe file('C:/Program Files/Sensu/sensuctl.exe') do
+      it { should exist }
+    end
+    describe 'sensuctl.version fact' do
+      it 'has version fact' do
+        output = `facter --json -p sensuctl`
+        data = JSON.parse(output.strip)
+        expect(data['sensuctl']['version']).to match(/^[0-9\.]+/)
       end
     end
   end
@@ -49,41 +51,36 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     class { 'sensu::agent':
       backends         => ['sensu-backend:8081'],
       entity_name      => 'sensu-agent',
-      subscriptions    => ['base'],
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
       config_hash      => {
         'log-level' => 'info',
       }
     }
-    sensu::agent::subscription { 'windows': }
     EOS
 
-    unless RSpec.configuration.skip_apply
-      it 'creates manifest' do
-        File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
-        puts "C:\manifest-agent.pp"
-        puts File.read('C:\manifest-agent.pp')
-      end
+    it 'creates manifest' do
+      File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
+      puts "C:\manifest-agent.pp"
+      puts File.read('C:\manifest-agent.pp')
+    end
 
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
-        its(:stdout) { is_expected.to match /EXITCODE=2/ }
-      end
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
-        its(:stdout) { is_expected.to match /EXITCODE=0/ }
-      end
+    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
+      its(:stdout) { is_expected.to match /EXITCODE=2/ }
+    end
+    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
+      its(:stdout) { is_expected.to match /EXITCODE=0/ }
+    end
 
-      describe file('C:\ProgramData\Sensu\config\agent.yml') do
-        expected_content = {
-          'backend-url'     => ['wss://sensu-backend:8081'],
-          'password'        => 'P@ssw0rd!',
-          'name'            => 'sensu-agent',
-          'subscriptions'   => ['base','windows'],
-          'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
-          'log-level'       => 'info',
-          'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
-        }
-        its(:content_as_yaml) { is_expected.to eq(expected_content) }
-      end
+    describe file('C:\ProgramData\Sensu\config\agent.yml') do
+      expected_content = {
+        'backend-url'     => ['wss://sensu-backend:8081'],
+        'password'        => 'P@ssw0rd!',
+        'name'            => 'sensu-agent',
+        'namespace'       => 'default',
+        'log-level'       => 'info',
+        'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
+      }
+      its(:content_as_yaml) { is_expected.to eq(expected_content) }
     end
     describe service('SensuAgent') do
       it { should be_enabled }
@@ -112,23 +109,21 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     }
     EOS
 
-    unless RSpec.configuration.skip_apply
-      it 'creates manifest' do
-        File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
-        puts "C:\manifest-agent.pp"
-        puts File.read('C:\manifest-agent.pp')
-      end
+    it 'creates manifest' do
+      File.open('C:\manifest-agent.pp', 'w') { |f| f.write(pp) }
+      puts "C:\manifest-agent.pp"
+      puts File.read('C:\manifest-agent.pp')
+    end
 
-      describe command('puppet resource package sensu-agent ensure=absent provider=chocolatey') do
-        its(:exit_status) { is_expected.to eq 0 }
-      end
+    describe command('puppet resource package sensu-agent ensure=absent provider=chocolatey') do
+      its(:exit_status) { is_expected.to eq 0 }
+    end
 
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
-        its(:stdout) { is_expected.to match /EXITCODE=2/ }
-      end
-      describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
-        its(:stdout) { is_expected.to match /EXITCODE=0/ }
-      end
+    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
+      its(:stdout) { is_expected.to match /EXITCODE=2/ }
+    end
+    describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
+      its(:stdout) { is_expected.to match /EXITCODE=0/ }
     end
 
     describe service('SensuAgent') do

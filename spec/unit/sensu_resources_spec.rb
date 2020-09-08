@@ -59,6 +59,21 @@ describe Puppet::Type.type(:sensu_resources) do
     end
   end
 
+  describe 'agent_entity_configs' do
+    it 'should allow valid values' do
+      config[:agent_entity_configs] = ['subscriptions']
+      expect(resource[:agent_entity_configs]).to eq(['subscriptions'])
+    end
+    it 'should allow valid value as string' do
+      config[:agent_entity_configs] = 'subscriptions'
+      expect(resource[:agent_entity_configs]).to eq(['subscriptions'])
+    end
+    it 'should not allow invalid values' do
+      config[:agent_entity_configs] = 'foo'
+      expect { resource }.to raise_error(Puppet::Error, %r{foo is not a valid})
+    end
+  end
+
   it 'should not purge sensu_check defined' do
     config[:name] = 'sensu_check'
     check = Puppet::Type.type(:sensu_check).new(:name => 'test', :command => 'test', :subscriptions => ['test'], :handlers => ['test'], :interval => 60)
@@ -79,5 +94,53 @@ describe Puppet::Type.type(:sensu_resources) do
     catalog.add_resource resource
     resource.generate
     expect(catalog.resources.size).to eq(1)
+    expect(instance_check.purging).to eq(true)
+  end
+
+  it 'should not purge sensu_agent_entity_config defined' do
+    config[:name] = 'sensu_agent_entity_config'
+    agent_config = Puppet::Type.type(:sensu_agent_entity_config).new(:name => 'subscriptions value linux on agent in dev')
+    instance_config = Puppet::Type.type(:sensu_agent_entity_config).new(:name => 'subscriptions value linux on agent in dev')
+    allow(agent_config.class).to receive(:instances).and_return([instance_config])
+    expect(instance_config).not_to receive(:purging)
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource resource
+    catalog.add_resource agent_config
+    ret = resource.generate
+    expect(catalog.resources.size).to eq(2)
+    expect(ret).not_to include(instance_config)
+  end
+  it 'should purge sensu_agent_entity_config not defined' do
+    config[:name] = 'sensu_agent_entity_config'
+    instance_config = Puppet::Type.type(:sensu_agent_entity_config).new(:name => 'subscriptions value linux on agent in dev')
+    allow(instance_config.class).to receive(:instances).and_return([instance_config])
+    expect(instance_config).to receive(:purging)
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource resource
+    ret = resource.generate
+    expect(catalog.resources.size).to eq(1)
+    expect(ret).to include(instance_config)
+  end
+  it 'should not purge sensu_agent_entity_config if config does not match agent_entity_configs' do
+    config[:name] = 'sensu_agent_entity_config'
+    config[:agent_entity_configs] = ['labels','annotations']
+    instance_config = Puppet::Type.type(:sensu_agent_entity_config).new(:name => 'subscriptions value linux on agent in dev')
+    allow(instance_config.class).to receive(:instances).and_return([instance_config])
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource resource
+    ret = resource.generate
+    expect(ret).not_to include(instance_config)
+  end
+  it 'should purge sensu_agent_entity_config not defined with agent_entity_configs defined' do
+    config[:name] = 'sensu_agent_entity_config'
+    config[:agent_entity_configs] = ['subscriptions']
+    instance_config = Puppet::Type.type(:sensu_agent_entity_config).new(:name => 'subscriptions value linux on agent in dev')
+    allow(instance_config.class).to receive(:instances).and_return([instance_config])
+    expect(instance_config).to receive(:purging)
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource resource
+    ret = resource.generate
+    expect(catalog.resources.size).to eq(1)
+    expect(ret).to include(instance_config)
   end
 end

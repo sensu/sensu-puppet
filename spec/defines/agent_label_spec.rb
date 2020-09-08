@@ -18,16 +18,38 @@ describe 'sensu::agent::label' do
         })
       }
 
+      it {
+        is_expected.to contain_sensu_agent_entity_config('sensu::agent::label cpu.warning').with({
+          'config'    => 'labels',
+          'key'       => 'cpu.warning',
+          'value'     => '90',
+          'entity'    => 'localhost',
+          'namespace' => 'default',
+        })
+      }
+
       it { is_expected.not_to contain_sensu__agent__config_entry('redact-label-cpu.warning') }
 
       context 'redact' do
         let(:params) { { :redact => true, :value => '90' } }
+        it { is_expected.not_to contain_sensu__agent__config_entry('redact-label-cpu.warning') }
+        it { is_expected.not_to contain_sensu_agent_entity_config('sensu::agent::label redact cpu.warning') }
+=begin TODO: Uncomment once redact is re-enabled
         it {
           is_expected.to contain_sensu__agent__config_entry('redact-label-cpu.warning').with({
             'key'   => 'redact',
             'value' => ['cpu.warning'],
           })
         }
+        it {
+          is_expected.to contain_sensu_agent_entity_config('sensu::agent::label redact cpu.warning').with({
+            'config'    => 'redact',
+            'value'     => 'cpu.warning',
+            'entity'    => 'localhost',
+            'namespace' => 'default',
+          })
+        }
+=end
       end
 
       context 'all params' do
@@ -45,6 +67,15 @@ describe 'sensu::agent::label' do
               'labels' => { 'cpu.critical' => '90' },
             },
             'order'  => '01',
+          })
+        }
+        it {
+          is_expected.to contain_sensu_agent_entity_config('sensu::agent::label cpu.warning').with({
+            'config'    => 'labels',
+            'key'       => 'cpu.critical',
+            'value'     => '90',
+            'entity'    => 'localhost',
+            'namespace' => 'default',
           })
         }
       end

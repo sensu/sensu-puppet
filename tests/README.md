@@ -78,6 +78,8 @@ Currently `tests/secrets.tar` holds secrets:
 
 Encrypt `tests/secrets.tar`, this should only be run if new secrets are needing to be added or modified. If available ensure `TRAVIS_CI_KEY` and `TRAVIS_CI_IV` environment variables are set or new ones will be used.
 
+The print environment variable names for the openssl command must be updated in `.travis.yml`.
+
 ```
 ./tests/encrypt-secrets.sh
 ```

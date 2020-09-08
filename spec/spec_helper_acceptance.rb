@@ -97,6 +97,7 @@ EOS
 ---
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
+sensu::api_host: sensu-backend
 EOS
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
     on setup_nodes, 'mkdir -p -m 0755 /etc/puppetlabs/puppet/data'

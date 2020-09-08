@@ -68,6 +68,8 @@
 # @param log_file
 #   Path to agent log file, only for Windows.
 #   Defaults to `C:\ProgramData\sensu\log\sensu-agent.log`
+# @param agent_entity_config_provider
+#   The provider to use when managing sensu_agent_entity_config resources
 #
 class sensu::agent (
   Optional[String] $version = undef,
@@ -81,18 +83,28 @@ class sensu::agent (
   Boolean $service_enable = true,
   Hash $config_hash = {},
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
-  Optional[String[1]] $entity_name = undef,
+  String[1] $entity_name = $facts['networking']['fqdn'],
   Optional[Array[String[1]]] $subscriptions = undef,
   Optional[Hash[String[1],String]] $annotations = undef,
   Optional[Hash[String[1],String]] $labels = undef,
-  Optional[String[1]] $namespace = undef,
-  Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+  String[1] $namespace = 'default',
+  Optional[Array[String[1]]] $redact = undef,
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
+  Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
 ) {
+
+  if $redact {
+    fail('sensu::agent: Setting redact is not supported at this time')
+  }
 
   include sensu
   include sensu::common
+  if $agent_entity_config_provider == 'sensuctl' {
+    include sensu::cli
+  } else {
+    include sensu::api
+  }
 
   $_version = pick($version, $sensu::version)
   $_backends = pick($backends, ["${sensu::api_host}:8081"])
@@ -126,6 +138,36 @@ class sensu::agent (
     'password'      => $sensu::agent_password,
   }
   $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
+  if $config['subscriptions'] {
+    $config['subscriptions'].each |$s| {
+      sensu::agent::subscription { $s: }
+    }
+  }
+  if $config['labels'] {
+    $config['labels'].each |$key, $value| {
+      sensu::agent::label { $key:
+        value => $value,
+      }
+    }
+  }
+  if $config['annotations'] {
+    $config['annotations'].each |$key, $value| {
+      sensu::agent::annotation { $key:
+        value => $value,
+      }
+    }
+  }
+  # Get first backend listed and use that address for API calls to configure
+  # sensu_agent_entity_config resources
+  $_backend = $config['backend-url'][0]
+  $_backend_without_prefix = $_backend.regsubst('^(ws|wss)://', '')
+  $_backend_host = split($_backend_without_prefix, /:/)[0]
+  sensu_agent_entity_setup { 'puppet':
+    url      => "${sensu::api_protocol}://${_backend_host}:${sensu::api_port}",
+    username => 'puppet-agent_entity_config',
+    password => $sensu::_agent_entity_config_password,
+  }
+
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     "${key}=\"${value}\""
   }
@@ -195,7 +237,8 @@ class sensu::agent (
   }
 
   datacat_collector { 'sensu_agent_config':
-    template_body   => '<%= @data.to_yaml %>',
+    template        => 'sensu/agent.yml.erb',
+    template_body   => template_body('sensu/agent.yml.erb'),
     target_resource => File['sensu_agent_config'],
     target_field    => 'content',
   }
@@ -248,5 +291,10 @@ class sensu::agent (
     enable    => $service_enable,
     name      => $service_name,
     subscribe => $service_subscribe,
+  }
+
+  sensu_agent_entity_validator { $config['name']:
+    namespace => $config['namespace'],
+    provider  => $agent_entity_config_provider,
   }
 }

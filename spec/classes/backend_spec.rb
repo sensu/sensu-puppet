@@ -19,6 +19,7 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_class('sensu::agent') }
         it { should contain_class('sensu::ssl').that_comes_before('Sensuctl_configure[puppet]') }
         it { should contain_class('sensu::backend::default_resources') }
+        it { should contain_class('sensu::backend::agent_resources') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
 
         context 'on systemd host', if: Puppet.version.to_s =~ %r{^5} do
@@ -29,7 +30,7 @@ describe 'sensu::backend', :type => :class do
         it { should_not contain_package('sensu-go-backend').that_notifies('Exec[sensu systemctl daemon-reload]') }
         it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-backend]') }
 
-        it { should have_sensu_user_resource_count(2) }
+        it { should have_sensu_user_resource_count(3) }
         it {
           should contain_sensu_user('admin').with({
             'ensure'                    => 'present',
@@ -269,6 +270,12 @@ describe 'sensu::backend', :type => :class do
         let(:params) {{ :include_default_resources => false }}
         it { should compile.with_all_deps }
         it { should_not contain_class('sensu::backend::default_resources') }
+      end
+
+      context 'with include_agent_resources => false' do
+        let(:params) {{ :include_agent_resources => false }}
+        it { should compile.with_all_deps }
+        it { should_not contain_class('sensu::backend::agent_resources') }
       end
 
       context 'with manage_agent_user => false' do

@@ -18,16 +18,38 @@ describe 'sensu::agent::annotation' do
         })
       }
 
+      it {
+        is_expected.to contain_sensu_agent_entity_config('sensu::agent::annotation cpu.title').with({
+          'config'    => 'annotations',
+          'key'       => 'cpu.title',
+          'value'     => 'foo',
+          'entity'    => 'localhost',
+          'namespace' => 'default',
+        })
+      }
+
       it { is_expected.not_to contain_sensu__agent__config_entry('redact-annotation-cpu.title') }
 
       context 'redact' do
         let(:params) { { :redact => true, :value => 'foo' } }
+        it { is_expected.not_to contain_sensu__agent__config_entry('redact-annotation-cpu.title') }
+        it { is_expected.not_to contain_sensu_agent_entity_config('sensu::agent::annotation redact cpu.title') }
+=begin TODO: Uncomment once redact is re-enabled
         it {
           is_expected.to contain_sensu__agent__config_entry('redact-annotation-cpu.title').with({
             'key'   => 'redact',
             'value' => ['cpu.title'],
           })
         }
+        it {
+          is_expected.to contain_sensu_agent_entity_config('sensu::agent::annotation redact cpu.title').with({
+            'config'    => 'redact',
+            'value'     => 'cpu.title',
+            'entity'    => 'localhost',
+            'namespace' => 'default',
+          })
+        }
+=end
       end
 
       context 'all params' do
@@ -45,6 +67,15 @@ describe 'sensu::agent::annotation' do
               'annotations' => { 'cpu.critical' => '90' },
             },
             'order'  => '01',
+          })
+        }
+        it {
+          is_expected.to contain_sensu_agent_entity_config('sensu::agent::annotation cpu.title').with({
+            'config'    => 'annotations',
+            'key'       => 'cpu.critical',
+            'value'     => '90',
+            'entity'    => 'localhost',
+            'namespace' => 'default',
           })
         }
       end
