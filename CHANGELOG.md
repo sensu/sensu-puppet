@@ -1,5 +1,20 @@
 # Changelog
 
+## [v5.0.0](https://github.com/sensu/sensu-puppet/tree/v5.0.0) (2020-09-08)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.13.1...v5.0.0)
+
+### Changed
+
+- Remove various deprecations [\#1273](https://github.com/sensu/sensu-puppet/pull/1273) ([treydock](https://github.com/treydock))
+- Support Sensu Go 6 [\#1255](https://github.com/sensu/sensu-puppet/pull/1255) ([treydock](https://github.com/treydock))
+
+### Added
+
+- Remove acceptance test skipping for plugins [\#1272](https://github.com/sensu/sensu-puppet/pull/1272) ([treydock](https://github.com/treydock))
+- Make sensu\_ad\_auth group\_search optional [\#1266](https://github.com/sensu/sensu-puppet/pull/1266) ([treydock](https://github.com/treydock))
+- Add sensu::backend\_upgrade task [\#1265](https://github.com/sensu/sensu-puppet/pull/1265) ([treydock](https://github.com/treydock))
+
 ## [v4.13.1](https://github.com/sensu/sensu-puppet/tree/v4.13.1) (2020-08-13)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.13.0...v4.13.1)
@@ -204,8 +219,6 @@
 
 - BREAKING: Add API providers [\#1191](https://github.com/sensu/sensu-puppet/pull/1191) ([treydock](https://github.com/treydock))
 - Add several parameters to sensu::agent class [\#1185](https://github.com/sensu/sensu-puppet/pull/1185) ([treydock](https://github.com/treydock))
-- Document upcoming breaking changes [\#1167](https://github.com/sensu/sensu-puppet/pull/1167) ([treydock](https://github.com/treydock))
-- BREAKING: Move cli resources to sensu::cli class [\#1164](https://github.com/sensu/sensu-puppet/pull/1164) ([treydock](https://github.com/treydock))
 
 ### Added
 
@@ -255,12 +268,6 @@
 ## [v3.11.0](https://github.com/sensu/sensu-puppet/tree/v3.11.0) (2019-11-12)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.10.0...v3.11.0)
-
-### Added
-
-- Support Windows 2019 [\#1168](https://github.com/sensu/sensu-puppet/pull/1168) ([treydock](https://github.com/treydock))
-- Improve release process [\#1166](https://github.com/sensu/sensu-puppet/pull/1166) ([treydock](https://github.com/treydock))
-- \(ci\) Use correct Ruby version 2.5.7 for latest Puppet 6 tests [\#1165](https://github.com/sensu/sensu-puppet/pull/1165) ([ghoneycutt](https://github.com/ghoneycutt))
 
 ### Fixed
 

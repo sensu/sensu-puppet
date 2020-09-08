@@ -18,6 +18,7 @@
 
 #### Private Classes
 
+* `sensu::backend::agent_resources`: Default sensu agent resources
 * `sensu::backend::datastore::postgresql`: Manage Sensu backend PostgreSQL datastore
 * `sensu::backend::default_resources`: Default sensu resources
 * `sensu::common`: Sensu class for common resources
@@ -28,13 +29,16 @@
 ### Defined types
 
 * [`sensu::agent::annotation`](#sensuagentannotation): Add agent annotation
-* [`sensu::agent::config_entry`](#sensuagentconfig_entry): Add custom agent config entry
+* [`sensu::agent::config_entry`](#sensuagentconfig_entry)
 * [`sensu::agent::label`](#sensuagentlabel): Add agent label
 * [`sensu::agent::subscription`](#sensuagentsubscription): Add agent subscription
 
 ### Resource types
 
 * [`sensu_ad_auth`](#sensu_ad_auth): Manages Sensu AD auth.
+* [`sensu_agent_entity_config`](#sensu_agent_entity_config): Manages a Sensu agent subscription
+* [`sensu_agent_entity_setup`](#sensu_agent_entity_setup): Abstract type to configure other types
+* [`sensu_agent_entity_validator`](#sensu_agent_entity_validator): **NOTE** This is a private type not intended to be used directly.  Verify the specified agent entity exists.
 * [`sensu_api_config`](#sensu_api_config): Abstract type to configure other types
 * [`sensu_api_validator`](#sensu_api_validator): **NOTE** This is a private type not intended to be used directly.  Verify that a connection can be successfully established between a node an
 * [`sensu_asset`](#sensu_asset): Manages Sensu assets
@@ -77,6 +81,7 @@
 * [`agent_event`](#agent_event): Create a Sensu Go agent event via the agent API
 * [`apikey`](#apikey): Manage Sensu Go API keys
 * [`assets_outdated`](#assets_outdated): Retreive outdated Sensu Go assets
+* [`backend_upgrade`](#backend_upgrade): Execute Sensu Go backend upgrade
 * [`check_execute`](#check_execute): Execute a Sensu Go check
 * [`event`](#event): Manage Sensu Go events
 * [`install_agent`](#install_agent): Install Sensu Go agent
@@ -229,14 +234,6 @@ Sensu backend admin password used to confiure sensuctl.
 
 Default value: `'P@ssw0rd!'`
 
-##### `old_password`
-
-Data type: `Optional[String]`
-
-DEPRECATED - Sensu backend admin old password needed when changing password.
-
-Default value: ``undef``
-
 ##### `agent_password`
 
 Data type: `String`
@@ -245,11 +242,12 @@ The sensu agent password
 
 Default value: `'P@ssw0rd!'`
 
-##### `agent_old_password`
+##### `agent_entity_config_password`
 
 Data type: `Optional[String]`
 
-DEPRECATED - The sensu agent old password needed when changing agent_password
+The password used when configuring Sensu Agent entity config items
+Defaults to value used for `agent_password`.
 
 Default value: ``undef``
 
@@ -383,12 +381,12 @@ Default value: ``undef``
 
 ##### `entity_name`
 
-Data type: `Optional[String[1]]`
+Data type: `String[1]`
 
 The value for agent.yml `name`.
 Passing `name` as part of `config_hash` takes precedence
 
-Default value: ``undef``
+Default value: `$facts['networking']['fqdn']`
 
 ##### `subscriptions`
 
@@ -419,23 +417,23 @@ Default value: ``undef``
 
 ##### `namespace`
 
-Data type: `Optional[String[1]]`
+Data type: `String[1]`
 
 The agent namespace
 Passing `namespace` as part of `config_hash` takes precedence
 
-Default value: ``undef``
+Default value: `'default'`
 
 ##### `redact`
 
-Data type: `Array[String[1]]`
+Data type: `Optional[Array[String[1]]]`
 
 The agent entity redact list
 Passing `redact` as part of `config_hash` takes precedence
 Defaults come from Sensu documentation:
 https://docs.sensu.io/sensu-go/latest/reference/agent/#security-configuration-flags
 
-Default value: `['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret']`
+Default value: ``undef``
 
 ##### `show_diff`
 
@@ -453,6 +451,14 @@ Path to agent log file, only for Windows.
 Defaults to `C:\ProgramData\sensu\log\sensu-agent.log`
 
 Default value: ``undef``
+
+##### `agent_entity_config_provider`
+
+Data type: `Enum['sensuctl','sensu_api']`
+
+The provider to use when managing sensu_agent_entity_config resources
+
+Default value: `'sensu_api'`
 
 ### `sensu::api`
 
@@ -598,6 +604,14 @@ Default value: ``undef``
 Data type: `Boolean`
 
 Sets if default sensu resources should be included
+
+Default value: ``true``
+
+##### `include_agent_resources`
+
+Data type: `Boolean`
+
+Sets if agent RBAC resources should be included
 
 Default value: ``true``
 
@@ -1225,6 +1239,14 @@ sensu::agent::annotation { 'fatigue_check/occurrences:': value => '2' }
 
 The following parameters are available in the `sensu::agent::annotation` defined type.
 
+##### `ensure`
+
+Data type: `Enum['present','absent']`
+
+Ensure property of the annotation
+
+Default value: `'present'`
+
 ##### `key`
 
 Data type: `String[1]`
@@ -1255,17 +1277,25 @@ Order of the datacat fragment
 
 Default value: `'50'`
 
+##### `entity`
+
+Data type: `Optional[String[1]]`
+
+Entity where to manage this annotation
+
+Default value: ``undef``
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+Namespace of entity to manage this annotation
+
+Default value: ``undef``
+
 ### `sensu::agent::config_entry`
 
-Add custom agent config entry
-
-#### Examples
-
-##### 
-
-```puppet
-sensu::agent::config_entry { 'disable-api'': value => true }
-```
+The sensu::agent::config_entry class.
 
 #### Parameters
 
@@ -1309,6 +1339,14 @@ sensu::agent::label { 'contacts': value => 'ops@example.com' }
 
 The following parameters are available in the `sensu::agent::label` defined type.
 
+##### `ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Ensure property for the label
+
+Default value: `'present'`
+
 ##### `key`
 
 Data type: `String[1]`
@@ -1338,6 +1376,22 @@ Data type: `String[1]`
 Order of the datacat fragment
 
 Default value: `'50'`
+
+##### `entity`
+
+Data type: `Optional[String[1]]`
+
+Entity where to manage this label
+
+Default value: ``undef``
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+Namespace of entity to manage this label
+
+Default value: ``undef``
 
 ### `sensu::agent::subscription`
 
@@ -1370,6 +1424,22 @@ Data type: `String[1]`
 Order of the datacat fragment
 
 Default value: `'50'`
+
+##### `entity`
+
+Data type: `Optional[String[1]]`
+
+Entity where to manage this subscription
+
+Default value: ``undef``
+
+##### `namespace`
+
+Data type: `Optional[String[1]]`
+
+Namespace of entity to manage this subscription
+
+Default value: ``undef``
 
 ## Resource types
 
@@ -1408,6 +1478,27 @@ sensu_ldap_auth { 'ad':
 }
 ```
 
+##### Add an AD auth that uses memberOf attribute by omitting group_search
+
+```puppet
+sensu_ldap_auth { 'ad':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => '127.0.0.1',
+      'port' => 389,
+      'binding' => {
+        'user_dn' => 'cn=binder,dc=acme,dc=org',
+        'password' => 'P@ssw0rd!'
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    },
+  ],
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_ad_auth` type.
@@ -1431,7 +1522,7 @@ AD servers as Array of Hashes
 Keys:
 * host: required
 * port: required
-* group_search: required
+* group_search: optional (omit to use memberOf)
 * user_search: required
 * binding: optional Hash
 * insecure: default is `false`
@@ -1476,6 +1567,194 @@ The name of the AD auth.
 
 The specific backend to use for this `sensu_ad_auth` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
+
+### `sensu_agent_entity_config`
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Service[sensu-agent]`
+* `Sensuctl_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+
+#### Examples
+
+##### Add a subscription to an agent using composite names
+
+```puppet
+sensu_agent_entity_config { 'subscription value linux on sensu-agent.example.org in dev':
+  ensure => 'present',
+}
+```
+
+##### Add an annotation to an agent using composite names
+
+```puppet
+sensu_agent_entity_config { 'annotations key contacts on sensu-agent.example.org in dev':
+  ensure => 'present',
+  value  => 'dev@example.com',
+}
+```
+
+##### Add a subscription to an agent
+
+```puppet
+sensu_agent_entity_config { 'subscription':
+  ensure    => 'present',
+  config    => 'subscription',
+  value     => 'linux',
+  entity    => 'sensu-agent.example.org',
+  namespace => 'dev',
+}
+```
+
+##### Add an annotation to an agent
+
+```puppet
+sensu_agent_entity_config { 'annotation-contacts':
+  ensure    => 'present',
+  config    => 'annotation',
+  key       => 'contacts',
+  value     => 'dev@example.com',
+  entity    => 'sensu-agent.example.org',
+  namespace => 'dev',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_agent_entity_config` type.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+##### `value`
+
+The value of the config for agent entity
+
+#### Parameters
+
+The following parameters are available in the `sensu_agent_entity_config` type.
+
+##### `config`
+
+The name of the config to set.
+
+##### `entity`
+
+The entity to manage subscription
+
+##### `key`
+
+Key of config entry set, for labels and annotations
+
+##### `name`
+
+namevar
+
+The name of the agent subscription.
+The name supports composite names that can define the entity and namespace.
+An example composite name to define subscription named `test` on entity 'agent' in namespace `dev`: `test on agent in
+dev`
+
+##### `namespace`
+
+The Sensu RBAC namespace that this entity belongs to.
+
+Default value: `default`
+
+##### `provider`
+
+The specific backend to use for this `sensu_agent_entity_config` resource. You will seldom need to specify this ---
+Puppet will usually discover the appropriate provider for your platform.
+
+### `sensu_agent_entity_setup`
+
+**NOTE** This is a private type not intended to be used directly.
+
+#### Parameters
+
+The following parameters are available in the `sensu_agent_entity_setup` type.
+
+##### `name`
+
+namevar
+
+The name of the resource.
+
+##### `password`
+
+Sensu API password
+
+##### `url`
+
+Sensu API URL
+
+##### `username`
+
+Sensu API username
+
+### `sensu_agent_entity_validator`
+
+**NOTE** This is a private type not intended to be used directly.
+
+Verify the specified agent entity exists.
+
+#### Examples
+
+##### Verify agent entity 'sensu-agent' exists
+
+```puppet
+sensu_api_validator { 'sensu-agent':
+  namespace => 'dev',
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_agent_entity_validator` type.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+#### Parameters
+
+The following parameters are available in the `sensu_agent_entity_validator` type.
+
+##### `name`
+
+namevar
+
+An entity to verify
+
+##### `namespace`
+
+Namespace of entity
+
+Default value: `default`
+
+##### `provider`
+
+The specific backend to use for this `sensu_agent_entity_validator` resource. You will seldom need to specify this ---
+Puppet will usually discover the appropriate provider for your platform.
+
+##### `timeout`
+
+The max number of seconds that the validator should wait before giving up and deciding that entity does not exist
+
+Default value: `10`
 
 ### `sensu_api_config`
 
@@ -1684,12 +1963,6 @@ The basic property that the resource should be in.
 
 Default value: `present`
 
-##### `filters`
-
-Valid values: `/.*/`, `absent`
-
-A set of filters used by the agent to determine of the asset should be installed.
-
 ##### `headers`
 
 HTTP headers to appy to asset retrieval requests.
@@ -1703,14 +1976,6 @@ Custom attributes to include with event data, which can be queried like regular 
 The Sensu RBAC namespace that this asset belongs to.
 
 Default value: `default`
-
-##### `sha512`
-
-The checksum of the asset
-
-##### `url`
-
-The URL location of the asset.
 
 #### Parameters
 
@@ -3553,6 +3818,10 @@ sensu_resources { 'sensu_check':
 
 The following parameters are available in the `sensu_resources` type.
 
+##### `agent_entity_configs`
+
+Types of configs to purge for sensu_agent_entity_configs, eg ['subscriptions','labels']
+
 ##### `name`
 
 namevar
@@ -4031,10 +4300,6 @@ namevar
 
 The name of the user.
 
-##### `old_password`
-
-DEPRECATED - The user's old password, needed in order to change a user's password
-
 ##### `provider`
 
 The specific backend to use for this `sensu_user` resource. You will seldom need to specify this --- Puppet will usually
@@ -4226,6 +4491,74 @@ Data type: `Optional[String[1]]`
 
 The namespace, defaults to all namespaces
 
+### `backend_upgrade`
+
+Execute Sensu Go backend upgrade
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `config_file`
+
+Data type: `Optional[String[1]]`
+
+Path to backend.yml
+
+##### `timeout`
+
+Data type: `Optional[Integer]`
+
+Timeout for connecting to etcd
+
+##### `etcd_advertise_client_urls`
+
+Data type: `Optional[Array]`
+
+list of this member's client URLs to advertise to clients
+
+##### `etcd_cert_file`
+
+Data type: `Optional[String[1]]`
+
+path to the client server TLS cert file
+
+##### `etcd_cipher_suites`
+
+Data type: `Optional[Array]`
+
+list of ciphers to use for etcd TLS configuration
+
+##### `etcd_client_cert_auth`
+
+Data type: `Optional[Boolean]`
+
+enable client cert authentication
+
+##### `etcd_client_urls`
+
+Data type: `Optional[Array]`
+
+client URLs to use when operating as an etcd client
+
+##### `etcd_key_file`
+
+Data type: `Optional[String[1]]`
+
+path to the client server TLS key file
+
+##### `etcd_max_request_bytes`
+
+Data type: `Optional[Integer]`
+
+maximum etcd request size in bytes (use with caution)
+
+##### `etcd_trusted_ca_file`
+
+Data type: `Optional[String[1]]`
+
+path to the client server TLS trusted CA cert file
+
 ### `check_execute`
 
 Execute a Sensu Go check
@@ -4309,6 +4642,12 @@ The backend(s) to connect agent to
 Data type: `String[1]`
 
 The subscription(s) for the agent
+
+##### `entity_name`
+
+Data type: `Optional[String[1]]`
+
+The agent entity name
 
 ##### `namespace`
 
