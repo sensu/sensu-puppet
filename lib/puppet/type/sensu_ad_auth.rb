@@ -76,7 +76,7 @@ DESC
     Keys:
     * host: required
     * port: required
-    * group_search: required for Sensu 5, optional for Sensu 6 (omit to use memberOf with Sensu 6)
+    * group_search: optional (omit to use memberOf)
     * user_search: required
     * binding: optional Hash
     * insecure: default is `false`

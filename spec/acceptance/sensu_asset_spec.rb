@@ -6,15 +6,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_mode == 'types' do
     it 'should work without errors' do
       pp = <<-EOS
       include sensu::backend
-      sensu_asset { 'test2':
-        url      => 'http://example.com/asset/example.tar',
-        sha512   => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-        filters  => ["entity.system.os == 'linux'"],
-        headers  => {
-          "Authorization" => 'Bearer $TOKEN',
-          "X-Forwarded-For" => "client1, proxy1, proxy2"
-        },
-      }
       sensu_asset { 'test':
         ensure => 'present',
         builds => [
@@ -276,7 +267,6 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       include sensu::backend
       sensu_asset { 'test': ensure => 'absent' }
-      sensu_asset { 'test2': ensure => 'absent' }
       sensu_asset { 'test-api':
         ensure   => 'absent',
         provider => 'sensu_api',

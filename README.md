@@ -3,7 +3,6 @@
 #### Table of Contents
 
 1. [Module Description](#module-description)
-    * [Deprecations](#deprecations)
     * [Updating this module from 4.x to 5.x](#updating-this-module-from-4x-to-5x)
     * [Updating this module from 3.x to 4.x](#updating-this-module-from-3x-to-4x)
 2. [Setup - The basics of getting started with Sensu](#setup)
@@ -73,38 +72,6 @@ Version 4 of this module supports Sensu Go >= 5.16.0 < 6.0.0.
 Version 5 of this module supports Sensu Go >= 6.0.0 < 7.0.0.
 
 Users wishing to use the previous Ruby based Sensu should use the [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic) module.
-
-### Deprecations
-
-#### sensu\_asset
-
-The `url`, `sha512`, `filters` and `headers` properties for `sensu_asset` are deprecated in favor of passing these values as part of `builds` property.
-Using these deprecated properties will still work but issue a warning when the Puppet catalog is applied.
-
-Before:
-
-```puppet
-sensu_asset { 'test':
-  ensure  => 'present',
-  url     => 'http://example.com/asset/example.tar',
-  sha512  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-  filters  => ["entity.system.os == 'linux'"],
-}
-```
-
-After:
-```puppet
-sensu_asset { 'test':
-  ensure => 'present',
-  builds => [
-    {
-      'url'     => 'http://example.com/asset/example.tar',
-      'sha512'  => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b',
-      'filters' => ["entity.system.os == 'linux'"],
-    },
-  ],
-}
-```
 
 ### Updating this module from 4.x to 5.x
 

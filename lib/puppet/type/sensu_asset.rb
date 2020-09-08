@@ -94,19 +94,6 @@ DESC
     end
   end
 
-  newproperty(:url) do
-    desc "The URL location of the asset."
-  end
-
-  newproperty(:sha512) do
-    desc "The checksum of the asset"
-  end
-
-  newproperty(:filters, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
-    desc "A set of filters used by the agent to determine of the asset should be installed."
-    newvalues(/.*/, :absent)
-  end
-
   newproperty(:builds, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
     desc <<-EOS
     A list of asset builds used to define multiple artifacts which provide the named asset.
@@ -202,21 +189,12 @@ DESC
     if self[:bonsai]
       return
     end
-    if ! self[:builds]
-      required_properties = [
-        :url,
-        :sha512,
-      ]
-      required_properties.each do |property|
-        if self[:ensure] == :present && self[property].nil?
-          fail "You must provide a #{property}"
-        end
-      end
-    end
-    if self[:url] || self[:sha512] || self[:filters] || self[:headers]
-      Puppet.warning("#{PuppetX::Sensu::Type.error_prefix(self)} Using url, sha512, filters, or headers properties for single build is deprecated, use builds property")
-      if self[:builds]
-        fail "Defining builds with url, sha512, or filters is not suppoed, they are mutually exclusive. Use only builds property"
+    required_properties = [
+      :builds,
+    ]
+    required_properties.each do |property|
+      if self[:ensure] == :present && self[property].nil?
+        fail "You must provide a #{property}"
       end
     end
     PuppetX::Sensu::Type.validate_namespace(self)

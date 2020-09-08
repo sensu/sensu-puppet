@@ -55,12 +55,6 @@ Puppet::Type.type(:sensu_user).provide(:sensuctl, :parent => Puppet::Provider::S
   def password_hash(password)
     begin
       hash = sensuctl(['user', 'hash-password', password])
-      # TODO: Remove once no longer need to support Sensu Go before 5.21
-      # Returns nil if output does not start with $, which means a hash was not provided
-      # If the hash-password command is not present, sensuctl will exit 0 and print help
-      if hash !~ /\$/
-        return nil
-      end
       return hash.strip
     rescue Exception => e
       Puppet.warning("Unable to generate password hash for user #{resource[:name]}: #{e.to_s}")
