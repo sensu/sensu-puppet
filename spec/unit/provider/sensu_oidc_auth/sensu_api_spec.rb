@@ -40,6 +40,7 @@ describe Puppet::Type.type(:sensu_oidc_auth).provider(:sensu_api) do
         :api_version => 'authentication/v2',
         :type => 'oidc',
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(false)
       expect(resource.provider).to receive(:api_request).with('authproviders/oidc', expected_spec, {:api_group => 'enterprise/authentication', :method => 'put'})
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
@@ -62,6 +63,7 @@ describe Puppet::Type.type(:sensu_oidc_auth).provider(:sensu_api) do
         :api_version => 'authentication/v2',
         :type => 'oidc',
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(false)
       expect(resource.provider).to receive(:api_request).with('authproviders/oidc', expected_spec, {:api_group => 'enterprise/authentication', :method => 'put'})
       resource.provider.username_claim = 'email'
       resource.provider.flush

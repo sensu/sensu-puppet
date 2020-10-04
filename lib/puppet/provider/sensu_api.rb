@@ -237,6 +237,29 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     self.class.auth_test(*args)
   end
 
+  def self.version
+    data = api_request('/version', nil, {:failonfail => false})
+  rescue Exception => e
+    Puppet.notice "Unable to query Sensu API version: #{e.message}"
+    return nil
+  else
+    return data.fetch('sensu_backend', nil)
+  end
+  def version
+    self.class.version
+  end
+
+  def self.version_cmp(v)
+    if @current_version.nil?
+      @current_version = version
+    end
+    return true if @current_version.nil?
+    return Gem::Version.new(@current_version) >= Gem::Version.new(v)
+  end
+  def version_cmp(*args)
+    self.class.version_cmp(*args)
+  end
+
   def self.get_bonsai_asset(name)
     opts = {
       :url => 'https://bonsai.sensu.io'

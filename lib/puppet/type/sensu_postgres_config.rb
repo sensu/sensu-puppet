@@ -48,6 +48,33 @@ DESC
   newproperty(:pool_size, :parent => PuppetX::Sensu::IntegerProperty) do
     desc "The maximum number of connections to hold in the PostgreSQL connection pool"
     newvalues(/^[0-9]+$/)
+    defaultto(0)
+  end
+
+  newproperty(:strict, :boolean => true) do
+    desc "Perform configuration validation when configuring this resource"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
+  newproperty(:batch_buffer, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "Maximum number of requests to buffer in memory."
+    newvalues(/^[0-9]+$/)
+    defaultto(0)
+  end
+
+  newproperty(:batch_size, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "Number of requests in each PostgreSQL write transaction"
+    newvalues(/^[0-9]+$/)
+    defaultto(1)
+  end
+
+  newproperty(:batch_workers, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "Number of requests in each PostgreSQL write transaction, defaults to value for pool_size"
+    newvalues(/^[0-9]+$/)
+    defaultto do
+      @resource[:pool_size]
+    end
   end
 
   def pre_run_check

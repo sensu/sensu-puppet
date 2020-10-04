@@ -17,7 +17,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
       check_pp = <<-EOS
       sensu_check { 'event-test':
         command       => 'exit 0',
-        subscriptions => ['entity:sensu-agent'],
+        subscriptions => ['entity:sensu-agent','base'],
         interval      => 1,
       }
       EOS

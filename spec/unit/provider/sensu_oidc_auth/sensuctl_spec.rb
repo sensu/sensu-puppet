@@ -37,6 +37,7 @@ describe Puppet::Type.type(:sensu_oidc_auth).provider(:sensuctl) do
         :client_secret => 'secret',
         :server => 'https://idp.example.com',
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(false)
       expect(resource.provider).to receive(:sensuctl_create).with('oidc', expected_metadata, expected_spec, 'authentication/v2')
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
@@ -55,6 +56,7 @@ describe Puppet::Type.type(:sensu_oidc_auth).provider(:sensuctl) do
         :server => 'https://idp.example.com',
         :username_claim => 'email',
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(false)
       expect(resource.provider).to receive(:sensuctl_create).with('oidc', expected_metadata, expected_spec, 'authentication/v2')
       resource.provider.username_claim = 'email'
       resource.provider.flush

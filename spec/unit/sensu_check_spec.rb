@@ -317,6 +317,7 @@ describe Puppet::Type.type(:sensu_check) do
       'graphite_plaintext',
       'influxdb_line',
       'opentsdb_line',
+      'prometheus_text',
     ].each do |v|
       it "should accept #{v}" do
         config[:output_metric_format] = v

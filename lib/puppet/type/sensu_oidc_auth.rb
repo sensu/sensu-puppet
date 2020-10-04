@@ -89,6 +89,12 @@ DESC
     desc 'Scopes to include in the claims'
   end
 
+  newproperty(:disable_offline_access, :boolean => true) do
+    desc "Sets if OIDC provider can include the offline_access scope"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
   validate do
     required_properties = [
       :client_id,

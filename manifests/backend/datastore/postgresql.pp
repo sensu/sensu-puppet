@@ -14,9 +14,13 @@ class sensu::backend::datastore::postgresql {
   $dsn = "postgresql://${user}:${password}@${host}:${port}/${dbname}?sslmode=${sslmode}"
 
   sensu_postgres_config { $sensu::backend::postgresql_name:
-    ensure    => $sensu::backend::datastore_ensure,
-    dsn       => Sensitive($dsn),
-    pool_size => $sensu::backend::postgresql_pool_size,
+    ensure        => $sensu::backend::datastore_ensure,
+    dsn           => Sensitive($dsn),
+    pool_size     => $sensu::backend::postgresql_pool_size,
+    strict        => $sensu::backend::postgresql_strict,
+    batch_buffer  => $sensu::backend::postgresql_batch_buffer,
+    batch_size    => $sensu::backend::postgresql_batch_size,
+    batch_workers => $sensu::backend::postgresql_batch_workers,
   }
 
   if $sensu::backend::manage_postgresql_db and $sensu::backend::datastore_ensure == 'present' {
