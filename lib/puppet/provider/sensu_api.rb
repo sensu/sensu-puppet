@@ -99,17 +99,23 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       request = Net::HTTP::Post.new(uri.path)
     elsif method == 'put'
       request = Net::HTTP::Put.new(uri.path)
+    elsif method == 'patch'
+      request = Net::HTTP::Patch.new(uri.path)
     elsif method == 'delete'
       request = Net::HTTP::Delete.new(uri.path)
     end
-    # Add data for POST and PUT
-    if ['post','put'].include?(method)
+    # Add data for POST, PUT, and PATCH
+    if ['post','put','patch'].include?(method)
       Puppet.debug("BODY: #{data.to_json}")
       request.body = data.to_json unless data.nil?
     end
     # Add headers
     request.add_field("Accept", "application/json") if defined?(request) && !request.nil?
-    request.add_field("Content-Type", "application/json") if defined?(request) && !request.nil?
+    if method == 'patch'
+      request.add_field("Content-Type", "application/merge-patch+json") if defined?(request) && !request.nil?
+    else
+      request.add_field("Content-Type", "application/json") if defined?(request) && !request.nil?
+    end
     # Add either token or basic auth
     if token.nil? && username && password && opts[:auth] != false
       Puppet.debug("Sensu API: Using basic auth of #{username}:#{password}")

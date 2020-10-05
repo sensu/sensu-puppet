@@ -128,51 +128,49 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensu_api, :parent => Pup
   end
 
   def update(add = true)
-    entity = get_entity(resource[:entity], resource[:namespace], api_opts)
-    redacted = PuppetX::Sensu::AgentEntityConfig.check_redacted(entity)
-    if redacted
-      raise Puppet::Error, "Sensu_agent_entity_config[#{resource[:name]}]: Unable to manage resource, REDACTED values detected"
-    end
     config = resource[:config]
-    if PuppetX::Sensu::AgentEntityConfig.metadata_configs.include?(config)
-      obj = entity['metadata'][config]
-    else
-      obj = entity[config]
-    end
-    case PuppetX::Sensu::AgentEntityConfig.config_classes[config]
-    when Array
-      if add && obj.nil?
-        obj = []
-      end
-      if add
-        obj << resource[:value]
-      else
-        obj.delete(resource[:value])
-      end
+    config_class = PuppetX::Sensu::AgentEntityConfig.config_classes[config]
+    case config_class
     when Hash
-      if add && obj.nil?
-        obj = {}
-      end
-      if add
-        obj[resource[:key]] = resource[:value]
-      else
-        obj.delete(resource[:key])
-      end
+      value = add ? resource[:value] : nil
+      obj = {resource[:key] => value}
     else
-      if add
-        obj = resource[:value]
+      data = get_entity(resource[:entity], resource[:namespace], api_opts)
+      obj = data[config]
+      case config_class
+      when Array
+        obj = [] if add && obj.nil?
+        if add
+          obj << resource[:value]
+        else
+          obj.delete(resource[:value])
+        end
       else
-        obj = ""
+        obj = add ? resource[:value] : ""
       end
     end
-    if PuppetX::Sensu::AgentEntityConfig.metadata_configs.include?(config)
-      entity['metadata'][config] = obj
+    if version_cmp('6.1.0')
+      method = 'patch'
+      entity = {}
+      if PuppetX::Sensu::AgentEntityConfig.metadata_configs.include?(config)
+        entity['metadata'] = {}
+        entity['metadata'][config] = obj
+      else
+        entity[config] = obj
+      end
     else
-      entity[config] = obj
+      method = 'put'
+      entity = get_entity(resource[:entity], resource[:namespace], api_opts)
+      if PuppetX::Sensu::AgentEntityConfig.metadata_configs.include?(config)
+        entity['metadata'][config] = {} if entity['metadata'][config].nil?
+        entity['metadata'][config][obj.keys[0]] = obj.values[0]
+      else
+        entity[config] = obj
+      end
     end
     opts = {
       :namespace => resource[:namespace],
-      :method => 'put',
+      :method => method,
     }
     api_request("entities/#{resource[:entity]}", entity, api_opts.merge(opts))
   end

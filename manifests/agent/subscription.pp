@@ -43,6 +43,6 @@ define sensu::agent::subscription (
     value     => $subscription,
     entity    => $_entity,
     namespace => $_namespace,
-    provider  => $sensu::agent::agent_entity_config_provider,
+    provider  => 'sensu_api',
   }
 }

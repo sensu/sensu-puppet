@@ -14,8 +14,9 @@ module PuppetX
       end
 
       def self.check_redacted(entity)
-        labels = entity['metadata'].fetch('labels', {})
-        annotations = entity['metadata'].fetch('annotations', {})
+        metadata = entity.fetch('metadata', {})
+        labels = metadata.fetch('labels', {})
+        annotations = metadata.fetch('annotations', {})
         (labels || {}).each_pair do |key,value|
           return true if value == 'REDACTED'
         end

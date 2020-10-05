@@ -62,14 +62,16 @@ Please log an issue if you identify any incompatibilities.
 | --------------- | ----------------------------------- |
 | 5.0 - 5.15      | latest v3                           |
 | 5.16+           | latest v4                           |
-| 6.0+            | latest v5                           |
+| 6.0             | v5.0.0                              |
+| 6.1+            | v5.1.0+
 
 ### Upgrade note
 
 Sensu Go 5.x is a rewrite of Sensu and no longer depends on redis and rabbitmq.
 Version 3 of this module supports Sensu Go >= 5.0.0 to < 5.16.0.
 Version 4 of this module supports Sensu Go >= 5.16.0 < 6.0.0.
-Version 5 of this module supports Sensu Go >= 6.0.0 < 7.0.0.
+Version 5.0.0 of this module supports Sensu Go >= 6.0.0 < 6.1.0.
+Version 5.1.0+ of this module supports Sensu Go >= 6.1.0 < 7.0.0.
 
 Users wishing to use the previous Ruby based Sensu should use the [sensu/sensuclassic](https://forge.puppet.com/sensu/sensuclassic) module.
 
@@ -105,8 +107,6 @@ See [API Providers](#api-providers) for example Hiera that can be used in a file
 
 This module will still continue to write subscriptions and other agent configurations to `agent.yml` so that if an agent entity is deleted it can be recreated
 by restarting the `sensu-agent` service.
-
-**NOTE**: At this time redaction of labels or annotations is not supported and will cause this module to produce errors. See [limitations](#limitations) for details.
 
 ### Updating this module from 3.x to 4.x
 
@@ -1211,10 +1211,6 @@ Examples can be found in the [examples](https://github.com/sensu/sensu-puppet/tr
 * [Slack Alerts](https://github.com/sensu/sensu-puppet/blob/master/examples/slack_alerts.pp) - Example of setting up Slack alerts
 
 ## Limitations
-
-Sensu Go 6 support of this module can not support redacted labels or annotations due to how agent entity API calls are made.
-At this time this module will produce errors if redacted labels or annotations are encountered.
-See [sensu-go#3955](https://github.com/sensu/sensu-go/issues/3955) for details on this issue.
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 

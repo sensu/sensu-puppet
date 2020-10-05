@@ -32,9 +32,6 @@ describe 'sensu::agent::label' do
 
       context 'redact' do
         let(:params) { { :redact => true, :value => '90' } }
-        it { is_expected.not_to contain_sensu__agent__config_entry('redact-label-cpu.warning') }
-        it { is_expected.not_to contain_sensu_agent_entity_config('sensu::agent::label redact cpu.warning') }
-=begin TODO: Uncomment once redact is re-enabled
         it {
           is_expected.to contain_sensu__agent__config_entry('redact-label-cpu.warning').with({
             'key'   => 'redact',
@@ -49,7 +46,6 @@ describe 'sensu::agent::label' do
             'namespace' => 'default',
           })
         }
-=end
       end
 
       context 'all params' do

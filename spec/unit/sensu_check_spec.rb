@@ -331,7 +331,7 @@ describe Puppet::Type.type(:sensu_check) do
 
     it 'should not accept invalid values' do
       config[:output_metric_format] = 'foo'
-      expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, absent/)
+      expect { check }.to raise_error(Puppet::Error, /Invalid value "foo". Valid values are nagios_perfdata, graphite_plaintext, influxdb_line, opentsdb_line, prometheus_text, absent/)
     end
   end
 

@@ -100,17 +100,16 @@ DESC
   newproperty(:value, :namevar => true) do
     desc "The value of the config for agent entity"
 
-    # TODO: Uncomment once able to handle redacted values
-    #def insync?(is)
-    #  return true if is == 'REDACTED'
-    #  super(is)
-    #end
+    def insync?(is)
+      return true if is == 'REDACTED'
+      super(is)
+    end
   end
 
   # This is only needed in case REDACTED values are encountered to ensure an update is performed
   # When agent.yaml is changed
   def refresh
-    if PuppetX::Sensu::AgentEntityConfig.config_classes[@parameters[:config].to_s].is_a?(Hash)
+    if PuppetX::Sensu::AgentEntityConfig.config_classes[@parameters[:config].value].is_a?(Hash) && provider.value == 'REDACTED'
       provider.update
     else
       debug 'Skipping refresh; config is not one that can be redacted'

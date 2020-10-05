@@ -32,9 +32,6 @@ describe 'sensu::agent::annotation' do
 
       context 'redact' do
         let(:params) { { :redact => true, :value => 'foo' } }
-        it { is_expected.not_to contain_sensu__agent__config_entry('redact-annotation-cpu.title') }
-        it { is_expected.not_to contain_sensu_agent_entity_config('sensu::agent::annotation redact cpu.title') }
-=begin TODO: Uncomment once redact is re-enabled
         it {
           is_expected.to contain_sensu__agent__config_entry('redact-annotation-cpu.title').with({
             'key'   => 'redact',
@@ -49,7 +46,6 @@ describe 'sensu::agent::annotation' do
             'namespace' => 'default',
           })
         }
-=end
       end
 
       context 'all params' do

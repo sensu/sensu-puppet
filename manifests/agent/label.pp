@@ -56,29 +56,24 @@ define sensu::agent::label (
     value     => $value,
     entity    => $_entity,
     namespace => $_namespace,
-    provider  => $sensu::agent::agent_entity_config_provider,
-    #TODO: Uncomment once able to support pushing updates for REDACTED
-    # https://github.com/sensu/sensu-go/issues/3955
-    #subscribe => File['sensu_agent_config'],
+    provider  => 'sensu_api',
+    subscribe => File['sensu_agent_config'],
   }
 
   if $redact {
-    warning("sensu::agent::label[${name}]: Setting redact is not supported at this time")
-    #TODO: Uncomment once able to support pushing updates for REDACTED
-    # https://github.com/sensu/sensu-go/issues/3955
-    #if $ensure == 'present' {
-    #  sensu::agent::config_entry { "redact-label-${name}":
-    #    key   => 'redact',
-    #    value => [$key],
-    #  }
-    #}
-    #sensu_agent_entity_config { "sensu::agent::label redact ${name}":
-    #  ensure    => $ensure,
-    #  config    => 'redact',
-    #  value     => $key,
-    #  entity    => $_entity,
-    #  namespace => $_namespace,
-    #  provider  => $sensu::agent::agent_entity_config_provider,
-    #}
+    if $ensure == 'present' {
+      sensu::agent::config_entry { "redact-label-${name}":
+        key   => 'redact',
+        value => [$key],
+      }
+    }
+    sensu_agent_entity_config { "sensu::agent::label redact ${name}":
+      ensure    => $ensure,
+      config    => 'redact',
+      value     => $key,
+      entity    => $_entity,
+      namespace => $_namespace,
+      provider  => 'sensu_api',
+    }
   }
 }
