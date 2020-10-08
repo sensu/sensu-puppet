@@ -77,6 +77,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
         'password'        => 'P@ssw0rd!',
         'name'            => 'sensu-agent',
         'namespace'       => 'default',
+        'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
         'log-level'       => 'info',
         'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
       }

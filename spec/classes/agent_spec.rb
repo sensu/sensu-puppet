@@ -80,6 +80,7 @@ describe 'sensu::agent', :type => :class do
               'backend-url'     => ['wss://localhost:8081'],
               'name'            => 'localhost',
               'namespace'       => 'default',
+              'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
             },
@@ -224,6 +225,7 @@ describe 'sensu::agent', :type => :class do
               'backend-url' => ['ws://localhost:8081'],
               'name'        => 'localhost',
               'namespace'   => 'default',
+              'redact'      => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'    => 'P@ssw0rd!',
             },
           })
@@ -240,6 +242,7 @@ describe 'sensu::agent', :type => :class do
             annotations: { 'foo' => 'bar' },
             labels: { 'bar' => 'baz' },
             namespace: 'qa',
+            redact: ['secret'],
           }
         end
 
@@ -253,6 +256,7 @@ describe 'sensu::agent', :type => :class do
               'annotations'     => {'foo' => 'bar'},
               'labels'          => {'bar' => 'baz'},
               'namespace'       => 'qa',
+              'redact'          => ['secret'],
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
             },
@@ -287,6 +291,7 @@ describe 'sensu::agent', :type => :class do
               'annotations'     => {'foo' => 'bar'},
               'labels'          => {'bar' => 'baz'},
               'namespace'       => 'default',
+              'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'        => 'P@ssw0rd!',
               'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
             },
@@ -390,6 +395,7 @@ describe 'sensu::agent', :type => :class do
                 'backend-url'     => [backend],
                 'name'            => 'localhost',
                 'namespace'       => 'default',
+                'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
                 'password'        => 'P@ssw0rd!',
                 'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
               },

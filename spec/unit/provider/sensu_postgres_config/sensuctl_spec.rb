@@ -30,10 +30,17 @@ describe Puppet::Type.type(:sensu_postgres_config).provider(:sensuctl) do
       }
       expected_spec = {
         :dsn => 'postgresql://sensu:changeme@localhost:5432/sensu',
+        :pool_size => 0,
+        :batch_buffer => 0,
+        :batch_size => 1,
+        :batch_workers => 0,
+        :strict => false
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(true)
       expect(resource.provider).to receive(:sensuctl_create).with('PostgresConfig', expected_metadata, expected_spec, 'store/v1')
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
+      expect(Puppet).not_to receive(:warning)
       expect(property_hash[:ensure]).to eq(:present)
     end
   end
@@ -45,7 +52,9 @@ describe Puppet::Type.type(:sensu_postgres_config).provider(:sensuctl) do
       }
       expected_spec = {
         :dsn => 'postgresql://sensu:changeme@localhost:5432/sensu2',
+        :pool_size => 0,
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(false)
       expect(resource.provider).to receive(:sensuctl_create).with('PostgresConfig', expected_metadata, expected_spec, 'store/v1')
       resource.provider.dsn = 'postgresql://sensu:changeme@localhost:5432/sensu2'
       resource.provider.flush
@@ -53,13 +62,15 @@ describe Puppet::Type.type(:sensu_postgres_config).provider(:sensuctl) do
   end
 
   describe 'destroy' do
-    it 'should delete a check' do
+    it 'should delete a postgres config' do
       expected_metadata = {
         :name => 'test',
       }
       expected_spec = {
         :dsn => 'postgresql://sensu:changeme@localhost:5432/sensu',
+        :pool_size => 0,
       }
+      allow(resource.provider).to receive(:version_cmp).and_return(false)
       expect(resource.provider).to receive(:sensuctl_delete).with('PostgresConfig', 'test', nil, expected_metadata, expected_spec, 'store/v1')
       resource.provider.destroy
       property_hash = resource.provider.instance_variable_get("@property_hash")

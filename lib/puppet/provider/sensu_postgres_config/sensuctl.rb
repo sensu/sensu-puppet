@@ -5,6 +5,15 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
 
   mk_resource_methods
 
+  def min_version
+    {
+      strict: '6.1.0',
+      batch_buffer: '6.1.0',
+      batch_size: '6.1.0',
+      batch_workers: '6.1.0',
+    }
+  end
+
   def self.instances
     configs = []
 
@@ -60,6 +69,13 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
     type_properties.each do |property|
       value = resource[property]
       next if value.nil?
+      if min_version.key?(property)
+        v = min_version[property]
+        if ! version_cmp(v)
+          Puppet.warning("Sensu_postgres_config[#{resource[:name]}] Property #{property} skipped, does not meet minimum Sensu Go version of #{v}")
+          next
+        end
+      end
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       elsif value == :absent
@@ -87,6 +103,13 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
           value = resource[property]
         end
         next if value.nil?
+        if min_version.key?(property)
+          v = min_version[property]
+          if ! version_cmp(v)
+            Puppet.warning("Sensu_postgres_config[#{resource[:name]}] Property #{property} skipped, does not meet minimum Sensu Go version of #{v}")
+            next
+          end
+        end
         if [:true, :false].include?(value)
           value = convert_boolean_property_value(value)
         elsif value == :absent
@@ -114,6 +137,13 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
         value = resource[property]
       end
       next if value.nil?
+      if min_version.key?(property)
+        v = min_version[property]
+        if ! version_cmp(v)
+          Puppet.warning("Sensu_postgres_config[#{resource[:name]}] Property #{property} skipped, does not meet minimum Sensu Go version of #{v}")
+          next
+        end
+      end
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       elsif value == :absent

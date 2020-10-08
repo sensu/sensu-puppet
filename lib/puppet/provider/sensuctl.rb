@@ -222,4 +222,28 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def valid_json?(json)
     self.class.valid_json?(json)
   end
+
+  def self.version
+    output = sensuctl(['version'], {:failonfail => false})
+    version = output[%r{version ([0-9.]+)}, 1]
+    return version
+  rescue Exception => e
+    Puppet.notice "Unable to query Sensu API version: #{e.message}"
+    return nil
+  end
+  def version
+    self.class.version
+  end
+
+  def self.version_cmp(v)
+    if @current_version.nil?
+      @current_version = version
+    end
+    return true if @current_version.nil?
+    return Gem::Version.new(@current_version) >= Gem::Version.new(v)
+  end
+  def version_cmp(*args)
+    self.class.version_cmp(*args)
+  end
+
 end

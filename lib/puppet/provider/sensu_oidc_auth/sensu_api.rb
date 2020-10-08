@@ -5,6 +5,12 @@ Puppet::Type.type(:sensu_oidc_auth).provide(:sensu_api, :parent => Puppet::Provi
 
   mk_resource_methods
 
+  def min_version
+    {
+      disable_offline_access: '6.1.0',
+    }
+  end
+
   def self.instances
     auths = []
 
@@ -62,6 +68,13 @@ Puppet::Type.type(:sensu_oidc_auth).provide(:sensu_api, :parent => Puppet::Provi
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
+      if min_version.key?(property)
+        v = min_version[property]
+        if ! version_cmp(v)
+          Puppet.warning("Sensu_oidc_auth[#{resource[:name]}] Property #{property} skipped, does not meet minimum Sensu Go version of #{v}")
+          next
+        end
+      end
       if [:true, :false].include?(value)
         value = convert_boolean_property_value(value)
       end
@@ -92,6 +105,13 @@ Puppet::Type.type(:sensu_oidc_auth).provide(:sensu_api, :parent => Puppet::Provi
           value = resource[property]
         end
         next if value.nil?
+        if min_version.key?(property)
+          v = min_version[property]
+          if ! version_cmp(v)
+            Puppet.warning("Sensu_oidc_auth[#{resource[:name]}] Property #{property} skipped, does not meet minimum Sensu Go version of #{v}")
+            next
+          end
+        end
         if [:true, :false].include?(value)
           value = convert_boolean_property_value(value)
         elsif value == :absent

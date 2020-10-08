@@ -99,17 +99,23 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       request = Net::HTTP::Post.new(uri.path)
     elsif method == 'put'
       request = Net::HTTP::Put.new(uri.path)
+    elsif method == 'patch'
+      request = Net::HTTP::Patch.new(uri.path)
     elsif method == 'delete'
       request = Net::HTTP::Delete.new(uri.path)
     end
-    # Add data for POST and PUT
-    if ['post','put'].include?(method)
+    # Add data for POST, PUT, and PATCH
+    if ['post','put','patch'].include?(method)
       Puppet.debug("BODY: #{data.to_json}")
       request.body = data.to_json unless data.nil?
     end
     # Add headers
     request.add_field("Accept", "application/json") if defined?(request) && !request.nil?
-    request.add_field("Content-Type", "application/json") if defined?(request) && !request.nil?
+    if method == 'patch'
+      request.add_field("Content-Type", "application/merge-patch+json") if defined?(request) && !request.nil?
+    else
+      request.add_field("Content-Type", "application/json") if defined?(request) && !request.nil?
+    end
     # Add either token or basic auth
     if token.nil? && username && password && opts[:auth] != false
       Puppet.debug("Sensu API: Using basic auth of #{username}:#{password}")
@@ -235,6 +241,29 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
   end
   def auth_test(*args)
     self.class.auth_test(*args)
+  end
+
+  def self.version
+    data = api_request('/version', nil, {:failonfail => false})
+  rescue Exception => e
+    Puppet.notice "Unable to query Sensu API version: #{e.message}"
+    return nil
+  else
+    return data.fetch('sensu_backend', nil)
+  end
+  def version
+    self.class.version
+  end
+
+  def self.version_cmp(v)
+    if @current_version.nil?
+      @current_version = version
+    end
+    return true if @current_version.nil?
+    return Gem::Version.new(@current_version) >= Gem::Version.new(v)
+  end
+  def version_cmp(*args)
+    self.class.version_cmp(*args)
   end
 
   def self.get_bonsai_asset(name)

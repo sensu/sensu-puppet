@@ -28,7 +28,13 @@ describe Puppet::Type.type(:sensu_postgres_config) do
     }.to raise_error(Puppet::Error, 'Title or name must be provided')
   end
 
-  defaults = {}
+  defaults = {
+    pool_size: 0,
+    strict: :false,
+    batch_buffer: 0,
+    batch_size: 1,
+    batch_workers: 0,
+  }
 
   # String properties
   [
@@ -79,6 +85,9 @@ describe Puppet::Type.type(:sensu_postgres_config) do
   # Integer properties
   [
     :pool_size,
+    :batch_buffer,
+    :batch_size,
+    :batch_workers,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = 30
@@ -105,6 +114,7 @@ describe Puppet::Type.type(:sensu_postgres_config) do
 
   # Boolean properties
   [
+    :strict
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true

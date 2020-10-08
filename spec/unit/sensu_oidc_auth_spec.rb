@@ -36,6 +36,7 @@ describe Puppet::Type.type(:sensu_oidc_auth) do
 
 
   defaults = {
+    disable_offline_access: :false,
   }
 
   # String properties
@@ -121,6 +122,7 @@ describe Puppet::Type.type(:sensu_oidc_auth) do
 
   # Boolean properties
   [
+    :disable_offline_access,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true

@@ -111,6 +111,14 @@
 #   Do not define with postgresql_ssl_key_source
 # @param postgresql_pool_size
 #   The PostgreSQL pool size
+# @param postgresql_strict
+#   Enables strict configuration checks for PostgreSQL
+# @param postgresql_batch_buffer
+#   PostgreSQL batch buffer size
+# @param postgresql_batch_size
+#   PostgreSQL batch size
+# @param postgresql_batch_workers
+#   PostgreSQL batch workers
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -155,6 +163,10 @@ class sensu::backend (
   Optional[String] $postgresql_ssl_key_source = undef,
   Optional[String] $postgresql_ssl_key_content = undef,
   Integer $postgresql_pool_size = 20,
+  Boolean $postgresql_strict = false,
+  Integer $postgresql_batch_buffer = 0,
+  Integer $postgresql_batch_size = 1,
+  Integer $postgresql_batch_workers = 20,
 ) {
 
   if $license_source and $license_content {

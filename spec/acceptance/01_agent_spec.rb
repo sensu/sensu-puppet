@@ -22,7 +22,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
       sensu::agent::subscription { 'linux': }
       sensu::agent::label { 'cpu.warning': value => '90' }
       sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz2' }
+      sensu::agent::label { 'bar': value => 'baz2', redact => true }
       sensu::agent::annotation { 'foobar': value => 'bar' }
       sensu::agent::annotation { 'cpu.message': value => 'bar' }
       sensu::agent::config_entry { 'keepalive-interval': value => 20 }
@@ -59,6 +59,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
           'cpu.message' => 'bar',
           'foobar'      => 'bar',
         },
+        'redact'             => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','bar'],
         'log-level'          => 'info',
         'trusted-ca-file'    => '/etc/sensu/ssl/ca.crt',
         'keepalive-interval' => 20,
@@ -81,7 +82,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         expect(data['subscriptions']).to include('base')
         expect(data['subscriptions']).to include('linux')
         expect(data['metadata']['labels']).to include({'foo' => 'bar'})
-        expect(data['metadata']['labels']).to include({'bar' => 'baz2'})
+        expect(data['metadata']['labels']).to include({'bar' => 'REDACTED'})
         expect(data['metadata']['labels']).to include({'cpu.warning' => '90'})
         expect(data['metadata']['labels']).to include({'cpu.critical' => '95'})
         expect(data['metadata']['annotations']).to include({'contacts' => 'dev@example.com'})
@@ -110,7 +111,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
       sensu::agent::subscription { 'bar': }
       sensu::agent::label { 'cpu.warning': value => '90' }
       sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz3' }
+      sensu::agent::label { 'bar': value => 'baz3', redact => true }
       sensu::agent::label { 'baz': value => 'baz' }
       sensu::agent::annotation { 'foobar': value => 'bar' }
       sensu::agent::annotation { 'cpu.message': value => 'baz' }
@@ -149,6 +150,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
           'cpu.message' => 'baz',
           'foobar'      => 'bar',
         },
+        'redact'             => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','bar'],
         'log-level'          => 'info',
         'trusted-ca-file'    => '/etc/sensu/ssl/ca.crt',
         'keepalive-interval' => 20,
@@ -173,7 +175,7 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         expect(data['subscriptions']).to include('foo')
         expect(data['subscriptions']).to include('bar')
         expect(data['metadata']['labels']).to include({'foo' => 'bar'})
-        expect(data['metadata']['labels']).to include({'bar' => 'baz3'})
+        expect(data['metadata']['labels']).to include({'bar' => 'REDACTED'})
         expect(data['metadata']['labels']).to include({'baz' => 'baz'})
         expect(data['metadata']['labels']).to include({'cpu.warning' => '90'})
         expect(data['metadata']['labels']).to include({'cpu.critical' => '95'})
@@ -257,50 +259,6 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
         expect(data['metadata']['annotations']).to include({'foobar' => 'bar'})
         expect(data['metadata']['annotations']).to include({'cpu.message' => 'baz'})
       end
-    end
-  end
-
-  context 'redacted values' do
-    it 'should not update redacted values' do
-      setup_pp = <<-EOS
-      class { '::sensu': }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        service_env_vars => { 'SENSU_API_PORT' => '4041' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-        }
-      }
-      sensu::agent::label { 'bar': value => 'bar', redact => true }
-      EOS
-      pp = <<-EOS
-      class { '::sensu': }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        service_env_vars => { 'SENSU_API_PORT' => '4041' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-        }
-      }
-      sensu::agent::label { 'bar': value => 'bar' }
-      EOS
-      apply_manifest_on(node, setup_pp, :catch_failures => true)
-      if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu-agent' { #{pp} }"
-        puppetserver = hosts_as('puppetserver')[0]
-        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
-      else
-        apply_manifest_on(node, pp, :catch_changes => true)
-      end
-      # Cleanup entity with redacted
-      on node, 'puppet resource service sensu-agent ensure=stopped'
-      on backend, "sensuctl entity delete sensu-agent --skip-confirm"
-      apply_manifest_on(node, pp, :catch_failures => true)
     end
   end
 end

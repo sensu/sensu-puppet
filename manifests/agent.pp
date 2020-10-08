@@ -88,22 +88,17 @@ class sensu::agent (
   Optional[Hash[String[1],String]] $annotations = undef,
   Optional[Hash[String[1],String]] $labels = undef,
   String[1] $namespace = 'default',
-  Optional[Array[String[1]]] $redact = undef,
+  Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
 ) {
 
-  if $redact {
-    fail('sensu::agent: Setting redact is not supported at this time')
-  }
-
   include sensu
   include sensu::common
+  include sensu::api
   if $agent_entity_config_provider == 'sensuctl' {
-    include sensu::cli
-  } else {
-    include sensu::api
+    warning('Class[sensu::agent]: Using agent_entity_config_provider is deprecated at this time, forcing use of sensu_api provider')
   }
 
   $_version = pick($version, $sensu::version)
@@ -295,6 +290,6 @@ class sensu::agent (
 
   sensu_agent_entity_validator { $config['name']:
     namespace => $config['namespace'],
-    provider  => $agent_entity_config_provider,
+    provider  => 'sensu_api',
   }
 }
