@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.1.0](https://github.com/sensu/sensu-puppet/tree/v5.1.0) (2020-10-08)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.0.0...v5.1.0)
+
+### Added
+
+- Support Sensu Go 6.1 [\#1274](https://github.com/sensu/sensu-puppet/pull/1274) ([treydock](https://github.com/treydock))
+
 ## [v5.0.0](https://github.com/sensu/sensu-puppet/tree/v5.0.0) (2020-09-08)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.13.1...v5.0.0)
@@ -118,7 +126,6 @@
 
 - Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 - Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
-- Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -135,6 +142,7 @@
 
 ### Added
 
+- Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
 - Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
@@ -268,10 +276,6 @@
 ## [v3.11.0](https://github.com/sensu/sensu-puppet/tree/v3.11.0) (2019-11-12)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.10.0...v3.11.0)
-
-### Fixed
-
-- Document sensu\_asset deprecations [\#1170](https://github.com/sensu/sensu-puppet/pull/1170) ([treydock](https://github.com/treydock))
 
 ## [v3.10.0](https://github.com/sensu/sensu-puppet/tree/v3.10.0) (2019-10-31)
 
