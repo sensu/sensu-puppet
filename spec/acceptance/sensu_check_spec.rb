@@ -20,6 +20,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
           'entity_attributes' => ["entity.Class == 'proxy'"],
         },
         output_metric_format             => 'nagios_perfdata',
+        output_metric_tags               => [{'name' => 'instance', 'value' => '{{ .name }}'}],
         labels                           => { 'foo' => 'baz' },
         secrets                          => [
           {'name' => 'TEST', 'secret' => 'test'}
@@ -76,6 +77,7 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['check_hooks']).to eq([{'0' => ['always.sh']},{'1' => ['test.sh']},{'critical' => ['httpd-restart']}])
         expect(data['proxy_requests']['entity_attributes']).to eq(["entity.Class == 'proxy'"])
         expect(data['output_metric_format']).to eq('nagios_perfdata')
+        expect(data['output_metric_tags']).to eq([{'name' => 'instance', 'value' => '{{ .name }}'}])
         expect(data['metadata']['labels']['foo']).to eq('baz')
         expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test'}])
       end
@@ -161,6 +163,10 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
           'entity_attributes' => ['System.OS==linux'],
         },
         output_metric_format             => 'graphite_plaintext',
+        output_metric_tags               => [
+          {'name' => 'instance', 'value' => '{{ .name }}'},
+          {'name' => 'prometheus_type', 'value' => 'gauge'},
+        ],
         labels                           => { 'foo' => 'bar' },
         secrets                          => [
           {'name' => 'TEST', 'secret' => 'test2'}
@@ -201,6 +207,9 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']},{'warning' => ['httpd-restart']}])
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
+        expect(data['output_metric_tags']).to include({'name' => 'instance', 'value' => '{{ .name }}'})
+        expect(data['output_metric_tags']).to include({'name' => 'prometheus_type', 'value' => 'gauge'})
+        expect(data['output_metric_tags'].size).to eq(2)
         expect(data['metadata']['labels']['foo']).to eq('bar')
         expect(data['secrets']).to eq([{'name' => 'TEST', 'secret' => 'test2'}])
       end
