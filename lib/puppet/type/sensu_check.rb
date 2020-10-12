@@ -239,6 +239,29 @@ DESC
     newvalues(/.*/, :absent)
   end
 
+  newproperty(:output_metric_tags, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
+    desc <<-EOS
+    Custom tags you can apply to enrich metric points produced by check output metric extraction."
+    Consists of Array of Hashes, each Hash must contain `name` and `value` keys.
+    EOS
+
+    validate do |tag|
+      if ! tag.is_a?(Hash)
+        raise ArgumentError, "Each tag must be a Hash not #{tag.class}"
+      end
+      required_keys = ['name','value']
+      keys = tag.keys.map { |k| k.to_s }
+      if required_keys.sort != keys.sort
+        raise ArgumentError, "tag must contain only 'name' and 'value' keys"
+      end
+      tag.each_pair do |key, value|
+        if ! value.is_a?(String)
+          raise ArgumentError, "#{key} must be a String, not #{value.class}"
+        end
+      end
+    end
+  end
+
   newproperty(:max_output_size, :parent => PuppetX::Sensu::IntegerProperty) do
     desc 'Maximum size, in bytes, of stored check outputs.'
   end

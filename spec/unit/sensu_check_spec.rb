@@ -335,6 +335,25 @@ describe Puppet::Type.type(:sensu_check) do
     end
   end
 
+  describe 'output_metric_tags' do
+    it 'should accept a valid value' do
+      config[:output_metric_tags] = [{'name' => 'instance', 'value' => '{{ .name }}'}]
+      expect(check[:output_metric_tags]).to eq([{'name' => 'instance', 'value' => '{{ .name }}'}])
+    end
+    it 'requires hash for each tag' do
+      config[:output_metric_tags] = ['foo']
+      expect { check }.to raise_error(Puppet::Error, /must be a Hash/)
+    end
+    it 'requires valid keys for tag' do
+      config[:output_metric_tags] = [{'name' => 'instance'}]
+      expect { check }.to raise_error(Puppet::Error, /tag must contain/)
+    end
+    it 'requires strings for values' do
+      config[:output_metric_tags] = [{'name' => 'instance', 'value' => false}]
+      expect { check }.to raise_error(Puppet::Error, /must be a String/)
+    end
+  end
+
   describe 'proxy_requests' do
     it 'accepts valid value' do
       config[:proxy_requests] = {'entity_attributes' => ['foo==bar'],'splay' => true, 'splay_coverage' => 60}
