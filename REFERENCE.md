@@ -2277,6 +2277,11 @@ Valid values: `/.*/`, `absent`
 
 An array of Sensu handlers to use for events created by the check.
 
+##### `output_metric_tags`
+
+Custom tags you can apply to enrich metric points produced by check output metric extraction."
+Consists of Array of Hashes, each Hash must contain `name` and `value` keys.
+
 ##### `proxy_entity_name`
 
 Valid values: `/^[\w\.\-]+$/`, `absent`

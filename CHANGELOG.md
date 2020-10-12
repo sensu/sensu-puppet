@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.2.0](https://github.com/sensu/sensu-puppet/tree/v5.2.0) (2020-10-12)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.1.0...v5.2.0)
+
+### Added
+
+- Add output\_metric\_tags property to sensu\_check [\#1275](https://github.com/sensu/sensu-puppet/pull/1275) ([treydock](https://github.com/treydock))
+
 ## [v5.1.0](https://github.com/sensu/sensu-puppet/tree/v5.1.0) (2020-10-08)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.0.0...v5.1.0)
@@ -126,6 +134,7 @@
 
 - Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 - Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
+- Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -142,7 +151,6 @@
 
 ### Added
 
-- Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
 - Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
@@ -184,11 +192,6 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.1...v4.3.0)
 
-### Added
-
-- Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
-- Better support for Sensu Go upgrades [\#1201](https://github.com/sensu/sensu-puppet/pull/1201) ([treydock](https://github.com/treydock))
-
 ## [v4.2.1](https://github.com/sensu/sensu-puppet/tree/v4.2.1) (2020-01-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.0...v4.2.1)
@@ -196,6 +199,8 @@
 ### Added
 
 - Remove workaround for sensuctl command json formatting [\#1204](https://github.com/sensu/sensu-puppet/pull/1204) ([treydock](https://github.com/treydock))
+- Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
+- Better support for Sensu Go upgrades [\#1201](https://github.com/sensu/sensu-puppet/pull/1201) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -266,7 +271,6 @@
 ### Added
 
 - Improve name validations to match Sensu Go [\#1173](https://github.com/sensu/sensu-puppet/pull/1173) ([treydock](https://github.com/treydock))
-- Add bolt task to manage API keys [\#1171](https://github.com/sensu/sensu-puppet/pull/1171) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
