@@ -81,6 +81,14 @@ This module begins supporting Sensu Go 6 with version >= 5.0.0
 
 **NOTE** Upgrading to support Sensu Go 6 requires backends have Puppet applied before agents will begin to work as there is an agent specifc Sensu user and role added to support modifying agent entities via the API.
 
+Class parameter changes:
+
+* Remove deprecated `sensu::old_password` and `sensu::old_agent_password`, these parameters are no longer needed and were removed
+
+Type property changes:
+
+* Remove deprecated `url`, `sha512` and `filters` properties from `sensu_asset`, use `builds` property instead
+
 #### Changes for backend
 
 There is a manual step to perform to upgrade the sensu-backend after upgrading the backend to 6.x.
