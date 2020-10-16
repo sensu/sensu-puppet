@@ -130,16 +130,24 @@ describe Puppet::Provider::Sensuctl do
       allow(subject).to receive(:sensuctl).with(['version'], {:failonfail => false}).and_return('sensuctl version 6.1.0+ee, enterprise edition, build be1e65933de5be15a65066227f007ae369af1449, built 2020-10-02T01:15:38Z, built with go1.13.15')
       expect(subject.version).to eq('6.1.0')
     end
+    it 'returns nil without version match' do
+      allow(subject).to receive(:sensuctl).with(['version'], {:failonfail => false}).and_return('foobar')
+      expect(subject.version).to eq(nil)
+    end
   end
 
   describe 'version_cmp' do
     it 'returns true' do
-      allow(subject).to receive(:version).and_return('6.1.0')
+      described_class.instance_variable_set('@current_version', '6.1.0')
+      expect(subject.version_cmp('6.1.0')).to eq(true)
+    end
+    it 'returns true with malformed version' do
+      described_class.instance_variable_set('@current_version', '(devel)')
       expect(subject.version_cmp('6.1.0')).to eq(true)
     end
     it 'returns false' do
-      allow(subject).to receive(:version).and_return('6.0.0')
-      expect(subject.version_cmp('6.1.0')).to eq(true)
+      described_class.instance_variable_set('@current_version', '6.0.0')
+      expect(subject.version_cmp('6.1.0')).to eq(false)
     end
   end
 end

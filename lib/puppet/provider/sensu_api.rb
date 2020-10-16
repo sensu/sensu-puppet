@@ -245,11 +245,10 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
 
   def self.version
     data = api_request('/version', nil, {:failonfail => false})
+    data.fetch('sensu_backend', nil)
   rescue Exception => e
     Puppet.notice "Unable to query Sensu API version: #{e.message}"
     return nil
-  else
-    return data.fetch('sensu_backend', nil)
   end
   def version
     self.class.version
@@ -260,7 +259,12 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       @current_version = version
     end
     return true if @current_version.nil?
-    return Gem::Version.new(@current_version) >= Gem::Version.new(v)
+    Gem::Version.new(@current_version) >= Gem::Version.new(v)
+  # Rescue in case version is not numeric such as well Sensu Go is built from source, the version may be "(devel)"
+  # See https://github.com/sensu/sensu-puppet/issues/1278
+  rescue ArgumentError => e
+    Puppet.debug "Unable to compare version #{@current_version} with needed version #{v}: #{e}"
+    return true
   end
   def version_cmp(*args)
     self.class.version_cmp(*args)

@@ -240,7 +240,10 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
       @current_version = version
     end
     return true if @current_version.nil?
-    return Gem::Version.new(@current_version) >= Gem::Version.new(v)
+    Gem::Version.new(@current_version) >= Gem::Version.new(v)
+  rescue ArgumentError => e
+    Puppet.debug "Unable to compare version #{@current_version} with needed version #{v}: #{e}"
+    return true
   end
   def version_cmp(*args)
     self.class.version_cmp(*args)
