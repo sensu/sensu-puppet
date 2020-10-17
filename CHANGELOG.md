@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.2.1](https://github.com/sensu/sensu-puppet/tree/v5.2.1) (2020-10-17)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.2.0...v5.2.1)
+
+### Fixed
+
+- Fix for when version query returns malformed version [\#1279](https://github.com/sensu/sensu-puppet/pull/1279) ([treydock](https://github.com/treydock))
+- Document breaking changes upgrading to 5.x [\#1277](https://github.com/sensu/sensu-puppet/pull/1277) ([treydock](https://github.com/treydock))
+
 ## [v5.2.0](https://github.com/sensu/sensu-puppet/tree/v5.2.0) (2020-10-12)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.1.0...v5.2.0)
@@ -192,6 +201,11 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.1...v4.3.0)
 
+### Added
+
+- Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
+- Better support for Sensu Go upgrades [\#1201](https://github.com/sensu/sensu-puppet/pull/1201) ([treydock](https://github.com/treydock))
+
 ## [v4.2.1](https://github.com/sensu/sensu-puppet/tree/v4.2.1) (2020-01-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.0...v4.2.1)
@@ -199,8 +213,6 @@
 ### Added
 
 - Remove workaround for sensuctl command json formatting [\#1204](https://github.com/sensu/sensu-puppet/pull/1204) ([treydock](https://github.com/treydock))
-- Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
-- Better support for Sensu Go upgrades [\#1201](https://github.com/sensu/sensu-puppet/pull/1201) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -258,7 +270,6 @@
 - Support PDK [\#1184](https://github.com/sensu/sensu-puppet/pull/1184) ([treydock](https://github.com/treydock))
 - Update default resources to match Sensu Go defaults [\#1181](https://github.com/sensu/sensu-puppet/pull/1181) ([treydock](https://github.com/treydock))
 - Move PostgresConfig to a type [\#1176](https://github.com/sensu/sensu-puppet/pull/1176) ([treydock](https://github.com/treydock))
-- Add support for Sensu etcd replicator [\#1175](https://github.com/sensu/sensu-puppet/pull/1175) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -268,14 +279,9 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.11.0...v3.12.0)
 
-### Added
-
-- Improve name validations to match Sensu Go [\#1173](https://github.com/sensu/sensu-puppet/pull/1173) ([treydock](https://github.com/treydock))
-
 ### Fixed
 
 - Add lint plugin [\#1177](https://github.com/sensu/sensu-puppet/pull/1177) ([ghoneycutt](https://github.com/ghoneycutt))
-- Update steps to release software [\#1172](https://github.com/sensu/sensu-puppet/pull/1172) ([ghoneycutt](https://github.com/ghoneycutt))
 
 ## [v3.11.0](https://github.com/sensu/sensu-puppet/tree/v3.11.0) (2019-11-12)
 
