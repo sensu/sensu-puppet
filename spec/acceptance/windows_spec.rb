@@ -117,7 +117,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     end
 
     describe command('puppet resource package sensu-agent ensure=absent provider=chocolatey') do
-      its(:exit_status) { is_expected.to eq 0 }
+      its(:stdout) { is_expected.to match /absent/ }
     end
 
     describe command('puppet apply --debug --detailed-exitcodes C:\manifest-agent.pp ; Write-Output "EXITCODE=$LastExitCode"') do
