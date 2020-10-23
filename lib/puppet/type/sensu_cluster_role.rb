@@ -54,7 +54,7 @@ DESC
         end
       end
       rule.each_pair do |k,v|
-        if ! v.is_a?(Array)
+        if ! v.nil? && ! v.is_a?(Array)
           raise ArgumentError, "Rule's #{k} must be an Array"
         end
       end

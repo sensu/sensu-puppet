@@ -9,14 +9,6 @@ describe 'sensu', :type => :class do
 
         it { should contain_class('sensu')}
         it { should contain_class('sensu::resources') }
-
-        it do
-          should contain_exec('sensu systemctl daemon-reload').with({
-            'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
-            'command'     => 'systemctl daemon-reload',
-            'refreshonly' => 'true',
-          })
-        end
       end
 
       context 'with use_ssl => false' do

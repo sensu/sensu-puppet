@@ -100,10 +100,11 @@ Beginning with Sensu Go 6, some changes to `agent.yml` will only bootstrap an ag
 If you wish to make changes to values such as `subscriptions`, `labels` or `annotations` after a host is added to Sensu this must be done
 via the Sensu Go API. To support this it's now required that agents have the ability to make API calls.
 
-In order to ensure agents can make API calls either via API or sensuctl the agent must be told about the admin password:
+In order to ensure agents can make API calls either via API or sensuctl the agent must be told about the admin password and API host:
 
 ```
 class { 'sensu':
+  api_host                     => 'sensu-backend.example.com',
   agent_entity_config_password => 'supersecret',
 }
 class { 'sensu::agent':
@@ -324,6 +325,10 @@ sensu::agent_entity_config_password: supersecret
 This module supports Windows Sensu Go agent via chocolatey beginning with version 5.12.0.
 
 ```puppet
+class { 'sensu':
+  api_host                     => 'sensu-backend.example.com',
+  agent_entity_config_password => 'supersecret',
+}
 class { 'sensu::agent':
   backends      => ['sensu-backend.example.com:8081'],
   subscriptions => ['windows'],
@@ -1219,6 +1224,8 @@ Examples can be found in the [examples](https://github.com/sensu/sensu-puppet/tr
 * [Slack Alerts](https://github.com/sensu/sensu-puppet/blob/master/examples/slack_alerts.pp) - Example of setting up Slack alerts
 
 ## Limitations
+
+Changing `sensu::etc_dir` is only supported on systems using systemd.
 
 The type `sensu_user` does not at this time support `ensure => absent` due to a limitation with sensuctl, see [sensu-go#2540](https://github.com/sensu/sensu-go/issues/2540).
 
