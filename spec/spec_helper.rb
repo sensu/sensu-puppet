@@ -33,6 +33,12 @@ RSpec.configure do |config|
     # facts being exercised with something like
     # Facter.collection.loader.load(:ipaddress)
     Facter.clear
+
+    # Ensure Puppet config initialization doesn't try and create directories that may not be writable
+    Puppet[:logdir] = '/tmp'
+    Puppet[:confdir] = '/tmp'
+    Puppet[:vardir] = '/tmp'
+    Puppet[:codedir] = '/tmp'
   end
   config.default_facts = {
     :environment               => 'rp_env',
