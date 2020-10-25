@@ -131,6 +131,11 @@ Puppet::Type.newtype(:sensu_resources) do
     if resource[:key] == 'sensu.io/managed_by'
       return false
     end
+    # Do not purge entity subscription as it can not be deleted
+    # https://github.com/sensu/sensu-puppet/pull/1280
+    if resource[:config] == 'subscriptions' && resource[:value] == "entity:#{resource[:entity]}"
+      return false
+    end
     if ! self[:agent_entity_configs].nil? && ! self[:agent_entity_configs].include?(resource[:config])
       return false
     end

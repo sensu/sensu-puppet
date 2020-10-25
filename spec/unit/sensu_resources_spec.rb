@@ -121,6 +121,19 @@ describe Puppet::Type.type(:sensu_resources) do
     expect(catalog.resources.size).to eq(1)
     expect(ret).to include(instance_config)
   end
+  # Do not purge entity subscription as it can not be deleted
+  # https://github.com/sensu/sensu-puppet/pull/1280
+  it 'should not purge sensu_agent_entity_config for subscription entity' do
+    config[:name] = 'sensu_agent_entity_config'
+    instance_config = Puppet::Type.type(:sensu_agent_entity_config).new(:name => 'subscriptions value entity:agent on agent in dev')
+    allow(instance_config.class).to receive(:instances).and_return([instance_config])
+    expect(instance_config).not_to receive(:purging)
+    catalog = Puppet::Resource::Catalog.new
+    catalog.add_resource resource
+    ret = resource.generate
+    expect(catalog.resources.size).to eq(1)
+    expect(ret).not_to include(instance_config)
+  end
   it 'should not purge sensu_agent_entity_config if config does not match agent_entity_configs' do
     config[:name] = 'sensu_agent_entity_config'
     config[:agent_entity_configs] = ['labels','annotations']

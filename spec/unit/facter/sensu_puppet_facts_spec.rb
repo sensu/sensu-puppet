@@ -4,10 +4,6 @@ require 'facter/sensu_puppet_facts'
 describe SensuPuppetFacts do
   subject { SensuPuppetFacts }
   before(:each) do
-    Puppet[:logdir] = '/tmp'
-    Puppet[:confdir] = '/tmp'
-    Puppet[:vardir] = '/tmp'
-    Puppet[:codedir] = '/tmp'
     subject.add_facts
   end
   after(:each) do
