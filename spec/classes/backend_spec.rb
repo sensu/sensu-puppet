@@ -24,11 +24,11 @@ describe 'sensu::backend', :type => :class do
 
         context 'on systemd host', if: Puppet.version.to_s =~ %r{^5} do
           let(:facts) { facts.merge({:service_provider => 'systemd'}) }
-          it { should contain_package('sensu-go-backend').that_notifies('Exec[sensu systemctl daemon-reload]') }
-          it { should contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-backend]') }
+          it { should contain_package('sensu-go-backend').that_notifies('Class[systemd::systemctl::daemon_reload]') }
+          it { should contain_class('systemd::systemctl::daemon_reload').that_comes_before('Service[sensu-backend]') }
         end
-        it { should_not contain_package('sensu-go-backend').that_notifies('Exec[sensu systemctl daemon-reload]') }
-        it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-backend]') }
+        it { should_not contain_package('sensu-go-backend').that_notifies('Class[systemd::systemctl::daemon_reload]') }
+        it { should_not contain_class('systemd::systemctl::daemon_reload').that_comes_before('Service[sensu-backend]') }
 
         it { should have_sensu_user_resource_count(3) }
         it {
@@ -153,6 +153,18 @@ describe 'sensu::backend', :type => :class do
         else
           it { should_not contain_file('sensu-backend_env_vars') }
         end
+
+        context 'systemd systems deploy dropin', if: facts[:kernel] == 'Linux' do
+          let(:facts) { facts.merge({:service_provider => 'systemd'}) }
+          it {
+            should contain_systemd__dropin_file('sensu-backend-start.conf').with({
+              'unit'    => 'sensu-backend.service',
+              'content' => %r{ExecStart=/usr/sbin/sensu-backend start -c /etc/sensu/backend.yml},
+              'notify'  => 'Service[sensu-backend]',
+            })
+          }
+        end
+        it { should_not contain_systemd__dropin_file('sensu-backend-start.conf') }
 
         it {
           should contain_service('sensu-backend').with({

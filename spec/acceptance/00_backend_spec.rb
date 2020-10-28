@@ -92,6 +92,44 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     end
   end
 
+  # This test verifies non-standard location is used by setting agent-port
+  # and then checking that port gets used by the daemon
+  context 'etc_dir change', if: (['base','full'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu':
+        etc_dir  => '/etc/sensugo',
+        password => 'supersecret',
+      }
+      class { 'sensu::backend':
+        config_hash => {
+          'agent-port' => 9081,
+        },
+      }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    describe service('sensu-backend'), :node => node do
+      it { should be_enabled }
+      it { should be_running }
+    end
+    describe port(9081), :node => node do
+      it { should be_listening }
+    end
+  end
+
   context 'backend and agent' do
     it 'should work without errors' do
       pp = <<-EOS

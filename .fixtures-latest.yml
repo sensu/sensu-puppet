@@ -30,5 +30,7 @@ fixtures:
       repo: git://github.com/voxpupuli/puppet-archive.git
     windows_env:
       repo: git://github.com/voxpupuli/puppet-windows_env.git
+    systemd:
+      repo: git://github.com/camptocamp/puppet-systemd.git
   symlinks:
     sensu: "#{source_dir}"

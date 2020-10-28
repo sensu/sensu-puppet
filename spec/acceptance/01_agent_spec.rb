@@ -92,6 +92,58 @@ describe 'sensu::agent class', if: ['base','full'].include?(RSpec.configuration.
     end
   end
 
+  # This test verifies non-standard location is used by setting api-port
+  # and then checking that port gets used by the daemon
+  context 'etc_dir changed', if: (['base','full'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
+    it 'should work without errors' do
+      pp = <<-EOS
+      class { '::sensu':
+        etc_dir => '/etc/sensugo',
+      }
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        subscriptions    => ['base'],
+        labels           => { 'foo' => 'bar' },
+        annotations      => { 'contacts' => 'dev@example.com' },
+        config_hash      => {
+          'log-level' => 'info',
+          'keepalive-interval' => 30,
+          'api-port' => 4041,
+        }
+      }
+      sensu::agent::subscription { 'linux': }
+      sensu::agent::label { 'cpu.warning': value => '90' }
+      sensu::agent::label { 'cpu.critical': value => '95' }
+      sensu::agent::label { 'bar': value => 'baz2', redact => true }
+      sensu::agent::annotation { 'foobar': value => 'bar' }
+      sensu::agent::annotation { 'cpu.message': value => 'bar' }
+      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-agent' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        # Run it twice and test for idempotency
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    describe service('sensu-agent'), :node => node do
+      it { should be_enabled }
+      it { should be_running }
+    end
+
+    describe port(4041), :node => node do
+      it { should be_listening }
+    end
+  end
+
   context 'updates' do
     it 'should work without errors' do
       pp = <<-EOS

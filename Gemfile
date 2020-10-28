@@ -61,6 +61,7 @@ group :system_tests do
   gem 'beaker-puppet_install_helper', :require => false
   gem 'beaker-rspec',                 :require => false
   gem 'serverspec',                   :require => false
+  gem 'simp-beaker-helpers',          :require => false
 end
 
 group :development do

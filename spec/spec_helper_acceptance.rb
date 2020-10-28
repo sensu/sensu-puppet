@@ -2,10 +2,13 @@ require 'beaker-rspec'
 require 'beaker-puppet'
 require 'beaker/module_install_helper'
 require 'beaker/puppet_install_helper'
+require 'simp/beaker_helpers'
 
+include Simp::BeakerHelpers
 run_puppet_install_helper
 install_module_dependencies
 install_module
+pluginsync_on(hosts)
 collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet5'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 
@@ -66,7 +69,6 @@ RSpec.configure do |c|
     # Dependencies only needed to test some examples
     if RSpec.configuration.sensu_mode == 'examples'
       on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '4.0.0')
-      on setup_nodes, puppet('module', 'install', 'camptocamp-systemd', '--version', '2.8.0')
       on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
       # rsyslog template relies on rsyslog_version fact so pre-install rsyslog
       # to keep things idempotent within minimal docker containers

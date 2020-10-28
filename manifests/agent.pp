@@ -35,6 +35,8 @@
 #   Sensu agent service ensure value.
 # @param service_enable
 #   Sensu agent service enable value.
+# @param service_path
+#   The path to sensu-agent service executable
 # @param config_hash
 #   Sensu agent configuration hash used to define agent.yml.
 # @param backends
@@ -81,6 +83,7 @@ class sensu::agent (
   String $service_name = 'sensu-agent',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
+  Stdlib::Absolutepath $service_path = '/usr/sbin/sensu-agent',
   Hash $config_hash = {},
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
   String[1] $entity_name = $facts['networking']['fqdn'],
@@ -217,8 +220,8 @@ class sensu::agent (
   # Only necessary for Puppet < 6.1.0,
   # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
   if versioncmp($facts['puppetversion'],'6.1.0') < 0 and $facts['service_provider'] == 'systemd' {
-    Package['sensu-go-agent'] ~> Exec['sensu systemctl daemon-reload']
-    Exec['sensu systemctl daemon-reload'] -> Service['sensu-agent']
+    Package['sensu-go-agent'] ~> Class['systemd::systemctl::daemon_reload']
+    Class['systemd::systemctl::daemon_reload'] -> Service['sensu-agent']
   }
 
   package { 'sensu-go-agent':
@@ -278,6 +281,18 @@ class sensu::agent (
         mergemode => 'clobber',
         notify    => Service['sensu-agent'],
       }
+    }
+  }
+
+  if $facts['service_provider'] == 'systemd' {
+    systemd::dropin_file { 'sensu-agent-start.conf':
+      unit    => 'sensu-agent.service',
+      content => join([
+        '[Service]',
+        'ExecStart=',
+        "ExecStart=${service_path} start -c ${sensu::agent_config_path}",
+      ], "\n"),
+      notify  => Service['sensu-agent'],
     }
   }
 

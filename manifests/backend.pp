@@ -22,6 +22,8 @@
 #   Sensu backend service ensure value.
 # @param service_enable
 #   Sensu backend service enable value.
+# @param service_path
+#   The path to sensu-backend service executable
 # @param state_dir
 #   Sensu backend state directory path.
 # @param config_hash
@@ -128,6 +130,7 @@ class sensu::backend (
   String $service_name = 'sensu-backend',
   String $service_ensure = 'running',
   Boolean $service_enable = true,
+  Stdlib::Absolutepath $service_path = '/usr/sbin/sensu-backend',
   Stdlib::Absolutepath $state_dir = '/var/lib/sensu/sensu-backend',
   Hash $config_hash = {},
   Optional[String] $ssl_cert_source = $facts['puppet_hostcert'],
@@ -234,8 +237,8 @@ class sensu::backend (
   # Only necessary for Puppet < 6.1.0,
   # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
   if versioncmp($facts['puppetversion'],'6.1.0') < 0 and $facts['service_provider'] == 'systemd' {
-    Package['sensu-go-backend'] ~> Exec['sensu systemctl daemon-reload']
-    Exec['sensu systemctl daemon-reload'] -> Service['sensu-backend']
+    Package['sensu-go-backend'] ~> Class['systemd::systemctl::daemon_reload']
+    Class['systemd::systemctl::daemon_reload'] -> Service['sensu-backend']
   }
 
   sensu_user { 'admin':
@@ -349,6 +352,18 @@ class sensu::backend (
       show_diff => $show_diff,
       require   => Package['sensu-go-backend'],
       notify    => Service['sensu-backend'],
+    }
+  }
+
+  if $facts['service_provider'] == 'systemd' {
+    systemd::dropin_file { 'sensu-backend-start.conf':
+      unit    => 'sensu-backend.service',
+      content => join([
+        '[Service]',
+        'ExecStart=',
+        "ExecStart=${service_path} start -c ${sensu::etc_dir}/backend.yml",
+      ], "\n"),
+      notify  => Service['sensu-backend'],
     }
   }
 

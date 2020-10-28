@@ -38,11 +38,11 @@ describe 'sensu::agent', :type => :class do
 
         context 'on systemd host', if: (facts[:kernel] == 'Linux' && Puppet.version.to_s =~ %r{^5}) do
           let(:facts) { facts.merge({:service_provider => 'systemd'}) }
-          it { should contain_package('sensu-go-agent').that_notifies('Exec[sensu systemctl daemon-reload]') }
-          it { should contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
+          it { should contain_package('sensu-go-agent').that_notifies('Class[systemd::systemctl::daemon_reload]') }
+          it { should contain_class('systemd::systemctl::daemon_reload').that_comes_before('Service[sensu-agent]') }
         end
-        it { should_not contain_package('sensu-go-agent').that_notifies('Exec[sensu systemctl daemon-reload]') }
-        it { should_not contain_exec('sensu systemctl daemon-reload').that_comes_before('Service[sensu-agent]') }
+        it { should_not contain_package('sensu-go-agent').that_notifies('Class[systemd::systemctl::daemon_reload]') }
+        it { should_not contain_class('systemd::systemctl::daemon_reload').that_comes_before('Service[sensu-agent]') }
 
         it {
           should contain_sensu_agent_entity_setup('puppet').with({
@@ -123,6 +123,18 @@ describe 'sensu::agent', :type => :class do
         else
           it { should_not contain_file('sensu-agent_env_vars') }
         end
+
+        context 'systemd systems deploy dropin', if: facts[:kernel] == 'Linux' do
+          let(:facts) { facts.merge({:service_provider => 'systemd'}) }
+          it {
+            should contain_systemd__dropin_file('sensu-agent-start.conf').with({
+              'unit'    => 'sensu-agent.service',
+              'content' => %r{ExecStart=/usr/sbin/sensu-agent start -c #{platforms[facts[:osfamily]][:agent_config_path]}},
+              'notify'  => 'Service[sensu-agent]',
+            })
+          }
+        end
+        it { should_not contain_systemd__dropin_file('sensu-agent-start.conf') }
 
         it {
           should contain_service('sensu-agent').with({
