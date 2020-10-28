@@ -129,7 +129,7 @@ class sensu (
       $os_package_require = []
     }
     'Debian': {
-      $os_package_require = [Class['::apt::update']]
+      $os_package_require = [Class['apt::update']]
     }
     'windows': {
       $os_package_require = []
@@ -142,7 +142,7 @@ class sensu (
   # $package_require is used by sensu::agent and sensu::backend
   # package resources
   if $manage_repo {
-    $package_require = [Class['::sensu::repo']] + $os_package_require
+    $package_require = [Class['sensu::repo']] + $os_package_require
   } else {
     $package_require = undef
   }
