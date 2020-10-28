@@ -359,6 +359,14 @@ Sensu agent service enable value.
 
 Default value: ``true``
 
+##### `service_path`
+
+Data type: `Stdlib::Absolutepath`
+
+The path to sensu-agent service executable
+
+Default value: `'/usr/sbin/sensu-agent'`
+
 ##### `config_hash`
 
 Data type: `Hash`
@@ -546,6 +554,14 @@ Data type: `Boolean`
 Sensu backend service enable value.
 
 Default value: ``true``
+
+##### `service_path`
+
+Data type: `Stdlib::Absolutepath`
+
+The path to sensu-backend service executable
+
+Default value: `'/usr/sbin/sensu-backend'`
 
 ##### `state_dir`
 

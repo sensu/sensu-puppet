@@ -1,5 +1,17 @@
 # Changelog
 
+## [v5.3.0](https://github.com/sensu/sensu-puppet/tree/v5.3.0) (2020-10-28)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.2.1...v5.3.0)
+
+### Added
+
+- Improved handling of changes to sensu::etc\_dir [\#1280](https://github.com/sensu/sensu-puppet/pull/1280) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Fix sensu\_agent\_entity\_config purging to not purge entity subscription [\#1281](https://github.com/sensu/sensu-puppet/pull/1281) ([treydock](https://github.com/treydock))
+
 ## [v5.2.1](https://github.com/sensu/sensu-puppet/tree/v5.2.1) (2020-10-17)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.2.0...v5.2.1)
@@ -269,19 +281,10 @@
 - Updates to travis-ci [\#1186](https://github.com/sensu/sensu-puppet/pull/1186) ([treydock](https://github.com/treydock))
 - Support PDK [\#1184](https://github.com/sensu/sensu-puppet/pull/1184) ([treydock](https://github.com/treydock))
 - Update default resources to match Sensu Go defaults [\#1181](https://github.com/sensu/sensu-puppet/pull/1181) ([treydock](https://github.com/treydock))
-- Move PostgresConfig to a type [\#1176](https://github.com/sensu/sensu-puppet/pull/1176) ([treydock](https://github.com/treydock))
-
-### Fixed
-
-- Only execute future release Rake function when generating changelog or release [\#1179](https://github.com/sensu/sensu-puppet/pull/1179) ([treydock](https://github.com/treydock))
 
 ## [v3.12.0](https://github.com/sensu/sensu-puppet/tree/v3.12.0) (2019-11-25)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.11.0...v3.12.0)
-
-### Fixed
-
-- Add lint plugin [\#1177](https://github.com/sensu/sensu-puppet/pull/1177) ([ghoneycutt](https://github.com/ghoneycutt))
 
 ## [v3.11.0](https://github.com/sensu/sensu-puppet/tree/v3.11.0) (2019-11-12)
 
