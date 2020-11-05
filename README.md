@@ -269,7 +269,7 @@ associated to `linux` and `apache-servers` subscriptions.
 The following example will manage the resources necessary to use `sensuctl`.
 
 ```puppet
-class { '::sensu':
+class { 'sensu':
   api_host => 'sensu-backend.example.com',
   password => 'supersecret',
 }
@@ -281,7 +281,7 @@ include sensu::cli
 For Windows the `install_source` parameter must be provided:
 
 ```puppet
-class { '::sensu':
+class { 'sensu':
   api_host => 'sensu-backend.example.com',
   password => 'supersecret',
 }
