@@ -155,13 +155,9 @@ class sensu::agent (
       }
     }
   }
-  # Get first backend listed and use that address for API calls to configure
-  # sensu_agent_entity_config resources
-  $_backend = $config['backend-url'][0]
-  $_backend_without_prefix = $_backend.regsubst('^(ws|wss)://', '')
-  $_backend_host = split($_backend_without_prefix, /:/)[0]
+
   sensu_agent_entity_setup { 'puppet':
-    url      => "${sensu::api_protocol}://${_backend_host}:${sensu::api_port}",
+    url      => $sensu::api_url,
     username => 'puppet-agent_entity_config',
     password => $sensu::_agent_entity_config_password,
   }
