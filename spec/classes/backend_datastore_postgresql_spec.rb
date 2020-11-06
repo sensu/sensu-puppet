@@ -20,7 +20,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
       it do
         should contain_sensu_postgres_config('postgresql').with({
           :ensure        => 'present',
-          :dsn           => 'postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require',
+          :dsn           => sensitive('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require'),
           :pool_size     => '20',
           :strict        => 'false',
           :batch_buffer  => '0',
@@ -64,7 +64,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
         it do
           should contain_sensu_postgres_config('postgresql').with({
             :ensure    => 'present',
-            :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu?sslmode=disable',
+            :dsn       => sensitive('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=disable'),
             :pool_size => '20',
           })
         end
@@ -267,7 +267,7 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
         it do
           should contain_sensu_postgres_config('postgresql').with({
            :ensure    => 'absent',
-           :dsn       => 'postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require',
+           :dsn       => sensitive('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require'),
            :pool_size => '20',
          })
         end
