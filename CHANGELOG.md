@@ -1,5 +1,17 @@
 # Changelog
 
+## [v5.3.1](https://github.com/sensu/sensu-puppet/tree/v5.3.1) (2020-11-05)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.3.0...v5.3.1)
+
+### Fixed
+
+- Fix agent to use correct API URL for agent entity configs [\#1286](https://github.com/sensu/sensu-puppet/pull/1286) ([treydock](https://github.com/treydock))
+
+### Merged Pull Requests
+
+- \[ci skip\] Style updates to puppet code in README [\#1285](https://github.com/sensu/sensu-puppet/pull/1285) ([ghoneycutt](https://github.com/ghoneycutt))
+
 ## [v5.3.0](https://github.com/sensu/sensu-puppet/tree/v5.3.0) (2020-10-28)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.2.1...v5.3.0)
@@ -280,7 +292,6 @@
 
 - Updates to travis-ci [\#1186](https://github.com/sensu/sensu-puppet/pull/1186) ([treydock](https://github.com/treydock))
 - Support PDK [\#1184](https://github.com/sensu/sensu-puppet/pull/1184) ([treydock](https://github.com/treydock))
-- Update default resources to match Sensu Go defaults [\#1181](https://github.com/sensu/sensu-puppet/pull/1181) ([treydock](https://github.com/treydock))
 
 ## [v3.12.0](https://github.com/sensu/sensu-puppet/tree/v3.12.0) (2019-11-25)
 
