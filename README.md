@@ -10,6 +10,7 @@
     * [Setup requirements](#setup-requirements)
     * [Beginning with Sensu](#beginning-with-sensu)
 3. [Usage - Configuration options and additional functionality](#usage)
+    * [Location of Resources](#location-of-resources)
     * [Basic Sensu backend](#basic-sensu-backend)
     * [Basic Sensu agent](#basic-sensu-agent)
     * [Basic Sensu CLI](#basic-sensu-cli)
@@ -226,6 +227,12 @@ The output should look like the following:
 ```
 
 ## Usage
+
+### Location of Resources
+
+Sensu Go is designed to have resources like checks and assets defined on the backend host.
+For Puppet this means that the simplest configuration will be one where checks and other resources are defined on the host using `sensu::backend` class.
+Hosts with only the `sensu::agent` class do not need to have checks defined on them, rather just have to have a subscription assigned that matches a check.
 
 ### Basic Sensu backend
 
