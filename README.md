@@ -1261,7 +1261,6 @@ Linux.
 * EL 6
 * EL 7
 * EL 8
-* Debian 8
 * Debian 9
 * Debian 10
 * Ubuntu 16.04 LTS
