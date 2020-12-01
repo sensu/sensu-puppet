@@ -136,7 +136,10 @@ DESC
   end
 
   newproperty(:secrets, :array_matching => :all, :parent => PuppetX::Sensu::SecretsProperty) do
-    desc 'List of Sensu secrets to set for the handler execution environment.'
+    desc <<-EOS
+    Array of the name/secret pairs to use with command execution.
+    Example: [{'name' => 'ANSIBLE_HOST', 'secret' => 'sensu-ansible-host' }]
+    EOS
   end
 
   newproperty(:namespace, :namevar => true) do
