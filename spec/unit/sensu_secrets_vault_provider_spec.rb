@@ -212,13 +212,27 @@ describe Puppet::Type.type(:sensu_secrets_vault_provider) do
 
   [
     :address,
-    :token,
     :version,
   ].each do |property|
     it "should require property when ensure => present" do
       config.delete(property)
       config[:ensure] = :present
       expect { resource }.to raise_error(Puppet::Error, /You must provide a #{property}/)
+    end
+  end
+
+  describe 'token validation' do
+    it 'should require either token or token_file' do
+      config.delete(:token)
+      config.delete(:token_file)
+      config[:ensure] = :present
+      expect { resource }.to raise_error(Puppet::Error, /You must provide either token/)
+    end
+    it 'should require mutually exclusive token and token_file' do
+      config[:token] = 'foo'
+      config[:token_file] = '/foo'
+      config[:ensure] = :present
+      expect { resource }.to raise_error(Puppet::Error, /token and token_file are mutually exclusive/)
     end
   end
 end

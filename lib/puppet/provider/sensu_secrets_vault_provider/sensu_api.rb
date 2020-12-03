@@ -54,12 +54,25 @@ Puppet::Type.type(:sensu_secrets_vault_provider).provide(:sensu_api, :parent => 
     end
   end
 
+  def get_token
+    if resource[:token_file]
+      token = File.read(resource[:token_file]).chomp
+    else
+      token = @property_flush[:token] || resource[:token]
+    end
+    token
+  rescue Errno::ENOENT => e
+    raise Puppet::Error "Unable to read token_file #{resource[:token_file]}: #{e}"
+  end
+
   def create
     spec = {}
     metadata = {}
     metadata[:name] = resource[:name]
     spec[:client] = {}
+    spec[:client][:token] = get_token
     type_properties.each do |property|
+      next if property == :token
       value = resource[property]
       next if value.nil?
       next if value == :absent || value == [:absent]
@@ -88,7 +101,9 @@ Puppet::Type.type(:sensu_secrets_vault_provider).provide(:sensu_api, :parent => 
       metadata = {}
       metadata[:name] = resource[:name]
       spec[:client] = {}
+      spec[:client][:token] = get_token
       type_properties.each do |property|
+        next if property == :token
         if @property_flush[property]
           value = @property_flush[property]
         else

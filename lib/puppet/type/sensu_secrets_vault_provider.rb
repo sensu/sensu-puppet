@@ -60,6 +60,10 @@ DESC
     end
   end
 
+  newparam(:token_file) do
+    desc 'Path to file that contains token to use for authentication.'
+  end
+
   newproperty(:version) do
     desc 'HashiCorp Vault HTTP API version'
   end
@@ -142,13 +146,18 @@ DESC
   validate do
     required_properties = [
       :address,
-      :token,
       :version,
     ]
     required_properties.each do |property|
       if self[:ensure] == :present && self[property].nil?
         fail "You must provide a #{property}"
       end
+    end
+    if self[:ensure] == :present && self[:token].nil? && self[:token_file].nil?
+      fail "You must provide either token or token_file"
+    end
+    if self[:ensure] == :present && self[:token] && self[:token_file]
+      fail "token and token_file are mutually exclusive"
     end
   end
 end

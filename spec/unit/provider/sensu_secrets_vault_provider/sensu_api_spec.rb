@@ -32,6 +32,18 @@ describe Puppet::Type.type(:sensu_secrets_vault_provider).provider(:sensu_api) d
     end
   end
 
+  describe 'get_token' do
+    it 'uses token' do
+      expect(resource.provider.get_token).to eq('secret')
+    end
+    it 'reads token file' do
+      allow(File).to receive(:read).with('/token').and_return("foobar\n")
+      config.delete(:token)
+      config[:token_file] = '/token'
+      expect(resource.provider.get_token).to eq('foobar')
+    end
+  end
+
   describe 'create' do
     it 'should create an auth' do
       expected_spec = {
