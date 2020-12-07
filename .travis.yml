@@ -49,21 +49,6 @@ matrix:
     bundler_args: --without system_tests development
   - rvm: 2.4.9
     services: docker
-    env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet5
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.5.7
-    services: docker
-    env: BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.5.7
-    services: docker
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
-    script: bundle exec rake beaker
-    stage: acceptance
-  - rvm: 2.4.9
-    services: docker
     env: BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet5 BEAKER_sensu_mode=full
     script: bundle exec rake beaker
     stage: acceptance
@@ -269,8 +254,6 @@ matrix:
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 5" FIXTURES_YML=".fixtures-latest.yml"
   - rvm: 2.5.7
     env: CHECK="parallel_spec" PUPPET_GEM_VERSION="~> 6" FIXTURES_YML=".fixtures-latest.yml"
-  - rvm: 2.5.7
-    env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-6" BEAKER_PUPPET_COLLECTION=puppet6
   - rvm: 2.5.7
     env: BEAKER_sensu_ci_build=yes BEAKER_set="centos-7" BEAKER_PUPPET_COLLECTION=puppet6 BEAKER_sensu_mode=full
   - rvm: 2.5.7
