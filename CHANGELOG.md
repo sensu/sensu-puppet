@@ -1,6 +1,21 @@
 # Changelog
 
-## [v5.3.1](https://github.com/sensu/sensu-puppet/tree/v5.3.1) (2020-11-05)
+## [v5.4.0](https://github.com/sensu/sensu-puppet/tree/v5.4.0) (2020-12-09)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.3.1...v5.4.0)
+
+### Added
+
+- Add token\_file parameter to sensu\_secrets\_vault\_provider [\#1291](https://github.com/sensu/sensu-puppet/pull/1291) ([treydock](https://github.com/treydock))
+- Remove Debian 8 support, is EOL [\#1290](https://github.com/sensu/sensu-puppet/pull/1290) ([treydock](https://github.com/treydock))
+- \[ci skip\] README updates for where to define resources [\#1287](https://github.com/sensu/sensu-puppet/pull/1287) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Remove EL6 acceptance tests that fail after EOL [\#1293](https://github.com/sensu/sensu-puppet/pull/1293) ([treydock](https://github.com/treydock))
+- Update documentation for secrets property [\#1289](https://github.com/sensu/sensu-puppet/pull/1289) ([treydock](https://github.com/treydock))
+
+## [v5.3.1](https://github.com/sensu/sensu-puppet/tree/v5.3.1) (2020-11-06)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.3.0...v5.3.1)
 
@@ -267,7 +282,6 @@
 ### Changed
 
 - BREAKING: Add API providers [\#1191](https://github.com/sensu/sensu-puppet/pull/1191) ([treydock](https://github.com/treydock))
-- Add several parameters to sensu::agent class [\#1185](https://github.com/sensu/sensu-puppet/pull/1185) ([treydock](https://github.com/treydock))
 
 ### Added
 
@@ -287,11 +301,6 @@
 ## [v3.13.0](https://github.com/sensu/sensu-puppet/tree/v3.13.0) (2019-11-26)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.12.0...v3.13.0)
-
-### Added
-
-- Updates to travis-ci [\#1186](https://github.com/sensu/sensu-puppet/pull/1186) ([treydock](https://github.com/treydock))
-- Support PDK [\#1184](https://github.com/sensu/sensu-puppet/pull/1184) ([treydock](https://github.com/treydock))
 
 ## [v3.12.0](https://github.com/sensu/sensu-puppet/tree/v3.12.0) (2019-11-25)
 

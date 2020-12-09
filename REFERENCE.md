@@ -2335,7 +2335,8 @@ An array of Sensu assets (names), required at runtime for the execution of the c
 
 ##### `secrets`
 
-List of Sensu secrets to set for the check execution environment.
+Array of the name/secret pairs to use with command execution.
+Example: [{'name' => 'ANSIBLE_HOST', 'secret' => 'sensu-ansible-host' }]
 
 ##### `silenced`
 
@@ -3174,7 +3175,8 @@ An array of Sensu assets (names), required at runtime for the execution of the c
 
 ##### `secrets`
 
-List of Sensu secrets to set for the handler execution environment.
+Array of the name/secret pairs to use with command execution.
+Example: [{'name' => 'ANSIBLE_HOST', 'secret' => 'sensu-ansible-host' }]
 
 ##### `socket`
 
@@ -3539,7 +3541,8 @@ An array of Sensu assets (names), required at runtime for the execution of the c
 
 ##### `secrets`
 
-List of Sensu secrets to set for the mutator execution environment.
+Array of the name/secret pairs to use with command execution.
+Example: [{'name' => 'ANSIBLE_HOST', 'secret' => 'sensu-ansible-host' }]
 
 ##### `timeout`
 
@@ -4267,6 +4270,10 @@ The name of the secrets provider.
 
 The specific backend to use for this `sensu_secrets_vault_provider` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
+
+##### `token_file`
+
+Path to file that contains token to use for authentication.
 
 ### `sensu_tessen`
 
