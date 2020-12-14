@@ -54,6 +54,15 @@ describe 'sensu::cli class', if: Gem.win_platform? do
 end
 
 describe 'sensu::agent class', if: Gem.win_platform? do
+  let(:facter_command) do
+    puppet_version = `puppet --version`
+    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
+      'puppet facts show'
+    else
+      'facter -p --json'
+    end
+  end
+
   context 'default' do
     pp = <<-EOS
     class { '::sensu': }
