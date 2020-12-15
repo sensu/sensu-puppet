@@ -75,4 +75,16 @@ describe 'sensu without SSL', if: ['base','full'].include?(RSpec.configuration.s
       its(:exit_status) { should eq 0 }
     end
   end
+
+  context 're-enables SSL' do
+    it 'should work without errors' do
+      backend_pp = <<-EOS
+      class { '::sensu':
+        password => 'P@ssw0rd!',
+      }
+      class { 'sensu::backend': }
+      EOS
+      apply_manifest_on(backend, backend_pp, :catch_failures => true)
+    end
+  end
 end

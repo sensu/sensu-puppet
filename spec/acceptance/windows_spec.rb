@@ -6,6 +6,15 @@ require 'json'
 #       the Sensu Go backend inside the Appveyor Windows testing environment
 
 describe 'sensu::cli class', if: Gem.win_platform? do
+  let(:facter_command) do
+    puppet_version = `puppet --version`
+    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
+      'puppet facts show'
+    else
+      'facter -p --json'
+    end
+  end
+
   context 'default' do
     pp = <<-EOS
     class { '::sensu':
@@ -36,7 +45,7 @@ describe 'sensu::cli class', if: Gem.win_platform? do
     end
     describe 'sensuctl.version fact' do
       it 'has version fact' do
-        output = `facter --json -p sensuctl`
+        output = `#{facter_command} sensuctl`
         data = JSON.parse(output.strip)
         expect(data['sensuctl']['version']).to match(/^[0-9\.]+/)
       end
@@ -45,6 +54,15 @@ describe 'sensu::cli class', if: Gem.win_platform? do
 end
 
 describe 'sensu::agent class', if: Gem.win_platform? do
+  let(:facter_command) do
+    puppet_version = `puppet --version`
+    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
+      'puppet facts show'
+    else
+      'facter -p --json'
+    end
+  end
+
   context 'default' do
     pp = <<-EOS
     class { '::sensu': }
@@ -89,7 +107,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     end
     describe 'sensu_agent.version fact' do
       it 'has version fact' do
-        output = `facter --json -p sensu_agent`
+        output = `#{facter_command} sensu_agent`
         data = JSON.parse(output.strip)
         expect(data['sensu_agent']['version']).to match(/^[0-9\.]+/)
       end
@@ -136,7 +154,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     end
     describe 'sensu_agent.version fact' do
       it 'has version fact' do
-        output = `facter --json -p sensu_agent`
+        output = `#{facter_command} sensu_agent`
         data = JSON.parse(output.strip)
         expect(data['sensu_agent']['version']).to match(/^[0-9\.]+/)
       end

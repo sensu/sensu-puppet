@@ -3,6 +3,15 @@ require 'spec_helper_acceptance'
 describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuration.sensu_mode) do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
+  let(:facter_command) do
+    puppet_version = on(backend, 'puppet --version').stdout
+    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
+      'puppet facts show'
+    else
+      'facter -p --json'
+    end
+  end
+
   context 'backend facts' do
     it 'should work without errors' do
       pp = <<-EOS
@@ -23,13 +32,15 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     end
 
     it "should have backend facts" do
-      version = on(backend, 'facter -p sensu_backend.version').stdout
-      expect(version).to match(/^[0-9\.]+/)
+      out = on(backend, "#{facter_command} sensu_backend.version").stdout
+      data = JSON.parse(out)
+      expect(data['sensu_backend.version']).to match(/^[0-9\.]+/)
     end
 
     it "should have sensuctl facts" do
-      version = on(backend, 'facter -p sensuctl.version').stdout
-      expect(version).to match(/^[0-9\.]+/)
+      out = on(backend, "#{facter_command} sensuctl.version").stdout
+      data = JSON.parse(out)
+      expect(data['sensuctl.version']).to match(/^[0-9\.]+/)
     end
   end
 
@@ -53,8 +64,9 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
     end
 
     it "should have agent facts" do
-      version = on(agent, 'facter -p sensu_agent.version').stdout
-      expect(version).to match(/^[0-9\.]+/)
+      out = on(agent, "#{facter_command} sensu_agent.version").stdout
+      data = JSON.parse(out)
+      expect(data['sensu_agent.version']).to match(/^[0-9\.]+/)
     end
   end
 end

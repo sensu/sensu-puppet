@@ -49,10 +49,16 @@ image:
 environment:
   matrix:
     - PUPPET_GEM_VERSION: '~>5.x'
+      FACTER_GEM_VERSION: '~>2.x'
       PUPPET_REPO: puppet5
       RUBY_VERSION: 24-x64
     - PUPPET_GEM_VERSION: '~>6.x'
+      FACTER_GEM_VERSION: '~>2.x'
       PUPPET_REPO: puppet6
       RUBY_VERSION: 25-x64
+    - PUPPET_GEM_VERSION: '~>7.x'
+      FACTER_GEM_VERSION: '~>4.x'
+      PUPPET_REPO: puppet7
+      RUBY_VERSION: 26-x64
 matrix:
   fast_finish: false

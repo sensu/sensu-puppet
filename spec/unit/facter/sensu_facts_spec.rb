@@ -44,6 +44,8 @@ describe "SensuFacts" do
     end
 
     it 'returns nil' do
+      allow(Facter::Core::Execution).to receive(:which).with('sensuctl').and_return(nil)
+      allow(Facter::Core::Execution).to receive(:which).with('sensu-agent').and_return(nil)
       allow(Facter::Core::Execution).to receive(:which).with('sensu-backend').and_return(nil)
       SensuFacts.add_backend_facts
       expect(Facter.fact(:sensu_backend).value).to be_nil

@@ -11,7 +11,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - 'yum install -y dnf-utils'
-      - 'dnf config-manager --set-enabled PowerTools'
+      - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks'
     docker_container_name: 'sensu-agent-el8'
   sensu-backend:
@@ -28,7 +28,7 @@ HOSTS:
       - '/usr/sbin/init'
     docker_image_commands:
       - 'yum install -y dnf-utils'
-      - 'dnf config-manager --set-enabled PowerTools'
+      - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks'
     docker_container_name: 'sensu-backend-el8'
 CONFIG:
