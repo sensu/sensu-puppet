@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.5.0](https://github.com/sensu/sensu-puppet/tree/v5.5.0) (2020-12-15)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.4.0...v5.5.0)
+
+### Added
+
+- Support Puppet 7 [\#1288](https://github.com/sensu/sensu-puppet/pull/1288) ([treydock](https://github.com/treydock))
+
 ## [v5.4.0](https://github.com/sensu/sensu-puppet/tree/v5.4.0) (2020-12-09)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.3.1...v5.4.0)
@@ -202,6 +210,7 @@
 - Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
+- Support EL8 [\#1208](https://github.com/sensu/sensu-puppet/pull/1208) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -218,7 +227,6 @@
 ### Added
 
 - Update puppet-strings examples for composite names [\#1211](https://github.com/sensu/sensu-puppet/pull/1211) ([treydock](https://github.com/treydock))
-- Support EL8 [\#1208](https://github.com/sensu/sensu-puppet/pull/1208) ([treydock](https://github.com/treydock))
 
 ## [v4.4.1](https://github.com/sensu/sensu-puppet/tree/v4.4.1) (2020-02-01)
 
@@ -287,7 +295,6 @@
 
 - Document contact routing and bonsai asset bugfix [\#1194](https://github.com/sensu/sensu-puppet/pull/1194) ([treydock](https://github.com/treydock))
 - Support 'sensu-backend init' added in Sensu Go 5.16 [\#1192](https://github.com/sensu/sensu-puppet/pull/1192) ([treydock](https://github.com/treydock))
-- Misc test fixes [\#1189](https://github.com/sensu/sensu-puppet/pull/1189) ([treydock](https://github.com/treydock))
 
 ### Merged Pull Requests
 
