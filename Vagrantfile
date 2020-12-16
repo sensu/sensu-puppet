@@ -119,15 +119,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "el6-agent", autostart: false do |agent|
-    agent.vm.box = "centos/6"
-    agent.vm.hostname = 'el6-agent.example.com'
-    agent.vm.network  :private_network, ip: "192.168.52.12"
-    agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
-  end
-
   config.vm.define "ubuntu1804-agent", autostart: false do |agent|
     agent.vm.box = "ubuntu/bionic64"
     agent.vm.hostname = 'ubuntu1804-agent.example.com'
