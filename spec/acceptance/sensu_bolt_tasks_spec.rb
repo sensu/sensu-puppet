@@ -326,20 +326,16 @@ groups:
   end
 end
 
-describe 'sensu backend_upgrade task', if: RSpec.configuration.sensu_mode == 'full' do
+# Skip this test when testing using CI repos as CI repos are missing 5.21.x packages
+describe 'sensu backend_upgrade task', if: (RSpec.configuration.sensu_mode == 'full' && !RSpec.configuration.add_ci_repo) do
   backend = hosts_as('sensu-backend')[0]
-  if RSpec.configuration.add_ci_repo
-    version = '5.21.0-22325'
-  else
-    version = '5.21.0-14262'
-  end
   context 'setup' do
     it 'is successful' do
       on backend, 'yum remove -y sensu-go\*'
       on backend, 'rm -rf /var/lib/sensu/sensu-backend/etcd /root/.config'
       pp = <<-EOS
         class { 'sensu':
-          version => '#{version}',
+          version => '5.21.0-14262',
         }
         include sensu::backend
       EOS
