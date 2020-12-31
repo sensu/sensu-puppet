@@ -99,6 +99,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
       pp = <<-EOS
       class { '::sensu':
         etc_dir  => '/etc/sensugo',
+        ssl_dir  => '/etc/sensugo/ssl',
         password => 'supersecret',
       }
       class { 'sensu::backend':
@@ -108,6 +109,11 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
       }
       EOS
 
+      # Cleanup sensu-backend to verify 'sensu-backend init' works with changed etc_dir
+      on node, 'puppet resource service sensu-backend ensure=stopped'
+      on node, 'rm -rf /etc/sensu'
+      on node, 'rm -rf /root/.config'
+      on node, 'rm -rf /var/lib/sensu/sensu-backend/etcd'
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
