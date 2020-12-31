@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",

@@ -1,5 +1,17 @@
 # Changelog
 
+## [v5.5.1](https://github.com/sensu/sensu-puppet/tree/v5.5.1) (2020-12-31)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.5.0...v5.5.1)
+
+### Fixed
+
+- Fix sensu-backend init to work with non-default etc\_dir [\#1296](https://github.com/sensu/sensu-puppet/pull/1296) ([treydock](https://github.com/treydock))
+
+### Merged Pull Requests
+
+- Vagrant [\#1294](https://github.com/sensu/sensu-puppet/pull/1294) ([ghoneycutt](https://github.com/ghoneycutt))
+
 ## [v5.5.0](https://github.com/sensu/sensu-puppet/tree/v5.5.0) (2020-12-15)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.4.0...v5.5.0)
@@ -86,6 +98,7 @@
 - Remove acceptance test skipping for plugins [\#1272](https://github.com/sensu/sensu-puppet/pull/1272) ([treydock](https://github.com/treydock))
 - Make sensu\_ad\_auth group\_search optional [\#1266](https://github.com/sensu/sensu-puppet/pull/1266) ([treydock](https://github.com/treydock))
 - Add sensu::backend\_upgrade task [\#1265](https://github.com/sensu/sensu-puppet/pull/1265) ([treydock](https://github.com/treydock))
+- Allow disabling namespace validation for large environments [\#1254](https://github.com/sensu/sensu-puppet/pull/1254) ([treydock](https://github.com/treydock))
 
 ## [v4.13.1](https://github.com/sensu/sensu-puppet/tree/v4.13.1) (2020-08-13)
 
@@ -110,10 +123,6 @@
 ## [v4.12.0](https://github.com/sensu/sensu-puppet/tree/v4.12.0) (2020-07-05)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.11.0...v4.12.0)
-
-### Added
-
-- Allow disabling namespace validation for large environments [\#1254](https://github.com/sensu/sensu-puppet/pull/1254) ([treydock](https://github.com/treydock))
 
 ## [v4.11.0](https://github.com/sensu/sensu-puppet/tree/v4.11.0) (2020-06-29)
 
@@ -175,6 +184,7 @@
 ### Added
 
 - Ignore builtin sensu.io/managed\_by label [\#1228](https://github.com/sensu/sensu-puppet/pull/1228) ([treydock](https://github.com/treydock))
+- Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 
 ### Merged Pull Requests
 
@@ -188,7 +198,6 @@
 
 ### Added
 
-- Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 - Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
 - Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
 
@@ -210,7 +219,6 @@
 - Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
-- Support EL8 [\#1208](https://github.com/sensu/sensu-puppet/pull/1208) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -227,6 +235,8 @@
 ### Added
 
 - Update puppet-strings examples for composite names [\#1211](https://github.com/sensu/sensu-puppet/pull/1211) ([treydock](https://github.com/treydock))
+- Support EL8 [\#1208](https://github.com/sensu/sensu-puppet/pull/1208) ([treydock](https://github.com/treydock))
+- Add manage\_agent\_user parameter to sensu::backend [\#1206](https://github.com/sensu/sensu-puppet/pull/1206) ([treydock](https://github.com/treydock))
 
 ## [v4.4.1](https://github.com/sensu/sensu-puppet/tree/v4.4.1) (2020-02-01)
 
@@ -239,10 +249,6 @@
 ## [v4.4.0](https://github.com/sensu/sensu-puppet/tree/v4.4.0) (2020-01-31)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.3.0...v4.4.0)
-
-### Added
-
-- Add manage\_agent\_user parameter to sensu::backend [\#1206](https://github.com/sensu/sensu-puppet/pull/1206) ([treydock](https://github.com/treydock))
 
 ## [v4.3.0](https://github.com/sensu/sensu-puppet/tree/v4.3.0) (2020-01-29)
 
@@ -287,19 +293,13 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v3.14.0...v4.0.0)
 
-### Changed
-
-- BREAKING: Add API providers [\#1191](https://github.com/sensu/sensu-puppet/pull/1191) ([treydock](https://github.com/treydock))
-
 ### Added
 
 - Document contact routing and bonsai asset bugfix [\#1194](https://github.com/sensu/sensu-puppet/pull/1194) ([treydock](https://github.com/treydock))
-- Support 'sensu-backend init' added in Sensu Go 5.16 [\#1192](https://github.com/sensu/sensu-puppet/pull/1192) ([treydock](https://github.com/treydock))
 
 ### Merged Pull Requests
 
 - Style [\#1193](https://github.com/sensu/sensu-puppet/pull/1193) ([ghoneycutt](https://github.com/ghoneycutt))
-- \(ci\) Update TravisCI configuration for new Slack channel [\#1190](https://github.com/sensu/sensu-puppet/pull/1190) ([ghoneycutt](https://github.com/ghoneycutt))
 
 ## [v3.14.0](https://github.com/sensu/sensu-puppet/tree/v3.14.0) (2019-12-01)
 
