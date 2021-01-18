@@ -77,12 +77,13 @@ describe 'sensu::agent', :type => :class do
           should contain_datacat_fragment('sensu_agent_config-main').with({
             'target' => 'sensu_agent_config',
             'data'   => {
-              'backend-url'     => ['wss://localhost:8081'],
-              'name'            => 'localhost',
-              'namespace'       => 'default',
-              'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
-              'password'        => 'P@ssw0rd!',
-              'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+              'backend-url'           => ['wss://localhost:8081'],
+              'name'                  => 'localhost',
+              'agent-managed-entity'  => 'false',
+              'namespace'             => 'default',
+              'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+              'password'              => 'P@ssw0rd!',
+              'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
             },
             'order'  => '01',
           })
@@ -234,11 +235,12 @@ describe 'sensu::agent', :type => :class do
           should contain_datacat_fragment('sensu_agent_config-main').with({
             'target' => 'sensu_agent_config',
             'data'   => {
-              'backend-url' => ['ws://localhost:8081'],
-              'name'        => 'localhost',
-              'namespace'   => 'default',
-              'redact'      => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
-              'password'    => 'P@ssw0rd!',
+              'backend-url'          => ['ws://localhost:8081'],
+              'name'                 => 'localhost',
+              'agent-managed-entity' => 'false',
+              'namespace'            => 'default',
+              'redact'               => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+              'password'             => 'P@ssw0rd!',
             },
           })
         }
@@ -249,6 +251,7 @@ describe 'sensu::agent', :type => :class do
       context 'with agent configs defined' do
         let(:params) do
           {
+            agent_managed_entity: true,
             entity_name: 'hostname',
             subscriptions: ['linux','base'],
             annotations: { 'foo' => 'bar' },
@@ -262,15 +265,16 @@ describe 'sensu::agent', :type => :class do
           should contain_datacat_fragment('sensu_agent_config-main').with({
             'target' => 'sensu_agent_config',
             'data'   => {
-              'backend-url'     => ['wss://localhost:8081'],
-              'name'            => 'hostname',
-              'subscriptions'   => ['linux','base'],
-              'annotations'     => {'foo' => 'bar'},
-              'labels'          => {'bar' => 'baz'},
-              'namespace'       => 'qa',
-              'redact'          => ['secret'],
-              'password'        => 'P@ssw0rd!',
-              'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+              'backend-url'           => ['wss://localhost:8081'],
+              'name'                  => 'hostname',
+              'agent-managed-entity'  => 'true',
+              'subscriptions'         => ['linux','base'],
+              'annotations'           => {'foo' => 'bar'},
+              'labels'                => {'bar' => 'baz'},
+              'namespace'             => 'qa',
+              'redact'                => ['secret'],
+              'password'              => 'P@ssw0rd!',
+              'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
             },
           })
         }
@@ -287,6 +291,7 @@ describe 'sensu::agent', :type => :class do
             labels: { 'bar' => 'baz' },
             namespace: 'qa',
             config_hash: {
+              'agent-managed-entity' => 'true',
               'subscriptions' => ['windows'],
               'namespace' => 'default',
             }
@@ -297,15 +302,16 @@ describe 'sensu::agent', :type => :class do
           should contain_datacat_fragment('sensu_agent_config-main').with({
             'target' => 'sensu_agent_config',
             'data'   => {
-              'backend-url'     => ['wss://localhost:8081'],
-              'name'            => 'hostname',
-              'subscriptions'   => ['windows'],
-              'annotations'     => {'foo' => 'bar'},
-              'labels'          => {'bar' => 'baz'},
-              'namespace'       => 'default',
-              'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
-              'password'        => 'P@ssw0rd!',
-              'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+              'backend-url'           => ['wss://localhost:8081'],
+              'agent-managed-entity'  => 'true',
+              'name'                  => 'hostname',
+              'subscriptions'         => ['windows'],
+              'annotations'           => {'foo' => 'bar'},
+              'labels'                => {'bar' => 'baz'},
+              'namespace'             => 'default',
+              'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+              'password'              => 'P@ssw0rd!',
+              'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
             },
           })
         }
@@ -404,12 +410,13 @@ describe 'sensu::agent', :type => :class do
             should contain_datacat_fragment('sensu_agent_config-main').with({
               'target' => 'sensu_agent_config',
               'data'   => {
-                'backend-url'     => [backend],
-                'name'            => 'localhost',
-                'namespace'       => 'default',
-                'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
-                'password'        => 'P@ssw0rd!',
-                'trusted-ca-file' => platforms[facts[:osfamily]][:ca_path],
+                'backend-url'           => [backend],
+                'name'                  => 'localhost',
+                'agent-managed-entity'  => 'false',
+                'namespace'             => 'default',
+                'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+                'password'              => 'P@ssw0rd!',
+                'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
               },
             })
           }

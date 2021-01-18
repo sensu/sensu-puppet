@@ -49,17 +49,18 @@ define sensu::agent::label (
     }
   }
 
-  sensu_agent_entity_config { "sensu::agent::label ${name}":
-    ensure    => $ensure,
-    config    => 'labels',
-    key       => $key,
-    value     => $value,
-    entity    => $_entity,
-    namespace => $_namespace,
-    provider  => 'sensu_api',
-    subscribe => File['sensu_agent_config'],
+  if ! $sensu::agent::agent_managed_entity {
+    sensu_agent_entity_config { "sensu::agent::label ${name}":
+      ensure    => $ensure,
+      config    => 'labels',
+      key       => $key,
+      value     => $value,
+      entity    => $_entity,
+      namespace => $_namespace,
+      provider  => 'sensu_api',
+      subscribe => File['sensu_agent_config'],
+    }
   }
-
   if $redact {
     if $ensure == 'present' {
       sensu::agent::config_entry { "redact-label-${name}":
@@ -67,13 +68,15 @@ define sensu::agent::label (
         value => [$key],
       }
     }
-    sensu_agent_entity_config { "sensu::agent::label redact ${name}":
-      ensure    => $ensure,
-      config    => 'redact',
-      value     => $key,
-      entity    => $_entity,
-      namespace => $_namespace,
-      provider  => 'sensu_api',
+    if ! $sensu::agent::agent_managed_entity {
+      sensu_agent_entity_config { "sensu::agent::label redact ${name}":
+        ensure    => $ensure,
+        config    => 'redact',
+        value     => $key,
+        entity    => $_entity,
+        namespace => $_namespace,
+        provider  => 'sensu_api',
+      }
     }
   }
 }

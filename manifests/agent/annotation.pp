@@ -49,15 +49,17 @@ define sensu::agent::annotation (
     }
   }
 
-  sensu_agent_entity_config { "sensu::agent::annotation ${name}":
-    ensure    => $ensure,
-    config    => 'annotations',
-    key       => $key,
-    value     => $value,
-    entity    => $_entity,
-    namespace => $_namespace,
-    provider  => 'sensu_api',
-    subscribe => File['sensu_agent_config'],
+  if ! $sensu::agent::agent_managed_entity {
+    sensu_agent_entity_config { "sensu::agent::annotation ${name}":
+      ensure    => $ensure,
+      config    => 'annotations',
+      key       => $key,
+      value     => $value,
+      entity    => $_entity,
+      namespace => $_namespace,
+      provider  => 'sensu_api',
+      subscribe => File['sensu_agent_config'],
+    }
   }
 
   if $redact {
@@ -67,13 +69,15 @@ define sensu::agent::annotation (
         value => [$key],
       }
     }
-    sensu_agent_entity_config { "sensu::agent::annotation redact ${name}":
-      ensure    => $ensure,
-      config    => 'redact',
-      value     => $key,
-      entity    => $_entity,
-      namespace => $_namespace,
-      provider  => 'sensu_api',
+    if ! $sensu::agent::agent_managed_entity {
+      sensu_agent_entity_config { "sensu::agent::annotation redact ${name}":
+        ensure    => $ensure,
+        config    => 'redact',
+        value     => $key,
+        entity    => $_entity,
+        namespace => $_namespace,
+        provider  => 'sensu_api',
+      }
     }
   }
 }

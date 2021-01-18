@@ -25,11 +25,22 @@ DESC
     desc "Sensu API password"
   end
 
+  newparam(:agent_managed_entity, :boolean => true) do
+    desc "Agent entity managed by agent.yml"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
   def generate
-    provider_class = Puppet::Type.type(:sensu_agent_entity_config).provider(:sensu_api)
-    provider_class.url = self[:url]
-    provider_class.username = self[:username]
-    provider_class.password = self[:password]
+    [
+      Puppet::Type.type(:sensu_agent_entity_config).provider(:sensu_api),
+      Puppet::Type.type(:sensu_agent_entity_config).provider(:sensuctl),
+    ].each do |provider_class|
+      provider_class.url = self[:url]
+      provider_class.username = self[:username]
+      provider_class.password = self[:password]
+      provider_class.agent_managed_entity = self[:agent_managed_entity]
+    end
     []
   end
 end

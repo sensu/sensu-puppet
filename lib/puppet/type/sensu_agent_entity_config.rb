@@ -106,6 +106,12 @@ DESC
     end
   end
 
+  newparam(:agent_managed_entity, :boolean => true) do
+    desc 'PRIVATE - determined by looking at agent entity labels'
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
   # This is only needed in case REDACTED values are encountered to ensure an update is performed
   # When agent.yaml is changed
   def refresh

@@ -6,6 +6,13 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensuctl, :parent => Pupp
 
   mk_resource_methods
 
+  class << self
+    attr_accessor :url
+    attr_accessor :username
+    attr_accessor :password
+    attr_accessor :agent_managed_entity
+  end
+
   def self.instances
     configs = []
 
@@ -14,6 +21,8 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensuctl, :parent => Pupp
     data.each do |d|
       entity = d['metadata']['name']
       namespace = d['metadata']['namespace']
+      labels = d['metadata']['labels'] || {}
+      managed_by = labels['sensu.io/managed_by']
       PuppetX::Sensu::AgentEntityConfig.config_classes.keys.each do |c|
         value = d[c] || d['metadata'][c]
         next if value.nil?
@@ -27,6 +36,7 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensuctl, :parent => Pupp
             config[:config] = c
             config[:value] = v
             config[:name] = "#{config[:config]} value #{config[:value]} on #{entity} in #{namespace}"
+            config[:agent_managed_entity] = true if managed_by == 'sensu-agent'
             configs << new(config)
           end
         when Hash
@@ -39,6 +49,7 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensuctl, :parent => Pupp
             config[:key] = key
             config[:value] = v
             config[:name] = "#{config[:config]} key #{config[:key]} on #{entity} in #{namespace}"
+            config[:agent_managed_entity] = true if managed_by == 'sensu-agent'
             configs << new(config)
           end
         else
@@ -49,6 +60,7 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensuctl, :parent => Pupp
           config[:config] = c
           config[:value] = value
           config[:name] = "#{config[:config]} on #{entity} in #{namespace}"
+          config[:agent_managed_entity] = true if managed_by == 'sensu-agent'
           configs << new(config)
         end
       end
@@ -75,6 +87,8 @@ Puppet::Type.type(:sensu_agent_entity_config).provide(:sensuctl, :parent => Pupp
   end
 
   def exists?
+    return true if (self.class.agent_managed_entity != nil && self.class.agent_managed_entity.to_s == 'true')
+    return true if (@property_hash[:agent_managed_entity] != nil && @property_hash[:agent_managed_entity].to_s == 'true')
     @property_hash[:ensure] == :present
   end
 
