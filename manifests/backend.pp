@@ -121,6 +121,8 @@
 #   PostgreSQL batch size
 # @param postgresql_batch_workers
 #   PostgreSQL batch workers
+# @param postgresql_enable_round_robin
+#   PostgreSQL enable round robin
 #
 class sensu::backend (
   Optional[String] $version = undef,
@@ -170,6 +172,7 @@ class sensu::backend (
   Integer $postgresql_batch_buffer = 0,
   Integer $postgresql_batch_size = 1,
   Integer $postgresql_batch_workers = 20,
+  Boolean $postgresql_enable_round_robin = false,
 ) {
 
   if $license_source and $license_content {

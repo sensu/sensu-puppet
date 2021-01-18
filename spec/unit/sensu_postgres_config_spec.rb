@@ -34,6 +34,7 @@ describe Puppet::Type.type(:sensu_postgres_config) do
     batch_buffer: 0,
     batch_size: 1,
     batch_workers: 0,
+    enable_round_robin: :false,
   }
 
   # String properties
@@ -114,7 +115,8 @@ describe Puppet::Type.type(:sensu_postgres_config) do
 
   # Boolean properties
   [
-    :strict
+    :strict,
+    :enable_round_robin,
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = true

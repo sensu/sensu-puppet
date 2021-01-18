@@ -30,6 +30,7 @@ describe Puppet::Type.type(:sensu_postgres_config).provider(:sensuctl) do
       }
       expected_spec = {
         :dsn => 'postgresql://sensu:changeme@localhost:5432/sensu',
+        :enable_round_robin => false,
         :pool_size => 0,
         :batch_buffer => 0,
         :batch_size => 1,

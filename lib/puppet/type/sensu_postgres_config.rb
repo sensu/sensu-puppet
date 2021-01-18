@@ -77,6 +77,12 @@ DESC
     end
   end
 
+  newproperty(:enable_round_robin, :boolean => true) do
+    desc "If true, enables round robin scheduling on PostgreSQL"
+    newvalues(:true, :false)
+    defaultto(:false)
+  end
+
   def pre_run_check
     required_properties = [
       :dsn,
