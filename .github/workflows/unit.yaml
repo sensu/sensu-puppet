@@ -1,0 +1,59 @@
+name: Unit
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    # Items marked as allow_failure=true are allowed to fail
+    # This is fixtures using latest untagged versions
+    continue-on-error: ${{ matrix.allow_failure }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - ruby: 2.4.9
+          puppet: 5
+          fixtures: .fixtures.yml
+          allow_failure: false
+        - ruby: 2.5.7
+          puppet: 6
+          fixtures: .fixtures.yml
+          allow_failure: false
+        - ruby: 2.7.0
+          puppet: 7
+          fixtures: .fixtures.yml
+          allow_failure: false
+        - ruby: 2.4.9
+          puppet: 5
+          fixtures: .fixtures-latest.yml
+          allow_failure: true
+        - ruby: 2.5.7
+          puppet: 6
+          fixtures: .fixtures-latest.yml
+          allow_failure: true
+        - ruby: 2.7.0
+          puppet: 7
+          fixtures: .fixtures-latest.yml
+          allow_failure: true
+    env:
+      BUNDLE_WITHOUT: system_tests:development
+      PUPPET_GEM_VERSION: "~> ${{ matrix.puppet }}.0"
+      FIXTURES_YML: ${{ matrix.fixtures }}
+    name: Puppet ${{ matrix.puppet }} (Ruby ${{ matrix.ruby }} fixtures=${{ matrix.fixtures }})
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+          bundler: '2.1.0'
+      - name: Validate
+        run: bundle exec rake validate lint strings:generate reference
+      - name: Run tests
+        run: bundle exec rake parallel_spec

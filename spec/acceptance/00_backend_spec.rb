@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuration.sensu_mode) do
+describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu_mode) do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
@@ -94,7 +94,7 @@ describe 'sensu::backend class', if: ['base','full'].include?(RSpec.configuratio
 
   # This test verifies non-standard location is used by setting agent-port
   # and then checking that port gets used by the daemon
-  context 'etc_dir change', if: (['base','full'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
+  context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':

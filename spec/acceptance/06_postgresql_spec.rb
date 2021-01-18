@@ -2,8 +2,16 @@ require 'spec_helper_acceptance'
 
 describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
   node = hosts_as('sensu-backend')[0]
+  agent = hosts_as('sensu-agent')[0]
   context 'adds postgresql datastore' do
     it 'should work without errors and be idempotent' do
+      agent_pp = <<-EOS
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        subscriptions    => ['base'],
+      }
+      EOS
       pp = <<-EOS
       class { 'postgresql::globals':
         manage_package_repo => true,
@@ -33,6 +41,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
         apply_manifest_on(node, pp, :catch_failures => true)
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
+      apply_manifest_on(agent, agent_pp, :catch_failures => true)
       apply_manifest_on(node, check_pp, :catch_failures => true)
       on node, 'sensuctl check execute event-test'
     end
@@ -82,6 +91,13 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
 
   context 'removes postgresql datastore' do
     it 'should work without errors and be idempotent' do
+      agent_pp = <<-EOS
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        subscriptions    => ['base'],
+      }
+      EOS
       pp = <<-EOS
       class { 'sensu::backend':
         datastore        => 'postgresql',
@@ -107,6 +123,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
         apply_manifest_on(node, pp, :catch_failures => true)
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
+      apply_manifest_on(agent, agent_pp, :catch_failures => true)
       apply_manifest_on(node, check_pp, :catch_failures => true)
       on node, 'sensuctl check execute event-test'
     end

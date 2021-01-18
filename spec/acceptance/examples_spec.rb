@@ -39,7 +39,7 @@ describe 'examples', if: RSpec.configuration.sensu_mode == 'examples' do
         apply_manifest_on(backend, backend_pp, :catch_failures => true)
         apply_manifest_on(backend, backend_pp, :catch_changes  => true)
       end
-      sleep 5
+      sleep 60
     end
 
     describe command("PGPASSWORD='sensu' psql -U sensu -h sensu-agent -c \"select * from events WHERE sensu_check = 'keepalive' LIMIT 1;\""), :node => agent do
