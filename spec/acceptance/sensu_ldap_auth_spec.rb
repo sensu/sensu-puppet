@@ -25,6 +25,22 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
           }
         ]
       }
+      sensu_ldap_auth { 'openldap-memberof':
+        ensure              => 'present',
+        servers             => [
+          {
+            'host'         => '127.0.0.1',
+            'port'         => 389,
+            'binding'      => {
+              'user_dn' => 'cn=binder,dc=acme,dc=org',
+              'password' => 'P@ssw0rd!'
+            },
+            'user_search'  => {
+              'base_dn' => 'dc=acme,dc=org',
+            },
+          }
+        ]
+      }
       sensu_ldap_auth { 'openldap-api':
         ensure              => 'present',
         servers             => [
@@ -70,6 +86,20 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
         expect(data['servers'][0]['security']).to eq('tls')
         expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=binder,dc=acme,dc=org', 'password' => 'P@ssw0rd!'})
         expect(data['servers'][0]['group_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'member','name_attribute' => 'cn','object_class' => 'groupOfNames'})
+        expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'})
+      end
+    end
+
+    it 'should have a valid LDAP auth using memberof' do
+      on node, 'sensuctl auth info openldap-memberof --format json' do
+        data = JSON.parse(stdout)
+        expect(data['servers'].size).to eq(1)
+        expect(data['servers'][0]['host']).to eq('127.0.0.1')
+        expect(data['servers'][0]['port']).to eq(389)
+        expect(data['servers'][0]['insecure']).to eq(false)
+        expect(data['servers'][0]['security']).to eq('tls')
+        expect(data['servers'][0]['binding']).to eq({'user_dn' => 'cn=binder,dc=acme,dc=org', 'password' => 'P@ssw0rd!'})
+        expect(data['servers'][0]['group_search']).to eq({'base_dn' => '','attribute' => '','name_attribute' => '','object_class' => ''})
         expect(data['servers'][0]['user_search']).to eq({'base_dn' => 'dc=acme,dc=org','attribute' => 'uid','name_attribute' => 'cn','object_class' => 'person'})
       end
     end

@@ -19,13 +19,14 @@ describe 'sensu::backend::datastore::postgresql', :type => :class do
 
       it do
         should contain_sensu_postgres_config('postgresql').with({
-          :ensure        => 'present',
-          :dsn           => sensitive('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require'),
-          :pool_size     => '20',
-          :strict        => 'false',
-          :batch_buffer  => '0',
-          :batch_size    => '1',
-          :batch_workers => '20',
+          :ensure             => 'present',
+          :dsn                => sensitive('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require'),
+          :pool_size          => '20',
+          :strict             => 'false',
+          :batch_buffer       => '0',
+          :batch_size         => '1',
+          :batch_workers      => '20',
+          :enable_round_robin => 'false',
         })
       end
 
