@@ -12,6 +12,10 @@ HOSTS:
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which iproute'
+    docker_env:
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
     docker_container_name: 'sensu-agent-el7'
   sensu-backend:
     roles:
@@ -28,6 +32,10 @@ HOSTS:
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which initscripts iproute'
+    docker_env:
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
     docker_container_name: 'sensu-backend-el7'
 CONFIG:
   log_level: debug

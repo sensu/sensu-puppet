@@ -2,9 +2,14 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [ -z "$TRAVIS_CI_KEY" -o -z "$TRAVIS_CI_IV" ]; then
-  echo "Must have TRAVIS_CI_KEY and TRAVIS_CI_IV environment variables set"
+if [ -z "$SENSU_SECRETS_PASSWORD" ]; then
+  echo "Must have SENSU_SECRETS_PASSWORD environment variable set"
   exit 1
 fi
 
-travis encrypt-file ${DIR}/secrets.tar.enc --decrypt --key $TRAVIS_CI_KEY --iv $TRAVIS_CI_IV
+echo $SENSU_SECRETS_PASSWORD | gpg --batch --yes --passphrase-fd 0 --quiet --output ${DIR}/secrets.tar ${DIR}/secrets.tar.gpg
+
+if [ -f ${DIR}/secrets.tar ]; then
+  cd ${DIR}
+  tar xvf secrets.tar
+fi

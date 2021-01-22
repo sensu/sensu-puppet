@@ -1,0 +1,74 @@
+name: Acceptance full
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  acceptance-full:
+    runs-on: ubuntu-latest
+    # Items marked as ci_build=yes are allowed to fail
+    continue-on-error: ${{ matrix.ci_build == 'yes' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Modes described in DESIGN.md: https://github.com/sensu/sensu-puppet/blob/master/DESIGN.md#acceptance-tests
+        sensu_mode:
+        - full
+        - types
+        - examples
+        puppet:
+        - puppet5
+        - puppet6
+        - puppet7
+        use_agent:
+        - no
+        ci_build:
+        - no
+        include:
+        - sensu_mode: types
+          puppet: puppet5
+          use_agent: yes
+          ci_build: no
+        - sensu_mode: types
+          puppet: puppet6
+          use_agent: yes
+          ci_build: no
+        - sensu_mode: types
+          puppet: puppet7
+          use_agent: yes
+          ci_build: no
+        - sensu_mode: types
+          puppet: puppet6
+          use_agent: no
+          ci_build: yes
+        - sensu_mode: examples
+          puppet: puppet6
+          use_agent: no
+          ci_build: yes
+    env:
+      BEAKER_debug: true
+    name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+        bundler-cache: true
+        bundler: '2.1.0'
+    - name: Decrypt secrets
+      env:
+        SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}
+      if: ${{ env.SENSU_SECRETS_PASSWORD != null }}
+      run: ./tests/decrypt-secrets.sh
+    - name: Run tests
+      run: bundle exec rake beaker
+      env:
+        BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
+        BEAKER_set: centos-7
+        BEAKER_sensu_mode: ${{ matrix.sensu_mode }}
+        BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
+        BEAKER_sensu_ci_build: ${{ matrix.ci_build }}

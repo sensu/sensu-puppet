@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  BUNDLE_WITHOUT: system_tests
+
+jobs:
+  deploy:
+    name: 'deploy to forge'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+          bundler: '2.1.0'
+      - name: Build and Deploy
+        env:
+          BLACKSMITH_FORGE_USERNAME: sensu
+          BLACKSMITH_FORGE_API_KEY: '${{ secrets.PUPPET_FORGE_API_KEY }}'
+        run: bundle exec rake module:push
