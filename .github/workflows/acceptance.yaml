@@ -21,6 +21,7 @@ jobs:
         - debian-10
         - ubuntu-1604
         - ubuntu-1804
+        - ubuntu-2004
         - amazonlinux-2
         - amazonlinux-201803
         puppet:
@@ -35,6 +36,9 @@ jobs:
           ci_build: yes
         - puppet: puppet7
           ci_build: yes
+        # Puppet 5 is not built for Ubuntu 20.04
+        - puppet: puppet5
+          set: ubuntu-2004
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (ci=${{ matrix.ci_build }})
