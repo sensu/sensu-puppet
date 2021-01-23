@@ -28,6 +28,24 @@ Puppet::Type.newtype(:sensu_ldap_auth) do
     ],
   }
 
+@example Add an LDAP auth that uses memberOf attribute by omitting group_search
+  sensu_ldap_auth { 'openldap':
+    ensure              => 'present',
+    servers             => [
+      {
+        'host' => '127.0.0.1',
+        'port' => 389,
+        'binding' => {
+          'user_dn' => 'cn=binder,dc=acme,dc=org',
+          'password' => 'P@ssw0rd!'
+        },
+        'user_search'  => {
+          'base_dn' => 'dc=acme,dc=org',
+        },
+      },
+    ],
+  }
+
 **Autorequires**:
 * `Package[sensu-go-cli]`
 * `Service[sensu-backend]`
@@ -57,7 +75,7 @@ DESC
     Keys:
     * host: required
     * port: required
-    * group_search: required
+    * group_search: optional (omit to use memberOf)
     * user_search: required
     * binding: optional Hash
     * insecure: default is `false`
@@ -87,7 +105,7 @@ DESC
       if ! server.is_a?(Hash)
         raise ArgumentError, "Each server must be a Hash not #{server.class}"
       end
-      required_keys = ['host','port','group_search','user_search']
+      required_keys = ['host','port','user_search']
       server_keys = server.keys.map { |k| k.to_s }
       required_keys.each do |k|
         if ! server_keys.include?(k)
@@ -111,16 +129,18 @@ DESC
           raise ArgumentError, "server binding must contain keys 'password' and 'user_dn'"
         end
       end
-      if ! server['group_search'].is_a?(Hash)
-        raise ArgumentError, "group_search must be a Hash not #{server['group_search'].class}"
-      end
-      if ! server['group_search'].key?('base_dn')
-        raise ArgumentError, "group_search requires base_dn"
-      end
-      group_search_valid_keys = ['base_dn','attribute','name_attribute','object_class']
-      server['group_search'].keys.each do |key|
-        if ! group_search_valid_keys.include?(key)
-          raise ArgumentError, "#{key} is not a valid key for group_search"
+      if server.key?('group_search')
+        if ! server['group_search'].is_a?(Hash)
+          raise ArgumentError, "group_search must be a Hash not #{server['group_search'].class}"
+        end
+        if ! server['group_search'].key?('base_dn')
+          raise ArgumentError, "group_search requires base_dn"
+        end
+        group_search_valid_keys = ['base_dn','attribute','name_attribute','object_class']
+        server['group_search'].keys.each do |key|
+          if ! group_search_valid_keys.include?(key)
+            raise ArgumentError, "#{key} is not a valid key for group_search"
+          end
         end
       end
       if ! server['user_search'].is_a?(Hash)
@@ -154,15 +174,24 @@ DESC
           server[k] = ''
         end
       end
-      group_search_defaults = {
-        'attribute' => 'member',
-        'name_attribute' => 'cn',
-        'object_class' => 'groupOfNames',
-      }
-      group_search_defaults.each_pair do |k,v|
-        if ! server['group_search'].key?(k)
-          server['group_search'][k] = v
+      if server.key?('group_search')
+        group_search_defaults = {
+          'attribute' => 'member',
+          'name_attribute' => 'cn',
+          'object_class' => 'groupOfNames',
+        }
+        group_search_defaults.each_pair do |k,v|
+          if ! server['group_search'].key?(k)
+            server['group_search'][k] = v
+          end
         end
+      else
+        server['group_search'] = {
+          'base_dn' => '',
+          'attribute' => '',
+          'name_attribute'  => '',
+          'object_class'    => '',
+        }
       end
       user_search_defaults = {
         'attribute' => 'uid',

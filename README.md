@@ -118,6 +118,8 @@ See [API Providers](#api-providers) for example Hiera that can be used in a file
 This module will still continue to write subscriptions and other agent configurations to `agent.yml` so that if an agent entity is deleted it can be recreated
 by restarting the `sensu-agent` service.
 
+Beginning with Sensu Go 6.2.0 you can go back to making `agent.yml` the authoritative source for an agent's config by setting `sensu::agent::agent_managed_entity` to `true`.
+
 ### Updating this module from 3.x to 4.x
 
 Class parameter changes:
@@ -372,6 +374,14 @@ class { 'sensu::agent':
 ```
 
 ### Advanced agent
+
+If you wish to have the `agent.yml` be authoritative for agent entity configs:
+
+```puppet
+class { 'sensu::agent':
+  agent_managed_entity  => true,
+}
+```
 
 If you wish to change the `agent` password you must provide the new and old password.
 It is advisable to set `show_diff` to `false` to avoid exposing the agent password.

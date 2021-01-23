@@ -39,6 +39,8 @@
 #   The path to sensu-agent service executable
 # @param config_hash
 #   Sensu agent configuration hash used to define agent.yml.
+# @param agent_managed_entity
+#   Manage agent entity using agent.yml rather than API
 # @param backends
 #   Array of sensu backends to pass to `backend-url` config option.
 #   Default is `["${sensu::api_host}:8081"]`
@@ -85,6 +87,7 @@ class sensu::agent (
   Boolean $service_enable = true,
   Stdlib::Absolutepath $service_path = '/usr/sbin/sensu-agent',
   Hash $config_hash = {},
+  Boolean $agent_managed_entity = false,
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
   String[1] $entity_name = $facts['networking']['fqdn'],
   Optional[Array[String[1]]] $subscriptions = undef,
@@ -126,14 +129,15 @@ class sensu::agent (
     }
   }
   $default_config = {
-    'backend-url'   => $backend_urls,
-    'name'          => $entity_name,
-    'subscriptions' => $subscriptions,
-    'annotations'   => $annotations,
-    'labels'        => $labels,
-    'namespace'     => $namespace,
-    'redact'        => $redact,
-    'password'      => $sensu::agent_password,
+    'backend-url'          => $backend_urls,
+    'name'                 => $entity_name,
+    'agent-managed-entity' => $agent_managed_entity,
+    'subscriptions'        => $subscriptions,
+    'annotations'          => $annotations,
+    'labels'               => $labels,
+    'namespace'            => $namespace,
+    'redact'               => $redact,
+    'password'             => $sensu::agent_password,
   }
   $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
   if $config['subscriptions'] {
@@ -156,9 +160,10 @@ class sensu::agent (
     }
   }
   sensu_agent_entity_setup { 'puppet':
-    url      => $sensu::api_url,
-    username => 'puppet-agent_entity_config',
-    password => $sensu::_agent_entity_config_password,
+    url                  => $sensu::api_url,
+    username             => 'puppet-agent_entity_config',
+    password             => $sensu::_agent_entity_config_password,
+    agent_managed_entity => $config['agent-managed-entity'],
   }
 
   $_service_env_vars = $service_env_vars.map |$key,$value| {

@@ -241,9 +241,9 @@ describe Puppet::Type.type(:sensu_ldap_auth) do
       config[:servers][0]['group_search'] = {'base_dn' => 'foo', 'foo' => 'bar'}
       expect { auth }.to raise_error(Puppet::Error, /is not a valid key for group_search/)
     end
-    it 'should fail if group_search not defined' do
+    it 'should not fail if group_search not defined' do
       config[:servers][0].delete('group_search')
-      expect { auth }.to raise_error(Puppet::Error, /requires key group_search/)
+      expect { auth }.not_to raise_error
     end
     it 'should require a hash for user_search' do
       config[:servers][0]['user_search'] = 'foo'

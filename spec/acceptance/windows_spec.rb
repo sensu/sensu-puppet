@@ -91,13 +91,14 @@ describe 'sensu::agent class', if: Gem.win_platform? do
 
     describe file('C:\ProgramData\Sensu\config\agent.yml') do
       expected_content = {
-        'backend-url'     => ['wss://sensu-backend:8081'],
-        'password'        => 'P@ssw0rd!',
-        'name'            => 'sensu-agent',
-        'namespace'       => 'default',
-        'redact'          => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
-        'log-level'       => 'info',
-        'trusted-ca-file' => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
+        'agent-managed-entity'  => false,
+        'backend-url'           => ['wss://sensu-backend:8081'],
+        'password'              => 'P@ssw0rd!',
+        'name'                  => 'sensu-agent',
+        'namespace'             => 'default',
+        'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
+        'log-level'             => 'info',
+        'trusted-ca-file'       => 'C:\ProgramData\Sensu\config\ssl\ca.crt',
       }
       its(:content_as_yaml) { is_expected.to eq(expected_content) }
     end

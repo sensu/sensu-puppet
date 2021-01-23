@@ -11,6 +11,7 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
       batch_buffer: '6.1.0',
       batch_size: '6.1.0',
       batch_workers: '6.1.0',
+      enable_round_robin: '6.2.0',
     }
   end
 
