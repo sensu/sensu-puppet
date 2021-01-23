@@ -375,6 +375,14 @@ Sensu agent configuration hash used to define agent.yml.
 
 Default value: `{}`
 
+##### `agent_managed_entity`
+
+Data type: `Boolean`
+
+Manage agent entity using agent.yml rather than API
+
+Default value: ``false``
+
 ##### `backends`
 
 Data type: `Optional[Array[Sensu::Backend_URL]]`
@@ -893,6 +901,14 @@ Data type: `Integer`
 PostgreSQL batch workers
 
 Default value: `20`
+
+##### `postgresql_enable_round_robin`
+
+Data type: `Boolean`
+
+PostgreSQL enable round robin
+
+Default value: ``false``
 
 ### `sensu::cli`
 
@@ -1691,6 +1707,14 @@ The value of the config for agent entity
 
 The following parameters are available in the `sensu_agent_entity_config` type.
 
+##### `agent_managed_entity`
+
+Valid values: ``true``, ``false``
+
+PRIVATE - determined by looking at agent entity labels
+
+Default value: ``false``
+
 ##### `config`
 
 The name of the config to set.
@@ -1730,6 +1754,14 @@ Puppet will usually discover the appropriate provider for your platform.
 #### Parameters
 
 The following parameters are available in the `sensu_agent_entity_setup` type.
+
+##### `agent_managed_entity`
+
+Valid values: ``true``, ``false``
+
+Agent entity managed by agent.yml
+
+Default value: ``false``
 
 ##### `name`
 
@@ -3356,6 +3388,27 @@ sensu_ldap_auth { 'openldap':
 }
 ```
 
+##### Add an LDAP auth that uses memberOf attribute by omitting group_search
+
+```puppet
+sensu_ldap_auth { 'openldap':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => '127.0.0.1',
+      'port' => 389,
+      'binding' => {
+        'user_dn' => 'cn=binder,dc=acme,dc=org',
+        'password' => 'P@ssw0rd!'
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    },
+  ],
+}
+```
+
 #### Properties
 
 The following properties are available in the `sensu_ldap_auth` type.
@@ -3379,7 +3432,7 @@ LDAP servers as Array of Hashes
 Keys:
 * host: required
 * port: required
-* group_search: required
+* group_search: optional (omit to use memberOf)
 * user_search: required
 * binding: optional Hash
 * insecure: default is `false`
@@ -3856,6 +3909,14 @@ Number of requests in each PostgreSQL write transaction, defaults to value for p
 ##### `dsn`
 
 Use the dsn attribute to specify the data source names as a URL or PostgreSQL connection string
+
+##### `enable_round_robin`
+
+Valid values: ``true``, ``false``
+
+If true, enables round robin scheduling on PostgreSQL
+
+Default value: `false`
 
 ##### `ensure`
 
