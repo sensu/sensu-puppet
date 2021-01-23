@@ -54,15 +54,7 @@ DESC
   extend PuppetX::Sensu::Type
   add_autorequires()
 
-  ensurable do
-    newvalue(:present) do
-      @resource.provider.create
-    end
-    newvalue(:absent) do
-      @resource.provider.destroy
-    end
-    defaultto(:present)
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc <<-EOS

@@ -4846,25 +4846,19 @@ Generate targets from Sensu Go
 
 Data type: `Optional[String[1]]`
 
-
+Namespace to pull entities from
 
 ##### `subscription`
 
 Data type: `Optional[String[1]]`
 
-
+Find entities with this subscription
 
 ##### `interface_list`
 
 Data type: `Optional[Array]`
 
-
-
-##### `uri_ipaddress`
-
-Data type: `Optional[Boolean]`
-
-
+Interfaces to search if more than one present
 
 ### `silenced`
 

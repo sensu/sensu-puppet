@@ -22,7 +22,7 @@ class SensuResolveReference
     entities
   end
 
-  def self.entities_to_targets(entities, interface_list, uri_ipaddress)
+  def self.entities_to_targets(entities, interface_list)
     targets = []
     entities.each do |e|
       target = {}
@@ -65,7 +65,6 @@ class SensuResolveReference
     namespace = params['namespace']
     subscription = params['subscription']
     interface_list = params['interface_list']
-    uri_ipaddress = params['uri_ipaddress']
 
     entities = sensuctl_entities(namespace)
 
@@ -73,7 +72,7 @@ class SensuResolveReference
       entities.select! { |e| e['subscriptions'].include?(subscription) }
     end
 
-    targets = entities_to_targets(entities, interface_list, uri_ipaddress)
+    targets = entities_to_targets(entities, interface_list)
     targets
   end
 
