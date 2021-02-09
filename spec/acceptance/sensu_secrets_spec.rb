@@ -21,10 +21,15 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
           "burst" => 100
         },
       }
+      file { '/tmp/secret':
+        ensure  => 'file',
+        content => "supersecret\n",
+        notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
+      }
       sensu_secrets_vault_provider { 'my_vault-token_file':
         ensure       => 'present',
         address      => "https://vaultserver.example.com:8200",
-        token_file   => "/tmp/secret",
+        token_file   => '/tmp/secret',
         version      => "v1",
         max_retries  => 2,
         timeout      => "20s",
@@ -65,7 +70,6 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
       }
       EOS
 
-      create_remote_file(node, '/tmp/secret', "supersecret\n")
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
@@ -171,16 +175,24 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
           "burst" => 200
         },
       }
+      file { '/tmp/secret':
+        ensure  => 'file',
+        content => "supersecret2\n",
+        notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
+      }
       sensu_secrets_vault_provider { 'my_vault-token_file':
         ensure       => 'present',
-        address      => "https://vaultserver.example.com:8201",
+        address      => "https://vaultserver.example.com:8200",
         token_file   => '/tmp/secret',
         version      => "v1",
-        max_retries  => 4,
-        timeout      => "40s",
+        max_retries  => 2,
+        timeout      => "20s",
+        tls          => {
+          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+        },
         rate_limiter => {
-          "limit" => 20,
-          "burst" => 200
+          "limit" => 10,
+          "burst" => 100
         },
       }
       sensu_secrets_vault_provider { 'my_vault-api':
@@ -209,7 +221,6 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
       }
       EOS
 
-      create_remote_file(node, '/tmp/secret', "supersecret2\n")
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
@@ -256,13 +267,13 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
         end
         data = resources.find { |r| r['metadata']['name'] == 'my_vault-token_file' }
         spec = data['spec']
-        expect(spec['client']['address']).to eq("https://vaultserver.example.com:8201")
+        expect(spec['client']['address']).to eq("https://vaultserver.example.com:8200")
         expect(spec['client']['token']).to eq("supersecret2")
         expect(spec['client']['version']).to eq("v1")
-        expect(spec['client']["max_retries"]).to eq(4)
-        expect(spec['client']["timeout"]).to eq("40s")
-        expect(spec['client']["tls"]).to be_nil
-        expect(spec['client']["rate_limiter"]).to eq({'limit' => 20, 'burst' => 200})
+        expect(spec['client']["max_retries"]).to eq(2)
+        expect(spec['client']["timeout"]).to eq("20s")
+        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end
     it 'should have a valid VaultProvider using API' do

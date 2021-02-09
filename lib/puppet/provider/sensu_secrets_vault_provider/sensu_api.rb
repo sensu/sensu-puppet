@@ -95,8 +95,8 @@ Puppet::Type.type(:sensu_secrets_vault_provider).provide(:sensu_api, :parent => 
     @property_hash[:ensure] = :present
   end
 
-  def flush
-    if !@property_flush.empty?
+  def flush(update = false)
+    if !@property_flush.empty? || update
       spec = {}
       metadata = {}
       metadata[:name] = resource[:name]
