@@ -40,14 +40,6 @@ jobs:
           puppet: puppet7
           use_agent: yes
           ci_build: no
-        - sensu_mode: types
-          puppet: puppet6
-          use_agent: no
-          ci_build: yes
-        - sensu_mode: examples
-          puppet: puppet6
-          use_agent: no
-          ci_build: yes
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
