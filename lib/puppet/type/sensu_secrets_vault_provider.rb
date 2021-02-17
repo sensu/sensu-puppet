@@ -61,7 +61,18 @@ DESC
   end
 
   newparam(:token_file) do
-    desc 'Path to file that contains token to use for authentication.'
+    desc <<-EOS
+    Path to file that contains token to use for authentication.
+
+    To update this resource with new content for the file, requires sending notify event from the file resource.
+
+    Example:
+
+    file { '/etc/sensu/provider-secret':
+      ...
+      notify => Sensu_secrets_vault_provider['my-vault'],
+    }
+    EOS
   end
 
   newproperty(:version) do
@@ -140,6 +151,12 @@ DESC
         end
       end
       value
+    end
+  end
+
+  def refresh
+    if provider.exists? && @parameters[:ensure].value.to_s == 'present' && ! @parameters[:token_file].value.nil?
+      provider.flush(true)
     end
   end
 
