@@ -1,5 +1,18 @@
 # Changelog
 
+## [v5.7.0](https://github.com/sensu/sensu-puppet/tree/v5.7.0) (2021-02-17)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.6.0...v5.7.0)
+
+### Added
+
+- Support refresh of sensu\_secrets\_vault\_provider token\_file [\#1305](https://github.com/sensu/sensu-puppet/pull/1305) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- Fix acceptance testing [\#1306](https://github.com/sensu/sensu-puppet/pull/1306) ([treydock](https://github.com/treydock))
+- Fix descriptions [\#1301](https://github.com/sensu/sensu-puppet/pull/1301) ([treydock](https://github.com/treydock))
+
 ## [v5.6.0](https://github.com/sensu/sensu-puppet/tree/v5.6.0) (2021-01-23)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.5.1...v5.6.0)
@@ -110,7 +123,6 @@
 - Remove acceptance test skipping for plugins [\#1272](https://github.com/sensu/sensu-puppet/pull/1272) ([treydock](https://github.com/treydock))
 - Make sensu\_ad\_auth group\_search optional [\#1266](https://github.com/sensu/sensu-puppet/pull/1266) ([treydock](https://github.com/treydock))
 - Add sensu::backend\_upgrade task [\#1265](https://github.com/sensu/sensu-puppet/pull/1265) ([treydock](https://github.com/treydock))
-- Allow disabling namespace validation for large environments [\#1254](https://github.com/sensu/sensu-puppet/pull/1254) ([treydock](https://github.com/treydock))
 
 ## [v4.13.1](https://github.com/sensu/sensu-puppet/tree/v4.13.1) (2020-08-13)
 
@@ -135,6 +147,10 @@
 ## [v4.12.0](https://github.com/sensu/sensu-puppet/tree/v4.12.0) (2020-07-05)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.11.0...v4.12.0)
+
+### Added
+
+- Allow disabling namespace validation for large environments [\#1254](https://github.com/sensu/sensu-puppet/pull/1254) ([treydock](https://github.com/treydock))
 
 ## [v4.11.0](https://github.com/sensu/sensu-puppet/tree/v4.11.0) (2020-06-29)
 
@@ -231,7 +247,6 @@
 - Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
 - Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
 - Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
-- Changes to support Sensu Go 5.17.1 [\#1207](https://github.com/sensu/sensu-puppet/pull/1207) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -253,6 +268,10 @@
 ## [v4.4.1](https://github.com/sensu/sensu-puppet/tree/v4.4.1) (2020-02-01)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.4.0...v4.4.1)
+
+### Added
+
+- Changes to support Sensu Go 5.17.1 [\#1207](https://github.com/sensu/sensu-puppet/pull/1207) ([treydock](https://github.com/treydock))
 
 ## [v4.4.0](https://github.com/sensu/sensu-puppet/tree/v4.4.0) (2020-01-31)
 
@@ -291,15 +310,10 @@
 ### Added
 
 - Add examples for Slack and InfluxDB [\#1199](https://github.com/sensu/sensu-puppet/pull/1199) ([treydock](https://github.com/treydock))
-- Allow SSL files to be defined via content parameters [\#1198](https://github.com/sensu/sensu-puppet/pull/1198) ([treydock](https://github.com/treydock))
 
 ## [v4.1.0](https://github.com/sensu/sensu-puppet/tree/v4.1.0) (2020-01-15)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.0.0...v4.1.0)
-
-### Added
-
-- Add support for sensuctl 'command' subcommand [\#1195](https://github.com/sensu/sensu-puppet/pull/1195) ([treydock](https://github.com/treydock))
 
 ## [v4.0.0](https://github.com/sensu/sensu-puppet/tree/v4.0.0) (2020-01-10)
 

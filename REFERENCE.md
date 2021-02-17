@@ -4336,6 +4336,15 @@ Puppet will usually discover the appropriate provider for your platform.
 
 Path to file that contains token to use for authentication.
 
+To update this resource with new content for the file, requires sending notify event from the file resource.
+
+Example:
+
+file { '/etc/sensu/provider-secret':
+  ...
+  notify => Sensu_secrets_vault_provider['my-vault'],
+}
+
 ### `sensu_tessen`
 
 **NOTE** This is a private type not intended to be used directly.
