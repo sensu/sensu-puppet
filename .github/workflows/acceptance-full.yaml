@@ -40,14 +40,9 @@ jobs:
           puppet: puppet7
           use_agent: yes
           ci_build: no
-        - sensu_mode: types
-          puppet: puppet6
-          use_agent: no
-          ci_build: yes
-        - sensu_mode: examples
-          puppet: puppet6
-          use_agent: no
-          ci_build: yes
+        # TODO: Uncomment once bolt tests are updated to work with latest bolt
+        #- sensu_mode: bolt
+        #  puppet: puppet6
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})

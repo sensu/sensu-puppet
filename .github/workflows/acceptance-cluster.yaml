@@ -23,10 +23,6 @@ jobs:
         - yes
         ci_build:
         - no
-        include:
-        - puppet: puppet6
-          use_agent: no
-          ci_build: yes
     env:
       BEAKER_debug: true
     name: Sensu Go Cluster ${{ matrix.puppet }} (use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})

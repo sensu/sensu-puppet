@@ -30,7 +30,6 @@ jobs:
         - puppet7
         ci_build:
         - no
-        - yes
         exclude:
         - puppet: puppet5
           ci_build: yes
