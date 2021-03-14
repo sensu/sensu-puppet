@@ -1250,7 +1250,7 @@ When changing the `sensu::password` value, it's necessary to run Puppet on the b
 
 ### Notes regarding support
 
-This module is built for use with Puppet versions 5 and 6 and the ruby
+This module is built for use with Puppet versions 6 and 7 and the ruby
 versions associated with those releases. See `.travis.yml` for an exact
 matrix of Puppet releases and ruby versions.
 
@@ -1275,6 +1275,7 @@ Linux.
 * Debian 10
 * Ubuntu 16.04 LTS
 * Ubuntu 18.04 LTS
+* Ubuntu 20.04 LTS
 * Amazon 2018.03
 * Amazon 2
 * Windows Server 2008 R2
