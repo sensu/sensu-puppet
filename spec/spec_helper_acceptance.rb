@@ -122,17 +122,24 @@ EOS
     end
 
     # Setup Puppet Bolt
-    if RSpec.configuration.sensu_mode == 'full'
+    if RSpec.configuration.sensu_mode == 'bolt'
       on setup_nodes, puppet("resource package puppet-bolt ensure=installed")
-      bolt_cfg = <<-EOS
-modulepath: "/etc/puppetlabs/code/modules:/etc/puppetlabs/code/environments/production/modules"
-ssh:
-  host-key-check: false
-  user: root
-  password: root
+      bolt_inventory_cfg = <<-EOS
+config:
+  transport: ssh
+  ssh:
+    host-key-check: false
+    user: root
+    password: root
+EOS
+      bolt_project_cfg = <<-EOS
+modulepath:
+- "/etc/puppetlabs/code/modules"
+- "/etc/puppetlabs/code/environments/production/modules"
 EOS
       on setup_nodes, 'mkdir -p -m 0755 /root/.puppetlabs/bolt'
-      create_remote_file(setup_nodes, '/root/.puppetlabs/bolt/bolt.yaml', bolt_cfg)
+      create_remote_file(setup_nodes, '/root/.puppetlabs/bolt/inventory.yaml', bolt_inventory_cfg)
+      create_remote_file(setup_nodes, '/root/.puppetlabs/bolt/bolt-project.yaml', bolt_project_cfg)
     end
   end
 end
