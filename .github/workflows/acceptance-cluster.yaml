@@ -15,7 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         puppet:
-        - puppet5
         - puppet6
         - puppet7
         use_agent:

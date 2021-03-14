@@ -21,7 +21,7 @@ rpm -qa | grep -q puppet
 if [ $? -ne 0 ]
 then
 
-    rpm_install http://yum.puppetlabs.com/puppet5-release-el-${release}.noarch.rpm
+    rpm_install http://yum.puppetlabs.com/puppet6-release-el-${release}.noarch.rpm
     yum -y install puppet-agent
     ln -s /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet
 fi
@@ -30,7 +30,7 @@ fi
 puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu ensure=link target=/vagrant
 
 # setup module dependencies
-puppet module install puppetlabs/stdlib --version ">= 5.1.0 < 7.0.0"
+puppet module install puppetlabs/stdlib --version ">= 5.1.0 < 8.0.0"
 puppet module install richardc-datacat --version ">= 0.6.2 < 2.0.0"
 
 puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10 host_aliases=sensu-backend

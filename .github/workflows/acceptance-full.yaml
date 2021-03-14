@@ -20,7 +20,6 @@ jobs:
         - types
         - examples
         puppet:
-        - puppet5
         - puppet6
         - puppet7
         use_agent:
@@ -28,10 +27,6 @@ jobs:
         ci_build:
         - no
         include:
-        - sensu_mode: types
-          puppet: puppet5
-          use_agent: yes
-          ci_build: no
         - sensu_mode: types
           puppet: puppet6
           use_agent: yes

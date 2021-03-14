@@ -6,10 +6,9 @@ require 'simp/beaker_helpers'
 
 include Simp::BeakerHelpers
 run_puppet_install_helper
-install_module_dependencies
 install_module
 pluginsync_on(hosts)
-collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet5'
+collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 
 RSpec.configure do |c|
@@ -59,21 +58,18 @@ RSpec.configure do |c|
 
   # Configure all nodes in nodeset
   c.before :suite do
-    # Install sensuclassic to ensure no conflicts
-    on setup_nodes, puppet('module', 'install', 'sensu-sensuclassic'), { :acceptable_exit_codes => [0,1] }
     # Install soft module dependencies
-    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 8.0.0"'), { :acceptable_exit_codes => [0,1] }
-    if collection == 'puppet6'
-      on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
-    end
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 9.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     # Dependencies only needed to test some examples
     if RSpec.configuration.sensu_mode == 'examples'
-      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '4.0.0')
+      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '5.0.0')
       on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
       # rsyslog template relies on rsyslog_version fact so pre-install rsyslog
       # to keep things idempotent within minimal docker containers
       on hosts, puppet('resource', 'package', 'rsyslog', 'ensure=present')
     end
+    install_module_dependencies
     ssldir = File.join(project_dir, 'tests/ssl')
     scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
     hosts.each do |host|

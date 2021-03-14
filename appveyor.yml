@@ -27,11 +27,11 @@ install:
 - ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/lib/facter" -Destination C:/ProgramData/PuppetLabs/puppet/cache/lib/facter -Recurse
 - set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
 - puppet --version
-- puppet module install puppetlabs-stdlib
-- puppet module install puppetlabs-chocolatey
-- puppet module install puppet-archive
-- puppet module install puppet-windows_env
-- puppet module install richardc-datacat
+- puppet module install puppetlabs-stdlib --version ">= 5.1.0 < 7.0.0"
+- puppet module install puppetlabs-chocolatey --version ">= 3.0.0 < 7.0.0"
+- puppet module install puppet-archive --version ">= 3.0.0 < 5.0.0"
+- puppet module install puppet-windows_env --version ">= 3.0.0 < 5.0.0"
+- puppet module install richardc-datacat --version ">= 0.6.0 < 2.0.0"
 - puppet config set --section main certname sensu_agent
 - facter -p --debug
 - ruby -v
@@ -48,10 +48,6 @@ image:
   - Visual Studio 2019
 environment:
   matrix:
-    - PUPPET_GEM_VERSION: '~>5.x'
-      FACTER_GEM_VERSION: '~>2.x'
-      PUPPET_REPO: puppet5
-      RUBY_VERSION: 24-x64
     - PUPPET_GEM_VERSION: '~>6.x'
       FACTER_GEM_VERSION: '~>2.x'
       PUPPET_REPO: puppet6

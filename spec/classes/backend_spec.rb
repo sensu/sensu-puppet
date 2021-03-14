@@ -22,14 +22,6 @@ describe 'sensu::backend', :type => :class do
         it { should contain_class('sensu::backend::agent_resources') }
         it { should_not contain_class('sensu::backend::datastore::postgresql') }
 
-        context 'on systemd host', if: Puppet.version.to_s =~ %r{^5} do
-          let(:facts) { facts.merge({:service_provider => 'systemd'}) }
-          it { should contain_package('sensu-go-backend').that_notifies('Class[systemd::systemctl::daemon_reload]') }
-          it { should contain_class('systemd::systemctl::daemon_reload').that_comes_before('Service[sensu-backend]') }
-        end
-        it { should_not contain_package('sensu-go-backend').that_notifies('Class[systemd::systemctl::daemon_reload]') }
-        it { should_not contain_class('systemd::systemctl::daemon_reload').that_comes_before('Service[sensu-backend]') }
-
         it { should have_sensu_user_resource_count(3) }
         it {
           should contain_sensu_user('admin').with({
