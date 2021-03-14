@@ -16,10 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 2.4.9
-          puppet: 5
-          fixtures: .fixtures.yml
-          allow_failure: false
         - ruby: 2.5.7
           puppet: 6
           fixtures: .fixtures.yml
@@ -28,10 +24,6 @@ jobs:
           puppet: 7
           fixtures: .fixtures.yml
           allow_failure: false
-        - ruby: 2.4.9
-          puppet: 5
-          fixtures: .fixtures-latest.yml
-          allow_failure: true
         - ruby: 2.5.7
           puppet: 6
           fixtures: .fixtures-latest.yml

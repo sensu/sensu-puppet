@@ -5,7 +5,7 @@ if ( Get-Command "puppet" -ErrorAction SilentlyContinue ) {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
   Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
   # Install puppet
-  iex "choco install puppet-agent --yes --version=5.5.19"
+  iex "choco install puppet-agent --yes --version=6.21.1"
 }
 
 $hiera_file = "C:\ProgramData\PuppetLabs\puppet\etc\hiera.yaml"

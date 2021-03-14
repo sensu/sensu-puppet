@@ -306,7 +306,6 @@ describe 'sensu bolt inventory', if: RSpec.configuration.sensu_mode == 'bolt' do
       apply_manifest_on(backend, pp, :catch_failures => true)
       apply_manifest_on(agent, agent_pp, :catch_failures => true)
       inventory_cfg1 = <<-EOS
-version: 2
 groups:
   - name: linux
     targets:

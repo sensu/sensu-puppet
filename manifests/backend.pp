@@ -236,14 +236,6 @@ class sensu::backend (
     include sensu::backend::agent_resources
   }
 
-  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
-  # Only necessary for Puppet < 6.1.0,
-  # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
-  if versioncmp($facts['puppetversion'],'6.1.0') < 0 and $facts['service_provider'] == 'systemd' {
-    Package['sensu-go-backend'] ~> Class['systemd::systemctl::daemon_reload']
-    Class['systemd::systemctl::daemon_reload'] -> Service['sensu-backend']
-  }
-
   sensu_user { 'admin':
     ensure                    => 'present',
     password                  => $sensu::password,
