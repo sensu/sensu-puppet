@@ -92,15 +92,35 @@
 
 ## Classes
 
-### `sensu`
+### <a name="sensu"></a>`sensu`
 
 This is the main Sensu class
 
 #### Parameters
 
-The following parameters are available in the `sensu` class.
+The following parameters are available in the `sensu` class:
 
-##### `version`
+* [`version`](#version)
+* [`etc_dir`](#etc_dir)
+* [`ssl_dir`](#ssl_dir)
+* [`manage_user`](#manage_user)
+* [`user`](#user)
+* [`manage_group`](#manage_group)
+* [`group`](#group)
+* [`etc_dir_purge`](#etc_dir_purge)
+* [`ssl_dir_purge`](#ssl_dir_purge)
+* [`manage_repo`](#manage_repo)
+* [`use_ssl`](#use_ssl)
+* [`ssl_ca_source`](#ssl_ca_source)
+* [`ssl_ca_content`](#ssl_ca_content)
+* [`api_host`](#api_host)
+* [`api_port`](#api_port)
+* [`password`](#password)
+* [`agent_password`](#agent_password)
+* [`agent_entity_config_password`](#agent_entity_config_password)
+* [`validate_namespaces`](#validate_namespaces)
+
+##### <a name="version"></a>`version`
 
 Data type: `String`
 
@@ -109,7 +129,7 @@ Windows MSI packaging and to avoid surprising upgrades.
 
 Default value: `'installed'`
 
-##### `etc_dir`
+##### <a name="etc_dir"></a>`etc_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -117,7 +137,7 @@ Absolute path to the Sensu etc directory.
 
 Default value: `'/etc/sensu'`
 
-##### `ssl_dir`
+##### <a name="ssl_dir"></a>`ssl_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -125,7 +145,7 @@ Absolute path to the Sensu ssl directory.
 
 Default value: `'/etc/sensu/ssl'`
 
-##### `manage_user`
+##### <a name="manage_user"></a>`manage_user`
 
 Data type: `Boolean`
 
@@ -133,7 +153,7 @@ Boolean that determines if sensu user should be managed
 
 Default value: ``true``
 
-##### `user`
+##### <a name="user"></a>`user`
 
 Data type: `String`
 
@@ -141,7 +161,7 @@ User used by sensu services
 
 Default value: `'sensu'`
 
-##### `manage_group`
+##### <a name="manage_group"></a>`manage_group`
 
 Data type: `Boolean`
 
@@ -149,7 +169,7 @@ Boolean that determines if sensu group should be managed
 
 Default value: ``true``
 
-##### `group`
+##### <a name="group"></a>`group`
 
 Data type: `String`
 
@@ -157,7 +177,7 @@ User group used by sensu services
 
 Default value: `'sensu'`
 
-##### `etc_dir_purge`
+##### <a name="etc_dir_purge"></a>`etc_dir_purge`
 
 Data type: `Boolean`
 
@@ -166,7 +186,7 @@ such that only Puppet managed files are present.
 
 Default value: ``true``
 
-##### `ssl_dir_purge`
+##### <a name="ssl_dir_purge"></a>`ssl_dir_purge`
 
 Data type: `Boolean`
 
@@ -175,7 +195,7 @@ such that only Puppet managed files are present.
 
 Default value: ``true``
 
-##### `manage_repo`
+##### <a name="manage_repo"></a>`manage_repo`
 
 Data type: `Boolean`
 
@@ -184,7 +204,7 @@ should be managed.
 
 Default value: ``true``
 
-##### `use_ssl`
+##### <a name="use_ssl"></a>`use_ssl`
 
 Data type: `Boolean`
 
@@ -192,7 +212,7 @@ Sensu backend service uses SSL
 
 Default value: ``true``
 
-##### `ssl_ca_source`
+##### <a name="ssl_ca_source"></a>`ssl_ca_source`
 
 Data type: `Optional[String]`
 
@@ -201,7 +221,7 @@ This parameter is mutually exclusive with ssl_ca_content
 
 Default value: `$facts['puppet_localcacert']`
 
-##### `ssl_ca_content`
+##### <a name="ssl_ca_content"></a>`ssl_ca_content`
 
 Data type: `Optional[String]`
 
@@ -210,7 +230,7 @@ This parameter is mutually exclusive with ssl_ca_source
 
 Default value: ``undef``
 
-##### `api_host`
+##### <a name="api_host"></a>`api_host`
 
 Data type: `String`
 
@@ -218,7 +238,7 @@ Sensu backend host used to configure sensuctl and verify API access.
 
 Default value: `$trusted['certname']`
 
-##### `api_port`
+##### <a name="api_port"></a>`api_port`
 
 Data type: `Stdlib::Port`
 
@@ -226,7 +246,7 @@ Sensu backend port used to configure sensuctl and verify API access.
 
 Default value: `8080`
 
-##### `password`
+##### <a name="password"></a>`password`
 
 Data type: `String`
 
@@ -234,7 +254,7 @@ Sensu backend admin password used to confiure sensuctl.
 
 Default value: `'P@ssw0rd!'`
 
-##### `agent_password`
+##### <a name="agent_password"></a>`agent_password`
 
 Data type: `String`
 
@@ -242,7 +262,7 @@ The sensu agent password
 
 Default value: `'P@ssw0rd!'`
 
-##### `agent_entity_config_password`
+##### <a name="agent_entity_config_password"></a>`agent_entity_config_password`
 
 Data type: `Optional[String]`
 
@@ -251,7 +271,7 @@ Defaults to value used for `agent_password`.
 
 Default value: ``undef``
 
-##### `validate_namespaces`
+##### <a name="validate_namespaces"></a>`validate_namespaces`
 
 Data type: `Boolean`
 
@@ -259,7 +279,7 @@ Determines if sensuctl and sensu_api types will validate their namespace exists
 
 Default value: ``true``
 
-### `sensu::agent`
+### <a name="sensuagent"></a>`sensu::agent`
 
 Class to manage the Sensu agent.
 
@@ -279,9 +299,32 @@ class { 'sensu::agent':
 
 #### Parameters
 
-The following parameters are available in the `sensu::agent` class.
+The following parameters are available in the `sensu::agent` class:
 
-##### `version`
+* [`version`](#version)
+* [`package_source`](#package_source)
+* [`package_download_path`](#package_download_path)
+* [`package_name`](#package_name)
+* [`service_env_vars_file`](#service_env_vars_file)
+* [`service_env_vars`](#service_env_vars)
+* [`service_name`](#service_name)
+* [`service_ensure`](#service_ensure)
+* [`service_enable`](#service_enable)
+* [`service_path`](#service_path)
+* [`config_hash`](#config_hash)
+* [`agent_managed_entity`](#agent_managed_entity)
+* [`backends`](#backends)
+* [`entity_name`](#entity_name)
+* [`subscriptions`](#subscriptions)
+* [`annotations`](#annotations)
+* [`labels`](#labels)
+* [`namespace`](#namespace)
+* [`redact`](#redact)
+* [`show_diff`](#show_diff)
+* [`log_file`](#log_file)
+* [`agent_entity_config_provider`](#agent_entity_config_provider)
+
+##### <a name="version"></a>`version`
 
 Data type: `Optional[String]`
 
@@ -290,7 +333,7 @@ Windows MSI packaging and to avoid surprising upgrades.
 
 Default value: ``undef``
 
-##### `package_source`
+##### <a name="package_source"></a>`package_source`
 
 Data type: `Optional[String[1]]`
 
@@ -300,7 +343,7 @@ Paths with puppet:// or absolute filesystem paths will also be installed.
 
 Default value: ``undef``
 
-##### `package_download_path`
+##### <a name="package_download_path"></a>`package_download_path`
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
@@ -309,7 +352,7 @@ This parameter only used when `package_source` is an URL or when it's a puppet s
 
 Default value: ``undef``
 
-##### `package_name`
+##### <a name="package_name"></a>`package_name`
 
 Data type: `String`
 
@@ -317,7 +360,7 @@ Name of Sensu agent package.
 
 Default value: `'sensu-go-agent'`
 
-##### `service_env_vars_file`
+##### <a name="service_env_vars_file"></a>`service_env_vars_file`
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
@@ -327,7 +370,7 @@ RedHat based default: `/etc/sysconfig/sensu-agent`
 
 Default value: ``undef``
 
-##### `service_env_vars`
+##### <a name="service_env_vars"></a>`service_env_vars`
 
 Data type: `Hash`
 
@@ -335,7 +378,7 @@ Hash of environment variables loaded by sensu-agent service
 
 Default value: `{}`
 
-##### `service_name`
+##### <a name="service_name"></a>`service_name`
 
 Data type: `String`
 
@@ -343,7 +386,7 @@ Name of the Sensu agent service.
 
 Default value: `'sensu-agent'`
 
-##### `service_ensure`
+##### <a name="service_ensure"></a>`service_ensure`
 
 Data type: `String`
 
@@ -351,7 +394,7 @@ Sensu agent service ensure value.
 
 Default value: `'running'`
 
-##### `service_enable`
+##### <a name="service_enable"></a>`service_enable`
 
 Data type: `Boolean`
 
@@ -359,7 +402,7 @@ Sensu agent service enable value.
 
 Default value: ``true``
 
-##### `service_path`
+##### <a name="service_path"></a>`service_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -367,7 +410,7 @@ The path to sensu-agent service executable
 
 Default value: `'/usr/sbin/sensu-agent'`
 
-##### `config_hash`
+##### <a name="config_hash"></a>`config_hash`
 
 Data type: `Hash`
 
@@ -375,7 +418,7 @@ Sensu agent configuration hash used to define agent.yml.
 
 Default value: `{}`
 
-##### `agent_managed_entity`
+##### <a name="agent_managed_entity"></a>`agent_managed_entity`
 
 Data type: `Boolean`
 
@@ -383,7 +426,7 @@ Manage agent entity using agent.yml rather than API
 
 Default value: ``false``
 
-##### `backends`
+##### <a name="backends"></a>`backends`
 
 Data type: `Optional[Array[Sensu::Backend_URL]]`
 
@@ -395,7 +438,7 @@ Passing `backend-url` as part of `config_hash` takes precedence over this parame
 
 Default value: ``undef``
 
-##### `entity_name`
+##### <a name="entity_name"></a>`entity_name`
 
 Data type: `String[1]`
 
@@ -404,7 +447,7 @@ Passing `name` as part of `config_hash` takes precedence
 
 Default value: `$facts['networking']['fqdn']`
 
-##### `subscriptions`
+##### <a name="subscriptions"></a>`subscriptions`
 
 Data type: `Optional[Array[String[1]]]`
 
@@ -413,7 +456,7 @@ Passing `subscriptions` as part of `config_hash` takes precedence
 
 Default value: ``undef``
 
-##### `annotations`
+##### <a name="annotations"></a>`annotations`
 
 Data type: `Optional[Hash[String[1],String]]`
 
@@ -422,7 +465,7 @@ Passing `annotations` as part of `config_hash` takes precedence
 
 Default value: ``undef``
 
-##### `labels`
+##### <a name="labels"></a>`labels`
 
 Data type: `Optional[Hash[String[1],String]]`
 
@@ -431,7 +474,7 @@ Passing `labels` as part of `config_hash` takes precedence
 
 Default value: ``undef``
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 Data type: `String[1]`
 
@@ -440,7 +483,7 @@ Passing `namespace` as part of `config_hash` takes precedence
 
 Default value: `'default'`
 
-##### `redact`
+##### <a name="redact"></a>`redact`
 
 Data type: `Array[String[1]]`
 
@@ -451,7 +494,7 @@ https://docs.sensu.io/sensu-go/latest/reference/agent/#security-configuration-fl
 
 Default value: `['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret']`
 
-##### `show_diff`
+##### <a name="show_diff"></a>`show_diff`
 
 Data type: `Boolean`
 
@@ -459,7 +502,7 @@ Sets show_diff parameter for agent.yml configuration file
 
 Default value: ``true``
 
-##### `log_file`
+##### <a name="log_file"></a>`log_file`
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
@@ -468,7 +511,7 @@ Defaults to `C:\ProgramData\sensu\log\sensu-agent.log`
 
 Default value: ``undef``
 
-##### `agent_entity_config_provider`
+##### <a name="agent_entity_config_provider"></a>`agent_entity_config_provider`
 
 Data type: `Enum['sensuctl','sensu_api']`
 
@@ -476,7 +519,7 @@ The provider to use when managing sensu_agent_entity_config resources
 
 Default value: `'sensu_api'`
 
-### `sensu::api`
+### <a name="sensuapi"></a>`sensu::api`
 
 Class to manage the Sensu API.
 
@@ -488,7 +531,7 @@ Class to manage the Sensu API.
 include sensu::api
 ```
 
-### `sensu::backend`
+### <a name="sensubackend"></a>`sensu::backend`
 
 Class to manage the Sensu backend.
 
@@ -502,9 +545,58 @@ include sensu::backend
 
 #### Parameters
 
-The following parameters are available in the `sensu::backend` class.
+The following parameters are available in the `sensu::backend` class:
 
-##### `version`
+* [`version`](#version)
+* [`package_name`](#package_name)
+* [`service_env_vars_file`](#service_env_vars_file)
+* [`service_env_vars`](#service_env_vars)
+* [`service_name`](#service_name)
+* [`service_ensure`](#service_ensure)
+* [`service_enable`](#service_enable)
+* [`service_path`](#service_path)
+* [`state_dir`](#state_dir)
+* [`config_hash`](#config_hash)
+* [`ssl_cert_source`](#ssl_cert_source)
+* [`ssl_cert_content`](#ssl_cert_content)
+* [`ssl_key_source`](#ssl_key_source)
+* [`ssl_key_content`](#ssl_key_content)
+* [`include_default_resources`](#include_default_resources)
+* [`include_agent_resources`](#include_agent_resources)
+* [`manage_agent_user`](#manage_agent_user)
+* [`agent_user_disabled`](#agent_user_disabled)
+* [`show_diff`](#show_diff)
+* [`license_source`](#license_source)
+* [`license_content`](#license_content)
+* [`manage_tessen`](#manage_tessen)
+* [`tessen_ensure`](#tessen_ensure)
+* [`datastore`](#datastore)
+* [`datastore_ensure`](#datastore_ensure)
+* [`manage_postgresql_db`](#manage_postgresql_db)
+* [`postgresql_name`](#postgresql_name)
+* [`postgresql_user`](#postgresql_user)
+* [`postgresql_password`](#postgresql_password)
+* [`postgresql_host`](#postgresql_host)
+* [`postgresql_port`](#postgresql_port)
+* [`postgresql_dbname`](#postgresql_dbname)
+* [`postgresql_sslmode`](#postgresql_sslmode)
+* [`postgresql_ssl_dir`](#postgresql_ssl_dir)
+* [`postgresql_ssl_ca_source`](#postgresql_ssl_ca_source)
+* [`postgresql_ssl_ca_content`](#postgresql_ssl_ca_content)
+* [`postgresql_ssl_crl_source`](#postgresql_ssl_crl_source)
+* [`postgresql_ssl_crl_content`](#postgresql_ssl_crl_content)
+* [`postgresql_ssl_cert_source`](#postgresql_ssl_cert_source)
+* [`postgresql_ssl_cert_content`](#postgresql_ssl_cert_content)
+* [`postgresql_ssl_key_source`](#postgresql_ssl_key_source)
+* [`postgresql_ssl_key_content`](#postgresql_ssl_key_content)
+* [`postgresql_pool_size`](#postgresql_pool_size)
+* [`postgresql_strict`](#postgresql_strict)
+* [`postgresql_batch_buffer`](#postgresql_batch_buffer)
+* [`postgresql_batch_size`](#postgresql_batch_size)
+* [`postgresql_batch_workers`](#postgresql_batch_workers)
+* [`postgresql_enable_round_robin`](#postgresql_enable_round_robin)
+
+##### <a name="version"></a>`version`
 
 Data type: `Optional[String]`
 
@@ -513,7 +605,7 @@ Windows MSI packaging and to avoid surprising upgrades.
 
 Default value: ``undef``
 
-##### `package_name`
+##### <a name="package_name"></a>`package_name`
 
 Data type: `String`
 
@@ -521,7 +613,7 @@ Name of Sensu backend package.
 
 Default value: `'sensu-go-backend'`
 
-##### `service_env_vars_file`
+##### <a name="service_env_vars_file"></a>`service_env_vars_file`
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
@@ -531,7 +623,7 @@ RedHat based default: `/etc/sysconfig/sensu-backend`
 
 Default value: ``undef``
 
-##### `service_env_vars`
+##### <a name="service_env_vars"></a>`service_env_vars`
 
 Data type: `Hash`
 
@@ -539,7 +631,7 @@ Hash of environment variables loaded by sensu-backend service
 
 Default value: `{}`
 
-##### `service_name`
+##### <a name="service_name"></a>`service_name`
 
 Data type: `String`
 
@@ -547,7 +639,7 @@ Name of the Sensu backend service.
 
 Default value: `'sensu-backend'`
 
-##### `service_ensure`
+##### <a name="service_ensure"></a>`service_ensure`
 
 Data type: `String`
 
@@ -555,7 +647,7 @@ Sensu backend service ensure value.
 
 Default value: `'running'`
 
-##### `service_enable`
+##### <a name="service_enable"></a>`service_enable`
 
 Data type: `Boolean`
 
@@ -563,7 +655,7 @@ Sensu backend service enable value.
 
 Default value: ``true``
 
-##### `service_path`
+##### <a name="service_path"></a>`service_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -571,7 +663,7 @@ The path to sensu-backend service executable
 
 Default value: `'/usr/sbin/sensu-backend'`
 
-##### `state_dir`
+##### <a name="state_dir"></a>`state_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -579,7 +671,7 @@ Sensu backend state directory path.
 
 Default value: `'/var/lib/sensu/sensu-backend'`
 
-##### `config_hash`
+##### <a name="config_hash"></a>`config_hash`
 
 Data type: `Hash`
 
@@ -587,7 +679,7 @@ Sensu backend configuration hash used to define backend.yml.
 
 Default value: `{}`
 
-##### `ssl_cert_source`
+##### <a name="ssl_cert_source"></a>`ssl_cert_source`
 
 Data type: `Optional[String]`
 
@@ -596,7 +688,7 @@ This parameter is mutually exclusive with ssl_cert_content
 
 Default value: `$facts['puppet_hostcert']`
 
-##### `ssl_cert_content`
+##### <a name="ssl_cert_content"></a>`ssl_cert_content`
 
 Data type: `Optional[String]`
 
@@ -605,7 +697,7 @@ This parameter is mutually exclusive with ssl_cert_source
 
 Default value: ``undef``
 
-##### `ssl_key_source`
+##### <a name="ssl_key_source"></a>`ssl_key_source`
 
 Data type: `Optional[String]`
 
@@ -614,7 +706,7 @@ This parameter is mutually exclusive with ssl_key_content
 
 Default value: `$facts['puppet_hostprivkey']`
 
-##### `ssl_key_content`
+##### <a name="ssl_key_content"></a>`ssl_key_content`
 
 Data type: `Optional[String]`
 
@@ -623,7 +715,7 @@ This parameter is mutually exclusive with ssl_key_source
 
 Default value: ``undef``
 
-##### `include_default_resources`
+##### <a name="include_default_resources"></a>`include_default_resources`
 
 Data type: `Boolean`
 
@@ -631,7 +723,7 @@ Sets if default sensu resources should be included
 
 Default value: ``true``
 
-##### `include_agent_resources`
+##### <a name="include_agent_resources"></a>`include_agent_resources`
 
 Data type: `Boolean`
 
@@ -639,7 +731,7 @@ Sets if agent RBAC resources should be included
 
 Default value: ``true``
 
-##### `manage_agent_user`
+##### <a name="manage_agent_user"></a>`manage_agent_user`
 
 Data type: `Boolean`
 
@@ -647,7 +739,7 @@ Sets if the Sensu agent user should be managed
 
 Default value: ``true``
 
-##### `agent_user_disabled`
+##### <a name="agent_user_disabled"></a>`agent_user_disabled`
 
 Data type: `Boolean`
 
@@ -658,7 +750,7 @@ See https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls
 
 Default value: ``false``
 
-##### `show_diff`
+##### <a name="show_diff"></a>`show_diff`
 
 Data type: `Boolean`
 
@@ -666,7 +758,7 @@ Sets show_diff parameter for backend.yml configuration file
 
 Default value: ``true``
 
-##### `license_source`
+##### <a name="license_source"></a>`license_source`
 
 Data type: `Optional[String]`
 
@@ -676,7 +768,7 @@ Do not define with license_content
 
 Default value: ``undef``
 
-##### `license_content`
+##### <a name="license_content"></a>`license_content`
 
 Data type: `Optional[String]`
 
@@ -685,7 +777,7 @@ Do not define with license_source
 
 Default value: ``undef``
 
-##### `manage_tessen`
+##### <a name="manage_tessen"></a>`manage_tessen`
 
 Data type: `Boolean`
 
@@ -693,7 +785,7 @@ Boolean that determines if Tessen is managed
 
 Default value: ``true``
 
-##### `tessen_ensure`
+##### <a name="tessen_ensure"></a>`tessen_ensure`
 
 Data type: `Enum['present','absent']`
 
@@ -701,7 +793,7 @@ Determine if Tessen is opt-in (present) or opt-out (absent)
 
 Default value: `'present'`
 
-##### `datastore`
+##### <a name="datastore"></a>`datastore`
 
 Data type: `Optional[Enum['postgresql']]`
 
@@ -709,7 +801,7 @@ Datastore to configure for sensu events
 
 Default value: ``undef``
 
-##### `datastore_ensure`
+##### <a name="datastore_ensure"></a>`datastore_ensure`
 
 Data type: `Enum['present','absent']`
 
@@ -718,7 +810,7 @@ datastore parameters must still be defined.
 
 Default value: `'present'`
 
-##### `manage_postgresql_db`
+##### <a name="manage_postgresql_db"></a>`manage_postgresql_db`
 
 Data type: `Boolean`
 
@@ -726,7 +818,7 @@ Boolean that sets of postgresql database should be managed
 
 Default value: ``true``
 
-##### `postgresql_name`
+##### <a name="postgresql_name"></a>`postgresql_name`
 
 Data type: `String`
 
@@ -734,7 +826,7 @@ Name of PostgresConfig that is configured with sensuctl
 
 Default value: `'postgresql'`
 
-##### `postgresql_user`
+##### <a name="postgresql_user"></a>`postgresql_user`
 
 Data type: `String`
 
@@ -742,7 +834,7 @@ The PostgreSQL database user
 
 Default value: `'sensu'`
 
-##### `postgresql_password`
+##### <a name="postgresql_password"></a>`postgresql_password`
 
 Data type: `String`
 
@@ -750,7 +842,7 @@ The PostgreSQL database password
 
 Default value: `'changeme'`
 
-##### `postgresql_host`
+##### <a name="postgresql_host"></a>`postgresql_host`
 
 Data type: `Stdlib::Host`
 
@@ -758,7 +850,7 @@ The PostgreSQL host
 
 Default value: `'localhost'`
 
-##### `postgresql_port`
+##### <a name="postgresql_port"></a>`postgresql_port`
 
 Data type: `Stdlib::Port`
 
@@ -766,7 +858,7 @@ The PostgreSQL port
 
 Default value: `5432`
 
-##### `postgresql_dbname`
+##### <a name="postgresql_dbname"></a>`postgresql_dbname`
 
 Data type: `String`
 
@@ -774,7 +866,7 @@ The name of the PostgreSQL database
 
 Default value: `'sensu'`
 
-##### `postgresql_sslmode`
+##### <a name="postgresql_sslmode"></a>`postgresql_sslmode`
 
 Data type: `Enum['disable','require','verify-ca','verify-full']`
 
@@ -782,7 +874,7 @@ The PostgreSQL sslmode value
 
 Default value: `'require'`
 
-##### `postgresql_ssl_dir`
+##### <a name="postgresql_ssl_dir"></a>`postgresql_ssl_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -790,7 +882,7 @@ The path to store SSL related files for PostgreSQL connections
 
 Default value: `'/var/lib/sensu/.postgresql'`
 
-##### `postgresql_ssl_ca_source`
+##### <a name="postgresql_ssl_ca_source"></a>`postgresql_ssl_ca_source`
 
 Data type: `Optional[String]`
 
@@ -799,7 +891,7 @@ Do not define with postgresql_ssl_ca_content
 
 Default value: ``undef``
 
-##### `postgresql_ssl_ca_content`
+##### <a name="postgresql_ssl_ca_content"></a>`postgresql_ssl_ca_content`
 
 Data type: `Optional[String]`
 
@@ -808,7 +900,7 @@ Do not define with postgresql_ssl_ca_source
 
 Default value: ``undef``
 
-##### `postgresql_ssl_crl_source`
+##### <a name="postgresql_ssl_crl_source"></a>`postgresql_ssl_crl_source`
 
 Data type: `Optional[String]`
 
@@ -817,7 +909,7 @@ Do not define with postgresql_ssl_crl_content
 
 Default value: ``undef``
 
-##### `postgresql_ssl_crl_content`
+##### <a name="postgresql_ssl_crl_content"></a>`postgresql_ssl_crl_content`
 
 Data type: `Optional[String]`
 
@@ -826,7 +918,7 @@ Do not define with postgresql_ssl_crl_source
 
 Default value: ``undef``
 
-##### `postgresql_ssl_cert_source`
+##### <a name="postgresql_ssl_cert_source"></a>`postgresql_ssl_cert_source`
 
 Data type: `Optional[String]`
 
@@ -835,7 +927,7 @@ Do not define with postgresql_ssl_cert_content
 
 Default value: ``undef``
 
-##### `postgresql_ssl_cert_content`
+##### <a name="postgresql_ssl_cert_content"></a>`postgresql_ssl_cert_content`
 
 Data type: `Optional[String]`
 
@@ -844,7 +936,7 @@ Do not define with postgresql_ssl_cert_source
 
 Default value: ``undef``
 
-##### `postgresql_ssl_key_source`
+##### <a name="postgresql_ssl_key_source"></a>`postgresql_ssl_key_source`
 
 Data type: `Optional[String]`
 
@@ -853,7 +945,7 @@ Do not define with postgresql_ssl_key_content
 
 Default value: ``undef``
 
-##### `postgresql_ssl_key_content`
+##### <a name="postgresql_ssl_key_content"></a>`postgresql_ssl_key_content`
 
 Data type: `Optional[String]`
 
@@ -862,7 +954,7 @@ Do not define with postgresql_ssl_key_source
 
 Default value: ``undef``
 
-##### `postgresql_pool_size`
+##### <a name="postgresql_pool_size"></a>`postgresql_pool_size`
 
 Data type: `Integer`
 
@@ -870,7 +962,7 @@ The PostgreSQL pool size
 
 Default value: `20`
 
-##### `postgresql_strict`
+##### <a name="postgresql_strict"></a>`postgresql_strict`
 
 Data type: `Boolean`
 
@@ -878,7 +970,7 @@ Enables strict configuration checks for PostgreSQL
 
 Default value: ``false``
 
-##### `postgresql_batch_buffer`
+##### <a name="postgresql_batch_buffer"></a>`postgresql_batch_buffer`
 
 Data type: `Integer`
 
@@ -886,7 +978,7 @@ PostgreSQL batch buffer size
 
 Default value: `0`
 
-##### `postgresql_batch_size`
+##### <a name="postgresql_batch_size"></a>`postgresql_batch_size`
 
 Data type: `Integer`
 
@@ -894,7 +986,7 @@ PostgreSQL batch size
 
 Default value: `1`
 
-##### `postgresql_batch_workers`
+##### <a name="postgresql_batch_workers"></a>`postgresql_batch_workers`
 
 Data type: `Integer`
 
@@ -902,7 +994,7 @@ PostgreSQL batch workers
 
 Default value: `20`
 
-##### `postgresql_enable_round_robin`
+##### <a name="postgresql_enable_round_robin"></a>`postgresql_enable_round_robin`
 
 Data type: `Boolean`
 
@@ -910,7 +1002,7 @@ PostgreSQL enable round robin
 
 Default value: ``false``
 
-### `sensu::cli`
+### <a name="sensucli"></a>`sensu::cli`
 
 Class to manage the Sensu CLI.
 
@@ -926,9 +1018,18 @@ class { 'sensu::cli':
 
 #### Parameters
 
-The following parameters are available in the `sensu::cli` class.
+The following parameters are available in the `sensu::cli` class:
 
-##### `version`
+* [`version`](#version)
+* [`package_name`](#package_name)
+* [`install_source`](#install_source)
+* [`install_path`](#install_path)
+* [`configure`](#configure)
+* [`sensuctl_chunk_size`](#sensuctl_chunk_size)
+* [`config_format`](#config_format)
+* [`config_namespace`](#config_namespace)
+
+##### <a name="version"></a>`version`
 
 Data type: `Optional[String]`
 
@@ -937,7 +1038,7 @@ Windows MSI packaging and to avoid surprising upgrades.
 
 Default value: ``undef``
 
-##### `package_name`
+##### <a name="package_name"></a>`package_name`
 
 Data type: `String`
 
@@ -945,7 +1046,7 @@ Name of Sensu CLI package.
 
 Default value: `'sensu-go-cli'`
 
-##### `install_source`
+##### <a name="install_source"></a>`install_source`
 
 Data type: `Optional[Variant[Stdlib::HTTPSUrl, Stdlib::HTTPUrl, Pattern[/^(file|puppet):/]]]`
 
@@ -955,7 +1056,7 @@ Paths with puppet:// or file:// paths will also be installed.
 
 Default value: ``undef``
 
-##### `install_path`
+##### <a name="install_path"></a>`install_path`
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
@@ -963,7 +1064,7 @@ Where to install sensuctl for Windows. Default to `C:\Program Files\Sensu`.
 
 Default value: ``undef``
 
-##### `configure`
+##### <a name="configure"></a>`configure`
 
 Data type: `Boolean`
 
@@ -971,7 +1072,7 @@ Determines if sensuctl should be configured
 
 Default value: ``true``
 
-##### `sensuctl_chunk_size`
+##### <a name="sensuctl_chunk_size"></a>`sensuctl_chunk_size`
 
 Data type: `Optional[Integer]`
 
@@ -979,7 +1080,7 @@ Chunk size to use when listing sensuctl resources
 
 Default value: ``undef``
 
-##### `config_format`
+##### <a name="config_format"></a>`config_format`
 
 Data type: `Optional[Enum['tabular','json','wrapped-json','yaml']]`
 
@@ -987,7 +1088,7 @@ Default format for sensuctl
 
 Default value: ``undef``
 
-##### `config_namespace`
+##### <a name="config_namespace"></a>`config_namespace`
 
 Data type: `Optional[String]`
 
@@ -995,7 +1096,7 @@ Default namespace for sensuctl
 
 Default value: ``undef``
 
-### `sensu::plugins`
+### <a name="sensuplugins"></a>`sensu::plugins`
 
 Class to manage the Sensu plugins.
 
@@ -1025,9 +1126,17 @@ class { 'sensu::plugins':
 
 #### Parameters
 
-The following parameters are available in the `sensu::plugins` class.
+The following parameters are available in the `sensu::plugins` class:
 
-##### `manage_repo`
+* [`manage_repo`](#manage_repo)
+* [`package_ensure`](#package_ensure)
+* [`package_name`](#package_name)
+* [`dependencies`](#dependencies)
+* [`gem_dependencies`](#gem_dependencies)
+* [`plugins`](#plugins)
+* [`extensions`](#extensions)
+
+##### <a name="manage_repo"></a>`manage_repo`
 
 Data type: `Optional[Boolean]`
 
@@ -1036,7 +1145,7 @@ Defaults to value for `sensu::manage_repo`.
 
 Default value: ``undef``
 
-##### `package_ensure`
+##### <a name="package_ensure"></a>`package_ensure`
 
 Data type: `String`
 
@@ -1044,7 +1153,7 @@ Ensure property for sensu plugins package.
 
 Default value: `'installed'`
 
-##### `package_name`
+##### <a name="package_name"></a>`package_name`
 
 Data type: `String`
 
@@ -1052,7 +1161,7 @@ Name of the Sensu plugins ruby package.
 
 Default value: `'sensu-plugins-ruby'`
 
-##### `dependencies`
+##### <a name="dependencies"></a>`dependencies`
 
 Data type: `Array`
 
@@ -1061,7 +1170,7 @@ Default is OS dependent.
 
 Default value: `[]`
 
-##### `gem_dependencies`
+##### <a name="gem_dependencies"></a>`gem_dependencies`
 
 Data type: `Array`
 
@@ -1069,7 +1178,7 @@ Gem dependencies.
 
 Default value: `[]`
 
-##### `plugins`
+##### <a name="plugins"></a>`plugins`
 
 Data type: `Variant[Array, Hash]`
 
@@ -1077,7 +1186,7 @@ Plugins to install
 
 Default value: `[]`
 
-##### `extensions`
+##### <a name="extensions"></a>`extensions`
 
 Data type: `Variant[Array, Hash]`
 
@@ -1085,15 +1194,40 @@ Extensions to install
 
 Default value: `[]`
 
-### `sensu::resources`
+### <a name="sensuresources"></a>`sensu::resources`
 
 Define sensu resources
 
 #### Parameters
 
-The following parameters are available in the `sensu::resources` class.
+The following parameters are available in the `sensu::resources` class:
 
-##### `ad_auths`
+* [`ad_auths`](#ad_auths)
+* [`assets`](#assets)
+* [`bonsai_assets`](#bonsai_assets)
+* [`checks`](#checks)
+* [`cluster_federations`](#cluster_federations)
+* [`cluster_federation_members`](#cluster_federation_members)
+* [`cluster_members`](#cluster_members)
+* [`cluster_role_bindings`](#cluster_role_bindings)
+* [`cluster_roles`](#cluster_roles)
+* [`configs`](#configs)
+* [`entities`](#entities)
+* [`etcd_replicators`](#etcd_replicators)
+* [`filters`](#filters)
+* [`handlers`](#handlers)
+* [`hooks`](#hooks)
+* [`ldap_auths`](#ldap_auths)
+* [`mutators`](#mutators)
+* [`namespaces`](#namespaces)
+* [`oidc_auths`](#oidc_auths)
+* [`role_bindings`](#role_bindings)
+* [`roles`](#roles)
+* [`secrets`](#secrets)
+* [`secrets_vault_providers`](#secrets_vault_providers)
+* [`users`](#users)
+
+##### <a name="ad_auths"></a>`ad_auths`
 
 Data type: `Hash`
 
@@ -1101,7 +1235,7 @@ Hash of sensu_ad_auth resources
 
 Default value: `{}`
 
-##### `assets`
+##### <a name="assets"></a>`assets`
 
 Data type: `Hash`
 
@@ -1109,7 +1243,7 @@ Hash of sensu_asset resources
 
 Default value: `{}`
 
-##### `bonsai_assets`
+##### <a name="bonsai_assets"></a>`bonsai_assets`
 
 Data type: `Hash`
 
@@ -1117,7 +1251,7 @@ Hash of sensu_bonsai_asset resources
 
 Default value: `{}`
 
-##### `checks`
+##### <a name="checks"></a>`checks`
 
 Data type: `Hash`
 
@@ -1125,7 +1259,7 @@ Hash of sensu_check resources
 
 Default value: `{}`
 
-##### `cluster_federations`
+##### <a name="cluster_federations"></a>`cluster_federations`
 
 Data type: `Hash`
 
@@ -1133,7 +1267,7 @@ Hash of sensu_cluster_federation resources
 
 Default value: `{}`
 
-##### `cluster_federation_members`
+##### <a name="cluster_federation_members"></a>`cluster_federation_members`
 
 Data type: `Hash`
 
@@ -1141,7 +1275,7 @@ Hash of sensu_cluster_federation_member resources
 
 Default value: `{}`
 
-##### `cluster_members`
+##### <a name="cluster_members"></a>`cluster_members`
 
 Data type: `Hash`
 
@@ -1149,7 +1283,7 @@ Hash of sensu_cluster_member resources
 
 Default value: `{}`
 
-##### `cluster_role_bindings`
+##### <a name="cluster_role_bindings"></a>`cluster_role_bindings`
 
 Data type: `Hash`
 
@@ -1157,7 +1291,7 @@ Hash of sensu_cluster_role_binding resources
 
 Default value: `{}`
 
-##### `cluster_roles`
+##### <a name="cluster_roles"></a>`cluster_roles`
 
 Data type: `Hash`
 
@@ -1165,7 +1299,7 @@ Hash of sensu_cluster_role resources
 
 Default value: `{}`
 
-##### `configs`
+##### <a name="configs"></a>`configs`
 
 Data type: `Hash`
 
@@ -1173,7 +1307,7 @@ Hash of sensu_config resources
 
 Default value: `{}`
 
-##### `entities`
+##### <a name="entities"></a>`entities`
 
 Data type: `Hash`
 
@@ -1181,7 +1315,7 @@ Hash of sensu_entity resources
 
 Default value: `{}`
 
-##### `etcd_replicators`
+##### <a name="etcd_replicators"></a>`etcd_replicators`
 
 Data type: `Hash`
 
@@ -1189,7 +1323,7 @@ Hash of sensu_etcd_replicator resources
 
 Default value: `{}`
 
-##### `filters`
+##### <a name="filters"></a>`filters`
 
 Data type: `Hash`
 
@@ -1197,7 +1331,7 @@ Hash of sensu_filter resources
 
 Default value: `{}`
 
-##### `handlers`
+##### <a name="handlers"></a>`handlers`
 
 Data type: `Hash`
 
@@ -1205,7 +1339,7 @@ Hash of sensu_handler resources
 
 Default value: `{}`
 
-##### `hooks`
+##### <a name="hooks"></a>`hooks`
 
 Data type: `Hash`
 
@@ -1213,7 +1347,7 @@ Hash of sensu_hook resources
 
 Default value: `{}`
 
-##### `ldap_auths`
+##### <a name="ldap_auths"></a>`ldap_auths`
 
 Data type: `Hash`
 
@@ -1221,7 +1355,7 @@ Hash of sensu_ldap_auth resources
 
 Default value: `{}`
 
-##### `mutators`
+##### <a name="mutators"></a>`mutators`
 
 Data type: `Hash`
 
@@ -1229,7 +1363,7 @@ Hash of sensu_mutator resources
 
 Default value: `{}`
 
-##### `namespaces`
+##### <a name="namespaces"></a>`namespaces`
 
 Data type: `Hash`
 
@@ -1237,7 +1371,7 @@ Hash of sensu_namespace resources
 
 Default value: `{}`
 
-##### `oidc_auths`
+##### <a name="oidc_auths"></a>`oidc_auths`
 
 Data type: `Hash`
 
@@ -1245,7 +1379,7 @@ Hash of sensu_oidc_auth resources
 
 Default value: `{}`
 
-##### `role_bindings`
+##### <a name="role_bindings"></a>`role_bindings`
 
 Data type: `Hash`
 
@@ -1253,7 +1387,7 @@ Hash of sensu_role_binding resources
 
 Default value: `{}`
 
-##### `roles`
+##### <a name="roles"></a>`roles`
 
 Data type: `Hash`
 
@@ -1261,7 +1395,7 @@ Hash of sensu_role resources
 
 Default value: `{}`
 
-##### `secrets`
+##### <a name="secrets"></a>`secrets`
 
 Data type: `Hash`
 
@@ -1269,7 +1403,7 @@ Hash of secrets
 
 Default value: `{}`
 
-##### `secrets_vault_providers`
+##### <a name="secrets_vault_providers"></a>`secrets_vault_providers`
 
 Data type: `Hash`
 
@@ -1277,7 +1411,7 @@ Hash of sensu_secrets_vault_providers
 
 Default value: `{}`
 
-##### `users`
+##### <a name="users"></a>`users`
 
 Data type: `Hash`
 
@@ -1287,7 +1421,7 @@ Default value: `{}`
 
 ## Defined types
 
-### `sensu::agent::annotation`
+### <a name="sensuagentannotation"></a>`sensu::agent::annotation`
 
 Add agent annotation
 
@@ -1301,9 +1435,17 @@ sensu::agent::annotation { 'fatigue_check/occurrences:': value => '2' }
 
 #### Parameters
 
-The following parameters are available in the `sensu::agent::annotation` defined type.
+The following parameters are available in the `sensu::agent::annotation` defined type:
 
-##### `ensure`
+* [`ensure`](#ensure)
+* [`key`](#key)
+* [`value`](#value)
+* [`redact`](#redact)
+* [`order`](#order)
+* [`entity`](#entity)
+* [`namespace`](#namespace)
+
+##### <a name="ensure"></a>`ensure`
 
 Data type: `Enum['present','absent']`
 
@@ -1311,7 +1453,7 @@ Ensure property of the annotation
 
 Default value: `'present'`
 
-##### `key`
+##### <a name="key"></a>`key`
 
 Data type: `String[1]`
 
@@ -1319,13 +1461,13 @@ Key of the annotation to add to agent.yml, defaults to `$name`.
 
 Default value: `$name`
 
-##### `value`
+##### <a name="value"></a>`value`
 
 Data type: `String`
 
 Label value to add to agent.yml
 
-##### `redact`
+##### <a name="redact"></a>`redact`
 
 Data type: `Boolean`
 
@@ -1333,7 +1475,7 @@ Boolean that sets if this entry should be added to redact list
 
 Default value: ``false``
 
-##### `order`
+##### <a name="order"></a>`order`
 
 Data type: `String[1]`
 
@@ -1341,7 +1483,7 @@ Order of the datacat fragment
 
 Default value: `'50'`
 
-##### `entity`
+##### <a name="entity"></a>`entity`
 
 Data type: `Optional[String[1]]`
 
@@ -1349,7 +1491,7 @@ Entity where to manage this annotation
 
 Default value: ``undef``
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 Data type: `Optional[String[1]]`
 
@@ -1357,15 +1499,19 @@ Namespace of entity to manage this annotation
 
 Default value: ``undef``
 
-### `sensu::agent::config_entry`
+### <a name="sensuagentconfig_entry"></a>`sensu::agent::config_entry`
 
 The sensu::agent::config_entry class.
 
 #### Parameters
 
-The following parameters are available in the `sensu::agent::config_entry` defined type.
+The following parameters are available in the `sensu::agent::config_entry` defined type:
 
-##### `key`
+* [`key`](#key)
+* [`value`](#value)
+* [`order`](#order)
+
+##### <a name="key"></a>`key`
 
 Data type: `String[1]`
 
@@ -1373,13 +1519,13 @@ Key of the config entry to add to agent.yml, defaults to `$name`.
 
 Default value: `$name`
 
-##### `value`
+##### <a name="value"></a>`value`
 
 Data type: `Any`
 
 Config entry value to add to agent.yml
 
-##### `order`
+##### <a name="order"></a>`order`
 
 Data type: `String[1]`
 
@@ -1387,7 +1533,7 @@ Order of the datacat fragment
 
 Default value: `'50'`
 
-### `sensu::agent::label`
+### <a name="sensuagentlabel"></a>`sensu::agent::label`
 
 Add agent label
 
@@ -1401,9 +1547,17 @@ sensu::agent::label { 'contacts': value => 'ops@example.com' }
 
 #### Parameters
 
-The following parameters are available in the `sensu::agent::label` defined type.
+The following parameters are available in the `sensu::agent::label` defined type:
 
-##### `ensure`
+* [`ensure`](#ensure)
+* [`key`](#key)
+* [`value`](#value)
+* [`redact`](#redact)
+* [`order`](#order)
+* [`entity`](#entity)
+* [`namespace`](#namespace)
+
+##### <a name="ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
@@ -1411,7 +1565,7 @@ Ensure property for the label
 
 Default value: `'present'`
 
-##### `key`
+##### <a name="key"></a>`key`
 
 Data type: `String[1]`
 
@@ -1419,13 +1573,13 @@ Key of the label to add to agent.yml, defaults to `$name`.
 
 Default value: `$name`
 
-##### `value`
+##### <a name="value"></a>`value`
 
 Data type: `String`
 
 Label value to add to agent.yml
 
-##### `redact`
+##### <a name="redact"></a>`redact`
 
 Data type: `Boolean`
 
@@ -1433,7 +1587,7 @@ Boolean that sets if this entry should be added to redact list
 
 Default value: ``false``
 
-##### `order`
+##### <a name="order"></a>`order`
 
 Data type: `String[1]`
 
@@ -1441,7 +1595,7 @@ Order of the datacat fragment
 
 Default value: `'50'`
 
-##### `entity`
+##### <a name="entity"></a>`entity`
 
 Data type: `Optional[String[1]]`
 
@@ -1449,7 +1603,7 @@ Entity where to manage this label
 
 Default value: ``undef``
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 Data type: `Optional[String[1]]`
 
@@ -1457,7 +1611,7 @@ Namespace of entity to manage this label
 
 Default value: ``undef``
 
-### `sensu::agent::subscription`
+### <a name="sensuagentsubscription"></a>`sensu::agent::subscription`
 
 Add agent subscription
 
@@ -1471,9 +1625,14 @@ sensu::agent::subscription { 'mysql': }
 
 #### Parameters
 
-The following parameters are available in the `sensu::agent::subscription` defined type.
+The following parameters are available in the `sensu::agent::subscription` defined type:
 
-##### `subscription`
+* [`subscription`](#subscription)
+* [`order`](#order)
+* [`entity`](#entity)
+* [`namespace`](#namespace)
+
+##### <a name="subscription"></a>`subscription`
 
 Data type: `String[1]`
 
@@ -1481,7 +1640,7 @@ Name of the subscription to add to agent.yml, defaults to `$name`.
 
 Default value: `$name`
 
-##### `order`
+##### <a name="order"></a>`order`
 
 Data type: `String[1]`
 
@@ -1489,7 +1648,7 @@ Order of the datacat fragment
 
 Default value: `'50'`
 
-##### `entity`
+##### <a name="entity"></a>`entity`
 
 Data type: `Optional[String[1]]`
 
@@ -1497,7 +1656,7 @@ Entity where to manage this subscription
 
 Default value: ``undef``
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 Data type: `Optional[String[1]]`
 
@@ -1507,7 +1666,7 @@ Default value: ``undef``
 
 ## Resource types
 
-### `sensu_ad_auth`
+### <a name="sensu_ad_auth"></a>`sensu_ad_auth`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -1621,18 +1780,21 @@ The prefix added to all LDAP usernames.
 
 The following parameters are available in the `sensu_ad_auth` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the AD auth.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_ad_auth` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_agent_entity_config`
+### <a name="sensu_agent_entity_config"></a>`sensu_agent_entity_config`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -1707,7 +1869,15 @@ The value of the config for agent entity
 
 The following parameters are available in the `sensu_agent_entity_config` type.
 
-##### `agent_managed_entity`
+* [`agent_managed_entity`](#agent_managed_entity)
+* [`config`](#config)
+* [`entity`](#entity)
+* [`key`](#key)
+* [`name`](#name)
+* [`namespace`](#namespace)
+* [`provider`](#provider)
+
+##### <a name="agent_managed_entity"></a>`agent_managed_entity`
 
 Valid values: ``true``, ``false``
 
@@ -1715,19 +1885,19 @@ PRIVATE - determined by looking at agent entity labels
 
 Default value: ``false``
 
-##### `config`
+##### <a name="config"></a>`config`
 
 The name of the config to set.
 
-##### `entity`
+##### <a name="entity"></a>`entity`
 
 The entity to manage subscription
 
-##### `key`
+##### <a name="key"></a>`key`
 
 Key of config entry set, for labels and annotations
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -1736,18 +1906,18 @@ The name supports composite names that can define the entity and namespace.
 An example composite name to define subscription named `test` on entity 'agent' in namespace `dev`: `test on agent in
 dev`
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 The Sensu RBAC namespace that this entity belongs to.
 
 Default value: `default`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_agent_entity_config` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
 
-### `sensu_agent_entity_setup`
+### <a name="sensu_agent_entity_setup"></a>`sensu_agent_entity_setup`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -1755,7 +1925,13 @@ Puppet will usually discover the appropriate provider for your platform.
 
 The following parameters are available in the `sensu_agent_entity_setup` type.
 
-##### `agent_managed_entity`
+* [`agent_managed_entity`](#agent_managed_entity)
+* [`name`](#name)
+* [`password`](#password)
+* [`url`](#url)
+* [`username`](#username)
+
+##### <a name="agent_managed_entity"></a>`agent_managed_entity`
 
 Valid values: ``true``, ``false``
 
@@ -1763,25 +1939,25 @@ Agent entity managed by agent.yml
 
 Default value: ``false``
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the resource.
 
-##### `password`
+##### <a name="password"></a>`password`
 
 Sensu API password
 
-##### `url`
+##### <a name="url"></a>`url`
 
 Sensu API URL
 
-##### `username`
+##### <a name="username"></a>`username`
 
 Sensu API username
 
-### `sensu_agent_entity_validator`
+### <a name="sensu_agent_entity_validator"></a>`sensu_agent_entity_validator`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -1813,30 +1989,35 @@ Default value: `present`
 
 The following parameters are available in the `sensu_agent_entity_validator` type.
 
-##### `name`
+* [`name`](#name)
+* [`namespace`](#namespace)
+* [`provider`](#provider)
+* [`timeout`](#timeout)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 An entity to verify
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 Namespace of entity
 
 Default value: `default`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_agent_entity_validator` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
 
-##### `timeout`
+##### <a name="timeout"></a>`timeout`
 
 The max number of seconds that the validator should wait before giving up and deciding that entity does not exist
 
 Default value: `10`
 
-### `sensu_api_config`
+### <a name="sensu_api_config"></a>`sensu_api_config`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -1844,25 +2025,31 @@ Default value: `10`
 
 The following parameters are available in the `sensu_api_config` type.
 
-##### `name`
+* [`name`](#name)
+* [`password`](#password)
+* [`url`](#url)
+* [`username`](#username)
+* [`validate_namespaces`](#validate_namespaces)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the resource.
 
-##### `password`
+##### <a name="password"></a>`password`
 
 Sensu API password
 
-##### `url`
+##### <a name="url"></a>`url`
 
 Sensu API URL
 
-##### `username`
+##### <a name="username"></a>`username`
 
 Sensu API username
 
-##### `validate_namespaces`
+##### <a name="validate_namespaces"></a>`validate_namespaces`
 
 Valid values: ``true``, ``false``
 
@@ -1870,7 +2057,7 @@ Determines of namespaces should be validated with Sensu API
 
 Default value: ``true``
 
-### `sensu_api_validator`
+### <a name="sensu_api_validator"></a>`sensu_api_validator`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -1907,49 +2094,57 @@ Default value: `present`
 
 The following parameters are available in the `sensu_api_validator` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`sensu_api_port`](#sensu_api_port)
+* [`sensu_api_server`](#sensu_api_server)
+* [`test_url`](#test_url)
+* [`timeout`](#timeout)
+* [`use_ssl`](#use_ssl)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 An arbitrary name used as the identity of the resource.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_api_validator` resource. You will seldom need to specify this --- Puppet
 will usually discover the appropriate provider for your platform.
 
-##### `sensu_api_port`
+##### <a name="sensu_api_port"></a>`sensu_api_port`
 
 The port that the sensu_api server should be listening on.
 
 Default value: `8080`
 
-##### `sensu_api_server`
+##### <a name="sensu_api_server"></a>`sensu_api_server`
 
 The DNS name or IP address of the server where sensu_api should be running.
 
 Default value: `localhost`
 
-##### `test_url`
+##### <a name="test_url"></a>`test_url`
 
 URL to use for testing if the Sensu backend is up
 
 Default value: `/version`
 
-##### `timeout`
+##### <a name="timeout"></a>`timeout`
 
 The max number of seconds that the validator should wait before giving up and deciding that sensu_api is not running;
 defaults to 15 seconds.
 
 Default value: `30`
 
-##### `use_ssl`
+##### <a name="use_ssl"></a>`use_ssl`
 
 Whether the connection will be attemped using https
 
 Default value: ``false``
 
-### `sensu_asset`
+### <a name="sensu_asset"></a>`sensu_asset`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2061,13 +2256,18 @@ Default value: `default`
 
 The following parameters are available in the `sensu_asset` type.
 
-##### `bonsai`
+* [`bonsai`](#bonsai)
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="bonsai"></a>`bonsai`
 
 Valid values: ``true``, ``false``
 
 Private property used by sensu_bonsai_asset type
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -2075,16 +2275,16 @@ The name of the asset.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_asset` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the asset.
 
-### `sensu_bonsai_asset`
+### <a name="sensu_bonsai_asset"></a>`sensu_bonsai_asset`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2152,36 +2352,43 @@ Specific version to install, or latest
 
 The following parameters are available in the `sensu_bonsai_asset` type.
 
-##### `bonsai_name`
+* [`bonsai_name`](#bonsai_name)
+* [`bonsai_namespace`](#bonsai_namespace)
+* [`name`](#name)
+* [`namespace`](#namespace)
+* [`provider`](#provider)
+* [`rename`](#rename)
+
+##### <a name="bonsai_name"></a>`bonsai_name`
 
 Bonsai asset name
 
-##### `bonsai_namespace`
+##### <a name="bonsai_namespace"></a>`bonsai_namespace`
 
 Bonsai asset namespace
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 Bonsai asset name
 
-##### `namespace`
+##### <a name="namespace"></a>`namespace`
 
 The Sensu RBAC namespace that this asset belongs to.
 
 Default value: `default`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_bonsai_asset` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `rename`
+##### <a name="rename"></a>`rename`
 
 Name for Sensu Go asset
 
-### `sensu_check`
+### <a name="sensu_check"></a>`sensu_check`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2404,7 +2611,11 @@ The time to live (TTL) in seconds until check results are considered stale.
 
 The following parameters are available in the `sensu_check` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -2412,16 +2623,16 @@ The name of the check.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_check` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the check.
 
-### `sensu_cluster_federation`
+### <a name="sensu_cluster_federation"></a>`sensu_cluster_federation`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2461,18 +2672,21 @@ Default value: `present`
 
 The following parameters are available in the `sensu_cluster_federation` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the federated cluster
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_cluster_federation` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
 
-### `sensu_cluster_federation_member`
+### <a name="sensu_cluster_federation_member"></a>`sensu_cluster_federation_member`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2516,26 +2730,31 @@ Default value: `present`
 
 The following parameters are available in the `sensu_cluster_federation_member` type.
 
-##### `api_url`
+* [`api_url`](#api_url)
+* [`cluster`](#cluster)
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="api_url"></a>`api_url`
 
 API URL to add to the federated cluster, defaults to name
 
-##### `cluster`
+##### <a name="cluster"></a>`cluster`
 
 Federated cluster name
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the resource
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_cluster_federation_member` resource. You will seldom need to specify this
 --- Puppet will usually discover the appropriate provider for your platform.
 
-### `sensu_cluster_member`
+### <a name="sensu_cluster_member"></a>`sensu_cluster_member`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2575,22 +2794,26 @@ Array of cluster peer URLs
 
 The following parameters are available in the `sensu_cluster_member` type.
 
-##### `id`
+* [`id`](#id)
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="id"></a>`id`
 
 Cluster member ID - read-only
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the cluster member.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_cluster_member` resource. You will seldom need to specify this --- Puppet
 will usually discover the appropriate provider for your platform.
 
-### `sensu_cluster_role`
+### <a name="sensu_cluster_role"></a>`sensu_cluster_role`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2630,18 +2853,21 @@ The rulesets that a role applies.
 
 The following parameters are available in the `sensu_cluster_role` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the role.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_cluster_role` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_cluster_role_binding`
+### <a name="sensu_cluster_role_binding"></a>`sensu_cluster_role_binding`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2702,18 +2928,21 @@ The users or groups being assigned.
 
 The following parameters are available in the `sensu_cluster_role_binding` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the role binding.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_cluster_role_binding` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
 
-### `sensu_command`
+### <a name="sensu_command"></a>`sensu_command`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2783,22 +3012,26 @@ The URL location of the asset.
 
 The following parameters are available in the `sensu_command` type.
 
-##### `bonsai_name`
+* [`bonsai_name`](#bonsai_name)
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="bonsai_name"></a>`bonsai_name`
 
 Bonsai asset name
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 command name
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_command` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_entity`
+### <a name="sensu_entity"></a>`sensu_entity`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -2894,7 +3127,11 @@ System information about the entity, such as operating system and platform.
 
 The following parameters are available in the `sensu_entity` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -2902,16 +3139,16 @@ The name of the entity.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_entity` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the entity.
 
-### `sensu_etcd_replicator`
+### <a name="sensu_etcd_replicator"></a>`sensu_etcd_replicator`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3000,18 +3237,21 @@ Destination cluster URL. If specifying more than one, use a comma to separate.
 
 The following parameters are available in the `sensu_etcd_replicator` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the Etcd Replicator.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_etcd_replicator` resource. You will seldom need to specify this --- Puppet
 will usually discover the appropriate provider for your platform.
 
-### `sensu_filter`
+### <a name="sensu_filter"></a>`sensu_filter`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3090,7 +3330,11 @@ Assets to be applied to the filter's execution context.
 
 The following parameters are available in the `sensu_filter` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -3098,16 +3342,16 @@ The name of the filter.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_filter` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the filter.
 
-### `sensu_handler`
+### <a name="sensu_handler"></a>`sensu_handler`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3234,7 +3478,11 @@ The handler type.
 
 The following parameters are available in the `sensu_handler` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -3242,16 +3490,16 @@ The name of the handler.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_handler` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the handler.
 
-### `sensu_hook`
+### <a name="sensu_hook"></a>`sensu_hook`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3336,7 +3584,11 @@ Default value: `60`
 
 The following parameters are available in the `sensu_hook` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -3344,16 +3596,16 @@ The name of the hook.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_hook` resource. You will seldom need to specify this --- Puppet will usually
 discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the hook.
 
-### `sensu_ldap_auth`
+### <a name="sensu_ldap_auth"></a>`sensu_ldap_auth`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3466,18 +3718,21 @@ The prefix added to all LDAP usernames.
 
 The following parameters are available in the `sensu_ldap_auth` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the LDAP auth.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_ldap_auth` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_license`
+### <a name="sensu_license"></a>`sensu_license`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -3504,22 +3759,26 @@ Default value: `present`
 
 The following parameters are available in the `sensu_license` type.
 
-##### `file`
+* [`file`](#file)
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="file"></a>`file`
 
 Path to license file
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the resource.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_license` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_mutator`
+### <a name="sensu_mutator"></a>`sensu_mutator`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3607,7 +3866,11 @@ The mutator execution duration timeout in seconds (hard stop)
 
 The following parameters are available in the `sensu_mutator` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -3615,16 +3878,16 @@ The name of the mutator.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_mutator` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the mutator.
 
-### `sensu_namespace`
+### <a name="sensu_namespace"></a>`sensu_namespace`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3659,18 +3922,21 @@ Default value: `present`
 
 The following parameters are available in the `sensu_namespace` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the namespace.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_namespace` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_oidc_auth`
+### <a name="sensu_oidc_auth"></a>`sensu_oidc_auth`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3758,18 +4024,21 @@ A prefix to use to form the final RBAC user name.
 
 The following parameters are available in the `sensu_oidc_auth` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the AD auth.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_oidc_auth` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_plugin`
+### <a name="sensu_plugin"></a>`sensu_plugin`
 
 **Autorequires**:
 * `Package[sensu-plugins-ruby]`
@@ -3824,7 +4093,14 @@ Specific version to install, or latest
 
 The following parameters are available in the `sensu_plugin` type.
 
-##### `clean`
+* [`clean`](#clean)
+* [`extension`](#extension)
+* [`name`](#name)
+* [`provider`](#provider)
+* [`proxy`](#proxy)
+* [`source`](#source)
+
+##### <a name="clean"></a>`clean`
 
 Valid values: ``true``, ``false``
 
@@ -3832,7 +4108,7 @@ Clean up (remove) other installed versions of the plugin(s) and/or extension(s)
 
 Default value: ``true``
 
-##### `extension`
+##### <a name="extension"></a>`extension`
 
 Valid values: ``true``, ``false``
 
@@ -3840,26 +4116,26 @@ Sets to install an extension instead of a plugin
 
 Default value: ``false``
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 Plugin or extension name
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_plugin` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `proxy`
+##### <a name="proxy"></a>`proxy`
 
 Install Sensu plugins and extensions via a PROXY URL
 
-##### `source`
+##### <a name="source"></a>`source`
 
 Install Sensu plugins and extensions from a custom SOURCE
 
-### `sensu_postgres_config`
+### <a name="sensu_postgres_config"></a>`sensu_postgres_config`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -3946,18 +4222,21 @@ Default value: `false`
 
 The following parameters are available in the `sensu_postgres_config` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the postgres config
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_postgres_config` resource. You will seldom need to specify this --- Puppet
 will usually discover the appropriate provider for your platform.
 
-### `sensu_resources`
+### <a name="sensu_resources"></a>`sensu_resources`
 
 Metatype for sensu resources
 
@@ -3975,17 +4254,21 @@ sensu_resources { 'sensu_check':
 
 The following parameters are available in the `sensu_resources` type.
 
-##### `agent_entity_configs`
+* [`agent_entity_configs`](#agent_entity_configs)
+* [`name`](#name)
+* [`purge`](#purge)
+
+##### <a name="agent_entity_configs"></a>`agent_entity_configs`
 
 Types of configs to purge for sensu_agent_entity_configs, eg ['subscriptions','labels']
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the type to be managed.
 
-##### `purge`
+##### <a name="purge"></a>`purge`
 
 Valid values: ``true``, ``false``, `yes`, `no`
 
@@ -3995,7 +4278,7 @@ autorequired by any managed resources.
 
 Default value: ``false``
 
-### `sensu_role`
+### <a name="sensu_role"></a>`sensu_role`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -4051,7 +4334,11 @@ The rulesets that a role applies.
 
 The following parameters are available in the `sensu_role` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -4059,16 +4346,16 @@ The name of the role.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_role` resource. You will seldom need to specify this --- Puppet will usually
 discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the role.
 
-### `sensu_role_binding`
+### <a name="sensu_role_binding"></a>`sensu_role_binding`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -4148,7 +4435,11 @@ The users or groups being assigned.
 
 The following parameters are available in the `sensu_role_binding` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -4156,16 +4447,16 @@ The name of the binding.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_role_binding` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the role binding.
 
-### `sensu_secret`
+### <a name="sensu_secret"></a>`sensu_secret`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -4217,7 +4508,11 @@ The name of the Sensu provider with the secret.
 
 The following parameters are available in the `sensu_secret` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`resource_name`](#resource_name)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -4225,16 +4520,16 @@ The name of the secret.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named `test` in namespace `dev`: `test in dev`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_secret` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `resource_name`
+##### <a name="resource_name"></a>`resource_name`
 
 The name of the secret.
 
-### `sensu_secrets_vault_provider`
+### <a name="sensu_secrets_vault_provider"></a>`sensu_secrets_vault_provider`
 
 **NOTE** Property names map to the `client` hash in Sensu Go reference for a secrets VaultProvider
 
@@ -4321,18 +4616,22 @@ HashiCorp Vault HTTP API version
 
 The following parameters are available in the `sensu_secrets_vault_provider` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+* [`token_file`](#token_file)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the secrets provider.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_secrets_vault_provider` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
 
-##### `token_file`
+##### <a name="token_file"></a>`token_file`
 
 Path to file that contains token to use for authentication.
 
@@ -4345,7 +4644,7 @@ file { '/etc/sensu/provider-secret':
   notify => Sensu_secrets_vault_provider['my-vault'],
 }
 
-### `sensu_tessen`
+### <a name="sensu_tessen"></a>`sensu_tessen`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -4370,18 +4669,21 @@ State of tessen
 
 The following parameters are available in the `sensu_tessen` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 Resource name
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_tessen` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `sensu_user`
+### <a name="sensu_user"></a>`sensu_user`
 
 **Autorequires**:
 * `Package[sensu-go-cli]`
@@ -4444,7 +4746,13 @@ The user's password.
 
 The following parameters are available in the `sensu_user` type.
 
-##### `configure`
+* [`configure`](#configure)
+* [`configure_trusted_ca_file`](#configure_trusted_ca_file)
+* [`configure_url`](#configure_url)
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="configure"></a>`configure`
 
 Valid values: ``true``, ``false``
 
@@ -4452,30 +4760,30 @@ Run sensuctl configure for this user
 
 Default value: ``false``
 
-##### `configure_trusted_ca_file`
+##### <a name="configure_trusted_ca_file"></a>`configure_trusted_ca_file`
 
 Path to trusted CA to use with 'sensuctl configure'
 
 Default value: `/etc/sensu/ssl/ca.crt`
 
-##### `configure_url`
+##### <a name="configure_url"></a>`configure_url`
 
 URL to use with 'sensuctl configure'
 
 Default value: `http://127.0.0.1:8080`
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the user.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensu_user` resource. You will seldom need to specify this --- Puppet will usually
 discover the appropriate provider for your platform.
 
-### `sensuctl_config`
+### <a name="sensuctl_config"></a>`sensuctl_config`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -4483,21 +4791,26 @@ discover the appropriate provider for your platform.
 
 The following parameters are available in the `sensuctl_config` type.
 
-##### `chunk_size`
+* [`chunk_size`](#chunk_size)
+* [`name`](#name)
+* [`path`](#path)
+* [`validate_namespaces`](#validate_namespaces)
+
+##### <a name="chunk_size"></a>`chunk_size`
 
 sensuctl chunk-size
 
-##### `name`
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the resource.
 
-##### `path`
+##### <a name="path"></a>`path`
 
 path to sensuctl
 
-##### `validate_namespaces`
+##### <a name="validate_namespaces"></a>`validate_namespaces`
 
 Valid values: ``true``, ``false``
 
@@ -4505,7 +4818,7 @@ Determines of namespaces should be validated with sensuctl
 
 Default value: ``true``
 
-### `sensuctl_configure`
+### <a name="sensuctl_configure"></a>`sensuctl_configure`
 
 **NOTE** This is a private type not intended to be used directly.
 
@@ -4552,38 +4865,47 @@ sensu-backend URL
 
 The following parameters are available in the `sensuctl_configure` type.
 
-##### `name`
+* [`name`](#name)
+* [`password`](#password)
+* [`provider`](#provider)
+* [`username`](#username)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the resource.
 
-##### `password`
+##### <a name="password"></a>`password`
 
 Password to use with sensuctl configure
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `sensuctl_configure` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### `username`
+##### <a name="username"></a>`username`
 
 Username to use with sensuctl configure
 
 ## Data types
 
-### `Sensu::Backend_URL`
+### <a name="sensubackend_url"></a>`Sensu::Backend_URL`
 
 Sensu Backend URL's require protocol of ws:// or wss://.
 A port is also required.
 There is logic in sensu::agent class to add the protocol so it's optional.
 
-Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]++:\d+$/]]`
+Alias of
+
+```puppet
+Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]++:\d+$/]]
+```
 
 ## Tasks
 
-### `agent_event`
+### <a name="agent_event"></a>`agent_event`
 
 Create a Sensu Go agent event via the agent API
 
@@ -4621,7 +4943,7 @@ Data type: `Optional[Integer]`
 
 The agent API port, defaults to 3031
 
-### `apikey`
+### <a name="apikey"></a>`apikey`
 
 Manage Sensu Go API keys
 
@@ -4647,7 +4969,7 @@ Data type: `Optional[String[1]]`
 
 The API key. Required for action=delete
 
-### `assets_outdated`
+### <a name="assets_outdated"></a>`assets_outdated`
 
 Retreive outdated Sensu Go assets
 
@@ -4661,7 +4983,7 @@ Data type: `Optional[String[1]]`
 
 The namespace, defaults to all namespaces
 
-### `backend_upgrade`
+### <a name="backend_upgrade"></a>`backend_upgrade`
 
 Execute Sensu Go backend upgrade
 
@@ -4729,7 +5051,7 @@ Data type: `Optional[String[1]]`
 
 path to the client server TLS trusted CA cert file
 
-### `check_execute`
+### <a name="check_execute"></a>`check_execute`
 
 Execute a Sensu Go check
 
@@ -4761,7 +5083,7 @@ Data type: `Optional[String[1]]`
 
 Explanation for the creation of this entry.
 
-### `event`
+### <a name="event"></a>`event`
 
 Manage Sensu Go events
 
@@ -4793,7 +5115,7 @@ Data type: `Optional[String[1]]`
 
 The namespace for event
 
-### `install_agent`
+### <a name="install_agent"></a>`install_agent`
 
 Install Sensu Go agent
 
@@ -4831,19 +5153,19 @@ Data type: `Optional[Boolean]`
 
 Return output from commands
 
-### `install_agent_linux`
+### <a name="install_agent_linux"></a>`install_agent_linux`
 
 Install Sensu Go agent on Linux
 
 **Supports noop?** false
 
-### `install_agent_windows`
+### <a name="install_agent_windows"></a>`install_agent_windows`
 
 Install Sensu Go agent on Windows
 
 **Supports noop?** false
 
-### `resolve_reference`
+### <a name="resolve_reference"></a>`resolve_reference`
 
 Generate targets from Sensu Go
 
@@ -4869,7 +5191,7 @@ Data type: `Optional[Array]`
 
 Interfaces to search if more than one present
 
-### `silenced`
+### <a name="silenced"></a>`silenced`
 
 Manage Sensu Go silencings
 

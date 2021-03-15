@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.8.0](https://github.com/sensu/sensu-puppet/tree/v5.8.0) (2021-03-14)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.7.0...v5.8.0)
+
+### Added
+
+- Drop Puppet 5 support, update module dependency version ranges [\#1308](https://github.com/sensu/sensu-puppet/pull/1308) ([treydock](https://github.com/treydock))
+
 ## [v5.7.0](https://github.com/sensu/sensu-puppet/tree/v5.7.0) (2021-02-17)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.6.0...v5.7.0)
@@ -202,7 +210,6 @@
 
 ### Merged Pull Requests
 
-- Postgresql examples [\#1238](https://github.com/sensu/sensu-puppet/pull/1238) ([treydock](https://github.com/treydock))
 - Fix vagrant [\#1234](https://github.com/sensu/sensu-puppet/pull/1234) ([treydock](https://github.com/treydock))
 
 ## [v4.7.0](https://github.com/sensu/sensu-puppet/tree/v4.7.0) (2020-03-21)
@@ -215,6 +222,7 @@
 
 ### Merged Pull Requests
 
+- Postgresql examples [\#1238](https://github.com/sensu/sensu-puppet/pull/1238) ([treydock](https://github.com/treydock))
 - Avoid facter 4, breaks unit tests [\#1232](https://github.com/sensu/sensu-puppet/pull/1232) ([treydock](https://github.com/treydock))
 - Add example usage for LDAP [\#1231](https://github.com/sensu/sensu-puppet/pull/1231) ([ghoneycutt](https://github.com/ghoneycutt))
 - Fix acceptance tests [\#1229](https://github.com/sensu/sensu-puppet/pull/1229) ([treydock](https://github.com/treydock))
@@ -288,7 +296,6 @@
 ### Added
 
 - Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
-- Better support for Sensu Go upgrades [\#1201](https://github.com/sensu/sensu-puppet/pull/1201) ([treydock](https://github.com/treydock))
 
 ## [v4.2.1](https://github.com/sensu/sensu-puppet/tree/v4.2.1) (2020-01-29)
 
@@ -298,18 +305,9 @@
 
 - Remove workaround for sensuctl command json formatting [\#1204](https://github.com/sensu/sensu-puppet/pull/1204) ([treydock](https://github.com/treydock))
 
-### Fixed
-
-- Several fixes for sensu\_bonsai\_asset [\#1202](https://github.com/sensu/sensu-puppet/pull/1202) ([treydock](https://github.com/treydock))
-- Remove unnecessary auto requirement [\#1200](https://github.com/sensu/sensu-puppet/pull/1200) ([treydock](https://github.com/treydock))
-
 ## [v4.2.0](https://github.com/sensu/sensu-puppet/tree/v4.2.0) (2020-01-20)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.1.0...v4.2.0)
-
-### Added
-
-- Add examples for Slack and InfluxDB [\#1199](https://github.com/sensu/sensu-puppet/pull/1199) ([treydock](https://github.com/treydock))
 
 ## [v4.1.0](https://github.com/sensu/sensu-puppet/tree/v4.1.0) (2020-01-15)
 
