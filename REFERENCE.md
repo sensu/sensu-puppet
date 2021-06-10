@@ -490,7 +490,7 @@ Data type: `Array[String[1]]`
 The agent entity redact list
 Passing `redact` as part of `config_hash` takes precedence
 Defaults come from Sensu documentation:
-https://docs.sensu.io/sensu-go/latest/reference/agent/#security-configuration-flags
+https://docs.sensu.io/sensu-go/latest/observability-pipeline/observe-schedule/agent/#security-configuration-flags
 
 Default value: `['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret']`
 
@@ -746,7 +746,7 @@ Data type: `Boolean`
 Sets if the Sensu agent user should be disabled
 Not applicable if `manage_agent_user` is `false`
 This is useful if using agent TLS authentication
-See https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication
+See [Sensu Go - Secure Sensu](https://docs.sensu.io/sensu-go/latest/operations/deploy-sensu/secure-sensu/#optional-configure-sensu-agent-mtls-authentication)
 
 Default value: ``false``
 
