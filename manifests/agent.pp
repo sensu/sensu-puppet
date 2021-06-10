@@ -66,7 +66,7 @@
 #   The agent entity redact list
 #   Passing `redact` as part of `config_hash` takes precedence
 #   Defaults come from Sensu documentation:
-#   https://docs.sensu.io/sensu-go/latest/reference/agent/#security-configuration-flags
+#   https://docs.sensu.io/sensu-go/latest/observability-pipeline/observe-schedule/agent/#security-configuration-flags
 # @param show_diff
 #   Sets show_diff parameter for agent.yml configuration file
 # @param log_file

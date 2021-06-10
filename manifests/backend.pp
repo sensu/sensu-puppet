@@ -50,7 +50,7 @@
 #   Sets if the Sensu agent user should be disabled
 #   Not applicable if `manage_agent_user` is `false`
 #   This is useful if using agent TLS authentication
-#   See https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication
+#   See [Sensu Go - Secure Sensu](https://docs.sensu.io/sensu-go/latest/operations/deploy-sensu/secure-sensu/#optional-configure-sensu-agent-mtls-authentication)
 # @param show_diff
 #   Sets show_diff parameter for backend.yml configuration file
 # @param license_source

@@ -170,7 +170,7 @@ Breaking changes:
 
 ## Setup
 
-### What sensu effects
+### What sensu affects
 
 This module will install packages, create configuration and start services necessary to manage Sensu agents and backend.
 
@@ -549,7 +549,7 @@ The types `sensu_ad_auth` and `sensu_ldap_auth` require a valid enterprise licen
 
 ### Contact routing
 
-See [Sensu Go - Contact Routing](https://docs.sensu.io/sensu-go/latest/guides/contact-routing/) for details. The following is one way to configure contact routing in Puppet.
+See [Sensu Go - Route alerts with event filters](https://docs.sensu.io/sensu-go/latest/observability-pipeline/observe-filter/route-alerts/) for details. The following is one way to configure contact routing in Puppet.
 
 Add the sensu-go-has-contact-filter bonsai asset:
 
