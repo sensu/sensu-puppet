@@ -44,8 +44,8 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Pr
     end
   end
 
-  def self.latest_version(namespace, name)
-    get_bonsai_latest_version(namespace, name)
+  def self.latest_version(namespace, name, opts = {})
+    get_bonsai_latest_version(namespace, name, opts)
   end
 
   def exists?
@@ -72,10 +72,13 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Pr
       method = 'post'
       url = "assets"
     end
+    proxy_opts = {}
+    proxy_opts[:http_proxy] = resource[:bonsai_http_proxy] if resource[:bonsai_http_proxy]
+    proxy_opts[:no_proxy] = resource[:bonsai_no_proxy] if resource[:bonsai_no_proxy]
     if version && version.to_s != 'latest'
       version_match = version
     else
-      version_match = self.class.latest_version(resource[:bonsai_namespace], resource[:bonsai_name])
+      version_match = self.class.latest_version(resource[:bonsai_namespace], resource[:bonsai_name], proxy_opts)
     end
     bonsai_asset_data = get_bonsai_asset(name)
     if bonsai_asset_data.nil? || bonsai_asset_data.empty?
@@ -105,7 +108,7 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Pr
     opt = {
       :method => method,
       :namespace => resource[:namespace],
-    }
+    }.merge(proxy_opts)
     api_request(url, asset, opt)
   end
 

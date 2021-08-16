@@ -74,6 +74,19 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     password = opts[:password] || @password
     method = opts[:method] || 'get'
     failonfail = opts[:failonfail].nil? ? true : opts[:failonfail]
+    if opts[:http_proxy]
+      proxy = URI.parse(opts[:http_proxy])
+      proxy_addr = proxy.host
+      proxy_port = proxy.port
+      proxy_user = proxy.user
+      proxy_password = proxy.password
+    else
+      proxy_addr = nil
+      proxy_port = nil
+      proxy_user = nil
+      proxy_password = nil
+    end
+    no_proxy = opts[:no_proxy]
     if opts[:use_token] == false
       token = nil
     else
@@ -90,7 +103,7 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       uri.query = URI.encode_www_form(data)
     end
     Puppet.debug("method=#{method} url=#{uri.to_s} path=#{path}")
-    http = Net::HTTP.new(uri.host, uri.port)
+    http = Net::HTTP.new(uri.host, uri.port, proxy_addr, proxy_port, proxy_user, proxy_password, no_proxy)
     http.use_ssl = (uri.scheme == 'https')
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl?
     if method == 'get'
@@ -270,10 +283,10 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     self.class.version_cmp(*args)
   end
 
-  def self.get_bonsai_asset(name)
+  def self.get_bonsai_asset(name, opts = {})
     opts = {
       :url => 'https://bonsai.sensu.io'
-    }
+    }.merge(opts)
     data = api_request("/api/v1/assets/#{name}", nil, opts)
   rescue Exception => e
     Puppet.notice "Unable to connect to bonsai at #{url}: #{e.message}"
@@ -285,14 +298,14 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
   def get_bonsai_asset(name)
     self.class.get_bonsai_asset(name)
   end
-  def self.get_bonsai_latest_version(namespace, name)
+  def self.get_bonsai_latest_version(namespace, name, opts = {})
     return nil if namespace.nil? || name.nil?
     full_name = "#{namespace}/#{name}"
     @latest_version = {} if @latest_version.nil?
     return @latest_version[full_name] if @latest_version[full_name]
     @latest_version[full_name] = nil
     versions = []
-    bonsai_asset = Puppet::Provider::SensuAPI.get_bonsai_asset(full_name)
+    bonsai_asset = Puppet::Provider::SensuAPI.get_bonsai_asset(full_name, opts)
     (bonsai_asset['versions'] || []).each do |bonsai_version|
       version = bonsai_version['version']
       next unless version =~ /^[0-9]/
