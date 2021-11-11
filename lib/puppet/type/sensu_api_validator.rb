@@ -42,7 +42,7 @@ DESC
   end
 
   newparam(:timeout) do
-    desc 'The max number of seconds that the validator should wait before giving up and deciding that sensu_api is not running; defaults to 15 seconds.'
+    desc 'The max number of seconds that the validator should wait before giving up and deciding that sensu_api is not running; defaults to 30 seconds.'
     defaultto 30
 
     validate do |value|
