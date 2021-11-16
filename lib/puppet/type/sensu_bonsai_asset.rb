@@ -69,7 +69,10 @@ DESC
         should = @should
       end
       if should == :latest || should == 'latest'
-        latest_version = provider.class.latest_version(@resource[:bonsai_namespace], @resource[:bonsai_name])
+        opts = {}
+        opts[:http_proxy] = @resource[:bonsai_http_proxy] if @resource[:bonsai_http_proxy]
+        opts[:no_proxy] = @resource[:bonsai_no_proxy] if @resource[:bonsai_no_proxy]
+        latest_version = provider.class.latest_version(@resource[:bonsai_namespace], @resource[:bonsai_name], opts)
         @latest = latest_version
         return is == @latest
       else
@@ -95,6 +98,14 @@ DESC
     defaultto do
       "#{@resource[:bonsai_namespace]}/#{@resource[:bonsai_name]}"
     end
+  end
+
+  newparam(:bonsai_http_proxy) do
+    desc "Proxy to use for Bonsai HTTP requests"
+  end
+
+  newparam(:bonsai_no_proxy) do
+    desc "Addresses to not proxy when making bonsai HTTP requests"
   end
 
   # Generate sensu_asset resource to avoid resource purging deleting

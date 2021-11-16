@@ -46,8 +46,8 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Pro
     end
   end
 
-  def self.latest_version(namespace, name)
-    Puppet::Provider::SensuAPI.get_bonsai_latest_version(namespace, name)
+  def self.latest_version(namespace, name, opts = {})
+    Puppet::Provider::SensuAPI.get_bonsai_latest_version(namespace, name, opts)
   end
 
   def exists?
@@ -76,8 +76,14 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Pro
     cmd << resource[:rename]
     cmd << '--namespace'
     cmd << resource[:namespace]
+    opts = {}
+    if resource[:bonsai_http_proxy] || resource[:bonsai_no_proxy]
+      opts[:custom_environment] = {}
+      opts[:custom_environment]['http_proxy'] = resource[:bonsai_http_proxy] if resource[:bonsai_http_proxy]
+      opts[:custom_environment]['no_proxy'] = resource[:bonsai_no_proxy] if resource[:bonsai_no_proxy]
+    end
     begin
-      sensuctl(cmd)
+      sensuctl(cmd, opts)
     rescue Exception => e
       raise Puppet::Error, "#{cmd.join(' ')} failed\nError message: #{e.message}"
     end

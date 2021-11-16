@@ -54,7 +54,7 @@ jobs:
       if: ${{ env.SENSU_SECRETS_PASSWORD != null }}
       run: ./tests/decrypt-secrets.sh
     - name: Run tests
-      run: bundle exec rake beaker
+      run: bundle exec rake acceptance
       env:
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
         BEAKER_set: centos-7
