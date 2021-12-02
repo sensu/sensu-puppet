@@ -11,7 +11,7 @@ purposes such as monitoring.
 @example Verify API connectivity to localhost:8080
   sensu_api_validator { 'sensu':
     sensu_api_server => 'localhost',
-    sensu_api_ort    => 8080,
+    sensu_api_port    => 8080,
   }
 DESC
 
