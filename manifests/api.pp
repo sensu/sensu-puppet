@@ -16,6 +16,7 @@ class sensu::api {
   }
 
   sensu_api_validator { 'sensu':
+    ensure           => 'present',
     sensu_api_server => $sensu::api_host,
     sensu_api_port   => $sensu::api_port,
     use_ssl          => $sensu::use_ssl,

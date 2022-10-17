@@ -1,36 +1,36 @@
 fixtures:
   repositories:
     apt:
-      repo: git://github.com/puppetlabs/puppetlabs-apt.git
+      repo: https://github.com/puppetlabs/puppetlabs-apt.git
     stdlib:
-      repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
+      repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
     datacat:
-      repo: git://github.com/richardc/puppet-datacat.git
+      repo: https://github.com/richardc/puppet-datacat.git
     yumrepo_core:
-      repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
+      repo: https://github.com/puppetlabs/puppetlabs-yumrepo_core
       puppet_version: ">= 6.0.0"
     chocolatey:
-      repo: git://github.com/puppetlabs/puppetlabs-chocolatey.git
+      repo: https://github.com/puppetlabs/puppetlabs-chocolatey.git
     # Needed by chocolatey
     registry:
-      repo: git://github.com/puppetlabs/puppetlabs-registry.git
+      repo: https://github.com/puppetlabs/puppetlabs-registry.git
     # Needed by chocolatey
     powershell:
-      repo: git://github.com/puppetlabs/puppetlabs-powershell.git
+      repo: https://github.com/puppetlabs/puppetlabs-powershell.git
     # Need by postgresql
     augeas_core:
-      repo: git://github.com/puppetlabs/puppetlabs-augeas_core
+      repo: https://github.com/puppetlabs/puppetlabs-augeas_core
       puppet_version: ">= 6.0.0"
     # Need by postgresql
     concat:
-      repo: git://github.com/puppetlabs/puppetlabs-concat.git
+      repo: https://github.com/puppetlabs/puppetlabs-concat.git
     postgresql:
-      repo: git://github.com/puppetlabs/puppetlabs-postgresql.git
+      repo: https://github.com/puppetlabs/puppetlabs-postgresql.git
     archive:
-      repo: git://github.com/voxpupuli/puppet-archive.git
+      repo: https://github.com/voxpupuli/puppet-archive.git
     windows_env:
-      repo: git://github.com/voxpupuli/puppet-windows_env.git
+      repo: https://github.com/voxpupuli/puppet-windows_env.git
     systemd:
-      repo: git://github.com/camptocamp/puppet-systemd.git
+      repo: https://github.com/camptocamp/puppet-systemd.git
   symlinks:
     sensu: "#{source_dir}"

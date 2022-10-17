@@ -20,7 +20,7 @@ jobs:
           puppet: 6
           fixtures: .fixtures.yml
           allow_failure: false
-        - ruby: 2.7.0
+        - ruby: 2.7.6
           puppet: 7
           fixtures: .fixtures.yml
           allow_failure: false
@@ -28,7 +28,7 @@ jobs:
           puppet: 6
           fixtures: .fixtures-latest.yml
           allow_failure: true
-        - ruby: 2.7.0
+        - ruby: 2.7.6
           puppet: 7
           fixtures: .fixtures-latest.yml
           allow_failure: true

@@ -374,4 +374,47 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
       end
     end
   end
+
+  context 'when backend is down' do
+    it 'should work with errors' do
+      pp = <<-EOS
+      class { '::sensu': }
+      class { 'sensu::agent':
+        backends         => ['sensu-backend:8081'],
+        entity_name      => 'sensu-agent',
+        subscriptions    => ['base'],
+        labels           => { 'foo' => 'bar' },
+        annotations      => { 'contacts' => 'dev@example.com' },
+        service_env_vars => { 'SENSU_API_PORT' => '4041' },
+        config_hash      => {
+          'log-level' => 'info',
+          'keepalive-interval' => 30,
+        }
+      }
+      sensu::agent::subscription { 'linux': }
+      sensu::agent::label { 'cpu.warning': value => '90' }
+      sensu::agent::label { 'cpu.critical': value => '95' }
+      sensu::agent::label { 'bar': value => 'baz2', redact => true }
+      sensu::agent::annotation { 'foobar': value => 'bar' }
+      sensu::agent::annotation { 'cpu.message': value => 'bar' }
+      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      file { '/tmp/test': ensure => 'file' }
+      EOS
+
+      on backend, 'puppet resource service sensu-backend ensure=stopped'
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-agent' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [1,4,6]
+      else
+        apply_manifest_on(node, pp, :catch_failures => false)
+      end
+      on backend, 'puppet resource service sensu-backend ensure=running'
+    end
+
+    describe file('/tmp/test'), :node => node do
+      it { is_expected.to be_file }
+    end
+  end
 end
