@@ -1,6 +1,23 @@
 # Changelog
 
-## [v5.8.0](https://github.com/sensu/sensu-puppet/tree/v5.8.0) (2021-03-14)
+## [v5.9.0](https://github.com/sensu/sensu-puppet/tree/v5.9.0) (2022-10-28)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.8.0...v5.9.0)
+
+### Added
+
+- Support HTTP proxies with sensu\_bonsai\_asset [\#1314](https://github.com/sensu/sensu-puppet/pull/1314) ([treydock](https://github.com/treydock))
+
+### Merged Pull Requests
+
+- Remove namespace validation for agents [\#1327](https://github.com/sensu/sensu-puppet/pull/1327) ([treydock](https://github.com/treydock))
+- Fix sensu\_api\_port spelling in sensu\_api\_validator example [\#1317](https://github.com/sensu/sensu-puppet/pull/1317) ([robmcelhinney](https://github.com/robmcelhinney))
+- Fix beaker acceptance tests [\#1316](https://github.com/sensu/sensu-puppet/pull/1316) ([treydock](https://github.com/treydock))
+- Set SensuAPIValidator timeout comments to 30 seconds [\#1315](https://github.com/sensu/sensu-puppet/pull/1315) ([robmcelhinney](https://github.com/robmcelhinney))
+- Update links to Sensu docs pages in README and REFERENCE [\#1311](https://github.com/sensu/sensu-puppet/pull/1311) ([hillaryfraley](https://github.com/hillaryfraley))
+- Add Dependabot [\#1310](https://github.com/sensu/sensu-puppet/pull/1310) ([ghoneycutt](https://github.com/ghoneycutt))
+
+## [v5.8.0](https://github.com/sensu/sensu-puppet/tree/v5.8.0) (2021-03-15)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.7.0...v5.8.0)
 
@@ -210,6 +227,7 @@
 
 ### Merged Pull Requests
 
+- Postgresql examples [\#1238](https://github.com/sensu/sensu-puppet/pull/1238) ([treydock](https://github.com/treydock))
 - Fix vagrant [\#1234](https://github.com/sensu/sensu-puppet/pull/1234) ([treydock](https://github.com/treydock))
 
 ## [v4.7.0](https://github.com/sensu/sensu-puppet/tree/v4.7.0) (2020-03-21)
@@ -222,7 +240,6 @@
 
 ### Merged Pull Requests
 
-- Postgresql examples [\#1238](https://github.com/sensu/sensu-puppet/pull/1238) ([treydock](https://github.com/treydock))
 - Avoid facter 4, breaks unit tests [\#1232](https://github.com/sensu/sensu-puppet/pull/1232) ([treydock](https://github.com/treydock))
 - Add example usage for LDAP [\#1231](https://github.com/sensu/sensu-puppet/pull/1231) ([ghoneycutt](https://github.com/ghoneycutt))
 - Fix acceptance tests [\#1229](https://github.com/sensu/sensu-puppet/pull/1229) ([treydock](https://github.com/treydock))
@@ -250,16 +267,6 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.5.0...v4.5.1)
 
-### Added
-
-- Add more examples [\#1214](https://github.com/sensu/sensu-puppet/pull/1214) ([treydock](https://github.com/treydock))
-- Better organization of class variables [\#1213](https://github.com/sensu/sensu-puppet/pull/1213) ([treydock](https://github.com/treydock))
-- Better documentation of private types [\#1212](https://github.com/sensu/sensu-puppet/pull/1212) ([treydock](https://github.com/treydock))
-
-### Fixed
-
-- Several fixes for sensu\_bonsai\_asset [\#1215](https://github.com/sensu/sensu-puppet/pull/1215) ([treydock](https://github.com/treydock))
-
 ### Merged Pull Requests
 
 - Fix release process [\#1216](https://github.com/sensu/sensu-puppet/pull/1216) ([treydock](https://github.com/treydock))
@@ -268,42 +275,21 @@
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.4.1...v4.5.0)
 
-### Added
-
-- Update puppet-strings examples for composite names [\#1211](https://github.com/sensu/sensu-puppet/pull/1211) ([treydock](https://github.com/treydock))
-- Support EL8 [\#1208](https://github.com/sensu/sensu-puppet/pull/1208) ([treydock](https://github.com/treydock))
-
 ## [v4.4.1](https://github.com/sensu/sensu-puppet/tree/v4.4.1) (2020-02-01)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.4.0...v4.4.1)
-
-### Added
-
-- Changes to support Sensu Go 5.17.1 [\#1207](https://github.com/sensu/sensu-puppet/pull/1207) ([treydock](https://github.com/treydock))
 
 ## [v4.4.0](https://github.com/sensu/sensu-puppet/tree/v4.4.0) (2020-01-31)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.3.0...v4.4.0)
 
-### Added
-
-- Add manage\_agent\_user parameter to sensu::backend [\#1206](https://github.com/sensu/sensu-puppet/pull/1206) ([treydock](https://github.com/treydock))
-
 ## [v4.3.0](https://github.com/sensu/sensu-puppet/tree/v4.3.0) (2020-01-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.1...v4.3.0)
 
-### Added
-
-- Support Sensu Go secrets features [\#1203](https://github.com/sensu/sensu-puppet/pull/1203) ([treydock](https://github.com/treydock))
-
 ## [v4.2.1](https://github.com/sensu/sensu-puppet/tree/v4.2.1) (2020-01-29)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.2.0...v4.2.1)
-
-### Added
-
-- Remove workaround for sensuctl command json formatting [\#1204](https://github.com/sensu/sensu-puppet/pull/1204) ([treydock](https://github.com/treydock))
 
 ## [v4.2.0](https://github.com/sensu/sensu-puppet/tree/v4.2.0) (2020-01-20)
 
