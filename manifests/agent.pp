@@ -296,6 +296,7 @@ class sensu::agent (
   }
 
   sensu_agent_entity_validator { $config['name']:
+    ensure    => 'present',
     namespace => $config['namespace'],
     provider  => 'sensu_api',
   }

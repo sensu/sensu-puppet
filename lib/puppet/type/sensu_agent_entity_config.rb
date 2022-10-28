@@ -181,6 +181,5 @@ DESC
     if !config.is_a?(Hash) && self[:value].nil?
       fail "You must provide a value for the value property"
     end
-    PuppetX::Sensu::Type.validate_namespace(self)
   end
 end

@@ -5,14 +5,14 @@ HOSTS:
       - sensu-agent
     platform: el-8-x86_64
     hypervisor: docker
-    image: centos:8
+    image: rockylinux:8
     docker_preserve_image: true
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
       - 'yum install -y dnf-utils'
       - 'dnf config-manager --set-enabled powertools'
-      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
     docker_container_name: 'sensu-agent-el8'
   sensu-backend:
     roles:
@@ -22,14 +22,14 @@ HOSTS:
       - default
     platform: el-8-x86_64
     hypervisor: docker
-    image: centos:8
+    image: rockylinux:8
     docker_preserve_image: true
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
       - 'yum install -y dnf-utils'
       - 'dnf config-manager --set-enabled powertools'
-      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
     docker_container_name: 'sensu-backend-el8'
 CONFIG:
   log_level: debug

@@ -1,49 +1,49 @@
 fixtures:
   repositories:
     apt:
-      repo: git://github.com/puppetlabs/puppetlabs-apt.git
+      repo: https://github.com/puppetlabs/puppetlabs-apt.git
       ref: 5.0.1
     stdlib:
-      repo: git://github.com/puppetlabs/puppetlabs-stdlib.git
+      repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
       ref: 5.1.0
     datacat:
-      repo: git://github.com/richardc/puppet-datacat.git
+      repo: https://github.com/richardc/puppet-datacat.git
       ref: 0.6.2
     yumrepo_core:
-      repo: git://github.com/puppetlabs/puppetlabs-yumrepo_core
+      repo: https://github.com/puppetlabs/puppetlabs-yumrepo_core
       ref: 1.0.1
       puppet_version: ">= 6.0.0"
     chocolatey:
-      repo: git://github.com/puppetlabs/puppetlabs-chocolatey.git
+      repo: https://github.com/puppetlabs/puppetlabs-chocolatey.git
       ref: 3.0.0
     # Needed by chocolatey
     registry:
-      repo: git://github.com/puppetlabs/puppetlabs-registry.git
+      repo: https://github.com/puppetlabs/puppetlabs-registry.git
       ref: 1.0.0
     # Needed by chocolatey
     powershell:
-      repo: git://github.com/puppetlabs/puppetlabs-powershell.git
+      repo: https://github.com/puppetlabs/puppetlabs-powershell.git
       ref: 1.0.1
     # Need by postgresql
     augeas_core:
-      repo: git://github.com/puppetlabs/puppetlabs-augeas_core
+      repo: https://github.com/puppetlabs/puppetlabs-augeas_core
       ref: 1.0.4
       puppet_version: ">= 6.0.0"
     # Need by postgresql
     concat:
-      repo: git://github.com/puppetlabs/puppetlabs-concat.git
+      repo: https://github.com/puppetlabs/puppetlabs-concat.git
       ref: v6.0.0
     postgresql:
-      repo: git://github.com/puppetlabs/puppetlabs-postgresql.git
+      repo: https://github.com/puppetlabs/puppetlabs-postgresql.git
       ref: v6.4.0
     archive:
-      repo: git://github.com/voxpupuli/puppet-archive.git
+      repo: https://github.com/voxpupuli/puppet-archive.git
       ref: 'v3.0.0'
     windows_env:
-      repo: git://github.com/voxpupuli/puppet-windows_env.git
+      repo: https://github.com/voxpupuli/puppet-windows_env.git
       ref: 'v3.0.0'
     systemd:
-      repo: git://github.com/camptocamp/puppet-systemd.git
+      repo: https://github.com/camptocamp/puppet-systemd.git
       ref: '2.0.0'
   symlinks:
     sensu: "#{source_dir}"

@@ -269,8 +269,4 @@ describe Puppet::Type.type(:sensu_agent_entity_config) do
       end
     end
   end
-
-  include_examples 'namespace' do
-    let(:res) { resource }
-  end
 end
