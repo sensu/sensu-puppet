@@ -74,7 +74,8 @@
 #   Defaults to `C:\ProgramData\sensu\log\sensu-agent.log`
 # @param agent_entity_config_provider
 #   The provider to use when managing sensu_agent_entity_config resources
-#
+# @param validate_agent_entity
+#   Determines if sensuctl and sensu_api types will validate if the entity exists within its namespace
 class sensu::agent (
   Optional[String] $version = undef,
   Optional[String[1]] $package_source = undef,
@@ -98,6 +99,7 @@ class sensu::agent (
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
+  Boolean $validate_agent_entity = true,
 ) {
 
   include sensu
@@ -295,9 +297,11 @@ class sensu::agent (
     subscribe => $service_subscribe,
   }
 
-  sensu_agent_entity_validator { $config['name']:
-    ensure    => 'present',
-    namespace => $config['namespace'],
-    provider  => 'sensu_api',
+  if $validate_agent_entity {
+    sensu_agent_entity_validator { $config['name']:
+      ensure    => 'present',
+      namespace => $config['namespace'],
+      provider  => 'sensu_api',
+    }
   }
 }
