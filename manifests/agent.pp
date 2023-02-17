@@ -295,9 +295,11 @@ class sensu::agent (
     subscribe => $service_subscribe,
   }
 
-  sensu_agent_entity_validator { $config['name']:
-    ensure    => 'present',
-    namespace => $config['namespace'],
-    provider  => 'sensu_api',
+  if ! $sensu::agent::agent_managed_entity {
+    sensu_agent_entity_validator { $config['name']:
+      ensure    => 'present',
+      namespace => $config['namespace'],
+      provider  => 'sensu_api',
+    }
   }
 }

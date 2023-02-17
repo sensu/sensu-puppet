@@ -119,6 +119,7 @@ The following parameters are available in the `sensu` class:
 * [`agent_password`](#-sensu--agent_password)
 * [`agent_entity_config_password`](#-sensu--agent_entity_config_password)
 * [`validate_namespaces`](#-sensu--validate_namespaces)
+* [`validate_api`](#-sensu--validate_api)
 
 ##### <a name="-sensu--version"></a>`version`
 
@@ -276,6 +277,14 @@ Default value: `undef`
 Data type: `Boolean`
 
 Determines if sensuctl and sensu_api types will validate their namespace exists
+
+Default value: `true`
+
+##### <a name="-sensu--validate_api"></a>`validate_api`
+
+Data type: `Boolean`
+
+Determines if sensu_api types will validate the connexion
 
 Default value: `true`
 
