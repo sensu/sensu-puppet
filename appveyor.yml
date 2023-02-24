@@ -40,21 +40,16 @@ install:
 test_script:
 - bundle exec rake acceptance:windows
 image:
-  # Windows 2012 R2
-  - Visual Studio 2015
-  # Windows 2016
-  - Visual Studio 2017
+  # Only test newest build images to avoid transient errors with older builds
   # Windows 2019
   - Visual Studio 2019
 environment:
   matrix:
-    - PUPPET_GEM_VERSION: '~>6.x'
-      FACTER_GEM_VERSION: '~>2.x'
-      PUPPET_REPO: puppet6
-      RUBY_VERSION: 25-x64
+    # Seen transient errors with Ruby 2.5 used with Puppet 6
+    # so just test Puppet 7 and Ruby 2.7
     - PUPPET_GEM_VERSION: '~>7.x'
       FACTER_GEM_VERSION: '~>4.x'
       PUPPET_REPO: puppet7
-      RUBY_VERSION: 26-x64
+      RUBY_VERSION: 27-x64
 matrix:
   fast_finish: false

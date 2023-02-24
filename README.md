@@ -484,6 +484,20 @@ sensu::agent::annotation { 'ec2_access_key':
 }
 ```
 
+### Advanced agent - Disable validations
+
+In some cases it might be desired to disable API and entity validations when agents are managing their own entity.
+
+```puppet
+class { 'sensu':
+  validate_api => false,
+}
+class { 'sensu::agent':
+  agent_managed_entity => true,
+  validate_entity      => false,
+}
+```
+
 ### Advanced agent - Custom config entries
 
 It is possible to define config entries for `agent.yml` in many locations in Puppet:
@@ -648,7 +662,7 @@ The following example will add a PostgreSQL server and database to the sensu-bac
 ```puppet
 class { 'postgresql::globals':
   manage_package_repo => true,
-  version             => '9.6',
+  version             => '11',
 }
 class { 'postgresql::server': }
 class { 'sensu::backend':

@@ -146,8 +146,7 @@ describe 'sensu::backend', :type => :class do
           it { should_not contain_file('sensu-backend_env_vars') }
         end
 
-        context 'systemd systems deploy dropin', if: facts[:kernel] == 'Linux' do
-          let(:facts) { facts.merge({:service_provider => 'systemd'}) }
+        if facts[:service_provider] == 'systemd'
           it {
             should contain_systemd__dropin_file('sensu-backend-start.conf').with({
               'unit'    => 'sensu-backend.service',
@@ -156,7 +155,12 @@ describe 'sensu::backend', :type => :class do
             })
           }
         end
-        it { should_not contain_systemd__dropin_file('sensu-backend-start.conf') }
+
+        context 'when not systemd', if: facts[:kernel] == 'Linux' do
+          let(:facts) { facts.merge({:service_provider => 'sysvinit'}) }
+
+          it { should_not contain_systemd__dropin_file('sensu-backend-start.conf') }
+        end
 
         it {
           should contain_service('sensu-backend').with({
@@ -365,7 +369,7 @@ describe 'sensu::backend', :type => :class do
       context 'datastore => postgresql' do
         let(:pre_condition) do
           <<-EOS
-          class { '::postgresql::globals': version => '9.6' }
+          class { '::postgresql::globals': version => '11' }
           class { '::postgresql::server': }
           EOS
         end

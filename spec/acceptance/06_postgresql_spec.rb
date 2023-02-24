@@ -15,7 +15,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
       pp = <<-EOS
       class { 'postgresql::globals':
         manage_package_repo => true,
-        version             => '9.6',
+        version             => '11',
       }
       class { 'postgresql::server':}
       class { 'sensu::backend':

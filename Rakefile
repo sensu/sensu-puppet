@@ -24,7 +24,7 @@ RSpec::Core::RakeTask.new(:acceptance) do |t|
 end
 
 desc 'Validate manifests, templates, ruby files and shell scripts'
-task :validate do
+task :sensu_validate do
   # lib/* gets checked by puppetlabs_spec_helper, though it skips spec entirely
   puts "\nValidating ruby files ignored by puppetlabs_spec_helper (Vagrantfile', 'spec/**/*.rb)"
   Dir['Vagrantfile', 'spec/**/*.rb'].each do |ruby_file|

@@ -117,8 +117,7 @@ describe 'sensu::agent', :type => :class do
           it { should_not contain_file('sensu-agent_env_vars') }
         end
 
-        context 'systemd systems deploy dropin', if: facts[:kernel] == 'Linux' do
-          let(:facts) { facts.merge({:service_provider => 'systemd'}) }
+        if facts[:service_provider] == 'systemd'
           it {
             should contain_systemd__dropin_file('sensu-agent-start.conf').with({
               'unit'    => 'sensu-agent.service',
@@ -127,7 +126,11 @@ describe 'sensu::agent', :type => :class do
             })
           }
         end
-        it { should_not contain_systemd__dropin_file('sensu-agent-start.conf') }
+
+        context 'when not systemd', if: facts[:kernel] == 'Linux' do
+          let(:facts) { facts.merge({:service_provider => 'sysvinit'}) }
+          it { should_not contain_systemd__dropin_file('sensu-agent-start.conf') }
+        end
 
         it {
           should contain_service('sensu-agent').with({
@@ -326,6 +329,16 @@ describe 'sensu::agent', :type => :class do
           it { should compile.with_all_deps }
         end
         it { should contain_package('sensu-go-agent').without_require }
+      end
+
+      context 'when validate_entity => false' do
+        let(:params) do
+          {
+            validate_entity: false
+          }
+        end
+
+        it { is_expected.not_to contain_sensu_agent_entity_validator('localhost') }
       end
 
       context 'with service_env_vars defined' do
