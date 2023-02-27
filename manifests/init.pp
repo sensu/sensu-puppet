@@ -60,6 +60,8 @@
 #   Defaults to value used for `agent_password`.
 # @param validate_namespaces
 #   Determines if sensuctl and sensu_api types will validate their namespace exists
+# @param validate_api
+#   Determines if Sensu API is validated
 class sensu (
   String $version = 'installed',
   Stdlib::Absolutepath $etc_dir = '/etc/sensu',
@@ -80,6 +82,7 @@ class sensu (
   String $agent_password = 'P@ssw0rd!',
   Optional[String] $agent_entity_config_password = undef,
   Boolean $validate_namespaces = true,
+  Boolean $validate_api = true,
 ) {
 
   if $ssl_ca_content {

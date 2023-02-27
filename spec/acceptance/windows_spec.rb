@@ -18,7 +18,8 @@ describe 'sensu::cli class', if: Gem.win_platform? do
   context 'default' do
     pp = <<-EOS
     class { '::sensu':
-      api_host => 'localhost',
+      api_host     => 'localhost',
+      validate_api => false,
     }
     class { 'sensu::cli':
       install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip',
@@ -65,14 +66,17 @@ describe 'sensu::agent class', if: Gem.win_platform? do
 
   context 'default' do
     pp = <<-EOS
-    class { '::sensu': }
+    class { '::sensu':
+      validate_api => false,
+    }
     class { 'sensu::agent':
       backends         => ['sensu-backend:8081'],
       entity_name      => 'sensu-agent',
       service_env_vars => { 'SENSU_API_PORT' => '4041' },
       config_hash      => {
         'log-level' => 'info',
-      }
+      },
+      validate_entity  => false,
     }
     EOS
 
@@ -117,15 +121,18 @@ describe 'sensu::agent class', if: Gem.win_platform? do
 
   context 'using package_source' do
     pp = <<-EOS
-    class { '::sensu': }
+    class { '::sensu':
+      validate_api => false,
+    }
     class { 'sensu::agent':
-      package_name   => 'Sensu Agent',
-      package_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go-agent_5.20.1.12427_en-US.x64.msi',
-      backends       => ['sensu-backend:8081'],
-      entity_name    => 'sensu-agent',
-      config_hash    => {
+      package_name    => 'Sensu Agent',
+      package_source  => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go-agent_5.20.1.12427_en-US.x64.msi',
+      backends        => ['sensu-backend:8081'],
+      entity_name     => 'sensu-agent',
+      config_hash     => {
         'log-level' => 'info',
-      }
+      },
+      validate_entity => false,
     }
     EOS
 

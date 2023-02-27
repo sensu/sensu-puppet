@@ -6,7 +6,7 @@ class { 'sensu::agent':
 
 class { 'postgresql::globals':
   manage_package_repo => true,
-  version             => '9.6',
+  version             => '11',
 }
 
 class { 'postgresql::server':

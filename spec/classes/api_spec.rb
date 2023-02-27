@@ -38,6 +38,18 @@ describe 'sensu::api', :type => :class do
         }
 
       end
+
+      context 'when validate_api => false' do
+        let(:pre_condition) do
+          <<-PP
+            class { 'sensu':
+              validate_api => false,
+            }
+          PP
+        end
+
+        it { is_expected.not_to contain_sensu_api_validator('sensu') }
+      end
     end
   end
 end

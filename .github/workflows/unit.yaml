@@ -46,6 +46,6 @@ jobs:
           bundler-cache: true
           bundler: '2.1.0'
       - name: Validate
-        run: bundle exec rake validate lint strings:generate reference
+        run: bundle exec rake sensu_validate lint strings:generate reference
       - name: Run tests
         run: bundle exec rake parallel_spec

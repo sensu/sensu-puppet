@@ -14,6 +14,8 @@ HOSTS:
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which iproute'
+      - 'wget --no-check-certificate https://copr.fedorainfracloud.org/coprs/jsynacek/systemd-backports-for-centos-7/repo/epel-7/jsynacek-systemd-backports-for-centos-7-epel-7.repo -O /etc/yum.repos.d/jsynacek-systemd-centos-7.repo'
+      - 'yum update -y systemd'
     docker_container_name: 'sensu-backend1-el7'
   sensu-backend2:
     roles:
@@ -28,6 +30,8 @@ HOSTS:
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which iproute'
+      - 'wget --no-check-certificate https://copr.fedorainfracloud.org/coprs/jsynacek/systemd-backports-for-centos-7/repo/epel-7/jsynacek-systemd-backports-for-centos-7-epel-7.repo -O /etc/yum.repos.d/jsynacek-systemd-centos-7.repo'
+      - 'yum update -y systemd'
     docker_container_name: 'sensu-backend2-el7'
   sensu-backend3:
     roles:
@@ -42,6 +46,8 @@ HOSTS:
     docker_image_commands:
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which iproute'
+      - 'wget --no-check-certificate https://copr.fedorainfracloud.org/coprs/jsynacek/systemd-backports-for-centos-7/repo/epel-7/jsynacek-systemd-backports-for-centos-7-epel-7.repo -O /etc/yum.repos.d/jsynacek-systemd-centos-7.repo'
+      - 'yum update -y systemd'
     docker_container_name: 'sensu-backend3-el7'
 CONFIG:
   log_level: debug

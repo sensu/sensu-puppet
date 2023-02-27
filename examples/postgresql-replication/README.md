@@ -9,9 +9,9 @@ Adjustments will have to be made for IP addresses and password.
 Once the primary and standby have applied their Puppet catalog you must bootstrap the standby:
 
 ```
-systemctl stop postgresql-9.6.service
-rm -rf /var/lib/pgsql/9.6/data/*
-sudo -u postgres pg_basebackup -h 192.168.52.11 -D /var/lib/pgsql/9.6/data -P -U repl -R --xlog-method=stream
+systemctl stop postgresql-11.service
+rm -rf /var/lib/pgsql/11/data/*
+sudo -u postgres pg_basebackup -h 192.168.52.11 -D /var/lib/pgsql/11/data -P -U repl -R --xlog-method=stream
 ```
 
 Once the bootstrap is done, re-run Puppet.

@@ -50,6 +50,7 @@ RSpec.configure do |config|
     },
     :operatingsystem           => 'RedHat',
     :operatingsystemmajrelease => '7',
+    :service_provider          => 'systemd',
     :fqdn                      => 'testfqdn.example.com',
     :puppet_hostcert           => '/dne/cert.pem',
     :puppet_hostprivkey        => '/dne/key.pem',

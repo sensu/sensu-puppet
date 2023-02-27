@@ -98,8 +98,8 @@ sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
-postgresql::server::service_status: 'systemctl status postgresql-9.6 1>/dev/null 2>&1'
-postgresql::server::service_reload: 'systemctl reload postgresql-9.6 1>/dev/null 2>&1'
+postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'
+postgresql::server::service_reload: 'systemctl reload postgresql-11 1>/dev/null 2>&1'
 EOS
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
     on setup_nodes, 'mkdir -p -m 0755 /etc/puppetlabs/puppet/data'
