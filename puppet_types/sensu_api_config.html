@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_api_config
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_api_config";
   relpath = '../';
 </script>
@@ -76,13 +76,15 @@
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    
+    <p><strong>NOTE</strong> This is a private type not intended to be used directly.</p>
+
   </div>
 </div>
 
 
 <div class="tags">
   
+
 
 </div>
 
@@ -97,20 +99,6 @@
       <div class="docstring">
         <div class="discussion">
           <p>The name of the resource.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">old_password</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          <p>Sensu API old password</p>
 
         </div>
       </div>
@@ -157,6 +145,39 @@
         </div>
       </div>
       
+      
+    </li>
+    
+    <li>
+      <span class="name">validate_namespaces</span>
+      
+      <span class="default"> (defaults to: <em>true</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Determines of namespaces should be validated with Sensu API</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            true
+          </li>
+          
+          <li>
+            
+            false
+          </li>
+          
+        </ul>
+      </div>
       
     </li>
     

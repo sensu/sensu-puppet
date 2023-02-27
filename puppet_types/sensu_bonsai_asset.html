@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_bonsai_asset
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_bonsai_asset";
   relpath = '../';
 </script>
@@ -94,6 +94,7 @@
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 </ul>
 
@@ -141,6 +142,7 @@
 }</code></pre>
     
   </div>
+
 
 
 </div>
@@ -204,7 +206,7 @@
           
           <li>
             
-            /[0-9\.]+/
+            /^(v)?[0-9\.]+$/
           </li>
           
         </ul>
@@ -219,6 +221,20 @@
 <div class="tags">
   <p class="tag_title">Parameters</p>
   <ul>
+    
+    <li>
+      <span class="name">bonsai_http_proxy</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Proxy to use for Bonsai HTTP requests</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
     
     <li>
       <span class="name">bonsai_name</span>
@@ -249,6 +265,20 @@
     </li>
     
     <li>
+      <span class="name">bonsai_no_proxy</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Addresses to not proxy when making bonsai HTTP requests</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
       <span class="name">name (namevar)</span>
       
       
@@ -271,6 +301,20 @@
       <div class="docstring">
         <div class="discussion">
           <p>The Sensu RBAC namespace that this asset belongs to.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_bonsai_asset</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

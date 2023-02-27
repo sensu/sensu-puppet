@@ -6,15 +6,15 @@
 <title>
   Puppet Class: sensu::cli
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_classes::sensu::cli";
   relpath = '../';
 </script>
@@ -239,6 +239,7 @@ Paths with puppet:// or file:// paths will also be installed.</p>
 </ul>
 
 
+
 </div><div class="method_details_list">
   <table class="source_code">
     <tr>
@@ -315,16 +316,7 @@ Paths with puppet:// or file:// paths will also be installed.</p>
 96
 97
 98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108</pre>
+99</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/cli.pp', line 30</span>
@@ -343,19 +335,10 @@ class sensu::cli (
   include sensu
   include sensu::common
 
-  $ssl_dir = $sensu::ssl_dir
-  $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
-  $api_url = $sensu::api_url
-  $password = $sensu::password
 
-  if $use_ssl {
-    $trusted_ca_file = $sensu::trusted_ca_file_path
-    if $configure {
-      Class[&#39;sensu::ssl&#39;] -&gt; Sensuctl_configure[&#39;puppet&#39;]
-    }
-  } else {
-    $trusted_ca_file = &#39;absent&#39;
+  if $sensu::use_ssl and $configure {
+    Class[&#39;sensu::ssl&#39;] -&gt; Sensuctl_configure[&#39;puppet&#39;]
   }
 
   if $facts[&#39;os&#39;][&#39;family&#39;] == &#39;windows&#39; {
@@ -393,16 +376,16 @@ class sensu::cli (
 
   if $configure {
     sensuctl_config { &#39;sensu&#39;:
-      chunk_size =&gt; $sensuctl_chunk_size,
-      path       =&gt; $sensuctl_path,
+      chunk_size          =&gt; $sensuctl_chunk_size,
+      path                =&gt; $sensuctl_path,
+      validate_namespaces =&gt; $sensu::validate_namespaces,
     }
 
     sensuctl_configure { &#39;puppet&#39;:
-      url              =&gt; $api_url,
+      url              =&gt; $sensu::api_url,
       username         =&gt; &#39;admin&#39;,
-      password         =&gt; $password,
-      old_password     =&gt; $sensu::old_password,
-      trusted_ca_file  =&gt; $trusted_ca_file,
+      password         =&gt; $sensu::password,
+      trusted_ca_file  =&gt; $sensu::trusted_ca_file,
       config_format    =&gt; $config_format,
       config_namespace =&gt; $config_namespace,
     }

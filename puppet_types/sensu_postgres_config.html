@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_postgres_config
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_postgres_config";
   relpath = '../';
 </script>
@@ -92,6 +92,7 @@
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 </ul>
 
   </div>
@@ -116,10 +117,93 @@
   </div>
 
 
+
 </div>
 <div class="tags">
   <p class="tag_title">Properties</p>
   <ul>
+    
+    <li>
+      <span class="name">batch_buffer</span>
+      
+      <span class="default"> (defaults to: <em>0</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Maximum number of requests to buffer in memory.</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /^[0-9]+$/
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">batch_size</span>
+      
+      <span class="default"> (defaults to: <em>1</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Number of requests in each PostgreSQL write transaction</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /^[0-9]+$/
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
+    <li>
+      <span class="name">batch_workers</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Number of requests in each PostgreSQL write transaction, defaults to value for pool_size</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            /^[0-9]+$/
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
     
     <li>
       <span class="name">dsn</span>
@@ -132,6 +216,39 @@
         </div>
       </div>
       
+      
+    </li>
+    
+    <li>
+      <span class="name">enable_round_robin</span>
+      
+      <span class="default"> (defaults to: <em>false</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>If true, enables round robin scheduling on PostgreSQL</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            true
+          </li>
+          
+          <li>
+            
+            false
+          </li>
+          
+        </ul>
+      </div>
       
     </li>
     
@@ -171,6 +288,8 @@
     <li>
       <span class="name">pool_size</span>
       
+      <span class="default"> (defaults to: <em>0</em>)</span>
+      
       
       <div class="docstring">
         <div class="discussion">
@@ -194,6 +313,39 @@
       
     </li>
     
+    <li>
+      <span class="name">strict</span>
+      
+      <span class="default"> (defaults to: <em>false</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>Perform configuration validation when configuring this resource</p>
+
+        </div>
+      </div>
+      
+      
+      <div>
+        Supported values:
+        <ul>
+          
+          <li>
+            
+            true
+          </li>
+          
+          <li>
+            
+            false
+          </li>
+          
+        </ul>
+      </div>
+      
+    </li>
+    
   </ul>
 </div>
 
@@ -209,6 +361,20 @@
       <div class="docstring">
         <div class="discussion">
           <p>The name of the postgres config</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_postgres_config</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

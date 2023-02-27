@@ -6,15 +6,15 @@
 <title>
   Puppet Class: sensu::backend::datastore::postgresql
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_classes::sensu::backend::datastore::postgresql";
   relpath = '../';
 </script>
@@ -85,6 +85,7 @@
 <div class="tags">
   
 
+
 </div><div class="method_details_list">
   <table class="source_code">
     <tr>
@@ -116,7 +117,81 @@
 25
 26
 27
-28</pre>
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/backend/datastore/postgresql.pp', line 4</span>
@@ -130,19 +205,93 @@ class sensu::backend::datastore::postgresql {
   $host = $sensu::backend::postgresql_host
   $port = $sensu::backend::postgresql_port
   $dbname = $sensu::backend::postgresql_dbname
-  $dsn = &quot;postgresql://${user}:${password}@${host}:${port}/${dbname}&quot;
+  $sslmode = $sensu::backend::postgresql_sslmode
+  $dsn = &quot;postgresql://${user}:${password}@${host}:${port}/${dbname}?sslmode=${sslmode}&quot;
 
   sensu_postgres_config { $sensu::backend::postgresql_name:
-    ensure    =&gt; $sensu::backend::datastore_ensure,
-    dsn       =&gt; Sensitive($dsn),
-    pool_size =&gt; $sensu::backend::postgresql_pool_size,
+    ensure             =&gt; $sensu::backend::datastore_ensure,
+    dsn                =&gt; Sensitive($dsn),
+    pool_size          =&gt; $sensu::backend::postgresql_pool_size,
+    strict             =&gt; $sensu::backend::postgresql_strict,
+    batch_buffer       =&gt; $sensu::backend::postgresql_batch_buffer,
+    batch_size         =&gt; $sensu::backend::postgresql_batch_size,
+    batch_workers      =&gt; $sensu::backend::postgresql_batch_workers,
+    enable_round_robin =&gt; $sensu::backend::postgresql_enable_round_robin,
   }
 
   if $sensu::backend::manage_postgresql_db and $sensu::backend::datastore_ensure == &#39;present&#39; {
     postgresql::server::db { $dbname:
       user     =&gt; $user,
-      password =&gt; postgresql_password($user, $password),
+      password =&gt; postgresql::postgresql_password($user, $password),
       before   =&gt; Sensu_postgres_config[$sensu::backend::postgresql_name],
+    }
+  }
+
+  $ssl_dir = $sensu::backend::postgresql_ssl_dir
+  $ssl_ca_source = $sensu::backend::postgresql_ssl_ca_source
+  $ssl_ca_content = $sensu::backend::postgresql_ssl_ca_content
+  $ssl_crl_source = $sensu::backend::postgresql_ssl_crl_source
+  $ssl_crl_content = $sensu::backend::postgresql_ssl_crl_content
+  $ssl_cert_source = $sensu::backend::postgresql_ssl_cert_source
+  $ssl_cert_content = $sensu::backend::postgresql_ssl_cert_content
+  $ssl_key_source = $sensu::backend::postgresql_ssl_key_source
+  $ssl_key_content = $sensu::backend::postgresql_ssl_key_content
+
+  file { &#39;sensu-backend postgresql_ssl_dir&#39;:
+    ensure  =&gt; &#39;directory&#39;,
+    path    =&gt; $ssl_dir,
+    owner   =&gt; $sensu::sensu_user,
+    group   =&gt; $sensu::sensu_group,
+    mode    =&gt; &#39;0755&#39;,
+    require =&gt; Package[&#39;sensu-go-backend&#39;],
+    notify  =&gt; Service[&#39;sensu-backend&#39;],
+  }
+  if $ssl_ca_source or $ssl_ca_content {
+    file { &#39;sensu-backend postgresql_ca&#39;:
+      ensure  =&gt; &#39;file&#39;,
+      path    =&gt; &quot;${ssl_dir}/root.crt&quot;,
+      source  =&gt; $ssl_ca_source,
+      content =&gt; $ssl_ca_content,
+      owner   =&gt; $sensu::sensu_user,
+      group   =&gt; $sensu::sensu_group,
+      mode    =&gt; &#39;0644&#39;,
+      notify  =&gt; Service[&#39;sensu-backend&#39;],
+    }
+  }
+  if $ssl_crl_source or $ssl_crl_content {
+    file { &#39;sensu-backend postgresql_crl&#39;:
+      ensure  =&gt; &#39;file&#39;,
+      path    =&gt; &quot;${ssl_dir}/root.crl&quot;,
+      source  =&gt; $ssl_crl_source,
+      content =&gt; $ssl_crl_content,
+      owner   =&gt; $sensu::sensu_user,
+      group   =&gt; $sensu::sensu_group,
+      mode    =&gt; &#39;0644&#39;,
+      notify  =&gt; Service[&#39;sensu-backend&#39;],
+    }
+  }
+  if $ssl_cert_source or $ssl_cert_content {
+    file { &#39;sensu-backend postgresql_cert&#39;:
+      ensure  =&gt; &#39;file&#39;,
+      path    =&gt; &quot;${ssl_dir}/postgresql.crt&quot;,
+      source  =&gt; $ssl_cert_source,
+      content =&gt; $ssl_cert_content,
+      owner   =&gt; $sensu::sensu_user,
+      group   =&gt; $sensu::sensu_group,
+      mode    =&gt; &#39;0644&#39;,
+      notify  =&gt; Service[&#39;sensu-backend&#39;],
+    }
+  }
+  if $ssl_key_source or $ssl_key_content {
+    file { &#39;sensu-backend postgresql_key&#39;:
+      ensure  =&gt; &#39;file&#39;,
+      path    =&gt; &quot;${ssl_dir}/postgresql.key&quot;,
+      source  =&gt; $ssl_key_source,
+      content =&gt; $ssl_key_content,
+      owner   =&gt; $sensu::sensu_user,
+      group   =&gt; $sensu::sensu_group,
+      mode    =&gt; &#39;0600&#39;,
+      notify  =&gt; Service[&#39;sensu-backend&#39;],
     }
   }
 }</pre>

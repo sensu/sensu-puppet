@@ -6,15 +6,15 @@
 <title>
   Puppet Class: sensu
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_classes::sensu";
   relpath = '../';
 </script>
@@ -367,23 +367,6 @@ This parameter is mutually exclusive with ssl_ca_source</p>
   
     <li>
       
-        <span class='name'>old_password</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Sensu backend admin old password needed when changing password.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>agent_password</span>
       
       
@@ -401,7 +384,7 @@ This parameter is mutually exclusive with ssl_ca_source</p>
   
     <li>
       
-        <span class='name'>agent_old_password</span>
+        <span class='name'>agent_entity_config_password</span>
       
       
         <span class='type'>(<tt>Optional[String]</tt>)</span>
@@ -411,12 +394,48 @@ This parameter is mutually exclusive with ssl_ca_source</p>
       
       
         &mdash;
-        <div class='inline'><p>The sensu agent old password needed when changing agent_password</p>
+        <div class='inline'><p>The password used when configuring Sensu Agent entity config items
+Defaults to value used for <code>agent_password</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>validate_namespaces</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determines if sensuctl and sensu_api types will validate their namespace exists</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>validate_api</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determines if Sensu API is validated</p>
 </div>
       
     </li>
   
 </ul>
+
 
 
 </div><div class="method_details_list">
@@ -426,9 +445,6 @@ This parameter is mutually exclusive with ssl_ca_source</p>
         <pre class="lines">
 
 
-62
-63
-64
 65
 66
 67
@@ -516,10 +532,13 @@ This parameter is mutually exclusive with ssl_ca_source</p>
 149
 150
 151
-152</pre>
+152
+153
+154
+155</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 62</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 65</span>
 
 class sensu (
   String $version = &#39;installed&#39;,
@@ -538,9 +557,10 @@ class sensu (
   String $api_host = $trusted[&#39;certname&#39;],
   Stdlib::Port $api_port = 8080,
   String $password = &#39;P@ssw0rd!&#39;,
-  Optional[String] $old_password = undef,
   String $agent_password = &#39;P@ssw0rd!&#39;,
-  Optional[String] $agent_old_password = undef,
+  Optional[String] $agent_entity_config_password = undef,
+  Boolean $validate_namespaces = true,
+  Boolean $validate_api = true,
 ) {
 
   if $ssl_ca_content {
@@ -576,17 +596,21 @@ class sensu (
 
   if $use_ssl {
     $api_protocol = &#39;https&#39;
+    $trusted_ca_file = $trusted_ca_file_path
   } else {
     $api_protocol = &#39;http&#39;
+    $trusted_ca_file = &#39;absent&#39;
   }
   $api_url = &quot;${api_protocol}://${api_host}:${api_port}&quot;
+
+  $_agent_entity_config_password = pick($agent_entity_config_password, $agent_password)
 
   case $facts[&#39;os&#39;][&#39;family&#39;] {
     &#39;RedHat&#39;: {
       $os_package_require = []
     }
     &#39;Debian&#39;: {
-      $os_package_require = [Class[&#39;::apt::update&#39;]]
+      $os_package_require = [Class[&#39;apt::update&#39;]]
     }
     &#39;windows&#39;: {
       $os_package_require = []
@@ -599,18 +623,13 @@ class sensu (
   # $package_require is used by sensu::agent and sensu::backend
   # package resources
   if $manage_repo {
-    $package_require = [Class[&#39;::sensu::repo&#39;]] + $os_package_require
+    $package_require = [Class[&#39;sensu::repo&#39;]] + $os_package_require
   } else {
     $package_require = undef
   }
 
   include sensu::resources
 
-  exec { &#39;sensu systemctl daemon-reload&#39;:
-    path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
-    command     =&gt; &#39;systemctl daemon-reload&#39;,
-    refreshonly =&gt; true,
-  }
 }</pre>
       </td>
     </tr>

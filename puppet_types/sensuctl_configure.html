@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensuctl_configure
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensuctl_configure";
   relpath = '../';
 </script>
@@ -80,17 +80,20 @@
 </div>
 
   <h2>Summary</h2>
-  Manages `sensuctl configure`. This is a private type not intended to be used directly.
+  Manages 'sensuctl configure'
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p><strong>Autorequires</strong>:</p>
+    <p><strong>NOTE</strong> This is a private type not intended to be used directly.</p>
+
+<p><strong>Autorequires</strong>:</p>
 
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 <li><code>file</code> - Puppet will autorequire <code>file</code> resources defined in <code>trusted_ca_file</code> property.</li>
 </ul>
 
@@ -100,6 +103,7 @@
 
 <div class="tags">
   
+
 
 </div>
 <div class="tags">
@@ -247,12 +251,12 @@
     </li>
     
     <li>
-      <span class="name">old_password</span>
+      <span class="name">password</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>The previous sensuctl password, needed in order to change passwords</p>
+          <p>Password to use with sensuctl configure</p>
 
         </div>
       </div>
@@ -261,12 +265,12 @@
     </li>
     
     <li>
-      <span class="name">password</span>
+      <span class="name">provider</span>
       
       
       <div class="docstring">
         <div class="discussion">
-          <p>Password to use with sensuctl configure</p>
+          <p>The specific backend to use for this <code>sensuctl_configure</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

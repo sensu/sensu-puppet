@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_entity
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_entity";
   relpath = '../';
 </script>
@@ -94,6 +94,7 @@
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 <li><code>sensu_handler</code> - Puppet will autorequie <code>sensu_handler</code> resource defined in <code>deregistration.handler</code> property.</li>
 </ul>
@@ -126,6 +127,7 @@
 }</code></pre>
     
   </div>
+
 
 
 </div>
@@ -350,6 +352,20 @@
           <p>The name of the entity.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_entity</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

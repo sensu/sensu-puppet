@@ -6,15 +6,15 @@
 <title>
   Module: PuppetX::Sensu::Type
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "PuppetX::Sensu::Type";
   relpath = '../../';
 </script>
@@ -177,7 +177,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#add_autorequires-instance_method" title="#add_autorequires (instance method)">#<strong>add_autorequires</strong>(namespace = true, require_configure = true)  &#x21d2; Object </a>
+      <a href="#add_autorequires-instance_method" title="#add_autorequires (instance method)">#<strong>add_autorequires</strong>(namespace = true, require_configure = true, require_admin = true)  &#x21d2; Object </a>
     
 
     
@@ -225,18 +225,19 @@ Puppet::Type::Sensu_asset[test] becomes Sensu_asset[test]</p>
 <div class="tags">
   
 
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-50
-51
-52</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/sensu/type.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/sensu/type.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_error_prefix'>error_prefix</span><span class='lparen'>(</span><span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>:</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span><span class='embexpr_end'>}</span><span class='tstring_content'>[</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_s'>s</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>]:</span><span class='tstring_end'>&quot;</span></span>
@@ -293,31 +294,59 @@ Puppet::Type::Sensu_asset[test] becomes Sensu_asset[test]</p>
       <pre class="lines">
 
 
-35
-36
-37
-38
-39
-40
 41
 42
 43
 44
 45
-46</pre>
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/sensu/type.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/sensu/type.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_validate_namespace'>validate_namespace</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_catalog'>catalog</span><span class='period'>.</span><span class='id identifier rubyid_resources'>resources</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_catalog_resource'>catalog_resource</span><span class='op'>|</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_catalog_resource'>catalog_resource</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Puppet::Type::Sensu_namespace</span><span class='tstring_end'>&#39;</span></span>
-      <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_catalog_resource'>catalog_resource</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
+  <span class='kw'>if</span> <span class='op'>!</span> <span class='ivar'>@catalog_namespaces</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span> <span class='op'>=</span> <span class='ivar'>@catalog_namespaces</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_catalog'>catalog</span><span class='period'>.</span><span class='id identifier rubyid_resources'>resources</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_catalog_resource'>catalog_resource</span><span class='op'>|</span>
+      <span class='kw'>if</span> <span class='id identifier rubyid_catalog_resource'>catalog_resource</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Puppet::Type::Sensu_namespace</span><span class='tstring_end'>&#39;</span></span>
+        <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_catalog_resource'>catalog_resource</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span>
+      <span class='kw'>end</span>
     <span class='kw'>end</span>
+    <span class='ivar'>@catalog_namespaces</span> <span class='op'>=</span> <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_namespaces'>namespaces</span> <span class='op'>=</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_provider'>provider</span><span class='period'>.</span><span class='id identifier rubyid_namespaces'>namespaces</span><span class='lparen'>(</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>!=</span> <span class='symbol'>:absent</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='lparen'>(</span> <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:namespace</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_namespaces'>namespaces</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:namespace</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='rparen'>)</span>
+  <span class='comment'># Check if namespace is in catalog
+</span>  <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>!=</span> <span class='symbol'>:absent</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:namespace</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='kw'>return</span> <span class='kw'>true</span>
+  <span class='kw'>end</span>
+  <span class='kw'>if</span> <span class='op'>!</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_provider'>provider</span><span class='period'>.</span><span class='id identifier rubyid_validate_namespaces'>validate_namespaces</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_provider'>provider</span><span class='period'>.</span><span class='id identifier rubyid_validate_namespaces'>validate_namespaces</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>==</span> <span class='symbol'>:false</span>
+    <span class='id identifier rubyid_namespaces'>namespaces</span> <span class='op'>=</span> <span class='id identifier rubyid_catalog_namespaces'>catalog_namespaces</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_namespaces'>namespaces</span> <span class='op'>=</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_provider'>provider</span><span class='period'>.</span><span class='id identifier rubyid_namespaces'>namespaces</span><span class='lparen'>(</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='comment'># Check if namespace exists on system (not defined in catalog)
+</span>  <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>!=</span> <span class='symbol'>:absent</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span> <span class='id identifier rubyid_namespaces'>namespaces</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:namespace</span><span class='rbracket'>]</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='op'>::</span><span class='const'>Error</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Sensu namespace &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:namespace</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; must be defined or exist</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -335,7 +364,7 @@ Puppet::Type::Sensu_asset[test] becomes Sensu_asset[test]</p>
       <div class="method_details first">
   <h3 class="signature first" id="add_autorequires-instance_method">
   
-    #<strong>add_autorequires</strong>(namespace = true, require_configure = true)  &#x21d2; <tt>Object</tt> 
+    #<strong>add_autorequires</strong>(namespace = true, require_configure = true, require_admin = true)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -371,12 +400,18 @@ Puppet::Type::Sensu_asset[test] becomes Sensu_asset[test]</p>
 30
 31
 32
-33</pre>
+33
+34
+35
+36
+37
+38
+39</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/puppet_x/sensu/type.rb', line 9</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_add_autorequires'>add_autorequires</span><span class='lparen'>(</span><span class='id identifier rubyid_namespace'>namespace</span><span class='op'>=</span><span class='kw'>true</span><span class='comma'>,</span> <span class='id identifier rubyid_require_configure'>require_configure</span><span class='op'>=</span><span class='kw'>true</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_add_autorequires'>add_autorequires</span><span class='lparen'>(</span><span class='id identifier rubyid_namespace'>namespace</span><span class='op'>=</span><span class='kw'>true</span><span class='comma'>,</span> <span class='id identifier rubyid_require_configure'>require_configure</span><span class='op'>=</span><span class='kw'>true</span><span class='comma'>,</span> <span class='id identifier rubyid_require_admin'>require_admin</span><span class='op'>=</span><span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_autorequire'>autorequire</span><span class='lparen'>(</span><span class='symbol'>:package</span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sensu-go-cli</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='kw'>end</span>
@@ -398,6 +433,12 @@ Puppet::Type::Sensu_asset[test] becomes Sensu_asset[test]</p>
   <span class='kw'>if</span> <span class='id identifier rubyid_namespace'>namespace</span>
     <span class='id identifier rubyid_autorequire'>autorequire</span><span class='lparen'>(</span><span class='symbol'>:sensu_namespace</span><span class='rparen'>)</span> <span class='kw'>do</span>
       <span class='lbracket'>[</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:namespace</span><span class='rbracket'>]</span> <span class='rbracket'>]</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_require_admin'>require_admin</span>
+    <span class='id identifier rubyid_autorequire'>autorequire</span><span class='lparen'>(</span><span class='symbol'>:sensu_user</span><span class='rparen'>)</span> <span class='kw'>do</span>
+      <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>admin</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>

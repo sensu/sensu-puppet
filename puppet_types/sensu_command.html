@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_command
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_command";
   relpath = '../';
 </script>
@@ -92,6 +92,7 @@
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensu_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 </ul>
 
   </div>
@@ -133,6 +134,7 @@
 }</code></pre>
     
   </div>
+
 
 
 </div>
@@ -261,6 +263,20 @@
       <div class="docstring">
         <div class="discussion">
           <p>command name</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_command</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

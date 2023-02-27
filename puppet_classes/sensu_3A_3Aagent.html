@@ -6,15 +6,15 @@
 <title>
   Puppet Class: sensu::agent
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_classes::sensu::agent";
   relpath = '../';
 </script>
@@ -262,6 +262,23 @@ RedHat based default: <code>/etc/sysconfig/sensu-agent</code></p>
   
     <li>
       
+        <span class='name'>service_path</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/usr/sbin/sensu-agent&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The path to sensu-agent service executable</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>config_hash</span>
       
       
@@ -273,6 +290,23 @@ RedHat based default: <code>/etc/sysconfig/sensu-agent</code></p>
       
         &mdash;
         <div class='inline'><p>Sensu agent configuration hash used to define agent.yml.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>agent_managed_entity</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Manage agent entity using agent.yml rather than API</p>
 </div>
       
     </li>
@@ -303,10 +337,10 @@ Passing <code>backend-url</code> as part of <code>config_hash</code> takes prece
         <span class='name'>entity_name</span>
       
       
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
+        <span class='type'>(<tt>String[1]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>$facts[&#39;networking&#39;][&#39;fqdn&#39;]</tt>)</em>
       
       
         &mdash;
@@ -321,7 +355,7 @@ Passing <code>name</code> as part of <code>config_hash</code> takes precedence</
         <span class='name'>subscriptions</span>
       
       
-        <span class='type'>(<tt>Optional[Array]</tt>)</span>
+        <span class='type'>(<tt>Optional[Array[String[1]]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -339,7 +373,7 @@ Passing <code>subscriptions</code> as part of <code>config_hash</code> takes pre
         <span class='name'>annotations</span>
       
       
-        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+        <span class='type'>(<tt>Optional[Hash[String[1],String]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -357,7 +391,7 @@ Passing <code>annotations</code> as part of <code>config_hash</code> takes prece
         <span class='name'>labels</span>
       
       
-        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+        <span class='type'>(<tt>Optional[Hash[String[1],String]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -375,15 +409,35 @@ Passing <code>labels</code> as part of <code>config_hash</code> takes precedence
         <span class='name'>namespace</span>
       
       
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
+        <span class='type'>(<tt>String[1]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>&#39;default&#39;</tt>)</em>
       
       
         &mdash;
         <div class='inline'><p>The agent namespace
 Passing <code>namespace</code> as part of <code>config_hash</code> takes precedence</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>redact</span>
+      
+      
+        <span class='type'>(<tt>Array[String[1]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[&#39;password&#39;,&#39;passwd&#39;,&#39;pass&#39;,&#39;api_key&#39;,&#39;api_token&#39;,&#39;access_key&#39;,&#39;secret_key&#39;,&#39;private_key&#39;,&#39;secret&#39;]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The agent entity redact list
+Passing <code>redact</code> as part of <code>config_hash</code> takes precedence
+Defaults come from Sensu documentation:
+<a href="https://docs.sensu.io/sensu-go/latest/observability-pipeline/observe-schedule/agent/#security-configuration-flags">https://docs.sensu.io/sensu-go/latest/observability-pipeline/observe-schedule/agent/#security-configuration-flags</a></p>
 </div>
       
     </li>
@@ -423,7 +477,43 @@ Defaults to <code>C:\ProgramData\sensu\log\sensu-agent.log</code></p>
       
     </li>
   
+    <li>
+      
+        <span class='name'>agent_entity_config_provider</span>
+      
+      
+        <span class='type'>(<tt>Enum['sensuctl','sensu_api']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sensu_api&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The provider to use when managing sensu_agent_entity_config resources</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>validate_entity</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sets whether to validate the agent&#39;s entity before attempting
+to configure the entity</p>
+</div>
+      
+    </li>
+  
 </ul>
+
 
 
 </div><div class="method_details_list">
@@ -433,20 +523,6 @@ Defaults to <code>C:\ProgramData\sensu\log\sensu-agent.log</code></p>
         <pre class="lines">
 
 
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
 81
 82
 83
@@ -603,10 +679,82 @@ Defaults to <code>C:\ProgramData\sensu\log\sensu-agent.log</code></p>
 234
 235
 236
-237</pre>
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/agent.pp', line 67</span>
+        <pre class="code"><span class="info file"># File 'manifests/agent.pp', line 81</span>
 
 class sensu::agent (
   Optional[String] $version = undef,
@@ -618,27 +766,33 @@ class sensu::agent (
   String $service_name = &#39;sensu-agent&#39;,
   String $service_ensure = &#39;running&#39;,
   Boolean $service_enable = true,
+  Stdlib::Absolutepath $service_path = &#39;/usr/sbin/sensu-agent&#39;,
   Hash $config_hash = {},
+  Boolean $agent_managed_entity = false,
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
-  Optional[String] $entity_name = undef,
-  Optional[Array] $subscriptions = undef,
-  Optional[Hash] $annotations = undef,
-  Optional[Hash] $labels = undef,
-  Optional[String] $namespace = undef,
+  String[1] $entity_name = $facts[&#39;networking&#39;][&#39;fqdn&#39;],
+  Optional[Array[String[1]]] $subscriptions = undef,
+  Optional[Hash[String[1],String]] $annotations = undef,
+  Optional[Hash[String[1],String]] $labels = undef,
+  String[1] $namespace = &#39;default&#39;,
+  Array[String[1]] $redact = [&#39;password&#39;,&#39;passwd&#39;,&#39;pass&#39;,&#39;api_key&#39;,&#39;api_token&#39;,&#39;access_key&#39;,&#39;secret_key&#39;,&#39;private_key&#39;,&#39;secret&#39;],
   Boolean $show_diff = true,
   Optional[Stdlib::Absolutepath] $log_file = undef,
+  Enum[&#39;sensuctl&#39;,&#39;sensu_api&#39;] $agent_entity_config_provider = &#39;sensu_api&#39;,
+  Boolean $validate_entity = true,
 ) {
 
   include sensu
   include sensu::common
+  include sensu::api
+  if $agent_entity_config_provider == &#39;sensuctl&#39; {
+    warning(&#39;Class[sensu::agent]: Using agent_entity_config_provider is deprecated at this time, forcing use of sensu_api provider&#39;)
+  }
 
-  $etc_dir = $sensu::etc_dir
-  $ssl_dir = $sensu::ssl_dir
-  $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
   $_backends = pick($backends, [&quot;${sensu::api_host}:8081&quot;])
 
-  if $use_ssl {
+  if $sensu::use_ssl {
     $backend_protocol = &#39;wss&#39;
     $ssl_config = {
       &#39;trusted-ca-file&#39; =&gt; $sensu::trusted_ca_file_path,
@@ -656,16 +810,44 @@ class sensu::agent (
       &quot;${backend_protocol}://${backend}&quot;
     }
   }
-  $default_config = delete_undef_values({
-    &#39;backend-url&#39;   =&gt; $backend_urls,
-    &#39;name&#39;          =&gt; $entity_name,
-    &#39;subscriptions&#39; =&gt; $subscriptions,
-    &#39;annotations&#39;   =&gt; $annotations,
-    &#39;labels&#39;        =&gt; $labels,
-    &#39;namespace&#39;     =&gt; $namespace,
-    &#39;password&#39;      =&gt; $sensu::agent_password,
-  })
-  $config = $default_config + $ssl_config + $config_hash
+  $default_config = {
+    &#39;backend-url&#39;          =&gt; $backend_urls,
+    &#39;name&#39;                 =&gt; $entity_name,
+    &#39;agent-managed-entity&#39; =&gt; $agent_managed_entity,
+    &#39;subscriptions&#39;        =&gt; $subscriptions,
+    &#39;annotations&#39;          =&gt; $annotations,
+    &#39;labels&#39;               =&gt; $labels,
+    &#39;namespace&#39;            =&gt; $namespace,
+    &#39;redact&#39;               =&gt; $redact,
+    &#39;password&#39;             =&gt; $sensu::agent_password,
+  }
+  $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
+  if $config[&#39;subscriptions&#39;] {
+    $config[&#39;subscriptions&#39;].each |$s| {
+      sensu::agent::subscription { $s: }
+    }
+  }
+  if $config[&#39;labels&#39;] {
+    $config[&#39;labels&#39;].each |$key, $value| {
+      sensu::agent::label { $key:
+        value =&gt; $value,
+      }
+    }
+  }
+  if $config[&#39;annotations&#39;] {
+    $config[&#39;annotations&#39;].each |$key, $value| {
+      sensu::agent::annotation { $key:
+        value =&gt; $value,
+      }
+    }
+  }
+  sensu_agent_entity_setup { &#39;puppet&#39;:
+    url                  =&gt; $sensu::api_url,
+    username             =&gt; &#39;puppet-agent_entity_config&#39;,
+    password             =&gt; $sensu::_agent_entity_config_password,
+    agent_managed_entity =&gt; $config[&#39;agent-managed-entity&#39;],
+  }
+
   $_service_env_vars = $service_env_vars.map |$key,$value| {
     &quot;${key}=\&quot;${value}\&quot;&quot;
   }
@@ -716,14 +898,6 @@ class sensu::agent (
     $_package_source = undef
   }
 
-  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
-  # Only necessary for Puppet &lt; 6.1.0,
-  # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
-  if versioncmp($facts[&#39;puppetversion&#39;],&#39;6.1.0&#39;) &lt; 0 and $facts[&#39;service_provider&#39;] == &#39;systemd&#39; {
-    Package[&#39;sensu-go-agent&#39;] ~&gt; Exec[&#39;sensu systemctl daemon-reload&#39;]
-    Exec[&#39;sensu systemctl daemon-reload&#39;] -&gt; Service[&#39;sensu-agent&#39;]
-  }
-
   package { &#39;sensu-go-agent&#39;:
     ensure   =&gt; $_version,
     name     =&gt; $package_name,
@@ -734,10 +908,22 @@ class sensu::agent (
     notify   =&gt; Service[&#39;sensu-agent&#39;],
   }
 
+  datacat_collector { &#39;sensu_agent_config&#39;:
+    template        =&gt; &#39;sensu/agent.yml.erb&#39;,
+    template_body   =&gt; template_body(&#39;sensu/agent.yml.erb&#39;),
+    target_resource =&gt; File[&#39;sensu_agent_config&#39;],
+    target_field    =&gt; &#39;content&#39;,
+  }
+
+  datacat_fragment { &#39;sensu_agent_config-main&#39;:
+    target =&gt; &#39;sensu_agent_config&#39;,
+    data   =&gt; $config,
+    order  =&gt; &#39;01&#39;,
+  }
+
   file { &#39;sensu_agent_config&#39;:
     ensure    =&gt; &#39;file&#39;,
     path      =&gt; $sensu::agent_config_path,
-    content   =&gt; to_yaml($config),
     owner     =&gt; $sensu::sensu_user,
     group     =&gt; $sensu::sensu_group,
     mode      =&gt; $sensu::file_mode,
@@ -772,11 +958,31 @@ class sensu::agent (
     }
   }
 
+  if $facts[&#39;service_provider&#39;] == &#39;systemd&#39; {
+    systemd::dropin_file { &#39;sensu-agent-start.conf&#39;:
+      unit    =&gt; &#39;sensu-agent.service&#39;,
+      content =&gt; join([
+        &#39;[Service]&#39;,
+        &#39;ExecStart=&#39;,
+        &quot;ExecStart=${service_path} start -c ${sensu::agent_config_path}&quot;,
+      ], &quot;\n&quot;),
+      notify  =&gt; Service[&#39;sensu-agent&#39;],
+    }
+  }
+
   service { &#39;sensu-agent&#39;:
     ensure    =&gt; $service_ensure,
     enable    =&gt; $service_enable,
     name      =&gt; $service_name,
     subscribe =&gt; $service_subscribe,
+  }
+
+  if $validate_entity {
+    sensu_agent_entity_validator { $config[&#39;name&#39;]:
+      ensure    =&gt; &#39;present&#39;,
+      namespace =&gt; $config[&#39;namespace&#39;],
+      provider  =&gt; &#39;sensu_api&#39;,
+    }
   }
 }</pre>
       </td>

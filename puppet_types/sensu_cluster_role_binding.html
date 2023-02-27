@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_cluster_role_binding
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_cluster_role_binding";
   relpath = '../';
 </script>
@@ -94,6 +94,7 @@
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 <li><code>sensu_cluster_role</code> - Puppet will autorequire <code>sensu_cluster_role</code> resource defined in <code>role_ref</code> property.</li>
 <li><code>sensu_user</code> - Puppet will autorequire <code>sensu_user</code> resources based on users and groups defined for the <code>subjects</code> property.</li>
 </ul>
@@ -132,6 +133,7 @@
 }</code></pre>
     
   </div>
+
 
 
 </div>
@@ -215,6 +217,20 @@
       <div class="docstring">
         <div class="discussion">
           <p>The name of the role binding.</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_cluster_role_binding</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

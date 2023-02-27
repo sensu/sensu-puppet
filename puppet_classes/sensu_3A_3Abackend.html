@@ -6,15 +6,15 @@
 <title>
   Puppet Class: sensu::backend
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_classes::sensu::backend";
   relpath = '../';
 </script>
@@ -219,6 +219,23 @@ RedHat based default: <code>/etc/sysconfig/sensu-backend</code></p>
   
     <li>
       
+        <span class='name'>service_path</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/usr/sbin/sensu-backend&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The path to sensu-backend service executable</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>state_dir</span>
       
       
@@ -342,6 +359,23 @@ This parameter is mutually exclusive with ssl_key_source</p>
   
     <li>
       
+        <span class='name'>include_agent_resources</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Sets if agent RBAC resources should be included</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>manage_agent_user</span>
       
       
@@ -372,7 +406,7 @@ This parameter is mutually exclusive with ssl_key_source</p>
         <div class='inline'><p>Sets if the Sensu agent user should be disabled
 Not applicable if <code>manage_agent_user</code> is <code>false</code>
 This is useful if using agent TLS authentication
-See <a href="https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication">https://docs.sensu.io/sensu-go/latest/guides/securing-sensu/#sensu-agent-tls-authentication</a></p>
+See <a href="https://docs.sensu.io/sensu-go/latest/operations/deploy-sensu/secure-sensu/#optional-configure-sensu-agent-mtls-authentication">Sensu Go - Secure Sensu</a></p>
 </div>
       
     </li>
@@ -621,6 +655,184 @@ datastore parameters must still be defined.</p>
   
     <li>
       
+        <span class='name'>postgresql_sslmode</span>
+      
+      
+        <span class='type'>(<tt>Enum['disable','require','verify-ca','verify-full']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;require&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The PostgreSQL sslmode value</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_dir</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/var/lib/sensu/.postgresql&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The path to store SSL related files for PostgreSQL connections</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_ca_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The source of PostgreSQL SSL CA
+Do not define with postgresql_ssl_ca_content</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_ca_content</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The content of PostgreSQL SSL CA
+Do not define with postgresql_ssl_ca_source</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_crl_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The source of PostgreSQL SSL CRL
+Do not define with postgresql_ssl_crl_content</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_crl_content</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The content of PostgreSQL SSL CRL
+Do not define with postgresql_ssl_crl_source</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_cert_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The source of PostgreSQL SSL certificate
+Do not define with postgresql_ssl_cert_content</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_cert_content</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The content of PostgreSQL SSL certificate
+Do not define with postgresql_ssl_cert_source</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_key_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The source of PostgreSQL SSL private key
+Do not define with postgresql_ssl_key_content</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_ssl_key_content</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The content of PostgreSQL SSL private key
+Do not define with postgresql_ssl_key_source</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>postgresql_pool_size</span>
       
       
@@ -636,7 +848,93 @@ datastore parameters must still be defined.</p>
       
     </li>
   
+    <li>
+      
+        <span class='name'>postgresql_strict</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Enables strict configuration checks for PostgreSQL</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_batch_buffer</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>PostgreSQL batch buffer size</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_batch_size</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>PostgreSQL batch size</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_batch_workers</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>20</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>PostgreSQL batch workers</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>postgresql_enable_round_robin</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>PostgreSQL enable round robin</p>
+</div>
+      
+    </li>
+  
 </ul>
+
 
 
 </div><div class="method_details_list">
@@ -646,48 +944,6 @@ datastore parameters must still be defined.</p>
         <pre class="lines">
 
 
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
 127
 128
 129
@@ -878,10 +1134,83 @@ datastore parameters must still be defined.</p>
 314
 315
 316
-317</pre>
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 85</span>
+        <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 127</span>
 
 class sensu::backend (
   Optional[String] $version = undef,
@@ -891,6 +1220,7 @@ class sensu::backend (
   String $service_name = &#39;sensu-backend&#39;,
   String $service_ensure = &#39;running&#39;,
   Boolean $service_enable = true,
+  Stdlib::Absolutepath $service_path = &#39;/usr/sbin/sensu-backend&#39;,
   Stdlib::Absolutepath $state_dir = &#39;/var/lib/sensu/sensu-backend&#39;,
   Hash $config_hash = {},
   Optional[String] $ssl_cert_source = $facts[&#39;puppet_hostcert&#39;],
@@ -898,6 +1228,7 @@ class sensu::backend (
   Optional[String] $ssl_key_source = $facts[&#39;puppet_hostprivkey&#39;],
   Optional[String] $ssl_key_content = undef,
   Boolean $include_default_resources = true,
+  Boolean $include_agent_resources = true,
   Boolean $manage_agent_user = true,
   Boolean $agent_user_disabled = false,
   Boolean $show_diff = true,
@@ -914,7 +1245,22 @@ class sensu::backend (
   Stdlib::Host $postgresql_host = &#39;localhost&#39;,
   Stdlib::Port $postgresql_port = 5432,
   String $postgresql_dbname = &#39;sensu&#39;,
+  Enum[&#39;disable&#39;,&#39;require&#39;,&#39;verify-ca&#39;,&#39;verify-full&#39;] $postgresql_sslmode = &#39;require&#39;,
+  Stdlib::Absolutepath $postgresql_ssl_dir = &#39;/var/lib/sensu/.postgresql&#39;,
+  Optional[String] $postgresql_ssl_ca_source = undef,
+  Optional[String] $postgresql_ssl_ca_content = undef,
+  Optional[String] $postgresql_ssl_crl_source = undef,
+  Optional[String] $postgresql_ssl_crl_content = undef,
+  Optional[String] $postgresql_ssl_cert_source = undef,
+  Optional[String] $postgresql_ssl_cert_content = undef,
+  Optional[String] $postgresql_ssl_key_source = undef,
+  Optional[String] $postgresql_ssl_key_content = undef,
   Integer $postgresql_pool_size = 20,
+  Boolean $postgresql_strict = false,
+  Integer $postgresql_batch_buffer = 0,
+  Integer $postgresql_batch_size = 1,
+  Integer $postgresql_batch_workers = 20,
+  Boolean $postgresql_enable_round_robin = false,
 ) {
 
   if $license_source and $license_content {
@@ -929,14 +1275,7 @@ class sensu::backend (
     include sensu::backend::datastore::postgresql
   }
 
-  $etc_dir = $sensu::etc_dir
-  $ssl_dir = $sensu::ssl_dir
-  $use_ssl = $sensu::use_ssl
   $_version = pick($version, $sensu::version)
-  $api_host = $sensu::api_host
-  $api_port = $sensu::api_port
-  $api_protocol = $sensu::api_protocol
-  $password = $sensu::password
 
   if $ssl_cert_content {
     $_ssl_cert_source = undef
@@ -949,31 +1288,28 @@ class sensu::backend (
     $_ssl_key_source = $ssl_key_source
   }
 
-  if $use_ssl {
+  if $sensu::use_ssl {
     if !($_ssl_cert_source or $ssl_cert_content) {
       fail(&#39;sensu::backend: ssl_cert_source or ssl_cert_content must be defined when sensu::use_ssl is true&#39;)
     }
     if !($_ssl_key_source or $ssl_key_content) {
       fail(&#39;sensu::backend: ssl_key_source or ssl_key_content must be defined when sensu::use_ssl is true&#39;)
     }
-    $trusted_ca_file = &quot;${ssl_dir}/ca.crt&quot;
     $ssl_config = {
-      &#39;cert-file&#39;       =&gt; &quot;${ssl_dir}/cert.pem&quot;,
-      &#39;key-file&#39;        =&gt; &quot;${ssl_dir}/key.pem&quot;,
-      &#39;trusted-ca-file&#39; =&gt; $trusted_ca_file,
+      &#39;cert-file&#39;       =&gt; &quot;${sensu::ssl_dir}/cert.pem&quot;,
+      &#39;key-file&#39;        =&gt; &quot;${sensu::ssl_dir}/key.pem&quot;,
+      &#39;trusted-ca-file&#39; =&gt; $sensu::trusted_ca_file_path,
     }
     $service_subscribe = Class[&#39;sensu::ssl&#39;]
     Class[&#39;sensu::ssl&#39;] -&gt; Sensuctl_configure[&#39;puppet&#39;]
   } else {
-    $trusted_ca_file = &#39;absent&#39;
     $ssl_config = {}
     $service_subscribe = undef
   }
 
-  $api_url = &quot;${api_protocol}://${api_host}:${api_port}&quot;
   $default_config = {
     &#39;state-dir&#39; =&gt; $state_dir,
-    &#39;api-url&#39;   =&gt; $api_url,
+    &#39;api-url&#39;   =&gt; $sensu::api_url,
   }
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
@@ -984,33 +1320,28 @@ class sensu::backend (
   if $include_default_resources {
     include sensu::backend::default_resources
   }
-
-  # See https://docs.sensu.io/sensu-go/latest/installation/upgrade/
-  # Only necessary for Puppet &lt; 6.1.0,
-  # See https://github.com/puppetlabs/puppet/commit/f8d5c60ddb130c6429ff12736bfdb4ae669a9fd4
-  if versioncmp($facts[&#39;puppetversion&#39;],&#39;6.1.0&#39;) &lt; 0 and $facts[&#39;service_provider&#39;] == &#39;systemd&#39; {
-    Package[&#39;sensu-go-backend&#39;] ~&gt; Exec[&#39;sensu systemctl daemon-reload&#39;]
-    Exec[&#39;sensu systemctl daemon-reload&#39;] -&gt; Service[&#39;sensu-backend&#39;]
+  if $include_agent_resources {
+    include sensu::backend::agent_resources
   }
 
   sensu_user { &#39;admin&#39;:
     ensure                    =&gt; &#39;present&#39;,
-    password                  =&gt; $password,
-    old_password              =&gt; $sensu::old_password,
+    password                  =&gt; $sensu::password,
     groups                    =&gt; [&#39;cluster-admins&#39;],
     disabled                  =&gt; false,
     configure                 =&gt; true,
-    configure_url             =&gt; $api_url,
-    configure_trusted_ca_file =&gt; $trusted_ca_file,
+    configure_url             =&gt; $sensu::api_url,
+    configure_trusted_ca_file =&gt; $sensu::trusted_ca_file,
+    provider                  =&gt; &#39;sensu_api&#39;,
+    before                    =&gt; Sensuctl_configure[&#39;puppet&#39;],
   }
 
   if $manage_agent_user {
     sensu_user { &#39;agent&#39;:
-      ensure       =&gt; &#39;present&#39;,
-      disabled     =&gt; $agent_user_disabled,
-      password     =&gt; $sensu::agent_password,
-      old_password =&gt; $sensu::agent_old_password,
-      groups       =&gt; [&#39;system:agents&#39;],
+      ensure   =&gt; &#39;present&#39;,
+      disabled =&gt; $agent_user_disabled,
+      password =&gt; $sensu::agent_password,
+      groups   =&gt; [&#39;system:agents&#39;],
     }
   }
 
@@ -1021,28 +1352,26 @@ class sensu::backend (
   if $license_source or $license_content {
     file { &#39;sensu_license&#39;:
       ensure    =&gt; &#39;file&#39;,
-      path      =&gt; &quot;${etc_dir}/license.json&quot;,
+      path      =&gt; &quot;${sensu::etc_dir}/license.json&quot;,
       source    =&gt; $license_source,
       content   =&gt; $license_content,
       owner     =&gt; $sensu::user,
       group     =&gt; $sensu::group,
       mode      =&gt; &#39;0600&#39;,
       show_diff =&gt; false,
-      notify    =&gt; Exec[&#39;sensu-add-license&#39;],
+      notify    =&gt; Sensu_license[&#39;puppet&#39;],
     }
 
-    exec { &#39;sensu-add-license&#39;:
-      path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
-      command     =&gt; &quot;sensuctl create --file ${etc_dir}/license.json&quot;,
-      refreshonly =&gt; true,
-      require     =&gt; Sensuctl_configure[&#39;puppet&#39;],
+    sensu_license { &#39;puppet&#39;:
+      ensure =&gt; &#39;present&#39;,
+      file   =&gt; &quot;${sensu::etc_dir}/license.json&quot;,
     }
   }
 
-  if $use_ssl {
+  if $sensu::use_ssl {
     file { &#39;sensu_ssl_cert&#39;:
       ensure    =&gt; &#39;file&#39;,
-      path      =&gt; &quot;${ssl_dir}/cert.pem&quot;,
+      path      =&gt; &quot;${sensu::ssl_dir}/cert.pem&quot;,
       source    =&gt; $_ssl_cert_source,
       content   =&gt; $ssl_cert_content,
       owner     =&gt; $sensu::user,
@@ -1053,7 +1382,7 @@ class sensu::backend (
     }
     file { &#39;sensu_ssl_key&#39;:
       ensure    =&gt; &#39;file&#39;,
-      path      =&gt; &quot;${ssl_dir}/key.pem&quot;,
+      path      =&gt; &quot;${sensu::ssl_dir}/key.pem&quot;,
       source    =&gt; $_ssl_key_source,
       content   =&gt; $ssl_key_content,
       owner     =&gt; $sensu::user,
@@ -1084,7 +1413,7 @@ class sensu::backend (
 
   file { &#39;sensu_backend_config&#39;:
     ensure    =&gt; &#39;file&#39;,
-    path      =&gt; &quot;${etc_dir}/backend.yml&quot;,
+    path      =&gt; &quot;${sensu::etc_dir}/backend.yml&quot;,
     content   =&gt; to_yaml($config),
     owner     =&gt; $sensu::user,
     group     =&gt; $sensu::group,
@@ -1109,11 +1438,42 @@ class sensu::backend (
     }
   }
 
+  if $facts[&#39;service_provider&#39;] == &#39;systemd&#39; {
+    systemd::dropin_file { &#39;sensu-backend-start.conf&#39;:
+      unit    =&gt; &#39;sensu-backend.service&#39;,
+      content =&gt; join([
+        &#39;[Service]&#39;,
+        &#39;ExecStart=&#39;,
+        &quot;ExecStart=${service_path} start -c ${sensu::etc_dir}/backend.yml&quot;,
+      ], &quot;\n&quot;),
+      notify  =&gt; Service[&#39;sensu-backend&#39;],
+    }
+  }
+
   service { &#39;sensu-backend&#39;:
     ensure    =&gt; $service_ensure,
     enable    =&gt; $service_enable,
     name      =&gt; $service_name,
     subscribe =&gt; $service_subscribe,
+  }
+
+  exec { &#39;sensu-backend init&#39;:
+    path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
+    command     =&gt; &quot;sensu-backend init --config-file ${sensu::etc_dir}/backend.yml&quot;,
+    environment =&gt; [
+      &#39;SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin&#39;,
+      &quot;SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=${sensu::password}&quot;,
+    ],
+    returns     =&gt; [0, 3],
+    # sensu-backend init will exit with code 3 if already run
+    # If exit code is 3, do not need to run sensu-backend init again
+    # If exit is not 3, run sensu-backend init
+    unless      =&gt; &quot;sensu-backend init --config-file ${sensu::etc_dir}/backend.yml ; [ \$? -eq 3 ] &amp;&amp; exit 0 || exit 1&quot;,
+    require     =&gt; Sensu_api_validator[&#39;sensu&#39;],
+    before      =&gt; [
+      Sensu_user[&#39;admin&#39;],
+      Sensuctl_configure[&#39;puppet&#39;],
+    ],
   }
 }</pre>
       </td>

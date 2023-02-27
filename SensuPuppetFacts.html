@@ -6,15 +6,15 @@
 <title>
   Module: SensuPuppetFacts
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "SensuPuppetFacts";
   relpath = '';
 </script>
@@ -185,7 +185,13 @@
 20
 21
 22
-23</pre>
+23
+24
+25
+26
+27
+28
+29</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/facter/sensu_puppet_facts.rb', line 4</span>
@@ -209,6 +215,12 @@
       <span class='op'>::</span><span class='const'><span class='object_link'><a href="Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='lbracket'>[</span><span class='symbol'>:localcacert</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
+
+  <span class='const'>Facter</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='symbol'>:puppet_hostcrl</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_setcode'>setcode</span> <span class='kw'>do</span>
+      <span class='op'>::</span><span class='const'><span class='object_link'><a href="Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='lbracket'>[</span><span class='symbol'>:hostcrl</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -230,14 +242,14 @@
       <pre class="lines">
 
 
-25
-26
-27
-28
-29</pre>
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/sensu_puppet_facts.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/sensu_puppet_facts.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_init_settings'>init_settings</span>
   <span class='kw'>if</span> <span class='op'>!</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='period'>.</span><span class='id identifier rubyid_settings'>settings</span><span class='period'>.</span><span class='id identifier rubyid_global_defaults_initialized?'>global_defaults_initialized?</span>

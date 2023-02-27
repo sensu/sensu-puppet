@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_mutator
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_mutator";
   relpath = '../';
 </script>
@@ -94,6 +94,7 @@
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensuctl_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 <li><code>sensu_namespace</code> - Puppet will autorequire <code>sensu_namespace</code> resource defined in <code>namespace</code> property.</li>
 <li><code>sensu_asset</code> - Puppet will autorequire <code>sensu_asset</code> resources defined in <code>runtime_assets</code> property.</li>
 </ul>
@@ -126,6 +127,7 @@
 }</code></pre>
     
   </div>
+
 
 
 </div>
@@ -292,7 +294,8 @@
       
       <div class="docstring">
         <div class="discussion">
-          <p>List of Sensu secrets to set for the mutator execution environment.</p>
+          <p>Array of the name/secret pairs to use with command execution.
+Example: [{&#39;name&#39; =&gt; &#39;ANSIBLE_HOST&#39;, &#39;secret&#39; =&gt; &#39;sensu-ansible-host&#39; }]</p>
 
         </div>
       </div>
@@ -348,6 +351,20 @@
           <p>The name of the mutator.
 The name supports composite names that can define the namespace.
 An example composite name to define resource named <code>test</code> in namespace <code>dev</code>: <code>test in dev</code></p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_mutator</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>

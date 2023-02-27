@@ -6,15 +6,15 @@
 <title>
   Resource Type: sensu_tessen
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_types::sensu_tessen";
   relpath = '../';
 </script>
@@ -80,18 +80,21 @@
 </div>
 
   <h2>Summary</h2>
-  Manages Sensu Tessen - This is a private type
+  Manages Sensu Tessen
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <p><strong>Autorequires</strong>:</p>
+    <p><strong>NOTE</strong> This is a private type not intended to be used directly.</p>
+
+<p><strong>Autorequires</strong>:</p>
 
 <ul>
 <li><code>Package[sensu-go-cli]</code></li>
 <li><code>Service[sensu-backend]</code></li>
 <li><code>Sensu_configure[puppet]</code></li>
 <li><code>Sensu_api_validator[sensu]</code></li>
+<li><code>Sensu_user[admin]</code></li>
 </ul>
 
   </div>
@@ -100,6 +103,7 @@
 
 <div class="tags">
   
+
 
 </div>
 <div class="tags">
@@ -152,6 +156,20 @@
       <div class="docstring">
         <div class="discussion">
           <p>Resource name</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">provider</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          <p>The specific backend to use for this <code>sensu_tessen</code> resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform.</p>
 
         </div>
       </div>
