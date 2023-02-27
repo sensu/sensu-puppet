@@ -119,6 +119,7 @@ The following parameters are available in the `sensu` class:
 * [`agent_password`](#-sensu--agent_password)
 * [`agent_entity_config_password`](#-sensu--agent_entity_config_password)
 * [`validate_namespaces`](#-sensu--validate_namespaces)
+* [`validate_api`](#-sensu--validate_api)
 
 ##### <a name="-sensu--version"></a>`version`
 
@@ -279,6 +280,14 @@ Determines if sensuctl and sensu_api types will validate their namespace exists
 
 Default value: `true`
 
+##### <a name="-sensu--validate_api"></a>`validate_api`
+
+Data type: `Boolean`
+
+Determines if Sensu API is validated
+
+Default value: `true`
+
 ### <a name="sensu--agent"></a>`sensu::agent`
 
 Class to manage the Sensu agent.
@@ -323,6 +332,7 @@ The following parameters are available in the `sensu::agent` class:
 * [`show_diff`](#-sensu--agent--show_diff)
 * [`log_file`](#-sensu--agent--log_file)
 * [`agent_entity_config_provider`](#-sensu--agent--agent_entity_config_provider)
+* [`validate_entity`](#-sensu--agent--validate_entity)
 
 ##### <a name="-sensu--agent--version"></a>`version`
 
@@ -518,6 +528,15 @@ Data type: `Enum['sensuctl','sensu_api']`
 The provider to use when managing sensu_agent_entity_config resources
 
 Default value: `'sensu_api'`
+
+##### <a name="-sensu--agent--validate_entity"></a>`validate_entity`
+
+Data type: `Boolean`
+
+Sets whether to validate the agent's entity before attempting
+to configure the entity
+
+Default value: `true`
 
 ### <a name="sensu--api"></a>`sensu::api`
 

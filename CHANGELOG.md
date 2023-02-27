@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.10.0](https://github.com/sensu/sensu-puppet/tree/v5.10.0) (2023-02-27)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.9.0...v5.10.0)
+
+### Added
+
+- Allow disabling agent entity validation and API validation [\#1332](https://github.com/sensu/sensu-puppet/pull/1332) ([treydock](https://github.com/treydock))
+
 ## [v5.9.0](https://github.com/sensu/sensu-puppet/tree/v5.9.0) (2022-10-28)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.8.0...v5.9.0)
@@ -252,7 +260,6 @@
 
 - Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
 - Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
-- Manage license through sensu\_license type [\#1218](https://github.com/sensu/sensu-puppet/pull/1218) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
@@ -266,10 +273,6 @@
 ## [v4.5.1](https://github.com/sensu/sensu-puppet/tree/v4.5.1) (2020-02-12)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v4.5.0...v4.5.1)
-
-### Merged Pull Requests
-
-- Fix release process [\#1216](https://github.com/sensu/sensu-puppet/pull/1216) ([treydock](https://github.com/treydock))
 
 ## [v4.5.0](https://github.com/sensu/sensu-puppet/tree/v4.5.0) (2020-02-08)
 
