@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.10.1](https://github.com/sensu/sensu-puppet/tree/v5.10.1) (2023-03-01)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.10.0...v5.10.1)
+
+### Fixed
+
+- Fix catalog compile errors when API validation is disabled on backends [\#1333](https://github.com/sensu/sensu-puppet/pull/1333) ([treydock](https://github.com/treydock))
+
 ## [v5.10.0](https://github.com/sensu/sensu-puppet/tree/v5.10.0) (2023-02-27)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.9.0...v5.10.0)
