@@ -391,6 +391,19 @@ describe 'sensu::backend', :type => :class do
           it { should contain_file('sensu-backend_env_vars').with_content(service_env_vars_content) }
         end
       end
+
+      context 'when validate_api => false' do
+        let(:pre_condition) do
+          <<-PP
+            class { 'sensu':
+              validate_api => false,
+            }
+          PP
+        end
+
+        it { should compile.with_all_deps }
+        it { is_expected.to contain_exec('sensu-backend init').without_require }
+      end
     end
   end
 end
