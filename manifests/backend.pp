@@ -369,6 +369,11 @@ class sensu::backend (
     subscribe => $service_subscribe,
   }
 
+  if $sensu::validate_api {
+    $init_require = Sensu_api_validator['sensu']
+  } else {
+    $init_require = undef
+  }
   exec { 'sensu-backend init':
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
     command     => "sensu-backend init --config-file ${sensu::etc_dir}/backend.yml",
@@ -381,7 +386,7 @@ class sensu::backend (
     # If exit code is 3, do not need to run sensu-backend init again
     # If exit is not 3, run sensu-backend init
     unless      => "sensu-backend init --config-file ${sensu::etc_dir}/backend.yml ; [ \$? -eq 3 ] && exit 0 || exit 1",
-    require     => Sensu_api_validator['sensu'],
+    require     => $init_require,
     before      => [
       Sensu_user['admin'],
       Sensuctl_configure['puppet'],
