@@ -1207,7 +1207,12 @@ Do not define with postgresql_ssl_key_source</p>
 387
 388
 389
-390</pre>
+390
+391
+392
+393
+394
+395</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/backend.pp', line 127</span>
@@ -1457,6 +1462,11 @@ class sensu::backend (
     subscribe =&gt; $service_subscribe,
   }
 
+  if $sensu::validate_api {
+    $init_require = Sensu_api_validator[&#39;sensu&#39;]
+  } else {
+    $init_require = undef
+  }
   exec { &#39;sensu-backend init&#39;:
     path        =&gt; &#39;/usr/bin:/bin:/usr/sbin:/sbin&#39;,
     command     =&gt; &quot;sensu-backend init --config-file ${sensu::etc_dir}/backend.yml&quot;,
@@ -1469,7 +1479,7 @@ class sensu::backend (
     # If exit code is 3, do not need to run sensu-backend init again
     # If exit is not 3, run sensu-backend init
     unless      =&gt; &quot;sensu-backend init --config-file ${sensu::etc_dir}/backend.yml ; [ \$? -eq 3 ] &amp;&amp; exit 0 || exit 1&quot;,
-    require     =&gt; Sensu_api_validator[&#39;sensu&#39;],
+    require     =&gt; $init_require,
     before      =&gt; [
       Sensu_user[&#39;admin&#39;],
       Sensuctl_configure[&#39;puppet&#39;],
