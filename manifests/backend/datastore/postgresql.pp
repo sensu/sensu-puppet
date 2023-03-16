@@ -7,11 +7,16 @@ class sensu::backend::datastore::postgresql {
 
   $user = $sensu::backend::postgresql_user
   $password = $sensu::backend::postgresql_password
+  if ! $password {
+    $password_dsn = '' # lint:ignore:empty_string_assignment
+  } else {
+    $password_dsn = ":${password}"
+  }
   $host = $sensu::backend::postgresql_host
   $port = $sensu::backend::postgresql_port
   $dbname = $sensu::backend::postgresql_dbname
   $sslmode = $sensu::backend::postgresql_sslmode
-  $dsn = "postgresql://${user}:${password}@${host}:${port}/${dbname}?sslmode=${sslmode}"
+  $dsn = "postgresql://${user}${password_dsn}@${host}:${port}/${dbname}?sslmode=${sslmode}"
 
   sensu_postgres_config { $sensu::backend::postgresql_name:
     ensure             => $sensu::backend::datastore_ensure,
@@ -25,9 +30,14 @@ class sensu::backend::datastore::postgresql {
   }
 
   if $sensu::backend::manage_postgresql_db and $sensu::backend::datastore_ensure == 'present' {
+    if ! $password {
+      $db_password = undef
+    } else {
+      $db_password = postgresql::postgresql_password($user, $password)
+    }
     postgresql::server::db { $dbname:
       user     => $user,
-      password => postgresql::postgresql_password($user, $password),
+      password => $db_password,
       before   => Sensu_postgres_config[$sensu::backend::postgresql_name],
     }
   }

@@ -686,6 +686,8 @@ class { 'sensu::backend':
 }
 ```
 
+**NOTE** Set `postgresql_password` to `false` if you want the DSN to only contain a username.
+
 ### Installing Plugins
 
 Plugin management is handled by the `sensu::plugins` class.
