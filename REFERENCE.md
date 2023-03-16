@@ -855,7 +855,7 @@ Default value: `'sensu'`
 
 ##### <a name="-sensu--backend--postgresql_password"></a>`postgresql_password`
 
-Data type: `String`
+Data type: `Variant[String, Boolean]`
 
 The PostgreSQL database password
 

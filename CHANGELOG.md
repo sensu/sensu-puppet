@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.11.0](https://github.com/sensu/sensu-puppet/tree/v5.11.0) (2023-03-16)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.10.1...v5.11.0)
+
+### Added
+
+- Support Postgres DSN that contains no password [\#1334](https://github.com/sensu/sensu-puppet/pull/1334) ([treydock](https://github.com/treydock))
+
 ## [v5.10.1](https://github.com/sensu/sensu-puppet/tree/v5.10.1) (2023-03-01)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.10.0...v5.10.1)
