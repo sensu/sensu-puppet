@@ -153,7 +153,7 @@ class sensu::backend (
   Boolean $manage_postgresql_db = true,
   String $postgresql_name = 'postgresql',
   String $postgresql_user = 'sensu',
-  String $postgresql_password = 'changeme',
+  Variant[String, Boolean] $postgresql_password = 'changeme',
   Stdlib::Host $postgresql_host = 'localhost',
   Stdlib::Port $postgresql_port = 5432,
   String $postgresql_dbname = 'sensu',
