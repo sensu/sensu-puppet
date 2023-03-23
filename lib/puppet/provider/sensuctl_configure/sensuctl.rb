@@ -4,7 +4,8 @@ Puppet::Type.type(:sensuctl_configure).provide(:sensuctl, :parent => Puppet::Pro
   desc "Provider sensuctl_configure using sensuctl"
 
   def exists?
-    File.file?(config_path)
+    return false unless File.file?(config_path)
+    sensuctl_config.key?('access_token') || sensuctl_config.key?('refresh_token')
   end
 
   def initialize(value = {})

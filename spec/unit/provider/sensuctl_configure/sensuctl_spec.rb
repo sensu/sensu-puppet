@@ -12,6 +12,26 @@ describe Puppet::Type.type(:sensuctl_configure).provider(:sensuctl) do
     })
   end
 
+  describe 'exists?' do
+    before(:each) do
+      allow(Dir).to receive(:home).and_return('/root')
+    end
+    it 'should exist' do
+      allow(File).to receive(:file?).with('/root/.config/sensu/sensuctl/cluster').and_return(true)
+      allow(File).to receive(:read).with('/root/.config/sensu/sensuctl/cluster').and_return(my_fixture_read('cluster'))
+      expect(resource.provider.exists?).to eq(true)
+    end
+    it 'should not exist if no tokens' do
+      allow(File).to receive(:file?).with('/root/.config/sensu/sensuctl/cluster').and_return(true)
+      allow(File).to receive(:read).with('/root/.config/sensu/sensuctl/cluster').and_return(my_fixture_read('cluster-dne'))
+      expect(resource.provider.exists?).to eq(false)
+    end
+    it 'should not exist if no file' do
+      allow(File).to receive(:file?).with('/root/.config/sensu/sensuctl/cluster').and_return(false)
+      expect(resource.provider.exists?).to eq(false)
+    end
+  end
+
   describe 'config_format' do
     it 'should have value' do
       allow(resource.provider).to receive(:sensuctl).with(['config','view','--format','json']).and_return(my_fixture_read('config_list.json'))

@@ -58,6 +58,20 @@ describe Puppet::Provider::Sensuctl do
     end
   end
 
+  context 'sensuctl' do
+    it 'should handle a command' do
+      allow(subject).to receive(:which).with('sensuctl').and_return('/usr/bin/sensuctl')
+      expect(subject).to receive(:execute).with(['/usr/bin/sensuctl', 'create', '--file', 'foo'], {failonfail: true, combine: true})
+      subject.sensuctl(['create', '--file', 'foo'])
+    end
+
+    it 'should handle failonfail=false' do
+      allow(subject).to receive(:which).with('sensuctl').and_return('/usr/bin/sensuctl')
+      expect(subject).to receive(:execute).with(['/usr/bin/sensuctl', 'create', '--file', 'foo'], {failonfail: false, combine: true})
+      subject.sensuctl(['create', '--file', 'foo'], failonfail: false)
+    end
+  end
+
   context 'sensuctl_create' do
     let(:tmp) { Tempfile.new() }
     before(:each) do

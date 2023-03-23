@@ -71,6 +71,8 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     else
       cmd = [sensuctl_cmd] + args
     end
+    opts[:failonfail] = true unless opts.key?(:failonfail)
+    opts[:combine] = true unless opts.key?(:combine)
     execute(cmd, opts)
   end
   def sensuctl(*args)
