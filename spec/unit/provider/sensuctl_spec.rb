@@ -125,14 +125,14 @@ describe Puppet::Provider::Sensuctl do
 
   context 'sensuctl_auth_types' do
     it 'should return auth and their types' do
-      allow(subject).to receive(:sensuctl).with(['auth','list','--format','yaml']).and_return(my_fixture_read('auths.txt'))
+      allow(subject).to receive(:sensuctl).with(['auth','list','--format','yaml'], failonfail: false).and_return(my_fixture_read('auths.txt'))
       expect(subject.sensuctl_auth_types).to eq({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
     end
   end
 
   context 'dump' do
     it 'dumps multiple resources' do
-      allow(subject).to receive(:sensuctl).with(['dump','federation/v1.EtcdReplicator','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.txt'))
+      allow(subject).to receive(:sensuctl).with(['dump','federation/v1.EtcdReplicator','--format','yaml','--all-namespaces'], failonfail: false).and_return(my_fixture_read('dump.txt'))
       ret = subject.dump('federation/v1.EtcdReplicator')
       expect(ret.size).to eq(2)
       expect(ret[0]['metadata']['name']).to eq('role_replicator')

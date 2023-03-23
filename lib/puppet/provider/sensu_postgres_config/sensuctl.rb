@@ -23,7 +23,8 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
     data.each do |d|
       config = {}
       config[:ensure] = :present
-      config[:name] = d['metadata']['name']
+      config[:name] = d.fetch('metadata', {}).fetch('name', nil)
+      next if config[:name].nil?
       d['spec'].each_pair do |key,value|
         if !!value == value
           value = value.to_s.to_sym

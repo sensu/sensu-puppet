@@ -93,7 +93,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     end
     data = []
     begin
-      output = sensuctl(args, {:failonfail => false})
+      output = sensuctl(args, failonfail: false)
       Puppet.debug("sensuctl #{args.join(' ')}: #{output}")
     rescue Exception => e
       Puppet.notice("Failed to list resources with sensuctl: #{e}")
@@ -152,14 +152,17 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   end
 
   def self.sensuctl_auth_types()
-    output = sensuctl(['auth','list','--format','yaml'])
+    output = sensuctl(['auth','list','--format','yaml'], failonfail: false)
     Puppet.debug("YAML auth list: #{output}")
     auth_types = {}
     auths = output.split('---')
     Puppet.debug("auths: #{auths}")
     auths.each do |auth|
       a = YAML.load(auth)
-      auth_types[a['metadata']['name']] = a['type']
+      next if a.nil?
+      name = a.fetch('metadata', {}).fetch('name', nil)
+      next if name.nil?
+      auth_types[name] = a['type']
     end
     Puppet.debug("auth_types: #{auth_types}")
     auth_types
@@ -168,8 +171,13 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   def self.dump(resource_type)
     # Dump YAML because 'sensuctl dump' does not yet support '--format json'
     # https://github.com/sensu/sensu-go/issues/3424
-    output = sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'])
-    Puppet.debug("YAML dump of #{resource_type}:\n#{output}")
+    begin
+      output = sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'], {:failonfail => false})
+      Puppet.debug("YAML dump of #{resource_type}:\n#{output}")
+    rescue Exception => e
+      Puppet.notice("Failed to dump resources with sensuctl: #{e}")
+      return []
+    end
     resources = []
     dumps = output.split('---')
     dumps.each do |d|
@@ -226,7 +234,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
   end
 
   def self.version
-    output = sensuctl(['version'], {:failonfail => false})
+    output = sensuctl(['version'], failonfail: false)
     version = output[%r{version ([0-9.]+)}, 1]
     return version
   rescue Exception => e

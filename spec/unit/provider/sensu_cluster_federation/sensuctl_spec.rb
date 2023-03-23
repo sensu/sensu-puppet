@@ -12,12 +12,12 @@ describe Puppet::Type.type(:sensu_cluster_federation).provider(:sensuctl) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(provider).to receive(:sensuctl).with(['dump','federation/v1.Cluster','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.out'))
+      allow(provider).to receive(:sensuctl).with(['dump','federation/v1.Cluster','--format','yaml','--all-namespaces'], failonfail: false).and_return(my_fixture_read('dump.out'))
       expect(provider.instances.length).to eq(1)
     end
 
     it 'should return the resource for a check' do
-      allow(provider).to receive(:sensuctl).with(['dump','federation/v1.Cluster','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.out'))
+      allow(provider).to receive(:sensuctl).with(['dump','federation/v1.Cluster','--format','yaml','--all-namespaces'], failonfail: false).and_return(my_fixture_read('dump.out'))
       property_hash = provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('test')
     end
