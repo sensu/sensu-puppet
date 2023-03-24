@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.11.1](https://github.com/sensu/sensu-puppet/tree/v5.11.1) (2023-03-24)
+
+[Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.11.0...v5.11.1)
+
+### Fixed
+
+- Address issues with sensuctl configure and errors [\#1335](https://github.com/sensu/sensu-puppet/pull/1335) ([treydock](https://github.com/treydock))
+
 ## [v5.11.0](https://github.com/sensu/sensu-puppet/tree/v5.11.0) (2023-03-16)
 
 [Full Changelog](https://github.com/sensu/sensu-puppet/compare/v5.10.1...v5.11.0)
@@ -275,7 +283,6 @@
 ### Added
 
 - Allow agents to have subscriptions defined as a resource [\#1227](https://github.com/sensu/sensu-puppet/pull/1227) ([treydock](https://github.com/treydock))
-- Support bonsai version with v prefix [\#1223](https://github.com/sensu/sensu-puppet/pull/1223) ([treydock](https://github.com/treydock))
 
 ### Fixed
 
