@@ -10,11 +10,24 @@ sensu_bonsai_asset { 'sensu/sensu-slack-handler':
   version => 'latest',
 }
 
+sensu_filter { 'state_change_only in default':
+  ensure      => 'present',
+  action      => 'allow',
+  expressions => [
+    'event.check.occurrences == 1',
+  ],
+}
+
 sensu_handler { 'slack':
   type           => 'pipe',
   env_vars       => ["SLACK_WEBHOOK_URL=${webhook_url}"],
   command        => "sensu-slack-handler --channel '${channel}'",
   runtime_assets => ['sensu/sensu-slack-handler'],
+  filters        => [
+    'is_incident',
+    'not_silenced',
+    'state_change_only',
+  ],
 }
 
 sensu_check { 'check_cpu':
