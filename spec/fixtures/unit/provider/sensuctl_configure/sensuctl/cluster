@@ -1,0 +1,10 @@
+{
+  "api-url": "https://example.com:8080",
+  "trusted-ca-file": "/etc/sensu/ssl/ca.crt",
+  "insecure-skip-tls-verify": false,
+  "access_token": "baz",
+  "expires_at": 1679580582,
+  "refresh_token": "foobar",
+  "APIKey": "",
+  "timeout": 0
+}

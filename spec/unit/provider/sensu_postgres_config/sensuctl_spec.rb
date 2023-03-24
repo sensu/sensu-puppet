@@ -12,12 +12,12 @@ describe Puppet::Type.type(:sensu_postgres_config).provider(:sensuctl) do
 
   describe 'self.instances' do
     it 'should create instances' do
-      allow(provider).to receive(:sensuctl).with(['dump','store/v1.PostgresConfig','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.txt'))
+      allow(provider).to receive(:sensuctl).with(['dump','store/v1.PostgresConfig','--format','yaml','--all-namespaces'], failonfail: false).and_return(my_fixture_read('dump.txt'))
       expect(provider.instances.length).to eq(1)
     end
 
     it 'should return the resource for a postres config' do
-      allow(provider).to receive(:sensuctl).with(['dump','store/v1.PostgresConfig','--format','yaml','--all-namespaces']).and_return(my_fixture_read('dump.txt'))
+      allow(provider).to receive(:sensuctl).with(['dump','store/v1.PostgresConfig','--format','yaml','--all-namespaces'], failonfail: false).and_return(my_fixture_read('dump.txt'))
       property_hash = provider.instances[0].instance_variable_get("@property_hash")
       expect(property_hash[:name]).to eq('my-postgres')
     end

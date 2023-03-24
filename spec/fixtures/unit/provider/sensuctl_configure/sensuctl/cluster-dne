@@ -1,0 +1,8 @@
+{
+  "api-url": "https://example.com:8080",
+  "trusted-ca-file": "/etc/sensu/ssl/ca.crt",
+  "insecure-skip-tls-verify": false,
+  "expires_at": 1679580582,
+  "APIKey": "",
+  "timeout": 0
+}
