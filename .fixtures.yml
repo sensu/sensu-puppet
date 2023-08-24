@@ -5,7 +5,7 @@ fixtures:
       ref: 5.0.1
     stdlib:
       repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
-      ref: 5.1.0
+      ref: 9.3.0
     datacat:
       repo: https://github.com/richardc/puppet-datacat.git
       ref: 0.6.2
