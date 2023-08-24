@@ -53,7 +53,7 @@ puppet resource file /etc/puppetlabs/code/environments/production/modules/sensu 
 
 # setup module dependencies
 puppet module install puppetlabs/stdlib --version ">= 9.0.0< 10.0.0"
-puppet module install puppetlabs/apt --version ">= 5.0.1 < 9.0.0"
+puppet module install puppetlabs/apt --version ">= 9.0.0 < 10.0.0"
 puppet module install richardc-datacat --version ">= 0.6.2 < 2.0.0"
 
 puppet resource host sensu-backend.example.com ensure=present ip=192.168.52.10 host_aliases=sensu-backend
