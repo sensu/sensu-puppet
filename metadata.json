@@ -1,6 +1,6 @@
 {
   "name": "sensu-sensu",
-  "version": "5.11.1",
+  "version": "5.11.2",
   "author": "sensu",
   "summary": "A module to install the Sensu monitoring framework",
   "license": "MIT",
@@ -18,11 +18,11 @@
     },
     {
       "name": "puppetlabs/postgresql",
-      "version_requirement": ">= 9.1.0 < 10.0.0"
+      "version_requirement": ">= 9.1.0 < 10.5.0"
     },
     {
-      "name": "camptocamp/systemd",
-      "version_requirement": ">= 2.0.0 < 6.0.0"
+      "name": "puppet/systemd",
+      "version_requirement": ">= 2.0.0 < 7.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -44,14 +44,16 @@
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
         "10",
-        "11"
+        "11",
+        "12"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "18.04",
-        "20.04"
+        "20.04",
+        "22.04"
       ]
     },
     {
