@@ -3,12 +3,12 @@ source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 if puppetversion = ENV['PUPPET_GEM_VERSION']
   gem 'puppet', puppetversion, :require => false
 else
-  gem 'puppet', :require => false
+  gem 'puppet', '~> 8.0', :require => false
 end
 if facterversion = ENV['FACTER_GEM_VERSION']
   gem 'facter', facterversion, :require => false
 else
-  gem 'facter', :require => false
+ gem 'facter', '~> 4.0', :require => false
 end
 
 group :development, :unit_tests do
