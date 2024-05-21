@@ -127,7 +127,7 @@
 class sensu::backend (
   Optional[String] $version = undef,
   String $package_name = 'sensu-go-backend',
-  Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
+  Optional[Stdlib::Absolutepath] $service_env_vars_file = '/home/ubuntu/.puppetlabs/etc/code/modules',
   Hash $service_env_vars = {},
   String $service_name = 'sensu-backend',
   String $service_ensure = 'running',
