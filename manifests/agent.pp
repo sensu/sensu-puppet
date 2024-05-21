@@ -81,7 +81,7 @@
 class sensu::agent (
   Optional[String] $version = undef,
   Optional[String[1]] $package_source = undef,
-  Optional[Stdlib::Absolutepath] $package_download_path = undef,
+  Optional[Stdlib::Absolutepath] $package_download_path = '/home/ubuntu/.puppetlabs/etc/code/modules',
   String $package_name = 'sensu-go-agent',
   Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
   Hash $service_env_vars = {},
@@ -99,7 +99,7 @@ class sensu::agent (
   String[1] $namespace = 'default',
   Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
   Boolean $show_diff = true,
-  Optional[Stdlib::Absolutepath] $log_file = undef,
+  Optional[Stdlib::Absolutepath] $log_file = '/home/ubuntu/.puppetlabs/etc/code/modules',
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
   Boolean $validate_entity = true,
 ) {
