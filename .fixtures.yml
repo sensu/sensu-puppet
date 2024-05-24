@@ -1,16 +1,17 @@
 fixtures:
   repositories:
     apt:
+        repo: https://github.com/puppetlabs/puppetlabs-apt.git
         ref: 9.1.0
         stdlib:
           repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
-          ref: 9.3.0
+          ref: 9.6.0
         datacat:
           repo: https://github.com/richardc/puppet-datacat.git
           ref: 0.6.2
         yumrepo_core:
           repo: https://github.com/puppetlabs/puppetlabs-yumrepo_core
-          ref: 2.0.0
+          ref: 2.1.0
           puppet_version: ">= 6.0.0"
         chocolatey:
           repo: https://github.com/puppetlabs/puppetlabs-chocolatey.git
@@ -26,15 +27,15 @@ fixtures:
         # Need by postgresql
         augeas_core:
           repo: https://github.com/puppetlabs/puppetlabs-augeas_core
-          ref: 1.3.0
+          ref: 1.5.0
           puppet_version: ">= 6.0.0"
         # Need by postgresql
         concat:
           repo: https://github.com/puppetlabs/puppetlabs-concat.git
-          ref: 9.0.0
+          ref: 9.0.2
         postgresql:
           repo: https://github.com/puppetlabs/puppetlabs-postgresql.git
-          ref: 9.1.0
+          ref: 10.3.0
         archive:
           repo: https://github.com/voxpupuli/puppet-archive.git
           ref: 7.0.0
@@ -43,6 +44,6 @@ fixtures:
           ref: 5.0.0
         systemd:
           repo: https://github.com/camptocamp/puppet-systemd.git
-          ref: 5.2.0
+          ref: 7.0.0
   symlinks:
     sensu: "#{source_dir}"
