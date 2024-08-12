@@ -77,6 +77,8 @@
 # @param validate_entity
 #   Sets whether to validate the agent's entity before attempting
 #   to configure the entity
+# @param timeout
+#   Sets the timeout for validate entity
 #
 class sensu::agent (
   Optional[String] $version = undef,
@@ -102,8 +104,8 @@ class sensu::agent (
   Optional[Stdlib::Absolutepath] $log_file = undef,
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
   Boolean $validate_entity = true,
+  Integer $timeout = 10,
 ) {
-
   include sensu
   include sensu::common
   include sensu::api
@@ -208,8 +210,8 @@ class sensu::agent (
         before => Package['sensu-go-agent'],
       }
     } elsif $package_source {
-        $package_provider = undef
-        $_package_source = $package_source
+      $package_provider = undef
+      $_package_source = $package_source
     } else {
       include chocolatey
       $package_provider = 'chocolatey'
@@ -284,9 +286,9 @@ class sensu::agent (
     systemd::dropin_file { 'sensu-agent-start.conf':
       unit    => 'sensu-agent.service',
       content => join([
-        '[Service]',
-        'ExecStart=',
-        "ExecStart=${service_path} start -c ${sensu::agent_config_path}",
+          '[Service]',
+          'ExecStart=',
+          "ExecStart=${service_path} start -c ${sensu::agent_config_path}",
       ], "\n"),
       notify  => Service['sensu-agent'],
     }
@@ -304,6 +306,7 @@ class sensu::agent (
       ensure    => 'present',
       namespace => $config['namespace'],
       provider  => 'sensu_api',
+      timeout   => $timeout,
     }
   }
 }
