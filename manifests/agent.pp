@@ -94,7 +94,7 @@ class sensu::agent (
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
   String[1] $entity_name = $facts['networking']['fqdn'],
   Optional[Array[String[1]]] $subscriptions = undef,
-  Optional[Hash[String[1],String]] $annotations = undef,
+  Optional[Hash[String[1],Variant[Array, Hash, String]]] $annotations = undef,
   Optional[Hash[String[1],String]] $labels = undef,
   String[1] $namespace = 'default',
   Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
