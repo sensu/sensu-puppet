@@ -1,0 +1,11 @@
+<%# Process each key-value pair in the input_data hash %>
+<%
+$data = $input_data.map |$key, $value| {
+  if $value =~ Array {
+    [$key, $value.uniq]
+  } else {
+    [$key, $value]
+  }
+}.reduce({}) |$memo, $entry| { $memo + { $entry[0] => $entry[1] } }
+%>
+<%= $data.to_yaml %>

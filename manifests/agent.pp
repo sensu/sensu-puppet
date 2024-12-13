@@ -81,7 +81,7 @@
 class sensu::agent (
   Optional[String] $version = undef,
   Optional[String[1]] $package_source = undef,
-  Optional[Stdlib::Absolutepath] $package_download_path = '/home/ubuntu/.puppetlabs/etc/code/modules',
+  Optional[Stdlib::Absolutepath] $package_download_path = undef,
   String $package_name = 'sensu-go-agent',
   Optional[Stdlib::Absolutepath] $service_env_vars_file = undef,
   Hash $service_env_vars = {},
@@ -91,7 +91,7 @@ class sensu::agent (
   Stdlib::Absolutepath $service_path = '/usr/sbin/sensu-agent',
   Hash $config_hash = {},
   Boolean $agent_managed_entity = false,
-  Optional[Array[Sensu::Backend_URL]] $backends = undef,
+  Optional[Array[Sensu::Backend_URL]] $backends = ["${sensu::api_host}:8081"],
   String[1] $entity_name = $facts['networking']['fqdn'],
   Optional[Array[String[1]]] $subscriptions = undef,
   Optional[Hash[String[1],String]] $annotations = undef,
@@ -237,10 +237,21 @@ class sensu::agent (
     target_field    => 'content',
   }
 
-  datacat_fragment { 'sensu_agent_config-main':
-    target => 'sensu_agent_config',
-    data   => $config,
-    order  => '01',
+  # changing the datacat module to concat
+ # datacat_fragment { 'sensu_agent_config-main':
+  #  target => 'sensu_agent_config',
+  #  data   => $config,
+  #  order  => '01',
+  #}
+
+  concat { 'sensu_agent_config':
+    ensure => 'present',
+  }
+
+  concat::fragment { 'sensu_agent_config-main':
+    target  => 'sensu_agent_config',
+    content => $config,
+    order   => '01',
   }
 
   file { 'sensu_agent_config':
