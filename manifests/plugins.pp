@@ -67,11 +67,11 @@ class sensu::plugins (
     require => $package_require,
   }
 
-  ensure_packages($dependencies)
+  stdlib::ensure_packages($dependencies)
   $dependencies.each |$package| {
     Package[$package] -> Sensu_plugin <| |> # lint:ignore:spaceship_operator_without_tag
   }
-  ensure_packages($gem_dependencies, {'provider' => 'sensu_gem', 'require' => [Package[$dependencies],Package['sensu-plugins-ruby']]})
+  stdlib::ensure_packages($gem_dependencies, {'provider' => 'sensu_gem', 'require' => [Package[$dependencies],Package['sensu-plugins-ruby']]})
 
   if $plugins =~ Array {
     $plugins.each |$plugin| {
