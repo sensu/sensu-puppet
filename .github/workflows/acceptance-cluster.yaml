@@ -30,9 +30,9 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.1'
+        ruby-version: '2.7'
         bundler-cache: true
-        bundler: '2.6.1'
+        bundler: '2.1.0'
     - name: Update RubyGems
       run: gem update --system 3.3.22
     - name: Decrypt secrets
