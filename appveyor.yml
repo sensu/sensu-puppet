@@ -27,10 +27,10 @@ install:
 - ps: Copy-Item -Path "${ENV:APPVEYOR_BUILD_FOLDER}/lib/facter" -Destination C:/ProgramData/PuppetLabs/puppet/cache/lib/facter -Recurse
 - set PATH=C:\Program Files\Puppet Labs\Puppet\bin;%PATH%
 - puppet --version
-- puppet module install puppetlabs-stdlib --version ">= 9.0.0 < 10.0.0"
-- puppet module install puppetlabs-chocolatey --version ">= 8.0.0 < 9.0.0"
-- puppet module install puppet-archive --version ">= 7.0.0 < 8.0.0"
-- puppet module install puppetlabs-windows_env --version ">= 5.0.0 < 6.0.0"
+- puppet module install puppetlabs-stdlib --version ">= 5.1.0 < 7.0.0"
+- puppet module install puppetlabs-chocolatey --version ">= 3.0.0 < 7.0.0"
+- puppet module install puppet-archive --version ">= 3.0.0 < 5.0.0"
+- puppet module install puppet-windows_env --version ">= 3.0.0 < 5.0.0"
 - puppet module install richardc-datacat --version ">= 0.6.0 < 2.0.0"
 - puppet config set --section main certname sensu_agent
 - facter -p --debug
