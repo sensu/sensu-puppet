@@ -59,13 +59,13 @@ end
 
 group :system_tests do
   gem 'beaker',                       :require => false
-  gem "beaker-docker",                :require => false
+  gem 'beaker-docker',                :require => false
   gem 'beaker-module_install_helper', :require => false
   gem 'beaker-puppet',                :require => false
-  gem 'beaker-puppet_install_helper', :require => false
+  gem 'beaker-puppet_install_helper', '0.9.8', :require => false
   gem 'beaker-rspec',                 :require => false
   gem 'serverspec',                   :require => false
-  gem 'simp-beaker-helpers',          :require => false
+  gem 'simp-beaker-helpers',          '~> 1.36.0', :require => false
 end
 
 group :development do
