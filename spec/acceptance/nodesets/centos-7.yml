@@ -10,6 +10,9 @@ HOSTS:
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
+      - "sed -i -e 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-*"
+      - "sed -i -e 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+      - 'yum clean all'
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which iproute'
       - 'wget --no-check-certificate https://copr.fedorainfracloud.org/coprs/jsynacek/systemd-backports-for-centos-7/repo/epel-7/jsynacek-systemd-backports-for-centos-7-epel-7.repo -O /etc/yum.repos.d/jsynacek-systemd-centos-7.repo'
@@ -32,6 +35,9 @@ HOSTS:
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
+      - "sed -i -e 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-*"
+      - "sed -i -e 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+      - 'yum clean all'
       - "sed -i -r '/^tsflags/d' /etc/yum.conf"
       - 'yum install -y wget which initscripts iproute'
       - 'wget --no-check-certificate https://copr.fedorainfracloud.org/coprs/jsynacek/systemd-backports-for-centos-7/repo/epel-7/jsynacek-systemd-backports-for-centos-7-epel-7.repo -O /etc/yum.repos.d/jsynacek-systemd-centos-7.repo'
