@@ -29,7 +29,7 @@ RSpec.configure do |c|
   else
     enterprise_file = File.join(project_dir, 'tests/sensu_license.json')
   end
-  if File.exists?(enterprise_file)
+  if File.exist?(enterprise_file)
     scp_to(hosts_as('sensu-backend'), enterprise_file, '/root/sensu_license.json')
     c.sensu_test_enterprise = true
   else
@@ -38,7 +38,7 @@ RSpec.configure do |c|
 
   ci_build = File.join(project_dir, 'tests/ci_build.sh')
   secrets = File.join(project_dir, 'tests/secrets')
-  if File.exists?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
+  if File.exist?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
     c.sensu_manage_repo = false
     c.add_ci_repo = true
   end
