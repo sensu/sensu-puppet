@@ -15,12 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         set:
-        - centos-7
         - rocky-8
-        - debian-10
-        - ubuntu-1804
-        - ubuntu-2004
-        - amazonlinux-201803
         puppet:
         - puppet6
         - puppet7
