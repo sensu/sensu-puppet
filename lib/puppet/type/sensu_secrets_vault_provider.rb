@@ -155,7 +155,7 @@ DESC
   end
 
   def refresh
-    if provider.exist? && @parameters[:ensure].value.to_s == 'present' && ! @parameters[:token_file].value.nil?
+    if provider.exists? && @parameters[:ensure].value.to_s == 'present' && ! @parameters[:token_file].value.nil?
       provider.flush(true)
     end
   end
