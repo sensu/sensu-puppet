@@ -103,7 +103,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        etc_dir => '/etc/sensugo',
+        etc_dir        => '/etc/sensugo',
       }
       class { 'sensu::agent':
         backends         => ['sensu-backend:8081'],

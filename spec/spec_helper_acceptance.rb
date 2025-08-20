@@ -87,7 +87,11 @@ RSpec.configure do |c|
     end
     install_module_dependencies
     ssldir = File.join(project_dir, 'tests/ssl')
-    scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
+    # Avoid copying static, possibly expired test CA by default.
+    # Use SENSU_TEST_SSL=true to force using repo-provided SSL fixtures.
+    if ENV['SENSU_TEST_SSL'] == 'true'
+      scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
+    end
     hosts.each do |host|
       on host, "puppet config set --section main certname #{host.name}"
     end
@@ -97,6 +101,14 @@ RSpec.configure do |c|
       scp_to(hosts, secrets, '/tmp/secrets')
       on hosts, '/tmp/ci_build.sh'
     end
+    # Generate fresh SSL materials on test hosts and point module to them
+    on setup_nodes, 'mkdir -p -m 0755 /etc/sensu/ssl'
+    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/ca.key 2048'
+    on setup_nodes, "openssl req -x509 -new -nodes -key /etc/sensu/ssl/ca.key -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=SensuTestCA' -days 3650 -out /etc/sensu/ssl/ca.crt"
+    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/key.pem 2048'
+    on setup_nodes, "openssl req -new -key /etc/sensu/ssl/key.pem -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=sensu-backend' -out /etc/sensu/ssl/server.csr"
+    on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256'
+
     hiera_yaml = <<-EOS
 ---
 version: 5
@@ -112,6 +124,9 @@ EOS
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
+sensu::ssl_ca_source: 'file:/etc/sensu/ssl/ca.crt'
+sensu::backend::ssl_cert_source: 'file:/etc/sensu/ssl/cert.pem'
+sensu::backend::ssl_key_source: 'file:/etc/sensu/ssl/key.pem'
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
 postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'

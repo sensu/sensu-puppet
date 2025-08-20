@@ -7,8 +7,8 @@ describe 'sensu without SSL', if: ['base'].include?(RSpec.configuration.sensu_mo
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        use_ssl  => false,
-        password => 'P@ssw0rd!',
+        use_ssl         => false,
+        password        => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       sensu_entity { 'sensu-agent':
@@ -48,7 +48,7 @@ describe 'sensu without SSL', if: ['base'].include?(RSpec.configuration.sensu_mo
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        use_ssl => false,
+        use_ssl         => false,
       }
       class { 'sensu::agent':
         backends    => ['sensu-backend:8081'],
@@ -83,7 +83,7 @@ describe 'sensu without SSL', if: ['base'].include?(RSpec.configuration.sensu_mo
     it 'should work without errors' do
       backend_pp = <<-EOS
       class { '::sensu':
-        password => 'P@ssw0rd!',
+        password       => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       EOS

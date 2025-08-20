@@ -7,8 +7,8 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
+        api_host       => 'sensu-backend',
+        password       => 'P@ssw0rd!',
       }
       class { 'sensu::cli': }
       EOS
@@ -51,8 +51,8 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        api_host => 'sensu-backend',
-        password => 'supersecret',
+        api_host       => 'sensu-backend',
+        password       => 'supersecret',
       }
       class { 'sensu::cli': }
       EOS
@@ -91,16 +91,16 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        use_ssl  => false,
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
+        use_ssl         => false,
+        api_host        => 'sensu-backend',
+        password        => 'P@ssw0rd!',
       }
       class { 'sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
-        use_ssl  => false,
-        password => 'P@ssw0rd!',
+        use_ssl         => false,
+        password        => 'P@ssw0rd!',
       }
       class { 'sensu::backend': }
       EOS
