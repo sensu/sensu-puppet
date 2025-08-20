@@ -103,11 +103,17 @@ RSpec.configure do |c|
     end
     # Generate fresh SSL materials on test hosts and point module to them
     on setup_nodes, 'mkdir -p -m 0755 /etc/sensu/ssl'
-    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/ca.key 2048'
-    on setup_nodes, "openssl req -x509 -new -nodes -key /etc/sensu/ssl/ca.key -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=SensuTestCA' -days 3650 -out /etc/sensu/ssl/ca.crt"
-    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/key.pem 2048'
-    on setup_nodes, "openssl req -new -key /etc/sensu/ssl/key.pem -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=sensu-backend' -out /etc/sensu/ssl/server.csr"
-    on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256'
+    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/ca.key 2048 2>/dev/null'
+    on setup_nodes, "openssl req -x509 -new -nodes -key /etc/sensu/ssl/ca.key -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=SensuTestCA' -days 3650 -out /etc/sensu/ssl/ca.crt 2>/dev/null"
+    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/key.pem 2048 2>/dev/null'
+    on setup_nodes, "openssl req -new -key /etc/sensu/ssl/key.pem -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=localhost' -out /etc/sensu/ssl/server.csr 2>/dev/null"
+    on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256 2>/dev/null'
+    on setup_nodes, 'chown -R sensu:sensu /etc/sensu/ssl 2>/dev/null || chown -R 1000:1000 /etc/sensu/ssl 2>/dev/null || true'
+    on setup_nodes, 'chmod 600 /etc/sensu/ssl/*.key /etc/sensu/ssl/*.pem 2>/dev/null || true'
+    on setup_nodes, 'chmod 644 /etc/sensu/ssl/*.crt 2>/dev/null || true'
+    # Verify SSL files were created
+    on setup_nodes, 'ls -la /etc/sensu/ssl/'
+    on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/ca.crt -text -noout | head -5'
 
     hiera_yaml = <<-EOS
 ---

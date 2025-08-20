@@ -13,6 +13,12 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       }
       EOS
 
+      # Debug: Check SSL files before applying manifest
+      on node, 'ls -la /etc/sensu/ssl/ || echo "SSL dir not found"'
+      on node, 'cat /etc/sensu/ssl/ca.crt | head -3 || echo "CA file not readable"'
+      on node, 'cat /etc/sensu/ssl/cert.pem | head -3 || echo "Cert file not readable"'
+      on node, 'cat /etc/sensu/ssl/key.pem | head -3 || echo "Key file not readable"'
+
       if RSpec.configuration.sensu_use_agent
         site_pp = "node 'sensu-backend' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
@@ -22,6 +28,10 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       else
         # Run it twice and test for idempotency
         apply_manifest_on(node, pp, :catch_failures => true)
+        # Debug: Check what happened after manifest
+        on node, 'systemctl status sensu-backend || echo "Service status check failed"'
+        on node, 'journalctl -u sensu-backend --no-pager -n 20 || echo "Journal check failed"'
+        on node, 'ls -la /etc/sensu/ || echo "Sensu dir check failed"'
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
     end
