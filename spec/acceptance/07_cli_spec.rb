@@ -41,6 +41,7 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
     end
 
     it 'should have working sensuctl' do
+      expect(wait_for_backend(backend)).to eq(true)
       exit_code = on(node, 'sensuctl cluster health').exit_code
       expect(exit_code).to eq(0)
     end
@@ -80,6 +81,7 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
     end
 
     it 'should have working sensuctl' do
+      expect(wait_for_backend(backend)).to eq(true)
       exit_code = on(node, 'sensuctl cluster health').exit_code
       expect(exit_code).to eq(0)
     end
@@ -121,6 +123,7 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
     end
 
     it 'should have working sensuctl' do
+      expect(wait_for_backend(backend)).to eq(true)
       exit_code = on(node, 'sensuctl cluster health').exit_code
       expect(exit_code).to eq(0)
     end

@@ -39,6 +39,9 @@ describe 'sensu without SSL', if: ['base'].include?(RSpec.configuration.sensu_mo
     describe command('sensuctl entity list'), :node => backend do
       its(:exit_status) { should eq 0 }
     end
+    it 'waits for backend to be healthy' do
+      expect(wait_for_backend(backend)).to eq(true)
+    end
   end
 
   context 'agent' do

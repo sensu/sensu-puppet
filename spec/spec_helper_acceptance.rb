@@ -11,6 +11,22 @@ pluginsync_on(hosts)
 collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 
+# Wait helpers to accommodate slower startup on newer Sensu versions
+def wait_for_command(host, command, max_retries = 30, sleep_seconds = 5)
+  retries = 0
+  until retries >= max_retries
+    result = on(host, command, acceptable_exit_codes: [0,1,2,3,4,5,6], silent: true) rescue nil
+    return true if result && result.exit_code == 0
+    sleep sleep_seconds
+    retries += 1
+  end
+  false
+end
+
+def wait_for_backend(host)
+  wait_for_command(host, 'sensuctl cluster health')
+end
+
 RSpec.configure do |c|
   c.add_setting :sensu_mode, default: 'base'
   c.add_setting :sensu_enterprise_file, default: nil

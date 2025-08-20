@@ -30,6 +30,9 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       it { should be_enabled }
       it { should be_running }
     end
+    it 'waits for backend to be healthy' do
+      expect(wait_for_backend(node)).to eq(true)
+    end
     describe package('sensu-go-agent'), :node => node do
       it { should_not be_installed }
     end
