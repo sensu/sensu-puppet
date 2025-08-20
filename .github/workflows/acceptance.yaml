@@ -16,6 +16,10 @@ jobs:
       matrix:
         set:
         - rocky-8
+        - debian-10
+        - ubuntu-1804
+        - ubuntu-2004
+        - amazonlinux-201803
         puppet:
         - puppet6
         - puppet7
