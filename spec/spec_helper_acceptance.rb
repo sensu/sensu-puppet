@@ -107,16 +107,17 @@ RSpec.configure do |c|
     on setup_nodes, "openssl req -x509 -new -nodes -key /etc/sensu/ssl/ca.key -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=SensuTestCA' -days 3650 -out /etc/sensu/ssl/ca.crt 2>/dev/null"
     on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/key.pem 2048 2>/dev/null'
     on setup_nodes, "openssl req -new -key /etc/sensu/ssl/key.pem -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=sensu-backend' -out /etc/sensu/ssl/server.csr 2>/dev/null"
-    # Create SSL config file for SAN
-    on setup_nodes, 'echo -e "basicConstraints=CA:FALSE\nkeyUsage=nonRepudiation,digitalSignature,keyEncipherment\nsubjectAltName=DNS:sensu-backend,DNS:localhost,IP:127.0.0.1" > /etc/sensu/ssl/san.conf'
-    on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256 -extfile /etc/sensu/ssl/san.conf -extensions v3_req 2>/dev/null'
+    # Generate certificate with correct CN and add to hosts file
+    on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256'
+    # Add hostname to hosts file to ensure proper resolution
+    on setup_nodes, 'echo "127.0.0.1 sensu-backend" >> /etc/hosts'
     on setup_nodes, 'chown -R sensu:sensu /etc/sensu/ssl 2>/dev/null || chown -R 1000:1000 /etc/sensu/ssl 2>/dev/null || true'
     on setup_nodes, 'chmod 600 /etc/sensu/ssl/*.key /etc/sensu/ssl/*.pem 2>/dev/null || true'
     on setup_nodes, 'chmod 644 /etc/sensu/ssl/*.crt 2>/dev/null || true'
     # Verify SSL files were created
     on setup_nodes, 'ls -la /etc/sensu/ssl/'
     on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/ca.crt -text -noout | head -5'
-    on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/cert.pem -text -noout | grep -A5 "Subject Alternative Name" || echo "No SAN found"'
+
 
     hiera_yaml = <<-EOS
 ---
