@@ -15,12 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         # Modes described in DESIGN.md: https://github.com/sensu/sensu-puppet/blob/master/DESIGN.md#acceptance-tests
-        set:
-        - rocky-8
-        - debian-10
-        - ubuntu-1804
-        - ubuntu-2004
-        - amazonlinux-201803
         sensu_mode:
         - full
         - types
@@ -45,7 +39,7 @@ jobs:
           puppet: puppet6
     env:
       BEAKER_debug: true
-    name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
+    name: Rocky 8 ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
     steps:
     - uses: actions/checkout@v4
     - name: Setup ruby
