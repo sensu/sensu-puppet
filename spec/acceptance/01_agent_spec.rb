@@ -77,6 +77,10 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
       it { should be_listening }
     end
 
+    it 'waits for backend before inspecting entity' do
+      expect(wait_for_backend(backend)).to eq(true)
+    end
+
     it 'should create an entity' do
       on backend, "sensuctl entity info sensu-agent --format json" do
         data = JSON.parse(stdout)
@@ -99,7 +103,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
-        etc_dir => '/etc/sensugo',
+        etc_dir        => '/etc/sensugo',
       }
       class { 'sensu::agent':
         backends         => ['sensu-backend:8081'],

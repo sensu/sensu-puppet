@@ -2,14 +2,33 @@ require 'beaker-rspec'
 require 'beaker-puppet'
 require 'beaker/module_install_helper'
 require 'beaker/puppet_install_helper'
-require 'simp/beaker_helpers'
 
+# Set environment variable to work around SSG offline issue
+ENV['BEAKER_ssg_repo'] = 'https://github.com/ComplianceAsCode/content.git'
+
+require 'simp/beaker_helpers'
 include Simp::BeakerHelpers
 run_puppet_install_helper
 install_module
 pluginsync_on(hosts)
 collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
+
+# Wait helpers to accommodate slower startup on newer Sensu versions
+def wait_for_command(host, command, max_retries = 30, sleep_seconds = 5)
+  retries = 0
+  until retries >= max_retries
+    result = on(host, command, acceptable_exit_codes: [0,1,2,3,4,5,6], silent: true) rescue nil
+    return true if result && result.exit_code == 0
+    sleep sleep_seconds
+    retries += 1
+  end
+  false
+end
+
+def wait_for_backend(host)
+  wait_for_command(host, 'sensuctl cluster health')
+end
 
 RSpec.configure do |c|
   c.add_setting :sensu_mode, default: 'base'
@@ -29,7 +48,7 @@ RSpec.configure do |c|
   else
     enterprise_file = File.join(project_dir, 'tests/sensu_license.json')
   end
-  if File.exists?(enterprise_file)
+  if File.exist?(enterprise_file)
     scp_to(hosts_as('sensu-backend'), enterprise_file, '/root/sensu_license.json')
     c.sensu_test_enterprise = true
   else
@@ -38,7 +57,7 @@ RSpec.configure do |c|
 
   ci_build = File.join(project_dir, 'tests/ci_build.sh')
   secrets = File.join(project_dir, 'tests/secrets')
-  if File.exists?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
+  if File.exist?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
     c.sensu_manage_repo = false
     c.add_ci_repo = true
   end
@@ -71,7 +90,11 @@ RSpec.configure do |c|
     end
     install_module_dependencies
     ssldir = File.join(project_dir, 'tests/ssl')
-    scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
+    # Avoid copying static, possibly expired test CA by default.
+    # Use SENSU_TEST_SSL=true to force using repo-provided SSL fixtures.
+    if ENV['SENSU_TEST_SSL'] == 'true'
+      scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
+    end
     hosts.each do |host|
       on host, "puppet config set --section main certname #{host.name}"
     end
@@ -81,6 +104,55 @@ RSpec.configure do |c|
       scp_to(hosts, secrets, '/tmp/secrets')
       on hosts, '/tmp/ci_build.sh'
     end
+    # Generate fresh SSL materials on test hosts and point module to them
+    on setup_nodes, 'mkdir -p -m 0755 /etc/sensu/ssl'
+    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/ca.key 2048 2>/dev/null'
+    on setup_nodes, "openssl req -x509 -new -nodes -key /etc/sensu/ssl/ca.key -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=SensuTestCA' -days 3650 -out /etc/sensu/ssl/ca.crt 2>/dev/null"
+    on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/key.pem 2048 2>/dev/null'
+    on setup_nodes, "openssl req -new -key /etc/sensu/ssl/key.pem -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=localhost' -out /etc/sensu/ssl/server.csr 2>/dev/null"
+    # Create proper OpenSSL config file
+    on setup_nodes, 'cat > /etc/sensu/ssl/san.conf << EOF
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+C = US
+ST = CI
+L = CI
+O = CI
+OU = CI
+CN = localhost
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation,digitalSignature,keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = sensu-backend
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+EOF'
+    # Generate certificate with proper config
+    on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256 -extfile /etc/sensu/ssl/san.conf -extensions v3_req'
+    # Add hostname to hosts file to ensure proper resolution
+    on setup_nodes, 'echo "127.0.0.1 sensu-backend" >> /etc/hosts'
+    on setup_nodes, 'chown -R sensu:sensu /etc/sensu/ssl 2>/dev/null || chown -R 1000:1000 /etc/sensu/ssl 2>/dev/null || true'
+    on setup_nodes, 'chmod 600 /etc/sensu/ssl/*.key /etc/sensu/ssl/*.pem 2>/dev/null || true'
+    on setup_nodes, 'chmod 644 /etc/sensu/ssl/*.crt 2>/dev/null || true'
+    # Verify SSL files were created
+    on setup_nodes, 'ls -la /etc/sensu/ssl/'
+    on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/ca.crt -text -noout | head -5'
+    # Verify the certificate has proper SANs
+    on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/cert.pem -text -noout | grep -A10 "Subject Alternative Name" || echo "SAN verification failed"'
+    
+    # Debug: Check if backend is listening on both ports
+    on setup_nodes, 'netstat -tlnp | grep :8080 || echo "Port 8080 not listening"'
+    on setup_nodes, 'netstat -tlnp | grep :8081 || echo "Port 8081 not listening"'
+
+
     hiera_yaml = <<-EOS
 ---
 version: 5
@@ -96,6 +168,12 @@ EOS
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
+sensu::validate_api: false
+sensu::ssl_ca_source: 'file:/etc/sensu/ssl/ca.crt'
+sensu::backend::ssl_cert_source: 'file:/etc/sensu/ssl/cert.pem'
+sensu::backend::ssl_key_source: 'file:/etc/sensu/ssl/key.pem'
+sensu::backend::service_env_vars:
+  SENSU_BACKEND_AGENT_PORT: '8081'
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
 postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'

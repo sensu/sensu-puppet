@@ -15,7 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         set:
-        - centos-7
         - rocky-8
         - debian-10
         - ubuntu-1804
@@ -33,13 +32,14 @@ jobs:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (ci=${{ matrix.ci_build }})
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: '3.2'
+        rubygems: 'latest'
+        bundler: 'latest'
         bundler-cache: true
-        bundler: '2.1.0'
     - name: Decrypt secrets
       env:
         SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}

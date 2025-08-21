@@ -1,0 +1,56 @@
+HOSTS:
+  sensu-backend1:
+    roles:
+      - agent
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: el-8-x86_64
+    hypervisor: docker
+    image: rockylinux:8
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'yum install -y dnf-utils'
+      - 'dnf config-manager --set-enabled powertools'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+    docker_container_name: 'sensu-backend1-el8'
+  sensu-backend2:
+    roles:
+      - agent
+      - sensu-backend
+    platform: el-8-x86_64
+    hypervisor: docker
+    image: rockylinux:8
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'yum install -y dnf-utils'
+      - 'dnf config-manager --set-enabled powertools'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+    docker_container_name: 'sensu-backend2-el8'
+  sensu-backend3:
+    roles:
+      - agent
+      - sensu-backend
+    platform: el-8-x86_64
+    hypervisor: docker
+    image: rockylinux:8
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'yum install -y dnf-utils'
+      - 'dnf config-manager --set-enabled powertools'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+    docker_container_name: 'sensu-backend3-el8'
+CONFIG:
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+
+

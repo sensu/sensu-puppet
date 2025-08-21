@@ -39,15 +39,16 @@ jobs:
           puppet: puppet6
     env:
       BEAKER_debug: true
-    name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
+    name: Rocky 8 ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: '3.2'
+        rubygems: 'latest'
+        bundler: 'latest'
         bundler-cache: true
-        bundler: '2.1.0'
     - name: Decrypt secrets
       env:
         SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}
@@ -57,7 +58,7 @@ jobs:
       run: bundle exec rake acceptance
       env:
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: centos-7
+        BEAKER_set: ${{ matrix.set }}
         BEAKER_sensu_mode: ${{ matrix.sensu_mode }}
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}
