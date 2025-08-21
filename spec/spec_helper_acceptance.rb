@@ -167,6 +167,8 @@ sensu::api_host: sensu-backend
 sensu::ssl_ca_source: 'file:/etc/sensu/ssl/ca.crt'
 sensu::backend::ssl_cert_source: 'file:/etc/sensu/ssl/cert.pem'
 sensu::backend::ssl_key_source: 'file:/etc/sensu/ssl/key.pem'
+sensu::backend::service_env_vars:
+  SENSU_BACKEND_AGENT_PORT: '8081'
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
 postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'
