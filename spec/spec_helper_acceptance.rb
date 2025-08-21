@@ -107,9 +107,32 @@ RSpec.configure do |c|
     on setup_nodes, "openssl req -x509 -new -nodes -key /etc/sensu/ssl/ca.key -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=SensuTestCA' -days 3650 -out /etc/sensu/ssl/ca.crt 2>/dev/null"
     on setup_nodes, 'openssl genrsa -out /etc/sensu/ssl/key.pem 2048 2>/dev/null'
     on setup_nodes, "openssl req -new -key /etc/sensu/ssl/key.pem -subj '/C=US/ST=CI/L=CI/O=CI/OU=CI/CN=localhost' -out /etc/sensu/ssl/server.csr 2>/dev/null"
-    # Create SSL config file with multiple SANs - sensu-backend must be first
-    on setup_nodes, 'echo -e "basicConstraints=CA:FALSE\nkeyUsage=nonRepudiation,digitalSignature,keyEncipherment\nsubjectAltName=DNS:sensu-backend,DNS:localhost,IP:127.0.0.1" > /etc/sensu/ssl/san.conf'
-    # Generate certificate with SANs
+    # Create proper OpenSSL config file
+    on setup_nodes, 'cat > /etc/sensu/ssl/san.conf << EOF
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+C = US
+ST = CI
+L = CI
+O = CI
+OU = CI
+CN = localhost
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation,digitalSignature,keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = sensu-backend
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+EOF'
+    # Generate certificate with proper config
     on setup_nodes, 'openssl x509 -req -in /etc/sensu/ssl/server.csr -CA /etc/sensu/ssl/ca.crt -CAkey /etc/sensu/ssl/ca.key -CAcreateserial -out /etc/sensu/ssl/cert.pem -days 3650 -sha256 -extfile /etc/sensu/ssl/san.conf -extensions v3_req'
     # Add hostname to hosts file to ensure proper resolution
     on setup_nodes, 'echo "127.0.0.1 sensu-backend" >> /etc/hosts'
