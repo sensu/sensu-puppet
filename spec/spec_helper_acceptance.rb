@@ -2,8 +2,11 @@ require 'beaker-rspec'
 require 'beaker-puppet'
 require 'beaker/module_install_helper'
 require 'beaker/puppet_install_helper'
-require 'simp/beaker_helpers'
 
+# Set environment variable to work around SSG offline issue
+ENV['BEAKER_ssg_repo'] = 'https://github.com/ComplianceAsCode/content.git'
+
+require 'simp/beaker_helpers'
 include Simp::BeakerHelpers
 run_puppet_install_helper
 install_module
