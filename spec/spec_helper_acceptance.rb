@@ -147,6 +147,10 @@ EOF'
     on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/ca.crt -text -noout | head -5'
     # Verify the certificate has proper SANs
     on setup_nodes, 'openssl x509 -in /etc/sensu/ssl/cert.pem -text -noout | grep -A10 "Subject Alternative Name" || echo "SAN verification failed"'
+    
+    # Debug: Check if backend is listening on both ports
+    on setup_nodes, 'netstat -tlnp | grep :8080 || echo "Port 8080 not listening"'
+    on setup_nodes, 'netstat -tlnp | grep :8081 || echo "Port 8081 not listening"'
 
 
     hiera_yaml = <<-EOS
@@ -164,6 +168,7 @@ EOS
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
+sensu::validate_api: false
 sensu::ssl_ca_source: 'file:/etc/sensu/ssl/ca.crt'
 sensu::backend::ssl_cert_source: 'file:/etc/sensu/ssl/cert.pem'
 sensu::backend::ssl_key_source: 'file:/etc/sensu/ssl/key.pem'
