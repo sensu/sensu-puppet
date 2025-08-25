@@ -333,6 +333,7 @@ The following parameters are available in the `sensu::agent` class:
 * [`log_file`](#-sensu--agent--log_file)
 * [`agent_entity_config_provider`](#-sensu--agent--agent_entity_config_provider)
 * [`validate_entity`](#-sensu--agent--validate_entity)
+* [`timeout`](#-sensu--agent--timeout)
 
 ##### <a name="-sensu--agent--version"></a>`version`
 
@@ -537,6 +538,14 @@ Sets whether to validate the agent's entity before attempting
 to configure the entity
 
 Default value: `true`
+
+##### <a name="-sensu--agent--timeout"></a>`timeout`
+
+Data type: `Integer`
+
+Sets the timeout for validate entity
+
+Default value: `10`
 
 ### <a name="sensu--api"></a>`sensu::api`
 
