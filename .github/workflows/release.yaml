@@ -21,6 +21,8 @@ jobs:
           ruby-version: '2.7'
           bundler-cache: true
           bundler: '2.1.0'
+      - name: Update RubyGems
+        run: gem update --system 3.3.22
       - name: Build and Deploy
         env:
           BLACKSMITH_FORGE_USERNAME: sensu
