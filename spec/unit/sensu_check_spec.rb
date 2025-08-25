@@ -311,6 +311,28 @@ describe Puppet::Type.type(:sensu_check) do
     end
   end
 
+  describe 'scheduler' do
+    [
+      'memory',
+      'etcd',
+      'postgres',
+    ].each do |v|
+      it "should accept #{v}" do
+        config[:scheduler] = v
+        expect(check[:scheduler]).to eq(v.to_sym)
+      end
+    end
+
+    it 'should not have a default' do
+      expect(check[:scheduler]).to be_nil
+    end
+
+    it 'should not accept invalid values' do
+      config[:scheduler] = 'foo'
+      expect { check }.to raise_error(Puppet::Error, /Invalid value "foo"/)
+    end
+  end
+
   describe 'output_metric_format' do
     [
       'nagios_perfdata',
