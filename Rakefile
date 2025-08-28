@@ -1,6 +1,6 @@
 require 'json'
 require 'parallel_tests/tasks'
-# require 'puppetlabs_spec_helper/rake_tasks/metadata'
+require 'rspec/core/rake_task'
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-blacksmith').any?
 require 'github_changelog_generator/task' if Bundler.rubygems.find_name('github_changelog_generator').any?
