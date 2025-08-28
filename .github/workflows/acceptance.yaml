@@ -16,7 +16,7 @@ jobs:
       matrix:
         set:
         - rocky-8
-        - debian-10
+        - debian-11
         - ubuntu-1804
         - ubuntu-2004
         - amazonlinux-201803
