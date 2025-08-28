@@ -17,7 +17,7 @@ group :development, :unit_tests do
   gem 'rspec-puppet-facts',                                        :require => false
   gem 'rspec-mocks',                                               :require => false
   gem 'parallel_tests',                                            :require => false
-  gem 'puppetlabs_spec_helper',                                    :require => false
+  gem 'puppetlabs_spec_helper', '~> 3.0',                          :require => false
   gem 'metadata-json-lint',                                        :require => false
   gem 'puppet-blacksmith',                                         :require => false
   gem 'puppet-lint',                                               :require => false

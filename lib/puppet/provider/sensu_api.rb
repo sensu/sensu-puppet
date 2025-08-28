@@ -74,6 +74,11 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
     password = opts[:password] || @password
     method = opts[:method] || 'get'
     failonfail = opts[:failonfail].nil? ? true : opts[:failonfail]
+    
+    # Guard against unconfigured API provider
+    if url.nil? || url.to_s.empty?
+      raise Puppet::Error, "Sensu API provider not configured. Please set url, username, and password via sensu_api_config."
+    end
     if opts[:http_proxy]
       proxy = URI.parse(opts[:http_proxy])
       proxy_addr = proxy.host
@@ -93,11 +98,11 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       token = @access_token
     end
     if path =~ %r{^/}
-      uri = URI(URI.join(url, path))
+      uri = URI(URI.join(url.to_s, path))
     elsif namespace
-      uri = URI(URI.join(url, "/api/#{api_group}/#{api_version}/namespaces/#{namespace}/#{path}"))
+      uri = URI(URI.join(url.to_s, "/api/#{api_group}/#{api_version}/namespaces/#{namespace}/#{path}"))
     else
-      uri = URI(URI.join(url, "/api/#{api_group}/#{api_version}/#{path}"))
+      uri = URI(URI.join(url.to_s, "/api/#{api_group}/#{api_version}/#{path}"))
     end
     if method == 'get' && !data.nil?
       uri.query = URI.encode_www_form(data)

@@ -13,10 +13,11 @@ exclude_paths = [
   "spec/**/*",
 ]
 
-PuppetLint.configuration.send("disable_80chars")
-PuppetLint.configuration.send("disable_140chars")
-PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetLint.configuration.relative = true
+# PuppetLint configuration moved to after gems are loaded
+# PuppetLint.configuration.send("disable_80chars")
+# PuppetLint.configuration.send("disable_140chars")
+# PuppetLint.configuration.ignore_paths = exclude_paths
+# PuppetLint.configuration.relative = true
 
 desc "Run acceptance tests"
 RSpec::Core::RakeTask.new(:acceptance) do |t|
