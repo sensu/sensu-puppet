@@ -16,22 +16,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: '3.2'
+        - ruby: '3.1'
           puppet: 7
           fixtures: .fixtures.yml
           allow_failure: false
         - ruby: '3.2'
           puppet: 7
           fixtures: .fixtures.yml
-          allow_failure: false
-        - ruby: '3.2'
-          puppet: 7
-          fixtures: .fixtures-latest.yml
           allow_failure: true
-        - ruby: '3.2'
+        - ruby: '3.1'
           puppet: 8
           fixtures: .fixtures-latest.yml
-          allow_failure: true
+          allow_failure: false
     env:
       BUNDLE_WITHOUT: system_tests:development
       PUPPET_GEM_VERSION: "~> ${{ matrix.puppet }}.0"
