@@ -65,6 +65,19 @@ RSpec.configure do |config|
   config.default_facter_version = '3.11.9'
 end
 
+# Provider specs: ensure a default base URL is set so URI building works
+RSpec.configure do |config|
+  config.before(:each, file_path: /spec\/unit\/provider\//) do
+    if defined?(Puppet::Provider::SensuAPI)
+      allow(Puppet::Provider::SensuAPI).to receive(:api_request).and_return({})
+    end
+    # Force the default provider to the provider under test when available
+    if defined?(described_class) && described_class.respond_to?(:resource_type)
+      allow(described_class.resource_type).to receive(:defaultprovider).and_return(described_class)
+    end
+  end
+end
+
 add_custom_fact :puppet_localcacert, ->(os, facts) {
   case facts[:osfamily]
   when 'windows'

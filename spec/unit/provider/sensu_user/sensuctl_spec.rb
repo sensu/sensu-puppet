@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
+  before do
+    allow(Puppet::Provider::SensuAPI).to receive(:api_request).and_return({})
+  end
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_user) }
   let(:resource) do

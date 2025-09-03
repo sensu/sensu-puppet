@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
+  before do
+    allow(Puppet::Provider::SensuAPI).to receive(:api_request).and_return({})
+  end
   let(:provider) { described_class }
   let(:resource) { Puppet::Type.type(:sensu_entity).new({name: 'test'}) }
 

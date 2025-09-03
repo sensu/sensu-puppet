@@ -16,11 +16,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 2.5.7
+        - ruby: 3.2.2
           puppet: 6
           fixtures: .fixtures.yml
           allow_failure: false
-        - ruby: 2.7.6
+        - ruby: 3.2.2
           puppet: 7
           fixtures: .fixtures.yml
           allow_failure: false
@@ -44,7 +44,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-          bundler: '2.1.0'
+          bundler: '2.4.10'
       - name: Validate
         run: bundle exec rake sensu_validate lint strings:generate reference
       - name: Run tests

@@ -13,6 +13,7 @@ end
 
 group :development, :unit_tests do
   gem 'rake'
+  gem 'net-ftp', require: false
   gem 'rspec-puppet',                                              :require => false
   gem 'rspec-puppet-facts',                                        :require => false
   gem 'rspec-mocks',                                               :require => false
