@@ -1,19 +1,35 @@
 HOSTS:
-  centos-7:
+  sensu-agent:
     roles:
       - agent
-    platform: el-7-x86_64
+    platform: el-8-x86_64
     hypervisor: docker
-    image: centos:7
+    image: rockylinux:8
     docker_preserve_image: true
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git iproute'
-    docker_container_name: 'sensu-el7'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+    docker_container_name: 'sensu-agent-el8'
+  sensu-backend:
+    roles:
+      - agent
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: el-8-x86_64
+    hypervisor: docker
+    image: rockylinux:8
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+    docker_container_name: 'sensu-backend-el8'
 CONFIG:
   log_level: debug
   type: foss
+  puppet_collection: puppet6
 ssh:
   password: root
   auth_methods: ["password"]

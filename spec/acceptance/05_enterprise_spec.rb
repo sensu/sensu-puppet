@@ -10,6 +10,12 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   context 'adds license file' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend',
+        password => 'P@ssw0rd!',
+        use_ssl => false,
+      }
+      class { 'sensu::cli': }
       class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
@@ -35,6 +41,12 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   context 'updates license file' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend',
+        password => 'P@ssw0rd!',
+        use_ssl => false,
+      }
+      class { 'sensu::cli': }
       class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }
@@ -59,6 +71,12 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   context 're-adds license file' do
     it 'should work without errors and be idempotent' do
       pp = <<-EOS
+      class { 'sensu':
+        api_host => 'sensu-backend',
+        password => 'P@ssw0rd!',
+        use_ssl => false,
+      }
+      class { 'sensu::cli': }
       class { 'sensu::backend':
         license_source => '/root/sensu_license.json',
       }

@@ -1,9 +1,7 @@
+require 'fileutils'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
 
-RSpec.configure do |config|
-  config.mock_with :rspec
-end
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 case ENV['COVERAGE']
@@ -25,6 +23,30 @@ custom_facts = File.join(module_spec_dir, 'fixtures', 'facts')
 ENV['FACTERDB_SEARCH_PATHS'] = custom_facts
 
 RSpec.configure do |config|
+  # Exclude acceptance specs by default; enable with RUN_ACCEPTANCE=1
+  if ENV['RUN_ACCEPTANCE'] != '1'
+    config.exclude_pattern = [
+      'spec/acceptance/**/*',
+      'spec/spec_helper_acceptance.rb',
+      'spec/spec_helper_acceptance_windows.rb'
+    ]
+  end
+  # Also constrain default pattern to non-acceptance suites to avoid eager load of acceptance helpers
+  if ENV['RUN_ACCEPTANCE'] != '1'
+    config.pattern = '{spec,./spec}/{unit,classes,defines,functions,hosts,tasks,type_aliases,shared_examples}/**/*_spec.rb'
+  end
+  config.before(:suite) do
+    # This hook runs once before all tests to ensure a clean slate.
+    # It removes the entire modules directory from the fixtures to prevent
+    # stale symlinks from causing "File exists" errors.
+    spec_dir = File.dirname(__FILE__)
+    modules_dir = File.join(spec_dir, 'fixtures', 'modules')
+
+    # Aggressively remove and recreate the directory.
+    FileUtils.rm_rf(modules_dir) if File.directory?(modules_dir)
+    FileUtils.mkdir_p(modules_dir)
+  end
+
   config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
   config.before :each do
@@ -63,19 +85,6 @@ RSpec.configure do |config|
     %r{/.rvm/},
   ]
   config.default_facter_version = '3.11.9'
-end
-
-# Provider specs: ensure a default base URL is set so URI building works
-RSpec.configure do |config|
-  config.before(:each, file_path: /spec\/unit\/provider\//) do
-    if defined?(Puppet::Provider::SensuAPI)
-      allow(Puppet::Provider::SensuAPI).to receive(:api_request).and_return({})
-    end
-    # Force the default provider to the provider under test when available
-    if defined?(described_class) && described_class.respond_to?(:resource_type)
-      allow(described_class.resource_type).to receive(:defaultprovider).and_return(described_class)
-    end
-  end
 end
 
 add_custom_fact :puppet_localcacert, ->(os, facts) {

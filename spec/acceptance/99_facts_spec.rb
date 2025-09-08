@@ -15,6 +15,10 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   context 'backend facts' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { '::sensu':
+        validate_api => false,
+        use_ssl => false,
+      }
       include sensu::backend
       EOS
 
@@ -32,21 +36,75 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
     end
 
     it "should have backend facts" do
-      out = on(backend, "#{facter_command} sensu_backend.version").stdout
+      # Apply the backend manifest to ensure it's installed
+      pp = <<-EOS
+      class { '::sensu':
+        validate_api => false,
+        use_ssl => false,
+      }
+      include sensu::backend
+      EOS
+      
+      apply_manifest_on(backend, pp, :catch_failures => true)
+      
+      # Wait for backend package to be installed and available
+      on backend, 'timeout 60 bash -c "while ! which sensu-backend; do sleep 2; done"'
+      
+      # Copy facter files to ensure they're available
+      fact_path = File.join(File.dirname(__FILE__), '../..', 'lib/facter')
+      scp_to(backend, fact_path, '/opt/puppetlabs/puppet/cache/lib/')
+      
+      # Test the version command directly first
+      on(backend, 'echo "=== DEBUGGING ==="')
+      on(backend, 'sensu-backend version || echo "BACKEND VERSION FAILED"')
+      
+      out = on(backend, "#{facter_command} sensu_backend_version").stdout
       data = JSON.parse(out)
-      expect(data['sensu_backend.version']).to match(/^[0-9\.]+/)
+      on(backend, "echo 'Fact result: #{data.inspect}'")
+      expect(data['sensu_backend_version']).to match(/^[0-9\.]+/)
     end
 
     it "should have sensuctl facts" do
-      out = on(backend, "#{facter_command} sensuctl.version").stdout
+      # Apply the backend manifest to ensure sensuctl is installed
+      pp = <<-EOS
+      class { '::sensu':
+        validate_api => false,
+        use_ssl => false,
+      }
+      include sensu::backend
+      EOS
+      
+      apply_manifest_on(backend, pp, :catch_failures => true)
+      
+      # Wait for sensuctl to be installed and available
+      on backend, 'timeout 60 bash -c "while ! which sensuctl; do sleep 2; done"'
+      
+      # Copy facter files to ensure they're available
+      fact_path = File.join(File.dirname(__FILE__), '../..', 'lib/facter')
+      scp_to(backend, fact_path, '/opt/puppetlabs/puppet/cache/lib/')
+      
+      # Debug version commands
+      puts "=== DEBUGGING SENSUCTL VERSION COMMANDS ==="
+      debug_output = on(backend, 'sensuctl version 2>&1 || echo "Command failed with exit code: $?"').stdout
+      puts "sensuctl version output: #{debug_output}"
+      
+      debug_output = on(backend, 'which sensuctl').stdout
+      puts "which sensuctl: #{debug_output}"
+      
+      out = on(backend, "#{facter_command} sensuctl_version").stdout
       data = JSON.parse(out)
-      expect(data['sensuctl.version']).to match(/^[0-9\.]+/)
+      puts "Fact result: #{data}"
+      expect(data['sensuctl_version']).to match(/^[0-9\.]+/)
     end
   end
 
   context 'agent facts' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { '::sensu':
+        validate_api => false,
+        use_ssl => false,
+      }
       include sensu::agent
       EOS
 
@@ -64,9 +122,27 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
     end
 
     it "should have agent facts" do
-      out = on(agent, "#{facter_command} sensu_agent.version").stdout
+      # Apply the agent manifest to ensure it's installed
+      pp = <<-EOS
+      class { '::sensu':
+        validate_api => false,
+        use_ssl => false,
+      }
+      include sensu::agent
+      EOS
+      
+      apply_manifest_on(agent, pp, :catch_failures => true)
+      
+      # Wait for agent package to be installed and available
+      on agent, 'timeout 60 bash -c "while ! which sensu-agent; do sleep 2; done"'
+      
+      # Copy facter files to ensure they're available
+      fact_path = File.join(File.dirname(__FILE__), '../..', 'lib/facter')
+      scp_to(agent, fact_path, '/opt/puppetlabs/puppet/cache/lib/')
+      
+      out = on(agent, "#{facter_command} sensu_agent_version").stdout
       data = JSON.parse(out)
-      expect(data['sensu_agent.version']).to match(/^[0-9\.]+/)
+      expect(data['sensu_agent_version']).to match(/^[0-9\.]+/)
     end
   end
 end

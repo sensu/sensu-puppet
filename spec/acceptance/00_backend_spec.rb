@@ -7,6 +7,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::backend':
         include_default_resources => false,
@@ -40,6 +41,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::backend':
         include_default_resources => true,
@@ -64,6 +66,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::backend':
         service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
@@ -94,13 +97,14 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   # This test verifies non-standard location is used by setting agent-port
   # and then checking that port gets used by the daemon
-  context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
+  context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && fact_on(node, 'service_provider') == 'systemd') do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
         etc_dir  => '/etc/sensugo',
         ssl_dir  => '/etc/sensugo/ssl',
         password => 'supersecret',
+        use_ssl  => false,
       }
       class { 'sensu::backend':
         config_hash => {
@@ -141,6 +145,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::backend': }
       class { 'sensu::agent':
@@ -176,6 +181,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::backend':
         agent_user_disabled => true,
@@ -201,6 +207,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       include sensu::backend
       EOS
@@ -230,6 +237,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       pp = <<-EOS
       class { '::sensu':
         password => 'P@ssw0rd!',
+        use_ssl => false,
       }
       class { 'sensu::backend':
         tessen_ensure => 'absent',

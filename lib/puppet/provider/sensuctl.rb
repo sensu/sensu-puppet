@@ -1,6 +1,7 @@
 require 'etc'
 require 'json'
 require 'tempfile'
+require 'yaml'
 
 class Puppet::Provider::Sensuctl < Puppet::Provider
   initvars
@@ -64,19 +65,20 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.convert_boolean_property_value(value)
   end
 
-  def self.sensuctl(args, opts = {})
+  def self.sensuctl(args, failonfail: nil, combine: nil, **_kwargs)
     sensuctl_cmd = which('sensuctl')
     if ! path.nil?
       cmd = [path] + args
     else
       cmd = [sensuctl_cmd] + args
     end
-    opts[:failonfail] = true unless opts.key?(:failonfail)
-    opts[:combine] = true unless opts.key?(:combine)
+    opts = {}
+    opts[:failonfail] = failonfail.nil? ? true : failonfail
+    opts[:combine] = combine.nil? ? true : combine
     execute(cmd, opts)
   end
-  def sensuctl(*args)
-    self.class.sensuctl(*args)
+  def sensuctl(cmd_args, **opts)
+    self.class.sensuctl(cmd_args, **opts)
   end
 
   def self.sensuctl_list(command, namespaces = true)
@@ -172,21 +174,28 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     # Dump YAML because 'sensuctl dump' does not yet support '--format json'
     # https://github.com/sensu/sensu-go/issues/3424
     begin
-      output = sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'], {:failonfail => false})
+      output = self.sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'], failonfail: false)
       Puppet.debug("YAML dump of #{resource_type}:\n#{output}")
     rescue Exception => e
       Puppet.notice("Failed to dump resources with sensuctl: #{e}")
       return []
     end
-    resources = []
-    dumps = output.split('---')
-    dumps.each do |d|
-      resources << YAML.load(d)
-    end
-    resources
+    parse_yaml_dump(output)
   end
   def dump(*args)
     self.class.dump(*args)
+  end
+
+  def self.parse_yaml_dump(output)
+    return [] if output.nil? || output.strip.empty?
+    docs = []
+    begin
+      YAML.load_stream(output) { |doc| docs << doc }
+    rescue StandardError
+      # Fallback to naive split if stream parsing fails
+      docs = output.split('---').map { |d| YAML.load(d) }
+    end
+    docs.compact
   end
 
   def self.namespaces()

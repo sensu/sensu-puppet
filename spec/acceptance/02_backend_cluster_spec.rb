@@ -9,6 +9,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       node1_pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       class { 'sensu::backend':
         config_hash => {
@@ -26,6 +27,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       node2_pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       class { 'sensu::backend':
         config_hash => {
@@ -95,6 +97,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       include sensu::api
       sensu_cluster_member { 'backend3':
@@ -104,6 +107,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       node3_pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       class { '::sensu::backend':
         config_hash => {
@@ -165,6 +169,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       node1_pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       class { '::sensu::backend':
         config_hash => {
@@ -182,6 +187,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       node2_pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       class { '::sensu::backend':
         config_hash => {
@@ -257,6 +263,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       include sensu::api
       sensu_cluster_member { 'backend3':
@@ -267,6 +274,7 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       node3_pp = <<-EOS
       class { 'sensu':
         api_host => $facts['networking']['hostname'],
+        use_ssl  => false,
       }
       class { 'sensu::backend':
         config_hash => {

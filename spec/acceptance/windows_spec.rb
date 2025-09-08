@@ -20,6 +20,7 @@ describe 'sensu::cli class', if: Gem.win_platform? do
     class { '::sensu':
       api_host     => 'localhost',
       validate_api => false,
+      use_ssl      => false,
     }
     class { 'sensu::cli':
       install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip',
@@ -68,6 +69,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     pp = <<-EOS
     class { '::sensu':
       validate_api => false,
+      use_ssl      => false,
     }
     class { 'sensu::agent':
       backends         => ['sensu-backend:8081'],
@@ -123,6 +125,7 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     pp = <<-EOS
     class { '::sensu':
       validate_api => false,
+      use_ssl      => false,
     }
     class { 'sensu::agent':
       package_name    => 'Sensu Agent',

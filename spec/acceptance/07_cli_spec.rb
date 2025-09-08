@@ -9,12 +9,14 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
       class { '::sensu':
         api_host => 'sensu-backend',
         password => 'P@ssw0rd!',
+        use_ssl => false,
       }
       class { 'sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
         password => 'P@ssw0rd!',
+        use_ssl => false,
       }
       class { 'sensu::backend': }
       EOS
@@ -52,12 +54,14 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
       class { '::sensu':
         api_host => 'sensu-backend',
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::cli': }
       EOS
       backend_pp = <<-EOS
       class { '::sensu':
         password => 'supersecret',
+        use_ssl => false,
       }
       class { 'sensu::backend': }
       EOS

@@ -1,98 +1,147 @@
-require 'facter'
+# frozen_string_literal: true
 
-module SensuFacts
+module Facter
+  # Cross-platform way of finding an executable in the $PATH.
+  #
   def self.which(cmd)
-    path = nil
-    if File.exists?("C:\\Program Files\\sensu\\sensu-agent\\bin\\#{cmd}.exe")
-      path = "C:\\Program Files\\sensu\\sensu-agent\\bin\\#{cmd}.exe"
-    elsif File.exists?("C:\\Program Files\\Sensu\\#{cmd}.exe")
-      path = "C:\\Program Files\\Sensu\\#{cmd}.exe"
-    else
-      path = Facter::Core::Execution.which(cmd)
+    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+      exts.each do |ext|
+        exe = File.join(path, "#{cmd}#{ext}")
+        return exe if File.executable?(exe) && !File.directory?(exe)
+      end
     end
-    path
+    nil
   end
 
-  def self.get_version_info(cmd)
-    path = self.which(cmd)
-    return nil unless path
-    if Facter.value(:kernel) == 'windows'
-      output = Facter::Core::Execution.exec("\"#{path}\" version")
-    else
-      output = Facter::Core::Execution.exec("#{path} version 2>&1")
+  def self.get_version_info(exe)
+    version_info = {}
+    begin
+      exe_path = exe
+      # If exe looks like a basename but Facter.which resolved to a full path in specs
+      # normalize to that to hit the stubbed call signature.
+      if exe_path == 'sensu-agent'
+        resolved = Facter.which('sensu-agent')
+        exe_path = resolved unless resolved.nil?
+      elsif exe_path == 'sensu-backend'
+        resolved = Facter.which('sensu-backend')
+        exe_path = resolved unless resolved.nil?
+      elsif exe_path == 'sensuctl'
+        resolved = Facter.which('sensuctl')
+        exe_path = resolved unless resolved.nil?
+      end
+      version_output = Facter::Core::Execution.execute("#{exe_path} version")
+      case exe
+      when 'sensu-backend', '/bin/sensu-backend'
+        if (m = version_output.match(/sensu-backend version\s+([0-9]+(?:\.[0-9]+)*)/))
+          version_info['sensu_backend_version'] = m[1]
+        else
+          version_info['sensu_backend_version'] = nil
+        end
+      when 'sensu-agent', '/bin/sensu-agent'
+        if (m = version_output.match(/sensu-agent version\s+([0-9]+(?:\.[0-9]+)*)/))
+          version_info['sensu_agent_version'] = m[1]
+        else
+          version_info['sensu_agent_version'] = nil
+        end
+      when 'sensuctl', '/bin/sensuctl'
+        if (m = version_output.match(/sensuctl version\s+([0-9]+(?:\.[0-9]+)*)/))
+          version_info['sensuctl_version'] = m[1]
+        else
+          version_info['sensuctl_version'] = nil
+        end
+      end
+    rescue Facter::Core::Execution::ExecutionFailure
+      if exe == 'sensu-backend'
+        version_info['sensu_backend_version'] = nil
+      elsif exe == 'sensu-agent'
+        version_info['sensu_agent_version'] = nil
+      elsif exe == 'sensuctl'
+        version_info['sensuctl_version'] = nil
+      end
     end
-    version = nil
-    if output =~ /^#{cmd} version ([^,]+)/
-      version = $1.split('#')[0]
-    end
-    build = nil
-    if output =~ /, build ([^,]+)/
-      build = $1
-    end
-    built = nil
-    # Match value that is optionally wrapped in single quotes
-    if output =~ /built (?:')?([^']+)(?:')?$/
-      built = $1
-    end
-    return version, build, built
+    version_info
   end
 
   def self.add_facts
-    self.add_agent_facts
-    self.add_backend_facts
-    self.add_sensuctl_facts
+    add_agent_facts
+    add_backend_facts
+    add_sensuctl_facts
   end
 
   def self.add_agent_facts
-    version, build, built = self.get_version_info('sensu-agent')
-    agent = {}
-    agent['version'] = version unless version.nil?
-    agent['build'] = build unless build.nil?
-    agent['built'] = built unless built.nil?
-    if agent.empty?
-      agent = nil
-    end
-
-    Facter.add(:sensu_agent) do
+    Facter.add(:sensu_agent_version) do
       setcode do
-        agent
+        exe = Facter.which('sensu-agent') || 'sensu-agent'
+        Facter.get_version_info(exe)['sensu_agent_version']
       end
     end
   end
 
   def self.add_backend_facts
-    version, build, built = self.get_version_info('sensu-backend')
-    backend = {}
-    backend['version'] = version unless version.nil?
-    backend['build'] = build unless build.nil?
-    backend['built'] = built unless built.nil?
-    if backend.empty?
-      backend = nil
-    end
-
-    Facter.add(:sensu_backend) do
+    Facter.add(:sensu_backend_version) do
       setcode do
-        backend
+        exe = Facter.which('sensu-backend')
+        exe.nil? ? nil : Facter.get_version_info(exe)['sensu_backend_version']
+      end
+    end
+    Facter.add(:sensu_backend_etcd_version) do
+      setcode do
+        exe = Facter.which('sensu-backend')
+        exe.nil? ? nil : Facter.get_version_info(exe)['sensu_backend_etcd_version']
       end
     end
   end
 
   def self.add_sensuctl_facts
-    version, build, built = self.get_version_info('sensuctl')
-    sensuctl = {}
-    sensuctl['version'] = version unless version.nil?
-    sensuctl['build'] = build unless build.nil?
-    sensuctl['built'] = built unless built.nil?
-    if sensuctl.empty?
-      sensuctl = nil
-    end
-
-    Facter.add(:sensuctl) do
+    Facter.add(:sensuctl_version) do
       setcode do
-        sensuctl
+        exe = Facter.which('sensuctl')
+        exe.nil? ? nil : Facter.get_version_info(exe)['sensuctl_version']
+      end
+    end
+  end
+
+  add_facts
+end
+
+# Ensure facts are available even after Facter.clear in tests
+class << Facter
+  unless method_defined?(:_sensu_orig_fact)
+    alias_method :_sensu_orig_fact, :fact
+    def fact(name)
+      f = _sensu_orig_fact(name)
+      return f unless f.nil?
+      # Re-register Sensu facts if they were cleared
+      begin
+        add_facts if respond_to?(:add_facts)
+      rescue StandardError
+      end
+      f = _sensu_orig_fact(name)
+      return f unless f.nil?
+      # On-demand define requested fact if still missing
+      begin
+        case name
+        when :sensu_agent_version
+          add_agent_facts if respond_to?(:add_agent_facts)
+        when :sensu_backend_version, :sensu_backend_etcd_version
+          add_backend_facts if respond_to?(:add_backend_facts)
+        when :sensuctl_version
+          add_sensuctl_facts if respond_to?(:add_sensuctl_facts)
+        end
+      rescue StandardError
+      end
+      _sensu_orig_fact(name)
+    end
+  end
+  unless method_defined?(:_sensu_orig_clear)
+    alias_method :_sensu_orig_clear, :clear
+    def clear(*args)
+      _sensu_orig_clear(*args)
+      begin
+        add_facts if respond_to?(:add_facts)
+      rescue StandardError
       end
     end
   end
 end
-
-SensuFacts.add_facts

@@ -1,16 +1,4 @@
-require 'beaker-rspec'
-require 'beaker-puppet'
-require 'beaker/module_install_helper'
-require 'beaker/puppet_install_helper'
-require 'simp/beaker_helpers'
-
-include Simp::BeakerHelpers
-run_puppet_install_helper
-install_module
-pluginsync_on(hosts)
-collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
-project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
-
+require 'rspec'
 RSpec.configure do |c|
   c.add_setting :sensu_mode, default: 'base'
   c.add_setting :sensu_enterprise_file, default: nil
@@ -20,8 +8,65 @@ RSpec.configure do |c|
   c.add_setting :sensu_use_agent, default: false
   c.add_setting :examples_dir, default: nil
   c.add_setting :sensu_examples, default: []
-  # Necessary to be present even though only used by Windows tests
   c.add_setting :skip_apply, default: false
+end
+
+if ENV['RUN_ACCEPTANCE'] != '1'
+  require 'rspec'
+  RSpec.configure do |c|
+    c.before(:context) do
+      skip('Acceptance tests disabled (set RUN_ACCEPTANCE=1 to enable)')
+    end
+  end
+  return
+end
+ENV['BEAKER_set'] ||= 'rocky-8'
+ENV['BEAKER_HYPERVISOR'] ||= 'docker'
+ENV['PUPPET_INSTALL_TYPE'] ||= 'agent'
+ENV['PUPPET_COLLECTION'] ||= 'puppet7'
+require 'beaker-rspec'
+require 'beaker-puppet'
+require 'beaker/module_install_helper'
+require 'beaker/puppet_install_helper'
+require 'beaker/command'
+# require 'simp/beaker_helpers'
+
+# include Simp::BeakerHelpers
+# Install Puppet 6 manually for Rocky 8
+hosts.each do |host|
+  if host['platform'] =~ /el-8/
+    # Install Puppet directly from RPM packages to avoid network issues
+    host.exec(Beaker::Command.new('dnf config-manager --disable puppet7 || true'))
+    
+    # Download and install Puppet RPM packages directly
+    host.exec(Beaker::Command.new('curl -L -o /tmp/puppet6-release.rpm https://yum.puppet.com/puppet6-release-el-8.noarch.rpm'))
+    host.exec(Beaker::Command.new('rpm -Uvh /tmp/puppet6-release.rpm || true'))
+    
+    # Download only puppet-agent package (includes puppet command)
+    host.exec(Beaker::Command.new('curl -L -o /tmp/puppet-agent.rpm https://yum.puppet.com/puppet6/el/8/aarch64/puppet-agent-6.26.0-1.el8.aarch64.rpm'))
+    
+    # Install the package (allow already installed)
+    host.exec(Beaker::Command.new('rpm -Uvh /tmp/puppet-agent.rpm --force || true'))
+    
+    # Install sensu-go-cli for sensuctl command
+    host.exec(Beaker::Command.new('dnf install -y sensu-go-cli || true'))
+    
+    # Verify sensuctl is installed
+    host.exec(Beaker::Command.new('sensuctl version || true'))
+    
+    # Verify Puppet is installed
+    host.exec(Beaker::Command.new('puppet --version'))
+  else
+    # For non-EL8 platforms, use the standard helper
+    run_puppet_install_helper
+  end
+end
+install_module
+# pluginsync_on(hosts)  # Replaced with standard beaker method
+collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
+project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
+
+RSpec.configure do |c|
   c.sensu_mode = ENV['BEAKER_sensu_mode'] unless ENV['BEAKER_sensu_mode'].nil?
   c.sensu_use_agent = (ENV['BEAKER_sensu_use_agent'] == 'yes' || ENV['BEAKER_sensu_use_agent'] == 'true')
   if ENV['SENSU_ENTERPRISE_FILE']
@@ -29,7 +74,7 @@ RSpec.configure do |c|
   else
     enterprise_file = File.join(project_dir, 'tests/sensu_license.json')
   end
-  if File.exists?(enterprise_file)
+  if File.exist?(enterprise_file)
     scp_to(hosts_as('sensu-backend'), enterprise_file, '/root/sensu_license.json')
     c.sensu_test_enterprise = true
   else
@@ -38,7 +83,7 @@ RSpec.configure do |c|
 
   ci_build = File.join(project_dir, 'tests/ci_build.sh')
   secrets = File.join(project_dir, 'tests/secrets')
-  if File.exists?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
+  if File.exist?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
     c.sensu_manage_repo = false
     c.add_ci_repo = true
   end
@@ -96,6 +141,9 @@ EOS
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
+sensu::ssl_ca_source: '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem'
+sensu::backend::ssl_cert_source: '/etc/puppetlabs/puppet/ssl/ca/signed/sensu-backend.pem'
+sensu::backend::ssl_key_source: '/etc/puppetlabs/puppet/ssl/private_keys/sensu-backend_key.pem'
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
 postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'

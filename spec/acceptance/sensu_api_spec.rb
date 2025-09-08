@@ -20,6 +20,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       class { '::sensu':
         api_host => 'sensu-backend',
+        use_ssl => false,
       }
       include ::sensu::api
       sensu_check { 'test-api':
@@ -77,6 +78,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       class { '::sensu':
         api_host => 'sensu-backend',
+        use_ssl => false,
       }
       include ::sensu::api
       sensu_check { 'test-api':
@@ -133,6 +135,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       class { '::sensu':
         api_host => 'sensu-backend',
+        use_ssl => false,
       }
       include ::sensu::api
       sensu_check { 'test-no-namespace':
@@ -165,6 +168,7 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
       pp = <<-EOS
       class { '::sensu':
         api_host => 'sensu-backend',
+        use_ssl => false,
       }
       include ::sensu::api
       sensu_check { 'test-api':
