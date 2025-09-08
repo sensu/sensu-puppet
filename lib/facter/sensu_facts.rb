@@ -30,7 +30,17 @@ module Facter
         resolved = Facter.which('sensuctl')
         exe_path = resolved unless resolved.nil?
       end
-      version_output = Facter::Core::Execution.execute("#{exe_path} version")
+      
+      # Check if executable exists and is executable
+      return version_info unless exe_path && File.executable?(exe_path)
+      
+      # Add timeout and better error handling
+      version_output = Facter::Core::Execution.execute("#{exe_path} version", timeout: 10)
+      
+      # Debug output for troubleshooting
+      if version_output.nil? || version_output.empty?
+        return version_info
+      end
       case exe
       when 'sensu-backend', '/bin/sensu-backend'
         if (m = version_output.match(/sensu-backend version\s+([0-9]+(?:\.[0-9]+)*)/))
@@ -73,7 +83,37 @@ module Facter
     Facter.add(:sensu_agent_version) do
       setcode do
         exe = Facter.which('sensu-agent') || 'sensu-agent'
-        Facter.get_version_info(exe)['sensu_agent_version']
+        # Retry up to 5 times with 2 second delay
+        retries = 0
+        begin
+          # Check if executable exists first
+          return '' unless exe && File.executable?(exe)
+          
+          result = Facter.get_version_info(exe)['sensu_agent_version']
+          if result && !result.empty?
+            result
+          else
+            # Try direct execution as fallback
+            begin
+              output = Facter::Core::Execution.execute("#{exe} version", timeout: 10)
+              if output && (m = output.match(/sensu-agent version\s+([0-9]+(?:\.[0-9]+)*)/))
+                m[1]
+              else
+                ''
+              end
+            rescue StandardError
+              ''
+            end
+          end
+        rescue StandardError
+          retries += 1
+          if retries < 5
+            sleep(2)
+            retry
+          else
+            ''
+          end
+        end
       end
     end
   end
@@ -82,13 +122,81 @@ module Facter
     Facter.add(:sensu_backend_version) do
       setcode do
         exe = Facter.which('sensu-backend')
-        exe.nil? ? nil : Facter.get_version_info(exe)['sensu_backend_version']
+        if exe.nil?
+          ''
+        else
+          # Retry up to 5 times with 2 second delay
+          retries = 0
+          begin
+            # Check if executable exists first
+            return '' unless File.executable?(exe)
+            
+            result = Facter.get_version_info(exe)['sensu_backend_version']
+            if result && !result.empty?
+              result
+            else
+              # Try direct execution as fallback
+              begin
+                output = Facter::Core::Execution.execute("#{exe} version", timeout: 10)
+                if output && (m = output.match(/sensu-backend version\s+([0-9]+(?:\.[0-9]+)*)/))
+                  m[1]
+                else
+                  ''
+                end
+              rescue StandardError
+                ''
+              end
+            end
+          rescue StandardError
+            retries += 1
+            if retries < 5
+              sleep(2)
+              retry
+            else
+              ''
+            end
+          end
+        end
       end
     end
     Facter.add(:sensu_backend_etcd_version) do
       setcode do
         exe = Facter.which('sensu-backend')
-        exe.nil? ? nil : Facter.get_version_info(exe)['sensu_backend_etcd_version']
+        if exe.nil?
+          ''
+        else
+          # Retry up to 5 times with 2 second delay
+          retries = 0
+          begin
+            # Check if executable exists first
+            return '' unless File.executable?(exe)
+            
+            result = Facter.get_version_info(exe)['sensu_backend_etcd_version']
+            if result && !result.empty?
+              result
+            else
+              # Try direct execution as fallback
+              begin
+                output = Facter::Core::Execution.execute("#{exe} version", timeout: 10)
+                if output && (m = output.match(/etcd version\s+([0-9]+(?:\.[0-9]+)*)/))
+                  m[1]
+                else
+                  ''
+                end
+              rescue StandardError
+                ''
+              end
+            end
+          rescue StandardError
+            retries += 1
+            if retries < 5
+              sleep(2)
+              retry
+            else
+              ''
+            end
+          end
+        end
       end
     end
   end
@@ -97,7 +205,41 @@ module Facter
     Facter.add(:sensuctl_version) do
       setcode do
         exe = Facter.which('sensuctl')
-        exe.nil? ? nil : Facter.get_version_info(exe)['sensuctl_version']
+        if exe.nil?
+          ''
+        else
+          # Retry up to 5 times with 2 second delay
+          retries = 0
+          begin
+            # Check if executable exists first
+            return '' unless File.executable?(exe)
+            
+            result = Facter.get_version_info(exe)['sensuctl_version']
+            if result && !result.empty?
+              result
+            else
+              # Try direct execution as fallback
+              begin
+                output = Facter::Core::Execution.execute("#{exe} version", timeout: 10)
+                if output && (m = output.match(/sensuctl version\s+([0-9]+(?:\.[0-9]+)*)/))
+                  m[1]
+                else
+                  ''
+                end
+              rescue StandardError
+                ''
+              end
+            end
+          rescue StandardError
+            retries += 1
+            if retries < 5
+              sleep(2)
+              retry
+            else
+              ''
+            end
+          end
+        end
       end
     end
   end

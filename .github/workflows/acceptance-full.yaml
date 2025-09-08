@@ -22,6 +22,7 @@ jobs:
         puppet:
         - puppet6
         - puppet7
+        - puppet8
         use_agent:
         - no
         ci_build:
@@ -37,6 +38,10 @@ jobs:
           ci_build: no
         - sensu_mode: bolt
           puppet: puppet6
+        - sensu_mode: types
+          puppet: puppet8
+          use_agent: yes
+          ci_build: no
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
@@ -45,7 +50,7 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2.2'
+        ruby-version: '3.1.4'
         bundler-cache: true
         bundler: '2.4.10'
     - name: Decrypt secrets
@@ -56,6 +61,7 @@ jobs:
     - name: Run tests
       run: bundle exec rake acceptance
       env:
+        RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
         BEAKER_set: centos-7
         BEAKER_sensu_mode: ${{ matrix.sensu_mode }}

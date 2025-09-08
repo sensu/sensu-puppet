@@ -20,13 +20,17 @@ jobs:
         - ubuntu-1804
         - ubuntu-2004
         - amazonlinux-201803
+        - centos-7
         puppet:
         - puppet6
         - puppet7
+        - puppet8
         ci_build:
         - no
         exclude:
         - puppet: puppet7
+          ci_build: yes
+        - puppet: puppet8
           ci_build: yes
     env:
       BEAKER_debug: true
@@ -36,7 +40,7 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2.2'
+        ruby-version: '3.1.4'
         bundler-cache: true
         bundler: '2.4.10'
     - name: Decrypt secrets
@@ -47,6 +51,7 @@ jobs:
     - name: Run tests
       run: bundle exec rake acceptance
       env:
+        RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
         BEAKER_set: ${{ matrix.set }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}

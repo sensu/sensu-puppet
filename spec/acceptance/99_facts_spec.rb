@@ -50,6 +50,9 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       # Wait for backend package to be installed and available
       on backend, 'timeout 60 bash -c "while ! which sensu-backend; do sleep 2; done"'
       
+      # Wait for backend service to be running
+      on backend, 'timeout 60 bash -c "while ! systemctl is-active --quiet sensu-backend; do sleep 2; done"'
+      
       # Copy facter files to ensure they're available
       fact_path = File.join(File.dirname(__FILE__), '../..', 'lib/facter')
       scp_to(backend, fact_path, '/opt/puppetlabs/puppet/cache/lib/')
@@ -57,6 +60,9 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       # Test the version command directly first
       on(backend, 'echo "=== DEBUGGING ==="')
       on(backend, 'sensu-backend version || echo "BACKEND VERSION FAILED"')
+      
+      # Wait a bit more for facter to be ready
+      sleep(5)
       
       out = on(backend, "#{facter_command} sensu_backend_version").stdout
       data = JSON.parse(out)
@@ -79,6 +85,9 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       # Wait for sensuctl to be installed and available
       on backend, 'timeout 60 bash -c "while ! which sensuctl; do sleep 2; done"'
       
+      # Wait for backend service to be running
+      on backend, 'timeout 60 bash -c "while ! systemctl is-active --quiet sensu-backend; do sleep 2; done"'
+      
       # Copy facter files to ensure they're available
       fact_path = File.join(File.dirname(__FILE__), '../..', 'lib/facter')
       scp_to(backend, fact_path, '/opt/puppetlabs/puppet/cache/lib/')
@@ -90,6 +99,9 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       
       debug_output = on(backend, 'which sensuctl').stdout
       puts "which sensuctl: #{debug_output}"
+      
+      # Wait a bit more for facter to be ready
+      sleep(5)
       
       out = on(backend, "#{facter_command} sensuctl_version").stdout
       data = JSON.parse(out)
@@ -136,9 +148,15 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       # Wait for agent package to be installed and available
       on agent, 'timeout 60 bash -c "while ! which sensu-agent; do sleep 2; done"'
       
+      # Wait for agent service to be running
+      on agent, 'timeout 60 bash -c "while ! systemctl is-active --quiet sensu-agent; do sleep 2; done"'
+      
       # Copy facter files to ensure they're available
       fact_path = File.join(File.dirname(__FILE__), '../..', 'lib/facter')
       scp_to(agent, fact_path, '/opt/puppetlabs/puppet/cache/lib/')
+      
+      # Wait a bit more for facter to be ready
+      sleep(5)
       
       out = on(agent, "#{facter_command} sensu_agent_version").stdout
       data = JSON.parse(out)

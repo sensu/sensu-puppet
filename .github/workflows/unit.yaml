@@ -16,12 +16,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 3.2.2
+        - ruby: 3.1.4
           puppet: 6
           fixtures: .fixtures.yml
           allow_failure: false
-        - ruby: 3.2.2
+        - ruby: 3.1.4
           puppet: 7
+          fixtures: .fixtures.yml
+          allow_failure: false
+        - ruby: 3.1.4
+          puppet: 8
           fixtures: .fixtures.yml
           allow_failure: false
         - ruby: 2.5.7

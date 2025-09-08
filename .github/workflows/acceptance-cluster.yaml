@@ -17,6 +17,7 @@ jobs:
         puppet:
         - puppet6
         - puppet7
+        - puppet8
         use_agent:
         - no
         - yes
@@ -30,7 +31,7 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2.2'
+        ruby-version: '3.1.4'
         bundler-cache: true
         bundler: '2.4.10'
     - name: Decrypt secrets
@@ -41,8 +42,9 @@ jobs:
     - name: Run tests
       run: bundle exec rake acceptance
       env:
+        RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: centos-7-cluster
+        BEAKER_set: rocky-8-cluster
         BEAKER_sensu_mode: cluster
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}
