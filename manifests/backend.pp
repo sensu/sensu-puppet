@@ -357,8 +357,6 @@ class sensu::backend (
     }
   }
 
-  
-
   if $facts['service_provider'] == 'systemd' {
     systemd::dropin_file { 'sensu-backend-start.conf':
       unit    => 'sensu-backend.service',
@@ -382,7 +380,7 @@ class sensu::backend (
   # Following the official Sensu documentation sequence
   exec { 'sensu-backend init':
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-    command     => "sensu-backend init",
+    command     => 'sensu-backend init',
     environment => [
       'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
       "SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=${sensu::password}",

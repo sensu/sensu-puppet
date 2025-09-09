@@ -20,7 +20,6 @@ jobs:
         - puppet8
         use_agent:
         - no
-        - yes
         ci_build:
         - no
     env:

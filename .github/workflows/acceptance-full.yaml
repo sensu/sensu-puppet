@@ -27,21 +27,27 @@ jobs:
         - no
         ci_build:
         - no
+        set:
+        - rocky-8
         include:
         - sensu_mode: types
           puppet: puppet6
           use_agent: yes
           ci_build: no
+          set: rocky-8
         - sensu_mode: types
           puppet: puppet7
           use_agent: yes
           ci_build: no
+          set: rocky-8
         - sensu_mode: bolt
           puppet: puppet6
+          set: rocky-8
         - sensu_mode: types
           puppet: puppet8
           use_agent: yes
           ci_build: no
+          set: rocky-8
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
@@ -63,7 +69,7 @@ jobs:
       env:
         RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: centos-7
+        BEAKER_set: ${{ matrix.set }}
         BEAKER_sensu_mode: ${{ matrix.sensu_mode }}
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}

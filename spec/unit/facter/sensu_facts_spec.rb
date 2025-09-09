@@ -9,7 +9,7 @@ describe 'sensu_facts' do
     it 'returns version information' do
       allow(Facter).to receive(:which).with('sensu-agent').and_return('/bin/sensu-agent')
       sensu_agent_version_output = "sensu-agent version 6.2.0, enterprise edition, build 12345, built 2023-10-26"
-      allow(Facter::Core::Execution).to receive(:execute).with('/bin/sensu-agent version').and_return(sensu_agent_version_output)
+      allow(Facter::Core::Execution).to receive(:execute).with('/bin/sensu-agent version', timeout: 10).and_return(sensu_agent_version_output)
       expect(Facter.fact(:sensu_agent_version).value).to eq('6.2.0')
     end
   end

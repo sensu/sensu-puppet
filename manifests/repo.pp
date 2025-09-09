@@ -13,31 +13,31 @@ class sensu::repo {
     } else {
       $repo_release = $facts['os']['release']['major']
     }
-    
+
     # For Rocky Linux 8 and similar EL8 distributions, use the official installation script
     if String($repo_release) == '8' {
       # Ensure curl is installed
       package { 'curl':
         ensure => 'installed',
       }
-      
+
       exec { 'install sensu repository':
-        path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-        command     => 'curl -s https://packagecloud.io/install/repositories/sensu/stable/script.rpm.sh | bash',
-        unless      => 'dnf repolist | grep -q sensu',
-        require     => Package['curl'],
+        path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+        command => 'curl -s https://packagecloud.io/install/repositories/sensu/stable/script.rpm.sh | bash',
+        unless  => 'dnf repolist | grep -q sensu',
+        require => Package['curl'],
       }
-      
-                # Configure the repository to disable GPG checking for packages
-          # Use exec to replace all gpgcheck=1 with gpgcheck=0
-          exec { 'disable sensu gpg check':
-            path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-            command     => 'sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/yum.repos.d/sensu_stable.repo',
-            unless      => 'grep -q "gpgcheck=0" /etc/yum.repos.d/sensu_stable.repo',
-            require     => Exec['install sensu repository'],
-            notify      => Exec['refresh sensu repository cache'],
-          }
-      
+
+      # Configure the repository to disable GPG checking for packages
+      # Use exec to replace all gpgcheck=1 with gpgcheck=0
+      exec { 'disable sensu gpg check':
+        path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+        command => 'sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/yum.repos.d/sensu_stable.repo',
+        unless  => 'grep -q "gpgcheck=0" /etc/yum.repos.d/sensu_stable.repo',
+        require => Exec['install sensu repository'],
+        notify  => Exec['refresh sensu repository cache'],
+      }
+
       # Refresh repository cache after disabling GPG check
       exec { 'refresh sensu repository cache':
         path        => '/usr/bin:/bin:/usr/sbin:/sbin',
