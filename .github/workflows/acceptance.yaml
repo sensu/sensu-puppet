@@ -54,4 +54,6 @@ jobs:
         RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
         BEAKER_set: ${{ matrix.set }}
+        BEAKER_sensu_mode: base
+        BEAKER_sensu_use_agent: no
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}
