@@ -13,6 +13,7 @@ HOSTS:
       - 'apt-get update'
       - 'apt-get install -y -q net-tools wget curl locales iproute2 apt-transport-https ca-certificates lsb-release systemd'
       - 'locale-gen en_US.UTF-8'
+      - 'apt-get install -y iputils-ping'
     docker_container_name: 'sensu-agent-ubuntu2404'
   sensu-backend:
     roles:
@@ -30,6 +31,7 @@ HOSTS:
       - 'apt-get update'
       - 'apt-get install -y -q net-tools wget curl locales iproute2 apt-transport-https ca-certificates lsb-release systemd'
       - 'locale-gen en_US.UTF-8'
+      - 'apt-get install -y puppet iputils-ping'
     docker_container_name: 'sensu-backend-ubuntu2404'
 CONFIG:
   type: foss

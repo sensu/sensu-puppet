@@ -1,3 +1,6 @@
+# Load URI.escape compatibility patch for Ruby 3.1.4
+require_relative 'lib/uri_escape_patch'
+
 require 'json'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'

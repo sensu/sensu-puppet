@@ -2,6 +2,9 @@ require 'fileutils'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
 
+# Load URI.escape compatibility patch for Ruby 3.1.4
+require_relative '../lib/uri_escape_patch'
+
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 case ENV['COVERAGE']
