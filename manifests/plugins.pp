@@ -44,7 +44,6 @@ class sensu::plugins (
   Variant[Array, Hash] $plugins = [],
   Variant[Array, Hash] $extensions = [],
 ) {
-
   if $facts['os']['family'] == 'windows' {
     fail('sensu::plugins is not supported on Windows')
   }
@@ -71,7 +70,7 @@ class sensu::plugins (
   $dependencies.each |$package| {
     Package[$package] -> Sensu_plugin <| |> # lint:ignore:spaceship_operator_without_tag
   }
-  ensure_packages($gem_dependencies, {'provider' => 'sensu_gem', 'require' => [Package[$dependencies],Package['sensu-plugins-ruby']]})
+  ensure_packages($gem_dependencies, { 'provider' => 'sensu_gem', 'require' => [Package[$dependencies],Package['sensu-plugins-ruby']] })
 
   if $plugins =~ Array {
     $plugins.each |$plugin| {
@@ -103,5 +102,4 @@ class sensu::plugins (
       }
     }
   }
-
 }
