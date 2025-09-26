@@ -103,7 +103,6 @@ class sensu::agent (
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
   Boolean $validate_entity = true,
 ) {
-
   include sensu
   include sensu::common
   include sensu::api
@@ -208,8 +207,8 @@ class sensu::agent (
         before => Package['sensu-go-agent'],
       }
     } elsif $package_source {
-        $package_provider = undef
-        $_package_source = $package_source
+      $package_provider = undef
+      $_package_source = $package_source
     } else {
       include chocolatey
       $package_provider = 'chocolatey'
