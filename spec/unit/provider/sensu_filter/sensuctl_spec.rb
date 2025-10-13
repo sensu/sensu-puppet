@@ -4,11 +4,13 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_filter) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :action => 'allow',
       :expressions => ["event.entity.labels.environment == 'production'"],
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

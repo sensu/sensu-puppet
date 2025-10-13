@@ -4,11 +4,13 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_role_binding) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :role_ref => {'type' => 'Role', 'name' => 'test-role'},
       :subjects => [{'type' => 'User', 'name' => 'test-user'}],
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

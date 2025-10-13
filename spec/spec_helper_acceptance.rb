@@ -32,38 +32,45 @@ require 'beaker/command'
 # require 'simp/beaker_helpers'
 
 # include Simp::BeakerHelpers
-# Install Puppet 6 manually for Rocky 8
+# Install Puppet using standard helper for all platforms
 hosts.each do |host|
   if host['platform'] =~ /el-8/
-    # Install Puppet directly from RPM packages to avoid network issues
-    host.exec(Beaker::Command.new('dnf config-manager --disable puppet7 || true'))
-    
-    # Download and install Puppet RPM packages directly
-    host.exec(Beaker::Command.new('curl -L -o /tmp/puppet6-release.rpm https://yum.puppet.com/puppet6-release-el-8.noarch.rpm'))
-    host.exec(Beaker::Command.new('rpm -Uvh /tmp/puppet6-release.rpm || true'))
-    
-    # Download only puppet-agent package (includes puppet command)
-    host.exec(Beaker::Command.new('curl -L -o /tmp/puppet-agent.rpm https://yum.puppet.com/puppet6/el/8/aarch64/puppet-agent-6.26.0-1.el8.aarch64.rpm'))
-    
-    # Install the package (allow already installed)
-    host.exec(Beaker::Command.new('rpm -Uvh /tmp/puppet-agent.rpm --force || true'))
-    
     # Install sensu-go-cli for sensuctl command
     host.exec(Beaker::Command.new('dnf install -y sensu-go-cli || true'))
     
     # Verify sensuctl is installed
     host.exec(Beaker::Command.new('sensuctl version || true'))
-    
-    # Verify Puppet is installed
-    host.exec(Beaker::Command.new('puppet --version'))
-  else
-    # For non-EL8 platforms, use the standard helper
-    run_puppet_install_helper
   end
 end
-install_module
+
+# Use standard Puppet installation helper with retry logic for dpkg locks
+# Install Puppet on hosts sequentially to avoid dpkg lock conflicts
+hosts.each do |host|
+  max_retries = 3
+  retry_count = 0
+  begin
+    run_puppet_install_helper_on(host)
+  rescue Beaker::Host::CommandFailure => e
+    if e.message.include?('dpkg frontend lock') && retry_count < max_retries
+      retry_count += 1
+      logger.warn("dpkg lock detected on #{host}, waiting 5 seconds before retry #{retry_count}/#{max_retries}")
+      sleep 5
+      retry
+    else
+      raise
+    end
+  end
+end
+
+# Verify Puppet is installed on all hosts
+hosts.each do |host|
+  host.exec(Beaker::Command.new('puppet --version'))
+end
+
+# Install the module on all hosts
+install_module_on(hosts)
 # pluginsync_on(hosts)  # Replaced with standard beaker method
-collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
+collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet7'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 
 RSpec.configure do |c|

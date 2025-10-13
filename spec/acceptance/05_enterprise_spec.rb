@@ -57,8 +57,8 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
     it 'should have valid license file content' do
       result = on(node, 'cat /etc/sensu/license.json')
-      expect(result.stdout).to include('puppet')
-      expect(result.stdout).to include('License')
+      expect(result.stdout).to include('LicenseFile')
+      expect(result.stdout).to include('Sensu')
     end
   end
   context 'updates license file' do
@@ -106,8 +106,8 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
     it 'should have valid license file content' do
       result = on(node, 'cat /etc/sensu/license.json')
-      expect(result.stdout).to include('puppet')
-      expect(result.stdout).to include('License')
+      expect(result.stdout).to include('LicenseFile')
+      expect(result.stdout).to include('Sensu')
     end
   end
   context 're-adds license file' do
@@ -162,8 +162,8 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
     it 'should have valid license file content' do
       result = on(node, 'cat /etc/sensu/license.json')
-      expect(result.stdout).to include('puppet')
-      expect(result.stdout).to include('License')
+      expect(result.stdout).to include('LicenseFile')
+      expect(result.stdout).to include('Sensu')
     end
   end
 end

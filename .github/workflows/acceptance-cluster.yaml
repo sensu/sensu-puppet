@@ -15,16 +15,18 @@ jobs:
       fail-fast: false
       matrix:
         puppet:
-        - puppet6
         - puppet7
         - puppet8
         use_agent:
         - no
         ci_build:
         - no
+        set:
+        - rocky-8-cluster
+        - ubuntu-2404-cluster
     env:
       BEAKER_debug: true
-    name: Sensu Go Cluster ${{ matrix.puppet }} (use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
+    name: Sensu Go Cluster ${{ matrix.set }} ${{ matrix.puppet }} (use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
     steps:
     - uses: actions/checkout@v2
     - name: Setup ruby
@@ -43,7 +45,7 @@ jobs:
       env:
         RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: rocky-8-cluster
+        BEAKER_set: ${{ matrix.set }}
         BEAKER_sensu_mode: cluster
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}

@@ -4,14 +4,16 @@ describe Puppet::Type.type(:sensu_etcd_replicator).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_etcd_replicator) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :ca_cert => '/path/to/ssl/trusted-certificate-authorities.pem',
       :cert => '/path/to/ssl/cert.pem',
       :key => '/path/to/ssl/key.pem',
       :url => 'http://127.0.0.1:2379',
       :resource_name => 'Role',
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

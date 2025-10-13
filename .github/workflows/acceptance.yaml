@@ -15,14 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         set:
-        - rocky-8
-        - debian-10
-        - ubuntu-1804
-        - ubuntu-2004
-        - amazonlinux-201803
-        - centos-7
+        - rocky-9-modern
+        - debian-12-modern
+        - ubuntu-24.04-modern
+        - ubuntu-22.04-modern
+        - almalinux-9-modern
         puppet:
-        - puppet6
         - puppet7
         - puppet8
         ci_build:

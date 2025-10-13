@@ -4,7 +4,10 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_bonsai_asset) }
   let(:config) do
-    { :name => 'sensu/sensu-pagerduty-handler' }
+    { 
+      :name => 'sensu/sensu-pagerduty-handler',
+      :provider => :sensuctl
+    }
   end
   let(:resource) do
     type.new(config)

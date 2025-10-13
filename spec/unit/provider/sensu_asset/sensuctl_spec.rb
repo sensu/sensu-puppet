@@ -4,13 +4,15 @@ describe Puppet::Type.type(:sensu_asset).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_asset) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :builds => [{
         "url" => 'http://127.0.0.1',
         "sha512" => '4f926bf4328fbad2b9cac873d117f771914f4b837c9c85584c38ccf55a3ef3c2e8d154812246e5dda4a87450576b2c58ad9ab40c9e2edc31b288d066b195b21b'
-      }]
-    })
+      }],
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

@@ -20,7 +20,6 @@ jobs:
         - types
         - examples
         puppet:
-        - puppet6
         - puppet7
         - puppet8
         use_agent:
@@ -29,19 +28,15 @@ jobs:
         - no
         set:
         - rocky-8
+        - ubuntu-2404-modern
         include:
-        - sensu_mode: types
-          puppet: puppet6
-          use_agent: yes
-          ci_build: no
-          set: rocky-8
         - sensu_mode: types
           puppet: puppet7
           use_agent: yes
           ci_build: no
           set: rocky-8
         - sensu_mode: bolt
-          puppet: puppet6
+          puppet: puppet7
           set: rocky-8
         - sensu_mode: types
           puppet: puppet8

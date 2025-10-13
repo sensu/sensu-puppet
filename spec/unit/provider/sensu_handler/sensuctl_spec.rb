@@ -7,11 +7,13 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_handler) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :command => 'test',
-      :type => 'pipe'
-    })
+      :type => 'pipe',
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

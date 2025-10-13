@@ -1,4 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'sensu_api'))
+require 'cgi'
 
 Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Provider::SensuAPI) do
   desc "Provider sensu_bonsai_asset using sensu API"
@@ -67,7 +68,8 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensu_api, :parent => Puppet::Pr
     name = "#{resource[:bonsai_namespace]}/#{resource[:bonsai_name]}"
     if exists
       method = 'put'
-      url = "assets/#{URI.escape(name, '/')}"
+      # Use modern URI encoding instead of deprecated URI.escape
+      url = "assets/#{CGI.escape(name).gsub('+', '%20')}"
     else
       method = 'post'
       url = "assets"

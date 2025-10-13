@@ -1,0 +1,43 @@
+HOSTS:
+  sensu-agent:
+    roles:
+      - agent
+      - sensu-agent
+    platform: el-9-x86_64
+    hypervisor: docker
+    image: rockylinux:9
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'dnf install -y dnf-utils'
+      - 'dnf config-manager --set-enabled crb'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+      - 'dnf install -y --allowerasing iputils curl systemd'
+    docker_container_name: 'sensu-agent-rocky9'
+  sensu-backend:
+    roles:
+      - agent
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: el-9-x86_64
+    hypervisor: docker
+    image: rockylinux:9
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'dnf install -y dnf-utils'
+      - 'dnf config-manager --set-enabled crb'
+      - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+      - 'dnf install -y --allowerasing iputils curl systemd'
+    docker_container_name: 'sensu-backend-rocky9'
+CONFIG:
+  type: foss
+  log_level: debug
+  puppet_collection: puppet7
+ssh:
+  password: root
+  auth_methods: ['password']
+  port: 22

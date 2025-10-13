@@ -14,7 +14,6 @@ end
 group :development, :unit_tests do
   gem 'rake'
   gem 'net-ftp', require: false
-  gem 'concurrent-ruby', '~> 1.1.0'  # Fix compatibility with Puppet 6.28.0
   gem 'rspec-puppet',                                              :require => false
   gem 'rspec-puppet-facts',                                        :require => false
   gem 'rspec-mocks',                                               :require => false
@@ -47,9 +46,6 @@ group :development, :unit_tests do
   gem 'rubocop', '~> 0.49.0',                                      :require => false
   gem 'rubocop-i18n', '~> 1.2.0',                                  :require => false
   gem 'rubocop-rspec', '~> 1.16.0',                                :require => false
-  if Gem.win_platform? && ENV['PUPPET_GEM_VERSION'] =~ /6.x/
-    gem 'ffi', '~>1.11.0', :require => false
-  end
 end
 
 group :documentation do

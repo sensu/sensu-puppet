@@ -7,11 +7,13 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_user) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :password => 'P@ssw0rd!',
       :groups => ['test'],
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

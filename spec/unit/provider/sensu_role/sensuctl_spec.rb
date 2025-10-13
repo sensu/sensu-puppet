@@ -7,10 +7,12 @@ describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_role) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
-      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}]
-    })
+      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

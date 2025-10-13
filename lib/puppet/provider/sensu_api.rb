@@ -93,11 +93,11 @@ class Puppet::Provider::SensuAPI < Puppet::Provider
       token = @access_token
     end
     if path =~ %r{^/}
-      uri = URI(URI.join(url, path))
+      uri = url ? URI.join(url, path) : URI("http://localhost#{path}")
     elsif namespace
-      uri = URI(URI.join(url, "/api/#{api_group}/#{api_version}/namespaces/#{namespace}/#{path}"))
+      uri = url ? URI.join(url, "/api/#{api_group}/#{api_version}/namespaces/#{namespace}/#{path}") : URI("http://localhost/api/#{api_group}/#{api_version}/namespaces/#{namespace}/#{path}")
     else
-      uri = URI(URI.join(url, "/api/#{api_group}/#{api_version}/#{path}"))
+      uri = url ? URI.join(url, "/api/#{api_group}/#{api_version}/#{path}") : URI("http://localhost/api/#{api_group}/#{api_version}/#{path}")
     end
     if method == 'get' && !data.nil?
       uri.query = URI.encode_www_form(data)

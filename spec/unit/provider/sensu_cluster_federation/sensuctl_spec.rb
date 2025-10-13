@@ -4,10 +4,12 @@ describe Puppet::Type.type(:sensu_cluster_federation).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_cluster_federation) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :api_urls => ['http://10.0.0.1:8080','http://10.0.0.2:8080'],
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

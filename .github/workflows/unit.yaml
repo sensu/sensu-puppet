@@ -17,10 +17,6 @@ jobs:
       matrix:
         include:
         - ruby: 3.1.4
-          puppet: 6
-          fixtures: .fixtures.yml
-          allow_failure: false
-        - ruby: 3.1.4
           puppet: 7
           fixtures: .fixtures.yml
           allow_failure: false

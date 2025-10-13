@@ -1,7 +1,5 @@
-# Load URI.escape compatibility patch for Ruby 3.1.4
-require_relative 'lib/uri_escape_patch'
-
 require 'json'
+require 'bundler'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-blacksmith').any?
