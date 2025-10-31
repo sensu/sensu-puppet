@@ -62,17 +62,18 @@ RSpec.configure do |config|
     config.pattern = '{spec,./spec}/{unit,classes,defines,functions,hosts,tasks,type_aliases,shared_examples}/**/*_spec.rb'
   end
   
-  config.before(:suite) do
-    # This hook runs once before all tests to ensure a clean slate.
-    # It removes the entire modules directory from the fixtures to prevent
-    # stale symlinks from causing "File exists" errors.
-    spec_dir = File.dirname(__FILE__)
-    modules_dir = File.join(spec_dir, 'fixtures', 'modules')
-
-    # Aggressively remove and recreate the directory.
-    FileUtils.rm_rf(modules_dir) if File.directory?(modules_dir)
-    FileUtils.mkdir_p(modules_dir)
-  end
+  # Disabled: This was removing fixtures installed by spec_prep
+  # config.before(:suite) do
+  #   # This hook runs once before all tests to ensure a clean slate.
+  #   # It removes the entire modules directory from the fixtures to prevent
+  #   # stale symlinks from causing "File exists" errors.
+  #   spec_dir = File.dirname(__FILE__)
+  #   modules_dir = File.join(spec_dir, 'fixtures', 'modules')
+  #
+  #   # Aggressively remove and recreate the directory.
+  #   FileUtils.rm_rf(modules_dir) if File.directory?(modules_dir)
+  #   FileUtils.mkdir_p(modules_dir)
+  # end
 
   config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'

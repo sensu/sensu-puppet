@@ -280,8 +280,8 @@ class sensu::agent (
     }
   }
 
-  # Always create systemd service file for modern Linux systems
-  if true {
+  # Only create systemd service files when systemd is the service provider
+  if $facts['service_provider'] == 'systemd' {
     # Create the base systemd service file
     file { '/etc/systemd/system/sensu-agent.service':
       ensure  => 'file',

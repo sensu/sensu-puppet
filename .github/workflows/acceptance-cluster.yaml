@@ -32,7 +32,7 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.1.4'
+        ruby-version: ${{ matrix.puppet == 'puppet8' && '3.2.5' || '3.1.4' }}
         bundler-cache: true
         bundler: '2.4.10'
     - name: Decrypt secrets

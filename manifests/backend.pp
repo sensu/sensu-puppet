@@ -378,6 +378,12 @@ class sensu::backend (
 
   # Initialize backend after service starts - this enables etcd on port 2379
   # Following the official Sensu documentation sequence
+  if $sensu::validate_api {
+    $init_require = Service['sensu-backend']
+  } else {
+    $init_require = undef
+  }
+  
   exec { 'sensu-backend init':
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
     command     => 'sensu-backend init',
@@ -390,7 +396,7 @@ class sensu::backend (
     # If exit code is 3, do not need to run sensu-backend init again
     # If exit is not 3, run sensu-backend init
     unless      => "sensu-backend init ; [ \$? -eq 3 ] && exit 0 || exit 1",
-    require     => Service['sensu-backend'],
+    require     => $init_require,
     # Don't require API validator since init enables the API
     before      => [
       Sensu_user['admin'],

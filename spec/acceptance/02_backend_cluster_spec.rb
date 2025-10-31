@@ -1,9 +1,10 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == 'cluster' do
-  node1 = hosts_with_name(hosts, 'sensu-backend-1')[0]
-  node2 = hosts_with_name(hosts, 'sensu-backend-2')[0]
-  node3 = hosts_with_name(hosts, 'sensu-backend-3')[0]
+  # Support both naming conventions: sensu-backend1 and sensu-backend-1
+  node1 = hosts_with_name(hosts, 'sensu-backend1')[0] || hosts_with_name(hosts, 'sensu-backend-1')[0]
+  node2 = hosts_with_name(hosts, 'sensu-backend2')[0] || hosts_with_name(hosts, 'sensu-backend-2')[0]
+  node3 = hosts_with_name(hosts, 'sensu-backend3')[0] || hosts_with_name(hosts, 'sensu-backend-3')[0]
   context 'new cluster' do
     it 'should work without errors' do
       node1_pp = <<-EOS
@@ -77,15 +78,15 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       it { should be_running }
     end
     it 'should have cluster members' do
-      on node1, 'sensuctl cluster member-list --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster member-list --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['members'].size).to eq(2)
       end
     end
 
     it 'should be healthy' do
-      on node1, 'sensuctl cluster health --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster health --format json' do |result|
+        data = JSON.parse(result.stdout)
         healthy = data.select { |m| m['Healthy'] == true }
         expect(healthy.size).to eq(2)
       end
@@ -148,16 +149,16 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
     end
 
     it 'should have new cluster member' do
-      on node1, 'sensuctl cluster member-list --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster member-list --format json' do |result|
+        data = JSON.parse(result.stdout)
         member = data['members'].select { |m| m['name'] == 'backend3' }[0]
         expect(member['peerURLs']).to eq(["http://#{fact_on(node3, 'ipaddress')}:2380"])
       end
     end
 
     it 'should be healthy' do
-      on node1, 'sensuctl cluster health --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster health --format json' do |result|
+        data = JSON.parse(result.stdout)
         healthy = data.select { |m| m['Healthy'] == true }
         expect(healthy.size).to eq(3)
       end
@@ -204,10 +205,11 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       EOS
 
       # cleanup previous tests
-      on hosts, 'systemctl stop sensu-backend'
-      on hosts, 'rm -rf /var/lib/sensu/sensu-backend/etcd/*'
-      on hosts, 'rm -rf /root/.config'
-      on hosts, 'puppet resource package sensu-go-backend ensure=absent'
+      backend_nodes = [node1, node2, node3]
+      on backend_nodes, 'systemctl stop sensu-backend', :acceptable_exit_codes => [0,5]
+      on backend_nodes, 'rm -rf /var/lib/sensu/sensu-backend/etcd/*'
+      on backend_nodes, 'rm -rf /root/.config'
+      on backend_nodes, 'puppet resource package sensu-go-backend ensure=absent'
 
       if RSpec.configuration.sensu_use_agent
         site_pp = <<-EOS
@@ -243,15 +245,15 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
       it { should be_running }
     end
     it 'should have cluster members' do
-      on node1, 'sensuctl cluster member-list --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster member-list --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['members'].size).to eq(2)
       end
     end
 
     it 'should be healthy' do
-      on node1, 'sensuctl cluster health --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster health --format json' do |result|
+        data = JSON.parse(result.stdout)
         healthy = data.select { |m| m['Healthy'] == true }
         expect(healthy.size).to eq(2)
       end
@@ -315,16 +317,16 @@ describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == '
     end
 
     it 'should have new cluster member' do
-      on node1, 'sensuctl cluster member-list --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster member-list --format json' do |result|
+        data = JSON.parse(result.stdout)
         member = data['members'].select { |m| m['name'] == 'backend3' }[0]
         expect(member['peerURLs']).to eq(["http://#{fact_on(node3, 'ipaddress')}:2380"])
       end
     end
 
     it 'should be healthy' do
-      on node1, 'sensuctl cluster health --format json' do
-        data = JSON.parse(stdout)
+      on node1, 'sensuctl cluster health --format json' do |result|
+        data = JSON.parse(result.stdout)
         healthy = data.select { |m| m['Healthy'] == true }
         expect(healthy.size).to eq(3)
       end

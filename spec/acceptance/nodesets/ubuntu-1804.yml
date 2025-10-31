@@ -36,7 +36,7 @@ HOSTS:
 CONFIG:
   type: foss
   log_level: debug
-  puppet_collection: puppet6
+  puppet_collection: puppet8
 ssh:
   password: root
   auth_methods: ["password"]

@@ -14,7 +14,7 @@ module Facter
     version_info = {}
     begin
       exe_path = exe
-      version_output = Facter::Core::Execution.execute("#{exe_path} version")
+      version_output = Facter::Core::Execution.execute("#{exe_path} version", timeout: 10)
       case exe
       when 'sensuctl', '/bin/sensuctl'
         if (m = version_output.match(/sensuctl version\s+([0-9.]+)/))

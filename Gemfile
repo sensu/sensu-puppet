@@ -18,7 +18,7 @@ group :development, :unit_tests do
   gem 'rspec-puppet-facts',                                        :require => false
   gem 'rspec-mocks',                                               :require => false
   gem 'parallel_tests',                                            :require => false
-  gem 'puppetlabs_spec_helper',                                    :require => false
+  gem 'puppetlabs_spec_helper', '~> 5.0',                          :require => false
   gem 'metadata-json-lint',                                        :require => false
   gem 'puppet-blacksmith',                                         :require => false
   gem 'puppet-lint',                                               :require => false
@@ -35,17 +35,16 @@ group :development, :unit_tests do
   gem 'puppet-lint-param-docs',                                    :require => false
   gem 'puppet-lint-resource_reference_syntax',                     :require => false
   gem 'puppet-lint-spaceship_operator_without_tag-check',          :require => false
-  gem 'puppet-lint-top_scope_facts-check',                         :require => false
+  # Removed: puppet-lint-top_scope_facts-check (incompatible with newer puppetlabs_spec_helper)
   gem 'puppet-lint-topscope-variable-check',                       :require => false
   gem 'puppet-lint-trailing_comma-check',                          :require => false
   gem 'puppet-lint-trailing_newline-check',                        :require => false
-  gem 'puppet-lint-undef_in_function-check',                       :require => false
+  # Removed: puppet-lint-undef_in_function-check (incompatible with newer puppet-lint)
   gem 'puppet-lint-unquoted_string-check',                         :require => false
   gem 'puppet-lint-variable_contains_upcase',                      :require => false
   gem 'puppet-lint-version_comparison-check',                      :require => false
-  gem 'rubocop', '~> 0.49.0',                                      :require => false
-  gem 'rubocop-i18n', '~> 1.2.0',                                  :require => false
-  gem 'rubocop-rspec', '~> 1.16.0',                                :require => false
+  gem 'rubocop', '~> 1.50.0',                                      :require => false
+  gem 'rubocop-rspec', '~> 2.20.0',                                :require => false
 end
 
 group :documentation do

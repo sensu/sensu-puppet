@@ -111,7 +111,9 @@ RSpec.configure do |c|
   # Configure all nodes in nodeset
   c.before :suite do
     # Install soft module dependencies
-    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 9.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-stdlib', '--version', '">= 9.0.0 < 10.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppet-systemd', '--version', '">= 4.0.0 < 8.0.0"'), { :acceptable_exit_codes => [0,1] }
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 9.0.0 < 10.0.0"'), { :acceptable_exit_codes => [0,1] }
     on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     # Dependencies only needed to test some examples
     if RSpec.configuration.sensu_mode == 'examples'

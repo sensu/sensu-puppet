@@ -263,8 +263,8 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
     end
 
     it 'should opt-out of tessen' do
-      on node, 'sensuctl tessen info --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl tessen info --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['opt_out']).to eq(true)
       end
     end

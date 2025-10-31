@@ -44,15 +44,15 @@ describe 'sensu::plugins class', if: ['base'].include?(RSpec.configuration.sensu
     end
 
     it 'should have Bonsai assets installed' do
-      on backend, 'sensuctl asset info sensu/sensu-ruby-runtime --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl asset info sensu/sensu-ruby-runtime --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
       end
     end
 
     it 'should have email-handler asset installed' do
-      on backend, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-email-handler')
       end
     end
@@ -132,15 +132,15 @@ describe 'sensu::plugins class', if: ['base'].include?(RSpec.configuration.sensu
     end
 
     it 'should have Bonsai assets installed' do
-      on agent, 'sensuctl asset info sensu/sensu-ruby-runtime --format json' do
-        data = JSON.parse(stdout)
+      on agent, 'sensuctl asset info sensu/sensu-ruby-runtime --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
       end
     end
 
     it 'should have email-handler asset installed' do
-      on agent, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on agent, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-email-handler')
       end
     end
