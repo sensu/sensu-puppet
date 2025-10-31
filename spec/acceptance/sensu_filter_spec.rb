@@ -5,7 +5,11 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_filter { 'test':
         action         => 'allow',
         expressions    => ["event.entity.labels.environment == 'production'"],
@@ -58,7 +62,11 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
   context 'update filter' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_filter { 'test':
         action     => 'allow',
         expressions => ["event.entity.labels.environment == 'test'"],
@@ -109,7 +117,11 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_filter { 'test': ensure => 'absent' }
       sensu_filter { 'test-api':
         ensure   => 'absent',

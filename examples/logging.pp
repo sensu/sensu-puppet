@@ -1,5 +1,9 @@
 # Sensu Go docs: https://docs.sensu.io/sensu-go/latest/guides/systemd-logs/
 
+class { 'sensu':
+  use_ssl => false,
+}
+
 include sensu::backend
 include sensu::agent
 include rsyslog::client

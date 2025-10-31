@@ -5,7 +5,11 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_oidc_auth { 'oidc':
         ensure            => 'present',
         additional_scopes => ['email','groups'],
@@ -80,7 +84,11 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_oidc_auth { 'oidc':
         ensure            => 'present',
         additional_scopes => ['email','groups','openid'],
@@ -159,7 +167,11 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_oidc_auth { 'oidc': ensure => 'absent' }
       sensu_oidc_auth { 'oidc-api': ensure => 'absent', provider => 'sensu_api' }
       EOS

@@ -10,7 +10,11 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
     end
     it 'sets up backend' do
       backend_pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       EOS
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
     end

@@ -32,8 +32,6 @@ HOSTS:
       - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
       - 'dnf install -y iputils curl'
-      - 'rpm -Uvh https://yum.puppet.com/puppet6-release-el-8.noarch.rpm'
-      - 'dnf install -y puppet'
     docker_container_name: 'sensu-backend-el8'
 CONFIG:
   log_level: debug

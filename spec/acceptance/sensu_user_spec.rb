@@ -5,7 +5,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_user { 'test':
         password => 'supersecret',
         groups   => ['read-only'],
@@ -66,7 +70,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates user' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_user { 'test':
         password => 'supersecret2',
         groups   => ['read-only'],
@@ -128,7 +136,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates user password' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_user { 'test':
         password => 'password3',
         groups   => ['read-only'],
@@ -167,7 +179,11 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should result in error as unsupported' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_user { 'test': ensure => 'absent' }
       sensu_user { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS

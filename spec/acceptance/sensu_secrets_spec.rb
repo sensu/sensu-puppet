@@ -5,7 +5,11 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_secrets_vault_provider { 'my_vault':
         ensure       => 'present',
         address      => "https://vaultserver.example.com:8200",
@@ -162,7 +166,11 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
   context 'updates secrets provider' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_secrets_vault_provider { 'my_vault':
         ensure       => 'present',
         address      => "https://vaultserver.example.com:8201",
@@ -315,7 +323,11 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_secrets_vault_provider { 'my_vault': ensure => 'absent' }
       sensu_secrets_vault_provider { 'my_vault-api': ensure => 'absent', provider => 'sensu_api' }
       sensu_secret { 'test': ensure => 'absent' }

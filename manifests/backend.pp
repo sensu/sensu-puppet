@@ -383,7 +383,7 @@ class sensu::backend (
   } else {
     $init_require = undef
   }
-  
+
   exec { 'sensu-backend init':
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
     command     => 'sensu-backend init',

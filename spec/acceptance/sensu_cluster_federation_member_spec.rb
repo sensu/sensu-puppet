@@ -5,7 +5,11 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in test':
         ensure => 'present',
       }
@@ -60,7 +64,11 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in test':
         ensure => 'absent',
       }

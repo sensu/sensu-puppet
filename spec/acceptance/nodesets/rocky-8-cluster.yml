@@ -16,8 +16,6 @@ HOSTS:
       - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
       - 'dnf install -y iputils curl'
-      - 'rpm -Uvh https://yum.puppet.com/puppet8-release-el-8.noarch.rpm'
-      - 'dnf install -y puppet-agent'
     docker_container_name: 'sensu-backend1-el8'
   sensu-backend2:
     roles:
@@ -34,8 +32,6 @@ HOSTS:
       - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
       - 'dnf install -y iputils curl'
-      - 'rpm -Uvh https://yum.puppet.com/puppet8-release-el-8.noarch.rpm'
-      - 'dnf install -y puppet-agent'
     docker_container_name: 'sensu-backend2-el8'
   sensu-backend3:
     roles:
@@ -52,8 +48,6 @@ HOSTS:
       - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
       - 'dnf install -y iputils curl'
-      - 'rpm -Uvh https://yum.puppet.com/puppet8-release-el-8.noarch.rpm'
-      - 'dnf install -y puppet-agent'
     docker_container_name: 'sensu-backend3-el8'
 CONFIG:
   log_level: debug

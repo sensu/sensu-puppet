@@ -5,7 +5,11 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_namespace { 'test': ensure => 'present' }
       sensu_namespace { 'test-api': ensure => 'present', provider => 'sensu_api' }
       EOS
@@ -43,7 +47,11 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_namespace { 'test': ensure => 'absent' }
       sensu_namespace { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS

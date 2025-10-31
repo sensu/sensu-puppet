@@ -5,7 +5,11 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_etcd_replicator { 'role_replicator':
         ensure        => 'present',
         ca_cert       => '/path/to/ssl/trusted-certificate-authorities.pem',
@@ -70,7 +74,11 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
   context 'updates' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_etcd_replicator { 'role_replicator':
         ensure                       => 'present',
         ca_cert                      => '/path/to/ssl/trusted-certificate-authorities2.pem',
@@ -137,7 +145,11 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_etcd_replicator { 'role_replicator': ensure => 'absent' }
       sensu_etcd_replicator { 'rolebinding_replicator':
         ensure   => 'absent',

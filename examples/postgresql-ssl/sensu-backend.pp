@@ -1,6 +1,9 @@
 $password = 'sensu'
 
-include sensu
+class { 'sensu':
+  use_ssl => false,
+}
+include sensu::cli
 class { 'sensu::agent':
   backends => ['sensu-backend:8081'],
 }

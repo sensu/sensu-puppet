@@ -13,6 +13,10 @@
 # sensu_ldap_auth is likely working but the access for your user is not granted
 # and you should modify the sensu_role_binding.
 #
+class { 'sensu':
+  use_ssl => false,
+}
+
 class { 'sensu::backend':
   # This will turn on debugging which will make it possible to see the LDAP
   # related Sensu logs.

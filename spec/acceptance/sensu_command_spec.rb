@@ -5,7 +5,11 @@ describe 'sensu_command', if: RSpec.configuration.sensu_mode == 'types' do
   context 'install command' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_command { 'command-test':
         ensure => 'present',
         url    => 'https://github.com/amdprophet/command-test/releases/download/v0.0.3/command-test_0.0.3_linux_amd64.tar.gz',
@@ -35,7 +39,11 @@ describe 'sensu_command', if: RSpec.configuration.sensu_mode == 'types' do
   context 'upgrade command' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_command { 'command-test':
         ensure => 'present',
         url    => 'https://github.com/amdprophet/command-test/releases/download/v0.0.4/command-test_0.0.4_linux_amd64.tar.gz',
@@ -65,7 +73,11 @@ describe 'sensu_command', if: RSpec.configuration.sensu_mode == 'types' do
   context 'remove command' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_command { 'command-test':
         ensure => 'absent',
       }

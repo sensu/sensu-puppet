@@ -3,16 +3,47 @@ require 'spec_helper_acceptance'
 describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
   node = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
-  context 'adds postgresql datastore' do
-    it 'should work without errors and be idempotent' do
+  context 'setup' do
+    it 'should setup backend and agent' do
+      backend_pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+        use_ssl => false,
+      }
+      class { 'sensu::backend': }
+      EOS
       agent_pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+        use_ssl => false,
+      }
       class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['base'],
+        backends    => ['sensu-backend:8081'],
+        entity_name => 'sensu-agent',
       }
       EOS
+      
+      apply_manifest_on(node, backend_pp, :catch_failures => true)
+      apply_manifest_on(agent, agent_pp, :catch_failures => true)
+      # Wait for agent to connect
+      sleep 10
+      # Verify agent is connected
+      on node, 'sensuctl entity list --format json' do |result|
+        entities = JSON.parse(result.stdout)
+        agent_found = entities.any? { |e| e['metadata']['name'] == 'sensu-agent' }
+        raise "Agent entity not found" unless agent_found
+      end
+    end
+  end
+  
+  context 'adds postgresql datastore' do
+    it 'should work without errors and be idempotent' do
+      # Install PostgreSQL and configure backend to use it
       pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+        use_ssl => false,
+      }
       class { 'postgresql::globals':
         manage_package_repo => true,
         version             => '11',
@@ -23,7 +54,7 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
       }
       EOS
       check_pp = <<-EOS
-      sensu_check { 'event-test':
+      sensu_check { 'event-test-pg':
         command       => 'exit 0',
         subscriptions => ['entity:sensu-agent','base'],
         interval      => 1,
@@ -37,29 +68,78 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
-        # Run it twice and test for idempotency
-        apply_manifest_on(node, pp, :catch_failures => true)
+        # Run it multiple times with proper stabilization
+        # First run: Install PostgreSQL and start services
+        apply_manifest_on(node, pp, :catch_failures => true, :acceptable_exit_codes => [0,2])
+        sleep 15  # Let PostgreSQL service fully start
+        
+        # Second run: Backend reconfigures for PostgreSQL datastore
+        apply_manifest_on(node, pp, :catch_failures => true, :acceptable_exit_codes => [0,2])
+        sleep 20  # Let backend fully restart and reconfigure, PostgreSQL to stabilize
+        
+        # Verify PostgreSQL service is running before idempotency check
+        on node, 'systemctl is-active postgresql-11' do |result|
+          unless result.stdout.strip == 'active'
+            raise "PostgreSQL service not active, status: #{result.stdout.strip}"
+          end
+        end
+        
+        # Third run: Should be idempotent now
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
-      apply_manifest_on(agent, agent_pp, :catch_failures => true)
+      # Add the check
       apply_manifest_on(node, check_pp, :catch_failures => true)
-      on node, 'sensuctl check execute event-test'
+      # Verify backend is ready and healthy
+      on node, 'sensuctl cluster health'
+      # Execute the check
+      on node, 'sensuctl check execute event-test-pg'
+      # Give check time to execute and event to be stored in PostgreSQL
+      # PostgreSQL datastore needs more time than embedded datastore
+      sleep 20
+      # Verify the entity exists before checking for events
+      on node, 'sensuctl entity info sensu-agent --format json' do |result|
+        data = JSON.parse(result.stdout)
+        expect(data['metadata']['name']).to eq('sensu-agent')
+      end
     end
 
     it 'configured postgres' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
-        data = YAML.load(stdout)
+      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do |result|
+        data = YAML.load(result.stdout)
         expect(data['spec']['dsn']).to eq('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require')
         expect(data['spec']['pool_size']).to eq(20)
       end
     end
 
     it 'should have an event' do
-      on node, 'sensuctl event info sensu-agent event-test --format json' do
-        data = JSON.parse(stdout)
-        expect(data['check']['status']).to eq(0)
+      # Retry logic for event retrieval as PostgreSQL may take longer to store events
+      max_retries = 5
+      retry_count = 0
+      success = false
+      
+      while retry_count < max_retries && !success
+        begin
+          on node, 'sensuctl event info sensu-agent event-test-pg --format json' do |result|
+            data = JSON.parse(result.stdout)
+            expect(data['check']['status']).to eq(0)
+            success = true
+          end
+        rescue Beaker::Host::CommandFailure => e
+          retry_count += 1
+          if retry_count < max_retries
+            puts "Event not found, retrying in 10 seconds... (attempt #{retry_count}/#{max_retries})"
+            sleep 10
+          else
+            # Final attempt - show what events exist for debugging
+            puts "Failed to find event after #{max_retries} attempts. Listing all events:"
+            on node, 'sensuctl event list --format json', :accept_all_exit_codes => true do |result|
+              puts result.stdout
+            end
+            raise e
+          end
+        end
       end
     end
   end
@@ -67,6 +147,10 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
   context 'updates postgresql datastore' do
     it 'should not expose dsn changes to logs' do
       setup_pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+        use_ssl => false,
+      }
       class { 'sensu::backend':
         datastore            => 'postgresql',
         manage_postgresql_db => false,
@@ -74,6 +158,10 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
       }
       EOS
       pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+        use_ssl => false,
+      }
       class { 'sensu::backend':
         datastore            => 'postgresql',
         manage_postgresql_db => false,
@@ -91,21 +179,18 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
 
   context 'removes postgresql datastore' do
     it 'should work without errors and be idempotent' do
-      agent_pp = <<-EOS
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['base'],
-      }
-      EOS
       pp = <<-EOS
+      class { '::sensu':
+        password => 'supersecret',
+        use_ssl => false,
+      }
       class { 'sensu::backend':
         datastore        => 'postgresql',
         datastore_ensure => 'absent',
       }
       EOS
       check_pp = <<-EOS
-      sensu_check { 'event-test':
+      sensu_check { 'event-test-pg-removal':
         command       => 'exit 0',
         subscriptions => ['entity:sensu-agent'],
         interval      => 1,
@@ -123,22 +208,24 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
         apply_manifest_on(node, pp, :catch_failures => true)
         apply_manifest_on(node, pp, :catch_changes  => true)
       end
-      apply_manifest_on(agent, agent_pp, :catch_failures => true)
+      # Add the check
       apply_manifest_on(node, check_pp, :catch_failures => true)
-      on node, 'sensuctl check execute event-test'
+      on node, 'sensuctl check execute event-test-pg-removal'
+      # Give check time to execute
+      sleep 5
     end
 
     it 'removed postgres config' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
-        expect(stdout).to be_empty
+      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do |result|
+        expect(result.stdout).to be_empty
       end
     end
 
     it 'should have an event' do
-      on node, 'sensuctl event info sensu-agent event-test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl event info sensu-agent event-test-pg-removal --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check']['status']).to eq(0)
       end
     end

@@ -5,7 +5,11 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_mutator { 'test':
         command        => 'test',
         runtime_assets => ['test'],
@@ -58,7 +62,11 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
   context 'update mutator' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_mutator { 'test':
         command        => 'test',
         timeout        => 60,
@@ -113,7 +121,11 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_mutator { 'test': ensure => 'absent' }
       sensu_mutator { 'test-api':
         ensure   => 'absent',

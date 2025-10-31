@@ -5,7 +5,11 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_hook { 'test':
         command => 'ps aux',
         labels  => { 'foo' => 'baz' },
@@ -56,7 +60,11 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
   context 'update hook' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_hook { 'test':
         command => 'ps aux',
         timeout => 120,
@@ -107,7 +115,11 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_hook { 'test': ensure => 'absent' }
       sensu_hook { 'test-api':
         ensure   => 'absent',

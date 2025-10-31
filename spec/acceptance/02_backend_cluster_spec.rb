@@ -1,10 +1,10 @@
 require 'spec_helper_acceptance'
 
 describe 'sensu::backend cluster class', if: RSpec.configuration.sensu_mode == 'cluster' do
-  # Support both naming conventions: sensu-backend1 and sensu-backend-1
   node1 = hosts_with_name(hosts, 'sensu-backend1')[0] || hosts_with_name(hosts, 'sensu-backend-1')[0]
   node2 = hosts_with_name(hosts, 'sensu-backend2')[0] || hosts_with_name(hosts, 'sensu-backend-2')[0]
   node3 = hosts_with_name(hosts, 'sensu-backend3')[0] || hosts_with_name(hosts, 'sensu-backend-3')[0]
+  
   context 'new cluster' do
     it 'should work without errors' do
       node1_pp = <<-EOS

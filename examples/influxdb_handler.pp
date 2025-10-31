@@ -5,11 +5,18 @@ $db_name = 'sensu'
 $user = 'sensu'
 $password = 'password'
 
-include sensu::backend
+class { 'sensu':
+  use_ssl => false,
+}
 
-sensu_bonsai_asset { 'sensu/sensu-influxdb-handler':
-  ensure  => 'present',
-  version => 'latest',
+include sensu::backend
+include sensu::cli
+
+exec { 'add sensu-influxdb-handler asset':
+  path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+  command => 'sensuctl asset add sensu/sensu-influxdb-handler',
+  unless  => 'sensuctl asset info sensu/sensu-influxdb-handler',
+  require => Sensuctl_configure['puppet'],
 }
 
 sensu_handler { 'influx-db':

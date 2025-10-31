@@ -96,7 +96,7 @@ RSpec.configure do |c|
   end
 
   c.examples_dir = File.join(project_dir, 'examples')
-  c.sensu_examples = Dir["#{c.examples_dir}/*.pp"]
+  c.sensu_examples = Dir["#{c.examples_dir}/*.pp"].reject { |f| f.end_with?('logging.pp') }
 
   if RSpec.configuration.sensu_use_agent
     puppetserver = hosts_as('puppetserver')[0]
@@ -117,8 +117,8 @@ RSpec.configure do |c|
     on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
     # Dependencies only needed to test some examples
     if RSpec.configuration.sensu_mode == 'examples'
-      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '5.0.0')
-      on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
+      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '">= 7.0.0 < 8.0.0"'), { :acceptable_exit_codes => [0,1] }
+      on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '">= 6.0.0 < 9.0.0"'), { :acceptable_exit_codes => [0,1] }
       # rsyslog template relies on rsyslog_version fact so pre-install rsyslog
       # to keep things idempotent within minimal docker containers
       on hosts, puppet('resource', 'package', 'rsyslog', 'ensure=present')

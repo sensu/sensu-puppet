@@ -5,7 +5,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_check { 'test':
         command                          => 'check-http.rb',
         subscriptions                    => ['demo'],
@@ -118,7 +122,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
       class { 'sensu::cli':
         sensuctl_chunk_size => 1,
       }
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_check { 'test3':
         command       => 'check-http3.rb',
         subscriptions => ['demo'],
@@ -150,7 +158,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates check' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_check { 'test':
         command                          => 'check-http.rb',
         subscriptions                    => ['demo'],
@@ -239,11 +251,19 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   context 'namespace validation when exists' do
     it 'should produce no error' do
       namespace_pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_namespace { 'devs': ensure => 'present' }
       EOS
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_check { 'test-namespace':
         command       => 'check-cpu.rb',
         subscriptions => ['demo'],
@@ -272,7 +292,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   context 'namespace validation' do
     it 'should produce error' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_check { 'test-no-namespace':
         command       => 'check-cpu.rb',
         subscriptions => ['demo'],
@@ -300,7 +324,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_check { 'test': ensure => 'absent' }
       sensu_check { 'test-api':
         ensure   => 'absent',
@@ -329,7 +357,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   context 'resources purge' do
     it 'should remove without errors' do
       before_pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_namespace { 'dev': ensure => 'present' }
       sensu_check { 'test1':
         command       => 'check-cpu.rb',
@@ -345,7 +377,11 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
       }
       EOS
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_namespace { 'dev': ensure => 'present' }
       sensu_check { 'test':
         command       => 'check-cpu.rb',

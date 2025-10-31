@@ -95,8 +95,8 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
     end
   end
 
-  # This test verifies non-standard location is used by setting agent-port
-  # and then checking that port gets used by the daemon
+  # This test verifies non-standard location is used by setting etc_dir
+  # and then checking that location gets used by the daemon
   context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && fact_on(node, 'service_provider') == 'systemd') do
     it 'should work without errors' do
       pp = <<-EOS

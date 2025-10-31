@@ -5,7 +5,11 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_cluster_role { 'test':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
@@ -167,7 +171,11 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
   context 'update cluster_role_binding' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_cluster_role { 'test':
         rules => [
           {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
@@ -355,7 +363,11 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_cluster_role { 'test': ensure => 'absent' }
       sensu_cluster_role { 'test-api':
         ensure   => 'absent',
@@ -414,13 +426,21 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
   context 'resource purging' do
     it 'should purge without errors' do
       before_pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_cluster_role { 'test1':
         rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
       }
       EOS
       pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       sensu_resources { 'sensu_cluster_role':
         purge => true
       }

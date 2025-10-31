@@ -5,7 +5,11 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_handler { 'test':
         type           => 'pipe',
         command        => 'notify.rb',
@@ -93,7 +97,11 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
   context 'update handler' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_handler { 'test':
         type           => 'pipe',
         command        => 'notify.rb',
@@ -175,7 +183,11 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_handler { 'test': ensure => 'absent' }
       sensu_handler { 'test-api':
         ensure   => 'absent',

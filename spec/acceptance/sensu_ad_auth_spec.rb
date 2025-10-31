@@ -5,7 +5,11 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_ad_auth { 'activedirectory':
         ensure              => 'present',
         servers             => [
@@ -90,7 +94,11 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_ad_auth { 'activedirectory':
         ensure              => 'present',
         servers             => [
@@ -189,7 +197,11 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_ad_auth { 'activedirectory': ensure => 'absent' }
       sensu_ad_auth { 'activedirectory-api': ensure => 'absent', provider => 'sensu_api' }
       EOS

@@ -5,7 +5,11 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_entity { 'test':
         entity_class           => 'proxy',
         deregistration         => {'handler' => 'slack-handler'},
@@ -51,7 +55,11 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates properties' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_entity { 'test':
         entity_class           => 'proxy',
         deregistration         => {'handler' => 'email-handler'},
@@ -97,7 +105,11 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_entity { 'test': ensure => 'absent' }
       sensu_entity { 'test-api':
         ensure   => 'absent',

@@ -5,7 +5,11 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       sensu_cluster_federation { 'test':
         api_urls => ['https://#{fact_on(node, 'ipaddress')}:8080'],
       }
@@ -62,7 +66,11 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
   context 'updates' do
     it 'should work without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       sensu_cluster_federation { 'test':
         api_urls => ['https://#{fact_on(node, 'ipaddress')}:9080'],
       }
@@ -119,7 +127,11 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
-      include ::sensu::backend
+      class { 'sensu':
+        use_ssl => false,
+      }
+      include sensu::backend
+      include sensu::cli
       sensu_cluster_federation { 'test': ensure => 'absent' }
       sensu_cluster_federation { 'testapi': ensure => 'absent', provider => 'sensu_api' }
       EOS

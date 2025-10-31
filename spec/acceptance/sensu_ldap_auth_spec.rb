@@ -5,7 +5,11 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'default' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_ldap_auth { 'openldap':
         ensure              => 'present',
         servers             => [
@@ -122,7 +126,11 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'updates auth' do
     it 'should work without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_ldap_auth { 'openldap':
         ensure              => 'present',
         servers             => [
@@ -213,7 +221,11 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
+      class { 'sensu':
+        use_ssl => false,
+      }
       include sensu::backend
+      include sensu::cli
       sensu_ldap_auth { 'openldap': ensure => 'absent' }
       sensu_ldap_auth { 'openldap-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
