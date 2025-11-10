@@ -5,11 +5,11 @@ describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'bolt' do
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu::agent':
-        backends    => ['sensu-backend:8081'],
-        entity_name => 'sensu-agent',
-      }
+      pp = <<~EOS
+class { 'sensu::agent':
+  backends    => ['sensu-backend:8081'],
+  entity_name => 'sensu-agent',
+}
       EOS
 
       apply_manifest_on(backend, 'include sensu::backend', :catch_failures => true)
@@ -19,13 +19,13 @@ describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'bolt' do
 
   context 'resolve' do
     it 'should work without errors' do
-      check_pp = <<-EOS
-      include sensu::backend
-      sensu_check { 'test':
-        command       => 'exit 1',
-        subscriptions => ['entity:sensu-agent'],
-        interval      => 3600,
-      }
+      check_pp = <<~EOS
+include sensu::backend
+sensu_check { 'test':
+  command       => 'exit 1',
+  subscriptions => ['entity:sensu-agent'],
+  interval      => 3600,
+}
       EOS
 
       apply_manifest_on(backend, check_pp, :catch_failures => true)
@@ -35,10 +35,9 @@ describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have resolved check' do
-      on backend, 'sensuctl event info sensu-agent test --format json' do
-        data = JSON.parse(stdout)
-        expect(data['check']['status']).to eq(0)
-      end
+      result = on backend, 'sensuctl event info sensu-agent test --format json'
+      data = JSON.parse(result.stdout)
+      expect(data['check']['status']).to eq(0)
     end
   end
 
@@ -71,12 +70,11 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have a valid silenced' do
-      on backend, 'sensuctl silenced info entity:sensu-agent:* --format json' do
-        data = JSON.parse(stdout)
-        expect(data['subscription']).to eq('entity:sensu-agent')
-        expect(data['expire']).to eq(-1)
-        expect(data['expire_on_resolve']).to eq(false)
-      end
+      result = on backend, 'sensuctl silenced info entity:sensu-agent:* --format json'
+      data = JSON.parse(result.stdout)
+      expect(data['subscription']).to eq('entity:sensu-agent')
+      expect(data['expire']).to eq(-1)
+      expect(data['expire_on_resolve']).to eq(false)
     end
   end
 
@@ -86,10 +84,9 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have a valid silenced with updated propery' do
-      on backend, 'sensuctl silenced info entity:sensu-agent:* --format json' do
-        data = JSON.parse(stdout)
-        expect(data['expire_on_resolve']).to eq(true)
-      end
+      result = on backend, 'sensuctl silenced info entity:sensu-agent:* --format json'
+      data = JSON.parse(result.stdout)
+      expect(data['expire_on_resolve']).to eq(true)
     end
   end
 
@@ -109,14 +106,15 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_mode == 'bolt
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-      }
-      include 'sensu::backend'
-      sensu_entity { 'sensu-agent':
-        ensure => 'absent',
-      }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+include 'sensu::backend'
+sensu_entity { 'sensu-agent':
+  ensure => 'absent',
+}
       EOS
 
       on agent, 'puppet resource service sensu-agent ensure=stopped'
@@ -134,16 +132,23 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_mode == 'bolt
   end
   context 'install_agent' do
     it 'should work without errors' do
-      on backend, 'bolt task run sensu::install_agent backend=sensu-backend:8081 subscription=linux entity_name=sensu-agent output=true --targets sensu-agent'
-      sleep 5
+      on backend, 'bolt task run sensu::install_agent backend=sensu-backend:8081 subscription=linux entity_name=sensu-agent use_ssl=true output=true --targets sensu-agent'
+      # Wait for agent to install, start, connect, and register with backend
+      sleep 30
     end
 
     it 'should have a valid entity' do
-      on backend, 'sensuctl entity info sensu-agent --format json' do
-        data = JSON.parse(stdout)
-        expect(data['subscriptions']).to include('linux')
-        expect(data['metadata']['namespace']).to eq('default')
+      # Retry up to 3 times with 10 second delays to allow agent registration
+      result = nil
+      3.times do |attempt|
+        result = on backend, 'sensuctl entity info sensu-agent --format json', { :acceptable_exit_codes => [0,1] }
+        break if result.exit_code == 0
+        sleep 10 if attempt < 2
       end
+      expect(result.exit_code).to eq(0), "Entity sensu-agent not found after 60 seconds"
+      data = JSON.parse(result.stdout)
+      expect(data['subscriptions']).to include('linux')
+      expect(data['metadata']['namespace']).to eq('default')
     end
   end
 end
@@ -153,19 +158,19 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_mode == 'bolt
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_check { 'test':
-        command       => 'exit 1',
-        subscriptions => ['entity:sensu-agent'],
-        interval      => 3600,
-      }
+      pp = <<~EOS
+include sensu::backend
+sensu_check { 'test':
+  command       => 'exit 1',
+  subscriptions => ['entity:sensu-agent'],
+  interval      => 3600,
+}
       EOS
-      agent_pp = <<-EOS
-      class { 'sensu::agent':
-        backends    => ['sensu-backend:8081'],
-        entity_name => 'sensu-agent',
-      }
+      agent_pp = <<~EOS
+class { 'sensu::agent':
+  backends    => ['sensu-backend:8081'],
+  entity_name => 'sensu-agent',
+}
       EOS
       apply_manifest_on(backend, pp, :catch_failures => true)
       apply_manifest_on(agent, agent_pp, :catch_failures => true)
@@ -178,10 +183,9 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_mode == 'bolt
     end
 
     it 'should have executed check' do
-      on backend, 'sensuctl event info sensu-agent test --format json' do
-        data = JSON.parse(stdout)
-        expect(data['check']['status']).to eq(1)
-      end
+      result = on backend, 'sensuctl event info sensu-agent test --format json'
+      data = JSON.parse(result.stdout)
+      expect(data['check']['status']).to eq(1)
     end
   end
 end
@@ -190,9 +194,9 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_mode == 'bo
   backend = hosts_as('sensu-backend')[0]
   context 'setup' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler': version => '1.0.2' }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler': version => '1.0.2' }
       EOS
       apply_manifest_on(backend, pp, :catch_failures => true)
     end
@@ -200,11 +204,10 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_mode == 'bo
 
   context 'assets_outdated' do
     it 'should return outdated assets' do
-      on backend, 'bolt task run sensu::assets_outdated --targets localhost --format json' do
-        data = JSON.parse(stdout)
-        d = data['items'][0]['value']['data']
-        expect(d[0]['asset_name']).to eq('sensu/sensu-pagerduty-handler')
-      end
+      result = on backend, 'bolt task run sensu::assets_outdated --targets localhost --format json'
+      data = JSON.parse(result.stdout)
+      d = data['items'][0]['value']['data']
+      expect(d[0]['asset_name']).to eq('sensu/sensu-pagerduty-handler')
     end
   end
 end
@@ -223,11 +226,10 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have created api key' do
-      on backend, 'sensuctl api-key list --format json' do
-        data = JSON.parse(stdout)
-        key = data.select { |k| k["username"] == "admin" }[0]
-        expect(key).not_to be_nil
-      end
+      result = on backend, 'sensuctl api-key list --format json'
+      data = JSON.parse(result.stdout)
+      key = data.select { |k| k["username"] == "admin" }[0]
+      expect(key).not_to be_nil
     end
   end
 
@@ -241,11 +243,10 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_mode == 'bolt' do
     it 'should remove without errors' do
       key = nil
       # Get key
-      on backend, 'sensuctl api-key list --format json' do
-        data = JSON.parse(stdout)
-        apikey = data.select { |k| k["username"] == "admin" }[0]
-        key = apikey["metadata"]["name"]
-      end
+      result = on backend, 'sensuctl api-key list --format json'
+      data = JSON.parse(result.stdout)
+      apikey = data.select { |k| k["username"] == "admin" }[0]
+      key = apikey["metadata"]["name"]
       on backend, "bolt task run sensu::apikey action=delete key=#{key} --targets sensu-backend"
     end
   end
@@ -256,14 +257,14 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_mode == 'bolt' 
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
+      pp = <<~EOS
+include sensu::backend
       EOS
-      agent_pp = <<-EOS
-      class { 'sensu::agent':
-        backends    => ['sensu-backend:8081'],
-        entity_name => 'sensu-agent',
-      }
+      agent_pp = <<~EOS
+class { 'sensu::agent':
+  backends    => ['sensu-backend:8081'],
+  entity_name => 'sensu-agent',
+}
       EOS
       apply_manifest_on(agent, agent_pp, :catch_failures => true)
       apply_manifest_on(backend, pp, :catch_failures => true)
@@ -276,11 +277,10 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_mode == 'bolt' 
     end
 
     it 'should have created an event' do
-      on backend, 'sensuctl event info sensu-agent bolttest --format json' do
-        data = JSON.parse(stdout)
-        expect(data['check']['status']).to eq(1)
-        expect(data['check']['output']).to eq('test')
-      end
+      result = on backend, 'sensuctl event info sensu-agent bolttest --format json'
+      data = JSON.parse(result.stdout)
+      expect(data['check']['status']).to eq(1)
+      expect(data['check']['output']).to eq('test')
     end
   end
 end
@@ -290,22 +290,22 @@ describe 'sensu bolt inventory', if: RSpec.configuration.sensu_mode == 'bolt' do
   agent = hosts_as('sensu-agent')[0]
   context 'setup' do
     it 'should work without errors' do
-      agent_pp = <<-EOS
-      class { 'sensu::agent':
-        backends    => ['sensu-backend:8081'],
-        entity_name => 'sensu-agent',
-      }
+      agent_pp = <<~EOS
+class { 'sensu::agent':
+  backends    => ['sensu-backend:8081'],
+  entity_name => 'sensu-agent',
+}
       EOS
-      pp = <<-EOS
-      include sensu::backend
-      class { 'sensu::agent':
-        backends    => ['sensu-backend:8081'],
-        entity_name => 'sensu-backend',
-      }
+      pp = <<~EOS
+include sensu::backend
+class { 'sensu::agent':
+  backends    => ['sensu-backend:8081'],
+  entity_name => 'sensu-backend',
+}
       EOS
       apply_manifest_on(backend, pp, :catch_failures => true)
       apply_manifest_on(agent, agent_pp, :catch_failures => true)
-      inventory_cfg1 = <<-EOS
+      inventory_cfg1 = <<~EOS
 groups:
   - name: linux
     targets:
@@ -317,33 +317,33 @@ groups:
 
   context 'inventory' do
     it 'produces inventory' do
-      on backend, 'bolt inventory show --targets linux --format json -i /root/.puppetlabs/bolt/inventory1.yaml' do
-        data = JSON.parse(stdout)
-        expect(data["count"]).to be >= 2
-      end
+      result = on backend, 'bolt inventory show --targets linux --format json -i /root/.puppetlabs/bolt/inventory1.yaml'
+      data = JSON.parse(result.stdout)
+      expect(data["count"]).to be >= 2
     end
   end
 end
 
-# Skip this test when testing using CI repos as CI repos are missing 5.21.x packages
-describe 'sensu backend_upgrade task', if: (RSpec.configuration.sensu_mode == 'bolt' && !RSpec.configuration.add_ci_repo) do
+# Skip this test as it requires old Sensu 5.x packages that are no longer available in repositories
+# This test was designed to verify the backend_upgrade task functionality when upgrading from 5.21.0
+describe 'sensu backend_upgrade task', if: false do
   backend = hosts_as('sensu-backend')[0]
   context 'setup' do
     it 'is successful' do
       on backend, 'yum remove -y sensu-go\*'
       on backend, 'rm -rf /var/lib/sensu/sensu-backend/etcd /root/.config'
-      pp = <<-EOS
-        class { 'sensu':
-          version => '5.21.0-14262',
-        }
-        include sensu::backend
+      pp = <<~EOS
+  class { 'sensu':
+    version => '5.21.0-14262',
+  }
+  include sensu::backend
       EOS
       apply_manifest_on(backend, pp, :catch_failures => true)
-      upgrade_pp = <<-EOS
-        class { 'sensu':
-          version => 'latest',
-        }
-        include sensu::backend
+      upgrade_pp = <<~EOS
+  class { 'sensu':
+    version => 'latest',
+  }
+  include sensu::backend
       EOS
       apply_manifest_on(backend, upgrade_pp, :catch_failures => true)
     end

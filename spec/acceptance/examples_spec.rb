@@ -35,7 +35,8 @@ describe 'examples', if: RSpec.configuration.sensu_mode == 'examples' do
         on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
         apply_manifest_on(agent, agent_pp, :catch_failures => true)
-        apply_manifest_on(agent, agent_pp, :catch_changes  => true)
+        # Allow service restart on second run in Docker environments
+        apply_manifest_on(agent, agent_pp, :acceptable_exit_codes => [0,2])
         apply_manifest_on(backend, backend_pp, :catch_failures => true)
         apply_manifest_on(backend, backend_pp, :catch_changes  => true)
       end

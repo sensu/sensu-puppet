@@ -5,26 +5,31 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
   backend = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
-        use_ssl => false,
-      }
-      class { 'sensu::cli': }
+      pp = <<~EOS
+class { '::sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
       EOS
-      backend_pp = <<-EOS
-      class { '::sensu':
-        password => 'P@ssw0rd!',
-        use_ssl => false,
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = <<-EOS
-          node 'sensu-agent' { #{pp} }
-          node 'sensu-backend' { #{backend_pp} }
+        site_pp = <<~EOS
+    node 'sensu-agent' { #{pp} }
+    node 'sensu-backend' { #{backend_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -50,26 +55,31 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
 
   context 'handles changed password' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        api_host => 'sensu-backend',
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::cli': }
+      pp = <<~EOS
+class { '::sensu':
+  api_host => 'sensu-backend',
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
       EOS
-      backend_pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = <<-EOS
-          node 'sensu-agent' { #{pp} }
-          node 'sensu-backend' { #{backend_pp} }
+        site_pp = <<~EOS
+    node 'sensu-agent' { #{pp} }
+    node 'sensu-backend' { #{backend_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
@@ -91,26 +101,29 @@ describe 'sensu::cli class', if: ['base'].include?(RSpec.configuration.sensu_mod
 
   context 'handles no SSL' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl  => false,
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
-      }
-      class { 'sensu::cli': }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl  => false,
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+}
+class { 'sensu::cli': }
       EOS
-      backend_pp = <<-EOS
-      class { '::sensu':
-        use_ssl  => false,
-        password => 'P@ssw0rd!',
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  use_ssl  => false,
+  password => 'P@ssw0rd!',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
-        site_pp = <<-EOS
-          node 'sensu-agent' { #{pp} }
-          node 'sensu-backend' { #{backend_pp} }
+        site_pp = <<~EOS
+    node 'sensu-agent' { #{pp} }
+    node 'sensu-backend' { #{backend_pp} }
         EOS
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)

@@ -5,45 +5,50 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
   backend = hosts_as('sensu-backend')[0]
   context 'default' do
     before(:context) do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['base'],
-        labels           => { 'foo' => 'bar' },
-        annotations      => { 'contacts' => 'dev@example.com' },
-        service_env_vars => { 'SENSU_API_PORT' => '4041' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-        }
-      }
-      sensu::agent::subscription { 'linux': }
-      sensu::agent::label { 'cpu.warning': value => '90' }
-      sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz2', redact => true }
-      sensu::agent::annotation { 'foobar': value => 'bar' }
-      sensu::agent::annotation { 'cpu.message': value => 'bar' }
-      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::agent':
+  backends         => ['sensu-backend:8081'],
+  entity_name      => 'sensu-agent',
+  subscriptions    => ['base'],
+  labels           => { 'foo' => 'bar' },
+  annotations      => { 'contacts' => 'dev@example.com' },
+  service_env_vars => { 'SENSU_API_PORT' => '4041' },
+  config_hash      => {
+    'log-level' => 'info',
+    'keepalive-interval' => 30,
+  }
+}
+sensu::agent::subscription { 'linux': }
+sensu::agent::label { 'cpu.warning': value => '90' }
+sensu::agent::label { 'cpu.critical': value => '95' }
+sensu::agent::label { 'bar': value => 'baz2', redact => true }
+sensu::agent::annotation { 'foobar': value => 'bar' }
+sensu::agent::annotation { 'cpu.message': value => 'bar' }
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
       EOS
 
       # Install sensuctl on backend for entity queries
-      backend_pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       # Always apply backend manifest first to ensure sensuctl is available
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
       # Wait for backend to be ready
-      on backend, 'timeout 300 bash -c "while ! curl -s http://localhost:8080/health; do sleep 5; done"'
+      on backend, 'timeout 300 bash -c "while ! curl -sk https://localhost:8080/health; do sleep 5; done"'
       # Ensure backend service is running
       on backend, 'systemctl start sensu-backend || true'
       on backend, 'systemctl enable sensu-backend || true'
@@ -69,7 +74,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
     describe file('/etc/sensu/agent.yml'), :node => node do
       expected_content = {
-        'backend-url'           => ['ws://sensu-backend:8081'],
+        'backend-url'           => ['wss://sensu-backend:8081'],
         'password'              => 'P@ssw0rd!',
         'name'                  => 'sensu-agent',
         'agent-managed-entity'  => false,
@@ -89,6 +94,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
         'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','bar'],
         'log-level'             => 'info',
         'keepalive-interval'    => 20,
+        'trusted-ca-file'       => '/etc/sensu/ssl/ca.crt',
       }
       its(:content_as_yaml) { is_expected.to eq(expected_content) }
     end
@@ -126,36 +132,37 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
   # and then checking that port gets used by the daemon
   context 'etc_dir changed', if: (['base'].include?(RSpec.configuration.sensu_mode) && fact_on(node, 'service_provider') == 'systemd') do
     before(:context) do
-      pp = <<-EOS
-      class { '::sensu':
-        etc_dir => '/etc/sensugo',
-        use_ssl => false,
-      }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['base'],
-        labels           => { 'foo' => 'bar' },
-        annotations      => { 'contacts' => 'dev@example.com' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-          'api-port' => 4041,
-        }
-      }
-      sensu::agent::subscription { 'linux': }
-      sensu::agent::label { 'cpu.warning': value => '90' }
-      sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz2', redact => true }
-      sensu::agent::annotation { 'foobar': value => 'bar' }
-      sensu::agent::annotation { 'cpu.message': value => 'bar' }
-      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      pp = <<~EOS
+class { '::sensu':
+  etc_dir => '/etc/sensugo',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::agent':
+  backends         => ['sensu-backend:8081'],
+  entity_name      => 'sensu-agent',
+  subscriptions    => ['base'],
+  labels           => { 'foo' => 'bar' },
+  annotations      => { 'contacts' => 'dev@example.com' },
+  config_hash      => {
+    'log-level' => 'info',
+    'keepalive-interval' => 30,
+    'api-port' => 4041,
+  }
+}
+sensu::agent::subscription { 'linux': }
+sensu::agent::label { 'cpu.warning': value => '90' }
+sensu::agent::label { 'cpu.critical': value => '95' }
+sensu::agent::label { 'bar': value => 'baz2', redact => true }
+sensu::agent::annotation { 'foobar': value => 'bar' }
+sensu::agent::annotation { 'cpu.message': value => 'bar' }
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
       EOS
 
       # Always apply backend manifest first to ensure sensuctl is available
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
       # Wait for backend to be ready
-      on backend, 'timeout 300 bash -c "while ! curl -s http://localhost:8080/health; do sleep 5; done"'
+      on backend, 'timeout 300 bash -c "while ! curl -sk https://localhost:8080/health; do sleep 5; done"'
       # Ensure backend service is running
       on backend, 'systemctl start sensu-backend || true'
       on backend, 'systemctl enable sensu-backend || true'
@@ -195,46 +202,51 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
   context 'updates using agent.yml' do
     before(:context) do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::agent':
-        backends             => ['sensu-backend:8081'],
-        agent_managed_entity => true,
-        entity_name          => 'sensu-agent',
-        subscriptions        => ['base','linux'],
-        labels               => { 'foo' => 'baz' },
-        annotations          => { 'contacts' => 'support@example.com' },
-        service_env_vars     => { 'SENSU_API_PORT' => '4041' },
-        config_hash          => {
-          'log-level'           => 'info',
-          'keepalive-interval'  => 30,
-        }
-      }
-      sensu::agent::label { 'cpu.warning': value => '90' }
-      sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz3', redact => true }
-      sensu::agent::label { 'baz': value => 'bar' }
-      sensu::agent::annotation { 'foobar': value => 'baz' }
-      sensu::agent::annotation { 'cpu.message': value => 'baz' }
-      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::agent':
+  backends             => ['sensu-backend:8081'],
+  agent_managed_entity => true,
+  entity_name          => 'sensu-agent',
+  subscriptions        => ['base','linux'],
+  labels               => { 'foo' => 'baz' },
+  annotations          => { 'contacts' => 'support@example.com' },
+  service_env_vars     => { 'SENSU_API_PORT' => '4041' },
+  config_hash          => {
+    'log-level'           => 'info',
+    'keepalive-interval'  => 30,
+  }
+}
+sensu::agent::label { 'cpu.warning': value => '90' }
+sensu::agent::label { 'cpu.critical': value => '95' }
+sensu::agent::label { 'bar': value => 'baz3', redact => true }
+sensu::agent::label { 'baz': value => 'bar' }
+sensu::agent::annotation { 'foobar': value => 'baz' }
+sensu::agent::annotation { 'cpu.message': value => 'baz' }
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
       EOS
 
       # Install sensuctl on backend for entity queries
-      backend_pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       # Always apply backend manifest first to ensure sensuctl is available
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
       # Wait for backend to be ready
-      on backend, 'timeout 300 bash -c "while ! curl -s http://localhost:8080/health; do sleep 5; done"'
+      on backend, 'timeout 300 bash -c "while ! curl -sk https://localhost:8080/health; do sleep 5; done"'
       # Ensure backend service is running
       on backend, 'systemctl start sensu-backend || true'
       on backend, 'systemctl enable sensu-backend || true'
@@ -280,46 +292,51 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
   context 'updates' do
     before(:context) do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['foo'],
-        labels           => { 'foo' => 'bar' },
-        annotations      => { 'contacts' => 'ops@example.com' },
-        service_env_vars => { 'SENSU_API_PORT' => '4041' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-        }
-      }
-      sensu::agent::subscription { 'bar': }
-      sensu::agent::label { 'cpu.warning': value => '90' }
-      sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz3', redact => true }
-      sensu::agent::label { 'baz': value => 'baz' }
-      sensu::agent::annotation { 'foobar': value => 'bar' }
-      sensu::agent::annotation { 'cpu.message': value => 'baz' }
-      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::agent':
+  backends         => ['sensu-backend:8081'],
+  entity_name      => 'sensu-agent',
+  subscriptions    => ['foo'],
+  labels           => { 'foo' => 'bar' },
+  annotations      => { 'contacts' => 'ops@example.com' },
+  service_env_vars => { 'SENSU_API_PORT' => '4041' },
+  config_hash      => {
+    'log-level' => 'info',
+    'keepalive-interval' => 30,
+  }
+}
+sensu::agent::subscription { 'bar': }
+sensu::agent::label { 'cpu.warning': value => '90' }
+sensu::agent::label { 'cpu.critical': value => '95' }
+sensu::agent::label { 'bar': value => 'baz3', redact => true }
+sensu::agent::label { 'baz': value => 'baz' }
+sensu::agent::annotation { 'foobar': value => 'bar' }
+sensu::agent::annotation { 'cpu.message': value => 'baz' }
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
       EOS
 
       # Install sensuctl on backend for entity queries
-      backend_pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       # Always apply backend manifest first to ensure sensuctl is available
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
       # Wait for backend to be ready
-      on backend, 'timeout 300 bash -c "while ! curl -s http://localhost:8080/health; do sleep 5; done"'
+      on backend, 'timeout 300 bash -c "while ! curl -sk https://localhost:8080/health; do sleep 5; done"'
       # Ensure backend service is running
       on backend, 'systemctl start sensu-backend || true'
       on backend, 'systemctl enable sensu-backend || true'
@@ -345,7 +362,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
     describe file('/etc/sensu/agent.yml'), :node => node do
       expected_content = {
-        'backend-url'           => ['ws://sensu-backend:8081'],
+        'backend-url'           => ['wss://sensu-backend:8081'],
         'password'              => 'P@ssw0rd!',
         'name'                  => 'sensu-agent',
         'agent-managed-entity'  => false,
@@ -366,6 +383,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
         'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret','bar'],
         'log-level'             => 'info',
         'keepalive-interval'    => 20,
+        'trusted-ca-file'       => '/etc/sensu/ssl/ca.crt',
       }
       its(:content_as_yaml) { is_expected.to eq(expected_content) }
     end
@@ -402,10 +420,10 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     end
 
     it 'removes redact for bar' do
-      pp = <<-EOS
-      sensu_agent_entity_config { 'redact value bar on sensu-agent in default':
-        ensure => 'absent',
-      }
+      pp = <<~EOS
+sensu_agent_entity_config { 'redact value bar on sensu-agent in default':
+  ensure => 'absent',
+}
       EOS
       apply_manifest_on(node, pp, :catch_failures => true)
     end
@@ -420,48 +438,53 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
   context 'purging' do
     before(:context) do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['foo'],
-        labels           => { 'foo' => 'bar', 'bar' => 'baz' },
-        annotations      => { 'contacts' => 'ops@example.com' },
-        service_env_vars => { 'SENSU_API_PORT' => '4041' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-        }
-      }
-      sensu::agent::subscription { 'base': }
-      sensu::agent::label { 'cpu.warning': value => '90' }
-      sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::annotation { 'cpu.message': value => 'baz' }
-      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::agent':
+  backends         => ['sensu-backend:8081'],
+  entity_name      => 'sensu-agent',
+  subscriptions    => ['foo'],
+  labels           => { 'foo' => 'bar', 'bar' => 'baz' },
+  annotations      => { 'contacts' => 'ops@example.com' },
+  service_env_vars => { 'SENSU_API_PORT' => '4041' },
+  config_hash      => {
+    'log-level' => 'info',
+    'keepalive-interval' => 30,
+  }
+}
+sensu::agent::subscription { 'base': }
+sensu::agent::label { 'cpu.warning': value => '90' }
+sensu::agent::label { 'cpu.critical': value => '95' }
+sensu::agent::annotation { 'cpu.message': value => 'baz' }
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
 
-      sensu_resources { 'sensu_agent_entity_config':
-        purge                => true,
-        agent_entity_configs => ['subscriptions','labels'],
-      }
+sensu_resources { 'sensu_agent_entity_config':
+  purge                => true,
+  agent_entity_configs => ['subscriptions','labels'],
+}
       EOS
 
       # Install sensuctl on backend for entity queries
-      backend_pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::backend': }
+      backend_pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
       EOS
 
       # Always apply backend manifest first to ensure sensuctl is available
       apply_manifest_on(backend, backend_pp, :catch_failures => true)
       # Wait for backend to be ready
-      on backend, 'timeout 300 bash -c "while ! curl -s http://localhost:8080/health; do sleep 5; done"'
+      on backend, 'timeout 300 bash -c "while ! curl -sk https://localhost:8080/health; do sleep 5; done"'
       # Ensure backend service is running
       on backend, 'systemctl start sensu-backend || true'
       on backend, 'systemctl enable sensu-backend || true'
@@ -506,31 +529,32 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
   context 'when backend is down' do
     it 'should work with errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        use_ssl => false,
-        validate_api => false,
-      }
-      class { 'sensu::agent':
-        backends         => ['sensu-backend:8081'],
-        entity_name      => 'sensu-agent',
-        subscriptions    => ['base'],
-        labels           => { 'foo' => 'bar' },
-        annotations      => { 'contacts' => 'dev@example.com' },
-        service_env_vars => { 'SENSU_API_PORT' => '4041' },
-        config_hash      => {
-          'log-level' => 'info',
-          'keepalive-interval' => 30,
-        }
-      }
-      sensu::agent::subscription { 'linux': }
-      sensu::agent::label { 'cpu.warning': value => '90' }
-      sensu::agent::label { 'cpu.critical': value => '95' }
-      sensu::agent::label { 'bar': value => 'baz2', redact => true }
-      sensu::agent::annotation { 'foobar': value => 'bar' }
-      sensu::agent::annotation { 'cpu.message': value => 'bar' }
-      sensu::agent::config_entry { 'keepalive-interval': value => 20 }
-      file { '/tmp/test': ensure => 'file' }
+      pp = <<~EOS
+class { '::sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  validate_api => false,
+}
+class { 'sensu::agent':
+  backends         => ['sensu-backend:8081'],
+  entity_name      => 'sensu-agent',
+  subscriptions    => ['base'],
+  labels           => { 'foo' => 'bar' },
+  annotations      => { 'contacts' => 'dev@example.com' },
+  service_env_vars => { 'SENSU_API_PORT' => '4041' },
+  config_hash      => {
+    'log-level' => 'info',
+    'keepalive-interval' => 30,
+  }
+}
+sensu::agent::subscription { 'linux': }
+sensu::agent::label { 'cpu.warning': value => '90' }
+sensu::agent::label { 'cpu.critical': value => '95' }
+sensu::agent::label { 'bar': value => 'baz2', redact => true }
+sensu::agent::annotation { 'foobar': value => 'bar' }
+sensu::agent::annotation { 'cpu.message': value => 'bar' }
+sensu::agent::config_entry { 'keepalive-interval': value => 20 }
+file { '/tmp/test': ensure => 'file' }
       EOS
 
       on backend, 'puppet resource service sensu-backend ensure=stopped'

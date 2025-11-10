@@ -9,24 +9,28 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   end
   context 'adds license file' do
     it 'should work without errors and be idempotent' do
-      pp = <<-EOS
-      class { 'sensu':
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
-        use_ssl => false,
-      }
-      class { 'sensu::cli': }
-      class { 'sensu::backend': }
-      
-      # Create license file separately to avoid sensu_license resource issues
-      file { '/etc/sensu/license.json':
-        ensure    => 'file',
-        source    => '/root/sensu_license.json',
-        owner     => 'sensu',
-        group     => 'sensu',
-        mode      => '0600',
-        show_diff => false,
-      }
+      pp = <<~EOS
+class { 'sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+
+# Create license file separately to avoid sensu_license resource issues
+file { '/etc/sensu/license.json':
+  ensure    => 'file',
+  source    => '/root/sensu_license.json',
+  owner     => 'sensu',
+  group     => 'sensu',
+  mode      => '0600',
+  show_diff => false,
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -63,24 +67,28 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   end
   context 'updates license file' do
     it 'should work without errors and be idempotent' do
-      pp = <<-EOS
-      class { 'sensu':
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
-        use_ssl => false,
-      }
-      class { 'sensu::cli': }
-      class { 'sensu::backend': }
-      
-      # Create license file separately to avoid sensu_license resource issues
-      file { '/etc/sensu/license.json':
-        ensure    => 'file',
-        source    => '/root/sensu_license.json',
-        owner     => 'sensu',
-        group     => 'sensu',
-        mode      => '0600',
-        show_diff => false,
-      }
+      pp = <<~EOS
+class { 'sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+
+# Create license file separately to avoid sensu_license resource issues
+file { '/etc/sensu/license.json':
+  ensure    => 'file',
+  source    => '/root/sensu_license.json',
+  owner     => 'sensu',
+  group     => 'sensu',
+  mode      => '0600',
+  show_diff => false,
+}
       EOS
 
       # Remove license file to ensure refresh works
@@ -112,24 +120,28 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   end
   context 're-adds license file' do
     it 'should work without errors and be idempotent' do
-      pp = <<-EOS
-      class { 'sensu':
-        api_host => 'sensu-backend',
-        password => 'P@ssw0rd!',
-        use_ssl => false,
-      }
-      class { 'sensu::cli': }
-      class { 'sensu::backend': }
-      
-      # Create license file separately to avoid sensu_license resource issues
-      file { '/etc/sensu/license.json':
-        ensure    => 'file',
-        source    => '/root/sensu_license.json',
-        owner     => 'sensu',
-        group     => 'sensu',
-        mode      => '0600',
-        show_diff => false,
-      }
+      pp = <<~EOS
+class { 'sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+
+# Create license file separately to avoid sensu_license resource issues
+file { '/etc/sensu/license.json':
+  ensure    => 'file',
+  source    => '/root/sensu_license.json',
+  owner     => 'sensu',
+  group     => 'sensu',
+  mode      => '0600',
+  show_diff => false,
+}
       EOS
 
       # Remove license to verify it can re-add

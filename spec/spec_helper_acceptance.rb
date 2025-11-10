@@ -155,8 +155,6 @@ sensu::backend::ssl_cert_source: '/etc/puppetlabs/puppet/ssl/ca/signed/sensu-bac
 sensu::backend::ssl_key_source: '/etc/puppetlabs/puppet/ssl/private_keys/sensu-backend_key.pem'
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
-postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'
-postgresql::server::service_reload: 'systemctl reload postgresql-11 1>/dev/null 2>&1'
 EOS
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
     on setup_nodes, 'mkdir -p -m 0755 /etc/puppetlabs/puppet/data'
@@ -170,8 +168,22 @@ EOS
         server = 'sensu-backend'
       end
       on hosts, puppet("config set --section main server #{server}")
+      # Disable CRL checking for test environment (set in multiple sections to ensure it works)
+      on hosts, puppet("config set --section main certificate_revocation false")
+      on hosts, puppet("config set --section agent certificate_revocation false")
+      # Ensure puppet8 repository is properly configured and cached
+      on puppetserver, 'dnf makecache'
       on puppetserver, puppet("resource package puppetserver ensure=installed")
+      # Configure puppetserver to autosign all certificates
+      create_remote_file(puppetserver, '/etc/puppetlabs/puppet/autosign.conf', '*')
+      on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/autosign.conf'
+      on puppetserver, puppet("config set --section master autosign /etc/puppetlabs/puppet/autosign.conf")
+      # Also disable CRL on puppetserver before starting
+      on puppetserver, puppet("config set --section main certificate_revocation false")
+      on puppetserver, puppet("config set --section master certificate_revocation false")
       on puppetserver, puppet("resource service puppetserver ensure=running")
+      # Wait for puppetserver to fully start
+      on puppetserver, 'sleep 10'
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/hiera.yaml'
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/data/common.yaml'
       create_remote_file(puppetserver, '/etc/puppetlabs/code/environments/production/manifests/site.pp', '')
@@ -180,7 +192,43 @@ EOS
 
     # Setup Puppet Bolt
     if RSpec.configuration.sensu_mode == 'bolt'
-      on setup_nodes, puppet("resource package puppet-bolt ensure=installed")
+      # Install puppet-bolt package, handling different package names across platforms
+      setup_nodes.each do |node|
+        if node['platform'] =~ /el-9/
+          # Rocky 9 uses puppet-bolt from puppet8 repository
+          on node, 'dnf install -y puppet-bolt || true', { :acceptable_exit_codes => [0,1] }
+          # If package install failed, try installing bolt via gem as fallback
+          result = on node, 'which bolt', { :acceptable_exit_codes => [0,1] }
+          if result.exit_code != 0
+            on node, '/opt/puppetlabs/puppet/bin/gem install --no-document bolt', { :acceptable_exit_codes => [0] }
+            # Create bolt wrapper script
+            bolt_wrapper = <<-SCRIPT
+#!/bin/bash
+exec /opt/puppetlabs/puppet/bin/bolt "$@"
+SCRIPT
+            create_remote_file(node, '/usr/local/bin/bolt', bolt_wrapper)
+            on node, 'chmod +x /usr/local/bin/bolt'
+          end
+        elsif node['platform'] =~ /el-8/
+          on node, puppet("resource package puppet-bolt ensure=installed"), { :acceptable_exit_codes => [0,1] }
+        elsif node['platform'] =~ /debian|ubuntu/
+          # Try package install first, fall back to gem if not available
+          on node, puppet("resource package puppet-bolt ensure=installed"), { :acceptable_exit_codes => [0,1] }
+          result = on node, 'which bolt', { :acceptable_exit_codes => [0,1] }
+          if result.exit_code != 0
+            on node, '/opt/puppetlabs/puppet/bin/gem install --no-document bolt', { :acceptable_exit_codes => [0] }
+            # Create bolt wrapper script
+            bolt_wrapper = <<-SCRIPT
+#!/bin/bash
+exec /opt/puppetlabs/puppet/bin/bolt "$@"
+SCRIPT
+            create_remote_file(node, '/usr/local/bin/bolt', bolt_wrapper)
+            on node, 'chmod +x /usr/local/bin/bolt'
+          end
+        else
+          on node, puppet("resource package puppet-bolt ensure=installed"), { :acceptable_exit_codes => [0,1] }
+        end
+      end
       bolt_inventory_cfg = <<-EOS
 config:
   transport: ssh

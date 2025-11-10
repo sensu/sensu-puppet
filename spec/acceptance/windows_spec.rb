@@ -3,7 +3,7 @@ require 'json'
 
 # NOTE: The tests for Windows can not define or change things like subscriptions, labels or annotations
 #       because those changes will require a backend to communicate with and we are unable to run
-#       the Sensu Go backend inside the Appveyor Windows testing environment
+#       the Sensu Go backend inside the Windows testing environment
 
 describe 'sensu::cli class', if: Gem.win_platform? do
   let(:facter_command) do
@@ -16,16 +16,16 @@ describe 'sensu::cli class', if: Gem.win_platform? do
   end
 
   context 'default' do
-    pp = <<-EOS
+    pp = <<~EOS
     class { '::sensu':
-      api_host     => 'localhost',
-      validate_api => false,
-      use_ssl      => false,
+api_host     => 'localhost',
+validate_api => false,
+use_ssl      => false,
     }
     class { 'sensu::cli':
-      install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip',
-      # Not yet able to run backend in appveyor so configure will not work
-      configure      => false,
+install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip',
+# Not yet able to run backend in Windows testing so configure will not work
+configure      => false,
     }
     EOS
 
@@ -66,19 +66,19 @@ describe 'sensu::agent class', if: Gem.win_platform? do
   end
 
   context 'default' do
-    pp = <<-EOS
+    pp = <<~EOS
     class { '::sensu':
-      validate_api => false,
-      use_ssl      => false,
+validate_api => false,
+use_ssl      => false,
     }
     class { 'sensu::agent':
-      backends         => ['sensu-backend:8081'],
-      entity_name      => 'sensu-agent',
-      service_env_vars => { 'SENSU_API_PORT' => '4041' },
-      config_hash      => {
-        'log-level' => 'info',
-      },
-      validate_entity  => false,
+backends         => ['sensu-backend:8081'],
+entity_name      => 'sensu-agent',
+service_env_vars => { 'SENSU_API_PORT' => '4041' },
+config_hash      => {
+  'log-level' => 'info',
+},
+validate_entity  => false,
     }
     EOS
 
@@ -122,20 +122,20 @@ describe 'sensu::agent class', if: Gem.win_platform? do
   end
 
   context 'using package_source' do
-    pp = <<-EOS
+    pp = <<~EOS
     class { '::sensu':
-      validate_api => false,
-      use_ssl      => false,
+validate_api => false,
+use_ssl      => false,
     }
     class { 'sensu::agent':
-      package_name    => 'Sensu Agent',
-      package_source  => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go-agent_5.20.1.12427_en-US.x64.msi',
-      backends        => ['sensu-backend:8081'],
-      entity_name     => 'sensu-agent',
-      config_hash     => {
-        'log-level' => 'info',
-      },
-      validate_entity => false,
+package_name    => 'Sensu Agent',
+package_source  => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go-agent_5.20.1.12427_en-US.x64.msi',
+backends        => ['sensu-backend:8081'],
+entity_name     => 'sensu-agent',
+config_hash     => {
+  'log-level' => 'info',
+},
+validate_entity => false,
     }
     EOS
 

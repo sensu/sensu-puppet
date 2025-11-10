@@ -65,7 +65,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.convert_boolean_property_value(value)
   end
 
-  def self.sensuctl(args, failonfail: nil, combine: nil, **_kwargs)
+  def self.sensuctl(args, failonfail: nil, combine: nil, custom_environment: nil, **_kwargs)
     sensuctl_cmd = which('sensuctl')
     if ! path.nil?
       cmd = [path] + args
@@ -75,6 +75,9 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     opts = {}
     opts[:failonfail] = failonfail.nil? ? true : failonfail
     opts[:combine] = combine.nil? ? true : combine
+    if custom_environment
+      opts[:custom_environment] = custom_environment
+    end
     execute(cmd, opts)
   end
   def sensuctl(cmd_args, **opts)

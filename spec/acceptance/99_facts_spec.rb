@@ -3,7 +3,7 @@ require 'spec_helper_acceptance'
 describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu_mode) do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
-  let(:facter_command) do
+  let(:facter_command) do |result|
     puppet_version = on(backend, 'puppet --version').stdout
     if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
       'puppet facts show'
@@ -14,12 +14,18 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'backend facts' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        validate_api => false,
-        use_ssl => false,
-      }
-      include sensu::backend
+      pp = <<~EOS
+class { '::sensu':
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  include_default_resources => false,
+  include_agent_resources => false,
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -37,12 +43,18 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
     it "should have backend facts" do
       # Apply the backend manifest to ensure it's installed
-      pp = <<-EOS
-      class { '::sensu':
-        validate_api => false,
-        use_ssl => false,
-      }
-      include sensu::backend
+      pp = <<~EOS
+class { '::sensu':
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  include_default_resources => false,
+  include_agent_resources => false,
+}
       EOS
       
       apply_manifest_on(backend, pp, :catch_failures => true)
@@ -72,12 +84,18 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
     it "should have sensuctl facts" do
       # Apply the backend manifest to ensure sensuctl is installed
-      pp = <<-EOS
-      class { '::sensu':
-        validate_api => false,
-        use_ssl => false,
-      }
-      include sensu::backend
+      pp = <<~EOS
+class { '::sensu':
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  include_default_resources => false,
+  include_agent_resources => false,
+}
       EOS
       
       apply_manifest_on(backend, pp, :catch_failures => true)
@@ -112,12 +130,13 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'agent facts' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        validate_api => false,
-        use_ssl => false,
-      }
-      include sensu::agent
+      pp = <<~EOS
+class { '::sensu':
+  validate_api => false,
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+include sensu::agent
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -135,12 +154,13 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
     it "should have agent facts" do
       # Apply the agent manifest to ensure it's installed
-      pp = <<-EOS
-      class { '::sensu':
-        validate_api => false,
-        use_ssl => false,
-      }
-      include sensu::agent
+      pp = <<~EOS
+class { '::sensu':
+  validate_api => false,
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+include sensu::agent
       EOS
       
       apply_manifest_on(agent, pp, :catch_failures => true)

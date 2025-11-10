@@ -4,59 +4,63 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_check { 'test':
-        command                          => 'check-http.rb',
-        subscriptions                    => ['demo'],
-        handlers                         => ['email'],
-        interval                         => 60,
-        check_hooks                      => [
-          { '0'        => ['always.sh'] },
-          { 1          => ['test.sh'] },
-          { 'critical' => ['httpd-restart'] },
-        ],
-        proxy_requests                   => {
-          'entity_attributes' => ["entity.Class == 'proxy'"],
-        },
-        output_metric_format             => 'nagios_perfdata',
-        output_metric_tags               => [{'name' => 'instance', 'value' => '{{ .name }}'}],
-        labels                           => { 'foo' => 'baz' },
-        secrets                          => [
-          {'name' => 'TEST', 'secret' => 'test'}
-        ],
-      }
-      sensu_check { 'test2':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
-      sensu_check { 'test-api':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-        provider      => 'sensu_api',
-      }
-      sensu_namespace { 'test': ensure => 'present' }
-      sensu_check { 'test2 in test':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
-      sensu_check { 'test-api in test':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-        provider      => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_check { 'test':
+  command                          => 'check-http.rb',
+  subscriptions                    => ['demo'],
+  handlers                         => ['email'],
+  interval                         => 60,
+  check_hooks                      => [
+    { '0'        => ['always.sh'] },
+    { 1          => ['test.sh'] },
+    { 'critical' => ['httpd-restart'] },
+  ],
+  proxy_requests                   => {
+    'entity_attributes' => ["entity.Class == 'proxy'"],
+  },
+  output_metric_format             => 'nagios_perfdata',
+  output_metric_tags               => [{'name' => 'instance', 'value' => '{{ .name }}'}],
+  labels                           => { 'foo' => 'baz' },
+  secrets                          => [
+    {'name' => 'TEST', 'secret' => 'test'}
+  ],
+}
+sensu_check { 'test2':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+sensu_check { 'test-api':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+  provider      => 'sensu_api',
+}
+sensu_namespace { 'test': ensure => 'present' }
+sensu_check { 'test2 in test':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+sensu_check { 'test-api in test':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+  provider      => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -73,8 +77,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check' do
-      on node, 'sensuctl check info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-http.rb')
         expect(data['publish']).to eq(true)
         expect(data['stdin']).to eq(false)
@@ -88,8 +92,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on node, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -98,16 +102,16 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace' do
-      on node, 'sensuctl check info test2 --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test2 --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('test2')
         expect(data['metadata']['namespace']).to eq('test')
       end
     end
 
     it 'should have a valid check in namespace using API' do
-      on node, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -118,27 +122,31 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'with chunk size' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu::cli':
-        sensuctl_chunk_size => 1,
-      }
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_check { 'test3':
-        command       => 'check-http3.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
-      sensu_check { 'test4':
-        command       => 'check-cpu4.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+# Note: sensu::backend includes sensu::cli, so we use resource defaults
+Sensuctl_configure {
+  chunk_size => 1,
+}
+sensu_check { 'test3':
+  command       => 'check-http3.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+sensu_check { 'test4':
+  command       => 'check-cpu4.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -157,47 +165,51 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'updates check' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_check { 'test':
-        command                          => 'check-http.rb',
-        subscriptions                    => ['demo'],
-        interval                         => 60,
-        check_hooks                      => [
-          { 'critical' => ['httpd-restart'] },
-          { 'warning'  => ['httpd-restart'] },
-        ],
-        proxy_requests                   => {
-          'entity_attributes' => ['System.OS==linux'],
-        },
-        output_metric_format             => 'graphite_plaintext',
-        output_metric_tags               => [
-          {'name' => 'instance', 'value' => '{{ .name }}'},
-          {'name' => 'prometheus_type', 'value' => 'gauge'},
-        ],
-        labels                           => { 'foo' => 'bar' },
-        secrets                          => [
-          {'name' => 'TEST', 'secret' => 'test2'}
-        ],
-      }
-      sensu_check { 'test-api':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo2'],
-        handlers      => ['email2'],
-        interval      => 120,
-        provider      => 'sensu_api',
-      }
-      sensu_check { 'test-api in test':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo2'],
-        handlers      => ['email2'],
-        interval      => 120,
-        provider      => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_check { 'test':
+  command                          => 'check-http.rb',
+  subscriptions                    => ['demo'],
+  interval                         => 60,
+  check_hooks                      => [
+    { 'critical' => ['httpd-restart'] },
+    { 'warning'  => ['httpd-restart'] },
+  ],
+  proxy_requests                   => {
+    'entity_attributes' => ['System.OS==linux'],
+  },
+  output_metric_format             => 'graphite_plaintext',
+  output_metric_tags               => [
+    {'name' => 'instance', 'value' => '{{ .name }}'},
+    {'name' => 'prometheus_type', 'value' => 'gauge'},
+  ],
+  labels                           => { 'foo' => 'bar' },
+  secrets                          => [
+    {'name' => 'TEST', 'secret' => 'test2'}
+  ],
+}
+sensu_check { 'test-api':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo2'],
+  handlers      => ['email2'],
+  interval      => 120,
+  provider      => 'sensu_api',
+}
+sensu_check { 'test-api in test':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo2'],
+  handlers      => ['email2'],
+  interval      => 120,
+  provider      => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -214,8 +226,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check with extended_attributes properties' do
-      on node, 'sensuctl check info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']},{'warning' => ['httpd-restart']}])
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
@@ -228,8 +240,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on node, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -238,8 +250,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace using API' do
-      on node, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -250,27 +262,35 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'namespace validation when exists' do
     it 'should produce no error' do
-      namespace_pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_namespace { 'devs': ensure => 'present' }
+      namespace_pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_namespace { 'devs': ensure => 'present' }
       EOS
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_check { 'test-namespace':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-        namespace     => 'devs',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_check { 'test-namespace':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+  namespace     => 'devs',
+}
       EOS
 
       apply_manifest_on(node, namespace_pp, :catch_failures => true)
@@ -291,19 +311,23 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'namespace validation' do
     it 'should produce error' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_check { 'test-no-namespace':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-        namespace     => 'dne',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_check { 'test-no-namespace':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+  namespace     => 'dne',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -323,17 +347,21 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_check { 'test': ensure => 'absent' }
-      sensu_check { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_check { 'test': ensure => 'absent' }
+sensu_check { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -356,48 +384,56 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'resources purge' do
     it 'should remove without errors' do
-      before_pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_namespace { 'dev': ensure => 'present' }
-      sensu_check { 'test1':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
-      sensu_check { 'test1 in dev':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
+      before_pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_namespace { 'dev': ensure => 'present' }
+sensu_check { 'test1':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+sensu_check { 'test1 in dev':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
       EOS
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_namespace { 'dev': ensure => 'present' }
-      sensu_check { 'test':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
-      sensu_check { 'test in dev':
-        command       => 'check-cpu.rb',
-        subscriptions => ['demo'],
-        handlers      => ['email'],
-        interval      => 60,
-      }
-      sensu_resources { 'sensu_check':
-        purge => true,
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_namespace { 'dev': ensure => 'present' }
+sensu_check { 'test':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+sensu_check { 'test in dev':
+  command       => 'check-cpu.rb',
+  subscriptions => ['demo'],
+  handlers      => ['email'],
+  interval      => 60,
+}
+sensu_resources { 'sensu_check':
+  purge => true,
+}
       EOS
 
       apply_manifest_on(node, before_pp, :catch_failures => true)
@@ -415,8 +451,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have purged checks' do
-      on node, 'sensuctl check list --format json --all-namespaces' do
-        data = JSON.parse(stdout) || []
+      on node, 'sensuctl check list --format json --all-namespaces' do |result|
+        data = JSON.parse(result.stdout) || []
         expect(data.size).to eq(2)
       end
     end

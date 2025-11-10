@@ -4,67 +4,71 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_ldap_auth { 'openldap':
-        ensure              => 'present',
-        servers             => [
-          {
-            'host'         => '127.0.0.1',
-            'port'         => 389,
-            'binding'      => {
-              'user_dn' => 'cn=binder,dc=acme,dc=org',
-              'password' => 'P@ssw0rd!'
-            },
-            'group_search' => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-            'user_search'  => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-          }
-        ]
-      }
-      sensu_ldap_auth { 'openldap-memberof':
-        ensure              => 'present',
-        servers             => [
-          {
-            'host'         => '127.0.0.1',
-            'port'         => 389,
-            'binding'      => {
-              'user_dn' => 'cn=binder,dc=acme,dc=org',
-              'password' => 'P@ssw0rd!'
-            },
-            'user_search'  => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-          }
-        ]
-      }
-      sensu_ldap_auth { 'openldap-api':
-        ensure              => 'present',
-        servers             => [
-          {
-            'host'         => '127.0.0.1',
-            'port'         => 389,
-            'binding'      => {
-              'user_dn' => 'cn=binder,dc=acme,dc=org',
-              'password' => 'P@ssw0rd!'
-            },
-            'group_search' => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-            'user_search'  => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-          }
-        ],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_ldap_auth { 'openldap':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host'         => '127.0.0.1',
+      'port'         => 389,
+      'binding'      => {
+        'user_dn' => 'cn=binder,dc=acme,dc=org',
+        'password' => 'P@ssw0rd!'
+      },
+      'group_search' => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    }
+  ]
+}
+sensu_ldap_auth { 'openldap-memberof':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host'         => '127.0.0.1',
+      'port'         => 389,
+      'binding'      => {
+        'user_dn' => 'cn=binder,dc=acme,dc=org',
+        'password' => 'P@ssw0rd!'
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    }
+  ]
+}
+sensu_ldap_auth { 'openldap-api':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host'         => '127.0.0.1',
+      'port'         => 389,
+      'binding'      => {
+        'user_dn' => 'cn=binder,dc=acme,dc=org',
+        'password' => 'P@ssw0rd!'
+      },
+      'group_search' => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    }
+  ],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -81,8 +85,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid LDAP auth' do
-      on node, 'sensuctl auth info openldap --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -95,8 +99,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid LDAP auth using memberof' do
-      on node, 'sensuctl auth info openldap-memberof --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap-memberof --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -109,8 +113,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid LDAP auth using API' do
-      on node, 'sensuctl auth info openldap-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -125,51 +129,55 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'updates auth' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_ldap_auth { 'openldap':
-        ensure              => 'present',
-        servers             => [
-          {
-            'host' => 'localhost',
-            'port' => 636,
-            'binding'      => {
-              'user_dn' => 'cn=test,dc=acme,dc=org',
-              'password' => 'supersecret'
-            },
-            'group_search' => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-            'user_search'  => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-          }
-        ]
-      }
-      sensu_ldap_auth { 'openldap-api':
-        ensure              => 'present',
-        servers             => [
-          {
-            'host' => 'localhost',
-            'port' => 636,
-            'binding'      => {
-              'user_dn' => 'cn=test,dc=acme,dc=org',
-              'password' => 'supersecret'
-            },
-            'group_search' => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-            'user_search'  => {
-              'base_dn' => 'dc=acme,dc=org',
-            },
-          }
-        ],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_ldap_auth { 'openldap':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => 'localhost',
+      'port' => 636,
+      'binding'      => {
+        'user_dn' => 'cn=test,dc=acme,dc=org',
+        'password' => 'supersecret'
+      },
+      'group_search' => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    }
+  ]
+}
+sensu_ldap_auth { 'openldap-api':
+  ensure              => 'present',
+  servers             => [
+    {
+      'host' => 'localhost',
+      'port' => 636,
+      'binding'      => {
+        'user_dn' => 'cn=test,dc=acme,dc=org',
+        'password' => 'supersecret'
+      },
+      'group_search' => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+      'user_search'  => {
+        'base_dn' => 'dc=acme,dc=org',
+      },
+    }
+  ],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -190,8 +198,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid ldap auth' do
-      on node, 'sensuctl auth info openldap --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('localhost')
         expect(data['servers'][0]['port']).to eq(636)
@@ -204,8 +212,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid ldap auth using API' do
-      on node, 'sensuctl auth info openldap-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('localhost')
         expect(data['servers'][0]['port']).to eq(636)
@@ -220,14 +228,18 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_ldap_auth { 'openldap': ensure => 'absent' }
-      sensu_ldap_auth { 'openldap-api': ensure => 'absent', provider => 'sensu_api' }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_ldap_auth { 'openldap': ensure => 'absent' }
+sensu_ldap_auth { 'openldap-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent

@@ -4,26 +4,30 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_mutator { 'test':
-        command        => 'test',
-        runtime_assets => ['test'],
-        labels         => { 'foo' => 'baz' },
-        secrets        => [
-          {'name' => 'TEST', 'secret' => 'test'}
-        ],
-      }
-      sensu_mutator { 'test-api':
-        command        => 'test',
-        runtime_assets => ['test'],
-        labels         => { 'foo' => 'baz' },
-        provider       => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_mutator { 'test':
+  command        => 'test',
+  runtime_assets => ['test'],
+  labels         => { 'foo' => 'baz' },
+  secrets        => [
+    {'name' => 'TEST', 'secret' => 'test'}
+  ],
+}
+sensu_mutator { 'test-api':
+  command        => 'test',
+  runtime_assets => ['test'],
+  labels         => { 'foo' => 'baz' },
+  provider       => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -40,8 +44,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator' do
-      on node, 'sensuctl mutator info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('test')
         expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
@@ -50,8 +54,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator using API' do
-      on node, 'sensuctl mutator info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('test')
         expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
@@ -61,28 +65,32 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'update mutator' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_mutator { 'test':
-        command        => 'test',
-        timeout        => 60,
-        runtime_assets => ['test2'],
-        labels         => { 'foo' => 'bar' },
-        secrets        => [
-          {'name' => 'TEST', 'secret' => 'test2'}
-        ],
-      }
-      sensu_mutator { 'test-api':
-        command        => 'test',
-        timeout        => 60,
-        runtime_assets => ['test2'],
-        labels         => { 'foo' => 'bar' },
-        provider       => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_mutator { 'test':
+  command        => 'test',
+  timeout        => 60,
+  runtime_assets => ['test2'],
+  labels         => { 'foo' => 'bar' },
+  secrets        => [
+    {'name' => 'TEST', 'secret' => 'test2'}
+  ],
+}
+sensu_mutator { 'test-api':
+  command        => 'test',
+  timeout        => 60,
+  runtime_assets => ['test2'],
+  labels         => { 'foo' => 'bar' },
+  provider       => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -99,8 +107,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator with updated propery' do
-      on node, 'sensuctl mutator info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(60)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -109,8 +117,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator with updated propery using API' do
-      on node, 'sensuctl mutator info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(60)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -120,17 +128,21 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_mutator { 'test': ensure => 'absent' }
-      sensu_mutator { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_mutator { 'test': ensure => 'absent' }
+sensu_mutator { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent

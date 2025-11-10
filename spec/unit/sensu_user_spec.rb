@@ -61,7 +61,7 @@ describe Puppet::Type.type(:sensu_user) do
   defaults = {
     'disabled': :false,
     'configure': :false,
-    'configure_url': 'http://127.0.0.1:8080',
+    'configure_url': 'https://127.0.0.1:8080',
     'configure_trusted_ca_file': '/etc/sensu/ssl/ca.crt',
   }
 

@@ -4,14 +4,17 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::backend':
-        include_default_resources => false,
-      }
+      pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  include_default_resources => false,
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -38,14 +41,17 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'default resources' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::backend':
-        include_default_resources => true,
-      }
+      pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  include_default_resources => true,
+}
       EOS
 
       # There should be no changes as default resources
@@ -63,14 +69,17 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'service env_vars' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::backend':
-        service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
-      }
+      pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  service_env_vars => { 'SENSU_BACKEND_AGENT_PORT' => '9081' },
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -99,18 +108,20 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   # and then checking that location gets used by the daemon
   context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && fact_on(node, 'service_provider') == 'systemd') do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        etc_dir  => '/etc/sensugo',
-        ssl_dir  => '/etc/sensugo/ssl',
-        password => 'supersecret',
-        use_ssl  => false,
-      }
-      class { 'sensu::backend':
-        config_hash => {
-          'agent-port' => 9081,
-        },
-      }
+      pp = <<~EOS
+class { '::sensu':
+  etc_dir  => '/etc/sensugo',
+  ssl_dir  => '/etc/sensugo/ssl',
+  password => 'supersecret',
+  use_ssl  => false,
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  config_hash => {
+    'agent-port' => 9081,
+  },
+}
       EOS
 
       # Cleanup sensu-backend to verify 'sensu-backend init' works with changed etc_dir
@@ -142,15 +153,19 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'backend and agent' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::backend': }
-      class { 'sensu::agent':
-        backends => ['sensu-backend:8081'],
-      }
+      pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+class { 'sensu::agent':
+  backends => ['sensu-backend:8081'],
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -178,14 +193,17 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'backend without agent' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      class { 'sensu::backend':
-        agent_user_disabled => true,
-      }
+      pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  agent_user_disabled => true,
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -204,12 +222,16 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'handles removal of sensuctl config' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'supersecret',
-        use_ssl => false,
-      }
-      include sensu::backend
+      pp = <<~EOS
+class { '::sensu':
+  password => 'supersecret',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
       EOS
 
       on node, 'rm -rf /root/.config'
@@ -234,14 +256,17 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   context 'reset admin password and opt-out tessen' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { '::sensu':
-        password => 'P@ssw0rd!',
-        use_ssl => false,
-      }
-      class { 'sensu::backend':
-        tessen_ensure => 'absent',
-      }
+      pp = <<~EOS
+class { '::sensu':
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+  tessen_ensure => 'absent',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent

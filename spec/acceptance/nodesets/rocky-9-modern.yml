@@ -7,6 +7,7 @@ HOSTS:
     hypervisor: docker
     image: rockylinux:9
     docker_preserve_image: true
+    docker_platform: linux/amd64
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
@@ -25,6 +26,7 @@ HOSTS:
     hypervisor: docker
     image: rockylinux:9
     docker_preserve_image: true
+    docker_platform: linux/amd64
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:

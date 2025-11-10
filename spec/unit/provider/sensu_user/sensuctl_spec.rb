@@ -54,7 +54,7 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
         :disabled => false,
       }
       expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
-      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','P@ssw0rd!','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
+      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','https://127.0.0.1:8080','--username','test','--password','P@ssw0rd!','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -84,7 +84,7 @@ describe Puppet::Type.type(:sensu_user).provider(:sensuctl) do
         :disabled => false,
       }
       expect(resource.provider).to receive(:sensuctl_create).with('User', {}, expected_spec)
-      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','http://127.0.0.1:8080','--username','test','--password','password','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
+      expect(resource.provider).to receive(:sensuctl).with(['configure','-n','--url','https://127.0.0.1:8080','--username','test','--password','password','--trusted-ca-file','/etc/sensu/ssl/ca.crt'])
       resource.provider.password = 'password'
       resource.provider.flush
     end

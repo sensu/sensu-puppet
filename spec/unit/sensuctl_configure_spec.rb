@@ -7,7 +7,7 @@ describe Puppet::Type.type(:sensuctl_configure) do
       name: 'puppet',
       username: 'admin',
       password: 'P@ssw0rd!',
-      url: 'http://localhost:8080',
+      url: 'https://localhost:8080',
     }
   end
   let(:config) do

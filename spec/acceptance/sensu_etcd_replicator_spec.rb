@@ -4,29 +4,33 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_etcd_replicator { 'role_replicator':
-        ensure        => 'present',
-        ca_cert       => '/path/to/ssl/trusted-certificate-authorities.pem',
-        cert          => '/path/to/ssl/cert.pem',
-        key           => '/path/to/ssl/key.pem',
-        url           => 'http://127.0.0.1:3379',
-        resource_name => 'Role',
-      }
-      sensu_etcd_replicator { 'rolebinding_replicator':
-        ensure        => 'present',
-        ca_cert       => '/path/to/ssl/trusted-certificate-authorities.pem',
-        cert          => '/path/to/ssl/cert.pem',
-        key           => '/path/to/ssl/key.pem',
-        url           => 'http://127.0.0.1:3379',
-        resource_name => 'RoleBinding',
-        provider      => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_etcd_replicator { 'role_replicator':
+  ensure        => 'present',
+  ca_cert       => '/path/to/ssl/trusted-certificate-authorities.pem',
+  cert          => '/path/to/ssl/cert.pem',
+  key           => '/path/to/ssl/key.pem',
+  url           => 'http://127.0.0.1:3379',
+  resource_name => 'Role',
+}
+sensu_etcd_replicator { 'rolebinding_replicator':
+  ensure        => 'present',
+  ca_cert       => '/path/to/ssl/trusted-certificate-authorities.pem',
+  cert          => '/path/to/ssl/cert.pem',
+  key           => '/path/to/ssl/key.pem',
+  url           => 'http://127.0.0.1:3379',
+  resource_name => 'RoleBinding',
+  provider      => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -45,9 +49,9 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
     it 'should have a valid etcd replicators' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -73,31 +77,35 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
 
   context 'updates' do
     it 'should work without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_etcd_replicator { 'role_replicator':
-        ensure                       => 'present',
-        ca_cert                      => '/path/to/ssl/trusted-certificate-authorities2.pem',
-        cert                         => '/path/to/ssl/cert2.pem',
-        key                          => '/path/to/ssl/key2.pem',
-        url                          => 'http://127.0.0.1:3379',
-        resource_name                => 'Role',
-        replication_interval_seconds => 60,
-      }
-      sensu_etcd_replicator { 'rolebinding_replicator':
-        ensure                       => 'present',
-        ca_cert                      => '/path/to/ssl/trusted-certificate-authorities2.pem',
-        cert                         => '/path/to/ssl/cert2.pem',
-        key                          => '/path/to/ssl/key2.pem',
-        url                          => 'http://127.0.0.1:3379',
-        resource_name                => 'RoleBinding',
-        replication_interval_seconds => 60,
-        provider                     => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_etcd_replicator { 'role_replicator':
+  ensure                       => 'present',
+  ca_cert                      => '/path/to/ssl/trusted-certificate-authorities2.pem',
+  cert                         => '/path/to/ssl/cert2.pem',
+  key                          => '/path/to/ssl/key2.pem',
+  url                          => 'http://127.0.0.1:3379',
+  resource_name                => 'Role',
+  replication_interval_seconds => 60,
+}
+sensu_etcd_replicator { 'rolebinding_replicator':
+  ensure                       => 'present',
+  ca_cert                      => '/path/to/ssl/trusted-certificate-authorities2.pem',
+  cert                         => '/path/to/ssl/cert2.pem',
+  key                          => '/path/to/ssl/key2.pem',
+  url                          => 'http://127.0.0.1:3379',
+  resource_name                => 'RoleBinding',
+  replication_interval_seconds => 60,
+  provider                     => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -116,9 +124,9 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
     it 'should have a valid etcd replicators' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -144,17 +152,21 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      class { 'sensu':
-        use_ssl => false,
-      }
-      include sensu::backend
-      include sensu::cli
-      sensu_etcd_replicator { 'role_replicator': ensure => 'absent' }
-      sensu_etcd_replicator { 'rolebinding_replicator':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_etcd_replicator { 'role_replicator': ensure => 'absent' }
+sensu_etcd_replicator { 'rolebinding_replicator':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -173,8 +185,8 @@ describe 'sensu_etcd_replicator', if: RSpec.configuration.sensu_mode == 'types' 
     it 'removed etcd replicators' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do
-        expect(stdout).to be_empty
+      on node, 'sensuctl dump federation/v1.EtcdReplicator --format yaml --all-namespaces' do |result|
+        expect(result.stdout).to be_empty
       end
     end
   end
