@@ -172,7 +172,16 @@ EOS
       on hosts, puppet("config set --section main certificate_revocation false")
       on hosts, puppet("config set --section agent certificate_revocation false")
       # Ensure puppet8 repository is properly configured and cached
-      on puppetserver, 'dnf makecache'
+      # Use OS-specific package manager commands
+      if puppetserver['platform'] =~ /debian|ubuntu/
+        on puppetserver, 'apt-get update'
+        # Install Java for Puppetserver on Debian/Ubuntu
+        on puppetserver, 'apt-get install -y openjdk-17-jre-headless || apt-get install -y openjdk-11-jre-headless'
+      else
+        on puppetserver, 'dnf makecache'
+        # Install Java for Puppetserver on Rocky/RHEL
+        on puppetserver, 'dnf install -y java-17-openjdk-headless || dnf install -y java-11-openjdk-headless'
+      end
       on puppetserver, puppet("resource package puppetserver ensure=installed")
       # Configure puppetserver to autosign all certificates
       create_remote_file(puppetserver, '/etc/puppetlabs/puppet/autosign.conf', '*')
@@ -181,9 +190,19 @@ EOS
       # Also disable CRL on puppetserver before starting
       on puppetserver, puppet("config set --section main certificate_revocation false")
       on puppetserver, puppet("config set --section master certificate_revocation false")
-      on puppetserver, puppet("resource service puppetserver ensure=running")
-      # Wait for puppetserver to fully start
-      on puppetserver, 'sleep 10'
+      # Start puppetserver service
+      on puppetserver, puppet("resource service puppetserver ensure=running enable=true")
+      # Wait for puppetserver to fully start and verify it's running
+      sleep_time = 30
+      logger.info("Waiting #{sleep_time} seconds for Puppetserver to fully start...")
+      sleep sleep_time
+      # Verify Puppetserver is actually running
+      result = on puppetserver, puppet("resource service puppetserver"), :acceptable_exit_codes => [0]
+      unless result.stdout.include?("ensure => 'running'")
+        on puppetserver, 'systemctl status puppetserver', :acceptable_exit_codes => [0,1,2,3]
+        on puppetserver, 'journalctl -xeu puppetserver -n 50 --no-pager', :acceptable_exit_codes => [0,1]
+        raise "Puppetserver failed to start on #{puppetserver}"
+      end
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/hiera.yaml'
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/data/common.yaml'
       create_remote_file(puppetserver, '/etc/puppetlabs/code/environments/production/manifests/site.pp', '')

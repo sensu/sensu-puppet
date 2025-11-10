@@ -43,7 +43,8 @@ class { 'sensu::agent':
   
   context 'adds postgresql datastore' do
     it 'should work without errors and be idempotent' do
-      # Install PostgreSQL and configure backend to use it
+      # Use PostgreSQL 13 on both Rocky and Ubuntu for consistency
+      # Rocky 9 defaults to PostgreSQL 13, so we match that on Ubuntu
       pp = <<~EOS
 class { '::sensu':
   password => 'supersecret',
@@ -51,9 +52,12 @@ class { '::sensu':
   ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
 }
 class { 'postgresql::globals':
-  manage_package_repo => false,
+  manage_package_repo => true,
+  version             => '13',
 }
-class { 'postgresql::server':}
+class { 'postgresql::server':
+  postgres_password => 'changeme',
+}
 class { 'sensu::backend':
   ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
   ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
@@ -75,17 +79,24 @@ sensu_check { 'event-test-pg':
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
+        # Set locale environment variables to prevent encoding errors
+        locale_env = {
+          'LANG' => 'en_US.UTF-8',
+          'LANGUAGE' => 'en_US:en',
+          'LC_ALL' => 'en_US.UTF-8'
+        }
+        
         # Run it multiple times with proper stabilization
         # First run: Install PostgreSQL and start services
-        apply_manifest_on(node, pp, :catch_failures => true, :acceptable_exit_codes => [0,2])
+        apply_manifest_on(node, pp, :catch_failures => true, :acceptable_exit_codes => [0,2], :environment => locale_env)
         sleep 15  # Let PostgreSQL service fully start
         
         # Second run: Backend reconfigures for PostgreSQL datastore
-        apply_manifest_on(node, pp, :catch_failures => true, :acceptable_exit_codes => [0,2])
+        apply_manifest_on(node, pp, :catch_failures => true, :acceptable_exit_codes => [0,2], :environment => locale_env)
         sleep 20  # Let backend fully restart and reconfigure, PostgreSQL to stabilize
         
         # Third run: Allow service restart in Docker environments
-        apply_manifest_on(node, pp, :acceptable_exit_codes => [0,2])
+        apply_manifest_on(node, pp, :acceptable_exit_codes => [0,2], :environment => locale_env)
       end
       # Add the check
       apply_manifest_on(node, check_pp, :catch_failures => true)
@@ -146,6 +157,12 @@ sensu_check { 'event-test-pg':
 
   context 'updates postgresql datastore' do
     it 'should not expose dsn changes to logs' do
+      locale_env = {
+        'LANG' => 'en_US.UTF-8',
+        'LANGUAGE' => 'en_US:en',
+        'LC_ALL' => 'en_US.UTF-8'
+      }
+      
       setup_pp = <<~EOS
 class { '::sensu':
   password => 'supersecret',
@@ -174,8 +191,8 @@ class { 'sensu::backend':
   postgresql_password  => 'foobar',
 }
       EOS
-      apply_manifest_on(node, setup_pp, :catch_failures => true)
-      result = apply_manifest_on(node, pp, :catch_failures => true)
+      apply_manifest_on(node, setup_pp, :catch_failures => true, :environment => locale_env)
+      result = apply_manifest_on(node, pp, :catch_failures => true, :environment => locale_env)
       expect(result.stdout).not_to include('supersecret')
       expect(result.stderr).not_to include('supersecret')
       expect(result.stdout).not_to include('foobar')
@@ -213,9 +230,16 @@ sensu_check { 'event-test-pg-removal':
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
+        # Set locale environment variables to prevent encoding errors
+        locale_env = {
+          'LANG' => 'en_US.UTF-8',
+          'LANGUAGE' => 'en_US:en',
+          'LC_ALL' => 'en_US.UTF-8'
+        }
+        
         # Run it twice and test for idempotency
-        apply_manifest_on(node, pp, :catch_failures => true)
-        apply_manifest_on(node, pp, :catch_changes  => true)
+        apply_manifest_on(node, pp, :catch_failures => true, :environment => locale_env)
+        apply_manifest_on(node, pp, :catch_changes  => true, :environment => locale_env)
       end
       # Add the check
       apply_manifest_on(node, check_pp, :catch_failures => true)

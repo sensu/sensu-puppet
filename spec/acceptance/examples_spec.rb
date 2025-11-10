@@ -25,8 +25,17 @@ describe 'examples', if: RSpec.configuration.sensu_mode == 'examples' do
     it "should apply without errors" do
       agent_pp = File.read(File.join(RSpec.configuration.examples_dir, 'postgresql-ssl', 'postgresql.pp'))
       backend_pp = File.read(File.join(RSpec.configuration.examples_dir, 'postgresql-ssl', 'sensu-backend.pp'))
+      
+      # Replace the postgresql::globals declaration to use PostgreSQL 13 with package repo management
+      # The example file has: manage_package_repo => false
+      # We need: manage_package_repo => true, version => '13'
+      agent_pp_with_version = agent_pp.gsub(
+        /class\s*{\s*'postgresql::globals':\s*manage_package_repo\s*=>\s*false,?\s*}/m,
+        "class { 'postgresql::globals':\n  manage_package_repo => true,\n  version             => '13',\n}"
+      )
+      
       if RSpec.configuration.sensu_use_agent
-        site_pp = "node 'sensu-backend' { #{backend_pp} }\nnode 'sensu-agent' { #{agent_pp} }"
+        site_pp = "node 'sensu-backend' { #{backend_pp} }\nnode 'sensu-agent' { #{agent_pp_with_version} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
@@ -34,9 +43,16 @@ describe 'examples', if: RSpec.configuration.sensu_mode == 'examples' do
         on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
         on backend, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
-        apply_manifest_on(agent, agent_pp, :catch_failures => true)
+        # Set locale environment variables to prevent encoding errors in PostgreSQL operations
+        locale_env = {
+          'LANG' => 'en_US.UTF-8',
+          'LANGUAGE' => 'en_US:en',
+          'LC_ALL' => 'en_US.UTF-8'
+        }
+        
+        apply_manifest_on(agent, agent_pp_with_version, :catch_failures => true, :environment => locale_env)
         # Allow service restart on second run in Docker environments
-        apply_manifest_on(agent, agent_pp, :acceptable_exit_codes => [0,2])
+        apply_manifest_on(agent, agent_pp_with_version, :acceptable_exit_codes => [0,2], :environment => locale_env)
         apply_manifest_on(backend, backend_pp, :catch_failures => true)
         apply_manifest_on(backend, backend_pp, :catch_changes  => true)
       end

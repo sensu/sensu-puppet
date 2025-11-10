@@ -2,6 +2,15 @@ require 'spec_helper_acceptance'
 
 describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
+  
+  # Determine CA bundle path based on OS
+  os_family = fact_on(node, 'os.family')
+  ca_bundle_path = if os_family == 'Debian'
+                     '/etc/ssl/certs/ca-certificates.crt'
+                   else
+                     '/etc/ssl/certs/ca-bundle.crt'
+                   end
+  
   context 'default' do
     it 'should work without errors' do
       pp = <<~EOS
@@ -22,7 +31,7 @@ sensu_secrets_vault_provider { 'my_vault':
   max_retries  => 2,
   timeout      => "20s",
   tls          => {
-    "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+    "ca_cert" => "#{ca_bundle_path}"
   },
   rate_limiter => {
     "limit" => 10,
@@ -31,7 +40,7 @@ sensu_secrets_vault_provider { 'my_vault':
 }
 file { '/tmp/secret':
   ensure  => 'file',
-  content => "supersecret\n",
+  content => "supersecret\\n",
   notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
 }
 sensu_secrets_vault_provider { 'my_vault-token_file':
@@ -42,7 +51,7 @@ sensu_secrets_vault_provider { 'my_vault-token_file':
   max_retries  => 2,
   timeout      => "20s",
   tls          => {
-    "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+    "ca_cert" => "#{ca_bundle_path}"
   },
   rate_limiter => {
     "limit" => 10,
@@ -57,7 +66,7 @@ sensu_secrets_vault_provider { 'my_vault-api':
   max_retries  => 2,
   timeout      => "20s",
   tls          => {
-    "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+    "ca_cert" => "#{ca_bundle_path}"
   },
   rate_limiter => {
     "limit" => 10,
@@ -107,7 +116,7 @@ sensu_secret { 'test-api':
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
         expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end
@@ -127,7 +136,7 @@ sensu_secret { 'test-api':
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
         expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end
@@ -147,8 +156,9 @@ sensu_secret { 'test-api':
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
-        expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
+        expect(spec['client']["rate_limiter"]["limit"]).to eq(10.0)
+        expect(spec['client']["rate_limiter"]["burst"]).to eq(100)
       end
     end
     it 'should have a valid secret' do
@@ -204,7 +214,7 @@ sensu_secrets_vault_provider { 'my_vault-token_file':
   max_retries  => 2,
   timeout      => "20s",
   tls          => {
-    "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
+    "ca_cert" => "#{ca_bundle_path}"
   },
   rate_limiter => {
     "limit" => 10,
@@ -288,7 +298,7 @@ sensu_secret { 'test-api in default':
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
         expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end

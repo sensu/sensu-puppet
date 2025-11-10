@@ -37,7 +37,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensuctl) do
   describe 'create' do
     it 'should create a bonsai_asset' do
       expected_cmd = ['asset','add','sensu/sensu-pagerduty-handler','--rename','sensu/sensu-pagerduty-handler','--namespace','default']
-      expect(resource.provider).to receive(:sensuctl).with(expected_cmd, {})
+      expect(resource.provider).to receive(:sensuctl).with(expected_cmd)
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -45,7 +45,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensuctl) do
     it 'should create a bonsai_asset for latest' do
       config[:version] = 'latest'
       expected_cmd = ['asset','add','sensu/sensu-pagerduty-handler','--rename','sensu/sensu-pagerduty-handler','--namespace','default']
-      expect(resource.provider).to receive(:sensuctl).with(expected_cmd, {})
+      expect(resource.provider).to receive(:sensuctl).with(expected_cmd)
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -53,7 +53,7 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensuctl) do
     it 'should create a bonsai_asset for a version' do
       config[:version] = '1.2.0'
       expected_cmd = ['asset','add','sensu/sensu-pagerduty-handler:1.2.0','--rename','sensu/sensu-pagerduty-handler','--namespace','default']
-      expect(resource.provider).to receive(:sensuctl).with(expected_cmd, {})
+      expect(resource.provider).to receive(:sensuctl).with(expected_cmd)
       resource.provider.create
       property_hash = resource.provider.instance_variable_get("@property_hash")
       expect(property_hash[:ensure]).to eq(:present)
@@ -71,13 +71,13 @@ describe Puppet::Type.type(:sensu_bonsai_asset).provider(:sensuctl) do
   describe 'flush' do
     it 'should install latest bonsai asset' do
       expected_cmd = ['asset','add','sensu/sensu-pagerduty-handler','--rename','sensu/sensu-pagerduty-handler','--namespace','default']
-      expect(resource.provider).to receive(:sensuctl).with(expected_cmd, {})
+      expect(resource.provider).to receive(:sensuctl).with(expected_cmd)
       resource.provider.version = 'latest'
       resource.provider.flush
     end
     it 'should install a version of bonsai asset' do
       expected_cmd = ['asset','add','sensu/sensu-pagerduty-handler:1.2.0','--rename','sensu/sensu-pagerduty-handler','--namespace','default']
-      expect(resource.provider).to receive(:sensuctl).with(expected_cmd, {})
+      expect(resource.provider).to receive(:sensuctl).with(expected_cmd)
       resource.provider.version = '1.2.0'
       resource.provider.flush
     end

@@ -26,22 +26,17 @@ jobs:
         ci_build:
         - no
         set:
-        - rocky-8
+        - rocky-9-modern
         - ubuntu-24.04-modern
         include:
         - sensu_mode: types
           puppet: puppet8
           use_agent: yes
           ci_build: no
-          set: rocky-8
+          set: rocky-9-modern
         - sensu_mode: bolt
           puppet: puppet8
-          set: rocky-8
-        - sensu_mode: types
-          puppet: puppet8
-          use_agent: yes
-          ci_build: no
-          set: rocky-8
+          set: rocky-9-modern
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
