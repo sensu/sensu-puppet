@@ -183,6 +183,32 @@ EOS
         on puppetserver, 'dnf install -y java-17-openjdk-headless || dnf install -y java-11-openjdk-headless'
       end
       on puppetserver, puppet("resource package puppetserver ensure=installed")
+      # Ensure test CA has all files Puppetserver expects for a complete CA
+      # The test SSL ca_crl.pem file is already included in tests/ssl/ca/
+      # Puppetserver needs ca_key.pem directly in the ca/ directory, not just in private/
+      # Copy the key from private/ to ca/ directory with proper ownership
+      on puppetserver, 'cp /etc/puppetlabs/puppet/ssl/ca/private/ca_key.pem /etc/puppetlabs/puppet/ssl/ca/ca_key.pem', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chown puppet:puppet /etc/puppetlabs/puppet/ssl/ca/ca_key.pem', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chmod 0640 /etc/puppetlabs/puppet/ssl/ca/ca_key.pem', :acceptable_exit_codes => [0,1]
+      
+      # Reset index.txt to prevent validation of pre-existing signed certificates
+      # Also clear the signed/ directory to prevent returning pre-generated test certificates
+      on puppetserver, 'rm -f /etc/puppetlabs/puppet/ssl/ca/index.txt*', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'rm -rf /etc/puppetlabs/puppet/ssl/ca/signed/*', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'touch /etc/puppetlabs/puppet/ssl/ca/index.txt', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'touch /etc/puppetlabs/puppet/ssl/ca/inventory.txt', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'echo 01 > /etc/puppetlabs/puppet/ssl/ca/serial', :acceptable_exit_codes => [0,1]
+      
+      # Fix ownership and permissions for all CA files including the pre-generated CRL
+      # Puppetserver needs to write to inventory.txt, serial, and other files when signing certificates
+      # Puppetserver needs to write to inventory.txt, serial, and other files when signing certificates
+      # Give full owner permissions to puppet user for all CA files and directories
+      on puppetserver, 'chown -R puppet:puppet /etc/puppetlabs/puppet/ssl/ca', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chown -R puppet:puppet /etc/puppetlabs/puppet/ssl/ca/private', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chmod -R 0700 /etc/puppetlabs/puppet/ssl/ca', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chmod -R 0600 /etc/puppetlabs/puppet/ssl/ca/*', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chmod 0700 /etc/puppetlabs/puppet/ssl/ca/private', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'chmod 0700 /etc/puppetlabs/puppet/ssl/ca/signed', :acceptable_exit_codes => [0,1]
       # Configure puppetserver to autosign all certificates
       create_remote_file(puppetserver, '/etc/puppetlabs/puppet/autosign.conf', '*')
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/autosign.conf'
@@ -190,23 +216,46 @@ EOS
       # Also disable CRL on puppetserver before starting
       on puppetserver, puppet("config set --section main certificate_revocation false")
       on puppetserver, puppet("config set --section master certificate_revocation false")
-      # Start puppetserver service
+      # Start puppetserver service with complete test CA
       on puppetserver, puppet("resource service puppetserver ensure=running enable=true")
       # Wait for puppetserver to fully start and verify it's running
       sleep_time = 30
-      logger.info("Waiting #{sleep_time} seconds for Puppetserver to fully start...")
+      logger.info("Waiting #{sleep_time} seconds for Puppetserver to fully start with test CA...")
       sleep sleep_time
       # Verify Puppetserver is actually running
       result = on puppetserver, puppet("resource service puppetserver"), :acceptable_exit_codes => [0]
-      unless result.stdout.include?("ensure => 'running'")
+      # Check if the output indicates the service is running (handle various output formats)
+      unless result.stdout =~ /ensure\s*=>\s*'?running'?/
+        logger.error("Puppetserver does not appear to be running. Output was: #{result.stdout}")
         on puppetserver, 'systemctl status puppetserver', :acceptable_exit_codes => [0,1,2,3]
         on puppetserver, 'journalctl -xeu puppetserver -n 50 --no-pager', :acceptable_exit_codes => [0,1]
         raise "Puppetserver failed to start on #{puppetserver}"
       end
+      logger.info("Puppetserver is running successfully on #{puppetserver} with test CA")
+      
+      # Debug: Check CA structure and permissions
+      logger.info("Verifying CA structure and permissions...")
+      on puppetserver, 'ls -la /etc/puppetlabs/puppet/ssl/ca/', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'ls -la /etc/puppetlabs/puppet/ssl/ca/private/', :acceptable_exit_codes => [0,1]
+      on puppetserver, 'ls -la /etc/puppetlabs/puppet/ssl/ca/signed/', :acceptable_exit_codes => [0,1]
+      
+      # Check Puppetserver logs for any startup warnings
+      logger.info("Checking Puppetserver logs for any issues...")
+      on puppetserver, 'journalctl -xeu puppetserver -n 20 --no-pager | grep -i "error\|warn\|ca" || true', :acceptable_exit_codes => [0,1]
+      
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/hiera.yaml'
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/data/common.yaml'
       create_remote_file(puppetserver, '/etc/puppetlabs/code/environments/production/manifests/site.pp', '')
       on puppetserver, "chmod 0644 /etc/puppetlabs/code/environments/production/manifests/site.pp"
+      
+      # Clean up agent SSL directories to prevent certificate mismatch errors
+      # The test SSL files are for Sensu, not for Puppet agent authentication
+      # Let puppet agent generate fresh certificates signed by Puppetserver
+      agents = hosts.reject { |h| h == puppetserver }
+      agents.each do |agent|
+        logger.info("Cleaning Puppet SSL directory on #{agent} to allow fresh certificate generation...")
+        on agent, 'rm -rf /etc/puppetlabs/puppet/ssl/private_keys /etc/puppetlabs/puppet/ssl/certs /etc/puppetlabs/puppet/ssl/certificate_requests /etc/puppetlabs/puppet/ssl/public_keys', :acceptable_exit_codes => [0,1]
+      end
     end
 
     # Setup Puppet Bolt

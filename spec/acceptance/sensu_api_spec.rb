@@ -53,7 +53,15 @@ sensu_check { 'test-api in test':
         site_pp = "node 'sensu-agent' { #{pp} }"
         puppetserver = hosts_as('puppetserver')[0]
         create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
-        on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        begin
+          on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        rescue Beaker::Host::CommandFailure => e
+          # Dump Puppetserver logs if agent fails
+          logger.error("Puppet agent failed, checking Puppetserver logs...")
+          on puppetserver, 'tail -100 /var/log/puppetlabs/puppetserver/puppetserver.log', :acceptable_exit_codes => [0,1]
+          on puppetserver, 'journalctl -xeu puppetserver -n 100 --no-pager | tail -50', :acceptable_exit_codes => [0,1]
+          raise e
+        end
         on agent, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
       else
         apply_manifest_on(agent, pp, :catch_failures => true)
