@@ -1,0 +1,75 @@
+HOSTS:
+  sensu-backend-1:
+    roles:
+      - sensu-backend
+      - default
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 apt-transport-https ca-certificates lsb-release systemd'
+      - 'locale-gen en_US.UTF-8'
+      - 'apt-get install -y iputils-ping dbus'
+      - 'systemctl enable ssh'
+    docker_container_name: 'sensu-backend-1-ubuntu2404'
+  sensu-backend-2:
+    roles:
+      - sensu-backend
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 apt-transport-https ca-certificates lsb-release systemd'
+      - 'locale-gen en_US.UTF-8'
+      - 'apt-get install -y iputils-ping dbus'
+      - 'systemctl enable ssh'
+    docker_container_name: 'sensu-backend-2-ubuntu2404'
+  sensu-backend-3:
+    roles:
+      - sensu-backend
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 apt-transport-https ca-certificates lsb-release systemd'
+      - 'locale-gen en_US.UTF-8'
+      - 'apt-get install -y iputils-ping dbus'
+      - 'systemctl enable ssh'
+    docker_container_name: 'sensu-backend-3-ubuntu2404'
+  sensu-agent:
+    roles:
+      - agent
+      - sensu-agent
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 apt-transport-https ca-certificates lsb-release systemd'
+      - 'locale-gen en_US.UTF-8'
+      - 'apt-get install -y iputils-ping dbus'
+      - 'systemctl enable ssh'
+    docker_container_name: 'sensu-agent-ubuntu2404'
+CONFIG:
+  type: foss
+  log_level: debug
+  puppet_collection: puppet8
+ssh:
+  password: root
+  auth_methods: ['password']
+  port: 22

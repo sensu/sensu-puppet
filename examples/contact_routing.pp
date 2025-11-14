@@ -1,10 +1,17 @@
 # Sensu Go docs: https://docs.sensu.io/sensu-go/latest/guides/contact-routing/
 
-include sensu::backend
+class { 'sensu':
+  use_ssl => false,
+}
 
-sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':
-  ensure  => 'present',
-  version => 'latest',
+include sensu::backend
+include sensu::cli
+
+exec { 'add sensu-go-has-contact-filter asset':
+  path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+  command => 'sensuctl asset add sensu/sensu-go-has-contact-filter',
+  unless  => 'sensuctl asset info sensu/sensu-go-has-contact-filter',
+  require => Sensuctl_configure['puppet'],
 }
 
 sensu_filter { 'contact_dev':
@@ -20,9 +27,11 @@ sensu_filter { 'contact_ops':
   expressions    => ['has_contact(event, "ops")'],
 }
 
-sensu_bonsai_asset { 'sensu/sensu-email-handler':
-  ensure  => 'present',
-  version => 'latest',
+exec { 'add sensu-email-handler asset':
+  path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+  command => 'sensuctl asset add sensu/sensu-email-handler',
+  unless  => 'sensuctl asset info sensu/sensu-email-handler',
+  require => Sensuctl_configure['puppet'],
 }
 
 sensu_handler { 'email_dev':

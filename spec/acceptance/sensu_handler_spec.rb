@@ -4,35 +4,43 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_handler { 'test':
-        type           => 'pipe',
-        command        => 'notify.rb',
-        runtime_assets => ['test'],
-        labels         => { 'foo' => 'baz' },
-        secrets        => [
-          {'name' => 'TEST', 'secret' => 'test'}
-        ],
-      }
-      sensu_handler { 'test2':
-        type           => 'tcp',
-        socket         => {'host' => '127.0.0.1', 'port' => 1234},
-        labels         => { 'foo' => 'bar' },
-      }
-      sensu_handler { 'test-api':
-        type           => 'pipe',
-        command        => 'notify.rb',
-        runtime_assets => ['test'],
-        labels         => { 'foo' => 'baz' },
-        provider       => 'sensu_api',
-      }
-      sensu_handler { 'test-api2':
-        type           => 'tcp',
-        socket         => {'host' => '127.0.0.1', 'port' => 1234},
-        labels         => { 'foo' => 'bar' },
-        provider       => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_handler { 'test':
+  type           => 'pipe',
+  command        => 'notify.rb',
+  runtime_assets => ['test'],
+  labels         => { 'foo' => 'baz' },
+  secrets        => [
+    {'name' => 'TEST', 'secret' => 'test'}
+  ],
+}
+sensu_handler { 'test2':
+  type           => 'tcp',
+  socket         => {'host' => '127.0.0.1', 'port' => 1234},
+  labels         => { 'foo' => 'bar' },
+}
+sensu_handler { 'test-api':
+  type           => 'pipe',
+  command        => 'notify.rb',
+  runtime_assets => ['test'],
+  labels         => { 'foo' => 'baz' },
+  provider       => 'sensu_api',
+}
+sensu_handler { 'test-api2':
+  type           => 'tcp',
+  socket         => {'host' => '127.0.0.1', 'port' => 1234},
+  labels         => { 'foo' => 'bar' },
+  provider       => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -49,8 +57,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid pipe handler' do
-      on node, 'sensuctl handler info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['type']).to eq('pipe')
         expect(data['timeout']).to eq(0)
         expect(data['command']).to eq('notify.rb')
@@ -60,8 +68,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid tcp handler' do
-      on node, 'sensuctl handler info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['type']).to eq('tcp')
         expect(data['timeout']).to eq(60)
         expect(data['socket']).to eq({'host' => '127.0.0.1', 'port' => 1234})
@@ -70,8 +78,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid pipe handler using API' do
-      on node, 'sensuctl handler info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['type']).to eq('pipe')
         expect(data['timeout']).to eq(0)
         expect(data['command']).to eq('notify.rb')
@@ -80,8 +88,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid tcp handler using API' do
-      on node, 'sensuctl handler info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['type']).to eq('tcp')
         expect(data['timeout']).to eq(60)
         expect(data['socket']).to eq({'host' => '127.0.0.1', 'port' => 1234})
@@ -92,37 +100,45 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'update handler' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_handler { 'test':
-        type           => 'pipe',
-        command        => 'notify.rb',
-        filters        => ['production'],
-        runtime_assets => ['test2'],
-        labels         => { 'foo' => 'bar' },
-        secrets        => [
-          {'name' => 'TEST', 'secret' => 'test2'}
-        ],
-      }
-      sensu_handler { 'test2':
-        type           => 'tcp',
-        socket         => {'host' => 'localhost', 'port' => 5678},
-        labels         => { 'foo' => 'bar' },
-      }
-      sensu_handler { 'test-api':
-        type           => 'pipe',
-        command        => 'notify.rb',
-        filters        => ['production'],
-        runtime_assets => ['test2'],
-        labels         => { 'foo' => 'bar' },
-        provider       => 'sensu_api',
-      }
-      sensu_handler { 'test-api2':
-        type           => 'tcp',
-        socket         => {'host' => 'localhost', 'port' => 5678},
-        labels         => { 'foo' => 'bar' },
-        provider       => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_handler { 'test':
+  type           => 'pipe',
+  command        => 'notify.rb',
+  filters        => ['production'],
+  runtime_assets => ['test2'],
+  labels         => { 'foo' => 'bar' },
+  secrets        => [
+    {'name' => 'TEST', 'secret' => 'test2'}
+  ],
+}
+sensu_handler { 'test2':
+  type           => 'tcp',
+  socket         => {'host' => 'localhost', 'port' => 5678},
+  labels         => { 'foo' => 'bar' },
+}
+sensu_handler { 'test-api':
+  type           => 'pipe',
+  command        => 'notify.rb',
+  filters        => ['production'],
+  runtime_assets => ['test2'],
+  labels         => { 'foo' => 'bar' },
+  provider       => 'sensu_api',
+}
+sensu_handler { 'test-api2':
+  type           => 'tcp',
+  socket         => {'host' => 'localhost', 'port' => 5678},
+  labels         => { 'foo' => 'bar' },
+  provider       => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -139,8 +155,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid pipe handler with updated propery' do
-      on node, 'sensuctl handler info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['filters']).to eq(['production'])
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -149,15 +165,15 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid tcp handler with updated propery' do
-      on node, 'sensuctl handler info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
       end
     end
 
     it 'should have a valid pipe handler with updated propery using API' do
-      on node, 'sensuctl handler info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['filters']).to eq(['production'])
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -165,8 +181,8 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid tcp handler with updated propery using API' do
-      on node, 'sensuctl handler info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl handler info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['socket']).to eq({'host' => 'localhost', 'port' => 5678})
       end
     end
@@ -174,13 +190,21 @@ describe 'sensu_handler', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_handler { 'test': ensure => 'absent' }
-      sensu_handler { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_handler { 'test': ensure => 'absent' }
+sensu_handler { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent

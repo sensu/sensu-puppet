@@ -4799,7 +4799,7 @@ Default value: `/etc/sensu/ssl/ca.crt`
 
 URL to use with 'sensuctl configure'
 
-Default value: `http://127.0.0.1:8080`
+Default value: `https://127.0.0.1:8080`
 
 ##### <a name="-sensu_user--name"></a>`name`
 
@@ -4926,7 +4926,7 @@ Sensu Backend URL's require protocol of ws:// or wss://.
 A port is also required.
 There is logic in sensu::agent class to add the protocol so it's optional.
 
-Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]++:\d+$/]]`
+Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]+:\d+$/]]`
 
 ## Tasks
 
@@ -5171,6 +5171,12 @@ The agent entity name
 Data type: `Optional[String[1]]`
 
 The namespace for the agent, default is 'default'
+
+##### `use_ssl`
+
+Data type: `Optional[Boolean]`
+
+Whether to use SSL for backend API connections, default is true
 
 ##### `output`
 

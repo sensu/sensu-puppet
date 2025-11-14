@@ -3,32 +3,34 @@ HOSTS:
     roles:
       - agent
       - sensu-agent
-    platform: el-6-x86_64
+    platform: el-9-x86_64
     hypervisor: docker
-    image: amazonlinux:2018.03
+    image: amazonlinux:2023
     docker_preserve_image: true
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y wget upstart which'
-    docker_container_name: 'sensu-agent-amazonlinux-201803'
+      - 'yum install -y wget which iproute systemd'
+    docker_container_name: 'sensu-agent-amazonlinux-2023'
   sensu-backend:
     roles:
       - agent
       - sensu-backend
+      - puppetserver
       - default
-    platform: el-6-x86_64
+    platform: el-9-x86_64
     hypervisor: docker
-    image: amazonlinux:2018.03
+    image: amazonlinux:2023
     docker_preserve_image: true
     docker_cmd:
       - '/sbin/init'
     docker_image_commands:
-      - 'yum install -y wget upstart which'
-    docker_container_name: 'sensu-backend-amazonlinux-201803'
+      - 'yum install -y wget which iproute systemd'
+    docker_container_name: 'sensu-backend-amazonlinux-2023'
 CONFIG:
   log_level: debug
   type: foss
+  puppet_collection: puppet8
 ssh:
   password: root
   auth_methods: ["password"]

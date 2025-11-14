@@ -4,21 +4,29 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_user { 'test':
-        password => 'supersecret',
-        groups   => ['read-only'],
-      }
-      sensu_user { 'test2':
-        password => 'supersecret',
-        groups   => ['read-only'],
-      }
-      sensu_user { 'test-api':
-        password => 'supersecret',
-        groups   => ['read-only'],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_user { 'test':
+  password => 'supersecret',
+  groups   => ['read-only'],
+}
+sensu_user { 'test2':
+  password => 'supersecret',
+  groups   => ['read-only'],
+}
+sensu_user { 'test-api':
+  password => 'supersecret',
+  groups   => ['read-only'],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -35,8 +43,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid user' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test' }[0]
         expect(d['groups']).to eq(['read-only'])
         expect(d['disabled']).to eq(false)
@@ -49,8 +57,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid user using API' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test-api' }[0]
         expect(d['groups']).to eq(['read-only'])
         expect(d['disabled']).to eq(false)
@@ -65,22 +73,30 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'updates user' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_user { 'test':
-        password => 'supersecret2',
-        groups   => ['read-only'],
-      }
-      sensu_user { 'test2':
-        password => 'supersecret',
-        groups   => ['read-only','admin'],
-        disabled => true,
-      }
-      sensu_user { 'test-api':
-        password => 'supersecret2',
-        groups   => ['read-only','admin'],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_user { 'test':
+  password => 'supersecret2',
+  groups   => ['read-only'],
+}
+sensu_user { 'test2':
+  password => 'supersecret',
+  groups   => ['read-only','admin'],
+  disabled => true,
+}
+sensu_user { 'test-api':
+  password => 'supersecret2',
+  groups   => ['read-only','admin'],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -99,8 +115,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have an updated user' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test2' }[0]
         expect(d['groups']).to eq(['read-only','admin'])
         expect(d['disabled']).to eq(true)
@@ -112,8 +128,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have an updated user using API' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test-api' }[0]
         expect(d['groups']).to eq(['read-only','admin'])
         expect(d['disabled']).to eq(false)
@@ -127,17 +143,25 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'updates user password' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_user { 'test':
-        password => 'password3',
-        groups   => ['read-only'],
-      }
-      sensu_user { 'test-api':
-        password => 'password3',
-        groups   => ['read-only'],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_user { 'test':
+  password => 'password3',
+  groups   => ['read-only'],
+}
+sensu_user { 'test-api':
+  password => 'password3',
+  groups   => ['read-only'],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -166,10 +190,18 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should result in error as unsupported' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_user { 'test': ensure => 'absent' }
-      sensu_user { 'test-api': ensure => 'absent', provider => 'sensu_api' }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_user { 'test': ensure => 'absent' }
+sensu_user { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent

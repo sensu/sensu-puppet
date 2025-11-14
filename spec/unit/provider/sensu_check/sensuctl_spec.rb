@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
+  before do
+    allow(Puppet::Provider::SensuAPI).to receive(:api_request).and_return({})
+    # Force the type to use sensuctl as default provider for these examples
+    sensuctl_provider = type.provider(:sensuctl)
+    allow(type).to receive(:defaultprovider).and_return(sensuctl_provider)
+  end
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_check) }
   let(:resource) do

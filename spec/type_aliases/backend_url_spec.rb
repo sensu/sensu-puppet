@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper_type_aliases'
 
 describe 'Sensu::Backend_URL' do
   context 'allows valid values' do

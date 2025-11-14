@@ -15,19 +15,20 @@ jobs:
       fail-fast: false
       matrix:
         set:
-        - centos-7
-        - rocky-8
-        - debian-10
-        - ubuntu-1804
-        - ubuntu-2004
-        - amazonlinux-201803
+        - rocky-9-modern
+        - debian-12-modern
+        - ubuntu-24.04-modern
+        - ubuntu-22.04-modern
+        - almalinux-9-modern
         puppet:
-        - puppet6
         - puppet7
+        - puppet8
         ci_build:
         - no
         exclude:
         - puppet: puppet7
+          ci_build: yes
+        - puppet: puppet8
           ci_build: yes
     env:
       BEAKER_debug: true
@@ -37,9 +38,9 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: ${{ matrix.puppet == 'puppet8' && '3.2.5' || '3.1.4' }}
         bundler-cache: true
-        bundler: '2.1.0'
+        bundler: '2.4.10'
     - name: Decrypt secrets
       env:
         SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}
@@ -48,6 +49,9 @@ jobs:
     - name: Run tests
       run: bundle exec rake acceptance
       env:
+        RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
         BEAKER_set: ${{ matrix.set }}
+        BEAKER_sensu_mode: base
+        BEAKER_sensu_use_agent: no
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}

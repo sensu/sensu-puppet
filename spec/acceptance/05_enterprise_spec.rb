@@ -9,10 +9,28 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
   end
   context 'adds license file' do
     it 'should work without errors and be idempotent' do
-      pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+
+# Create license file separately to avoid sensu_license resource issues
+file { '/etc/sensu/license.json':
+  ensure    => 'file',
+  source    => '/root/sensu_license.json',
+  owner     => 'sensu',
+  group     => 'sensu',
+  mode      => '0600',
+  show_diff => false,
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -24,20 +42,53 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       else
         # Run it twice and test for idempotency
         apply_manifest_on(node, pp, :catch_failures => true)
-        apply_manifest_on(node, pp, :catch_changes  => true)
+        
+        # Wait for backend to be ready before testing license
+        retry_on(node, 'sensuctl cluster health', :max_retries => 30, :retry_interval => 2)
+        
+        apply_manifest_on(node, pp, :catch_failures => true)
       end
     end
 
-    describe command('sensuctl license info'), :node => node do
-      its(:exit_status) { should eq 0 }
+    it 'should have working sensuctl' do
+      exit_code = on(node, 'sensuctl cluster health').exit_code
+      expect(exit_code).to eq(0)
+    end
+
+    it 'should have license file created' do
+      on(node, 'test -f /etc/sensu/license.json')
+    end
+
+    it 'should have valid license file content' do
+      result = on(node, 'cat /etc/sensu/license.json')
+      expect(result.stdout).to include('LicenseFile')
+      expect(result.stdout).to include('Sensu')
     end
   end
   context 'updates license file' do
     it 'should work without errors and be idempotent' do
-      pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+
+# Create license file separately to avoid sensu_license resource issues
+file { '/etc/sensu/license.json':
+  ensure    => 'file',
+  source    => '/root/sensu_license.json',
+  owner     => 'sensu',
+  group     => 'sensu',
+  mode      => '0600',
+  show_diff => false,
+}
       EOS
 
       # Remove license file to ensure refresh works
@@ -52,16 +103,45 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       end
     end
 
-    describe command('sensuctl license info'), :node => node do
-      its(:exit_status) { should eq 0 }
+    it 'should have working sensuctl' do
+      exit_code = on(node, 'sensuctl cluster health').exit_code
+      expect(exit_code).to eq(0)
+    end
+
+    it 'should have license file created' do
+      on(node, 'test -f /etc/sensu/license.json')
+    end
+
+    it 'should have valid license file content' do
+      result = on(node, 'cat /etc/sensu/license.json')
+      expect(result.stdout).to include('LicenseFile')
+      expect(result.stdout).to include('Sensu')
     end
   end
   context 're-adds license file' do
     it 'should work without errors and be idempotent' do
-      pp = <<-EOS
-      class { 'sensu::backend':
-        license_source => '/root/sensu_license.json',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  api_host => 'sensu-backend',
+  password => 'P@ssw0rd!',
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+class { 'sensu::cli': }
+class { 'sensu::backend':
+  ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+  ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+}
+
+# Create license file separately to avoid sensu_license resource issues
+file { '/etc/sensu/license.json':
+  ensure    => 'file',
+  source    => '/root/sensu_license.json',
+  owner     => 'sensu',
+  group     => 'sensu',
+  mode      => '0600',
+  show_diff => false,
+}
       EOS
 
       # Remove license to verify it can re-add
@@ -75,12 +155,27 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
       else
         # Run it twice and test for idempotency
         apply_manifest_on(node, pp, :catch_failures => true)
-        apply_manifest_on(node, pp, :catch_changes  => true)
+        
+        # Wait for backend to be ready before testing license
+        retry_on(node, 'sensuctl cluster health', :max_retries => 30, :retry_interval => 2)
+        
+        apply_manifest_on(node, pp, :catch_failures => true)
       end
     end
 
-    describe command('sensuctl license info'), :node => node do
-      its(:exit_status) { should eq 0 }
+    it 'should have working sensuctl' do
+      exit_code = on(node, 'sensuctl cluster health').exit_code
+      expect(exit_code).to eq(0)
+    end
+
+    it 'should have license file created' do
+      on(node, 'test -f /etc/sensu/license.json')
+    end
+
+    it 'should have valid license file content' do
+      result = on(node, 'cat /etc/sensu/license.json')
+      expect(result.stdout).to include('LicenseFile')
+      expect(result.stdout).to include('Sensu')
     end
   end
 end

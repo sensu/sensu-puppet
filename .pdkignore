@@ -25,7 +25,6 @@
 .project
 .envrc
 /inventory.yaml
-/appveyor.yml
 /.fixtures.yml
 /Gemfile
 /.gitattributes

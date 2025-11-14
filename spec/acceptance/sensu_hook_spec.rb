@@ -4,19 +4,27 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_hook { 'test':
-        command => 'ps aux',
-        labels  => { 'foo' => 'baz' },
-        runtime_assets => ['test'],
-      }
-      sensu_hook { 'test-api':
-        command => 'ps aux',
-        labels  => { 'foo' => 'baz' },
-        runtime_assets => ['test'],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_hook { 'test':
+  command => 'ps aux',
+  labels  => { 'foo' => 'baz' },
+  runtime_assets => ['test'],
+}
+sensu_hook { 'test-api':
+  command => 'ps aux',
+  labels  => { 'foo' => 'baz' },
+  runtime_assets => ['test'],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -33,8 +41,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook' do
-      on node, 'sensuctl hook info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('ps aux')
         expect(data['stdin']).to eq(false)
         expect(data['runtime_assets']).to eq(['test'])
@@ -43,8 +51,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook using API' do
-      on node, 'sensuctl hook info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('ps aux')
         expect(data['stdin']).to eq(false)
         expect(data['runtime_assets']).to eq(['test'])
@@ -55,21 +63,29 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'update hook' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_hook { 'test':
-        command => 'ps aux',
-        timeout => 120,
-        runtime_assets => ['test2'],
-        labels  => { 'foo' => 'bar' },
-      }
-      sensu_hook { 'test-api':
-        command => 'ps aux',
-        timeout => 120,
-        runtime_assets => ['test2'],
-        labels  => { 'foo' => 'bar' },
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_hook { 'test':
+  command => 'ps aux',
+  timeout => 120,
+  runtime_assets => ['test2'],
+  labels  => { 'foo' => 'bar' },
+}
+sensu_hook { 'test-api':
+  command => 'ps aux',
+  timeout => 120,
+  runtime_assets => ['test2'],
+  labels  => { 'foo' => 'bar' },
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -86,8 +102,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook with updated propery' do
-      on node, 'sensuctl hook info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(120)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -95,8 +111,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook with updated propery using API' do
-      on node, 'sensuctl hook info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(120)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -106,13 +122,21 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_hook { 'test': ensure => 'absent' }
-      sensu_hook { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_hook { 'test': ensure => 'absent' }
+sensu_hook { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent

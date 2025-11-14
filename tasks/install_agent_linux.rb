@@ -14,6 +14,7 @@ begin
     entity_name = 'undef'
   end
   namespace = params['namespace'] || 'default'
+  use_ssl = params.fetch('use_ssl', true)
   output = params.fetch('output', false)
 
   return_output = {}
@@ -40,7 +41,7 @@ begin
   f = Tempfile.new('manifest')
   manifest = <<-EOS
 class { '::sensu':
-  use_ssl => false,
+  use_ssl => #{use_ssl},
 }
 class { 'sensu::agent':
   backends      => ['#{backend}'],

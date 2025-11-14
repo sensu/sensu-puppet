@@ -18,6 +18,10 @@
       "description": "The namespace for the agent, default is 'default'",
       "type": "Optional[String[1]]"
     },
+    "use_ssl": {
+      "description": "Whether to use SSL for backend API connections, default is true",
+      "type": "Optional[Boolean]"
+    },
     "output": {
       "description": "Return output from commands",
       "type": "Optional[Boolean]"

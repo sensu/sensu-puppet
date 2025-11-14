@@ -4,30 +4,30 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'install bonsai asset' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
-        ensure  => 'present',
-        version => '1.1.0',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-email-handler':
-        ensure   => 'present',
-        version  => '0.1.0',
-        provider => 'sensu_api',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-ruby-runtime in default':
-        ensure  => 'present',
-        version => 'latest',
-      }
-      sensu_namespace { 'dev': ensure => 'present' }
-      sensu_bonsai_asset { 'sensu/sensu-ruby-runtime in dev':
-        ensure  => 'present',
-        version => 'latest',
-      }
-      sensu_bonsai_asset { 'nixwiz/sensu-go-fatigue-check-filter':
-        ensure  => 'present',
-        version => 'v0.2.2',
-      }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => '1.1.0',
+}
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure   => 'present',
+  version  => '0.1.0',
+  provider => 'sensu_api',
+}
+sensu_bonsai_asset { 'sensu/sensu-ruby-runtime in default':
+  ensure  => 'present',
+  version => 'latest',
+}
+sensu_namespace { 'dev': ensure => 'present' }
+sensu_bonsai_asset { 'sensu/sensu-ruby-runtime in dev':
+  ensure  => 'present',
+  version => 'latest',
+}
+sensu_bonsai_asset { 'nixwiz/sensu-go-fatigue-check-filter':
+  ensure  => 'present',
+  version => 'v0.2.2',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -89,21 +89,21 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
       # Define two assets as 'latest' using different providers
       # to ensure the latest of each is used
       # See https://github.com/sensu/sensu-puppet/pull/1202
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
-        ensure  => 'present',
-        version => 'latest',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':
-        ensure  => 'present',
-        version => 'latest',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-email-handler':
-        ensure   => 'present',
-        version  => 'latest',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => 'latest',
+}
+sensu_bonsai_asset { 'sensu/sensu-go-has-contact-filter':
+  ensure  => 'present',
+  version => 'latest',
+}
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure   => 'present',
+  version  => 'latest',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -142,17 +142,17 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'downgrade bonsai asset' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
-        ensure  => 'present',
-        version => '1.1.0',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-email-handler':
-        ensure   => 'present',
-        version  => '0.1.0',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => '1.1.0',
+}
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure   => 'present',
+  version  => '0.1.0',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -187,17 +187,17 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'upgrade bonsai asset' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
-        ensure  => 'present',
-        version => '1.2.0',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-email-handler':
-        ensure   => 'present',
-        version  => '0.2.0',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => '1.2.0',
+}
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure   => 'present',
+  version  => '0.2.0',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -232,18 +232,18 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'asset purging' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
-        ensure  => 'present',
-        version => '1.2.0',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-email-handler':
-        ensure   => 'present',
-        version  => '0.2.0',
-        provider => 'sensu_api',
-      }
-      resources { 'sensu_asset': purge => true }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'present',
+  version => '1.2.0',
+}
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure   => 'present',
+  version  => '0.2.0',
+  provider => 'sensu_api',
+}
+resources { 'sensu_asset': purge => true }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -278,15 +278,15 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'remove bonsai asset' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
-        ensure  => 'absent',
-      }
-      sensu_bonsai_asset { 'sensu/sensu-email-handler':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+include sensu::backend
+sensu_bonsai_asset { 'sensu/sensu-pagerduty-handler':
+  ensure  => 'absent',
+}
+sensu_bonsai_asset { 'sensu/sensu-email-handler':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent

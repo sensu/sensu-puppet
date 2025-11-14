@@ -2,72 +2,89 @@ require 'spec_helper_acceptance'
 
 describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
+  
+  # Determine CA bundle path based on OS
+  os_family = fact_on(node, 'os.family')
+  ca_bundle_path = if os_family == 'Debian'
+                     '/etc/ssl/certs/ca-certificates.crt'
+                   else
+                     '/etc/ssl/certs/ca-bundle.crt'
+                   end
+  
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_secrets_vault_provider { 'my_vault':
-        ensure       => 'present',
-        address      => "https://vaultserver.example.com:8200",
-        token        => "VAULT_TOKEN",
-        version      => "v1",
-        max_retries  => 2,
-        timeout      => "20s",
-        tls          => {
-          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
-        },
-        rate_limiter => {
-          "limit" => 10,
-          "burst" => 100
-        },
-      }
-      file { '/tmp/secret':
-        ensure  => 'file',
-        content => "supersecret\n",
-        notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
-      }
-      sensu_secrets_vault_provider { 'my_vault-token_file':
-        ensure       => 'present',
-        address      => "https://vaultserver.example.com:8200",
-        token_file   => '/tmp/secret',
-        version      => "v1",
-        max_retries  => 2,
-        timeout      => "20s",
-        tls          => {
-          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
-        },
-        rate_limiter => {
-          "limit" => 10,
-          "burst" => 100
-        },
-      }
-      sensu_secrets_vault_provider { 'my_vault-api':
-        ensure       => 'present',
-        address      => "https://vaultserver.example.com:8200",
-        token        => "VAULT_TOKEN",
-        version      => "v1",
-        max_retries  => 2,
-        timeout      => "20s",
-        tls          => {
-          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
-        },
-        rate_limiter => {
-          "limit" => 10,
-          "burst" => 100
-        },
-        provider     => 'sensu_api',
-      }
-      sensu_secret { 'test':
-        ensure           => 'present',
-        id               => 'secret/database#password',
-        secrets_provider => 'my_vault',
-      }
-      sensu_secret { 'test-api':
-        ensure           => 'present',
-        id               => 'secret/database#password',
-        secrets_provider => 'my_vault',
-        provider         => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_secrets_vault_provider { 'my_vault':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8200",
+  token        => "VAULT_TOKEN",
+  version      => "v1",
+  max_retries  => 2,
+  timeout      => "20s",
+  tls          => {
+    "ca_cert" => "#{ca_bundle_path}"
+  },
+  rate_limiter => {
+    "limit" => 10,
+    "burst" => 100
+  },
+}
+file { '/tmp/secret':
+  ensure  => 'file',
+  content => "supersecret\\n",
+  notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
+}
+sensu_secrets_vault_provider { 'my_vault-token_file':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8200",
+  token_file   => '/tmp/secret',
+  version      => "v1",
+  max_retries  => 2,
+  timeout      => "20s",
+  tls          => {
+    "ca_cert" => "#{ca_bundle_path}"
+  },
+  rate_limiter => {
+    "limit" => 10,
+    "burst" => 100
+  },
+}
+sensu_secrets_vault_provider { 'my_vault-api':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8200",
+  token        => "VAULT_TOKEN",
+  version      => "v1",
+  max_retries  => 2,
+  timeout      => "20s",
+  tls          => {
+    "ca_cert" => "#{ca_bundle_path}"
+  },
+  rate_limiter => {
+    "limit" => 10,
+    "burst" => 100
+  },
+  provider     => 'sensu_api',
+}
+sensu_secret { 'test':
+  ensure           => 'present',
+  id               => 'secret/database#password',
+  secrets_provider => 'my_vault',
+}
+sensu_secret { 'test-api':
+  ensure           => 'present',
+  id               => 'secret/database#password',
+  secrets_provider => 'my_vault',
+  provider         => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -86,9 +103,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -99,16 +116,16 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
         expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end
     it 'should have a valid VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -119,16 +136,16 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
         expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end
     it 'should have a valid VaultProvider using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -139,20 +156,21 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
-        expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
+        expect(spec['client']["rate_limiter"]["limit"]).to eq(10.0)
+        expect(spec['client']["rate_limiter"]["burst"]).to eq(100)
       end
     end
     it 'should have a valid secret' do
-      on node, 'sensuctl secret info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#password')
         expect(data['provider']).to eq('my_vault')
       end
     end
     it 'should have a valid secret using API' do
-      on node, 'sensuctl secret info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#password')
         expect(data['provider']).to eq('my_vault')
       end
@@ -161,64 +179,72 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
 
   context 'updates secrets provider' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_secrets_vault_provider { 'my_vault':
-        ensure       => 'present',
-        address      => "https://vaultserver.example.com:8201",
-        token        => "VAULT_TOKEN1",
-        version      => "v1",
-        max_retries  => 4,
-        timeout      => "40s",
-        rate_limiter => {
-          "limit" => 20,
-          "burst" => 200
-        },
-      }
-      file { '/tmp/secret':
-        ensure  => 'file',
-        content => "supersecret2\n",
-        notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
-      }
-      sensu_secrets_vault_provider { 'my_vault-token_file':
-        ensure       => 'present',
-        address      => "https://vaultserver.example.com:8200",
-        token_file   => '/tmp/secret',
-        version      => "v1",
-        max_retries  => 2,
-        timeout      => "20s",
-        tls          => {
-          "ca_cert" => "/etc/ssl/certs/ca-bundle.crt"
-        },
-        rate_limiter => {
-          "limit" => 10,
-          "burst" => 100
-        },
-      }
-      sensu_secrets_vault_provider { 'my_vault-api':
-        ensure       => 'present',
-        address      => "https://vaultserver.example.com:8201",
-        token        => "VAULT_TOKEN1",
-        version      => "v1",
-        max_retries  => 4,
-        timeout      => "40s",
-        rate_limiter => {
-          "limit" => 20,
-          "burst" => 200
-        },
-        provider     => 'sensu_api',
-      }
-      sensu_secret { 'test in default':
-        ensure           => 'present',
-        id               => 'secret/database#secret',
-        secrets_provider => 'my_vault',
-      }
-      sensu_secret { 'test-api in default':
-        ensure           => 'present',
-        id               => 'secret/database#secret',
-        secrets_provider => 'my_vault',
-        provider         => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_secrets_vault_provider { 'my_vault':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8201",
+  token        => "VAULT_TOKEN1",
+  version      => "v1",
+  max_retries  => 4,
+  timeout      => "40s",
+  rate_limiter => {
+    "limit" => 20,
+    "burst" => 200
+  },
+}
+file { '/tmp/secret':
+  ensure  => 'file',
+  content => "supersecret2\n",
+  notify  => Sensu_secrets_vault_provider['my_vault-token_file'],
+}
+sensu_secrets_vault_provider { 'my_vault-token_file':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8200",
+  token_file   => '/tmp/secret',
+  version      => "v1",
+  max_retries  => 2,
+  timeout      => "20s",
+  tls          => {
+    "ca_cert" => "#{ca_bundle_path}"
+  },
+  rate_limiter => {
+    "limit" => 10,
+    "burst" => 100
+  },
+}
+sensu_secrets_vault_provider { 'my_vault-api':
+  ensure       => 'present',
+  address      => "https://vaultserver.example.com:8201",
+  token        => "VAULT_TOKEN1",
+  version      => "v1",
+  max_retries  => 4,
+  timeout      => "40s",
+  rate_limiter => {
+    "limit" => 20,
+    "burst" => 200
+  },
+  provider     => 'sensu_api',
+}
+sensu_secret { 'test in default':
+  ensure           => 'present',
+  id               => 'secret/database#secret',
+  secrets_provider => 'my_vault',
+}
+sensu_secret { 'test-api in default':
+  ensure           => 'present',
+  id               => 'secret/database#secret',
+  secrets_provider => 'my_vault',
+  provider         => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -239,9 +265,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -259,9 +285,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider using token_file' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -272,16 +298,16 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
         expect(spec['client']['version']).to eq("v1")
         expect(spec['client']["max_retries"]).to eq(2)
         expect(spec['client']["timeout"]).to eq("20s")
-        expect(spec['client']["tls"]["ca_cert"]).to eq("/etc/ssl/certs/ca-bundle.crt")
+        expect(spec['client']["tls"]["ca_cert"]).to eq(ca_bundle_path)
         expect(spec['client']["rate_limiter"]).to eq({'limit' => 10, 'burst' => 100})
       end
     end
     it 'should have a valid VaultProvider using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -297,15 +323,15 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
       end
     end
     it 'should have a valid secret' do
-      on node, 'sensuctl secret info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#secret')
         expect(data['provider']).to eq('my_vault')
       end
     end
     it 'should have a valid secret using API' do
-      on node, 'sensuctl secret info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#secret')
         expect(data['provider']).to eq('my_vault')
       end
@@ -314,12 +340,20 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_secrets_vault_provider { 'my_vault': ensure => 'absent' }
-      sensu_secrets_vault_provider { 'my_vault-api': ensure => 'absent', provider => 'sensu_api' }
-      sensu_secret { 'test': ensure => 'absent' }
-      sensu_secret { 'test-api': ensure => 'absent', provider => 'sensu_api' }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_secrets_vault_provider { 'my_vault': ensure => 'absent' }
+sensu_secrets_vault_provider { 'my_vault-api': ensure => 'absent', provider => 'sensu_api' }
+sensu_secret { 'test': ensure => 'absent' }
+sensu_secret { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -338,9 +372,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have removed VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -351,9 +385,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have removed VaultProvider using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end

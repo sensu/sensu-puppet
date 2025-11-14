@@ -1,11 +1,17 @@
 # Sensu Go docs: https://docs.sensu.io/sensu-go/latest/guides/email-handler/
 
-include sensu::backend
+class { 'sensu':
+  use_ssl => false,
+}
 
-sensu_bonsai_asset { 'sensu/sensu-email-handler':
-  ensure  => 'present',
-  version => 'latest',
-  rename  => 'sensu-email-handler',
+include sensu::backend
+include sensu::cli
+
+exec { 'add sensu-email-handler asset':
+  path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+  command => 'sensuctl asset add sensu/sensu-email-handler',
+  unless  => 'sensuctl asset info sensu/sensu-email-handler',
+  require => Sensuctl_configure['puppet'],
 }
 
 sensu_filter { 'state_change_only in default':
@@ -29,7 +35,7 @@ sensu_handler { 'email in default':
     'not_silenced',
     'state_change_only',
   ],
-  runtime_assets => ['sensu-email-handler'],
+  runtime_assets => ['sensu/sensu-email-handler'],
 }
 
 sensu_check { 'check_cpu':

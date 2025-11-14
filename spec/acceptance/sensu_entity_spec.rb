@@ -4,16 +4,24 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_entity { 'test':
-        entity_class           => 'proxy',
-        deregistration         => {'handler' => 'slack-handler'},
-      }
-      sensu_entity { 'test-api':
-        entity_class           => 'proxy',
-        deregistration         => {'handler' => 'slack-handler'},
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_entity { 'test':
+  entity_class           => 'proxy',
+  deregistration         => {'handler' => 'slack-handler'},
+}
+sensu_entity { 'test-api':
+  entity_class           => 'proxy',
+  deregistration         => {'handler' => 'slack-handler'},
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -30,8 +38,8 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should create an entity' do
-      on node, "sensuctl entity info test --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['entity_class']).to eq('proxy')
         expect(data['deregister']).to eq(false)
         expect(data['deregistration']['handler']).to eq('slack-handler')
@@ -39,8 +47,8 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should create an entity using API' do
-      on node, "sensuctl entity info test-api --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test-api --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['entity_class']).to eq('proxy')
         expect(data['deregister']).to eq(false)
         expect(data['deregistration']['handler']).to eq('slack-handler')
@@ -50,18 +58,26 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'updates properties' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_entity { 'test':
-        entity_class           => 'proxy',
-        deregistration         => {'handler' => 'email-handler'},
-        labels                 => { 'foo' => 'bar' }
-      }
-      sensu_entity { 'test-api':
-        entity_class           => 'proxy',
-        deregistration         => {'handler' => 'email-handler'},
-        labels                 => { 'foo' => 'bar' }
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_entity { 'test':
+  entity_class           => 'proxy',
+  deregistration         => {'handler' => 'email-handler'},
+  labels                 => { 'foo' => 'bar' }
+}
+sensu_entity { 'test-api':
+  entity_class           => 'proxy',
+  deregistration         => {'handler' => 'email-handler'},
+  labels                 => { 'foo' => 'bar' }
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -78,16 +94,16 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid entity with extended_attributes properties' do
-      on node, "sensuctl entity info test --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['deregistration']['handler']).to eq('email-handler')
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
 
     it 'should have a valid entity with extended_attributes properties with API' do
-      on node, "sensuctl entity info test-api --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test-api --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['deregistration']['handler']).to eq('email-handler')
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
@@ -96,13 +112,21 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_entity { 'test': ensure => 'absent' }
-      sensu_entity { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_entity { 'test': ensure => 'absent' }
+sensu_entity { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent

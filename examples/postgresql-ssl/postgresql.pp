@@ -1,25 +1,62 @@
 $password = 'sensu'
 
+class { 'sensu':
+  use_ssl       => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+  api_host      => 'sensu-backend',
+}
+
 class { 'sensu::agent':
-  backends => ['sensu-backend:8081'],
+  backends    => ['sensu-backend:8081'],
+  config_hash => {
+    'keepalive-interval' => 5,
+  },
 }
 
 class { 'postgresql::globals':
-  manage_package_repo => true,
-  version             => '11',
+  manage_package_repo => false,
+}
+
+# Ensure data directory is ready for initdb
+exec { 'clean_postgres_datadir_if_incomplete':
+  command => '/bin/rm -rf /var/lib/pgsql/data/*',
+  onlyif  => '/bin/bash -c "[ -d /var/lib/pgsql/data ] && [ ! -f /var/lib/pgsql/data/PG_VERSION ]"',
+  require => Class['postgresql::server::install'],
+  before  => Class['postgresql::server::initdb'],
 }
 
 class { 'postgresql::server':
   listen_addresses => '*',
 }
 
+# Copy SSL key for PostgreSQL to use with the default name
+# Must be created AFTER initdb but BEFORE service starts
 file { 'postgresql_ssl_key_file':
-  ensure => 'file',
-  path   => "${postgresql::server::datadir}/${trusted['certname']}.pem",
-  source => "/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
-  owner  => 'postgres',
-  group  => 'postgres',
-  mode   => '0600',
+  ensure  => 'file',
+  path    => "${postgresql::server::datadir}/server.key",
+  source  => '/etc/puppetlabs/puppet/ssl/private_keys/sensu-agent_key.pem',
+  owner   => 'postgres',
+  group   => 'postgres',
+  mode    => '0600',
+  require => Class['postgresql::server::initdb'],
+  before  => Class['postgresql::server::service'],
+}
+
+postgresql::server::config_entry { 'ssl':
+  value => 'on',
+}
+
+postgresql::server::config_entry { 'ssl_cert_file':
+  value => '/etc/puppetlabs/puppet/ssl/ca/signed/sensu-agent.pem',
+}
+
+postgresql::server::config_entry { 'ssl_key_file':
+  value   => 'server.key',
+  require => File['postgresql_ssl_key_file'],
+}
+
+postgresql::server::config_entry { 'ssl_ca_file':
+  value => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
 }
 
 postgresql::server::db { 'sensu':
@@ -34,25 +71,4 @@ postgresql::server::pg_hba_rule { 'allow access to sensu database':
   user        => 'sensu',
   address     => '0.0.0.0/0',
   auth_method => 'password',
-}
-
-postgresql::server::config_entry { 'ssl':
-  value => 'on',
-}
-
-postgresql::server::config_entry { 'ssl_cert_file':
-  value => "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
-}
-
-postgresql::server::config_entry { 'ssl_key_file':
-  value   => "${trusted['certname']}.pem",
-  require => File['postgresql_ssl_key_file'],
-}
-
-postgresql::server::config_entry { 'ssl_ca_file':
-  value => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-}
-
-postgresql::server::config_entry { 'ssl_crl_file':
-  value => '/etc/puppetlabs/puppet/ssl/crl.pem',
 }

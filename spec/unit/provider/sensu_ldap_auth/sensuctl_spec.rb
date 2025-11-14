@@ -12,6 +12,7 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
         'group_search' => {'base_dn' => 'ou=Groups'},
         'user_search' => {'base_dn' => 'ou=People'},
       }],
+      :provider => :sensuctl
     }
   end
   let(:resource) do

@@ -20,23 +20,23 @@ jobs:
         - types
         - examples
         puppet:
-        - puppet6
-        - puppet7
+        - puppet8
         use_agent:
         - no
         ci_build:
         - no
+        set:
+        - rocky-9-modern
+        - ubuntu-24.04-modern
         include:
         - sensu_mode: types
-          puppet: puppet6
+          puppet: puppet8
           use_agent: yes
           ci_build: no
-        - sensu_mode: types
-          puppet: puppet7
-          use_agent: yes
-          ci_build: no
+          set: rocky-9-modern
         - sensu_mode: bolt
-          puppet: puppet6
+          puppet: puppet8
+          set: rocky-9-modern
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
@@ -45,9 +45,9 @@ jobs:
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: ${{ matrix.puppet == 'puppet8' && '3.2.5' || '3.1.4' }}
         bundler-cache: true
-        bundler: '2.1.0'
+        bundler: '2.4.10'
     - name: Decrypt secrets
       env:
         SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}
@@ -56,8 +56,9 @@ jobs:
     - name: Run tests
       run: bundle exec rake acceptance
       env:
+        RUN_ACCEPTANCE: 1
         BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: centos-7
+        BEAKER_set: ${{ matrix.set }}
         BEAKER_sensu_mode: ${{ matrix.sensu_mode }}
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}

@@ -4,6 +4,7 @@ Param(
   [Parameter(Mandatory = $True)] [String] $Subscription,
   [Parameter(Mandatory = $False)] [String] $Entity_name = "$env:computername.$env:userdnsdomain",
   [Parameter(Mandatory = $False)] [String] $Namespace = "default",
+  [Parameter(Mandatory = $False)] [Bool] $Use_ssl = $True,
   [Parameter(Mandatory = $False)] [Bool] $Output = $False
 )
 
@@ -22,9 +23,10 @@ $return_output.Add("module-install", $($module_install_output -Split "`n").TrimE
 
 # Create Puppet manifest in Temp space
 $MANIFEST = [System.IO.Path]::GetTempFileName()
+$Use_ssl_lower = $Use_ssl.ToString().ToLower()
 $manifest_content = @"
 class { '::sensu':
-  use_ssl => false,
+  use_ssl => $Use_ssl_lower,
 }
 class { 'sensu::agent':
   package_source => '$Package_source',

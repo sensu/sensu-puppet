@@ -4,15 +4,23 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include ::sensu::backend
-      sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in test':
-        ensure => 'present',
-      }
-      sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in testapi':
-        ensure   => 'present',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in test':
+  ensure => 'present',
+}
+sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in testapi':
+  ensure   => 'present',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -31,9 +39,9 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
     it 'should have a valid federated cluster member' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -45,9 +53,9 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
     it 'should have a valid federated cluster member using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -59,15 +67,23 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include ::sensu::backend
-      sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in test':
-        ensure => 'absent',
-      }
-      sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in testapi':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in test':
+  ensure => 'absent',
+}
+sensu_cluster_federation_member { 'https://#{fact_on(node, 'ipaddress')}:8080 in testapi':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -86,9 +102,9 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
     it 'should have removed a federated cluster member' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -100,9 +116,9 @@ describe 'sensu_cluster_federation_member', if: RSpec.configuration.sensu_mode =
     it 'should have removed a federated cluster member using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end

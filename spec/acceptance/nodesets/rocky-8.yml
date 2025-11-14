@@ -13,6 +13,7 @@ HOSTS:
       - 'yum install -y dnf-utils'
       - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+      - 'dnf install -y iputils curl'
     docker_container_name: 'sensu-agent-el8'
   sensu-backend:
     roles:
@@ -30,10 +31,12 @@ HOSTS:
       - 'yum install -y dnf-utils'
       - 'dnf config-manager --set-enabled powertools'
       - 'dnf install -y wget which initscripts iproute langpacks-en glibc-all-langpacks glibc-langpack-en'
+      - 'dnf install -y iputils curl'
     docker_container_name: 'sensu-backend-el8'
 CONFIG:
   log_level: debug
   type: foss
+  puppet_collection: puppet8
 ssh:
   password: root
   auth_methods: ["password"]

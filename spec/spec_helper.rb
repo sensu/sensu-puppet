@@ -4,7 +4,31 @@ include RspecPuppetFacts
 RSpec.configure do |config|
   config.mock_with :rspec
 end
+
 require 'puppetlabs_spec_helper/module_spec_helper'
+
+# Fix stdlib module loading issue for rspec-puppet tests
+RSpec.configure do |config|
+  config.before(:each) do
+    # Set the module path to include our fixtures
+    fixture_modules = File.join(File.dirname(__FILE__), 'fixtures', 'modules')
+    if Dir.exist?(fixture_modules)
+      # Set Puppet settings for module resolution
+      Puppet.settings[:modulepath] = fixture_modules
+      
+      # Reset the current environment to ensure fresh module loading
+      Puppet.push_context(environment: nil)
+      env = Puppet.lookup(:current_environment)
+      if env
+        env.instance_variable_set(:@modulepath, [fixture_modules])
+      end
+    end
+  end
+  
+  config.after(:each) do
+    Puppet.pop_context if Puppet.respond_to?(:pop_context)
+  end
+end
 
 case ENV['COVERAGE']
 when 'SimpleCov'
@@ -25,8 +49,39 @@ custom_facts = File.join(module_spec_dir, 'fixtures', 'facts')
 ENV['FACTERDB_SEARCH_PATHS'] = custom_facts
 
 RSpec.configure do |config|
+  # Exclude acceptance specs by default; enable with RUN_ACCEPTANCE=1
+  if ENV['RUN_ACCEPTANCE'] != '1'
+    config.exclude_pattern = [
+      'spec/acceptance/**/*',
+      'spec/spec_helper_acceptance.rb',
+      'spec/spec_helper_acceptance_windows.rb'
+    ]
+  end
+  # Also constrain default pattern to non-acceptance suites to avoid eager load of acceptance helpers
+  if ENV['RUN_ACCEPTANCE'] != '1'
+    config.pattern = '{spec,./spec}/{unit,classes,defines,functions,hosts,tasks,type_aliases,shared_examples}/**/*_spec.rb'
+  end
+  
+  # Disabled: This was removing fixtures installed by spec_prep
+  # config.before(:suite) do
+  #   # This hook runs once before all tests to ensure a clean slate.
+  #   # It removes the entire modules directory from the fixtures to prevent
+  #   # stale symlinks from causing "File exists" errors.
+  #   spec_dir = File.dirname(__FILE__)
+  #   modules_dir = File.join(spec_dir, 'fixtures', 'modules')
+  #
+  #   # Aggressively remove and recreate the directory.
+  #   FileUtils.rm_rf(modules_dir) if File.directory?(modules_dir)
+  #   FileUtils.mkdir_p(modules_dir)
+  # end
+
   config.mock_with :rspec
   config.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
+  
+  # Set up module path for rspec-puppet
+  config.manifest_dir = File.join(File.dirname(__FILE__), 'fixtures', 'manifests')
+  config.module_path = File.join(File.dirname(__FILE__), 'fixtures', 'modules')
+  
   config.before :each do
     # Ensure that we don't accidentally cache facts and environment between
     # test cases.  This requires each example group to explicitly load the
@@ -39,6 +94,17 @@ RSpec.configure do |config|
     Puppet[:confdir] = '/tmp'
     Puppet[:vardir] = '/tmp'
     Puppet[:codedir] = '/tmp'
+    
+    # Ensure modulepath includes fixtures for stdlib type resolution
+    fixtures_modules_path = File.join(__dir__, 'fixtures', 'modules')
+    if Dir.exist?(fixtures_modules_path)
+      Puppet[:modulepath] = fixtures_modules_path
+      # Also ensure the current environment uses the same modulepath for catalog compilation
+      env = Puppet.lookup(:current_environment)
+      if env && env.respond_to?(:modulepath=)
+        env.modulepath = [fixtures_modules_path]
+      end
+    end
   end
   config.default_facts = {
     :environment               => 'rp_env',

@@ -4,58 +4,66 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_cluster_role { 'test':
-        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-      }
-      sensu_cluster_role { 'test-api':
-        rules    => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-        provider => 'sensu_api',
-      }
-      sensu_role { 'test':
-        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-      }
-      sensu_role { 'test-api':
-        rules    => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-        provider => 'sensu_api',
-      }
-      sensu_cluster_role_binding { 'test':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-      }
-      sensu_cluster_role_binding { 'test2':
-        role_ref => {'type' => 'Role', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-      }
-      sensu_cluster_role_binding { 'test-api':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-        provider => 'sensu_api',
-      }
-      sensu_cluster_role_binding { 'test-api2':
-        role_ref => {'type' => 'Role', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-        provider => 'sensu_api',
-      }
-      sensu_role_binding { 'test':
-        role_ref => {'type' => 'Role', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-      }
-      sensu_role_binding { 'test2':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-      }
-      sensu_role_binding { 'test-api':
-        role_ref => {'type' => 'Role', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-        provider => 'sensu_api',
-      }
-      sensu_role_binding { 'test-api2':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_cluster_role { 'test':
+  rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+}
+sensu_cluster_role { 'test-api':
+  rules    => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+  provider => 'sensu_api',
+}
+sensu_role { 'test':
+  rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+}
+sensu_role { 'test-api':
+  rules    => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+  provider => 'sensu_api',
+}
+sensu_cluster_role_binding { 'test':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+}
+sensu_cluster_role_binding { 'test2':
+  role_ref => {'type' => 'Role', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+}
+sensu_cluster_role_binding { 'test-api':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+  provider => 'sensu_api',
+}
+sensu_cluster_role_binding { 'test-api2':
+  role_ref => {'type' => 'Role', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+  provider => 'sensu_api',
+}
+sensu_role_binding { 'test':
+  role_ref => {'type' => 'Role', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+}
+sensu_role_binding { 'test2':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+}
+sensu_role_binding { 'test-api':
+  role_ref => {'type' => 'Role', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+  provider => 'sensu_api',
+}
+sensu_role_binding { 'test-api2':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -72,92 +80,92 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role' do
-      on node, 'sensuctl cluster-role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid cluster_role from API' do
-      on node, 'sensuctl cluster-role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid role' do
-      on node, 'sensuctl role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid role using API' do
-      on node, 'sensuctl role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid cluster_role_binding' do
-      on node, 'sensuctl cluster-role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role' do
-      on node, 'sensuctl cluster-role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding using API' do
-      on node, 'sensuctl cluster-role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role using API' do
-      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding' do
-      on node, 'sensuctl role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole' do
-      on node, 'sensuctl role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding using API' do
-      on node, 'sensuctl role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole using API' do
-      on node, 'sensuctl role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
@@ -166,76 +174,84 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
 
   context 'update cluster_role_binding' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_cluster_role { 'test':
-        rules => [
-          {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
-          {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
-        ],
-      }
-      sensu_cluster_role { 'test-api':
-        rules    => [
-          {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
-          {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
-        ],
-        provider => 'sensu_api',
-      }
-      sensu_role { 'test':
-        rules => [
-          {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
-          {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
-        ],
-      }
-      sensu_role { 'test-api':
-        rules => [
-          {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
-          {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
-        ],
-        provider => 'sensu_api',
-      }
-      sensu_role { 'test2':
-        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-      }
-      sensu_cluster_role { 'test2':
-        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-      }
-      sensu_cluster_role_binding { 'test':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
-      }
-      sensu_cluster_role_binding { 'test2':
-        role_ref => {'type' => 'Role', 'name' => 'test2'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-      }
-      sensu_cluster_role_binding { 'test-api':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
-        subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
-        provider => 'sensu_api',
-      }
-      sensu_cluster_role_binding { 'test-api2':
-        role_ref => {'type' => 'Role', 'name' => 'test2'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-        provider => 'sensu_api',
-      }
-      sensu_role_binding { 'test':
-        role_ref => {'type' => 'Role', 'name' => 'test2'},
-        subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
-      }
-      sensu_role_binding { 'test2':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test2'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-      }
-      sensu_role_binding { 'test-api':
-        role_ref => {'type' => 'Role', 'name' => 'test2'},
-        subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
-        provider => 'sensu_api',
-      }
-      sensu_role_binding { 'test-api2':
-        role_ref => {'type' => 'ClusterRole', 'name' => 'test2'},
-        subjects => [{'type' => 'User', 'name' => 'admin'}],
-        provider => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_cluster_role { 'test':
+  rules => [
+    {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
+    {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
+  ],
+}
+sensu_cluster_role { 'test-api':
+  rules    => [
+    {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
+    {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
+  ],
+  provider => 'sensu_api',
+}
+sensu_role { 'test':
+  rules => [
+    {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
+    {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
+  ],
+}
+sensu_role { 'test-api':
+  rules => [
+    {'verbs' => ['get','list'], 'resources' => ['*'], resource_names => ['foo']},
+    {'verbs' => ['get','list'], 'resources' => ['checks'], resource_names => ['bar']},
+  ],
+  provider => 'sensu_api',
+}
+sensu_role { 'test2':
+  rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+}
+sensu_cluster_role { 'test2':
+  rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+}
+sensu_cluster_role_binding { 'test':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
+}
+sensu_cluster_role_binding { 'test2':
+  role_ref => {'type' => 'Role', 'name' => 'test2'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+}
+sensu_cluster_role_binding { 'test-api':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test'},
+  subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
+  provider => 'sensu_api',
+}
+sensu_cluster_role_binding { 'test-api2':
+  role_ref => {'type' => 'Role', 'name' => 'test2'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+  provider => 'sensu_api',
+}
+sensu_role_binding { 'test':
+  role_ref => {'type' => 'Role', 'name' => 'test2'},
+  subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
+}
+sensu_role_binding { 'test2':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test2'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+}
+sensu_role_binding { 'test-api':
+  role_ref => {'type' => 'Role', 'name' => 'test2'},
+  subjects => [{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}],
+  provider => 'sensu_api',
+}
+sensu_role_binding { 'test-api2':
+  role_ref => {'type' => 'ClusterRole', 'name' => 'test2'},
+  subjects => [{'type' => 'User', 'name' => 'admin'}],
+  provider => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -252,8 +268,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role with updated propery' do
-      on node, 'sensuctl cluster-role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -261,8 +277,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role with updated propery using API' do
-      on node, 'sensuctl cluster-role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -270,8 +286,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid role with updated propery' do
-      on node, 'sensuctl role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -279,8 +295,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid role with updated propery using API' do
-      on node, 'sensuctl role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -288,64 +304,64 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role_binding with updated propery' do
-      on node, 'sensuctl cluster-role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role with updated property' do
-      on node, 'sensuctl cluster-role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with updated propery using API' do
-      on node, 'sensuctl cluster-role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role with updated property using API' do
-      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding with updated propery' do
-      on node, 'sensuctl role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole with updated property' do
-      on node, 'sensuctl role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding with updated propery using API' do
-      on node, 'sensuctl role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole with updated property using API' do
-      on node, 'sensuctl role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
@@ -354,22 +370,30 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_cluster_role { 'test': ensure => 'absent' }
-      sensu_cluster_role { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
-      sensu_role { 'test': ensure => 'absent' }
-      sensu_role { 'test-api': ensure => 'absent', provider => 'sensu_api' }
-      sensu_cluster_role_binding { 'test': ensure => 'absent' }
-      sensu_cluster_role_binding { 'test-api':
-        ensure   => 'absent',
-        provider => 'sensu_api',
-      }
-      sensu_role_binding { 'test': ensure => 'absent' }
-      sensu_role_binding { 'test-api': ensure => 'absent', provider => 'sensu_api' }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_cluster_role { 'test': ensure => 'absent' }
+sensu_cluster_role { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
+sensu_role { 'test': ensure => 'absent' }
+sensu_role { 'test-api': ensure => 'absent', provider => 'sensu_api' }
+sensu_cluster_role_binding { 'test': ensure => 'absent' }
+sensu_cluster_role_binding { 'test-api':
+  ensure   => 'absent',
+  provider => 'sensu_api',
+}
+sensu_role_binding { 'test': ensure => 'absent' }
+sensu_role_binding { 'test-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -413,20 +437,36 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
 
   context 'resource purging' do
     it 'should purge without errors' do
-      before_pp = <<-EOS
-      include sensu::backend
-      sensu_cluster_role { 'test1':
-        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-      }
+      before_pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_cluster_role { 'test1':
+  rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+}
       EOS
-      pp = <<-EOS
-      include ::sensu::backend
-      sensu_resources { 'sensu_cluster_role':
-        purge => true
-      }
-      sensu_cluster_role { 'test2':
-        rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_resources { 'sensu_cluster_role':
+  purge => true
+}
+sensu_cluster_role { 'test2':
+  rules => [{'verbs' => ['get','list'], 'resources' => ['checks']}],
+}
       EOS
 
       apply_manifest_on(node, before_pp, :catch_failures => true)

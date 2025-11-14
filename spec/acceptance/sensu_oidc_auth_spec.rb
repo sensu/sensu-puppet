@@ -4,33 +4,41 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
   node = hosts_as('sensu-backend')[0]
   context 'default' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_oidc_auth { 'oidc':
-        ensure            => 'present',
-        additional_scopes => ['email','groups'],
-        client_id         => '0oa13ry4ypeDDBpxF357',
-        client_secret     => 'supersecret',
-        groups_claim      => 'groups',
-        groups_prefix     => 'oidc:',
-        redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
-        server            => 'https://idp.example.com',
-        username_claim    => 'email',
-        username_prefix   => 'oidc:',
-      }
-      sensu_oidc_auth { 'oidc-api':
-        ensure            => 'present',
-        additional_scopes => ['email','groups'],
-        client_id         => '0oa13ry4ypeDDBpxF357',
-        client_secret     => 'supersecret',
-        groups_claim      => 'groups',
-        groups_prefix     => 'oidc:',
-        redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
-        server            => 'https://idp.example.com',
-        username_claim    => 'email',
-        username_prefix   => 'oidc:',
-        provider          => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_oidc_auth { 'oidc':
+  ensure            => 'present',
+  additional_scopes => ['email','groups'],
+  client_id         => '0oa13ry4ypeDDBpxF357',
+  client_secret     => 'supersecret',
+  groups_claim      => 'groups',
+  groups_prefix     => 'oidc:',
+  redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+  server            => 'https://idp.example.com',
+  username_claim    => 'email',
+  username_prefix   => 'oidc:',
+}
+sensu_oidc_auth { 'oidc-api':
+  ensure            => 'present',
+  additional_scopes => ['email','groups'],
+  client_id         => '0oa13ry4ypeDDBpxF357',
+  client_secret     => 'supersecret',
+  groups_claim      => 'groups',
+  groups_prefix     => 'oidc:',
+  redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+  server            => 'https://idp.example.com',
+  username_claim    => 'email',
+  username_prefix   => 'oidc:',
+  provider          => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -47,8 +55,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth' do
-      on node, 'sensuctl auth info oidc --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('supersecret')
         expect(data['server']).to eq('https://idp.example.com')
@@ -62,8 +70,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth using API' do
-      on node, 'sensuctl auth info oidc-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('supersecret')
         expect(data['server']).to eq('https://idp.example.com')
@@ -79,33 +87,41 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'updates auth' do
     it 'should work without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_oidc_auth { 'oidc':
-        ensure            => 'present',
-        additional_scopes => ['email','groups','openid'],
-        client_id         => '0oa13ry4ypeDDBpxF357',
-        client_secret     => 'foobar',
-        groups_claim      => 'roles',
-        groups_prefix     => 'oidc:',
-        redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
-        server            => 'https://idp.example.com',
-        username_claim    => 'username',
-        username_prefix   => 'oidc:',
-      }
-      sensu_oidc_auth { 'oidc-api':
-        ensure            => 'present',
-        additional_scopes => ['email','groups','openid'],
-        client_id         => '0oa13ry4ypeDDBpxF357',
-        client_secret     => 'foobar',
-        groups_claim      => 'roles',
-        groups_prefix     => 'oidc:',
-        redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
-        server            => 'https://idp.example.com',
-        username_claim    => 'username',
-        username_prefix   => 'oidc:',
-        provider          => 'sensu_api',
-      }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_oidc_auth { 'oidc':
+  ensure            => 'present',
+  additional_scopes => ['email','groups','openid'],
+  client_id         => '0oa13ry4ypeDDBpxF357',
+  client_secret     => 'foobar',
+  groups_claim      => 'roles',
+  groups_prefix     => 'oidc:',
+  redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+  server            => 'https://idp.example.com',
+  username_claim    => 'username',
+  username_prefix   => 'oidc:',
+}
+sensu_oidc_auth { 'oidc-api':
+  ensure            => 'present',
+  additional_scopes => ['email','groups','openid'],
+  client_id         => '0oa13ry4ypeDDBpxF357',
+  client_secret     => 'foobar',
+  groups_claim      => 'roles',
+  groups_prefix     => 'oidc:',
+  redirect_uri      => 'https://sensu-backend.example.com:8080/api/enterprise/authentication/v2/oidc/callback',
+  server            => 'https://idp.example.com',
+  username_claim    => 'username',
+  username_prefix   => 'oidc:',
+  provider          => 'sensu_api',
+}
       EOS
 
       if RSpec.configuration.sensu_use_agent
@@ -126,8 +142,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth' do
-      on node, 'sensuctl auth info oidc --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('foobar')
         expect(data['server']).to eq('https://idp.example.com')
@@ -141,8 +157,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth using API' do
-      on node, 'sensuctl auth info oidc-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('foobar')
         expect(data['server']).to eq('https://idp.example.com')
@@ -158,10 +174,18 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
 
   context 'ensure => absent' do
     it 'should remove without errors' do
-      pp = <<-EOS
-      include sensu::backend
-      sensu_oidc_auth { 'oidc': ensure => 'absent' }
-      sensu_oidc_auth { 'oidc-api': ensure => 'absent', provider => 'sensu_api' }
+      pp = <<~EOS
+class { 'sensu':
+  use_ssl => true,
+  ssl_ca_source => '/etc/puppetlabs/puppet/ssl/ca/ca_crt.pem',
+}
+    class { 'sensu::backend':
+ssl_cert_source => '/etc/puppetlabs/puppet/ssl/certs/cert.pem',
+ssl_key_source => '/etc/puppetlabs/puppet/ssl/private_keys/key.pem',
+    }
+include sensu::cli
+sensu_oidc_auth { 'oidc': ensure => 'absent' }
+sensu_oidc_auth { 'oidc-api': ensure => 'absent', provider => 'sensu_api' }
       EOS
 
       if RSpec.configuration.sensu_use_agent

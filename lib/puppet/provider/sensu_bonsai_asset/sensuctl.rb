@@ -83,7 +83,7 @@ Puppet::Type.type(:sensu_bonsai_asset).provide(:sensuctl, :parent => Puppet::Pro
       opts[:custom_environment]['no_proxy'] = resource[:bonsai_no_proxy] if resource[:bonsai_no_proxy]
     end
     begin
-      sensuctl(cmd, opts)
+      sensuctl(cmd, **opts)
     rescue Exception => e
       raise Puppet::Error, "#{cmd.join(' ')} failed\nError message: #{e.message}"
     end

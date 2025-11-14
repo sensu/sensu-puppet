@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
+  before do
+    allow(Puppet::Provider::SensuAPI).to receive(:api_request).and_return({})
+  end
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_role) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
-      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}]
-    })
+      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

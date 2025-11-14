@@ -176,6 +176,20 @@ This module will install packages, create configuration and start services neces
 
 ### Setup requirements
 
+#### Puppet and Ruby Version Requirements
+
+This module requires specific Ruby versions depending on the Puppet version:
+
+| Puppet Version | Required Ruby Version | Support Status |
+|----------------|----------------------|----------------|
+| Puppet 7.x | Ruby 3.1.x | ✅ Supported |
+| Puppet 8.x | Ruby 3.2.x | ✅ Supported |
+| Puppet 6.x | Ruby 2.5.x - 2.7.x | ❌ EOL (Removed) |
+
+**Important**: Ensure your environment has the correct Ruby version for your Puppet version. Using incompatible versions may cause unexpected failures.
+
+#### Plugin Sync
+
 Plugin sync is required if the custom sensu types and providers are used.
 
 #### Soft module dependencies
@@ -183,7 +197,7 @@ Plugin sync is required if the custom sensu types and providers are used.
 For systems using `apt`:
   * [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) module (`>= 5.0.1 < 9.0.0`)
 
-For systems using `yum` and Puppet >= 6.0.0:
+For systems using `yum` and Puppet >= 7.0.0:
   * [puppetlabs/yumrepo_core](https://forge.puppet.com/puppetlabs/yumrepo_core) module (`>= 1.0.1 < 2.0.0`)
 
 For Windows:
@@ -1266,8 +1280,8 @@ When changing the `sensu::password` value, it's necessary to run Puppet on the b
 
 ### Notes regarding support
 
-This module is built for use with Puppet versions 6 and 7 and the ruby
-versions associated with those releases. See `.travis.yml` for an exact
+This module is built for use with Puppet versions 7 and 8 and the ruby
+versions associated with those releases. See `.github/workflows/` for an exact
 matrix of Puppet releases and ruby versions.
 
 This module targets the latest release of the current major Puppet

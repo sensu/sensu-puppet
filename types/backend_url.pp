@@ -4,5 +4,5 @@
 type Sensu::Backend_URL = Variant[
   Pattern[/^[^\s:]+:\d+$/],
   Pattern[/^ws:\/\/[^\s:]+:\d+$/],
-  Pattern[/^wss:\/\/[^\s:]++:\d+$/]
+  Pattern[/^wss:\/\/[^\s:]+:\d+$/]
 ]

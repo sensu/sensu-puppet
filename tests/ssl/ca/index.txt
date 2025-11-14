@@ -1,0 +1,2 @@
+V	351108062332Z		1000	unknown	/C=US/ST=CA/O=Sensu/OU=Testing/CN=sensu-backend
+V	351108062332Z		1001	unknown	/C=US/ST=CA/O=Sensu/OU=Testing/CN=sensu-agent

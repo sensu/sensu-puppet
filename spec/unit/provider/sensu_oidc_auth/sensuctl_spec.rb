@@ -4,12 +4,14 @@ describe Puppet::Type.type(:sensu_oidc_auth).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_oidc_auth) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'oidc',
       :client_id => 'id',
       :client_secret => 'secret',
       :server => 'https://idp.example.com',
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do

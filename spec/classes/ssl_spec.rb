@@ -5,6 +5,7 @@ describe 'sensu::ssl', :type => :class do
     context "on #{os}" do
       let(:facts) { facts }
       context 'with default values for all parameters' do
+        let(:pre_condition) { "class { 'sensu': ssl_ca_content => 'FAKE' }" }
         # Unknown bug in rspec-puppet fails to compile windows paths
         # when they are used for file source of sensu_ssl_ca, issue with windows mocking
         # https://github.com/rodjek/rspec-puppet/issues/750
@@ -36,8 +37,8 @@ describe 'sensu::ssl', :type => :class do
             'group'     => platforms[facts[:osfamily]][:group],
             'mode'      => platforms[facts[:osfamily]][:ca_mode],
             'show_diff' => 'false',
-            'source'    => facts['puppet_localcacert'],
-            'content'   => nil,
+            'source'    => nil,
+            'content'   => 'FAKE',
           })
         }
 

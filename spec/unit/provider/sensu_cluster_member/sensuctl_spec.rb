@@ -4,10 +4,12 @@ describe Puppet::Type.type(:sensu_cluster_member).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_cluster_member) }
   let(:resource) do
-    type.new({
+    config = {
       :name => 'test',
       :peer_urls => ['http://127.0.0.1:2380'],
-    })
+      :provider => :sensuctl
+    }
+    type.new(config)
   end
 
   describe 'self.instances' do
