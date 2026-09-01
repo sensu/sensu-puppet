@@ -21,13 +21,6 @@ jobs:
       with:
         ruby-version: '3.4'
         bundler-cache: true
-    - name: Install Puppet agent
-      shell: pwsh
-      run: |
-        $url = "https://downloads.puppet.com/windows/puppet8/puppet-agent-x64-latest.msi"
-        Invoke-WebRequest -Uri $url -OutFile puppet-agent.msi
-        Start-Process msiexec.exe -ArgumentList '/i puppet-agent.msi /quiet /norestart' -Wait
-        "C:\Program Files\Puppet Labs\Puppet\bin" >> $env:GITHUB_PATH
     - name: Install module and dependencies
       shell: pwsh
       run: |
@@ -42,12 +35,12 @@ jobs:
         New-Item -ItemType Directory -Force "C:\ProgramData\PuppetLabs\puppet\etc\ssl" | Out-Null
         Get-ChildItem -Path "tests\ssl" | Copy-Item -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -Recurse -Force
         # Set certname for predictable $trusted['certname'] used as api_host default
-        puppet config set --section main certname sensu_agent
+        bundle exec puppet config set --section main certname sensu_agent
         # Install Forge dependencies (Windows-relevant subset)
-        puppet module install puppetlabs-stdlib     --version ">= 9.0.0 < 10.0.0"
-        puppet module install richardc-datacat      --version ">= 0.6.0 < 2.0.0"
-        puppet module install puppet-archive        --version ">= 7.0.0 < 8.0.0"
-        puppet module install puppetlabs-chocolatey --version ">= 9.0.0 < 10.0.0"
+        bundle exec puppet module install puppetlabs-stdlib     --version ">= 9.0.0 < 10.0.0"
+        bundle exec puppet module install richardc-datacat      --version ">= 0.6.0 < 2.0.0"
+        bundle exec puppet module install puppet-archive        --version ">= 7.0.0 < 8.0.0"
+        bundle exec puppet module install puppetlabs-chocolatey --version ">= 9.0.0 < 10.0.0"
         # puppet-windows_env 6.1.0 supports Puppet 8 but has not been published to the Forge
         git clone --depth 1 --branch v6.1.0 https://github.com/voxpupuli/puppet-windows_env.git "$modulepath\windows_env"
     - name: Run Windows acceptance tests
