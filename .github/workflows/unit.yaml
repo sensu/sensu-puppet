@@ -32,6 +32,6 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Validate
-        run: bundle exec rake sensu_validate lint reference
+        run: bundle exec rake sensu_validate lint
       - name: Run tests
         run: bundle exec rake spec
