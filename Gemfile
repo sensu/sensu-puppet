@@ -18,36 +18,28 @@ group :development, :unit_tests do
   gem 'rspec-mocks',                                               :require => false
   gem 'parallel_tests',                                            :require => false
   gem 'puppetlabs_spec_helper',                                    :require => false
+  gem 'puppetlabs-syntax',                                         :require => false
+  gem 'rspec-github',                                              :require => false
   gem 'metadata-json-lint',                                        :require => false
   gem 'puppet-blacksmith',                                         :require => false
   gem 'puppet-lint',                                               :require => false
   gem 'puppet-lint-absolute_classname-check',                      :require => false
   gem 'puppet-lint-alias-check',                                   :require => false
   gem 'puppet-lint-anchor-check',                                  :require => false
-  gem 'puppet-lint-classes_and_types_beginning_with_digits-check', :require => false
-  gem 'puppet-lint-empty_string-check',                            :require => false
-  gem 'puppet-lint-empty_trailing_lines',                          :require => false
   gem 'puppet-lint-file_ensure-check',                             :require => false
   gem 'puppet-lint-leading_zero-check',                            :require => false
-  gem 'puppet-lint-legacy_facts-check',                            :require => false
-  gem 'puppet-lint-no_symbolic_file_modes-check',                  :require => false
   gem 'puppet-lint-param-docs',                                    :require => false
   gem 'puppet-lint-resource_reference_syntax',                     :require => false
   gem 'puppet-lint-spaceship_operator_without_tag-check',          :require => false
-  gem 'puppet-lint-top_scope_facts-check',                         :require => false
   gem 'puppet-lint-topscope-variable-check',                       :require => false
   gem 'puppet-lint-trailing_comma-check',                          :require => false
-  gem 'puppet-lint-trailing_newline-check',                        :require => false
-  gem 'puppet-lint-undef_in_function-check',                       :require => false
   gem 'puppet-lint-unquoted_string-check',                         :require => false
   gem 'puppet-lint-variable_contains_upcase',                      :require => false
   gem 'puppet-lint-version_comparison-check',                      :require => false
-  gem 'rubocop', '~> 0.49.0',                                      :require => false
-  gem 'rubocop-i18n', '~> 1.2.0',                                  :require => false
-  gem 'rubocop-rspec', '~> 1.16.0',                                :require => false
-  if Gem.win_platform? && ENV['PUPPET_GEM_VERSION'] =~ /6.x/
-    gem 'ffi', '~>1.11.0', :require => false
-  end
+  gem 'rubocop', '~> 1.65',                                        :require => false
+  gem 'rubocop-i18n', '~> 3.0',                                    :require => false
+  gem 'rubocop-rspec', '~> 3.0',                                   :require => false
+  gem 'syslog',                                                    :require => false
 end
 
 group :documentation do
@@ -58,14 +50,14 @@ group :documentation do
 end
 
 group :system_tests do
-  gem 'beaker',                       :require => false
-  gem "beaker-docker",                :require => false
-  gem 'beaker-module_install_helper', :require => false
-  gem 'beaker-puppet',                :require => false
-  gem 'beaker-puppet_install_helper', :require => false
-  gem 'beaker-rspec',                 :require => false
-  gem 'serverspec',                   :require => false
-  gem 'simp-beaker-helpers',          :require => false
+  gem 'beaker',                       '7.7.0',  :require => false
+  gem 'beaker-docker',                '3.1.3',  :require => false
+  gem 'beaker-module_install_helper', '0.1.7',  :require => false
+  gem 'beaker-puppet',                '4.4.3',  :require => false
+  gem 'beaker-puppet_install_helper', '0.9.4',  :require => false
+  gem 'beaker-rspec',                 '9.1.0',  :require => false
+  gem 'serverspec',                   '2.43.0', :require => false
+  gem 'simp-beaker-helpers',          '3.1.1',  :require => false
 end
 
 group :development do

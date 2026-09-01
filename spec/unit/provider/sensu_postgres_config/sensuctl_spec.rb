@@ -7,6 +7,7 @@ describe Puppet::Type.type(:sensu_postgres_config).provider(:sensuctl) do
     type.new({
       :name => 'test',
       :dsn => 'postgresql://sensu:changeme@localhost:5432/sensu',
+      :provider => 'sensuctl',
     })
   end
 

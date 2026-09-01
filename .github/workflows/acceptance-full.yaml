@@ -9,6 +9,7 @@ on:
 jobs:
   acceptance-full:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     # Items marked as ci_build=yes are allowed to fail
     continue-on-error: ${{ matrix.ci_build == 'yes' }}
     strategy:
@@ -20,44 +21,62 @@ jobs:
         - types
         - examples
         puppet:
-        - puppet6
-        - puppet7
+        - puppet8
         use_agent:
         - no
         ci_build:
         - no
+        set:
+        - rocky-9-modern
+        - ubuntu-24.04-modern
         include:
         - sensu_mode: types
-          puppet: puppet6
+          puppet: puppet8
           use_agent: yes
           ci_build: no
-        - sensu_mode: types
-          puppet: puppet7
-          use_agent: yes
-          ci_build: no
+          set: rocky-9-modern
         - sensu_mode: bolt
-          puppet: puppet6
+          puppet: puppet8
+          use_agent: no
+          ci_build: no
+          set: rocky-9-modern
     env:
       BEAKER_debug: true
     name: ${{ matrix.set }} ${{ matrix.puppet }} (mode=${{ matrix.sensu_mode }} use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: '3.4'
         bundler-cache: true
-        bundler: '2.1.0'
     - name: Decrypt secrets
       env:
         SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}
       if: ${{ env.SENSU_SECRETS_PASSWORD != null }}
       run: ./tests/decrypt-secrets.sh
+    - name: Restore Docker image cache
+      uses: actions/cache@v6
+      with:
+        path: /tmp/.docker-cache
+        key: docker-${{ matrix.set }}-${{ hashFiles(format('spec/acceptance/nodesets/{0}.yml', matrix.set)) }}
+        restore-keys: docker-${{ matrix.set }}-
+    - name: Load cached Docker images
+      run: |
+        if [ -d /tmp/.docker-cache ]; then
+          for f in /tmp/.docker-cache/*.tar; do [ -f "$f" ] && docker load -i "$f" || true; done
+        fi
     - name: Run tests
       run: bundle exec rake acceptance
       env:
-        BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: centos-7
+        RUN_ACCEPTANCE: 1
+        BEAKER_set: ${{ matrix.set }}
         BEAKER_sensu_mode: ${{ matrix.sensu_mode }}
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}
+    - name: Save Docker images to cache
+      if: always()
+      run: |
+        mkdir -p /tmp/.docker-cache
+        docker images --format '{{.Repository}}:{{.Tag}}' | grep '^sensu-' | \
+          xargs -I{} sh -c 'docker save {} -o /tmp/.docker-cache/$(echo {} | tr "/:." "_").tar' || true

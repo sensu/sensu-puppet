@@ -6,7 +6,7 @@ describe 'sensu::cli', :type => :class do
       let(:facts) { facts }
       let(:node) { 'test.example.com' }
       let(:install_source_param) do
-        'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.14.1/sensu-go_5.14.1_windows_amd64.zip'
+        'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/6.14.2/sensu-go_6.14.2_windows_amd64.zip'
       end
       let(:default_params) do
         if facts[:osfamily] == 'windows'

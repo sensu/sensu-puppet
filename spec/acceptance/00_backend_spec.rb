@@ -94,7 +94,7 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
 
   # This test verifies non-standard location is used by setting agent-port
   # and then checking that port gets used by the daemon
-  context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
+  context 'etc_dir change', if: (['base'].include?(RSpec.configuration.sensu_mode) && node && pfact_on(node, 'service_provider') == 'systemd') do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
@@ -255,10 +255,9 @@ describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu
     end
 
     it 'should opt-out of tessen' do
-      on node, 'sensuctl tessen info --format json' do
-        data = JSON.parse(stdout)
-        expect(data['opt_out']).to eq(true)
-      end
+      result = on node, 'sensuctl tessen info --format json'
+      data = JSON.parse(result.stdout)
+      expect(data['opt_out']).to eq(true)
     end
   end
 end

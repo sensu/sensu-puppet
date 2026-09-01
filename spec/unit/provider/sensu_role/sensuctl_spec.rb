@@ -6,7 +6,8 @@ describe Puppet::Type.type(:sensu_role).provider(:sensuctl) do
   let(:resource) do
     type.new({
       :name => 'test',
-      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}]
+      :rules => [{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['']}],
+      :provider => 'sensuctl',
     })
   end
 

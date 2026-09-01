@@ -117,7 +117,7 @@ class sensu::agent (
   if $sensu::use_ssl {
     $backend_protocol = 'wss'
     $ssl_config = {
-      'trusted-ca-file' => $sensu::trusted_ca_file_path,
+      'trusted-ca-file' => $sensu::trusted_ca_file,
     }
     $service_subscribe = Class['sensu::ssl']
   } else {
@@ -174,6 +174,10 @@ class sensu::agent (
     "${key}=\"${value}\""
   }
   $_service_env_vars_lines = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
+  $_env_file_line = $service_env_vars_file ? {
+    undef   => undef,
+    default => "EnvironmentFile=-${service_env_vars_file}",
+  }
 
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
@@ -280,14 +284,55 @@ class sensu::agent (
     }
   }
 
+  # Only create systemd service files when systemd is the service provider
   if $facts['service_provider'] == 'systemd' {
+    # Create the base systemd service file
+    file { '/etc/systemd/system/sensu-agent.service':
+      ensure  => 'file',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => join([
+        '[Unit]',
+        'Description=Sensu Agent',
+        'Documentation=https://sensu.io/docs/latest/observability-pipeline/observe-schedule/agent/',
+        'After=network-online.target',
+        'Wants=network-online.target',
+        '',
+        '[Service]',
+        'Type=simple',
+        'User=sensu',
+        'Group=sensu',
+        $_env_file_line,
+        'ExecStart=/usr/sbin/sensu-agent start -c /etc/sensu/agent.yml',
+        'Restart=always',
+        'RestartSec=5',
+        'StandardOutput=journal',
+        'StandardError=journal',
+        'SyslogIdentifier=sensu-agent',
+        '',
+        '[Install]',
+        'WantedBy=multi-user.target',
+      ].filter |$l| { $l != undef }, "\n"),
+      notify  => [Exec['systemd-reload'], Service['sensu-agent']],
+    }
+
+    # Reload systemd after creating the service file
+    exec { 'systemd-reload':
+      command     => 'systemctl daemon-reload',
+      path        => ['/usr/bin', '/bin'],
+      refreshonly => true,
+      notify      => Service['sensu-agent'],
+    }
+
     systemd::dropin_file { 'sensu-agent-start.conf':
       unit    => 'sensu-agent.service',
       content => join([
         '[Service]',
         'ExecStart=',
         "ExecStart=${service_path} start -c ${sensu::agent_config_path}",
-      ], "\n"),
+        $_env_file_line,
+      ].filter |$l| { $l != undef }, "\n"),
       notify  => Service['sensu-agent'],
     }
   }
@@ -304,6 +349,7 @@ class sensu::agent (
       ensure    => 'present',
       namespace => $config['namespace'],
       provider  => 'sensu_api',
+      require   => Class['sensu::api'],
     }
   }
 }

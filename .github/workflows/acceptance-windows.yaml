@@ -1,0 +1,52 @@
+name: Acceptance Windows
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  acceptance-windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    name: Windows sensu::cli and sensu::agent
+    env:
+      BUNDLE_WITHOUT: development
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Install Puppet agent
+      shell: pwsh
+      run: |
+        $url = "https://downloads.puppet.com/windows/puppet8/puppet-agent-x64-latest.msi"
+        Invoke-WebRequest -Uri $url -OutFile puppet-agent.msi
+        Start-Process msiexec.exe -ArgumentList '/i puppet-agent.msi /quiet /norestart' -Wait
+        "C:\Program Files\Puppet Labs\Puppet\bin" >> $env:GITHUB_PATH
+    - name: Install module and dependencies
+      shell: pwsh
+      run: |
+        $modulepath = "C:\ProgramData\PuppetLabs\code\environments\production\modules"
+        New-Item -ItemType Directory -Force $modulepath | Out-Null
+        # Install this module from the checkout so tests use current code
+        Copy-Item -Path "." -Destination "$modulepath\sensu" -Recurse -Force
+        # Provide the Puppet CA cert so ssl_ca_source resolves — the sensu class defaults
+        # ssl_ca_source to $facts['puppet_localcacert'], which points here on Windows.
+        # A fresh runner has no Puppet master, so no CA cert exists at that path yet.
+        Copy-Item -Path "tests\ssl\*" -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -Recurse -Force
+        # Set certname for predictable $trusted['certname'] used as api_host default
+        puppet config set --section main certname sensu_agent
+        # Install Forge dependencies (Windows-relevant subset)
+        puppet module install puppetlabs-stdlib     --version ">= 9.0.0 < 10.0.0" --ignore-dependencies
+        puppet module install richardc-datacat      --version ">= 0.6.0 < 2.0.0"  --ignore-dependencies
+        puppet module install puppet-archive        --version ">= 3.0.0 < 5.0.0"  --ignore-dependencies
+        puppet module install puppet-windows_env    --version ">= 3.0.0 < 5.0.0"  --ignore-dependencies
+        puppet module install puppetlabs-chocolatey --version ">= 3.0.0 < 7.0.0"  --ignore-dependencies
+    - name: Run Windows acceptance tests
+      shell: pwsh
+      run: bundle exec rake acceptance:windows

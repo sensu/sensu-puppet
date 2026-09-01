@@ -55,8 +55,8 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid AD auth' do
-      on node, 'sensuctl auth info activedirectory --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info activedirectory --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -71,8 +71,8 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid AD auth using API' do
-      on node, 'sensuctl auth info activedirectory-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info activedirectory-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -154,8 +154,8 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid ad auth' do
-      on node, 'sensuctl auth info activedirectory --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info activedirectory --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('localhost')
         expect(data['servers'][0]['port']).to eq(636)
@@ -170,8 +170,8 @@ describe 'sensu_ad_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid ad auth using API' do
-      on node, 'sensuctl auth info activedirectory-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info activedirectory-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('localhost')
         expect(data['servers'][0]['port']).to eq(636)

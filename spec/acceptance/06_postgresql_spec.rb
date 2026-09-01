@@ -14,8 +14,8 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
       EOS
       pp = <<-EOS
       class { 'postgresql::globals':
-        manage_package_repo => true,
-        version             => '11',
+        manage_package_repo => false,
+        version             => '16',
       }
       class { 'postgresql::server':}
       class { 'sensu::backend':
@@ -49,16 +49,16 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
     it 'configured postgres' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
-        data = YAML.load(stdout)
+      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do |result|
+        data = YAML.load(result.stdout)
         expect(data['spec']['dsn']).to eq('postgresql://sensu:changeme@localhost:5432/sensu?sslmode=require')
         expect(data['spec']['pool_size']).to eq(20)
       end
     end
 
     it 'should have an event' do
-      on node, 'sensuctl event info sensu-agent event-test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl event info sensu-agent event-test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check']['status']).to eq(0)
       end
     end
@@ -131,14 +131,14 @@ describe 'postgresql datastore', if: RSpec.configuration.sensu_mode == 'full' do
     it 'removed postgres config' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do
-        expect(stdout).to be_empty
+      on node, 'sensuctl dump store/v1.PostgresConfig --format yaml --all-namespaces' do |result|
+        expect(result.stdout).to be_empty
       end
     end
 
     it 'should have an event' do
-      on node, 'sensuctl event info sensu-agent event-test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl event info sensu-agent event-test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check']['status']).to eq(0)
       end
     end

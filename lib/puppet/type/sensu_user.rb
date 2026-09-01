@@ -99,7 +99,7 @@ DESC
 
   newparam(:configure_url) do
     desc "URL to use with 'sensuctl configure'"
-    defaultto 'http://127.0.0.1:8080'
+    defaultto 'https://127.0.0.1:8080'
   end
 
   newparam(:configure_trusted_ca_file) do

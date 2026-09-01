@@ -35,8 +35,8 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid filter' do
-      on node, 'sensuctl filter info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl filter info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['action']).to eq('allow')
         expect(data['expressions']).to eq(["event.entity.labels.environment == 'production'"])
         expect(data['runtime_assets']).to eq(['test'])
@@ -45,8 +45,8 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid filter using API' do
-      on node, 'sensuctl filter info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl filter info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['action']).to eq('allow')
         expect(data['expressions']).to eq(["event.entity.labels.environment == 'production'"])
         expect(data['runtime_assets']).to eq(['test'])
@@ -88,8 +88,8 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid filter with updated propery' do
-      on node, 'sensuctl filter info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl filter info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['expressions']).to eq(["event.entity.labels.environment == 'test'"])
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -97,8 +97,8 @@ describe 'sensu_filter', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid filter with updated propery using API' do
-      on node, 'sensuctl filter info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl filter info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['expressions']).to eq(["event.entity.labels.environment == 'test'"])
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')

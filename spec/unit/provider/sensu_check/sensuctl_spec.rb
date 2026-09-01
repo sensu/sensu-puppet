@@ -10,6 +10,7 @@ describe Puppet::Type.type(:sensu_check).provider(:sensuctl) do
       :subscriptions => ['demo'],
       :handlers => ['slack'],
       :interval => 60,
+      :provider => 'sensuctl',
     })
   end
 

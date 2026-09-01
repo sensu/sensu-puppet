@@ -1,14 +1,20 @@
 require 'beaker-rspec'
 require 'beaker-puppet'
 require 'beaker/module_install_helper'
-require 'beaker/puppet_install_helper'
 require 'simp/beaker_helpers'
+require 'json'
+
+# On Apple Silicon (arm64), Puppet's EL aarch64 yum CloudFront distribution
+# returns 403 specifically for libdnf user-agent requests. Override dnf's
+# user_agent before puppet-agent is installed so the repo responds with 200.
+if RbConfig::CONFIG['host_cpu'] == 'arm64'
+  on hosts, "echo 'user_agent=curl/8.0' >> /etc/dnf/dnf.conf", acceptable_exit_codes: [0, 1]
+end
 
 include Simp::BeakerHelpers
-run_puppet_install_helper
+run_puppet_install_helper_on(hosts)
 install_module
 pluginsync_on(hosts)
-collection = ENV['BEAKER_PUPPET_COLLECTION'] || 'puppet6'
 project_dir = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 
 RSpec.configure do |c|
@@ -29,7 +35,7 @@ RSpec.configure do |c|
   else
     enterprise_file = File.join(project_dir, 'tests/sensu_license.json')
   end
-  if File.exists?(enterprise_file)
+  if File.exist?(enterprise_file)
     scp_to(hosts_as('sensu-backend'), enterprise_file, '/root/sensu_license.json')
     c.sensu_test_enterprise = true
   else
@@ -38,7 +44,7 @@ RSpec.configure do |c|
 
   ci_build = File.join(project_dir, 'tests/ci_build.sh')
   secrets = File.join(project_dir, 'tests/secrets')
-  if File.exists?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
+  if File.exist?(secrets) && (ENV['BEAKER_sensu_ci_build'] == 'yes' || ENV['BEAKER_sensu_ci_build'] == 'true')
     c.sensu_manage_repo = false
     c.add_ci_repo = true
   end
@@ -58,18 +64,39 @@ RSpec.configure do |c|
 
   # Configure all nodes in nodeset
   c.before :suite do
+    # Install metadata.json dependencies first so stdlib 9.x+ is present
+    # before soft dependencies (puppetlabs-apt etc.) pull in an older stdlib.
+    metadata = JSON.parse(File.read(File.join(project_dir, 'metadata.json')))
+    metadata.fetch('dependencies', []).each do |dep|
+      mod  = dep['name'].sub('/', '-')
+      ver  = dep['version_requirement']
+      args = ver ? [mod, '--version', "\"#{ver}\""] : [mod]
+      on setup_nodes, puppet('module', 'install', *args), acceptable_exit_codes: [0, 1]
+    end
     # Install soft module dependencies
-    on setup_nodes, puppet('module', 'install', 'puppetlabs-apt', '--version', '">= 5.0.1 < 9.0.0"'), { :acceptable_exit_codes => [0,1] }
+    # puppetlabs-apt is omitted: puppetlabs-postgresql (a metadata dep) already
+    # requires apt >= 9.2.0 and installs it, making a separate apt install conflict.
     on setup_nodes, puppet('module', 'install', 'puppetlabs-yumrepo_core', '--version', '">= 1.0.1 < 2.0.0"'), { :acceptable_exit_codes => [0,1] }
+    # puppetlabs-concat is a transitive dep of puppetlabs-postgresql; install it
+    # explicitly because puppet module install can silently skip transitive deps
+    # when the parent module is already cached in a preserved Docker image.
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-concat', '--version', '">= 4.1.0 < 11.0.0"'), { :acceptable_exit_codes => [0,1] }
+    # puppetlabs-inifile is a transitive dep of puppet-systemd (used by journald.pp)
+    on setup_nodes, puppet('module', 'install', 'puppetlabs-inifile', '--version', '">= 1.6.0 < 7.0.0"'), { :acceptable_exit_codes => [0,1] }
+    # full mode uses PostgreSQL via the PGDG yum repo. Rocky 9's dnf won't
+    # auto-import new repo GPG keys non-interactively, so pre-bootstrap the
+    # PGDG repo RPM which imports keys via rpm --import before puppet runs.
+    if RSpec.configuration.sensu_mode == 'full' || RSpec.configuration.sensu_mode == 'examples'
+      # Bootstrap the PGDG yum repo RPM on EL systems (imports GPG keys via
+      # rpm --import) so dnf can install PGDG packages non-interactively.
+      # Skipped silently on Debian/Ubuntu where dnf is not installed.
+      on hosts, "if command -v dnf >/dev/null 2>&1; then arch=$(uname -m) && dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-${arch}/pgdg-redhat-repo-latest.noarch.rpm; fi", acceptable_exit_codes: [0, 1]
+    end
     # Dependencies only needed to test some examples
     if RSpec.configuration.sensu_mode == 'examples'
-      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '5.0.0')
-      on setup_nodes, puppet('module', 'install', 'saz-rsyslog', '--version', '5.0.0')
-      # rsyslog template relies on rsyslog_version fact so pre-install rsyslog
-      # to keep things idempotent within minimal docker containers
-      on hosts, puppet('resource', 'package', 'rsyslog', 'ensure=present')
+      on setup_nodes, puppet('module', 'install', 'puppet-logrotate', '--version', '">= 8.0.0 < 10.0.0"', '--ignore-dependencies')
+      on setup_nodes, puppet('module', 'install', 'puppet-rsyslog', '--version', '">= 8.0.0 < 10.0.0"', '--ignore-dependencies')
     end
-    install_module_dependencies
     ssldir = File.join(project_dir, 'tests/ssl')
     scp_to(hosts, ssldir, '/etc/puppetlabs/puppet/')
     hosts.each do |host|
@@ -94,12 +121,11 @@ EOS
     common_yaml = <<-EOS
 ---
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
-sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
-postgresql::server::service_status: 'systemctl status postgresql-11 1>/dev/null 2>&1'
-postgresql::server::service_reload: 'systemctl reload postgresql-11 1>/dev/null 2>&1'
+postgresql::server::service_status: 'systemctl status postgresql-16 1>/dev/null 2>&1'
+postgresql::server::service_reload: 'systemctl reload postgresql-16 1>/dev/null 2>&1'
 EOS
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
     on setup_nodes, 'mkdir -p -m 0755 /etc/puppetlabs/puppet/data'
@@ -115,6 +141,8 @@ EOS
       on hosts, puppet("config set --section main server #{server}")
       on puppetserver, puppet("resource package puppetserver ensure=installed")
       on puppetserver, puppet("resource service puppetserver ensure=running")
+      # Wait for puppetserver JVM to finish startup and bind port 8140 (can take 30-90s).
+      retry_on(puppetserver, 'wget -q --no-check-certificate -O - https://localhost:8140/status/v1/simple 2>/dev/null | grep -q running', max_retries: 60, retry_interval: 5)
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/hiera.yaml'
       on puppetserver, 'chmod 0644 /etc/puppetlabs/puppet/data/common.yaml'
       create_remote_file(puppetserver, '/etc/puppetlabs/code/environments/production/manifests/site.pp', '')

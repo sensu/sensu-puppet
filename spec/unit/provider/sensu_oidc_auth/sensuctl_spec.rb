@@ -9,6 +9,7 @@ describe Puppet::Type.type(:sensu_oidc_auth).provider(:sensuctl) do
       :client_id => 'id',
       :client_secret => 'secret',
       :server => 'https://idp.example.com',
+      :provider => 'sensuctl',
     })
   end
 

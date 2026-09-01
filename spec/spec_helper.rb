@@ -1,3 +1,12 @@
+# Workaround: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS is frozen in Ruby 3.3+ but
+# Puppet's monkey_patches.rb tries to modify it in place. Unfreeze before requiring Puppet.
+require 'openssl'
+if OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.frozen?
+  unfrozen = OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.dup
+  OpenSSL::SSL::SSLContext.send(:remove_const, :DEFAULT_PARAMS)
+  OpenSSL::SSL::SSLContext.const_set(:DEFAULT_PARAMS, unfrozen)
+end
+
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
 
@@ -49,7 +58,7 @@ RSpec.configure do |config|
       :family => 'RedHat',
     },
     :operatingsystem           => 'RedHat',
-    :operatingsystemmajrelease => '7',
+    :operatingsystemmajrelease => '9',
     :service_provider          => 'systemd',
     :fqdn                      => 'testfqdn.example.com',
     :puppet_hostcert           => '/dne/cert.pem',
@@ -91,8 +100,6 @@ def platforms
     'Debian' => {
       :package_require => ['Class[Sensu::Repo]', 'Class[Apt::Update]'],
       package_provider: nil,
-      :plugins_package_require => ['Class[Sensu::Repo::Community]', 'Class[Apt::Update]'],
-      :plugins_dependencies => ['make','gcc','g++','libssl-dev'],
       agent_package_name: 'sensu-go-agent',
       :agent_config_path => '/etc/sensu/agent.yml',
       agent_config_mode: '0640',
@@ -113,8 +120,6 @@ def platforms
     'RedHat' => {
       :package_require => ['Class[Sensu::Repo]'],
       package_provider: nil,
-      :plugins_package_require => ['Class[Sensu::Repo::Community]'],
-      :plugins_dependencies => ['make','gcc','gcc-c++','openssl-devel'],
       agent_package_name: 'sensu-go-agent',
       :agent_config_path => '/etc/sensu/agent.yml',
       agent_config_mode: '0640',
@@ -146,7 +151,6 @@ def platforms
       ssl_dir_mode: nil,
       etc_dir_mode: nil,
       ca_mode: nil,
-      plugins_dependencies: [],
       agent_service_name: 'SensuAgent',
       log_file: 'C:\ProgramData\sensu\log\sensu-agent.log',
       agent_service_env_vars_file: nil,

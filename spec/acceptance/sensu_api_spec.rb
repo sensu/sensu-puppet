@@ -52,8 +52,8 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on backend, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -62,8 +62,8 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace using API' do
-      on backend, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -108,8 +108,8 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on backend, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -118,8 +118,8 @@ describe 'sensu_api providers', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace using API' do
-      on backend, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])

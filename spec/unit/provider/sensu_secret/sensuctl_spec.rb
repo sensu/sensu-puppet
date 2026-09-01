@@ -8,6 +8,7 @@ describe Puppet::Type.type(:sensu_secret).provider(:sensuctl) do
       :name => 'test',
       :id => 'test',
       :secrets_provider => 'env',
+      :provider => 'sensuctl',
     }
   end
   let(:resource) do

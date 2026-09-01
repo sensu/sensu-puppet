@@ -69,8 +69,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check' do
-      on node, 'sensuctl check info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-http.rb')
         expect(data['publish']).to eq(true)
         expect(data['stdin']).to eq(false)
@@ -84,8 +84,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on node, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -94,16 +94,16 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace' do
-      on node, 'sensuctl check info test2 --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test2 --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('test2')
         expect(data['metadata']['namespace']).to eq('test')
       end
     end
 
     it 'should have a valid check in namespace using API' do
-      on node, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -202,8 +202,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check with extended_attributes properties' do
-      on node, 'sensuctl check info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']},{'warning' => ['httpd-restart']}])
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
@@ -216,8 +216,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on node, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -226,8 +226,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace using API' do
-      on node, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -379,8 +379,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have purged checks' do
-      on node, 'sensuctl check list --format json --all-namespaces' do
-        data = JSON.parse(stdout) || []
+      on node, 'sensuctl check list --format json --all-namespaces' do |result|
+        data = JSON.parse(result.stdout) || []
         expect(data.size).to eq(2)
       end
     end

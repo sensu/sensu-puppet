@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Puppet::Type.type(:sensu_namespace).provider(:sensuctl) do
   let(:provider) { described_class }
   let(:type) { Puppet::Type.type(:sensu_namespace) }
-  let(:resource) { type.new({:name => 'test' }) }
+  let(:resource) { type.new({:name => 'test', :provider => 'sensuctl'}) }
 
   describe 'self.instances' do
     it 'should create instances' do

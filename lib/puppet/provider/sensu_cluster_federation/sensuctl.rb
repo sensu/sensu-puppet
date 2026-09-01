@@ -10,12 +10,15 @@ Puppet::Type.type(:sensu_cluster_federation).provide(:sensuctl, :parent => Puppe
   def self.instances
     clusters = []
 
-    data = dump('federation/v1.Cluster')
+    data = self.parse_yaml_dump(self.sensuctl(['dump','federation/v1.Cluster','--format','yaml','--all-namespaces'], failonfail: false))
     data.each do |d|
+      next if d.nil?
       cluster = {}
       cluster[:ensure] = :present
-      cluster[:name] = d['metadata']['name']
-      d['spec'].each_pair do |key,value|
+      cluster[:name] = d.fetch('metadata', {}).fetch('name', nil)
+      next if cluster[:name].nil?
+      spec = d['spec'] || {}
+      spec.each_pair do |key,value|
         if !!value == value
           value = value.to_s.to_sym
         end

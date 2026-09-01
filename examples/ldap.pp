@@ -1,29 +1,27 @@
-# Read more at Sensu's documentation site.
-#
-# https://docs.sensu.io/sensu-go/latest/installation/auth/#ldap-authentication
+# Sensu Go docs: https://docs.sensu.io/sensu-go/latest/installation/auth/#ldap-authentication
 #
 # The documentation for the puppet types are available at the following links.
-#
 # http://sensu.github.io/sensu-puppet/puppet_types/sensu_ldap_auth.html
 # http://sensu.github.io/sensu-puppet/puppet_types/sensu_role_binding.html
 #
-# Access the backend in a web browser such as
-# https:://sensu-backend.example.com:3000 and you should be able to login with
-# LDAP credentials. If you can login, but see a 404 that means that
-# sensu_ldap_auth is likely working but the access for your user is not granted
-# and you should modify the sensu_role_binding.
-#
+# Access the backend in a web browser at http://sensu-backend.example.com:3000
+# and login with your LDAP credentials. If you can login but see a 404, LDAP
+# auth is working but role access is not yet granted — modify sensu_role_binding.
+
+# Replace with your LDAP server details
+$ldap_server        = 'ldap.example.com'
+$ldap_bind_password = 'password'
+
+class { 'sensu':
+  use_ssl => false,
+}
+
 class { 'sensu::backend':
-  # This will turn on debugging which will make it possible to see the LDAP
-  # related Sensu logs.
+  # Enable debug logging to diagnose LDAP authentication issues
   config_hash => {
-    'debug'     => true,
     'log-level' => 'debug',
   },
 }
-
-$ldap_server = 'ldap.example.com'
-$ldap_bind_password = 'password'
 
 sensu_ldap_auth { 'openldap':
   ensure  => 'present',

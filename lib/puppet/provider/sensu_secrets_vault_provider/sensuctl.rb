@@ -10,9 +10,9 @@ Puppet::Type.type(:sensu_secrets_vault_provider).provide(:sensuctl, :parent => P
   def self.instances
     secrets_providers = []
 
-    data = dump('secrets/v1.Provider')
-
+    data = self.parse_yaml_dump(self.sensuctl(['dump','secrets/v1.Provider','--format','yaml','--all-namespaces'], failonfail: false))
     data.each do |d|
+      next if d.nil?
       next unless d['type'] == 'VaultProvider'
       secrets_provider = {}
       secrets_provider[:ensure] = :present

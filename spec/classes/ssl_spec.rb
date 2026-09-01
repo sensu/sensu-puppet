@@ -36,7 +36,7 @@ describe 'sensu::ssl', :type => :class do
             'group'     => platforms[facts[:osfamily]][:group],
             'mode'      => platforms[facts[:osfamily]][:ca_mode],
             'show_diff' => 'false',
-            'source'    => facts['puppet_localcacert'],
+            'source'    => facts[:puppet_localcacert],
             'content'   => nil,
           })
         }

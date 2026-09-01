@@ -31,9 +31,9 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
     it 'should have a valid federated cluster' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -46,9 +46,9 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
     it 'should have a valid federated cluster using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -88,9 +88,9 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
     it 'should have updated a federated cluster' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -103,9 +103,9 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
     it 'should have updated a federated cluster using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -140,9 +140,9 @@ describe 'sensu_cluster_federation', if: RSpec.configuration.sensu_mode == 'type
     it 'should have removed a federated clusters' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do
+      on node, 'sensuctl dump federation/v1.Cluster --format yaml --all-namespaces' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end

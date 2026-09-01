@@ -33,8 +33,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook' do
-      on node, 'sensuctl hook info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('ps aux')
         expect(data['stdin']).to eq(false)
         expect(data['runtime_assets']).to eq(['test'])
@@ -43,8 +43,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook using API' do
-      on node, 'sensuctl hook info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('ps aux')
         expect(data['stdin']).to eq(false)
         expect(data['runtime_assets']).to eq(['test'])
@@ -86,8 +86,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook with updated propery' do
-      on node, 'sensuctl hook info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(120)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -95,8 +95,8 @@ describe 'sensu_hook', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid hook with updated propery using API' do
-      on node, 'sensuctl hook info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl hook info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(120)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
