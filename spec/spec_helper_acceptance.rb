@@ -119,14 +119,19 @@ hierarchy:
   - name: "Common"
     path: "common.yaml"
 EOS
+    backend_platform = hosts_as('sensu-backend').first['platform'].to_s
+    pg_service = backend_platform.match?(/ubuntu|debian/) ? 'postgresql@16-main' : 'postgresql-16'
+    if backend_platform.match?(/ubuntu|debian/)
+      on hosts_as('sensu-backend'), "ln -sf /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-bundle.crt", acceptable_exit_codes: [0, 1]
+    end
     common_yaml = <<-EOS
 ---
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
 sensu::api_host: sensu-backend
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
-postgresql::server::service_status: 'systemctl status postgresql-16 1>/dev/null 2>&1'
-postgresql::server::service_reload: 'systemctl reload postgresql-16 1>/dev/null 2>&1'
+postgresql::server::service_status: 'systemctl status #{pg_service} 1>/dev/null 2>&1'
+postgresql::server::service_reload: 'systemctl reload #{pg_service} 1>/dev/null 2>&1'
 EOS
     create_remote_file(setup_nodes, '/etc/puppetlabs/puppet/hiera.yaml', hiera_yaml)
     on setup_nodes, 'mkdir -p -m 0755 /etc/puppetlabs/puppet/data'

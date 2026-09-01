@@ -34,7 +34,8 @@ jobs:
         $modulepath = "C:\ProgramData\PuppetLabs\code\environments\production\modules"
         New-Item -ItemType Directory -Force $modulepath | Out-Null
         # Install this module from the checkout so tests use current code
-        Copy-Item -Path "." -Destination "$modulepath\sensu" -Recurse -Force
+        New-Item -ItemType Directory -Force "$modulepath\sensu" | Out-Null
+        Get-ChildItem -Path "." | Where-Object { $_.Name -notin @('vendor', '.git') } | Copy-Item -Destination "$modulepath\sensu" -Recurse -Force
         # Provide the Puppet CA cert so ssl_ca_source resolves — the sensu class defaults
         # ssl_ca_source to $facts['puppet_localcacert'], which points here on Windows.
         # A fresh runner has no Puppet master, so no CA cert exists at that path yet.
