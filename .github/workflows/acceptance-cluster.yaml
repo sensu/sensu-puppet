@@ -55,6 +55,7 @@ jobs:
       env:
         RUN_ACCEPTANCE: 1
         BEAKER_set: ${{ matrix.set }}
+        BEAKER_PUPPET_COLLECTION: puppet8
         BEAKER_sensu_mode: cluster
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}
