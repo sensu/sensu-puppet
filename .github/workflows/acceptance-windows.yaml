@@ -39,15 +39,17 @@ jobs:
         # Provide the Puppet CA cert so ssl_ca_source resolves — the sensu class defaults
         # ssl_ca_source to $facts['puppet_localcacert'], which points here on Windows.
         # A fresh runner has no Puppet master, so no CA cert exists at that path yet.
-        Copy-Item -Path "tests\ssl\*" -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -Recurse -Force
+        New-Item -ItemType Directory -Force "C:\ProgramData\PuppetLabs\puppet\etc\ssl" | Out-Null
+        Get-ChildItem -Path "tests\ssl" | Copy-Item -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -Recurse -Force
         # Set certname for predictable $trusted['certname'] used as api_host default
         puppet config set --section main certname sensu_agent
         # Install Forge dependencies (Windows-relevant subset)
-        puppet module install puppetlabs-stdlib     --version ">= 9.0.0 < 10.0.0" --ignore-dependencies
-        puppet module install richardc-datacat      --version ">= 0.6.0 < 2.0.0"  --ignore-dependencies
-        puppet module install puppet-archive        --version ">= 3.0.0 < 5.0.0"  --ignore-dependencies
-        puppet module install puppet-windows_env    --version ">= 3.0.0 < 5.0.0"  --ignore-dependencies
-        puppet module install puppetlabs-chocolatey --version ">= 3.0.0 < 7.0.0"  --ignore-dependencies
+        puppet module install puppetlabs-stdlib     --version ">= 9.0.0 < 10.0.0"
+        puppet module install richardc-datacat      --version ">= 0.6.0 < 2.0.0"
+        puppet module install puppet-archive        --version ">= 7.0.0 < 8.0.0"
+        puppet module install puppetlabs-chocolatey --version ">= 9.0.0 < 10.0.0"
+        # puppet-windows_env 6.1.0 supports Puppet 8 but has not been published to the Forge
+        git clone --depth 1 --branch v6.1.0 https://github.com/voxpupuli/puppet-windows_env.git "$modulepath\windows_env"
     - name: Run Windows acceptance tests
       shell: pwsh
       run: bundle exec rake acceptance:windows
