@@ -58,6 +58,9 @@ group :system_tests do
   gem 'beaker-rspec',                 '9.1.0',  :require => false
   gem 'serverspec',                   '2.43.0', :require => false
   gem 'simp-beaker-helpers',          '3.1.1',  :require => false
+  # puppet requires ffi at runtime on Windows; it is not in puppet's gemspec so
+  # bundler won't include it when BUNDLE_WITHOUT=development excludes the listen chain
+  gem 'ffi',                                    :require => false
 end
 
 group :development do
