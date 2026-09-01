@@ -2,16 +2,16 @@ require 'serverspec'
 
 set :backend, :cmd
 
-# bundle exec sets RUBYOPT=-r bundler/setup for the test runner (Ruby 3.4).
-# The system Puppet's embedded Ruby (a different Ruby version) inherits this,
-# causing Puppet to look for gems in the test runner's vendor/bundle/ruby/3.4.0
-# path. That bundle's native gems (like ffi) are compiled for Ruby 3.4, not
-# Puppet's embedded Ruby, so `require 'ffi'` fails and puppet apply exits 1.
-# Clearing RUBYOPT here is safe: bundler/setup already ran for this process,
-# so LOAD_PATH is set; clearing only affects subprocess environment.
-ENV.delete('RUBYOPT') if Gem.win_platform?
+if Gem.win_platform?
+  # bundle exec prepends vendor/bundle/ruby/3.4.0/bin to PATH, so the bundled
+  # puppet binstub wins over system puppet. Prepend the system Puppet bin dir
+  # so tests invoke the installed puppet-agent (with its own embedded Ruby and
+  # native ffi) rather than the gem from the test bundle.
+  # Also clear RUBYOPT so puppet's embedded Ruby doesn't inherit -r bundler/setup.
+  ENV['PATH'] = "C:\\Program Files\\Puppet Labs\\Puppet\\bin#{File::PATH_SEPARATOR}#{ENV['PATH']}"
+  ENV.delete('RUBYOPT')
+end
 
 RSpec.configure do |c|
-  # Readable test descriptions
   c.formatter = :documentation
 end
