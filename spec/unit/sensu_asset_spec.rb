@@ -212,7 +212,7 @@ describe Puppet::Type.type(:sensu_asset) do
   ].each do |property|
     it "should accept valid #{property}" do
       config[property] = { 'foo': 'bar' }
-      expect(asset[property]).to eq({'foo': 'bar'})
+      expect(asset[property]).to eq({'foo' => 'bar'})
     end
     it "should not accept invalid #{property}" do
       config[property] = 'foo'
