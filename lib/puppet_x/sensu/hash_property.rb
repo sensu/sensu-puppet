@@ -13,6 +13,14 @@ module PuppetX
         value.transform_keys(&:to_s)
       end
 
+      def insync?(is)
+        ignore_labels = ['sensu.io/managed_by']
+        if self.name == :labels && is.is_a?(Hash)
+          is = is.reject { |k, _| ignore_labels.include?(k) }
+        end
+        super(is)
+      end
+
       def change_to_s(currentvalue, newvalue)
         currentvalue = currentvalue.to_s if currentvalue != :absent
         newvalue = newvalue.to_s

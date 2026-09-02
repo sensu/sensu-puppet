@@ -58,6 +58,7 @@
 * [`sensu_mutator`](#sensu_mutator): Manages Sensu mutators
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
 * [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth.
+* [`sensu_pipeline`](#sensu_pipeline): Manages Sensu pipelines
 * [`sensu_postgres_config`](#sensu_postgres_config): Manages Sensu postgres config
 * [`sensu_resources`](#sensu_resources): Metatype for sensu resources
 * [`sensu_role`](#sensu_role): Manages Sensu roles
@@ -330,6 +331,13 @@ The following parameters are available in the `sensu::agent` class:
 * [`log_file`](#-sensu--agent--log_file)
 * [`agent_entity_config_provider`](#-sensu--agent--agent_entity_config_provider)
 * [`validate_entity`](#-sensu--agent--validate_entity)
+* [`keepalive_handlers`](#-sensu--agent--keepalive_handlers)
+* [`keepalive_interval`](#-sensu--agent--keepalive_interval)
+* [`keepalive_warning_timeout`](#-sensu--agent--keepalive_warning_timeout)
+* [`keepalive_critical_timeout`](#-sensu--agent--keepalive_critical_timeout)
+* [`keepalive_check_labels`](#-sensu--agent--keepalive_check_labels)
+* [`keepalive_check_annotations`](#-sensu--agent--keepalive_check_annotations)
+* [`keepalive_pipelines`](#-sensu--agent--keepalive_pipelines)
 
 ##### <a name="-sensu--agent--version"></a>`version`
 
@@ -465,7 +473,7 @@ Default value: `undef`
 
 ##### <a name="-sensu--agent--annotations"></a>`annotations`
 
-Data type: `Optional[Hash[String[1],String]]`
+Data type: `Optional[Hash[String[1],Variant[String, Array, Hash]]]`
 
 The agent annotations value for agent.yml
 Passing `annotations` as part of `config_hash` takes precedence
@@ -534,6 +542,64 @@ Sets whether to validate the agent's entity before attempting
 to configure the entity
 
 Default value: `true`
+
+##### <a name="-sensu--agent--keepalive_handlers"></a>`keepalive_handlers`
+
+Data type: `Optional[Array[String[1]]]`
+
+List of handlers for keepalive events. Maps to `keepalive-handlers` in agent.yml.
+
+Default value: `undef`
+
+##### <a name="-sensu--agent--keepalive_interval"></a>`keepalive_interval`
+
+Data type: `Optional[Integer]`
+
+Number of seconds between keepalive events. Maps to `keepalive-interval` in agent.yml.
+
+Default value: `undef`
+
+##### <a name="-sensu--agent--keepalive_warning_timeout"></a>`keepalive_warning_timeout`
+
+Data type: `Optional[Integer]`
+
+Number of seconds until a keepalive is considered stale (warning threshold).
+Maps to `keepalive-warning-timeout` in agent.yml.
+
+Default value: `undef`
+
+##### <a name="-sensu--agent--keepalive_critical_timeout"></a>`keepalive_critical_timeout`
+
+Data type: `Optional[Integer]`
+
+Number of seconds until a keepalive is considered stale (critical threshold).
+Maps to `keepalive-critical-timeout` in agent.yml.
+
+Default value: `undef`
+
+##### <a name="-sensu--agent--keepalive_check_labels"></a>`keepalive_check_labels`
+
+Data type: `Optional[Hash[String[1],String]]`
+
+Labels to apply to the keepalive check. Maps to `keepalive-check-labels` in agent.yml.
+
+Default value: `undef`
+
+##### <a name="-sensu--agent--keepalive_check_annotations"></a>`keepalive_check_annotations`
+
+Data type: `Optional[Hash[String[1],Variant[String, Array, Hash]]]`
+
+Annotations to apply to the keepalive check. Maps to `keepalive-check-annotations` in agent.yml.
+
+Default value: `undef`
+
+##### <a name="-sensu--agent--keepalive_pipelines"></a>`keepalive_pipelines`
+
+Data type: `Optional[Array[Hash]]`
+
+List of pipeline references for keepalive events. Maps to `keepalive-pipelines` in agent.yml.
+
+Default value: `undef`
 
 ### <a name="sensu--api"></a>`sensu::api`
 
@@ -2378,6 +2444,12 @@ The following properties are available in the `sensu_check` type.
 
 Arbitrary, non-identifying metadata to include with event data.
 
+##### `asset_status`
+
+Valid values: `/.*/`, `absent`
+
+An array of asset execution statuses that indicate asset download or execution failure.
+
 ##### `check_hooks`
 
 An array of check response types with respective arrays of Sensu hook names.
@@ -2411,6 +2483,12 @@ Default value: `present`
 Valid values: `/.*/`, `absent`
 
 An array of environment variables to use with command execution.
+
+##### `fallback_pipeline`
+
+Fallback pipeline used when no other pipeline is matched.
+A ResourceReference Hash with keys: name, type, api_version.
+Example: { 'name' => 'fallback', 'type' => 'Pipeline', 'api_version' => 'core/v2' }
 
 ##### `handlers`
 
@@ -2464,6 +2542,21 @@ An array of Sensu handlers to use for events created by the check.
 
 Custom tags you can apply to enrich metric points produced by check output metric extraction."
 Consists of Array of Hashes, each Hash must contain `name` and `value` keys.
+
+##### `output_metric_thresholds`
+
+Metric threshold rules for check output metric extraction.
+Each element is a Hash with keys:
+* name       - Required String - metric name to match
+* tags       - Optional Array of Hashes with 'name' and 'value' keys to match metric tags
+* thresholds - Optional Array of Hashes with 'min', 'max', and 'status' keys
+* null_status - Optional Integer - status when metric is missing (default 0)
+
+##### `pipelines`
+
+Pipelines used to process events produced by this check.
+Each element is a ResourceReference Hash with keys: name, type, api_version.
+Example: [{ 'name' => 'my_pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' }]
 
 ##### `proxy_entity_name`
 
@@ -2519,6 +2612,29 @@ If the Sensu agent writes JSON serialized Sensu entity and check data to the com
 
 Default value: `false`
 
+##### `subdue`
+
+Time windows when the check should be subdued (not scheduled).
+A Hash with a 'days' key containing per-day time ranges.
+Valid day keys: all, sunday, monday, tuesday, wednesday, thursday, friday, saturday.
+Each day value is an Array of Hashes with 'begin' and 'end' keys (kitchen time format, e.g. '3:00PM').
+Example:
+  {
+    'days' => {
+      'all' => [{ 'begin' => '5:00PM', 'end' => '8:00AM' }],
+      'friday' => [{ 'begin' => '12:00PM', 'end' => '1:00PM' }],
+    }
+  }
+
+##### `subdues`
+
+Repeating time windows when the check should be subdued.
+Each element is a Hash with keys:
+* begin - ISO 8601 datetime string when the subdue begins
+* end   - ISO 8601 datetime string when the subdue ends
+* repeat - Array of strings specifying recurrence (e.g. ['weekly'])
+Example: [{ 'begin' => '2023-01-01T00:00:00Z', 'end' => '2023-01-01T08:00:00Z', 'repeat' => ['weekly'] }]
+
 ##### `subscriptions`
 
 An array of Sensu entity subscriptions that check requests will be sent to.
@@ -2534,6 +2650,12 @@ The check execution duration timeout in seconds (hard stop).
 Valid values: `/^[0-9]+$/`, `absent`
 
 The time to live (TTL) in seconds until check results are considered stale.
+
+##### `ttl_status`
+
+Valid values: `/^[0-9]+$/`, `absent`
+
+The exit status code used when a check TTL expires.
 
 #### Parameters
 
@@ -3966,6 +4088,125 @@ The name of the AD auth.
 The specific backend to use for this `sensu_oidc_auth` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
+### <a name="sensu_pipeline"></a>`sensu_pipeline`
+
+**Autorequires**:
+* `Package[sensu-go-cli]`
+* `Service[sensu-backend]`
+* `Sensuctl_configure[puppet]`
+* `Sensu_api_validator[sensu]`
+* `Sensu_user[admin]`
+* `sensu_namespace` - Puppet will autorequire `sensu_namespace` resource defined in `namespace` property.
+
+#### Examples
+
+##### Create a pipeline
+
+```puppet
+sensu_pipeline { 'test':
+  ensure    => 'present',
+  workflows => [
+    {
+      'name'    => 'notify',
+      'filters' => [{ 'name' => 'is_incident', 'type' => 'EventFilter', 'api_version' => 'core/v2' }],
+      'handler' => { 'name' => 'slack', 'type' => 'Handler', 'api_version' => 'core/v2' },
+    },
+  ],
+}
+```
+
+##### Create a pipeline in namespace `dev`
+
+```puppet
+sensu_pipeline { 'test in dev':
+  ensure    => 'present',
+  workflows => [
+    {
+      'name'    => 'notify',
+      'handler' => { 'name' => 'slack', 'type' => 'Handler', 'api_version' => 'core/v2' },
+    },
+  ],
+}
+```
+
+#### Properties
+
+The following properties are available in the `sensu_pipeline` type.
+
+##### `annotations`
+
+Arbitrary, non-identifying metadata to include with event data.
+
+##### `continue_on_error`
+
+Valid values: `true`, `false`
+
+If true, the pipeline continues executing workflows when an error occurs.
+
+Default value: `false`
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+##### `labels`
+
+Custom attributes to include with event data, which can be queried like regular attributes.
+
+##### `namespace`
+
+The Sensu RBAC namespace that this pipeline belongs to.
+
+Default value: `default`
+
+##### `workflows`
+
+One or more pipeline workflows.
+Each workflow is a Hash with the following keys:
+* name - Required String - descriptive name for the workflow
+* filters - Optional Array of ResourceReference Hashes, each with keys: name, type, api_version
+* mutator - Optional ResourceReference Hash with keys: name, type, api_version
+* handler - Required ResourceReference Hash with keys: name, type, api_version
+
+Example:
+  [
+    {
+      'name'    => 'notify',
+      'filters' => [{ 'name' => 'is_incident', 'type' => 'EventFilter', 'api_version' => 'core/v2' }],
+      'mutator' => { 'name' => 'only_check_output', 'type' => 'Mutator', 'api_version' => 'core/v2' },
+      'handler' => { 'name' => 'slack', 'type' => 'Handler', 'api_version' => 'core/v2' },
+    },
+  ]
+
+#### Parameters
+
+The following parameters are available in the `sensu_pipeline` type.
+
+* [`name`](#-sensu_pipeline--name)
+* [`provider`](#-sensu_pipeline--provider)
+* [`resource_name`](#-sensu_pipeline--resource_name)
+
+##### <a name="-sensu_pipeline--name"></a>`name`
+
+namevar
+
+The name of the pipeline.
+The name supports composite names that can define the namespace.
+An example composite name to define resource named `test` in namespace `dev`: `test in dev`
+
+##### <a name="-sensu_pipeline--provider"></a>`provider`
+
+The specific backend to use for this `sensu_pipeline` resource. You will seldom need to specify this --- Puppet will
+usually discover the appropriate provider for your platform.
+
+##### <a name="-sensu_pipeline--resource_name"></a>`resource_name`
+
+The name of the pipeline.
+
 ### <a name="sensu_postgres_config"></a>`sensu_postgres_config`
 
 **Autorequires**:
@@ -4728,7 +4969,7 @@ Sensu Backend URL's require protocol of ws:// or wss://.
 A port is also required.
 There is logic in sensu::agent class to add the protocol so it's optional.
 
-Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]+:\d+$/]]`
+Alias of `Variant[Pattern[/^[^\s:]+:\d+$/], Pattern[/^ws:\/\/[^\s:]+:\d+$/], Pattern[/^wss:\/\/[^\s:]++:\d+$/]]`
 
 ## Tasks
 
@@ -4962,6 +5203,12 @@ Data type: `String[1]`
 
 The subscription(s) for the agent
 
+##### `package_source`
+
+Data type: `Optional[String[1]]`
+
+Windows only. Full MSI URL or local path for the Sensu Go agent installer. The MSI filename includes a build number that varies per release — find the current release at https://github.com/sensu/sensu-go/releases. URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go-agent_<version>.<build>_en-US.x64.msi
+
 ##### `entity_name`
 
 Data type: `Optional[String[1]]`
@@ -4973,12 +5220,6 @@ The agent entity name
 Data type: `Optional[String[1]]`
 
 The namespace for the agent, default is 'default'
-
-##### `use_ssl`
-
-Data type: `Optional[Boolean]`
-
-Whether to use SSL for backend API connections, default is true
 
 ##### `output`
 
@@ -4997,6 +5238,14 @@ Install Sensu Go agent on Linux
 Install Sensu Go agent on Windows
 
 **Supports noop?** false
+
+#### Parameters
+
+##### `package_source`
+
+Data type: `String[1]`
+
+Full MSI URL or local path for the Sensu Go agent installer. The MSI filename includes a build number that varies per release — find the current release at https://github.com/sensu/sensu-go/releases. URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go-agent_<version>.<build>_en-US.x64.msi
 
 ### <a name="resolve_reference"></a>`resolve_reference`
 

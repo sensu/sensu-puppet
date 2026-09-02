@@ -77,6 +77,22 @@
 # @param validate_entity
 #   Sets whether to validate the agent's entity before attempting
 #   to configure the entity
+# @param keepalive_handlers
+#   List of handlers for keepalive events. Maps to `keepalive-handlers` in agent.yml.
+# @param keepalive_interval
+#   Number of seconds between keepalive events. Maps to `keepalive-interval` in agent.yml.
+# @param keepalive_warning_timeout
+#   Number of seconds until a keepalive is considered stale (warning threshold).
+#   Maps to `keepalive-warning-timeout` in agent.yml.
+# @param keepalive_critical_timeout
+#   Number of seconds until a keepalive is considered stale (critical threshold).
+#   Maps to `keepalive-critical-timeout` in agent.yml.
+# @param keepalive_check_labels
+#   Labels to apply to the keepalive check. Maps to `keepalive-check-labels` in agent.yml.
+# @param keepalive_check_annotations
+#   Annotations to apply to the keepalive check. Maps to `keepalive-check-annotations` in agent.yml.
+# @param keepalive_pipelines
+#   List of pipeline references for keepalive events. Maps to `keepalive-pipelines` in agent.yml.
 #
 class sensu::agent (
   Optional[String] $version = undef,
@@ -102,6 +118,13 @@ class sensu::agent (
   Optional[Stdlib::Absolutepath] $log_file = undef,
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
   Boolean $validate_entity = true,
+  Optional[Array[String[1]]] $keepalive_handlers = undef,
+  Optional[Integer] $keepalive_interval = undef,
+  Optional[Integer] $keepalive_warning_timeout = undef,
+  Optional[Integer] $keepalive_critical_timeout = undef,
+  Optional[Hash[String[1],String]] $keepalive_check_labels = undef,
+  Optional[Hash[String[1],Variant[String, Array, Hash]]] $keepalive_check_annotations = undef,
+  Optional[Array[Hash]] $keepalive_pipelines = undef,
 ) {
 
   include sensu
@@ -133,15 +156,22 @@ class sensu::agent (
     }
   }
   $default_config = {
-    'backend-url'          => $backend_urls,
-    'name'                 => $entity_name,
-    'agent-managed-entity' => $agent_managed_entity,
-    'subscriptions'        => $subscriptions,
-    'annotations'          => $annotations,
-    'labels'               => $labels,
-    'namespace'            => $namespace,
-    'redact'               => $redact,
-    'password'             => $sensu::agent_password,
+    'backend-url'                  => $backend_urls,
+    'name'                         => $entity_name,
+    'agent-managed-entity'         => $agent_managed_entity,
+    'subscriptions'                => $subscriptions,
+    'annotations'                  => $annotations,
+    'labels'                       => $labels,
+    'namespace'                    => $namespace,
+    'redact'                       => $redact,
+    'password'                     => $sensu::agent_password,
+    'keepalive-handlers'           => $keepalive_handlers,
+    'keepalive-interval'           => $keepalive_interval,
+    'keepalive-warning-timeout'    => $keepalive_warning_timeout,
+    'keepalive-critical-timeout'   => $keepalive_critical_timeout,
+    'keepalive-check-labels'       => $keepalive_check_labels,
+    'keepalive-check-annotations'  => $keepalive_check_annotations,
+    'keepalive-pipelines'          => $keepalive_pipelines,
   }
   $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
   if $config['subscriptions'] {

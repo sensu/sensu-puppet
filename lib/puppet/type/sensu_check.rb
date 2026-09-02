@@ -278,6 +278,180 @@ DESC
     EOS
   end
 
+  newproperty(:pipelines, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
+    desc <<-EOS
+    Pipelines used to process events produced by this check.
+    Each element is a ResourceReference Hash with keys: name, type, api_version.
+    Example: [{ 'name' => 'my_pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' }]
+    EOS
+    validate do |value|
+      unless value.is_a?(Hash)
+        raise ArgumentError, "pipelines elements must be a Hash"
+      end
+      %w[name type api_version].each do |key|
+        unless value.key?(key)
+          raise ArgumentError, "pipelines element must have a '#{key}' key"
+        end
+        unless value[key].is_a?(String) && !value[key].empty?
+          raise ArgumentError, "pipelines element '#{key}' must be a non-empty String"
+        end
+      end
+      valid_keys = %w[name type api_version]
+      value.keys.each do |k|
+        raise ArgumentError, "#{k} is not a valid key for a pipelines element" unless valid_keys.include?(k.to_s)
+      end
+    end
+  end
+
+  newproperty(:fallback_pipeline, :parent => PuppetX::Sensu::HashProperty) do
+    desc <<-EOS
+    Fallback pipeline used when no other pipeline is matched.
+    A ResourceReference Hash with keys: name, type, api_version.
+    Example: { 'name' => 'fallback', 'type' => 'Pipeline', 'api_version' => 'core/v2' }
+    EOS
+    validate do |value|
+      super(value)
+      %w[name type api_version].each do |key|
+        unless value.key?(key)
+          raise ArgumentError, "fallback_pipeline must have a '#{key}' key"
+        end
+        unless value[key].is_a?(String) && !value[key].empty?
+          raise ArgumentError, "fallback_pipeline '#{key}' must be a non-empty String"
+        end
+      end
+    end
+  end
+
+  newproperty(:subdue, :parent => PuppetX::Sensu::HashProperty) do
+    desc <<-EOS
+    Time windows when the check should be subdued (not scheduled).
+    A Hash with a 'days' key containing per-day time ranges.
+    Valid day keys: all, sunday, monday, tuesday, wednesday, thursday, friday, saturday.
+    Each day value is an Array of Hashes with 'begin' and 'end' keys (kitchen time format, e.g. '3:00PM').
+    Example:
+      {
+        'days' => {
+          'all' => [{ 'begin' => '5:00PM', 'end' => '8:00AM' }],
+          'friday' => [{ 'begin' => '12:00PM', 'end' => '1:00PM' }],
+        }
+      }
+    EOS
+    validate do |value|
+      super(value)
+      unless value.key?('days')
+        raise ArgumentError, "subdue must have a 'days' key"
+      end
+      unless value['days'].is_a?(Hash)
+        raise ArgumentError, "subdue 'days' must be a Hash"
+      end
+      valid_days = %w[all sunday monday tuesday wednesday thursday friday saturday]
+      value['days'].each_pair do |day, ranges|
+        unless valid_days.include?(day.to_s)
+          raise ArgumentError, "subdue day '#{day}' is not valid. Must be one of: #{valid_days.join(', ')}"
+        end
+        unless ranges.is_a?(Array)
+          raise ArgumentError, "subdue day '#{day}' value must be an Array"
+        end
+        ranges.each do |range|
+          unless range.is_a?(Hash) && range.key?('begin') && range.key?('end')
+            raise ArgumentError, "subdue day '#{day}' ranges must be Hashes with 'begin' and 'end' keys"
+          end
+        end
+      end
+    end
+  end
+
+  newproperty(:subdues, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
+    desc <<-EOS
+    Repeating time windows when the check should be subdued.
+    Each element is a Hash with keys:
+    * begin - ISO 8601 datetime string when the subdue begins
+    * end   - ISO 8601 datetime string when the subdue ends
+    * repeat - Array of strings specifying recurrence (e.g. ['weekly'])
+    Example: [{ 'begin' => '2023-01-01T00:00:00Z', 'end' => '2023-01-01T08:00:00Z', 'repeat' => ['weekly'] }]
+    EOS
+    validate do |value|
+      unless value.is_a?(Hash)
+        raise ArgumentError, "subdues elements must be a Hash"
+      end
+      %w[begin end].each do |key|
+        unless value.key?(key)
+          raise ArgumentError, "subdues element must have a '#{key}' key"
+        end
+        unless value[key].is_a?(String) && !value[key].empty?
+          raise ArgumentError, "subdues element '#{key}' must be a non-empty String"
+        end
+      end
+      if value.key?('repeat')
+        unless value['repeat'].is_a?(Array)
+          raise ArgumentError, "subdues element 'repeat' must be an Array"
+        end
+      end
+      valid_keys = %w[begin end repeat]
+      value.keys.each do |k|
+        raise ArgumentError, "#{k} is not a valid key for a subdues element" unless valid_keys.include?(k.to_s)
+      end
+    end
+  end
+
+  newproperty(:output_metric_thresholds, :array_matching => :all, :parent => PuppetX::Sensu::ArrayOfHashesProperty) do
+    desc <<-EOS
+    Metric threshold rules for check output metric extraction.
+    Each element is a Hash with keys:
+    * name       - Required String - metric name to match
+    * tags       - Optional Array of Hashes with 'name' and 'value' keys to match metric tags
+    * thresholds - Optional Array of Hashes with 'min', 'max', and 'status' keys
+    * null_status - Optional Integer - status when metric is missing (default 0)
+    EOS
+    validate do |value|
+      unless value.is_a?(Hash)
+        raise ArgumentError, "output_metric_thresholds elements must be a Hash"
+      end
+      unless value.key?('name')
+        raise ArgumentError, "output_metric_thresholds element must have a 'name' key"
+      end
+      unless value['name'].is_a?(String) && !value['name'].empty?
+        raise ArgumentError, "output_metric_thresholds element 'name' must be a non-empty String"
+      end
+      if value.key?('tags')
+        unless value['tags'].is_a?(Array)
+          raise ArgumentError, "output_metric_thresholds element 'tags' must be an Array"
+        end
+        value['tags'].each do |tag|
+          unless tag.is_a?(Hash) && tag.key?('name') && tag.key?('value')
+            raise ArgumentError, "output_metric_thresholds tags must be Hashes with 'name' and 'value' keys"
+          end
+        end
+      end
+      if value.key?('thresholds')
+        unless value['thresholds'].is_a?(Array)
+          raise ArgumentError, "output_metric_thresholds element 'thresholds' must be an Array"
+        end
+        value['thresholds'].each do |t|
+          unless t.is_a?(Hash)
+            raise ArgumentError, "output_metric_thresholds thresholds elements must be Hashes"
+          end
+          unless t.key?('status') && t['status'].is_a?(Integer)
+            raise ArgumentError, "output_metric_thresholds threshold must have an integer 'status' key"
+          end
+        end
+      end
+      if value.key?('null_status') && !value['null_status'].is_a?(Integer)
+        raise ArgumentError, "output_metric_thresholds element 'null_status' must be an Integer"
+      end
+    end
+  end
+
+  newproperty(:ttl_status, :parent => PuppetX::Sensu::IntegerProperty) do
+    desc "The exit status code used when a check TTL expires."
+    newvalues(/^[0-9]+$/, :absent)
+  end
+
+  newproperty(:asset_status, :array_matching => :all, :parent => PuppetX::Sensu::ArrayProperty) do
+    desc "An array of asset execution statuses that indicate asset download or execution failure."
+    newvalues(/.*/, :absent)
+  end
+
   newproperty(:namespace, :namevar => true) do
     desc "The Sensu RBAC namespace that this check belongs to."
     defaultto 'default'
@@ -309,6 +483,17 @@ DESC
       end
     end
     check_hooks
+  end
+
+  autorequire(:sensu_pipeline) do
+    pipeline_names = []
+    (self[:pipelines] || []).each do |p|
+      pipeline_names << p['name'] if p.is_a?(Hash) && p['name']
+    end
+    if self[:fallback_pipeline].is_a?(Hash)
+      pipeline_names << self[:fallback_pipeline]['name']
+    end
+    pipeline_names
   end
 
   def self.title_patterns

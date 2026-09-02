@@ -297,6 +297,84 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
   end
 
+  context 'with sensu go 6.x properties' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      include sensu::backend
+      sensu_handler { 'notify':
+        type    => 'pipe',
+        command => 'notify.rb',
+      }
+      sensu_pipeline { 'test-pipeline':
+        ensure    => 'present',
+        workflows => [
+          {
+            'name'    => 'notify',
+            'handler' => { 'name' => 'notify', 'type' => 'Handler', 'api_version' => 'core/v2' },
+          },
+        ],
+      }
+      sensu_check { 'test-6x':
+        command                   => 'check-http.rb',
+        subscriptions             => ['demo'],
+        interval                  => 60,
+        pipelines                 => [
+          { 'name' => 'test-pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' },
+        ],
+        output_metric_thresholds  => [
+          {
+            'name'        => 'disk.usage_percent',
+            'null_status' => 0,
+            'thresholds'  => [
+              { 'max' => '80', 'min' => '', 'status' => 1 },
+              { 'max' => '90', 'min' => '', 'status' => 2 },
+            ],
+          },
+        ],
+      }
+      sensu_check { 'test-6x-api':
+        command       => 'check-http.rb',
+        subscriptions => ['demo'],
+        interval      => 60,
+        pipelines     => [
+          { 'name' => 'test-pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' },
+        ],
+        provider      => 'sensu_api',
+      }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    it 'should have a check with pipelines and metric thresholds' do
+      on node, 'sensuctl check info test-6x --format json' do |result|
+        data = JSON.parse(result.stdout)
+        expect(data['pipelines'].length).to eq(1)
+        expect(data['pipelines'][0]['name']).to eq('test-pipeline')
+        expect(data['pipelines'][0]['type']).to eq('Pipeline')
+        expect(data['output_metric_thresholds'].length).to eq(1)
+        expect(data['output_metric_thresholds'][0]['name']).to eq('disk.usage_percent')
+      end
+    end
+
+    it 'should have a check with pipelines using API' do
+      on node, 'sensuctl check info test-6x-api --format json' do |result|
+        data = JSON.parse(result.stdout)
+        expect(data['pipelines'].length).to eq(1)
+        expect(data['pipelines'][0]['name']).to eq('test-pipeline')
+      end
+    end
+  end
+
   context 'ensure => absent' do
     it 'should remove without errors' do
       pp = <<-EOS
