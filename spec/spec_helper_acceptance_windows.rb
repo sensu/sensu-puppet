@@ -1,3 +1,4 @@
+require_relative 'openssl_unfreeze'
 require 'serverspec'
 
 set :backend, :cmd

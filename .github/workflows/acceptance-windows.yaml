@@ -21,6 +21,11 @@ jobs:
       with:
         ruby-version: '3.4'
         bundler-cache: true
+    - name: Configure RUBYOPT for puppet OpenSSL compatibility
+      shell: pwsh
+      run: |
+        $fix = "${{ github.workspace }}/spec/openssl_unfreeze.rb" -replace '\\', '/'
+        "RUBYOPT=-r $fix" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     - name: Install module and dependencies
       shell: pwsh
       run: |
