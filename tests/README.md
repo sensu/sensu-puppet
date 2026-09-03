@@ -5,7 +5,7 @@
 Uses two containers (`sensu-backend` + `sensu-agent`). Tests run in alphabetical order so `00_backend_spec.rb` sets up the backend before `01_agent_spec.rb` needs it.
 
 ```bash
-BEAKER_set=rocky-9-modern \
+BEAKER_set=rocky-9 \
 BEAKER_sensu_mode=base \
 bundle exec rake acceptance
 ```
@@ -16,14 +16,14 @@ Use the same two-host nodeset so both `sensu-backend` and `sensu-agent` roles ar
 When running `01_agent_spec.rb` alone, always include `00_backend_spec.rb` first so the backend service is already up:
 
 ```bash
-BEAKER_set=rocky-9-modern \
+BEAKER_set=rocky-9 \
 bundle exec rspec spec/acceptance/00_backend_spec.rb spec/acceptance/01_agent_spec.rb
 ```
 
 For backend-only specs (no agent needed):
 
 ```bash
-BEAKER_set=rocky-9-modern \
+BEAKER_set=rocky-9 \
 bundle exec rspec spec/acceptance/00_backend_spec.rb
 ```
 
@@ -33,10 +33,10 @@ After the first run, containers are committed to named Docker images (`docker_pr
 
 ```bash
 # Keep containers alive between runs (skips docker_image_commands re-execution)
-BEAKER_DESTROY=no BEAKER_set=rocky-9-modern BEAKER_sensu_mode=base bundle exec rake acceptance
+BEAKER_DESTROY=no BEAKER_set=rocky-9 BEAKER_sensu_mode=base bundle exec rake acceptance
 
 # Reuse existing containers without re-provisioning (fastest iteration)
-BEAKER_PROVISION=no BEAKER_DESTROY=no BEAKER_set=rocky-9-modern BEAKER_sensu_mode=base bundle exec rake acceptance
+BEAKER_PROVISION=no BEAKER_DESTROY=no BEAKER_set=rocky-9 BEAKER_sensu_mode=base bundle exec rake acceptance
 ```
 
 Container names are fixed (e.g. `sensu-backend-el9`, `sensu-agent-ubuntu2404`) via `docker_container_name` in each nodeset — beaker reconnects to them by name on the next run.
