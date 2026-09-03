@@ -38,7 +38,7 @@ HOSTS:
       - 'locale-gen en_US.UTF-8'
     docker_container_name: 'sensu-backend-debian12'
 CONFIG:
-  log_level: debug
+  log_level: warn
   type: foss
 ssh:
   password: root

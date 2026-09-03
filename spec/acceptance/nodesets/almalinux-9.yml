@@ -32,7 +32,7 @@ HOSTS:
       - 'dnf install -y wget which iproute langpacks-en glibc-langpack-en'
     docker_container_name: 'sensu-backend-almalinux9'
 CONFIG:
-  log_level: debug
+  log_level: warn
   type: foss
 ssh:
   password: root

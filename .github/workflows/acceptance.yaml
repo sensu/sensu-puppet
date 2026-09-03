@@ -16,11 +16,11 @@ jobs:
       fail-fast: false
       matrix:
         set:
-        - rocky-9-modern
-        - debian-12-modern
-        - ubuntu-24.04-modern
-        - ubuntu-22.04-modern
-        - almalinux-9-modern
+        - rocky-9
+        - debian-12
+        - ubuntu-24.04
+        - ubuntu-22.04
+        - almalinux-9
         puppet:
         - puppet8
         ci_build:
@@ -29,7 +29,7 @@ jobs:
         - puppet: puppet8
           ci_build: yes
     env:
-      BEAKER_debug: true
+      BEAKER_debug: false
     name: ${{ matrix.set }} ${{ matrix.puppet }} (ci=${{ matrix.ci_build }})
     steps:
     - uses: actions/checkout@v7

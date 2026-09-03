@@ -48,7 +48,7 @@ HOSTS:
     docker_container_name: 'sensu-backend3-ubuntu2404'
 CONFIG:
   type: foss
-  log_level: debug
+  log_level: warn
 ssh:
   password: root
   auth_methods: ["password"]
