@@ -47,8 +47,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth' do
-      on node, 'sensuctl auth info oidc --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('supersecret')
         expect(data['server']).to eq('https://idp.example.com')
@@ -62,8 +62,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth using API' do
-      on node, 'sensuctl auth info oidc-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('supersecret')
         expect(data['server']).to eq('https://idp.example.com')
@@ -126,8 +126,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth' do
-      on node, 'sensuctl auth info oidc --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('foobar')
         expect(data['server']).to eq('https://idp.example.com')
@@ -141,8 +141,8 @@ describe 'sensu_oidc_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid OIDC auth using API' do
-      on node, 'sensuctl auth info oidc-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info oidc-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['client_id']).to eq('0oa13ry4ypeDDBpxF357')
         expect(data['client_secret']).to eq('foobar')
         expect(data['server']).to eq('https://idp.example.com')

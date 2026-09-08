@@ -1,6 +1,11 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu::plugins class', if: ['base'].include?(RSpec.configuration.sensu_mode) do
+# The packagecloud.io/sensu/community repo (which this class depends on) has no
+# sensu-plugins-ruby package for any OS this module currently supports (RedHat/Rocky/AlmaLinux
+# 8-9, Debian 12, Ubuntu 22.04/24.04, Amazon 2023) -- confirmed failing identically on every one
+# tested. sensu::plugins itself is being removed entirely in a follow-up PR in favor of
+# sensu_bonsai_asset; skip rather than carry a permanently-red suite until that lands.
+describe 'sensu::plugins class', if: ['base'].include?(RSpec.configuration.sensu_mode), skip: 'sensu-plugins-ruby has no package for any currently-supported OS; sensu::plugins is being removed in a follow-up PR' do
   agent = hosts_as('sensu-agent')[0]
   backend = hosts_as('sensu-backend')[0]
   context 'on agent' do

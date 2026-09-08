@@ -82,7 +82,7 @@ describe 'sensu::backend', :type => :class do
           should contain_package('sensu-go-backend').with({
             'ensure'  => 'installed',
             'name'    => 'sensu-go-backend',
-            'require' => platforms[facts[:osfamily]][:package_require],
+            'require' => platforms[facts[:os]['family']][:package_require],
             'notify'  => 'Service[sensu-backend]',
           })
         }
@@ -129,14 +129,14 @@ describe 'sensu::backend', :type => :class do
           END
         end
 
-        if platforms[facts[:osfamily]][:backend_service_env_vars_file]
+        if platforms[facts[:os]['family']][:backend_service_env_vars_file]
           it {
             should contain_file('sensu-backend_env_vars').with({
               'ensure'  => 'file',
-              'path'    => platforms[facts[:osfamily]][:backend_service_env_vars_file],
+              'path'    => platforms[facts[:os]['family']][:backend_service_env_vars_file],
               'content' => service_env_vars_content,
-              'owner'   => platforms[facts[:osfamily]][:user],
-              'group'   => platforms[facts[:osfamily]][:group],
+              'owner'   => platforms[facts[:os]['family']][:user],
+              'group'   => platforms[facts[:os]['family']][:group],
               'mode'    => '0640',
               'require' => 'Package[sensu-go-backend]',
               'notify'  => 'Service[sensu-backend]',
@@ -369,7 +369,7 @@ describe 'sensu::backend', :type => :class do
       context 'datastore => postgresql' do
         let(:pre_condition) do
           <<-EOS
-          class { '::postgresql::globals': version => '11' }
+          class { '::postgresql::globals': version => '16' }
           class { '::postgresql::server': }
           EOS
         end
@@ -387,7 +387,7 @@ describe 'sensu::backend', :type => :class do
             |SENSU_BACKEND_AGENT_PORT="9081"
           END
         end
-        if platforms[facts[:osfamily]][:backend_service_env_vars_file]
+        if platforms[facts[:os]['family']][:backend_service_env_vars_file]
           it { should contain_file('sensu-backend_env_vars').with_content(service_env_vars_content) }
         end
       end

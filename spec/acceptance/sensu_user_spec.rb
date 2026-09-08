@@ -35,8 +35,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid user' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test' }[0]
         expect(d['groups']).to eq(['read-only'])
         expect(d['disabled']).to eq(false)
@@ -49,8 +49,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid user using API' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test-api' }[0]
         expect(d['groups']).to eq(['read-only'])
         expect(d['disabled']).to eq(false)
@@ -99,8 +99,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have an updated user' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test2' }[0]
         expect(d['groups']).to eq(['read-only','admin'])
         expect(d['disabled']).to eq(true)
@@ -112,8 +112,8 @@ describe 'sensu_user', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have an updated user using API' do
-      on node, 'sensuctl user list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl user list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['username'] == 'test-api' }[0]
         expect(d['groups']).to eq(['read-only','admin'])
         expect(d['disabled']).to eq(false)

@@ -1,4 +1,6 @@
+require_relative 'spec/openssl_unfreeze'
 require 'json'
+require 'bundler'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-blacksmith').any?
@@ -54,6 +56,23 @@ namespace :acceptance do
   desc 'Run acceptance tests against current code for Windows'
   RSpec::Core::RakeTask.new(:windows) do |t|
     t.pattern = 'spec/acceptance/windows_spec.rb'
+  end
+
+  desc 'List acceptance spec files and which BEAKER_sensu_mode enables them'
+  task :list do
+    Dir['spec/acceptance/**/*_spec.rb'].sort.each do |f|
+      guard = File.read(f).scan(/sensu_mode == '(\w+)'/).flatten.uniq
+      mode  = guard.empty? ? 'always' : guard.join(', ')
+      puts "%-55s  [%s]" % [f, mode]
+    end
+  end
+
+  %w[base types full examples bolt cluster].each do |mode|
+    desc "Run acceptance tests in #{mode} mode (set BEAKER_set as needed)"
+    task mode.to_sym do
+      ENV['BEAKER_sensu_mode'] = mode
+      Rake::Task[:acceptance].invoke
+    end
   end
 end
 

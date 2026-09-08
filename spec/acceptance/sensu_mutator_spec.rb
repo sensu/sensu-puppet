@@ -36,8 +36,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator' do
-      on node, 'sensuctl mutator info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('test')
         expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
@@ -46,8 +46,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator using API' do
-      on node, 'sensuctl mutator info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('test')
         expect(data['runtime_assets']).to eq(['test'])
         expect(data['metadata']['labels']['foo']).to eq('baz')
@@ -91,8 +91,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator with updated propery' do
-      on node, 'sensuctl mutator info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(60)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')
@@ -101,8 +101,8 @@ describe 'sensu_mutator', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid mutator with updated propery using API' do
-      on node, 'sensuctl mutator info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl mutator info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['timeout']).to eq(60)
         expect(data['runtime_assets']).to eq(['test2'])
         expect(data['metadata']['labels']['foo']).to eq('bar')

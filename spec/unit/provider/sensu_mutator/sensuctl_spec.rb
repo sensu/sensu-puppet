@@ -7,6 +7,7 @@ describe Puppet::Type.type(:sensu_mutator).provider(:sensuctl) do
     type.new({
       :name => 'test',
       :command => 'test',
+      :provider => 'sensuctl',
     })
   end
 

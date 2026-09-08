@@ -12,15 +12,15 @@ jobs:
   deploy:
     name: 'deploy to forge'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7'
+          ruby-version: '3.4'
           bundler-cache: true
-          bundler: '2.1.0'
       - name: Build and Deploy
         env:
           BLACKSMITH_FORGE_USERNAME: sensu

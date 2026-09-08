@@ -8,6 +8,7 @@ describe Puppet::Type.type(:sensu_role_binding).provider(:sensuctl) do
       :name => 'test',
       :role_ref => {'type' => 'Role', 'name' => 'test-role'},
       :subjects => [{'type' => 'User', 'name' => 'test-user'}],
+      :provider => 'sensuctl',
     })
   end
 

@@ -10,6 +10,10 @@
       "description": "The subscription(s) for the agent",
       "type": "String[1]"
     },
+    "package_source": {
+      "description": "Windows only. Full MSI URL or local path for the Sensu Go agent installer. The MSI filename includes a build number that varies per release — find the current release at https://github.com/sensu/sensu-go/releases. URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go-agent_<version>.<build>_en-US.x64.msi",
+      "type": "Optional[String[1]]"
+    },
     "entity_name": {
       "description": "The agent entity name",
       "type": "Optional[String[1]]"

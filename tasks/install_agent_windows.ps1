@@ -2,12 +2,22 @@
 Param(
   [Parameter(Mandatory = $True)] [String] $Backend,
   [Parameter(Mandatory = $True)] [String] $Subscription,
+  [Parameter(Mandatory = $False)] [String] $PackageSource,
   [Parameter(Mandatory = $False)] [String] $Entity_name = "$env:computername.$env:userdnsdomain",
   [Parameter(Mandatory = $False)] [String] $Namespace = "default",
   [Parameter(Mandatory = $False)] [Bool] $Output = $False
 )
 
-$Package_source = "https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.13.1/sensu-go-agent_5.13.1.5957_en-US.x64.msi"
+# PackageSource must be the full MSI URL or local path for the target Sensu Go release.
+# The MSI filename embeds a build number that varies per release and cannot be derived
+# from the version tag alone. Find the current release at:
+#   https://github.com/sensu/sensu-go/releases
+# URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go-agent_<version>.<build>_en-US.x64.msi
+if ([string]::IsNullOrEmpty($PackageSource)) {
+  Write-Error "package_source is required for Windows agent installation. Find the current release at https://github.com/sensu/sensu-go/releases"
+  exit 1
+}
+$Package_source = $PackageSource
 
 $env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin"
 

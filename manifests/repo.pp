@@ -5,10 +5,10 @@ class sensu::repo {
 
   if $facts['os']['family'] == 'RedHat' {
     if $facts['os']['name'] == 'Amazon' {
-      if $facts['os']['release']['major'] =~ /^201\d$/ {
-        $repo_release = '6'
-      } else {
-        $repo_release = '7'
+      case $facts['os']['release']['major'] {
+        /^201\d$/: { $repo_release = '6' }  # Amazon Linux 1
+        '2023':    { $repo_release = '9' }  # Amazon Linux 2023 is RHEL 9-based
+        default:   { $repo_release = '7' }  # Amazon Linux 2
       }
     } else {
       $repo_release = $facts['os']['release']['major']

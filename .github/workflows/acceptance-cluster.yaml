@@ -9,40 +9,59 @@ on:
 jobs:
   acceptance-cluster:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     # Items marked as ci_build=yes are allowed to fail
     continue-on-error: ${{ matrix.ci_build == 'yes' }}
     strategy:
       fail-fast: false
       matrix:
         puppet:
-        - puppet6
-        - puppet7
+        - puppet8
         use_agent:
         - no
-        - yes
         ci_build:
         - no
+        set:
+        - rocky-8-cluster
+        - ubuntu-24.04-cluster
     env:
-      BEAKER_debug: true
-    name: Sensu Go Cluster ${{ matrix.puppet }} (use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
+      BEAKER_debug: false
+    name: Sensu Go Cluster ${{ matrix.set }} ${{ matrix.puppet }} (use-agent=${{ matrix.use_agent }} CI=${{ matrix.ci_build }})
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
+        ruby-version: '3.4'
         bundler-cache: true
-        bundler: '2.1.0'
     - name: Decrypt secrets
       env:
         SENSU_SECRETS_PASSWORD: ${{ secrets.SENSU_SECRETS_PASSWORD }}
       if: ${{ env.SENSU_SECRETS_PASSWORD != null }}
       run: ./tests/decrypt-secrets.sh
+    - name: Restore Docker image cache
+      uses: actions/cache@v6
+      with:
+        path: /tmp/.docker-cache
+        key: docker-${{ matrix.set }}-${{ hashFiles(format('spec/acceptance/nodesets/{0}.yml', matrix.set)) }}
+        restore-keys: docker-${{ matrix.set }}-
+    - name: Load cached Docker images
+      run: |
+        if [ -d /tmp/.docker-cache ]; then
+          for f in /tmp/.docker-cache/*.tar; do [ -f "$f" ] && docker load -i "$f" || true; done
+        fi
     - name: Run tests
       run: bundle exec rake acceptance
       env:
-        BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet }}
-        BEAKER_set: centos-7-cluster
+        RUN_ACCEPTANCE: 1
+        BEAKER_set: ${{ matrix.set }}
+        BEAKER_PUPPET_COLLECTION: puppet8
         BEAKER_sensu_mode: cluster
         BEAKER_sensu_use_agent: ${{ matrix.use_agent }}
         BEAKER_sensu_ci_build: ${{ matrix.ci_build }}
+    - name: Save Docker images to cache
+      if: always()
+      run: |
+        mkdir -p /tmp/.docker-cache
+        docker images --format '{{.Repository}}:{{.Tag}}' | grep '^sensu-' | \
+          xargs -I{} sh -c 'docker save {} -o /tmp/.docker-cache/$(echo {} | tr "/:." "_").tar' || true

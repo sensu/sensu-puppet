@@ -3,14 +3,7 @@ require 'spec_helper_acceptance'
 describe 'sensu::backend class', if: ['base'].include?(RSpec.configuration.sensu_mode) do
   backend = hosts_as('sensu-backend')[0]
   agent = hosts_as('sensu-agent')[0]
-  let(:facter_command) do
-    puppet_version = on(backend, 'puppet --version').stdout
-    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
-      'puppet facts show'
-    else
-      'facter -p --json'
-    end
-  end
+  let(:facter_command) { 'puppet facts show' }
 
   context 'backend facts' do
     it 'should work without errors' do

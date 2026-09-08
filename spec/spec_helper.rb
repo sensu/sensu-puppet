@@ -1,3 +1,5 @@
+require_relative 'openssl_unfreeze'
+
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
 
@@ -49,7 +51,7 @@ RSpec.configure do |config|
       :family => 'RedHat',
     },
     :operatingsystem           => 'RedHat',
-    :operatingsystemmajrelease => '7',
+    :operatingsystemmajrelease => '9',
     :service_provider          => 'systemd',
     :fqdn                      => 'testfqdn.example.com',
     :puppet_hostcert           => '/dne/cert.pem',
@@ -62,7 +64,11 @@ RSpec.configure do |config|
     %r{/\.rbenv/},
     %r{/.rvm/},
   ]
-  config.default_facter_version = '3.11.9'
+  # facterdb 4.5.0 only bundles Facter 4.x/5.x fact data; 5.6 is the highest available and
+  # covers every OS/release this module's metadata.json declares (verified: 13/13 combos
+  # matched). The one gap (Windows Server 2016, no native 5.6 fixture) falls back to the
+  # highest compatible version automatically via rspec-puppet-facts' loose-requirement check.
+  config.default_facter_version = '5.6'
 end
 
 add_custom_fact :puppet_localcacert, ->(os, facts) {
@@ -91,8 +97,6 @@ def platforms
     'Debian' => {
       :package_require => ['Class[Sensu::Repo]', 'Class[Apt::Update]'],
       package_provider: nil,
-      :plugins_package_require => ['Class[Sensu::Repo::Community]', 'Class[Apt::Update]'],
-      :plugins_dependencies => ['make','gcc','g++','libssl-dev'],
       agent_package_name: 'sensu-go-agent',
       :agent_config_path => '/etc/sensu/agent.yml',
       agent_config_mode: '0640',
@@ -109,12 +113,12 @@ def platforms
       log_file: nil,
       agent_service_env_vars_file: '/etc/default/sensu-agent',
       backend_service_env_vars_file: '/etc/default/sensu-backend',
+      :plugins_package_require => ['Class[Sensu::Repo::Community]', 'Class[Apt::Update]'],
+      plugins_dependencies: ['make', 'gcc', 'g++', 'libssl-dev'],
     },
     'RedHat' => {
       :package_require => ['Class[Sensu::Repo]'],
       package_provider: nil,
-      :plugins_package_require => ['Class[Sensu::Repo::Community]'],
-      :plugins_dependencies => ['make','gcc','gcc-c++','openssl-devel'],
       agent_package_name: 'sensu-go-agent',
       :agent_config_path => '/etc/sensu/agent.yml',
       agent_config_mode: '0640',
@@ -131,6 +135,8 @@ def platforms
       log_file: nil,
       agent_service_env_vars_file: '/etc/sysconfig/sensu-agent',
       backend_service_env_vars_file: '/etc/sysconfig/sensu-backend',
+      :plugins_package_require => ['Class[Sensu::Repo::Community]'],
+      plugins_dependencies: ['make', 'gcc', 'gcc-c++', 'openssl-devel'],
     },
     'windows' => {
       agent_package_name: 'sensu-agent',
@@ -146,7 +152,6 @@ def platforms
       ssl_dir_mode: nil,
       etc_dir_mode: nil,
       ca_mode: nil,
-      plugins_dependencies: [],
       agent_service_name: 'SensuAgent',
       log_file: 'C:\ProgramData\sensu\log\sensu-agent.log',
       agent_service_env_vars_file: nil,

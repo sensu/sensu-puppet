@@ -1,0 +1,39 @@
+HOSTS:
+  sensu-agent:
+    roles:
+      - agent
+      - sensu-agent
+    platform: el-9-x86_64
+    hypervisor: docker
+    image: almalinux:9
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'dnf install -y dnf-plugins-core'
+      - 'dnf config-manager --set-enabled crb'
+      - 'dnf install -y wget which iproute langpacks-en glibc-langpack-en'
+    docker_container_name: 'sensu-agent-almalinux9'
+  sensu-backend:
+    roles:
+      - agent
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: el-9-x86_64
+    hypervisor: docker
+    image: almalinux:9
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'dnf install -y dnf-plugins-core'
+      - 'dnf config-manager --set-enabled crb'
+      - 'dnf install -y wget which iproute langpacks-en glibc-langpack-en'
+    docker_container_name: 'sensu-backend-almalinux9'
+CONFIG:
+  log_level: warn
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]

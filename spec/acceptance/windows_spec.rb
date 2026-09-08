@@ -1,19 +1,12 @@
 require 'spec_helper_acceptance_windows' if Gem.win_platform?
 require 'json'
 
-# NOTE: The tests for Windows can not define or change things like subscriptions, labels or annotations
-#       because those changes will require a backend to communicate with and we are unable to run
-#       the Sensu Go backend inside the Appveyor Windows testing environment
+# NOTE: Windows tests cannot define or change subscriptions, labels, or annotations
+#       because those require a running backend, which cannot run on a Windows.
+#       These tests validate sensu::cli and sensu::agent package install/config only.
 
 describe 'sensu::cli class', if: Gem.win_platform? do
-  let(:facter_command) do
-    puppet_version = `puppet --version`
-    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
-      'puppet facts show'
-    else
-      'facter -p --json'
-    end
-  end
+  let(:facter_command) { 'puppet facts show' }
 
   context 'default' do
     pp = <<-EOS
@@ -21,9 +14,11 @@ describe 'sensu::cli class', if: Gem.win_platform? do
       api_host     => 'localhost',
       validate_api => false,
     }
+    # URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go_<version>_windows_amd64.zip
+    # Find current release at: https://github.com/sensu/sensu-go/releases
     class { 'sensu::cli':
-      install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip',
-      # Not yet able to run backend in appveyor so configure will not work
+      install_source => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/6.14.2/sensu-go_6.14.2_windows_amd64.zip',
+      # Windows CI runner cannot run the Sensu backend so configure will not work
       configure      => false,
     }
     EOS
@@ -55,14 +50,7 @@ describe 'sensu::cli class', if: Gem.win_platform? do
 end
 
 describe 'sensu::agent class', if: Gem.win_platform? do
-  let(:facter_command) do
-    puppet_version = `puppet --version`
-    if Gem::Version.new(puppet_version) >= Gem::Version.new('7.0.0')
-      'puppet facts show'
-    else
-      'facter -p --json'
-    end
-  end
+  let(:facter_command) { 'puppet facts show' }
 
   context 'default' do
     pp = <<-EOS
@@ -126,7 +114,9 @@ describe 'sensu::agent class', if: Gem.win_platform? do
     }
     class { 'sensu::agent':
       package_name    => 'Sensu Agent',
-      package_source  => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go-agent_5.20.1.12427_en-US.x64.msi',
+      # URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go-agent_<version>.<build>_en-US.x64.msi
+      # Find current release (including build number) at: https://github.com/sensu/sensu-go/releases
+      package_source  => 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/6.14.2/sensu-go-agent_6.14.2.7655_en-US.x64.msi',
       backends        => ['sensu-backend:8081'],
       entity_name     => 'sensu-agent',
       config_hash     => {

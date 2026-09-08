@@ -1,0 +1,54 @@
+HOSTS:
+  sensu-backend1:
+    roles:
+      - agent
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 ca-certificates lsb-release'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-backend1-ubuntu2404'
+  sensu-backend2:
+    roles:
+      - agent
+      - sensu-backend
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init' 
+    docker_image_commands:
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 ca-certificates lsb-release'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-backend2-ubuntu2404'
+  sensu-backend3:
+    roles:
+      - agent
+      - sensu-backend
+    platform: ubuntu-24.04-amd64
+    hypervisor: docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 ca-certificates lsb-release'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-backend3-ubuntu2404'
+CONFIG:
+  type: foss
+  log_level: warn
+ssh:
+  password: root
+  auth_methods: ["password"]

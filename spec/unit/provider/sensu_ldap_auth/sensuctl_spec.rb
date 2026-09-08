@@ -6,6 +6,7 @@ describe Puppet::Type.type(:sensu_ldap_auth).provider(:sensuctl) do
   let(:config) do
     {
       :name => 'test',
+      :provider => 'sensuctl',
       :servers => [{
         'host' => 'test', 'port' => 389,
         'binding' => {'user_dn' => 'cn=foo','password' => 'foo'},

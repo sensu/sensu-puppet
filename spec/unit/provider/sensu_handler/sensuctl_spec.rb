@@ -7,7 +7,8 @@ describe Puppet::Type.type(:sensu_handler).provider(:sensuctl) do
     type.new({
       :name => 'test',
       :command => 'test',
-      :type => 'pipe'
+      :type => 'pipe',
+      :provider => 'sensuctl',
     })
   end
 

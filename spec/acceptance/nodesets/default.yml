@@ -1,20 +1,24 @@
 HOSTS:
-  centos-7:
+  sensu-backend:
     roles:
       - agent
-    platform: el-7-x86_64
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: el-9-x86_64
     hypervisor: docker
-    image: centos:7
+    image: rockylinux:9
     docker_preserve_image: true
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
-      - 'yum install -y tar wget cronie git iproute'
-    docker_container_name: 'sensu-el7'
+      - 'dnf install -y dnf-plugins-core'
+      - 'dnf config-manager --set-enabled crb'
+      - 'dnf install -y wget which iproute langpacks-en glibc-langpack-en'
+    docker_container_name: 'sensu-backend-el9'
 CONFIG:
-  log_level: debug
+  log_level: warn
   type: foss
 ssh:
   password: root
   auth_methods: ["password"]
-

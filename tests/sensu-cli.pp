@@ -1,5 +1,7 @@
 if $facts['os']['family'] == 'windows' {
-  $install_source = 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/5.20.1/sensu-go_5.20.1_windows_amd64.zip'
+  # URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go_<version>_windows_amd64.zip
+  # Find current release at: https://github.com/sensu/sensu-go/releases
+  $install_source = 'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/6.14.2/sensu-go_6.14.2_windows_amd64.zip'
 } else {
   $install_source = undef
 }

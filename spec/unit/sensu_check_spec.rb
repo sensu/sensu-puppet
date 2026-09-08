@@ -442,4 +442,108 @@ describe Puppet::Type.type(:sensu_check) do
   include_examples 'annotations' do
     let(:res) { check }
   end
+
+  describe 'pipelines' do
+    it 'should accept an array of resource references' do
+      config[:pipelines] = [{ 'name' => 'my_pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' }]
+      expect(check[:pipelines]).to eq([{ 'name' => 'my_pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' }])
+    end
+    it 'should require Hash elements' do
+      config[:pipelines] = ['not_a_hash']
+      expect { check }.to raise_error(Puppet::Error, /must be a Hash/)
+    end
+    it 'should require name, type, api_version keys' do
+      config[:pipelines] = [{ 'name' => 'p' }]
+      expect { check }.to raise_error(Puppet::Error, /must have a 'type' key/)
+    end
+    it 'should reject invalid keys' do
+      config[:pipelines] = [{ 'name' => 'p', 'type' => 'Pipeline', 'api_version' => 'core/v2', 'extra' => 'x' }]
+      expect { check }.to raise_error(Puppet::Error, /extra is not a valid key/)
+    end
+  end
+
+  describe 'fallback_pipeline' do
+    it 'should accept a resource reference hash' do
+      config[:fallback_pipeline] = { 'name' => 'fallback', 'type' => 'Pipeline', 'api_version' => 'core/v2' }
+      expect(check[:fallback_pipeline]).to eq({ 'name' => 'fallback', 'type' => 'Pipeline', 'api_version' => 'core/v2' })
+    end
+    it 'should require name, type, api_version keys' do
+      config[:fallback_pipeline] = { 'name' => 'fallback' }
+      expect { check }.to raise_error(Puppet::Error, /must have a 'type' key/)
+    end
+  end
+
+  describe 'subdue' do
+    it 'should accept a valid days hash' do
+      config[:subdue] = { 'days' => { 'all' => [{ 'begin' => '5:00PM', 'end' => '8:00AM' }] } }
+      expect(check[:subdue]).to eq({ 'days' => { 'all' => [{ 'begin' => '5:00PM', 'end' => '8:00AM' }] } })
+    end
+    it 'should require a days key' do
+      config[:subdue] = { 'notdays' => {} }
+      expect { check }.to raise_error(Puppet::Error, /must have a 'days' key/)
+    end
+    it 'should reject invalid day names' do
+      config[:subdue] = { 'days' => { 'holiday' => [] } }
+      expect { check }.to raise_error(Puppet::Error, /holiday.*is not valid/)
+    end
+    it 'should require day values to be Arrays' do
+      config[:subdue] = { 'days' => { 'all' => 'not_array' } }
+      expect { check }.to raise_error(Puppet::Error, /must be an Array/)
+    end
+  end
+
+  describe 'subdues' do
+    it 'should accept valid time window elements' do
+      config[:subdues] = [{ 'begin' => '2023-01-01T00:00:00Z', 'end' => '2023-01-01T08:00:00Z', 'repeat' => ['weekly'] }]
+      expect(check[:subdues]).to eq([{ 'begin' => '2023-01-01T00:00:00Z', 'end' => '2023-01-01T08:00:00Z', 'repeat' => ['weekly'] }])
+    end
+    it 'should require begin and end keys' do
+      config[:subdues] = [{ 'begin' => '2023-01-01T00:00:00Z' }]
+      expect { check }.to raise_error(Puppet::Error, /must have a 'end' key/)
+    end
+    it 'should require repeat to be an Array' do
+      config[:subdues] = [{ 'begin' => '2023-01-01T00:00:00Z', 'end' => '2023-01-01T08:00:00Z', 'repeat' => 'weekly' }]
+      expect { check }.to raise_error(Puppet::Error, /repeat.*must be an Array/)
+    end
+  end
+
+  describe 'output_metric_thresholds' do
+    it 'should accept valid thresholds' do
+      config[:output_metric_thresholds] = [
+        {
+          'name'       => 'cpu',
+          'tags'       => [{ 'name' => 'host', 'value' => 'web01' }],
+          'thresholds' => [{ 'min' => '0', 'max' => '80', 'status' => 1 }],
+          'null_status' => 0,
+        },
+      ]
+      expect { check }.to_not raise_error
+    end
+    it 'should require a name key' do
+      config[:output_metric_thresholds] = [{ 'thresholds' => [] }]
+      expect { check }.to raise_error(Puppet::Error, /must have a 'name' key/)
+    end
+    it 'should require thresholds to be an Array' do
+      config[:output_metric_thresholds] = [{ 'name' => 'cpu', 'thresholds' => 'not_array' }]
+      expect { check }.to raise_error(Puppet::Error, /thresholds.*must be an Array/)
+    end
+    it 'should require null_status to be an Integer' do
+      config[:output_metric_thresholds] = [{ 'name' => 'cpu', 'null_status' => 'high' }]
+      expect { check }.to raise_error(Puppet::Error, /null_status.*must be an Integer/)
+    end
+  end
+
+  describe 'ttl_status' do
+    it 'should accept an integer' do
+      config[:ttl_status] = 2
+      expect(check[:ttl_status]).to eq(2)
+    end
+  end
+
+  describe 'asset_status' do
+    it 'should accept an array of strings' do
+      config[:asset_status] = ['127', '128']
+      expect(check[:asset_status]).to eq(['127', '128'])
+    end
+  end
 end

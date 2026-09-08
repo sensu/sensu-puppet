@@ -86,9 +86,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -106,9 +106,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -126,9 +126,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -144,15 +144,15 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
       end
     end
     it 'should have a valid secret' do
-      on node, 'sensuctl secret info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#password')
         expect(data['provider']).to eq('my_vault')
       end
     end
     it 'should have a valid secret using API' do
-      on node, 'sensuctl secret info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#password')
         expect(data['provider']).to eq('my_vault')
       end
@@ -239,9 +239,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -259,9 +259,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider using token_file' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -279,9 +279,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have a valid VaultProvider using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -297,15 +297,15 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
       end
     end
     it 'should have a valid secret' do
-      on node, 'sensuctl secret info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#secret')
         expect(data['provider']).to eq('my_vault')
       end
     end
     it 'should have a valid secret using API' do
-      on node, 'sensuctl secret info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl secret info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['id']).to eq('secret/database#secret')
         expect(data['provider']).to eq('my_vault')
       end
@@ -338,9 +338,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have removed VaultProvider' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end
@@ -351,9 +351,9 @@ describe 'sensu_secrets_vault_provider', if: RSpec.configuration.sensu_mode == '
     it 'should have removed VaultProvider using API' do
       # Dump YAML because 'sensuctl dump' does not yet support '--format json'
       # https://github.com/sensu/sensu-go/issues/3424
-      on node, 'sensuctl dump secrets/v1.Provider' do
+      on node, 'sensuctl dump secrets/v1.Provider' do |result|
         resources = []
-        dumps = stdout.split('---')
+        dumps = result.stdout.split('---')
         dumps.each do |d|
           resources << YAML.load(d)
         end

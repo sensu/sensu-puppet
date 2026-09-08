@@ -77,8 +77,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid LDAP auth' do
-      on node, 'sensuctl auth info openldap --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -91,8 +91,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid LDAP auth using memberof' do
-      on node, 'sensuctl auth info openldap-memberof --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap-memberof --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -105,8 +105,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid LDAP auth using API' do
-      on node, 'sensuctl auth info openldap-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('127.0.0.1')
         expect(data['servers'][0]['port']).to eq(389)
@@ -182,8 +182,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid ldap auth' do
-      on node, 'sensuctl auth info openldap --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('localhost')
         expect(data['servers'][0]['port']).to eq(636)
@@ -196,8 +196,8 @@ describe 'sensu_ldap_auth', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid ldap auth using API' do
-      on node, 'sensuctl auth info openldap-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl auth info openldap-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['servers'].size).to eq(1)
         expect(data['servers'][0]['host']).to eq('localhost')
         expect(data['servers'][0]['port']).to eq(636)

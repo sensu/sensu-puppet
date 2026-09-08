@@ -69,8 +69,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check' do
-      on node, 'sensuctl check info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-http.rb')
         expect(data['publish']).to eq(true)
         expect(data['stdin']).to eq(false)
@@ -84,8 +84,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on node, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -94,16 +94,16 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace' do
-      on node, 'sensuctl check info test2 --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test2 --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('test2')
         expect(data['metadata']['namespace']).to eq('test')
       end
     end
 
     it 'should have a valid check in namespace using API' do
-      on node, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo'])
         expect(data['handlers']).to eq(['email'])
@@ -202,8 +202,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check with extended_attributes properties' do
-      on node, 'sensuctl check info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check_hooks']).to eq([{'critical' => ['httpd-restart']},{'warning' => ['httpd-restart']}])
         expect(data['proxy_requests']['entity_attributes']).to eq(['System.OS==linux'])
         expect(data['output_metric_format']).to eq('graphite_plaintext')
@@ -216,8 +216,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have valid check using API' do
-      on node, 'sensuctl check info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -226,8 +226,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid check in namespace using API' do
-      on node, 'sensuctl check info test-api --namespace test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl check info test-api --namespace test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['command']).to eq('check-cpu.rb')
         expect(data['subscriptions']).to eq(['demo2'])
         expect(data['handlers']).to eq(['email2'])
@@ -294,6 +294,84 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
 
     describe command('sensuctl check info test-no-namespace'), :node => node do
       its(:exit_status) { should_not eq 0 }
+    end
+  end
+
+  context 'with sensu go 6.x properties' do
+    it 'should work without errors' do
+      pp = <<-EOS
+      include sensu::backend
+      sensu_handler { 'notify':
+        type    => 'pipe',
+        command => 'notify.rb',
+      }
+      sensu_pipeline { 'test-pipeline':
+        ensure    => 'present',
+        workflows => [
+          {
+            'name'    => 'notify',
+            'handler' => { 'name' => 'notify', 'type' => 'Handler', 'api_version' => 'core/v2' },
+          },
+        ],
+      }
+      sensu_check { 'test-6x':
+        command                   => 'check-http.rb',
+        subscriptions             => ['demo'],
+        interval                  => 60,
+        pipelines                 => [
+          { 'name' => 'test-pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' },
+        ],
+        output_metric_thresholds  => [
+          {
+            'name'        => 'disk.usage_percent',
+            'null_status' => 0,
+            'thresholds'  => [
+              { 'max' => '80', 'min' => '', 'status' => 1 },
+              { 'max' => '90', 'min' => '', 'status' => 2 },
+            ],
+          },
+        ],
+      }
+      sensu_check { 'test-6x-api':
+        command       => 'check-http.rb',
+        subscriptions => ['demo'],
+        interval      => 60,
+        pipelines     => [
+          { 'name' => 'test-pipeline', 'type' => 'Pipeline', 'api_version' => 'core/v2' },
+        ],
+        provider      => 'sensu_api',
+      }
+      EOS
+
+      if RSpec.configuration.sensu_use_agent
+        site_pp = "node 'sensu-backend' { #{pp} }"
+        puppetserver = hosts_as('puppetserver')[0]
+        create_remote_file(puppetserver, "/etc/puppetlabs/code/environments/production/manifests/site.pp", site_pp)
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0,2]
+        on node, puppet("agent -t --detailed-exitcodes"), acceptable_exit_codes: [0]
+      else
+        apply_manifest_on(node, pp, :catch_failures => true)
+        apply_manifest_on(node, pp, :catch_changes  => true)
+      end
+    end
+
+    it 'should have a check with pipelines and metric thresholds' do
+      on node, 'sensuctl check info test-6x --format json' do |result|
+        data = JSON.parse(result.stdout)
+        expect(data['pipelines'].length).to eq(1)
+        expect(data['pipelines'][0]['name']).to eq('test-pipeline')
+        expect(data['pipelines'][0]['type']).to eq('Pipeline')
+        expect(data['output_metric_thresholds'].length).to eq(1)
+        expect(data['output_metric_thresholds'][0]['name']).to eq('disk.usage_percent')
+      end
+    end
+
+    it 'should have a check with pipelines using API' do
+      on node, 'sensuctl check info test-6x-api --format json' do |result|
+        data = JSON.parse(result.stdout)
+        expect(data['pipelines'].length).to eq(1)
+        expect(data['pipelines'][0]['name']).to eq('test-pipeline')
+      end
     end
   end
 
@@ -379,8 +457,8 @@ describe 'sensu_check', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have purged checks' do
-      on node, 'sensuctl check list --format json --all-namespaces' do
-        data = JSON.parse(stdout) || []
+      on node, 'sensuctl check list --format json --all-namespaces' do |result|
+        data = JSON.parse(result.stdout) || []
         expect(data.size).to eq(2)
       end
     end

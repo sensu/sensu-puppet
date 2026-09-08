@@ -72,92 +72,92 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role' do
-      on node, 'sensuctl cluster-role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid cluster_role from API' do
-      on node, 'sensuctl cluster-role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid role' do
-      on node, 'sensuctl role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid role using API' do
-      on node, 'sensuctl role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules']).to eq([{'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => nil}])
       end
     end
 
     it 'should have a valid cluster_role_binding' do
-      on node, 'sensuctl cluster-role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role' do
-      on node, 'sensuctl cluster-role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding using API' do
-      on node, 'sensuctl cluster-role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role using API' do
-      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding' do
-      on node, 'sensuctl role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole' do
-      on node, 'sensuctl role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding using API' do
-      on node, 'sensuctl role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole using API' do
-      on node, 'sensuctl role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
@@ -252,8 +252,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role with updated propery' do
-      on node, 'sensuctl cluster-role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -261,8 +261,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role with updated propery using API' do
-      on node, 'sensuctl cluster-role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -270,8 +270,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid role with updated propery' do
-      on node, 'sensuctl role info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -279,8 +279,8 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid role with updated propery using API' do
-      on node, 'sensuctl role info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['rules'].size).to eq(2)
         expect(data['rules'][0]).to eq({'verbs' => ['get','list'], 'resources' => ['*'], 'resource_names' => ['foo']})
         expect(data['rules'][1]).to eq({'verbs' => ['get','list'], 'resources' => ['checks'], 'resource_names' => ['bar']})
@@ -288,64 +288,64 @@ describe 'sensu RBAC resources', if: RSpec.configuration.sensu_mode == 'types' d
     end
 
     it 'should have a valid cluster_role_binding with updated propery' do
-      on node, 'sensuctl cluster-role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role with updated property' do
-      on node, 'sensuctl cluster-role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with updated propery using API' do
-      on node, 'sensuctl cluster-role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid cluster_role_binding with Role with updated property using API' do
-      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl cluster-role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding with updated propery' do
-      on node, 'sensuctl role-binding info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole with updated property' do
-      on node, 'sensuctl role-binding info test2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end
     end
 
     it 'should have a valid role_binding with updated propery using API' do
-      on node, 'sensuctl role-binding info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'Role', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'},{'type' => 'User', 'name' => 'agent'}])
       end
     end
 
     it 'should have a valid role_binding for ClusterRole with updated property using API' do
-      on node, 'sensuctl role-binding info test-api2 --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl role-binding info test-api2 --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['role_ref']).to eq({'type' => 'ClusterRole', 'name' => 'test2'})
         expect(data['subjects']).to eq([{'type' => 'User', 'name' => 'admin'}])
       end

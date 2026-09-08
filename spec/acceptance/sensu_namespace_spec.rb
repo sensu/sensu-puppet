@@ -24,16 +24,16 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid namespace' do
-      on node, 'sensuctl namespace list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl namespace list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['name'] == 'test' }
         expect(d[0]['name']).to eq('test')
       end
     end
 
     it 'should have a valid namespace using API' do
-      on node, 'sensuctl namespace list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl namespace list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['name'] == 'test-api' }
         expect(d[0]['name']).to eq('test-api')
       end
@@ -62,16 +62,16 @@ describe 'sensu_namespace', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should not have test namespace' do
-      on node, 'sensuctl namespace list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl namespace list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['name'] == 'test' }
         expect(d.size).to eq(0)
       end
     end
 
     it 'should not have test namespace using API' do
-      on node, 'sensuctl namespace list --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl namespace list --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data.select { |o| o['name'] == 'test-api' }
         expect(d.size).to eq(0)
       end

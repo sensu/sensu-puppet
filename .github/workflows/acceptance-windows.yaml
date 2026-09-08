@@ -1,0 +1,55 @@
+name: Acceptance Windows
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  acceptance-windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    name: Windows sensu::cli and sensu::agent
+    env:
+      BUNDLE_WITHOUT: development
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Configure RUBYOPT for puppet OpenSSL and minitar compatibility
+      shell: pwsh
+      run: |
+        $fix = "${{ github.workspace }}/spec/openssl_unfreeze.rb" -replace '\\', '/'
+        $vendor = "${{ github.workspace }}/spec/vendor" -replace '\\', '/'
+        "RUBYOPT=-I $vendor -r $fix" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    - name: Install module and dependencies
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        $modulepath = "C:\ProgramData\PuppetLabs\code\environments\production\modules"
+        New-Item -ItemType Directory -Force $modulepath | Out-Null
+        # Install this module from the checkout so tests use current code
+        New-Item -ItemType Directory -Force "$modulepath\sensu" | Out-Null
+        Get-ChildItem -Path "." | Where-Object { $_.Name -notin @('vendor', '.git') } | Copy-Item -Destination "$modulepath\sensu" -Recurse -Force
+        # Provide the Puppet CA cert so ssl_ca_source resolves — the sensu class defaults
+        # ssl_ca_source to $facts['puppet_localcacert'], which points here on Windows.
+        # A fresh runner has no Puppet master, so no CA cert exists at that path yet.
+        New-Item -ItemType Directory -Force "C:\ProgramData\PuppetLabs\puppet\etc\ssl" | Out-Null
+        Get-ChildItem -Path "tests\ssl" | Copy-Item -Destination "C:\ProgramData\PuppetLabs\puppet\etc\ssl" -Recurse -Force
+        # Set certname for predictable $trusted['certname'] used as api_host default
+        bundle exec puppet config set --section main certname sensu_agent
+        # Install Forge dependencies (Windows-relevant subset)
+        bundle exec puppet module install puppetlabs-stdlib     --version ">= 9.0.0 < 10.0.0"
+        bundle exec puppet module install richardc-datacat      --version ">= 0.6.0 < 2.0.0"
+        bundle exec puppet module install puppet-archive        --version ">= 7.0.0 < 8.0.0"
+        bundle exec puppet module install puppetlabs-chocolatey --version ">= 9.0.0 < 10.0.0"
+        # puppet-windows_env 6.1.0 supports Puppet 8 but has not been published to the Forge
+        git clone --depth 1 --branch v6.1.0 https://github.com/voxpupuli/puppet-windows_env.git "$modulepath\windows_env"
+    - name: Run Windows acceptance tests
+      shell: pwsh
+      run: bundle exec rake acceptance:windows
