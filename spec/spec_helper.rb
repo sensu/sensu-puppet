@@ -64,7 +64,11 @@ RSpec.configure do |config|
     %r{/\.rbenv/},
     %r{/.rvm/},
   ]
-  config.default_facter_version = '3.11.9'
+  # facterdb 4.5.0 only bundles Facter 4.x/5.x fact data; 5.6 is the highest available and
+  # covers every OS/release this module's metadata.json declares (verified: 13/13 combos
+  # matched). The one gap (Windows Server 2016, no native 5.6 fixture) falls back to the
+  # highest compatible version automatically via rspec-puppet-facts' loose-requirement check.
+  config.default_facter_version = '5.6'
 end
 
 add_custom_fact :puppet_localcacert, ->(os, facts) {

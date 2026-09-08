@@ -9,7 +9,7 @@ describe 'sensu::cli', :type => :class do
         'https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/6.14.2/sensu-go_6.14.2_windows_amd64.zip'
       end
       let(:default_params) do
-        if facts[:osfamily] == 'windows'
+        if facts[:os]['family'] == 'windows'
           { :install_source => install_source_param }
         else
           {}
@@ -60,7 +60,7 @@ describe 'sensu::cli', :type => :class do
             should contain_package('sensu-go-cli').with({
               'ensure'  => 'installed',
               'name'    => 'sensu-go-cli',
-              'require' => platforms[facts[:osfamily]][:package_require],
+              'require' => platforms[facts[:os]['family']][:package_require],
             })
           }
         end
@@ -73,7 +73,7 @@ describe 'sensu::cli', :type => :class do
             'url'                 => 'https://test.example.com:8080',
             'username'            => 'admin',
             'password'            => 'P@ssw0rd!',
-            'trusted_ca_file'     => platforms[facts[:osfamily]][:ca_path],
+            'trusted_ca_file'     => platforms[facts[:os]['family']][:ca_path],
             'config_format'       => nil,
             'config_namespace'    => nil,
           })
@@ -81,19 +81,19 @@ describe 'sensu::cli', :type => :class do
 
       end
 
-      context 'when install_source is puppet URL', if: facts[:osfamily] == 'windows' do
+      context 'when install_source is puppet URL', if: facts[:os]['family'] == 'windows' do
         let(:install_source_param) { 'puppet:///sensu-go-cli.zip' }
         it { should contain_archive('sensu-go-cli.zip').with_source(install_source_param) }
       end
 
-      context 'when install_source is file', if: facts[:osfamily] == 'windows' do
+      context 'when install_source is file', if: facts[:os]['family'] == 'windows' do
         let(:install_source_param) { 'file:\\C:\\sensu-go-cli.zip' }
         it { should contain_archive('sensu-go-cli.zip').with_source(install_source_param) }
       end
 
       context 'when install_source is not set' do
         let(:params) { {} }
-        if facts[:osfamily] == 'windows'
+        if facts[:os]['family'] == 'windows'
           it { should compile.and_raise_error(/install_source is required for Windows/) }
         else
           it { should compile.with_all_deps }

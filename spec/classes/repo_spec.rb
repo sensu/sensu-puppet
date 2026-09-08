@@ -12,7 +12,7 @@ describe 'sensu::repo', :type => :class do
       case os
       when /(redhat-7|centos-7)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/7/$basearch"
-      when /amazon-2023-x86_64/
+      when /(redhat-9|centos-9|rocky-9|almalinux-9|amazon-2023)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/9/$basearch"
       when /(redhat-8|centos-8|rocky-8|almalinux-8)-x86_64/
         baseurl = "https://packagecloud.io/sensu/stable/el/8/$basearch"
@@ -21,7 +21,7 @@ describe 'sensu::repo', :type => :class do
         baseurl = nil
       end
       it { should compile.with_all_deps }
-      if facts[:osfamily] == 'RedHat'
+      if facts[:os]['family'] == 'RedHat'
         it {
           should contain_yumrepo('sensu').with({
             'descr'           => 'sensu',
@@ -48,7 +48,7 @@ describe 'sensu::repo', :type => :class do
         else
           it { should_not contain_exec('dnf makecache sensu') }
         end
-      elsif facts[:osfamily] == 'Debian'
+      elsif facts[:os]['family'] == 'Debian'
         it {
           should contain_apt__source('sensu').with({
             'ensure' => 'present',

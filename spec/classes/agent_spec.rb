@@ -22,7 +22,7 @@ describe 'sensu::agent', :type => :class do
           sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
           it {
             should contain_exec('install-agent-service').with({
-              'command' => "C:\\windows\\system32\\cmd.exe /c \"\"#{sensu_agent_exe}\" service install --config-file \"#{platforms[facts[:osfamily]][:agent_config_path]}\" --log-file \"#{platforms[facts[:osfamily]][:log_file]}\"\"",
+              'command' => "C:\\windows\\system32\\cmd.exe /c \"\"#{sensu_agent_exe}\" service install --config-file \"#{platforms[facts[:os]['family']][:agent_config_path]}\" --log-file \"#{platforms[facts[:os]['family']][:log_file]}\"\"",
               'unless'  => 'C:\\windows\\system32\\sc.exe query SensuAgent',
               'before'  => 'Service[sensu-agent]',
               'require' => [
@@ -47,11 +47,11 @@ describe 'sensu::agent', :type => :class do
         it {
           should contain_package('sensu-go-agent').with({
             'ensure'   => 'installed',
-            'name'     => platforms[facts[:osfamily]][:agent_package_name],
+            'name'     => platforms[facts[:os]['family']][:agent_package_name],
             'source'   => nil,
-            'provider' => platforms[facts[:osfamily]][:package_provider],
+            'provider' => platforms[facts[:os]['family']][:package_provider],
             'before'   => 'File[sensu_etc_dir]',
-            'require'  => platforms[facts[:osfamily]][:package_require],
+            'require'  => platforms[facts[:os]['family']][:package_require],
             'notify'   => 'Service[sensu-agent]',
           })
         }
@@ -75,7 +75,7 @@ describe 'sensu::agent', :type => :class do
               'namespace'             => 'default',
               'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'              => 'P@ssw0rd!',
-              'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
+              'trusted-ca-file'       => platforms[facts[:os]['family']][:ca_path],
             },
             'order'  => '01',
           })
@@ -84,10 +84,10 @@ describe 'sensu::agent', :type => :class do
         it {
           should contain_file('sensu_agent_config').with({
             'ensure'  => 'file',
-            'path'    => platforms[facts[:osfamily]][:agent_config_path],
-            'owner'   => platforms[facts[:osfamily]][:user],
-            'group'   => platforms[facts[:osfamily]][:group],
-            'mode'    => platforms[facts[:osfamily]][:agent_config_mode],
+            'path'    => platforms[facts[:os]['family']][:agent_config_path],
+            'owner'   => platforms[facts[:os]['family']][:user],
+            'group'   => platforms[facts[:os]['family']][:group],
+            'mode'    => platforms[facts[:os]['family']][:agent_config_mode],
             'require' => 'Package[sensu-go-agent]',
             'notify'  => 'Service[sensu-agent]',
           })
@@ -100,15 +100,15 @@ describe 'sensu::agent', :type => :class do
           END
         end
 
-        if platforms[facts[:osfamily]][:agent_service_env_vars_file]
+        if platforms[facts[:os]['family']][:agent_service_env_vars_file]
           it {
             should contain_file('sensu-agent_env_vars').with({
               'ensure'  => 'file',
-              'path'    => platforms[facts[:osfamily]][:agent_service_env_vars_file],
+              'path'    => platforms[facts[:os]['family']][:agent_service_env_vars_file],
               'content' => service_env_vars_content,
-              'owner'   => platforms[facts[:osfamily]][:user],
-              'group'   => platforms[facts[:osfamily]][:group],
-              'mode'    => platforms[facts[:osfamily]][:agent_config_mode],
+              'owner'   => platforms[facts[:os]['family']][:user],
+              'group'   => platforms[facts[:os]['family']][:group],
+              'mode'    => platforms[facts[:os]['family']][:agent_config_mode],
               'require' => 'Package[sensu-go-agent]',
               'notify'  => 'Service[sensu-agent]',
             })
@@ -121,7 +121,7 @@ describe 'sensu::agent', :type => :class do
           it {
             should contain_systemd__dropin_file('sensu-agent-start.conf').with({
               'unit'    => 'sensu-agent.service',
-              'content' => %r{ExecStart=/usr/sbin/sensu-agent start -c #{platforms[facts[:osfamily]][:agent_config_path]}},
+              'content' => %r{ExecStart=/usr/sbin/sensu-agent start -c #{platforms[facts[:os]['family']][:agent_config_path]}},
               'notify'  => 'Service[sensu-agent]',
             })
           }
@@ -136,7 +136,7 @@ describe 'sensu::agent', :type => :class do
           should contain_service('sensu-agent').with({
             'ensure'    => 'running',
             'enable'    => true,
-            'name'      => platforms[facts[:osfamily]][:agent_service_name],
+            'name'      => platforms[facts[:os]['family']][:agent_service_name],
             'subscribe' => 'Class[Sensu::Ssl]',
           })
         }
@@ -269,7 +269,7 @@ describe 'sensu::agent', :type => :class do
               'namespace'             => 'qa',
               'redact'                => ['secret'],
               'password'              => 'P@ssw0rd!',
-              'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
+              'trusted-ca-file'       => platforms[facts[:os]['family']][:ca_path],
             },
           })
         }
@@ -306,7 +306,7 @@ describe 'sensu::agent', :type => :class do
               'namespace'             => 'default',
               'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
               'password'              => 'P@ssw0rd!',
-              'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
+              'trusted-ca-file'       => platforms[facts[:os]['family']][:ca_path],
             },
           })
         }
@@ -351,7 +351,7 @@ describe 'sensu::agent', :type => :class do
           END
         end
 
-        if platforms[facts[:osfamily]][:agent_service_env_vars_file]
+        if platforms[facts[:os]['family']][:agent_service_env_vars_file]
           it { should contain_file('sensu-agent_env_vars').with_content(service_env_vars_content) }
         end
         if facts[:os]['family'] == 'windows'
@@ -369,15 +369,25 @@ describe 'sensu::agent', :type => :class do
       end
 
       context 'labels and annotations validations' do
-        invalid_combinations = {
-          'labels'      => [1, true, ['foo'], {'foo' => 'bar'}],
-          'annotations' => [1, true, ['foo'], {'foo' => 'bar'}],
-        }
-        invalid_combinations.each_pair do |param, values|
-          values.each do |value|
+        {
+          'labels'      => { invalid: [1, true, ['foo'], {'foo' => 'bar'}], error: /expects a String value/ },
+          'annotations' => { invalid: [1, true], error: /expects a value of type String, Array, or Hash/,
+                              valid: [['foo'], {'foo' => 'bar'}] },
+        }.each_pair do |param, spec|
+          spec[:invalid].each do |value|
             context "#{param} invalid for #{value.class}" do
               let(:params) { { param => { 'key' => value } } }
-              it { is_expected.to compile.and_raise_error(/expects a String value/) }
+              it { is_expected.to compile.and_raise_error(spec[:error]) }
+            end
+          end
+          (spec[:valid] || []).each do |value|
+            context "#{param} valid for #{value.class}" do
+              let(:params) { { param => { 'key' => value } } }
+              # See the compile check near the top of this file — same rspec-puppet
+              # Windows path-mocking limitation.
+              if facts[:os]['family'] != 'windows'
+                it { is_expected.to compile.with_all_deps }
+              end
             end
           end
         end
@@ -421,7 +431,7 @@ describe 'sensu::agent', :type => :class do
                 'namespace'             => 'default',
                 'redact'                => ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
                 'password'              => 'P@ssw0rd!',
-                'trusted-ca-file'       => platforms[facts[:osfamily]][:ca_path],
+                'trusted-ca-file'       => platforms[facts[:os]['family']][:ca_path],
               },
             })
           }

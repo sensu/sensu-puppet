@@ -15,6 +15,10 @@ group :development, :unit_tests do
   gem 'rake'
   gem 'rspec-puppet',                                              :require => false
   gem 'rspec-puppet-facts',                                        :require => false
+  # facterdb's jgrep dependency calls the legacy JSON.create_id= setter, removed in json 3.0+.
+  # jgrep 1.5.4 is its latest release, with no fix upstream. Only rspec-puppet-facts/facterdb
+  # need this, so pin it here rather than for every bundle context.
+  gem 'json', '< 3.0',                                             :require => false
   gem 'rspec-mocks',                                               :require => false
   gem 'parallel_tests',                                            :require => false
   gem 'puppetlabs_spec_helper',                                    :require => false

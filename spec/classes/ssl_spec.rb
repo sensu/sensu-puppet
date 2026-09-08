@@ -18,23 +18,23 @@ describe 'sensu::ssl', :type => :class do
         it {
           should contain_file('sensu_ssl_dir').with({
             'ensure'  => 'directory',
-            'path'    => platforms[facts[:osfamily]][:ssl_dir],
+            'path'    => platforms[facts[:os]['family']][:ssl_dir],
             'purge'   => true,
             'recurse' => true,
             'force'   => true,
-            'owner'   => platforms[facts[:osfamily]][:user],
-            'group'   => platforms[facts[:osfamily]][:group],
-            'mode'    => platforms[facts[:osfamily]][:ssl_dir_mode],
+            'owner'   => platforms[facts[:os]['family']][:user],
+            'group'   => platforms[facts[:os]['family']][:group],
+            'mode'    => platforms[facts[:os]['family']][:ssl_dir_mode],
           })
         }
 
         it {
           should contain_file('sensu_ssl_ca').with({
             'ensure'    => 'file',
-            'path'      => platforms[facts[:osfamily]][:ca_path],
-            'owner'     => platforms[facts[:osfamily]][:user],
-            'group'     => platforms[facts[:osfamily]][:group],
-            'mode'      => platforms[facts[:osfamily]][:ca_mode],
+            'path'      => platforms[facts[:os]['family']][:ca_path],
+            'owner'     => platforms[facts[:os]['family']][:user],
+            'group'     => platforms[facts[:os]['family']][:group],
+            'mode'      => platforms[facts[:os]['family']][:ca_mode],
             'show_diff' => 'false',
             'source'    => facts[:puppet_localcacert],
             'content'   => nil,
