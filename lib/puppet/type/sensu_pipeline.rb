@@ -3,21 +3,27 @@ require_relative '../../puppet_x/sensu/array_of_hashes_property'
 require_relative '../../puppet_x/sensu/hash_of_strings_property'
 require_relative '../../puppet_x/sensu/hash_property'
 
-SENSU_PIPELINE_VALIDATE_REF = lambda do |ref, field_name|
-  unless ref.is_a?(Hash)
-    raise ArgumentError, "workflows #{field_name} must be a Hash"
-  end
-  %w[name type api_version].each do |key|
-    unless ref.key?(key)
-      raise ArgumentError, "workflows #{field_name} must have a '#{key}' key"
+module PuppetX
+  module Sensu
+    module Pipeline
+      def self.validate_ref(ref, field_name)
+        unless ref.is_a?(Hash)
+          raise ArgumentError, "workflows #{field_name} must be a Hash"
+        end
+        %w[name type api_version].each do |key|
+          unless ref.key?(key)
+            raise ArgumentError, "workflows #{field_name} must have a '#{key}' key"
+          end
+          unless ref[key].is_a?(String) && !ref[key].empty?
+            raise ArgumentError, "workflows #{field_name} '#{key}' must be a non-empty String"
+          end
+        end
+        valid_keys = %w[name type api_version]
+        ref.keys.each do |k|
+          raise ArgumentError, "#{k} is not a valid key for workflows #{field_name}" unless valid_keys.include?(k.to_s)
+        end
+      end
     end
-    unless ref[key].is_a?(String) && !ref[key].empty?
-      raise ArgumentError, "workflows #{field_name} '#{key}' must be a non-empty String"
-    end
-  end
-  valid_keys = %w[name type api_version]
-  ref.keys.each do |k|
-    raise ArgumentError, "#{k} is not a valid key for workflows #{field_name}" unless valid_keys.include?(k.to_s)
   end
 end
 
@@ -113,17 +119,17 @@ DESC
       unless value.key?('handler')
         raise ArgumentError, "workflows element must have a 'handler' key"
       end
-      SENSU_PIPELINE_VALIDATE_REF.call(value['handler'], 'handler')
+      PuppetX::Sensu::Pipeline.validate_ref(value['handler'], 'handler')
       if value.key?('filters')
         unless value['filters'].is_a?(Array)
           raise ArgumentError, "workflows element 'filters' must be an Array"
         end
         value['filters'].each do |f|
-          SENSU_PIPELINE_VALIDATE_REF.call(f, 'filters element')
+          PuppetX::Sensu::Pipeline.validate_ref(f, 'filters element')
         end
       end
       if value.key?('mutator')
-        SENSU_PIPELINE_VALIDATE_REF.call(value['mutator'], 'mutator')
+        PuppetX::Sensu::Pipeline.validate_ref(value['mutator'], 'mutator')
       end
       valid_keys = %w[name filters mutator handler]
       value.keys.each do |k|

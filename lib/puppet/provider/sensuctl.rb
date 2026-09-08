@@ -161,7 +161,12 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     auths = output.split('---')
     Puppet.debug("auths: #{auths}")
     auths.each do |auth|
-      a = YAML.load(auth)
+      begin
+        a = YAML.safe_load(auth, permitted_classes: [Symbol, Time, Date])
+      rescue StandardError => e
+        Puppet.debug("Failed to parse auth YAML entry: #{e}")
+        next
+      end
       next if a.nil?
       name = a.fetch('metadata', {}).fetch('name', nil)
       next if name.nil?
@@ -193,7 +198,7 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     begin
       YAML.load_stream(output) { |doc| docs << doc }
     rescue StandardError
-      docs = output.split('---').map { |d| YAML.load(d) }
+      docs = output.split('---').map { |d| YAML.safe_load(d, permitted_classes: [Symbol, Time, Date]) }
     end
     docs.compact
   end
