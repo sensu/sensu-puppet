@@ -32,6 +32,8 @@
     * [Sensu backend federation](#sensu-backend-federation)
     * [Large Environment Considerations](#large-environment-considerations)
     * [Composite Names for Namespaces](#composite-names-for-namespaces)
+    * [Installing Plugins](#installing-plugins)
+    * [Installing Extensions](#installing-extensions)
     * [Installing Bonsai Assets](#installing-bonsai-assets)
     * [Bolt Tasks](#bolt-tasks)
 4. [Reference](#reference)
@@ -886,6 +888,111 @@ sensu_check { 'check-cpu in team1':
 The example above would add the `check-cpu` check to both the `default` and `team1` namespaces.
 
 **NOTE:** If you use composite names for namespaces, the `namespace` property takes precedence.
+
+### Installing Plugins
+
+Plugin management is handled by the `sensu::plugins` class.
+
+Example installing plugins on agent:
+
+```puppet
+  class { 'sensu::agent':
+    backends      => ['sensu-backend.example.com:8081'],
+    subscriptions => ['linux', 'apache-servers'],
+  }
+  class { 'sensu::plugins':
+    plugins => ['disk-checks'],
+  }
+```
+
+The `plugins` parameter can also be a Hash that sets the version:
+
+```puppet
+  class { 'sensu::agent':
+    backends      => ['sensu-backend.example.com:8081'],
+    subscriptions => ['linux', 'apache-servers'],
+  }
+  class { 'sensu::plugins':
+    plugins => {
+      'disk-checks' => { 'version' => 'latest' },
+    },
+  }
+```
+
+Set `dependencies` to an empty Array to disable the `sensu::plugins` dependency management.
+
+```puppet
+  class { 'sensu::plugins':
+    dependencies => [],
+  }
+```
+
+If gems are required and not pulled in as gem dependencies they can also be installed.
+
+```puppet
+class { 'sensu::plugins':
+  plugins          => ['memory-checks'],
+  gem_dependencies => ['vmstat'],
+}
+```
+
+You can uninstall plugins by passing `ensure` as `absent`.
+
+```puppet
+  class { 'sensu::agent':
+    backends      => ['sensu-backend.example.com:8081'],
+    subscriptions => ['linux', 'apache-servers'],
+  }
+  class { 'sensu::plugins':
+    plugins => {
+      'disk-checks' => { 'ensure' => 'absent' },
+    },
+  }
+```
+
+### Installing Extensions
+
+Extension management is handled by the `sensu::plugins` class.
+
+Example installing extension on backend:
+
+```puppet
+  class { 'sensu':
+    password => 'supersecret',
+  }
+  include sensu::backend
+  class { 'sensu::plugins':
+    extensions => ['graphite'],
+  }
+```
+
+The `extensions` parameter can also be a Hash that sets the version:
+
+```puppet
+  class { 'sensu':
+    password => 'supersecret',
+  }
+  include sensu::backend
+  class { 'sensu::plugins':
+    extensions => {
+      'graphite' => { 'version' => 'latest' },
+    },
+  }
+```
+
+You can uninstall extensions by passing `ensure` as `absent`.
+
+```puppet
+  class { 'sensu':
+    password => 'supersecret',
+  }
+  include sensu::backend
+  class { 'sensu::plugins':
+    extensions => {
+      'graphite' => { 'ensure' => 'absent' },
+    },
+  }
+```
 
 ### Installing Bonsai Assets
 
