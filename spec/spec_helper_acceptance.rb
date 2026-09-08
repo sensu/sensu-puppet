@@ -134,7 +134,6 @@ EOS
     common_yaml = <<-EOS
 ---
 sensu::manage_repo: #{RSpec.configuration.sensu_manage_repo}
-sensu::plugins::manage_repo: true
 sensu::api_host: sensu-backend
 postgresql::globals::encoding: UTF8
 postgresql::globals::locale: C
