@@ -1,3 +1,10 @@
+# beaker-docker defaults docker-api to a 300s read timeout, which the 3-host EL8 cluster nodeset
+# can exceed while building images (three cold dnf installs per host). Set it before beaker-rspec
+# is required -- it provisions at require time, and beaker-docker merges over any options already
+# present rather than replacing them.
+require 'docker'
+::Docker.options = { read_timeout: 900, write_timeout: 900 }
+
 require 'beaker-rspec'
 require 'beaker-puppet'
 require 'beaker/module_install_helper'

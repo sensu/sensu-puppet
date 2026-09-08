@@ -44,6 +44,11 @@ group :development, :unit_tests do
   gem 'rubocop-i18n', '~> 3.0',                                    :require => false
   gem 'rubocop-rspec', '~> 3.0',                                   :require => false
   gem 'syslog',                                                    :require => false
+  # rexml stopped being a default gem in Ruby 3.4, so bundler must supply it. Only beaker
+  # (group :system_tests) pulls it in transitively, and the unit job runs with
+  # BUNDLE_WITHOUT=system_tests:development -- where the puppetlabs-chocolatey fixture's
+  # package provider requires rexml/document while autoloading the package type.
+  gem 'rexml',                                                     :require => false
 end
 
 group :documentation do
