@@ -1,3 +1,4 @@
+require_relative 'spec/openssl_unfreeze'
 require 'json'
 require 'bundler'
 require 'puppetlabs_spec_helper/rake_tasks'
