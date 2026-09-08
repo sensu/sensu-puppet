@@ -220,15 +220,8 @@ class sensu::backend (
   }
 
   $default_config = {
-    'state-dir'                        => $state_dir,
-    'api-listen-address'               => '[::]:8080',
-    'agent-port'                       => 8081,
-    'etcd-listen-client-urls'          => 'http://127.0.0.1:2379',
-    'etcd-advertise-client-urls'       => 'http://127.0.0.1:2379',
-    'etcd-listen-peer-urls'            => 'http://127.0.0.1:2380',
-    'etcd-initial-advertise-peer-urls' => 'http://127.0.0.1:2380',
-    'etcd-initial-cluster'             => 'default=http://127.0.0.1:2380',
-    'etcd-initial-cluster-state'       => 'new',
+    'state-dir' => $state_dir,
+    'api-url'   => $sensu::api_url,
   }
   $config = $default_config + $ssl_config + $config_hash
   $_service_env_vars = $service_env_vars.map |$key,$value| {
@@ -376,17 +369,14 @@ class sensu::backend (
     subscribe => $service_subscribe,
   }
 
-  # Initialize backend after service starts - this enables etcd on port 2379
-  # Following the official Sensu documentation sequence
   if $sensu::validate_api {
-    $init_require = Service['sensu-backend']
+    $init_require = Sensu_api_validator['sensu']
   } else {
     $init_require = undef
   }
-
   exec { 'sensu-backend init':
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-    command     => 'sensu-backend init',
+    command     => "sensu-backend init --config-file ${sensu::etc_dir}/backend.yml",
     environment => [
       'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
       "SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=${sensu::password}",
@@ -395,9 +385,8 @@ class sensu::backend (
     # sensu-backend init will exit with code 3 if already run
     # If exit code is 3, do not need to run sensu-backend init again
     # If exit is not 3, run sensu-backend init
-    unless      => "sensu-backend init ; [ \$? -eq 3 ] && exit 0 || exit 1",
+    unless      => "sensu-backend init --config-file ${sensu::etc_dir}/backend.yml ; [ \$? -eq 3 ] && exit 0 || exit 1",
     require     => $init_require,
-    # Don't require API validator since init enables the API
     before      => [
       Sensu_user['admin'],
       Sensuctl_configure['puppet'],

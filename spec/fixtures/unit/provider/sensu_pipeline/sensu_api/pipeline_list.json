@@ -1,0 +1,20 @@
+[
+  {
+    "workflows": [
+      {
+        "name": "notify",
+        "filters": [
+          { "name": "is_incident", "type": "EventFilter", "api_version": "core/v2" }
+        ],
+        "handler": { "name": "slack", "type": "Handler", "api_version": "core/v2" }
+      }
+    ],
+    "continue_on_error": false,
+    "metadata": {
+      "name": "test",
+      "namespace": "default",
+      "labels": null,
+      "annotations": null
+    }
+  }
+]

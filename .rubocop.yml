@@ -3,7 +3,7 @@ plugins:
 - rubocop-rspec
 - rubocop-i18n
 AllCops:
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 3.2
   NewCops: disable
   SuggestExtensions: false
   Include:

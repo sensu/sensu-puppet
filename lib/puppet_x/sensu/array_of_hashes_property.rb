@@ -4,7 +4,11 @@ module PuppetX
       def insync?(is)
         return super(is) unless is.is_a?(Array) && should.is_a?(Array)
         strip_nils = lambda { |h| h.is_a?(Hash) ? h.reject { |_, v| v.nil? } : h }
-        is.map(&strip_nils) == should.map(&strip_nils)
+        # Elements are semantically a set (sensuctl/the API may return them in a
+        # different order than declared), so compare after sorting on a stable,
+        # content-derived key rather than by position.
+        stable_sort = lambda { |arr| arr.map(&strip_nils).sort_by(&:to_s) }
+        stable_sort.call(is) == stable_sort.call(should)
       end
 
       def change_to_s(currentvalue, newvalue)

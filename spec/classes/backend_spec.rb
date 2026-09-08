@@ -102,14 +102,7 @@ describe 'sensu::backend', :type => :class do
         backend_content = <<-END.gsub(/^\s+\|/, '')
           |---
           |state-dir: "/var/lib/sensu/sensu-backend"
-          |api-listen-address: "[::]:8080"
-          |agent-port: 8081
-          |etcd-listen-client-urls: http://127.0.0.1:2379
-          |etcd-advertise-client-urls: http://127.0.0.1:2379
-          |etcd-listen-peer-urls: http://127.0.0.1:2380
-          |etcd-initial-advertise-peer-urls: http://127.0.0.1:2380
-          |etcd-initial-cluster: default=http://127.0.0.1:2380
-          |etcd-initial-cluster-state: new
+          |api-url: https://test.example.com:8080
           |cert-file: "/etc/sensu/ssl/cert.pem"
           |key-file: "/etc/sensu/ssl/key.pem"
           |trusted-ca-file: "/etc/sensu/ssl/ca.crt"
@@ -225,14 +218,7 @@ describe 'sensu::backend', :type => :class do
         backend_content = <<-END.gsub(/^\s+\|/, '')
           |---
           |state-dir: "/var/lib/sensu/sensu-backend"
-          |api-listen-address: "[::]:8080"
-          |agent-port: 8081
-          |etcd-listen-client-urls: http://127.0.0.1:2379
-          |etcd-advertise-client-urls: http://127.0.0.1:2379
-          |etcd-listen-peer-urls: http://127.0.0.1:2380
-          |etcd-initial-advertise-peer-urls: http://127.0.0.1:2380
-          |etcd-initial-cluster: default=http://127.0.0.1:2380
-          |etcd-initial-cluster-state: new
+          |api-url: http://test.example.com:8080
         END
 
         it {
@@ -250,14 +236,14 @@ describe 'sensu::backend', :type => :class do
         it {
           should contain_exec('sensu-backend init').with({
             'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
-            'command'     => 'sensu-backend init',
+            'command'     => 'sensu-backend init --config-file /etc/sensu/backend.yml',
             'environment' => [
               'SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin',
               'SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=P@ssw0rd!',
             ],
             'returns'     => [0, 3],
-            'unless'      => 'sensu-backend init ; [ $? -eq 3 ] && exit 0 || exit 1',
-            'require'     => 'Service[sensu-backend]',
+            'unless'      => 'sensu-backend init --config-file /etc/sensu/backend.yml ; [ $? -eq 3 ] && exit 0 || exit 1',
+            'require'     => 'Sensu_api_validator[sensu]',
             'before'      => [
               'Sensu_user[admin]',
               'Sensuctl_configure[puppet]',
