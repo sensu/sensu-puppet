@@ -113,6 +113,8 @@ def platforms
       log_file: nil,
       agent_service_env_vars_file: '/etc/default/sensu-agent',
       backend_service_env_vars_file: '/etc/default/sensu-backend',
+      :plugins_package_require => ['Class[Sensu::Repo::Community]', 'Class[Apt::Update]'],
+      plugins_dependencies: ['make', 'gcc', 'g++', 'libssl-dev'],
     },
     'RedHat' => {
       :package_require => ['Class[Sensu::Repo]'],
@@ -133,6 +135,8 @@ def platforms
       log_file: nil,
       agent_service_env_vars_file: '/etc/sysconfig/sensu-agent',
       backend_service_env_vars_file: '/etc/sysconfig/sensu-backend',
+      :plugins_package_require => ['Class[Sensu::Repo::Community]'],
+      plugins_dependencies: ['make', 'gcc', 'gcc-c++', 'openssl-devel'],
     },
     'windows' => {
       agent_package_name: 'sensu-agent',
