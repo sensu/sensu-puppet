@@ -44,40 +44,40 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have bonsai asset' do
-      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('1.1.0')
       end
     end
 
     it 'should have bonsai asset from API' do
-      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('0.1.0')
       end
     end
 
     it 'should have bonsai asset in default namespace' do
-      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json --namespace=default' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json --namespace=default' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
         expect(data['metadata']['namespace']).to eq('default')
       end
     end
 
     it 'should have bonsai asset in dev namespace' do
-      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json --namespace=dev' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-ruby-runtime --format json --namespace=dev' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['metadata']['name']).to eq('sensu/sensu-ruby-runtime')
         expect(data['metadata']['namespace']).to eq('dev')
       end
     end
 
     it 'should have bonsai asset' do
-      on node, 'sensuctl asset info nixwiz/sensu-go-fatigue-check-filter --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info nixwiz/sensu-go-fatigue-check-filter --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('v0.2.2')
       end
@@ -120,8 +120,8 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have bonsai asset' do
-      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         upgraded = (Gem::Version.new(version) > Gem::Version.new('1.1.0'))
         expect(version).not_to eq('1.1.0')
@@ -130,8 +130,8 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have bonsai asset using API' do
-      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         upgraded = (Gem::Version.new(version) > Gem::Version.new('0.1.0'))
         expect(version).not_to eq('0.1.0')
@@ -169,16 +169,16 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have bonsai asset' do
-      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('1.1.0')
       end
     end
 
     it 'should have bonsai asset from API' do
-      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('0.1.0')
       end
@@ -214,16 +214,16 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have bonsai asset' do
-      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('1.2.0')
       end
     end
 
     it 'should have bonsai asset from API' do
-      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('0.2.0')
       end
@@ -260,16 +260,16 @@ describe 'sensu_bonsai_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have bonsai asset' do
-      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-pagerduty-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('1.2.0')
       end
     end
 
     it 'should have bonsai asset from API' do
-      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info sensu/sensu-email-handler --format json' do |result|
+        data = JSON.parse(result.stdout)
         version = data['metadata']['annotations']['io.sensu.bonsai.version']
         expect(version).to eq('0.2.0')
       end

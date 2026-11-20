@@ -10,13 +10,15 @@ Puppet::Type.type(:sensu_etcd_replicator).provide(:sensuctl, :parent => Puppet::
   def self.instances
     replicators = []
 
-    data = dump('federation/v1.EtcdReplicator')
-
+    data = self.parse_yaml_dump(self.sensuctl(['dump','federation/v1.EtcdReplicator','--format','yaml','--all-namespaces'], failonfail: false))
     data.each do |d|
+      next if d.nil?
       replicator = {}
       replicator[:ensure] = :present
-      replicator[:name] = d['metadata']['name']
-      d['spec'].each_pair do |key,value|
+      replicator[:name] = d.fetch('metadata', {}).fetch('name', nil)
+      next if replicator[:name].nil?
+      spec = d['spec'] || {}
+      spec.each_pair do |key,value|
         if !!value == value
           value = value.to_s.to_sym
         end

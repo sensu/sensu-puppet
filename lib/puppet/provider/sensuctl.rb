@@ -1,6 +1,7 @@
 require 'etc'
 require 'json'
 require 'tempfile'
+require 'yaml'
 
 class Puppet::Provider::Sensuctl < Puppet::Provider
   initvars
@@ -64,19 +65,21 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     self.class.convert_boolean_property_value(value)
   end
 
-  def self.sensuctl(args, opts = {})
+  def self.sensuctl(args, failonfail: nil, combine: nil, custom_environment: nil, **_kwargs)
     sensuctl_cmd = which('sensuctl')
     if ! path.nil?
       cmd = [path] + args
     else
       cmd = [sensuctl_cmd] + args
     end
-    opts[:failonfail] = true unless opts.key?(:failonfail)
-    opts[:combine] = true unless opts.key?(:combine)
+    opts = {}
+    opts[:failonfail] = failonfail.nil? ? true : failonfail
+    opts[:combine] = combine.nil? ? true : combine
+    opts[:custom_environment] = custom_environment if custom_environment
     execute(cmd, opts)
   end
-  def sensuctl(*args)
-    self.class.sensuctl(*args)
+  def sensuctl(cmd_args, **opts)
+    self.class.sensuctl(cmd_args, **opts)
   end
 
   def self.sensuctl_list(command, namespaces = true)
@@ -158,7 +161,12 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     auths = output.split('---')
     Puppet.debug("auths: #{auths}")
     auths.each do |auth|
-      a = YAML.load(auth)
+      begin
+        a = YAML.safe_load(auth, permitted_classes: [Symbol, Time, Date])
+      rescue StandardError => e
+        Puppet.debug("Failed to parse auth YAML entry: #{e}")
+        next
+      end
       next if a.nil?
       name = a.fetch('metadata', {}).fetch('name', nil)
       next if name.nil?
@@ -172,21 +180,27 @@ class Puppet::Provider::Sensuctl < Puppet::Provider
     # Dump YAML because 'sensuctl dump' does not yet support '--format json'
     # https://github.com/sensu/sensu-go/issues/3424
     begin
-      output = sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'], {:failonfail => false})
+      output = self.sensuctl(['dump',resource_type,'--format','yaml','--all-namespaces'], failonfail: false)
       Puppet.debug("YAML dump of #{resource_type}:\n#{output}")
     rescue Exception => e
       Puppet.notice("Failed to dump resources with sensuctl: #{e}")
       return []
     end
-    resources = []
-    dumps = output.split('---')
-    dumps.each do |d|
-      resources << YAML.load(d)
-    end
-    resources
+    parse_yaml_dump(output)
   end
   def dump(*args)
     self.class.dump(*args)
+  end
+
+  def self.parse_yaml_dump(output)
+    return [] if output.nil? || output.strip.empty?
+    docs = []
+    begin
+      YAML.load_stream(output) { |doc| docs << doc }
+    rescue StandardError
+      docs = output.split('---').map { |d| YAML.safe_load(d, permitted_classes: [Symbol, Time, Date]) }
+    end
+    docs.compact
   end
 
   def self.namespaces()

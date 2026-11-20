@@ -14,7 +14,7 @@ if $facts['networking']['ip'] == $primary_ip {
 
 class { 'postgresql::globals':
   manage_package_repo => true,
-  version             => '11',
+  version             => '16',
 }
 class { 'postgresql::server':
   listen_addresses     => '*',
@@ -80,16 +80,14 @@ postgresql::server::config_entry { 'max_wal_senders':
   value  => '5',
 }
 
-# To prevent the primary server from removing the WAL segments required for
-# the standby server before shipping them, set the minimum number of segments
-# retained in the pg_xlog directory. At least wal_keep_segments should be
-# larger than the number of segments generated between the beginning of
-# online-backup and the startup of streaming replication. If you enable WAL
-# archiving to an archive directory accessible from the standby, this may
-# not be necessary.
-postgresql::server::config_entry { 'wal_keep_segments':
+# To prevent the primary server from removing the WAL files required for
+# the standby server before shipping them, set the minimum size of WAL files
+# retained in the pg_wal directory. If you enable WAL archiving to an archive
+# directory accessible from the standby, this may not be necessary.
+# wal_keep_size replaced wal_keep_segments (removed in PG14); value is in MB.
+postgresql::server::config_entry { 'wal_keep_size':
   ensure => $primary_ensure,
-  value  => '32',
+  value  => '512',
 }
 
 if $primary {

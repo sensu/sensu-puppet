@@ -1,6 +1,9 @@
 require 'spec_helper_acceptance'
 
-describe 'sensu_plugin', if: RSpec.configuration.sensu_mode == 'types' do
+# Same root cause as 04_plugins_spec.rb: sensu_plugin installs gems into the sensu-plugins-ruby
+# embedded Ruby, and packagecloud.io/sensu/community ships no sensu-plugins-ruby package for any
+# OS this module supports. The type is removed entirely in the follow-up plugin-removal PR.
+describe 'sensu_plugin', if: RSpec.configuration.sensu_mode == 'types', skip: 'sensu-plugins-ruby has no package for any currently-supported OS; sensu_plugin is being removed in a follow-up PR' do
   agent = hosts_as('sensu-agent')[0]
   context 'install plugin' do
     it 'should work without errors' do

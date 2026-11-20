@@ -1,0 +1,13 @@
+type: AD
+api_version: authentication/v2
+metadata:
+  name: activedirectory
+  created_at: 2024-01-15T10:30:00Z
+spec:
+  groups_prefix: ""
+  servers:
+  - binding:
+      password: P@ssw0rd!
+      user_dn: cn=binder,cn=users,dc=acme,dc=org
+    host: 127.0.0.1
+    port: 636

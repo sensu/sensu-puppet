@@ -18,7 +18,7 @@ Puppet::Type.type(:sensu_postgres_config).provide(:sensuctl, :parent => Puppet::
   def self.instances
     configs = []
 
-    data = dump('store/v1.PostgresConfig')
+    data = self.parse_yaml_dump(self.sensuctl(['dump','store/v1.PostgresConfig','--format','yaml','--all-namespaces'], failonfail: false))
 
     data.each do |d|
       config = {}

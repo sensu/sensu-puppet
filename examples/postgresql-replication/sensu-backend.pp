@@ -1,10 +1,16 @@
-$password = 'sensu'
+$password  = 'sensu'
 $master_ip = '192.168.52.11'
 
-include sensu
+class { 'sensu':
+  use_ssl => false,
+}
+
+include sensu::cli
+
 class { 'sensu::agent':
   backends => ['sensu-backend:8081'],
 }
+
 class { 'sensu::backend':
   datastore                  => 'postgresql',
   manage_postgresql_db       => false,

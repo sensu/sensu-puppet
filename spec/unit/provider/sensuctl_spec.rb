@@ -128,6 +128,13 @@ describe Puppet::Provider::Sensuctl do
       allow(subject).to receive(:sensuctl).with(['auth','list','--format','yaml'], failonfail: false).and_return(my_fixture_read('auths.txt'))
       expect(subject.sensuctl_auth_types).to eq({"activedirectory"=>"AD", "activedirectory2"=>"AD", "openldap"=>"LDAP"})
     end
+
+    it 'should not raise on a timestamp field (Psych::DisallowedClass regression)' do
+      # Ruby 3.1+/Psych 4+ auto-resolves unquoted ISO8601-looking scalars to Time,
+      # and bare YAML.load rejects Time unless explicitly permitted.
+      allow(subject).to receive(:sensuctl).with(['auth','list','--format','yaml'], failonfail: false).and_return(my_fixture_read('auths_with_timestamp.txt'))
+      expect(subject.sensuctl_auth_types).to eq({"activedirectory"=>"AD"})
+    end
   end
 
   context 'dump' do
@@ -136,6 +143,16 @@ describe Puppet::Provider::Sensuctl do
       ret = subject.dump('federation/v1.EtcdReplicator')
       expect(ret.size).to eq(2)
       expect(ret[0]['metadata']['name']).to eq('role_replicator')
+    end
+  end
+
+  context 'parse_yaml_dump' do
+    it 'falls back to per-document parsing when the primary parse fails, without choking on timestamps' do
+      output = "---\nmetadata:\n  name: role_replicator\nspec:\n  last_ok: 2024-01-15T10:30:00Z\n"
+      allow(YAML).to receive(:load_stream).and_raise(StandardError, 'boom')
+      docs = subject.parse_yaml_dump(output)
+      expect(docs.size).to eq(1)
+      expect(docs[0]['metadata']['name']).to eq('role_replicator')
     end
   end
 

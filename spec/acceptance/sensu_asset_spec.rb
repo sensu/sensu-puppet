@@ -91,8 +91,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid asset with multiple builds' do
-      on node, 'sensuctl asset info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['builds'].size).to eq(3)
         expect(data['builds'][0]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz')
         expect(data['builds'][0]['sha512']).to eq('487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3')
@@ -107,8 +107,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid asset with multiple builds using API' do
-      on node, 'sensuctl asset info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['builds'].size).to eq(3)
         expect(data['builds'][0]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.3_linux_amd64.tar.gz')
         expect(data['builds'][0]['sha512']).to eq('487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d3')
@@ -228,8 +228,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid asset with multiple builds with updated properties' do
-      on node, 'sensuctl asset info test --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['builds'].size).to eq(3)
         expect(data['builds'][0]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.4_linux_amd64.tar.gz')
         expect(data['builds'][0]['sha512']).to eq('487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d4')
@@ -245,8 +245,8 @@ describe 'sensu_asset', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid asset with multiple builds with updated properties using API' do
-      on node, 'sensuctl asset info test-api --format json' do
-        data = JSON.parse(stdout)
+      on node, 'sensuctl asset info test-api --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['builds'].size).to eq(3)
         expect(data['builds'][0]['url']).to eq('https://assets.bonsai.sensu.io/981307deb10ebf1f1433a80da5504c3c53d5c44f/sensu-go-cpu-check_0.0.4_linux_amd64.tar.gz')
         expect(data['builds'][0]['sha512']).to eq('487ab34b37da8ce76d2657b62d37b35fbbb240c3546dd463fa0c37dc58a72b786ef0ca396a0a12c8d006ac7fa21923e0e9ae63419a4d56aec41fccb574c1a5d4')

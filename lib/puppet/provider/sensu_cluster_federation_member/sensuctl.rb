@@ -10,10 +10,13 @@ Puppet::Type.type(:sensu_cluster_federation_member).provide(:sensuctl, :parent =
   def self.instances
     members = []
 
-    data = dump('federation/v1.Cluster')
+    data = Puppet::Provider::Sensuctl.parse_yaml_dump(self.sensuctl(['dump','federation/v1.Cluster','--format','yaml','--all-namespaces'], failonfail: false))
     data.each do |d|
-      cluster = d['metadata']['name']
-      d['spec']['api_urls'].each do |api_url|
+      next if d.nil?
+      cluster = d.fetch('metadata', {}).fetch('name', nil)
+      next if cluster.nil?
+      api_urls = d.fetch('spec', {}).fetch('api_urls', []) || []
+      api_urls.each do |api_url|
         member = {}
         member[:ensure] = :present
         member[:name] = "#{api_url} in #{cluster}"

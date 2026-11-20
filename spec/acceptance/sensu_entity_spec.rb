@@ -30,8 +30,8 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should create an entity' do
-      on node, "sensuctl entity info test --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['entity_class']).to eq('proxy')
         expect(data['deregister']).to eq(false)
         expect(data['deregistration']['handler']).to eq('slack-handler')
@@ -39,8 +39,8 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should create an entity using API' do
-      on node, "sensuctl entity info test-api --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test-api --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['entity_class']).to eq('proxy')
         expect(data['deregister']).to eq(false)
         expect(data['deregistration']['handler']).to eq('slack-handler')
@@ -78,16 +78,16 @@ describe 'sensu_entity', if: RSpec.configuration.sensu_mode == 'types' do
     end
 
     it 'should have a valid entity with extended_attributes properties' do
-      on node, "sensuctl entity info test --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['deregistration']['handler']).to eq('email-handler')
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end
     end
 
     it 'should have a valid entity with extended_attributes properties with API' do
-      on node, "sensuctl entity info test-api --format json" do
-        data = JSON.parse(stdout)
+      on node, "sensuctl entity info test-api --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['deregistration']['handler']).to eq('email-handler')
         expect(data['metadata']['labels']['foo']).to eq('bar')
       end

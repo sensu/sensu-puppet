@@ -29,3 +29,5 @@
 tests/sensu_license.json
 tests/secrets
 tests/secrets.tar
+tests/etcd-ssl/*.pem
+tests/etcd-ssl/*.csr

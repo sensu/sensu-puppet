@@ -2,12 +2,12 @@
 
 ## Tests
 
-  - Pull requests that add any additional functionality should have tests which cover the new feature to ensure it does what is expected
+  - PRs that add functionality must include tests for the new feature
   - Pull requests with failing tests will not be merged
 
 ## Features
 
-  - Keep feature based PRs as small as possible, with as few commits as necessary. These are easier to review and will be merged quicker
+  - Keep feature PRs small with as few commits as necessary — they review and merge faster
 
 ## Bug Fixes
 
@@ -15,7 +15,7 @@
 
 ## Commits
 
-  - Squash/rebase any commits where possible to reduce the noise in the PR
+  - Squash/rebase commits where possible
 
 ## Git commits
 
@@ -27,21 +27,20 @@ Reference the issue number, in the format `(GH-###)`.
 
 ## Versions
 
-As of v3.0.0, this module supports Sensu V5 aka Sensu Go. Previous
-versions supported Sensu Classic which can be found at
+As of v5.0.0, this module supports Sensu Go 6.x. Previous versions supported
+Sensu Go 5.x (v3/v4) and Sensu Classic (v1/v2), see
 [https://github.com/sensu/puppet-module-sensuclassic](https://github.com/sensu/puppet-module-sensuclassic)
 
 ## Branches
 
 ### master
 
-The `master` branch is for development against Sensu Go v5.
+The `master` branch is for development against the latest Sensu Go release.
 
 # Release process
 
 1. Update version in `metadata.json`
-1. Run Rake task to release module: `pdk bundle exec rake release`
-1. Update GitHub pages: `pdk bundle exec rake strings:gh_pages:update`
-1. Tag the release, such as `git tag -a 'v3.11.0' -m 'v3.11.0'`
-1. Push release to upstream master: `git push upstream master`
-1. Push tags upstream master: `git push upstream --tags`
+1. Tag the release: `git tag -a 'v5.13.0' -m 'v5.13.0'` (replace with actual version)
+1. Push tags upstream: `git push upstream --tags`
+1. GitHub Actions will automatically publish the module to Puppet Forge when a version tag is pushed (see `.github/workflows/release.yaml`)
+1. Update GitHub pages: `bundle exec rake strings:gh_pages:update`

@@ -77,6 +77,22 @@
 # @param validate_entity
 #   Sets whether to validate the agent's entity before attempting
 #   to configure the entity
+# @param keepalive_handlers
+#   List of handlers for keepalive events. Maps to `keepalive-handlers` in agent.yml.
+# @param keepalive_interval
+#   Number of seconds between keepalive events. Maps to `keepalive-interval` in agent.yml.
+# @param keepalive_warning_timeout
+#   Number of seconds until a keepalive is considered stale (warning threshold).
+#   Maps to `keepalive-warning-timeout` in agent.yml.
+# @param keepalive_critical_timeout
+#   Number of seconds until a keepalive is considered stale (critical threshold).
+#   Maps to `keepalive-critical-timeout` in agent.yml.
+# @param keepalive_check_labels
+#   Labels to apply to the keepalive check. Maps to `keepalive-check-labels` in agent.yml.
+# @param keepalive_check_annotations
+#   Annotations to apply to the keepalive check. Maps to `keepalive-check-annotations` in agent.yml.
+# @param keepalive_pipelines
+#   List of pipeline references for keepalive events. Maps to `keepalive-pipelines` in agent.yml.
 #
 class sensu::agent (
   Optional[String] $version = undef,
@@ -94,7 +110,7 @@ class sensu::agent (
   Optional[Array[Sensu::Backend_URL]] $backends = undef,
   String[1] $entity_name = $facts['networking']['fqdn'],
   Optional[Array[String[1]]] $subscriptions = undef,
-  Optional[Hash[String[1],String]] $annotations = undef,
+  Optional[Hash[String[1],Variant[String, Array, Hash]]] $annotations = undef,
   Optional[Hash[String[1],String]] $labels = undef,
   String[1] $namespace = 'default',
   Array[String[1]] $redact = ['password','passwd','pass','api_key','api_token','access_key','secret_key','private_key','secret'],
@@ -102,6 +118,13 @@ class sensu::agent (
   Optional[Stdlib::Absolutepath] $log_file = undef,
   Enum['sensuctl','sensu_api'] $agent_entity_config_provider = 'sensu_api',
   Boolean $validate_entity = true,
+  Optional[Array[String[1]]] $keepalive_handlers = undef,
+  Optional[Integer] $keepalive_interval = undef,
+  Optional[Integer] $keepalive_warning_timeout = undef,
+  Optional[Integer] $keepalive_critical_timeout = undef,
+  Optional[Hash[String[1],String]] $keepalive_check_labels = undef,
+  Optional[Hash[String[1],Variant[String, Array, Hash]]] $keepalive_check_annotations = undef,
+  Optional[Array[Hash]] $keepalive_pipelines = undef,
 ) {
 
   include sensu
@@ -117,7 +140,7 @@ class sensu::agent (
   if $sensu::use_ssl {
     $backend_protocol = 'wss'
     $ssl_config = {
-      'trusted-ca-file' => $sensu::trusted_ca_file_path,
+      'trusted-ca-file' => $sensu::trusted_ca_file,
     }
     $service_subscribe = Class['sensu::ssl']
   } else {
@@ -133,15 +156,22 @@ class sensu::agent (
     }
   }
   $default_config = {
-    'backend-url'          => $backend_urls,
-    'name'                 => $entity_name,
-    'agent-managed-entity' => $agent_managed_entity,
-    'subscriptions'        => $subscriptions,
-    'annotations'          => $annotations,
-    'labels'               => $labels,
-    'namespace'            => $namespace,
-    'redact'               => $redact,
-    'password'             => $sensu::agent_password,
+    'backend-url'                  => $backend_urls,
+    'name'                         => $entity_name,
+    'agent-managed-entity'         => $agent_managed_entity,
+    'subscriptions'                => $subscriptions,
+    'annotations'                  => $annotations,
+    'labels'                       => $labels,
+    'namespace'                    => $namespace,
+    'redact'                       => $redact,
+    'password'                     => $sensu::agent_password,
+    'keepalive-handlers'           => $keepalive_handlers,
+    'keepalive-interval'           => $keepalive_interval,
+    'keepalive-warning-timeout'    => $keepalive_warning_timeout,
+    'keepalive-critical-timeout'   => $keepalive_critical_timeout,
+    'keepalive-check-labels'       => $keepalive_check_labels,
+    'keepalive-check-annotations'  => $keepalive_check_annotations,
+    'keepalive-pipelines'          => $keepalive_pipelines,
   }
   $config = filter($default_config + $ssl_config + $config_hash) |$key, $value| { $value =~ NotUndef }
   if $config['subscriptions'] {
@@ -174,6 +204,10 @@ class sensu::agent (
     "${key}=\"${value}\""
   }
   $_service_env_vars_lines = ['# This file is being maintained by Puppet.','# DO NOT EDIT'] + $_service_env_vars
+  $_env_file_line = $service_env_vars_file ? {
+    undef   => undef,
+    default => "EnvironmentFile=-${service_env_vars_file}",
+  }
 
   if $facts['os']['family'] == 'windows' {
     $sensu_agent_exe = "C:\\Program Files\\sensu\\sensu-agent\\bin\\sensu-agent.exe"
@@ -280,6 +314,7 @@ class sensu::agent (
     }
   }
 
+  # Only create systemd service files when systemd is the service provider
   if $facts['service_provider'] == 'systemd' {
     systemd::dropin_file { 'sensu-agent-start.conf':
       unit    => 'sensu-agent.service',
@@ -287,7 +322,8 @@ class sensu::agent (
         '[Service]',
         'ExecStart=',
         "ExecStart=${service_path} start -c ${sensu::agent_config_path}",
-      ], "\n"),
+        $_env_file_line,
+      ].filter |$l| { $l != undef }, "\n"),
       notify  => Service['sensu-agent'],
     }
   }
@@ -304,6 +340,7 @@ class sensu::agent (
       ensure    => 'present',
       namespace => $config['namespace'],
       provider  => 'sensu_api',
+      require   => Class['sensu::api'],
     }
   }
 }

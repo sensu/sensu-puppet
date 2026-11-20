@@ -21,12 +21,12 @@ describe 'sensu::plugins', :type => :class do
         it {
           should contain_package('sensu-plugins-ruby').with({
             'ensure'  => 'installed',
-            'require' => platforms[facts[:osfamily]][:plugins_package_require],
+            'require' => platforms[facts[:os]['family']][:plugins_package_require],
           })
         }
       end
 
-      platforms[facts[:osfamily]][:plugins_dependencies].each do |package|
+      platforms[facts[:os]['family']][:plugins_dependencies].each do |package|
         it { should contain_package(package) }
       end
 
@@ -81,7 +81,7 @@ describe 'sensu::plugins', :type => :class do
       context 'dependencies => []' do
         let(:params) {{ :dependencies => [] }}
         it { should compile.with_all_deps }
-        platforms[facts[:osfamily]][:plugins_dependencies].each do |package|
+        platforms[facts[:os]['family']][:plugins_dependencies].each do |package|
           it { should_not contain_package(package) }
         end
       end
@@ -99,7 +99,7 @@ describe 'sensu::plugins', :type => :class do
         let(:params) {{ :gem_dependencies => ['test'] }}
         it { should contain_package('test').with_provider('sensu_gem') }
         it { should contain_package('test').that_requires('Package[sensu-plugins-ruby]') }
-        platforms[facts[:osfamily]][:plugins_dependencies].each do |package|
+        platforms[facts[:os]['family']][:plugins_dependencies].each do |package|
           it { should contain_package('test').that_requires("Package[#{package}]") }
         end
       end

@@ -8,6 +8,7 @@ describe Puppet::Type.type(:sensu_filter).provider(:sensuctl) do
       :name => 'test',
       :action => 'allow',
       :expressions => ["event.entity.labels.environment == 'production'"],
+      :provider => 'sensuctl',
     })
   end
 

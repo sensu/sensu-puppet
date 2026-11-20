@@ -1,0 +1,39 @@
+HOSTS:
+  sensu-agent:
+    roles:
+      - agent
+      - sensu-agent
+    platform: ubuntu-22.04-amd64
+    hypervisor: docker
+    image: ubuntu:22.04
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 ca-certificates lsb-release'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-agent-ubuntu2204'
+  sensu-backend:
+    roles:
+      - agent
+      - sensu-backend
+      - puppetserver
+      - default
+    platform: ubuntu-22.04-amd64
+    hypervisor: docker
+    image: ubuntu:22.04
+    docker_preserve_image: true
+    docker_cmd:
+      - '/sbin/init'
+    docker_image_commands:
+      - 'apt-get update'
+      - 'apt-get install -y -q net-tools wget curl locales iproute2 ca-certificates lsb-release'
+      - 'locale-gen en_US.UTF-8'
+    docker_container_name: 'sensu-backend-ubuntu2204'
+CONFIG:
+  type: foss
+  log_level: warn
+ssh:
+  password: root
+  auth_methods: ["password"]

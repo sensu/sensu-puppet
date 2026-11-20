@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'sensu::api', :type => :class do
   # Only test 1 OS to speed up tests when behavior does not vary based on OS facts
   on_supported_os({
-    supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemrelease' => ['7'] }]
+    supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemrelease' => ['8'] }]
   }).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }

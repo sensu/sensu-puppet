@@ -30,13 +30,13 @@ describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'bolt' do
 
       apply_manifest_on(backend, check_pp, :catch_failures => true)
       on backend, 'sensuctl check execute test'
-      sleep 20
+      retry_on(backend, 'sensuctl event info sensu-agent test', max_retries: 20, retry_interval: 2)
       on backend, 'bolt task run sensu::event action=resolve entity=sensu-agent check=test --targets sensu-backend'
     end
 
     it 'should have resolved check' do
-      on backend, 'sensuctl event info sensu-agent test --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl event info sensu-agent test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check']['status']).to eq(0)
       end
     end
@@ -47,7 +47,7 @@ describe 'sensu event task', if: RSpec.configuration.sensu_mode == 'bolt' do
       # Stop sensu-agent on agent node to avoid re-creating event
       apply_manifest_on(agent,
         "service { 'sensu-agent': ensure => 'stopped' }")
-      sleep 20
+      retry_on(agent, '! systemctl is-active sensu-agent', max_retries: 20, retry_interval: 2)
       on backend, 'bolt task run sensu::event action=delete entity=sensu-agent check=test --targets sensu-backend'
     end
 
@@ -71,8 +71,8 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have a valid silenced' do
-      on backend, 'sensuctl silenced info entity:sensu-agent:* --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl silenced info entity:sensu-agent:* --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['subscription']).to eq('entity:sensu-agent')
         expect(data['expire']).to eq(-1)
         expect(data['expire_on_resolve']).to eq(false)
@@ -86,8 +86,8 @@ describe 'sensu silenced task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have a valid silenced with updated propery' do
-      on backend, 'sensuctl silenced info entity:sensu-agent:* --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl silenced info entity:sensu-agent:* --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['expire_on_resolve']).to eq(true)
       end
     end
@@ -135,12 +135,12 @@ describe 'sensu install_agent task', if: RSpec.configuration.sensu_mode == 'bolt
   context 'install_agent' do
     it 'should work without errors' do
       on backend, 'bolt task run sensu::install_agent backend=sensu-backend:8081 subscription=linux entity_name=sensu-agent output=true --targets sensu-agent'
-      sleep 5
+      retry_on(backend, 'sensuctl entity info sensu-agent', max_retries: 10, retry_interval: 2)
     end
 
     it 'should have a valid entity' do
-      on backend, 'sensuctl entity info sensu-agent --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl entity info sensu-agent --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['subscriptions']).to include('linux')
         expect(data['metadata']['namespace']).to eq('default')
       end
@@ -174,12 +174,12 @@ describe 'sensu check_execute task', if: RSpec.configuration.sensu_mode == 'bolt
   context 'check_execute' do
     it 'should work without errors' do
       on backend, 'bolt task run sensu::check_execute check=test subscription=entity:sensu-agent --targets localhost'
-      sleep 30
+      retry_on(backend, 'sensuctl event info sensu-agent test', max_retries: 20, retry_interval: 3)
     end
 
     it 'should have executed check' do
-      on backend, 'sensuctl event info sensu-agent test --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl event info sensu-agent test --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check']['status']).to eq(1)
       end
     end
@@ -200,8 +200,8 @@ describe 'sensu assets_outdated task', if: RSpec.configuration.sensu_mode == 'bo
 
   context 'assets_outdated' do
     it 'should return outdated assets' do
-      on backend, 'bolt task run sensu::assets_outdated --targets localhost --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'bolt task run sensu::assets_outdated --targets localhost --format json' do |result|
+        data = JSON.parse(result.stdout)
         d = data['items'][0]['value']['data']
         expect(d[0]['asset_name']).to eq('sensu/sensu-pagerduty-handler')
       end
@@ -223,8 +223,8 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_mode == 'bolt' do
     end
 
     it 'should have created api key' do
-      on backend, 'sensuctl api-key list --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl api-key list --format json' do |result|
+        data = JSON.parse(result.stdout)
         key = data.select { |k| k["username"] == "admin" }[0]
         expect(key).not_to be_nil
       end
@@ -241,8 +241,8 @@ describe 'sensu apikey task', if: RSpec.configuration.sensu_mode == 'bolt' do
     it 'should remove without errors' do
       key = nil
       # Get key
-      on backend, 'sensuctl api-key list --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl api-key list --format json' do |result|
+        data = JSON.parse(result.stdout)
         apikey = data.select { |k| k["username"] == "admin" }[0]
         key = apikey["metadata"]["name"]
       end
@@ -272,12 +272,12 @@ describe 'sensu agent_event task', if: RSpec.configuration.sensu_mode == 'bolt' 
   context 'agent_event' do
     it 'should work without errors' do
       on backend, 'bolt task run sensu::agent_event name=bolttest status=1 output=test --targets sensu-agent'
-      sleep 5
+      retry_on(backend, 'sensuctl event info sensu-agent bolttest', max_retries: 10, retry_interval: 2)
     end
 
     it 'should have created an event' do
-      on backend, 'sensuctl event info sensu-agent bolttest --format json' do
-        data = JSON.parse(stdout)
+      on backend, 'sensuctl event info sensu-agent bolttest --format json' do |result|
+        data = JSON.parse(result.stdout)
         expect(data['check']['status']).to eq(1)
         expect(data['check']['output']).to eq('test')
       end
@@ -317,44 +317,10 @@ groups:
 
   context 'inventory' do
     it 'produces inventory' do
-      on backend, 'bolt inventory show --targets linux --format json -i /root/.puppetlabs/bolt/inventory1.yaml' do
-        data = JSON.parse(stdout)
+      on backend, 'bolt inventory show --targets linux --format json -i /root/.puppetlabs/bolt/inventory1.yaml' do |result|
+        data = JSON.parse(result.stdout)
         expect(data["count"]).to be >= 2
       end
-    end
-  end
-end
-
-# Skip this test when testing using CI repos as CI repos are missing 5.21.x packages
-describe 'sensu backend_upgrade task', if: (RSpec.configuration.sensu_mode == 'bolt' && !RSpec.configuration.add_ci_repo) do
-  backend = hosts_as('sensu-backend')[0]
-  context 'setup' do
-    it 'is successful' do
-      on backend, 'yum remove -y sensu-go\*'
-      on backend, 'rm -rf /var/lib/sensu/sensu-backend/etcd /root/.config'
-      pp = <<-EOS
-        class { 'sensu':
-          version => '5.21.0-14262',
-        }
-        include sensu::backend
-      EOS
-      apply_manifest_on(backend, pp, :catch_failures => true)
-      upgrade_pp = <<-EOS
-        class { 'sensu':
-          version => 'latest',
-        }
-        include sensu::backend
-      EOS
-      apply_manifest_on(backend, upgrade_pp, :catch_failures => true)
-    end
-  end
-
-  context 'peforms upgrade' do
-    describe command('bolt task run sensu::backend_upgrade --targets sensu-backend'), :node => backend do
-      its(:exit_status) { should eq 0 }
-    end
-    describe command('sensu-backend upgrade --skip-confirm 2>&1'), :node => backend do
-      its(:stdout) { should match /up to date/ }
     end
   end
 end
