@@ -326,7 +326,7 @@ class sensu::backend (
   file { 'sensu_backend_config':
     ensure    => 'file',
     path      => "${sensu::etc_dir}/backend.yml",
-    content   => to_yaml($config),
+    content   => stdlib::to_yaml($config),
     owner     => $sensu::user,
     group     => $sensu::group,
     mode      => '0640',

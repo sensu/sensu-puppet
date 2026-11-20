@@ -8,7 +8,7 @@ fixtures:
       repo: https://github.com/richardc/puppet-datacat.git
     yumrepo_core:
       repo: https://github.com/puppetlabs/puppetlabs-yumrepo_core
-      puppet_version: ">= 6.0.0"
+      puppet_version: ">= 8.0.0"
     chocolatey:
       repo: https://github.com/puppetlabs/puppetlabs-chocolatey.git
     # Needed by chocolatey
@@ -20,7 +20,7 @@ fixtures:
     # Need by postgresql
     augeas_core:
       repo: https://github.com/puppetlabs/puppetlabs-augeas_core
-      puppet_version: ">= 6.0.0"
+      puppet_version: ">= 8.0.0"
     # Need by postgresql
     concat:
       repo: https://github.com/puppetlabs/puppetlabs-concat.git
@@ -31,6 +31,6 @@ fixtures:
     windows_env:
       repo: https://github.com/voxpupuli/puppet-windows_env.git
     systemd:
-      repo: https://github.com/camptocamp/puppet-systemd.git
+      repo: https://github.com/voxpupuli/puppet-systemd.git
   symlinks:
     sensu: "#{source_dir}"

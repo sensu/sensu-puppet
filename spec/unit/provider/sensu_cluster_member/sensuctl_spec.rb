@@ -7,6 +7,7 @@ describe Puppet::Type.type(:sensu_cluster_member).provider(:sensuctl) do
     type.new({
       :name => 'test',
       :peer_urls => ['http://127.0.0.1:2380'],
+      :provider => 'sensuctl',
     })
   end
 

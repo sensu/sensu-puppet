@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Puppet::Type.type(:sensu_entity).provider(:sensuctl) do
   let(:provider) { described_class }
-  let(:resource) { Puppet::Type.type(:sensu_entity).new({name: 'test'}) }
+  let(:resource) { Puppet::Type.type(:sensu_entity).new({name: 'test', provider: 'sensuctl'}) }
 
   describe 'self.instances' do
     it 'should create instances' do

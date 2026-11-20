@@ -20,7 +20,7 @@ describe 'sensu::common', :type => :class do
         end
         it { should contain_class('sensu::ssl') }
 
-        if facts[:osfamily] == 'windows'
+        if facts[:os]['family'] == 'windows'
           it { should_not contain_user('sensu') }
           it { should_not contain_group('sensu') }
         else
@@ -48,14 +48,14 @@ describe 'sensu::common', :type => :class do
           }
         end
 
-        if platforms[facts[:osfamily]][:etc_parent_dir]
+        if platforms[facts[:os]['family']][:etc_parent_dir]
           it {
             should contain_file('sensu_dir').with({
               'ensure'  => 'directory',
-              'path'    => platforms[facts[:osfamily]][:etc_parent_dir],
-              'owner'   => platforms[facts[:osfamily]][:user],
-              'group'   => platforms[facts[:osfamily]][:group],
-              'mode'    => platforms[facts[:osfamily]][:etc_dir_mode],
+              'path'    => platforms[facts[:os]['family']][:etc_parent_dir],
+              'owner'   => platforms[facts[:os]['family']][:user],
+              'group'   => platforms[facts[:os]['family']][:group],
+              'mode'    => platforms[facts[:os]['family']][:etc_dir_mode],
             })
           }
         else
@@ -65,10 +65,10 @@ describe 'sensu::common', :type => :class do
         it {
           should contain_file('sensu_etc_dir').with({
             'ensure'  => 'directory',
-            'path'    => platforms[facts[:osfamily]][:etc_dir],
-            'owner'   => platforms[facts[:osfamily]][:user],
-            'group'   => platforms[facts[:osfamily]][:group],
-            'mode'    => platforms[facts[:osfamily]][:etc_dir_mode],
+            'path'    => platforms[facts[:os]['family']][:etc_dir],
+            'owner'   => platforms[facts[:os]['family']][:user],
+            'group'   => platforms[facts[:os]['family']][:group],
+            'mode'    => platforms[facts[:os]['family']][:etc_dir_mode],
             'purge'   => true,
             'recurse' => true,
             'force'   => true,
@@ -88,7 +88,11 @@ describe 'sensu::common', :type => :class do
 
       context 'with use_ssl => false' do
         let(:pre_condition) { "class { 'sensu': use_ssl => false }" }
-        it { should compile.with_all_deps }
+        # See the compile check near the top of this file — same rspec-puppet
+        # Windows path-mocking limitation.
+        if facts[:os]['family'] != 'windows'
+          it { should compile.with_all_deps }
+        end
         it { should_not contain_class('sensu::ssl') }
       end
     end

@@ -9,6 +9,7 @@ describe Puppet::Type.type(:sensu_secrets_vault_provider).provider(:sensuctl) do
       :address => 'https://vaultserver.example.com:8200',
       :token => 'secret',
       :version => 'v1',
+      :provider => 'sensuctl',
     }
   end
   let(:resource) do

@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "sensu-backend", primary: true, autostart: true do |backend|
-    backend.vm.box = "centos/7"
+    backend.vm.box = "rockylinux/9"
     backend.vm.hostname = 'sensu-backend.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.10'
     backend.vm.network :forwarded_port, guest: 2380, host: 2380, auto_correct: true
@@ -48,7 +48,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "sensu-backend-peer1", autostart: false  do |backend|
-    backend.vm.box = "centos/7"
+    backend.vm.box = "rockylinux/9"
     backend.vm.hostname = 'sensu-backend-peer1.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.21'
     backend.vm.network :forwarded_port, guest: 2380, host: 2381, auto_correct: true
@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "sensu-backend-peer2", autostart: false do |backend|
-    backend.vm.box = "centos/7"
+    backend.vm.box = "rockylinux/9"
     backend.vm.hostname = 'sensu-backend-peer2.example.com'
     backend.vm.network :private_network, ip: ENV['ALTERNATE_IP'] || '192.168.52.22'
     backend.vm.network :forwarded_port, guest: 2380, host: 2382, auto_correct: true
@@ -74,7 +74,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "sensu-backend-federated1", autostart: false  do |backend|
-    backend.vm.box = "centos/7"
+    backend.vm.box = "rockylinux/9"
     backend.vm.hostname = 'sensu-backend-peer1.example.com'
     backend.vm.network :private_network, ip: '192.168.52.30'
     backend.vm.network :forwarded_port, guest: 2380, host: 2383, auto_correct: true
@@ -82,12 +82,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8080, host: 8084, auto_correct: true
     backend.vm.network :forwarded_port, guest: 8081, host: 8086, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    backend.vm.provision :shell, :path => "tests/generate-etcd-ssl.sh"
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
     backend.vm.provision :shell, :inline => "sensuctl role list"
   end
 
   config.vm.define "sensu-backend-federated2", autostart: false do |backend|
-    backend.vm.box = "centos/7"
+    backend.vm.box = "rockylinux/9"
     backend.vm.hostname = 'sensu-backend-peer2.example.com'
     backend.vm.network :private_network, ip: '192.168.52.31'
     backend.vm.network :forwarded_port, guest: 2380, host: 2384, auto_correct: true
@@ -95,14 +96,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     backend.vm.network :forwarded_port, guest: 8080, host: 8085, auto_correct: true
     backend.vm.network :forwarded_port, guest: 8081, host: 8086, auto_correct: true
     backend.vm.provision :shell, :path => "tests/provision_basic_el.sh"
+    backend.vm.provision :shell, :path => "tests/generate-etcd-ssl.sh"
     backend.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-backend-federated-cluster.pp"
   end
 
   config.vm.define "el8-agent", autostart: true do |agent|
-    agent.vm.box = "centos/8"
-    # TODO: Using specific box until CentOS 8.1 box is used for centos/8
-    # https://github.com/dotless-de/vagrant-vbguest/issues/367
-    agent.vm.box_url = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-Vagrant-8.1.1911-20200113.3.x86_64.vagrant-virtualbox.box"
+    agent.vm.box = "rockylinux/8"
     agent.vm.hostname = 'el8-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.32"
     agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
@@ -110,58 +109,49 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "el7-agent", autostart: true do |agent|
-    agent.vm.box = "centos/7"
-    agent.vm.hostname = 'el7-agent.example.com'
+  config.vm.define "el9-agent", autostart: true do |agent|
+    agent.vm.box = "rockylinux/9"
+    agent.vm.hostname = 'el9-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.11"
     agent.vm.provision :shell, :path => "tests/provision_basic_el.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "ubuntu1804-agent", autostart: false do |agent|
-    agent.vm.box = "ubuntu/bionic64"
-    agent.vm.hostname = 'ubuntu1804-agent.example.com'
+  config.vm.define "ubuntu2404-agent", autostart: false do |agent|
+    agent.vm.box = "ubuntu/noble64"
+    agent.vm.hostname = 'ubuntu2404-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.13"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "ubuntu1604-agent", autostart: false do |agent|
-    agent.vm.box = "ubuntu/xenial64"
-    agent.vm.hostname = 'ubuntu1604-agent.example.com'
-    agent.vm.network  :private_network, ip: "192.168.52.23"
+  config.vm.define "ubuntu2204-agent", autostart: false do |agent|
+    agent.vm.box = "ubuntu/jammy64"
+    agent.vm.hostname = 'ubuntu2204-agent.example.com'
+    agent.vm.network  :private_network, ip: "192.168.52.33"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "debian10-agent", autostart: false do |agent|
-    agent.vm.box = "debian/buster64"
-    agent.vm.hostname = 'debian10-agent.example.com'
+  config.vm.define "debian12-agent", autostart: false do |agent|
+    agent.vm.box = "debian/bookworm64"
+    agent.vm.hostname = 'debian12-agent.example.com'
     agent.vm.network  :private_network, ip: "192.168.52.27"
     agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
     agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
     agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
   end
 
-  config.vm.define "debian9-agent", autostart: false do |agent|
-    agent.vm.box = "debian/stretch64"
-    agent.vm.hostname = 'debian9-agent.example.com'
-    agent.vm.network  :private_network, ip: "192.168.52.20"
-    agent.vm.provision :shell, :path => "tests/provision_basic_debian.sh"
-    agent.vm.provision :shell, :inline => "puppet apply /vagrant/tests/sensu-agent.pp"
-    agent.vm.provision :shell, :inline => "facter --custom-dir=/vagrant/lib/facter sensu_agent"
-  end
-
-  config.vm.define "win2012r2-agent", autostart: false do |agent|
-    agent.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
+  config.vm.define "win2019-agent", autostart: false do |agent|
+    agent.vm.box = "gusztavvargadr/windows-server-2019-standard"
     agent.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
+      vb.customize ["modifyvm", :id, "--cpus", "2"]
     end
-    agent.vm.hostname = 'win2012r2-agent'
+    agent.vm.hostname = 'win2019-agent'
     agent.vm.network  :private_network, ip: "192.168.52.24"
     agent.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
     agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
@@ -170,25 +160,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
   end
 
-  config.vm.define "win2012r2-agent-bolt", autostart: false do |agent|
-    agent.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
-    agent.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
-    end
-    agent.vm.hostname = 'win2012r2-agent'
-    agent.vm.network  :private_network, ip: "192.168.52.29"
-    agent.vm.network "forwarded_port", host: 3389, guest: 3389, auto_correct: true
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
-    agent.vm.provision :shell, :path => "tests/test_bolt_win.ps1"
-    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
-  end
-
   config.vm.define "win2016-agent", autostart: false do |agent|
-    agent.vm.box = "mwrock/Windows2016"
+    agent.vm.box = "gusztavvargadr/windows-server-2016-standard"
     agent.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
+      vb.customize ["modifyvm", :id, "--cpus", "2"]
       vb.gui = false
     end
     agent.vm.hostname = 'win2016-agent'
@@ -197,21 +173,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
     agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-agent.pp"'
     agent.vm.provision :shell, :inline => 'iex "puppet apply -v C:/vagrant/tests/sensu-cli.pp"'
-    agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
-  end
-
-  config.vm.define "win2016-agent-bolt", autostart: false do |agent|
-    agent.vm.box = "mwrock/Windows2016"
-    agent.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
-      vb.gui = false
-    end
-    agent.vm.hostname = 'win2016-agent-bolt'
-    agent.vm.network  :private_network, ip: "192.168.52.28"
-    agent.vm.network "forwarded_port", host: 3391, guest: 3389, auto_correct: true
-    agent.vm.provision :shell, :path => "tests/provision_basic_win.ps1"
-    agent.vm.provision :shell, :path => "tests/test_bolt_win.ps1"
     agent.vm.provision :shell, :inline => 'iex "facter --custom-dir=C:\vagrant\lib\facter sensu_agent"'
   end
 end

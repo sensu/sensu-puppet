@@ -78,8 +78,8 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     end
 
     it 'should create an entity' do
-      on backend, "sensuctl entity info sensu-agent --format json" do
-        data = JSON.parse(stdout)
+      on backend, "sensuctl entity info sensu-agent --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['subscriptions']).to include('base')
         expect(data['subscriptions']).to include('linux')
         expect(data['metadata']['labels']).to include({'foo' => 'bar'})
@@ -95,7 +95,7 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
 
   # This test verifies non-standard location is used by setting api-port
   # and then checking that port gets used by the daemon
-  context 'etc_dir changed', if: (['base'].include?(RSpec.configuration.sensu_mode) && pfact_on(node, 'service_provider') == 'systemd') do
+  context 'etc_dir changed', if: (['base'].include?(RSpec.configuration.sensu_mode) && node && pfact_on(node, 'service_provider') == 'systemd') do
     it 'should work without errors' do
       pp = <<-EOS
       class { '::sensu':
@@ -185,8 +185,8 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     end
 
     it 'should update an entity' do
-      on backend, "sensuctl entity info sensu-agent --format json" do
-        data = JSON.parse(stdout)
+      on backend, "sensuctl entity info sensu-agent --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['subscriptions']).to include('base')
         expect(data['subscriptions']).to include('linux')
         expect(data['subscriptions']).not_to include('foo')
@@ -281,8 +281,8 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     end
 
     it 'should update an entity' do
-      on backend, "sensuctl entity info sensu-agent --format json" do
-        data = JSON.parse(stdout)
+      on backend, "sensuctl entity info sensu-agent --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['subscriptions']).to include('base')
         expect(data['subscriptions']).to include('linux')
         expect(data['subscriptions']).to include('foo')
@@ -307,8 +307,8 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
       apply_manifest_on(node, pp, :catch_failures => true)
     end
     it 'should have previously updated redacted value from refresh of agent.yml' do
-      on backend, "sensuctl entity info sensu-agent --format json" do
-        data = JSON.parse(stdout)
+      on backend, "sensuctl entity info sensu-agent --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['redact']).not_to include('bar')
         expect(data['metadata']['labels']).to include({'bar' => 'baz3'})
       end
@@ -357,8 +357,8 @@ describe 'sensu::agent class', if: ['base'].include?(RSpec.configuration.sensu_m
     end
 
     it 'should have an entity' do
-      on backend, "sensuctl entity info sensu-agent --format json" do
-        data = JSON.parse(stdout)
+      on backend, "sensuctl entity info sensu-agent --format json" do |result|
+        data = JSON.parse(result.stdout)
         expect(data['subscriptions']).to include('base')
         expect(data['subscriptions']).not_to include('linux')
         expect(data['subscriptions']).to include('foo')

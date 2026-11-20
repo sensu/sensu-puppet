@@ -9,6 +9,7 @@ describe Puppet::Type.type(:sensu_command).provider(:sensuctl) do
       :name => 'command-test',
       :url => 'http://foo.example.com',
       :sha512 => sha512,
+      :provider => 'sensuctl',
     }
   end
   let(:resource) do

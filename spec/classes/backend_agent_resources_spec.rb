@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'sensu::backend::default_resources', :type => :class do
   on_supported_os({
-    supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemrelease' => ['7'] }]
+    supported_os: [{ 'operatingsystem' => 'RedHat', 'operatingsystemrelease' => ['8'] }]
   }).each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }

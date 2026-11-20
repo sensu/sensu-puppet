@@ -2,5 +2,11 @@
   "name": "Install Agent Windows",
   "description": "Install Sensu Go agent on Windows",
   "input_method": "powershell",
-  "private": true
+  "private": true,
+  "parameters": {
+    "package_source": {
+      "description": "Full MSI URL or local path for the Sensu Go agent installer. Required for Windows. The MSI filename includes a build number that varies per release — find the current release at https://github.com/sensu/sensu-go/releases. URL pattern: https://s3-us-west-2.amazonaws.com/sensu.io/sensu-go/<version>/sensu-go-agent_<version>.<build>_en-US.x64.msi",
+      "type": "Optional[String[1]]"
+    }
+  }
 }

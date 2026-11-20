@@ -19,7 +19,7 @@
 #   Namespace of entity to manage this annotation
 #
 define sensu::agent::annotation (
-  String $value,
+  Variant[String, Array, Hash] $value,
   Enum['present','absent'] $ensure = 'present',
   String[1] $key   = $name,
   Boolean $redact = false,

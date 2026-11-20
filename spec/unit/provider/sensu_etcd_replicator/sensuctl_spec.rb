@@ -11,6 +11,7 @@ describe Puppet::Type.type(:sensu_etcd_replicator).provider(:sensuctl) do
       :key => '/path/to/ssl/key.pem',
       :url => 'http://127.0.0.1:2379',
       :resource_name => 'Role',
+      :provider => 'sensuctl',
     })
   end
 

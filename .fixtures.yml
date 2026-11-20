@@ -2,48 +2,48 @@ fixtures:
   repositories:
     apt:
       repo: https://github.com/puppetlabs/puppetlabs-apt.git
-      ref: 5.0.1
+      ref: v11.3.2
     stdlib:
       repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
-      ref: 5.1.0
+      ref: v9.7.0
     datacat:
       repo: https://github.com/richardc/puppet-datacat.git
       ref: 0.6.2
     yumrepo_core:
       repo: https://github.com/puppetlabs/puppetlabs-yumrepo_core
-      ref: 1.0.1
-      puppet_version: ">= 6.0.0"
+      ref: v3.0.1
+      puppet_version: ">= 8.0.0"
     chocolatey:
       repo: https://github.com/puppetlabs/puppetlabs-chocolatey.git
-      ref: 3.0.0
+      ref: v9.0.0
     # Needed by chocolatey
     registry:
       repo: https://github.com/puppetlabs/puppetlabs-registry.git
-      ref: 1.0.0
+      ref: v5.0.3
     # Needed by chocolatey
     powershell:
       repo: https://github.com/puppetlabs/puppetlabs-powershell.git
-      ref: 1.0.1
+      ref: v6.1.0
     # Need by postgresql
     augeas_core:
       repo: https://github.com/puppetlabs/puppetlabs-augeas_core
-      ref: 1.0.4
-      puppet_version: ">= 6.0.0"
+      ref: v2.0.1
+      puppet_version: ">= 8.0.0"
     # Need by postgresql
     concat:
       repo: https://github.com/puppetlabs/puppetlabs-concat.git
-      ref: v6.0.0
+      ref: v10.0.1
     postgresql:
       repo: https://github.com/puppetlabs/puppetlabs-postgresql.git
-      ref: v6.4.0
+      ref: v10.6.3
     archive:
       repo: https://github.com/voxpupuli/puppet-archive.git
-      ref: 'v3.0.0'
+      ref: 'v7.1.0'
     windows_env:
       repo: https://github.com/voxpupuli/puppet-windows_env.git
-      ref: 'v3.0.0'
+      ref: 'v6.1.0'
     systemd:
-      repo: https://github.com/camptocamp/puppet-systemd.git
-      ref: '2.0.0'
+      repo: https://github.com/voxpupuli/puppet-systemd.git
+      ref: 'v10.0.0'
   symlinks:
     sensu: "#{source_dir}"

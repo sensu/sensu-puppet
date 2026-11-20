@@ -25,7 +25,6 @@
 .project
 .envrc
 /inventory.yaml
-/appveyor.yml
 /.fixtures.yml
 /Gemfile
 /.gitattributes
@@ -36,7 +35,6 @@
 /rakelib/
 /.rspec
 /.rubocop.yml
-/.travis.yml
 /.yardopts
 /spec/
 /.vscode/

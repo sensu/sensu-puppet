@@ -19,15 +19,11 @@ data/common.yaml:
   unmanaged: true
 Rakefile:
   unmanaged: true
-.travis.yml:
-  unmanaged: true
 spec/spec_helper.rb:
   unmanaged: true
 .gitignore:
   paths: *ignorepaths
 Gemfile:
-  unmanaged: true
-appveyor.yml:
   unmanaged: true
 .rspec:
   unmanaged: true

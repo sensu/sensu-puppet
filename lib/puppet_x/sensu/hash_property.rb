@@ -3,6 +3,14 @@ module PuppetX
     class HashProperty < Puppet::Property
       validate do |value|
         fail "#{self.name.to_s} should be a Hash" unless value.is_a? ::Hash
+        value.each_pair do |key, _val|
+          fail "#{self.name.to_s} key #{key} must be a String" unless key.is_a?(String) || key.is_a?(Symbol)
+          fail "#{self.name.to_s} key #{key} must not be empty" if key.to_s.empty?
+        end
+      end
+
+      munge do |value|
+        value.transform_keys(&:to_s)
       end
 
       def change_to_s(currentvalue, newvalue)
@@ -18,4 +26,3 @@ module PuppetX
     end
   end
 end
-
