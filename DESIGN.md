@@ -2,7 +2,7 @@
 
 ## Classes
 
-Seven main public classes (add more as needed):
+Six main public classes (add more as needed):
 
 * sensu - Define variables used by all other classes
 * sensu::agent - Sensu Agent
@@ -10,7 +10,6 @@ Seven main public classes (add more as needed):
 * sensu::cli - Manage sensuctl
 * sensu::api - Configure sensu_api providers
 * sensu::resources - Define sensu resources
-* sensu::plugins - Sensu plugins
 
 The class `sensu::common` is a private class that holds resources shared by many public classes.
 
@@ -30,7 +29,7 @@ The exception is Sensu Go resource `metadata`. The values for `metadata` keys of
 
 ### All other types/providers
 
-Custom types replace complex `Exec` resources where possible. For example, `sensu_bonsai_asset` manages Bonsai asset installation without requiring manual `sensuctl` invocations, and `sensu_plugin` manages Sensu Go plugins without using `sensuctl`.
+Custom types replace complex `Exec` resources where possible. For example, `sensu_bonsai_asset` manages Bonsai asset installation without requiring manual `sensuctl` invocations.
 
 The use of Exec is acceptable for simple cases like adding the license file where the Exec can be triggered when a file changes.
 

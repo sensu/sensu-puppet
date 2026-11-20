@@ -1,8 +1,3 @@
 ---
 sensu::agent::service_env_vars_file: /etc/default/sensu-agent
 sensu::backend::service_env_vars_file: /etc/default/sensu-backend
-sensu::plugins::dependencies:
-  - make
-  - gcc
-  - g++
-  - libssl-dev

@@ -13,7 +13,6 @@
 * [`sensu::api`](#sensu--api): Manage Sensu API
 * [`sensu::backend`](#sensu--backend): Manage Sensu backend
 * [`sensu::cli`](#sensu--cli): Manage Sensu CLI
-* [`sensu::plugins`](#sensu--plugins): Manage Sensu plugins
 * [`sensu::resources`](#sensu--resources): Define sensu resources
 
 #### Private Classes
@@ -23,7 +22,6 @@
 * `sensu::backend::default_resources`: Default sensu resources
 * `sensu::common`: Sensu class for common resources
 * `sensu::repo`: Private class to manage sensu repository resources
-* `sensu::repo::community`: Private class to manage sensu community repository resources
 * `sensu::ssl`: Private class to manage sensu SSL resources
 
 ### Defined types
@@ -61,7 +59,6 @@
 * [`sensu_namespace`](#sensu_namespace): Manages Sensu namespaces
 * [`sensu_oidc_auth`](#sensu_oidc_auth): Manages Sensu OIDC auth.
 * [`sensu_pipeline`](#sensu_pipeline): Manages Sensu pipelines
-* [`sensu_plugin`](#sensu_plugin): Manages Sensu plugins
 * [`sensu_postgres_config`](#sensu_postgres_config): Manages Sensu postgres config
 * [`sensu_resources`](#sensu_resources): Metatype for sensu resources
 * [`sensu_role`](#sensu_role): Manages Sensu roles
@@ -1180,104 +1177,6 @@ Data type: `Optional[String]`
 Default namespace for sensuctl
 
 Default value: `undef`
-
-### <a name="sensu--plugins"></a>`sensu::plugins`
-
-Class to manage the Sensu plugins.
-
-#### Examples
-
-##### 
-
-```puppet
-class { 'sensu::plugins':
-  plugins    => ['disk-checks'],
-  extensions => ['graphite'],
-}
-```
-
-##### 
-
-```puppet
-class { 'sensu::plugins':
-  plugins    => {
-    'disk-checks' => { 'version' => 'latest' },
-  },
-  extensions => {
-    'graphite' => { 'version' => 'latest' },
-  },
-}
-```
-
-#### Parameters
-
-The following parameters are available in the `sensu::plugins` class:
-
-* [`manage_repo`](#-sensu--plugins--manage_repo)
-* [`package_ensure`](#-sensu--plugins--package_ensure)
-* [`package_name`](#-sensu--plugins--package_name)
-* [`dependencies`](#-sensu--plugins--dependencies)
-* [`gem_dependencies`](#-sensu--plugins--gem_dependencies)
-* [`plugins`](#-sensu--plugins--plugins)
-* [`extensions`](#-sensu--plugins--extensions)
-
-##### <a name="-sensu--plugins--manage_repo"></a>`manage_repo`
-
-Data type: `Optional[Boolean]`
-
-Determines if plugin repo should be managed.
-Defaults to value for `sensu::manage_repo`.
-
-Default value: `undef`
-
-##### <a name="-sensu--plugins--package_ensure"></a>`package_ensure`
-
-Data type: `String`
-
-Ensure property for sensu plugins package.
-
-Default value: `'installed'`
-
-##### <a name="-sensu--plugins--package_name"></a>`package_name`
-
-Data type: `String`
-
-Name of the Sensu plugins ruby package.
-
-Default value: `'sensu-plugins-ruby'`
-
-##### <a name="-sensu--plugins--dependencies"></a>`dependencies`
-
-Data type: `Array`
-
-Package dependencies needed to install plugins and extensions.
-Default is OS dependent.
-
-Default value: `[]`
-
-##### <a name="-sensu--plugins--gem_dependencies"></a>`gem_dependencies`
-
-Data type: `Array`
-
-Gem dependencies.
-
-Default value: `[]`
-
-##### <a name="-sensu--plugins--plugins"></a>`plugins`
-
-Data type: `Variant[Array, Hash]`
-
-Plugins to install
-
-Default value: `[]`
-
-##### <a name="-sensu--plugins--extensions"></a>`extensions`
-
-Data type: `Variant[Array, Hash]`
-
-Extensions to install
-
-Default value: `[]`
 
 ### <a name="sensu--resources"></a>`sensu::resources`
 
@@ -4307,103 +4206,6 @@ usually discover the appropriate provider for your platform.
 ##### <a name="-sensu_pipeline--resource_name"></a>`resource_name`
 
 The name of the pipeline.
-
-### <a name="sensu_plugin"></a>`sensu_plugin`
-
-**Autorequires**:
-* `Package[sensu-plugins-ruby]`
-
-#### Examples
-
-##### Install a sensu plugin
-
-```puppet
-sensu_plugin { 'disk-checks':
-  ensure  => 'present',
-}
-```
-
-##### Install specific version of a sensu plugin
-
-```puppet
-sensu_plugin { 'disk-checks':
-  ensure  => 'present',
-  version => '4.0.0',
-}
-```
-
-##### Install latest version of a sensu plugin
-
-```puppet
-sensu_plugin { 'disk-checks':
-  ensure  => 'present',
-  version => 'latest',
-}
-```
-
-#### Properties
-
-The following properties are available in the `sensu_plugin` type.
-
-##### `ensure`
-
-Valid values: `present`, `absent`
-
-The basic property that the resource should be in.
-
-Default value: `present`
-
-##### `version`
-
-Valid values: `latest`, `/[0-9\.]+/`
-
-Specific version to install, or latest
-
-#### Parameters
-
-The following parameters are available in the `sensu_plugin` type.
-
-* [`clean`](#-sensu_plugin--clean)
-* [`extension`](#-sensu_plugin--extension)
-* [`name`](#-sensu_plugin--name)
-* [`provider`](#-sensu_plugin--provider)
-* [`proxy`](#-sensu_plugin--proxy)
-* [`source`](#-sensu_plugin--source)
-
-##### <a name="-sensu_plugin--clean"></a>`clean`
-
-Valid values: `true`, `false`
-
-Clean up (remove) other installed versions of the plugin(s) and/or extension(s)
-
-Default value: `true`
-
-##### <a name="-sensu_plugin--extension"></a>`extension`
-
-Valid values: `true`, `false`
-
-Sets to install an extension instead of a plugin
-
-Default value: `false`
-
-##### <a name="-sensu_plugin--name"></a>`name`
-
-namevar
-
-Plugin or extension name
-
-##### <a name="-sensu_plugin--provider"></a>`provider`
-
-The specific backend to use for this `sensu_plugin` resource. You will seldom need to specify this --- Puppet will
-usually discover the appropriate provider for your platform.
-
-##### <a name="-sensu_plugin--proxy"></a>`proxy`
-
-Install Sensu plugins and extensions via a PROXY URL
-
-##### <a name="-sensu_plugin--source"></a>`source`
-
-Install Sensu plugins and extensions from a custom SOURCE
 
 ### <a name="sensu_postgres_config"></a>`sensu_postgres_config`
 
