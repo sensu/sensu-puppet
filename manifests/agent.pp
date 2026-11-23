@@ -126,7 +126,6 @@ class sensu::agent (
   Optional[Hash[String[1],Variant[String, Array, Hash]]] $keepalive_check_annotations = undef,
   Optional[Array[Hash]] $keepalive_pipelines = undef,
 ) {
-
   include sensu
   include sensu::common
   include sensu::api
@@ -242,8 +241,8 @@ class sensu::agent (
         before => Package['sensu-go-agent'],
       }
     } elsif $package_source {
-        $package_provider = undef
-        $_package_source = $package_source
+      $package_provider = undef
+      $_package_source = $package_source
     } else {
       include chocolatey
       $package_provider = 'chocolatey'

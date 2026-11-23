@@ -84,7 +84,6 @@ class sensu (
   Boolean $validate_namespaces = true,
   Boolean $validate_api = true,
 ) {
-
   if $ssl_ca_content {
     $_ssl_ca_source = undef
   } else {
@@ -151,5 +150,4 @@ class sensu (
   }
 
   include sensu::resources
-
 }

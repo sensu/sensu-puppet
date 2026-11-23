@@ -174,7 +174,6 @@ class sensu::backend (
   Integer $postgresql_batch_workers = 20,
   Boolean $postgresql_enable_round_robin = false,
 ) {
-
   if $license_source and $license_content {
     fail('sensu::backend: Do not define both license_source and license_content')
   }

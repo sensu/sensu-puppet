@@ -2,7 +2,6 @@
 # @api private
 #
 class sensu::repo {
-
   if $facts['os']['family'] == 'RedHat' {
     if $facts['os']['name'] == 'Amazon' {
       case $facts['os']['release']['major'] {

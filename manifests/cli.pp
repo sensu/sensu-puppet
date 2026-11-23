@@ -37,7 +37,6 @@ class sensu::cli (
   Optional[Enum['tabular','json','wrapped-json','yaml']] $config_format = undef,
   Optional[String] $config_namespace = undef,
 ) {
-
   include sensu
   include sensu::common
 
