@@ -60,7 +60,7 @@ end
 
 group :system_tests do
   gem 'beaker',                       '7.7.0',  :require => false
-  gem 'beaker-docker',                '3.1.3',  :require => false
+  gem 'beaker-docker',                '3.2.0',  :require => false
   gem 'beaker-module_install_helper', '0.1.7',  :require => false
   gem 'beaker-puppet',                '4.4.3',  :require => false
   gem 'beaker-puppet_install_helper', '0.9.4',  :require => false
